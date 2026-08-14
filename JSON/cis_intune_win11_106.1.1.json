@@ -1,0 +1,43 @@
+{
+  "id": "106.1.1",
+  "title": "Ensure 'Device Health: BitLocker' is set to 'Require'",
+  "assessment_status": "Manual",
+  "benchmark": {
+    "product": "CIS Microsoft Intune for Windows 11 Benchmark",
+    "version": "5.0.0",
+    "platform": "Windows 11 (Intune)"
+  },
+  "profile_applicability": ["Level 1 (L1)"],
+  "recommended_state": "Require",
+  "description": "This policy setting ensures that BitLocker Drive Encryption is active on Windows devices. When this policy is set to require, Intune uses the Windows Health Attestation Service (HAS) to verify that BitLocker is enabled and protecting the operating system volume at the time of device check-in. The recommended state for this setting is: Require.",
+  "rationale": "Full-disk encryption protects data stored on end-user devices from unauthorized access in the event of loss or theft. Without BitLocker, a threat actor who gains physical access to a device can mount the drive externally and read data in plaintext, bypassing all operating system access controls. BitLocker encryption ensures that data at rest remains protected by a cryptographic key bound to the device's hardware security stack.",
+  "impact": "Devices that do not have BitLocker enabled including devices where encryption was initiated but have not completed will be marked non-compliant. Non-compliant devices may lose access to corporate resources until encryption is confirmed.",
+  "audit": {
+    "methods": [
+      {
+        "method_name": "Console Navigation",
+        "type": "manual",
+        "description": "Navigate to the UI Path articulated in the Remediation section and confirm it is set as prescribed."
+      }
+    ]
+  },
+  "remediation": {
+    "methods": [
+      {
+        "method_name": "Intune Admin Center",
+        "type": "manual_steps",
+        "description": "To establish the recommended configuration from Microsoft Intune Admin Center:\n1. Navigate to Endpoint security - Compliance policies.\n2. Create or edit a Compliance policy.\n3. Under Device Health, set BitLocker to Require."
+      }
+    ]
+  },
+  "default_value": "Not Configured",
+  "references": [
+    "https://learn.microsoft.com/en-us/intune/device-security/compliance/overview"
+  ],
+  "grid_id": null,
+  "minimum_os_csp": null,
+  "additional_information": null,
+  "cis_controls": [
+    { "version": "v8", "control_id": "3.6", "control_title": "Encrypt Data on End-User Devices", "implementation_groups": ["IG1", "IG2", "IG3"] }
+  ]
+}

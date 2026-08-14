@@ -1,0 +1,46 @@
+{
+  "id": "2.1.1.4",
+  "title": "Audit Security Keys Used With Apple Accounts",
+  "assessment_status": "Manual",
+  "benchmark": {
+    "product": "CIS Apple macOS 26 (Tahoe) Benchmark",
+    "version": "1.1.0",
+    "platform": "macOS"
+  },
+  "profile_applicability": ["Level 2"],
+  "recommended_state": null,
+  "description": "Apple has introduced the capability of using security keys to protect Apple Accounts using two-factor authentication in macOS 13.2, in iOS 16.3, and in iPadOS 16.3. This feature along with the purchase of two hardware tokens (a backup device is required) protects against the compromise of Apple Accounts. This feature requires all devices using an enrolled Apple Account to meet the minimum OS standard.",
+  "rationale": "Users of Apple devices are supported across their devices by using the same Apple Account to support shared data in both iCloud and across devices. Compromising an Apple Account has become a very attractive target for attackers to gain unauthorized access to iCloud storage and user devices. Two-factor authentication reduces the risk.",
+  "impact": "Legacy devices and test machines will be challenging to ensure that they are all running recent Operating Systems that can utilize Security Keys. It is best practice not to use Apple Accounts with access to current user data on legacy and test machines. Technical staff that use legacy devices are encouraged to create additional Apple Accounts that do not need two-factor protection and can be used for testing on legacy devices when required.",
+  "audit": {
+    "methods": [
+      {
+        "method_name": "Graphical Method",
+        "type": "manual",
+        "description": "Perform the following steps to verify if Security Keys is set to your organization's requirements:\n1. Open System Settings\n2. Select Apple Account\n3. Select Password & Security\n4. Verify that Security Keys is set to your organization's requirements"
+      }
+    ]
+  },
+  "remediation": {
+    "methods": [
+      {
+        "method_name": "Graphical Method",
+        "type": "manual_steps",
+        "description": "Perform the following steps to set Security Keys is set to your organization's requirements:\n1. Open System Settings\n2. Select Apple Account\n3. Select Password & Security\n4. Select 'Add..' to add a security key, or 'Remove All Security Keys' ro remove security keys, to meet your organization's requirements"
+      }
+    ]
+  },
+  "default_value": null,
+  "references": [
+    "https://support.apple.com/en-us/102637",
+    "https://9to5mac.com/2023/02/03/ios-16-3-hardware-security-keys-explained-video/",
+    "https://hcsonline.com/images/PDFs/Security_Key_Apple_ID.pdf"
+  ],
+  "grid_id": null,
+  "minimum_os_csp": null,
+  "additional_information": null,
+  "cis_controls": [
+    { "version": "v8", "control_id": "5.2", "control_title": "Use Unique Passwords", "implementation_groups": ["IG1", "IG2", "IG3"] },
+    { "version": "v7", "control_id": "4.4", "control_title": "Use Unique Passwords", "implementation_groups": ["IG2", "IG3"] }
+  ]
+}

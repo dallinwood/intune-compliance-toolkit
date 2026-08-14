@@ -1,6 +1,6 @@
 # Ignore reference files
 *.pdf
-references/
+baseline-references/
 
 ### Python ###
 

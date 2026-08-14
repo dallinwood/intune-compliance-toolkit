@@ -1,0 +1,57 @@
+{
+  "id": "4.11.48.1",
+  "title": "Ensure 'Prevent Internet Explorer security prompt for Windows Installer scripts' is set to 'Disabled'",
+  "assessment_status": "Automated",
+  "benchmark": {
+    "product": "CIS Microsoft Intune for Windows 11 Benchmark",
+    "version": "5.0.0",
+    "platform": "Windows 11 (Intune)"
+  },
+  "profile_applicability": ["Level 2 (L2)"],
+  "recommended_state": "Disabled",
+  "description": "This policy setting controls whether Web-based programs are allowed to install software on the computer without notifying the user.\n\nThe recommended state for this setting is: Disabled.",
+  "rationale": "Suppressing the system warning can pose a security risk and increase the attack surface on the system.",
+  "impact": "None - this is the default behavior.",
+  "audit": {
+    "methods": [
+      {
+        "method_name": "Registry Check",
+        "type": "scripted",
+        "description": "Navigate to the UI Path articulated in the Remediation section and confirm it is set as prescribed. This policy setting is backed by the following registry location with a REG_DWORD value of 0.",
+        "steps": [
+          {
+            "step_role": "compliance_check",
+            "original_command": null,
+            "check_command": "$safeForScripting = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'SafeForScripting' -ErrorAction SilentlyContinue).SafeForScripting",
+            "check_command_verified": true,
+            "output_description": "REG_DWORD value of 0",
+            "check_command_notes": "No original_command exists - CIS only gives the registry location and REG_DWORD value, not a script.",
+            "output_check": [
+              { "variable": "safeForScripting", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "remediation": {
+    "methods": [
+      {
+        "method_name": "Settings Catalog",
+        "type": "configuration_profile",
+        "description": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to 'Disabled'.",
+        "config_keys": [
+          { "settings_catalog_path": "Administrative Templates\\Windows Components\\Windows Installer\\Prevent Internet Explorer security prompt for Windows Installer scripts", "value": "Disabled" }
+        ]
+      }
+    ]
+  },
+  "default_value": "Disabled. (When a script hosted by an Internet browser tries to install a program on the system, the system warns users and allows them to select or refuse the installation.)",
+  "references": [],
+  "grid_id": "MS-00000533",
+  "minimum_os_csp": "Windows 10, Version 2004 with KB5005101 and later",
+  "additional_information": null,
+  "cis_controls": [
+    { "version": "v8", "control_id": "2.5", "control_title": "Allowlist Authorized Software", "implementation_groups": ["IG2", "IG3"] }
+  ]
+}
