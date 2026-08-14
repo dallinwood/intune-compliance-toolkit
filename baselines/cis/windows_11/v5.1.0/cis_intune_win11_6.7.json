@@ -9,20 +9,7 @@
   },
   "profile_applicability": ["Level 1 (L1)"],
   "recommended_state": "Success",
-  "description": "This subcategory reports changes in authentication policy. Events for this subcategory include:\n\nThe recommended state for this setting is to include: Success.",
-  "related_events": [
-    { "event_id": 4706, "description": "A new trust was created to a domain." },
-    { "event_id": 4707, "description": "A trust to a domain was removed." },
-    { "event_id": 4713, "description": "Kerberos policy was changed." },
-    { "event_id": 4716, "description": "Trusted domain information was modified." },
-    { "event_id": 4717, "description": "System security access was granted to an account." },
-    { "event_id": 4718, "description": "System security access was removed from an account." },
-    { "event_id": 4739, "description": "Domain Policy was changed." },
-    { "event_id": 4864, "description": "A namespace collision was detected." },
-    { "event_id": 4865, "description": "A trusted forest information entry was added." },
-    { "event_id": 4866, "description": "A trusted forest information entry was removed." },
-    { "event_id": 4867, "description": "A trusted forest information entry was modified." }
-  ],
+  "description": "This subcategory reports changes in authentication policy. Events for this subcategory include:\n\n- 4706: A new trust was created to a domain.\n- 4707: A trust to a domain was removed.\n- 4713: Kerberos policy was changed.\n- 4716: Trusted domain information was modified.\n- 4717: System security access was granted to an account.\n- 4718: System security access was removed from an account.\n- 4739: Domain Policy was changed.\n- 4864: A namespace collision was detected.\n- 4865: A trusted forest information entry was added.\n- 4866: A trusted forest information entry was removed.\n- 4867: A trusted forest information entry was modified.\n\nThe recommended state for this setting is to include: Success.",
   "rationale": "Auditing these events may be useful when investigating a security incident.",
   "impact": "If no audit settings are configured, or if audit settings are too lax on the computers in your organization, security incidents might not be detected, or not enough evidence will be available for network forensic analysis after security incidents occur. However, if audit settings are too severe, critically important entries in the Security log may be obscured by all of the meaningless entries and computer performance and the available amount of data storage may be seriously affected. Companies that operate in certain regulated industries may have legal obligations to log certain events or activities.",
   "audit": {

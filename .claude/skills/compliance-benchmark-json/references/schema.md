@@ -18,7 +18,7 @@ One file per rule, named `<benchmark-slug>_<platform-slug>_<rule-id>.json` (e.g.
 | `benchmark` | object | `{ product, version, platform }` - identifies which benchmark document and which platform this rule targets. No `source_file` path (removed - product/version already identifies it, and file paths move). |
 | `profile_applicability` | array of strings | Raw strings from source, e.g. `["Level 1"]`, `["Level 1 (L1)"]`, `["BitLocker (BL)"]`. Don't parse profile codes out - keep them as the source wrote them, since not every benchmark follows the same code scheme. |
 | `recommended_state` | string \| null | The benchmark's own label for the target value (e.g. `"Block"`, `"Disabled"`, `"Success"`). `null` when the rule is organization-defined with no fixed target, or when the source never phrases a single recommended value. **Not redundant** with `output_check.value` even when a check exists - see below. |
-| `description`, `rationale`, `impact` | string | Verbatim source prose. Multi-paragraph text uses `\n\n` between paragraphs; embedded bullet lists use `\n- ` per item, in the same string - don't break bullets into a separate array unless the list is independently queryable data (see `related_events` below). Any source note/callout that appeared under the same heading gets folded into this same string. |
+| `description`, `rationale`, `impact` | string | Verbatim source prose. Multi-paragraph text uses `\n\n` between paragraphs; embedded bullet lists use `\n- ` per item, in the same string. Any source note/callout that appeared under the same heading gets folded into this same string. |
 | `audit` | object | See below. |
 | `remediation` | object | See below. Out of scope for the `check_command`/`output_check` redesign - remediation steps still use an older `command` / `expected_output` / `purpose` shape, since remediation is an action, not a compliance check. |
 | `default_value` | string \| null | The source's stated default, when given. |
@@ -112,6 +112,6 @@ These point at specific existing rule files by name, produced during initial sch
 
 **Organization-defined pass criteria with a real script** - `cis_macos26_2.1.1.1.json` (iCloud Keychain, tagged `Manual` in source despite having a runnable script-based check) and `cis_macos26_2.12.2.json` (Touch ID, two `output_check` entries from one command). Both show `assessment_status: "Manual"` coexisting with `type: "scripted"` - the tag and the schema fields are independent facts.
 
-**"Include" semantics (contains, not equals)** - `cis_intune_win11_6.7.json` (Audit Authentication Policy Change): `operator: "contains"`, plus `related_events` as a structured array (event IDs are genuinely queryable data, unlike an ordinary bullet list).
+**"Include" semantics (contains, not equals)** - `cis_intune_win11_6.7.json` (Audit Authentication Policy Change): `operator: "contains"`.
 
 **Pure manual, no script possible at all** - `cis_macos26_2.1.1.4.json` (Security Keys - device-side state can't be read at all) and `cis_intune_win11_106.1.1.json` (BitLocker Device Health - it's a cloud-evaluated compliance policy with no local registry/CSP backing, so even a populated `recommended_state` has nothing to attach a script to). Neither has an `audit.methods[].steps` at all.
