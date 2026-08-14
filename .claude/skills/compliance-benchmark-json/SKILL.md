@@ -69,6 +69,11 @@ These appeared in early iterations of this schema and were deliberately cut - if
 - **`recommended_state_mode`** (`"set"` / `"include"`) - duplicated `output_check[].operator` (`"eq"` vs `"contains"`). Kept `recommended_state` itself, though - see `references/schema.md` for why that one field is NOT redundant even though its sibling was.
 - **`interpreter`** (`"zsh"` / `"powershell"` per method) - fully derivable from `benchmark.platform`; the target platform's own compliance mechanism fixes the scripting language anyway, so there's no actual choice being recorded.
 - **`registry_check`** (a separate object shape for registry-only audits) - collapsed into the same `steps` shape everything else uses, so a consumer only has to handle one pattern instead of two.
+- **`related_events`** (a structured `{event_id, description}` array, tried on the Audit Authentication Policy Change rule) - only one rule ever populated it. A structured field only earns its keep if a script generator can read it across many rules; a one-off array that no generator logic touches is just prose wearing a schema costume, and prose belongs in `description` (as a verbatim `\n- ` bullet list, same as any other source bullet list). If a genuinely recurring, cross-rule pattern like this shows up again (e.g. several rules all list associated event IDs), it's worth re-introducing as a proper shared field at that point - not before.
+
+## Don't add a field for one rule
+
+Before introducing a new structured key beyond the general schema, check whether it would appear in more than a handful of rules. A key that only ever holds data for a single rule can't be meaningfully consumed by an automated generator (there's no shared logic to write against it), so it doesn't earn the fidelity/automation split described above - it's just a bullet list with extra ceremony. Fold rule-specific structured-looking data (tables, ID lists, etc.) into the relevant prose field verbatim instead, and only promote it to a real field once the same shape recurs across multiple rules.
 
 ## A note on benchmark-specific fields
 
