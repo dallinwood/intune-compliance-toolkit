@@ -569,3 +569,15 @@ entry here, not just the session that wrote it.
   to "never answered" (the placeholder) instead of persisting a stray
   value - applied to both the integer and string inputs. (`de5e3c3` fix:
   stop integer input coercing empty to 0, clear reverts to placeholder)
+- **2026-08-17** - Milestone 3: export/import. Added `logic/exportImport.ts`
+  (`buildSettingsFile`, `validateSettingsFile`, `resolveImportedSelections`),
+  unit-tested for round-tripping, schema-version rejection, malformed-entry
+  rejection, and unresolved-ref reporting. `ExportImportControls` downloads
+  the current selection state as a pretty-printed JSON file and lets the
+  admin choose one to import; import validates the file, confirms before
+  replacing the current selection (it's a load-this-snapshot action, not a
+  merge), and reports (rather than silently dropping) any imported ref that
+  no longer matches a currently-loaded rule. Extracted `SelectionToolbar`
+  (selected count, clear, export/import) out of `AppShell`'s header, per
+  the plan's original component breakdown. Added `setAllSelections` to
+  `selectionStore` for the wholesale replace.

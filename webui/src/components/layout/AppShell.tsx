@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { FilterSidebar } from '../filters/FilterSidebar'
 import { RuleTable } from '../rules/RuleTable'
+import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { useFilterStore, type FilterState } from '../../state/filterStore'
-import { useSelectionStore } from '../../state/selectionStore'
 import type { RuleRow } from '../../types/rule-row'
 
 type FilterValues = Pick<FilterState, 'search' | 'products' | 'versions' | 'platforms' | 'profiles' | 'automatable'>
@@ -24,24 +24,16 @@ function matchesFilters(row: RuleRow, filters: FilterValues): boolean {
 export function AppShell({ rows }: { rows: RuleRow[] }) {
   const filters = useFilterStore()
   const filteredRows = useMemo(() => rows.filter((row) => matchesFilters(row, filters)), [rows, filters])
-  const selections = useSelectionStore((store) => store.selections)
-  const clearAll = useSelectionStore((store) => store.clearAll)
-  const selectedCount = useMemo(() => Object.values(selections).filter((entry) => entry.enabled).length, [selections])
 
   return (
     <div className="flex h-screen flex-col">
       <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
         <h1 className="text-lg font-semibold text-slate-900">Intune Compliance Toolkit</h1>
-        <div className="flex items-center gap-4 text-sm text-slate-500">
-          <span>
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-slate-500">
             {filteredRows.length} of {rows.length} rules
           </span>
-          <span className="font-medium text-slate-700">{selectedCount} selected</span>
-          {selectedCount > 0 && (
-            <button type="button" onClick={clearAll} className="text-xs text-slate-500 underline hover:text-slate-700">
-              Clear selection
-            </button>
-          )}
+          <SelectionToolbar rows={rows} />
         </div>
       </header>
       <div className="flex flex-1 overflow-hidden">

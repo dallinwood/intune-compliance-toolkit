@@ -9,6 +9,9 @@ export interface SelectionState {
   setOrganizationDefinedValue: (ref: RuleRef, variable: string, value: OrgDefinedValue) => void
   clearOrganizationDefinedValue: (ref: RuleRef, variable: string) => void
   clearAll: () => void
+  // Wholesale replace - used by settings import, which is a "load this
+  // snapshot" action, not a per-field merge.
+  setAllSelections: (selections: SelectionMap) => void
 }
 
 // Same shape as the eventual export/import settings file (schemaVersion +
@@ -42,6 +45,7 @@ export const useSelectionStore = create<SelectionState>()(
           }),
         })),
       clearAll: () => set({ selections: {} }),
+      setAllSelections: (selections) => set({ selections }),
     }),
     {
       name: 'intune-toolkit:selections',
