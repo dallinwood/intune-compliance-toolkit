@@ -540,4 +540,5 @@ entry here, not just the session that wrote it.
   `operatorSymbol()`/`formatCheckValue()` to `logic/outputCheckText.ts`
   (unit-tested) for it. `describeOutputCheck()`'s full sentence is kept as
   the row's hover tooltip. Applied the same command/config styling to
-  `RemediationMethodCard` for consistency.
+  `RemediationMethodCard` for consistency. (`3ebede1` fix: separate command
+  block from checks, badge-style pass/fail criteria)
