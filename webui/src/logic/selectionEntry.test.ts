@@ -16,14 +16,13 @@ describe('refKey', () => {
 })
 
 describe('createSelectionEntry', () => {
-  it('defaults to not enabled, first methods, and no organization-defined values', () => {
+  it('defaults to not enabled, no explicit audit method choice, and no organization-defined values', () => {
     const entry = createSelectionEntry(REF_A)
 
     expect(entry).toEqual({
       ref: REF_A,
       enabled: false,
-      selectedAuditMethodIndex: 0,
-      selectedRemediationMethodIndex: 0,
+      selectedAuditMethodIndex: null,
       organizationDefinedValues: {},
     })
   })
@@ -65,8 +64,8 @@ describe('getSelection', () => {
   })
 
   it('returns the stored entry when one exists', () => {
-    const selections = upsertSelection({}, REF_A, (entry) => ({ ...entry, selectedRemediationMethodIndex: 2 }))
+    const selections = upsertSelection({}, REF_A, (entry) => ({ ...entry, selectedAuditMethodIndex: 2 }))
 
-    expect(getSelection(selections, REF_A).selectedRemediationMethodIndex).toBe(2)
+    expect(getSelection(selections, REF_A).selectedAuditMethodIndex).toBe(2)
   })
 })

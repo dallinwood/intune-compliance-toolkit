@@ -6,7 +6,6 @@ export interface SelectionState {
   selections: SelectionMap
   setEnabled: (ref: RuleRef, enabled: boolean) => void
   setAuditMethodIndex: (ref: RuleRef, index: number) => void
-  setRemediationMethodIndex: (ref: RuleRef, index: number) => void
   setOrganizationDefinedValue: (ref: RuleRef, variable: string, value: OrgDefinedValue) => void
   clearAll: () => void
 }
@@ -23,13 +22,6 @@ export const useSelectionStore = create<SelectionState>()(
       setAuditMethodIndex: (ref, index) =>
         set((state) => ({
           selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, selectedAuditMethodIndex: index })),
-        })),
-      setRemediationMethodIndex: (ref, index) =>
-        set((state) => ({
-          selections: upsertSelection(state.selections, ref, (entry) => ({
-            ...entry,
-            selectedRemediationMethodIndex: index,
-          })),
         })),
       setOrganizationDefinedValue: (ref, variable, value) =>
         set((state) => ({

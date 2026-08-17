@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { fetchRuleDetail } from '../../data/ruleDetail'
+import { effectiveAuditMethodIndex } from '../../logic/auditMethods'
 import { getSelection, type RuleRef } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
 import type { RuleDetail } from '../../types/rule-detail'
-import { AuditMethodPicker } from './AuditMethodPicker'
+import { AuditMethodList } from './AuditMethodList'
 import { OrgDefinedValueInput } from './OrgDefinedValueInput'
-import { RemediationMethodPicker } from './RemediationMethodPicker'
+import { RemediationMethodList } from './RemediationMethodList'
 
 type LoadState = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; rule: RuleDetail }
 
@@ -13,7 +14,6 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
   const [state, setState] = useState<LoadState>({ status: 'loading' })
   const selections = useSelectionStore((store) => store.selections)
   const setAuditMethodIndex = useSelectionStore((store) => store.setAuditMethodIndex)
-  const setRemediationMethodIndex = useSelectionStore((store) => store.setRemediationMethodIndex)
   const setOrganizationDefinedValue = useSelectionStore((store) => store.setOrganizationDefinedValue)
 
   useEffect(() => {
@@ -39,8 +39,9 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
 
   const { rule } = state
   const selection = getSelection(selections, ruleRef)
-  const auditMethod = rule.audit.methods[selection.selectedAuditMethodIndex]
-  const organizationDefinedChecks = (auditMethod?.steps ?? []).flatMap((step) =>
+  const effectiveIndex = effectiveAuditMethodIndex(rule.audit.methods, selection.selectedAuditMethodIndex)
+  const effectiveMethod = effectiveIndex !== null ? rule.audit.methods[effectiveIndex] : null
+  const organizationDefinedChecks = (effectiveMethod?.steps ?? []).flatMap((step) =>
     step.output_check.filter((check) => check.value_source === 'organization_defined'),
   )
 
@@ -53,24 +54,11 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
         <p className="text-slate-600">{rule.rationale}</p>
       </div>
 
-      <AuditMethodPicker
+      <AuditMethodList
         methods={rule.audit.methods}
         selectedIndex={selection.selectedAuditMethodIndex}
-        onChange={(index) => setAuditMethodIndex(ruleRef, index)}
+        onSelect={(index) => setAuditMethodIndex(ruleRef, index)}
       />
-
-      {auditMethod?.type === 'scripted' && (
-        <div className="space-y-2">
-          {(auditMethod.steps ?? []).map((step, stepIndex) => (
-            <div key={stepIndex} className="rounded border border-slate-200 bg-white p-2">
-              {!step.check_command_verified && (
-                <p className="mb-1 text-xs font-medium text-amber-600">⚠ Unverified check command</p>
-              )}
-              <pre className="overflow-x-auto text-xs whitespace-pre-wrap text-slate-700">{step.check_command}</pre>
-            </div>
-          ))}
-        </div>
-      )}
 
       {organizationDefinedChecks.length > 0 && (
         <div className="space-y-1">
@@ -86,11 +74,7 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
         </div>
       )}
 
-      <RemediationMethodPicker
-        methods={rule.remediation.methods}
-        selectedIndex={selection.selectedRemediationMethodIndex}
-        onChange={(index) => setRemediationMethodIndex(ruleRef, index)}
-      />
+      <RemediationMethodList methods={rule.remediation.methods} />
 
       {rule.references.length > 0 && (
         <div>

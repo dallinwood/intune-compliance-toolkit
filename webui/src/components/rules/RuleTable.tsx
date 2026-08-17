@@ -107,7 +107,15 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
             const isExpanded = expanded.has(key)
             return (
               <Fragment key={key}>
-                <tr className="hover:bg-slate-50">
+                <tr
+                  className="cursor-pointer hover:bg-slate-50"
+                  onClick={(event) => {
+                    // Let the checkbox (or any future button/link in the row)
+                    // handle its own click instead of also toggling expand.
+                    if ((event.target as HTMLElement).closest('input, a, button')) return
+                    toggleExpanded(key)
+                  }}
+                >
                   <td className="w-8 py-1 pl-6">
                     <input
                       type="checkbox"
@@ -115,15 +123,8 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
                       onChange={(event) => setEnabled(row.ref, event.target.checked)}
                     />
                   </td>
-                  <td className="w-6 py-1">
-                    <button
-                      type="button"
-                      onClick={() => toggleExpanded(key)}
-                      aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
-                      className="text-slate-400 hover:text-slate-700"
-                    >
-                      {isExpanded ? '▾' : '▸'}
-                    </button>
+                  <td className="w-6 py-1 text-center text-slate-400" aria-hidden="true">
+                    {isExpanded ? '▾' : '▸'}
                   </td>
                   <td className="w-20 px-2 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
                   <td className="px-2 py-1">{row.title}</td>

@@ -215,16 +215,33 @@ def is_automated(rule):
   title, computed `assessment_status` badge (automatable or not),
   `source_assessment_status` as a secondary chip when it differs from the
   computed value, profile chips, "org value required" indicator (from
-  `_index.json`), expand chevron.
+  `_index.json`), a static expand indicator. Clicking anywhere on the row
+  (other than the checkbox, or any future button/link) toggles expand —
+  the indicator isn't a separate click target.
 - **`RuleDetailPanel`** — on first expand, lazily fetches the full per-rule
-  JSON (cached after). Shows description/rationale/impact/audit/remediation/
-  references/`extended_attributes.cis` (only available here, not indexed).
-  `AuditMethodPicker`/`RemediationMethodPicker` when a rule has more than
-  one method (persisted per-selection). `OrgDefinedValueInput` renders a
-  typed input (checkbox/number/text per `data_type`) for every
-  `output_check` with `value_source: "organization_defined"` in the chosen
-  method. A step whose `check_command_verified` is `false` gets a visible
-  warning badge — real data already contains unverified commands.
+  JSON (cached after). Shows description/rationale/`extended_attributes.cis`
+  (only available here, not indexed), then `AuditMethodList` and
+  `RemediationMethodList`: every method (audit and remediation) renders as
+  a collapsed, independently-expandable card showing its full detail (the
+  check command, `output_description`, and a human-readable pass/fail
+  criterion per `output_check` via `describeOutputCheck()` — e.g.
+  "`cis_macos26_1_6_days` is at least `30`" — for audit; description,
+  `config_keys`, and steps for remediation). Generated scripts only ever
+  run a **scripted** audit method, never a manual one and never any
+  remediation method, so selection is scoped accordingly: a manual audit
+  method's card has no selection control at all (just a "not used in
+  generated scripts" label); a scripted audit method is used automatically
+  with no control when it's the *only* scripted method; a selector (radio,
+  restricted to the scripted cards) appears only when a rule has 2+
+  scripted methods, so the admin can pick which one's check feeds
+  generation — resolved via `effectiveAuditMethodIndex()` (see below).
+  Remediation methods never get a selection control under any
+  circumstance — they're informational-only. `OrgDefinedValueInput` renders
+  a typed input (checkbox/number/text per `data_type`) for every
+  `output_check` with `value_source: "organization_defined"` on the
+  *effective* scripted method. A step whose `check_command_verified` is
+  `false` gets a visible warning badge — real data already contains
+  unverified commands.
 - **`SelectionToolbar`** — live selected count, Export/Import/Generate/Clear.
 - **`ExportImportControls`** — export serializes selection state to the
   settings JSON and downloads it; import validates `schemaVersion` + each
@@ -252,8 +269,12 @@ interface SettingsFileV1 {
 interface RuleSelection {
   ref: { family: string; product: string; version: string; file: string; id: string };
   enabled: boolean;
-  selectedAuditMethodIndex: number;
-  selectedRemediationMethodIndex: number;
+  // null = no explicit choice; resolved via effectiveAuditMethodIndex(),
+  // which defaults to the rule's first scripted method. Only ever
+  // non-null when a rule has 2+ scripted methods and the admin picked
+  // one. No remediation-method selection exists - remediation is
+  // informational only and never feeds a generated script.
+  selectedAuditMethodIndex: number | null;
   organizationDefinedValues: Record<string, string | number | boolean>; // keyed by output_check.variable
 }
 ```
@@ -274,22 +295,27 @@ MANUAL_ATTESTATION  := enabled selections where index.assessment_status == "Manu
 
 Full rule JSON is still fetched for every `GENERATABLE` selection before
 packing (to build the real script/rules-JSON content), and at that point the
-generator re-derives `hasScriptedMethod` from the *selected* audit method
+generator re-derives eligibility from the rule's *effective* audit method
 specifically (a rule can have more than one method; the index's
 `is_automated()` checks "any method," but generation must use whichever
-method the user actually picked in `AuditMethodPicker`):
+scripted method is actually effective for that selection — see
+`effectiveAuditMethodIndex()` under "Component / screen breakdown," shared
+between the detail panel and this check):
 
 ```
 hasScriptedMethod(rule, selectedAuditMethodIndex):
-    method = rule.audit.methods[selectedAuditMethodIndex]
-    return method.type == "scripted"
-       and any(step.output_check is non-empty for step in method.steps)
+    effectiveIndex = effectiveAuditMethodIndex(rule.audit.methods, selectedAuditMethodIndex)
+    if effectiveIndex is null: return false
+    method = rule.audit.methods[effectiveIndex]
+    return any(step.output_check is non-empty for step in method.steps)
 ```
 
-If a selection is `GENERATABLE` per the index but the user has picked a
-*different*, non-scripted method for it in the detail panel, it's moved to
-`MANUAL_ATTESTATION` at this point instead — the index tells you "a script
-is possible," not "the method you selected is scripted."
+`effectiveAuditMethodIndex` already guarantees the resolved method (if any)
+is scripted, so this can only be false when the rule has no scripted method
+at all — in which case the selection moves to `MANUAL_ATTESTATION` at this
+point instead. The index's "Automated" only means "a script is possible
+somewhere in this rule," not that a specific method is guaranteed scripted,
+so this re-check is still required.
 
 **Packing** (operates on `GENERATABLE` only):
 
@@ -370,9 +396,9 @@ for each platform:
    natural-id grouping and the computed automatable filter. No selection
    yet. The Python index change should land first since the UI's filter
    design and the chunking algorithm's eligibility split both depend on it.
-2. **Row-expand detail + selection state** — `RuleDetailPanel` + pickers +
-   `OrgDefinedValueInput`, Zustand `selectionStore` + localStorage
-   persistence.
+2. **Row-expand detail + selection state** — `RuleDetailPanel` +
+   `AuditMethodList`/`RemediationMethodList` + `OrgDefinedValueInput`,
+   Zustand `selectionStore` + localStorage persistence.
 3. **Export / import** — `exportImport.ts` + `ExportImportControls`,
    including unresolvable-ref reporting on import.
 4. **Generate / download bundles** — `naturalId.ts`, `chunking.ts`,
@@ -479,3 +505,25 @@ entry here, not just the session that wrote it.
   file), plus a live selected-count/clear-selection control in the header.
   (`c88d4cc` feat: add row-expand rule detail and selection state
   (Milestone 2))
+- **2026-08-17** - Added `CLAUDE.md` instructing all future sessions to keep
+  this progress log current, and backfilled it for everything above.
+  (`84eb839` docs: add CLAUDE.md and backfill plan progress log)
+- **2026-08-17** - UI fixes requested after using Milestone 2: (1) a row now
+  expands on a click anywhere in it, not just a tiny chevron; (2) replaced
+  the radio-button audit/remediation pickers with per-method collapsible
+  cards - manual audit methods and all remediation methods are view-only
+  (never selectable, since generated scripts only ever run one scripted
+  audit method), a selector appears only when a rule has 2+ scripted audit
+  methods; (3) every method card, expanded, now shows the check command (or
+  remediation steps/config), `output_description`, and a human-readable
+  pass/fail line per `output_check` (new `describeOutputCheck()`), so
+  Windows and macOS rules render consistently instead of the ad hoc
+  difference Milestone 2 had. Added `logic/auditMethods.ts`
+  (`effectiveAuditMethodIndex()`, shared between the detail panel and the
+  future chunking eligibility check) and `logic/outputCheckText.ts`, both
+  unit-tested. Simplified the selection schema: dropped
+  `selectedRemediationMethodIndex` entirely (remediation is never used for
+  generation) and made `selectedAuditMethodIndex` nullable (defaults to
+  "use the first scripted method" via `effectiveAuditMethodIndex()`, since
+  a bare selection entry has no rule content to compute a real default
+  from). (commit follows this entry)

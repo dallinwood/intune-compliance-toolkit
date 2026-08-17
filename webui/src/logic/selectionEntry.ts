@@ -15,8 +15,13 @@ export type OrgDefinedValue = string | number | boolean
 export interface SelectionEntry {
   ref: RuleRef
   enabled: boolean
-  selectedAuditMethodIndex: number
-  selectedRemediationMethodIndex: number
+  // null = no explicit choice; resolved via logic/auditMethods.ts's
+  // effectiveAuditMethodIndex(), which defaults to the rule's first
+  // scripted method. Only ever needs to be non-null when a rule has 2+
+  // scripted methods and the admin picked a specific one. There is no
+  // remediation-method selection - remediation is informational only and
+  // never feeds a generated script.
+  selectedAuditMethodIndex: number | null
   organizationDefinedValues: Record<string, OrgDefinedValue>
 }
 
@@ -30,8 +35,7 @@ export function createSelectionEntry(ref: RuleRef): SelectionEntry {
   return {
     ref,
     enabled: false,
-    selectedAuditMethodIndex: 0,
-    selectedRemediationMethodIndex: 0,
+    selectedAuditMethodIndex: null,
     organizationDefinedValues: {},
   }
 }
