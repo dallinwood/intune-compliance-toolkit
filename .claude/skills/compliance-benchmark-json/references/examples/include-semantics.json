@@ -1,0 +1,66 @@
+{
+  "id": "6.7",
+  "title": "Ensure 'Audit Authentication Policy Change' is set to include 'Success'",
+  "assessment_status": "Automated",
+  "benchmark": {
+    "product": "CIS Microsoft Intune for Windows 11 Benchmark",
+    "version": "5.0.0",
+    "platform": "Windows 11 (Intune)"
+  },
+  "profile_applicability": ["Level 1 (L1)"],
+  "recommended_state": "Success",
+  "description": "This subcategory reports changes in authentication policy. Events for this subcategory include:\n\n- 4706: A new trust was created to a domain.\n- 4707: A trust to a domain was removed.\n- 4713: Kerberos policy was changed.\n- 4716: Trusted domain information was modified.\n- 4717: System security access was granted to an account.\n- 4718: System security access was removed from an account.\n- 4739: Domain Policy was changed.\n- 4864: A namespace collision was detected.\n- 4865: A trusted forest information entry was added.\n- 4866: A trusted forest information entry was removed.\n- 4867: A trusted forest information entry was modified.\n\nThe recommended state for this setting is to include: Success.",
+  "rationale": "Auditing these events may be useful when investigating a security incident.",
+  "impact": "If no audit settings are configured, or if audit settings are too lax on the computers in your organization, security incidents might not be detected, or not enough evidence will be available for network forensic analysis after security incidents occur. However, if audit settings are too severe, critically important entries in the Security log may be obscured by all of the meaningless entries and computer performance and the available amount of data storage may be seriously affected. Companies that operate in certain regulated industries may have legal obligations to log certain events or activities.",
+  "audit": {
+    "methods": [
+      {
+        "method_name": "Console Navigation",
+        "type": "manual",
+        "description": "Navigate to the UI Path articulated in the Remediation section and confirm it is set as prescribed."
+      },
+      {
+        "method_name": "auditpol",
+        "type": "scripted",
+        "description": "To audit the system using auditpol.exe, perform the following and confirm it is set as prescribed:",
+        "steps": [
+          {
+            "step_role": "compliance_check",
+            "original_command": "auditpol /get /subcategory:\"{0cce9230-69ae-11d9-bed3-505054503030}\"",
+            "check_command": "$authPolicyChangeCsv = auditpol /get /subcategory:\"{0cce9230-69ae-11d9-bed3-505054503030}\" /r | ConvertFrom-Csv\n$authPolicyChangeSetting = $authPolicyChangeCsv.'Inclusion Setting'",
+            "check_command_verified": false,
+            "output_description": "confirm it is set as prescribed",
+            "check_command_notes": "Adds auditpol's /r (CSV report) flag, not present in the original command, so the value is machine-parseable instead of a formatted text table. Possible values include 'Success', 'Failure', 'Success and Failure', or 'No Auditing'; the recommended state requires this to include 'Success', which may also include 'Failure' without affecting compliance.",
+            "output_check": [
+              { "variable": "authPolicyChangeSetting", "data_type": "string", "operator": "contains", "value": "Success", "value_source": "benchmark" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "remediation": {
+    "methods": [
+      {
+        "method_name": "Settings Catalog",
+        "type": "configuration_profile",
+        "description": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to 'Success'.",
+        "config_keys": [
+          { "settings_catalog_path": "Auditing\\Audit Authentication Policy Change", "value": "Success" }
+        ]
+      }
+    ]
+  },
+  "default_value": "Success.",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-authentication-policy-change"
+  ],
+  "grid_id": "MS-00000220",
+  "minimum_os_csp": "Windows 10, Version 1803 with KB4516045 and later",
+  "additional_information": null,
+  "cis_controls": [
+    { "version": "v8", "control_id": "8.5", "control_title": "Collect Detailed Audit Logs", "implementation_groups": ["IG2", "IG3"] },
+    { "version": "v7", "control_id": "5.5", "control_title": "Implement Automated Configuration Monitoring Systems", "implementation_groups": ["IG2", "IG3"] },
+    { "version": "v7", "control_id": "6.3", "control_title": "Enable Detailed Logging", "implementation_groups": ["IG2", "IG3"] }
+  ]
+}

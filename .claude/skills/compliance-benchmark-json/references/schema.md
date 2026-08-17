@@ -102,16 +102,18 @@ Note the field names here are the *old* generation (`command`/`expected_output`/
 
 ## Worked examples of each shape
 
-These point at specific existing rule files by name, produced during initial schema design. Search the repo for these filenames rather than assuming a folder - see "File naming and location" above.
+Frozen snapshots bundled in `references/examples/` alongside this file - not live pointers into wherever the project currently keeps its rule files, so they won't go stale if that location moves or the rules themselves get further edited. Each is a real, complete rule file illustrating one structural shape.
 
-**Single deterministic scripted check, no dependency** - `cis_intune_win11_4.10.24.1.json` (LSASS SSP/AP): one registry-property-lookup step, `original_command: null` since the source gave only a registry path.
+**`examples/single-scripted-check.json`** (LSASS SSP/AP) - one registry-property-lookup step, `original_command: null` since the source gave only a registry path, no runnable command.
 
-**Multiple independent commands in one method** - `cis_macos26_2.3.3.4.json` (Remote Login): 3 steps, each mapping 1:1 to a separate command the source gave, each independently `check_command_verified: true`.
+**`examples/multiple-independent-steps.json`** (Remote Login) - 3 steps in one method, each mapping 1:1 to a separate command the source gave, each independently `check_command_verified: true`.
 
-**Sequential dependency between steps** - `cis_intune_win11_1.1.json` (Cortana Above Lock): step 1 (`step_role: "lookup"`) resolves an identifier; step 2's `check_command` references that identifier from step 1.
+**`examples/sequential-dependency.json`** (Cortana Above Lock) - step 1 (`step_role: "lookup"`) resolves an identifier; step 2's `check_command` references that identifier from step 1. Also shows `check_command_verified: false` used honestly - step 2's substitution logic has a genuine unresolved question about the identifier's exact format.
 
-**Organization-defined pass criteria with a real script** - `cis_macos26_2.1.1.1.json` (iCloud Keychain, tagged `Manual` in source despite having a runnable script-based check) and `cis_macos26_2.12.2.json` (Touch ID, two `output_check` entries from one command). Both show `assessment_status: "Manual"` coexisting with `type: "scripted"` - the tag and the schema fields are independent facts.
+**`examples/organization-defined-single-value.json`** (iCloud Keychain) - tagged `assessment_status: "Manual"` in source despite having a runnable script-based check; `output_check.value_source: "organization_defined"` because the pass/fail target is "matches your organization's requirements," not a fixed value. Shows the tag and the schema fields are independent facts.
 
-**"Include" semantics (contains, not equals)** - `cis_intune_win11_6.7.json` (Audit Authentication Policy Change): `operator: "contains"`.
+**`examples/organization-defined-multi-value.json`** (Touch ID) - one step yields two `output_check` entries from a single command's multi-line output; a second step shows a `value_source: "benchmark"` ceiling (172800, the OS-enforced max) that is explicitly *not* the same thing as the organization's actual desired value.
 
-**Pure manual, no script possible at all** - `cis_macos26_2.1.1.4.json` (Security Keys - device-side state can't be read at all) and `cis_intune_win11_106.1.1.json` (BitLocker Device Health - it's a cloud-evaluated compliance policy with no local registry/CSP backing, so even a populated `recommended_state` has nothing to attach a script to). Neither has an `audit.methods[].steps` at all.
+**`examples/include-semantics.json`** (Audit Authentication Policy Change) - `operator: "contains"` rather than `"eq"`, because the recommended state is "include Success" and a state of "Success and Failure" should still pass.
+
+**`examples/manual-no-script-device-side.json`** (Security Keys) and **`examples/manual-no-script-cloud-only.json`** (BitLocker Device Health) - two different reasons a rule can have no `audit.methods[].steps` at all: the first because the device-side state genuinely can't be read by a script, the second because the setting is evaluated by a cloud service with no local registry/CSP backing to query. Note the second still has a populated `recommended_state` - the value exists, there's just nothing on the device to check it against.
