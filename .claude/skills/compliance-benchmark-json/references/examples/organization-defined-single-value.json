@@ -7,7 +7,9 @@
     "version": "1.1.0",
     "platform": "macOS"
   },
-  "profile_applicability": ["Level 2"],
+  "profile_applicability": [
+    "Level 2"
+  ],
   "recommended_state": null,
   "description": "The iCloud Passwords & Keychain is Apple's synchronization service that works with Apple Accounts to synchronize password, passkey, and credit card information across macOS, iOS, iPadOS. The capability allows users to use synced password, passkey, and credit card information in either macOS, iOS, or iPadOS for use in Safari and other applications. The password, passkey, and credit card information stored on macOS in the keychain is stored in Apple's cloud, including on Enterprise-managed computers. When using personal Apple Accounts, credentials and payment information may include both enterprise-related and personal data, depending on user behavior and account usage patterns.",
   "rationale": "Ensure that iCloud Passwords and Keychain usage aligns with organizational requirements, taking into account whether personal or managed Apple Accounts are being utilized.",
@@ -63,14 +65,60 @@
   },
   "default_value": null,
   "references": [],
-  "grid_id": null,
   "minimum_os_csp": null,
   "additional_information": null,
-  "cis_controls": [
-    { "version": "v8", "control_id": "4.1", "control_title": "Establish and Maintain a Secure Configuration Process", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v8", "control_id": "4.8", "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v8", "control_id": "15.3", "control_title": "Classify Service Providers", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v7", "control_id": "5.1", "control_title": "Establish Secure Configurations", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v7", "control_id": "9.2", "control_title": "Ensure Only Approved Ports, Protocols and Services Are Running", "implementation_groups": ["IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": null,
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "4.1",
+          "control_title": "Establish and Maintain a Secure Configuration Process",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v8",
+          "control_id": "4.8",
+          "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v8",
+          "control_id": "15.3",
+          "control_title": "Classify Service Providers",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "5.1",
+          "control_title": "Establish Secure Configurations",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "9.2",
+          "control_title": "Ensure Only Approved Ports, Protocols and Services Are Running",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

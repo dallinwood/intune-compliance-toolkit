@@ -7,7 +7,9 @@
     "version": "1.1.0",
     "platform": "macOS"
   },
-  "profile_applicability": ["Level 2"],
+  "profile_applicability": [
+    "Level 2"
+  ],
   "recommended_state": null,
   "description": "Apple has introduced the capability of using security keys to protect Apple Accounts using two-factor authentication in macOS 13.2, in iOS 16.3, and in iPadOS 16.3. This feature along with the purchase of two hardware tokens (a backup device is required) protects against the compromise of Apple Accounts. This feature requires all devices using an enrolled Apple Account to meet the minimum OS standard.",
   "rationale": "Users of Apple devices are supported across their devices by using the same Apple Account to support shared data in both iCloud and across devices. Compromising an Apple Account has become a very attractive target for attackers to gain unauthorized access to iCloud storage and user devices. Two-factor authentication reduces the risk.",
@@ -36,11 +38,32 @@
     "https://9to5mac.com/2023/02/03/ios-16-3-hardware-security-keys-explained-video/",
     "https://hcsonline.com/images/PDFs/Security_Key_Apple_ID.pdf"
   ],
-  "grid_id": null,
   "minimum_os_csp": null,
   "additional_information": null,
-  "cis_controls": [
-    { "version": "v8", "control_id": "5.2", "control_title": "Use Unique Passwords", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v7", "control_id": "4.4", "control_title": "Use Unique Passwords", "implementation_groups": ["IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": null,
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "5.2",
+          "control_title": "Use Unique Passwords",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "4.4",
+          "control_title": "Use Unique Passwords",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

@@ -7,7 +7,9 @@
     "version": "5.0.0",
     "platform": "Windows 11 (Intune)"
   },
-  "profile_applicability": ["Level 1 (L1)"],
+  "profile_applicability": [
+    "Level 1 (L1)"
+  ],
   "recommended_state": "Success",
   "description": "This subcategory reports changes in authentication policy. Events for this subcategory include:\n\n- 4706: A new trust was created to a domain.\n- 4707: A trust to a domain was removed.\n- 4713: Kerberos policy was changed.\n- 4716: Trusted domain information was modified.\n- 4717: System security access was granted to an account.\n- 4718: System security access was removed from an account.\n- 4739: Domain Policy was changed.\n- 4864: A namespace collision was detected.\n- 4865: A trusted forest information entry was added.\n- 4866: A trusted forest information entry was removed.\n- 4867: A trusted forest information entry was modified.\n\nThe recommended state for this setting is to include: Success.",
   "rationale": "Auditing these events may be useful when investigating a security incident.",
@@ -32,7 +34,13 @@
             "output_description": "confirm it is set as prescribed",
             "check_command_notes": "Adds auditpol's /r (CSV report) flag, not present in the original command, so the value is machine-parseable instead of a formatted text table. Possible values include 'Success', 'Failure', 'Success and Failure', or 'No Auditing'; the recommended state requires this to include 'Success', which may also include 'Failure' without affecting compliance.",
             "output_check": [
-              { "variable": "cis_intune_win11_6_7_auth_policy_change_setting", "data_type": "string", "operator": "contains", "value": "Success", "value_source": "benchmark" }
+              {
+                "variable": "cis_intune_win11_6_7_auth_policy_change_setting",
+                "data_type": "string",
+                "operator": "contains",
+                "value": "Success",
+                "value_source": "benchmark"
+              }
             ]
           }
         ]
@@ -46,7 +54,10 @@
         "type": "configuration_profile",
         "description": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to 'Success'.",
         "config_keys": [
-          { "settings_catalog_path": "Auditing\\Audit Authentication Policy Change", "value": "Success" }
+          {
+            "settings_catalog_path": "Auditing\\Audit Authentication Policy Change",
+            "value": "Success"
+          }
         ]
       }
     ]
@@ -55,12 +66,40 @@
   "references": [
     "https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-authentication-policy-change"
   ],
-  "grid_id": "MS-00000220",
   "minimum_os_csp": "Windows 10, Version 1803 with KB4516045 and later",
   "additional_information": null,
-  "cis_controls": [
-    { "version": "v8", "control_id": "8.5", "control_title": "Collect Detailed Audit Logs", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v7", "control_id": "5.5", "control_title": "Implement Automated Configuration Monitoring Systems", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v7", "control_id": "6.3", "control_title": "Enable Detailed Logging", "implementation_groups": ["IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": "MS-00000220",
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "8.5",
+          "control_title": "Collect Detailed Audit Logs",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "5.5",
+          "control_title": "Implement Automated Configuration Monitoring Systems",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "6.3",
+          "control_title": "Enable Detailed Logging",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

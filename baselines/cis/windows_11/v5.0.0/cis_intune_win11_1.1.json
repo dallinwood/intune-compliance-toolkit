@@ -7,7 +7,9 @@
     "version": "5.0.0",
     "platform": "Windows 11 (Intune)"
   },
-  "profile_applicability": ["Level 1 (L1)"],
+  "profile_applicability": [
+    "Level 1 (L1)"
+  ],
   "recommended_state": "Block",
   "description": "This policy setting determines whether or not the user can interact with Cortana using speech while the system is locked.\n\nThe recommended state for this setting is: Block.",
   "rationale": "Access to any computer resource should not be allowed when the device is locked.",
@@ -35,7 +37,13 @@
             "output_description": "confirm the value is set to 0",
             "check_command_notes": "No original_command exists for either step in this method - CIS only describes the registry paths to navigate to, not a script. This step substitutes the WinningProvider GUID captured in step 1 in place of the source's literal '{GUID}' placeholder; check_command_verified is false because it's unconfirmed whether the captured value includes the enclosing braces the source's placeholder implies, which affects whether the substituted path resolves correctly.",
             "output_check": [
-              { "variable": "cis_intune_win11_1_1_allow_cortana_above_lock", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+              {
+                "variable": "cis_intune_win11_1_1_allow_cortana_above_lock",
+                "data_type": "integer",
+                "operator": "eq",
+                "value": 0,
+                "value_source": "benchmark"
+              }
             ]
           }
         ]
@@ -49,7 +57,10 @@
         "type": "configuration_profile",
         "description": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to 'Block'.",
         "config_keys": [
-          { "settings_catalog_path": "Above Lock\\Allow Cortana Above Lock", "value": "Block" }
+          {
+            "settings_catalog_path": "Above Lock\\Allow Cortana Above Lock",
+            "value": "Block"
+          }
         ]
       }
     ]
@@ -58,11 +69,32 @@
   "references": [
     "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-abovelock#allowcortanaabovelock"
   ],
-  "grid_id": "MS-00000510",
   "minimum_os_csp": "Windows 10, Version 1607 and later",
   "additional_information": null,
-  "cis_controls": [
-    { "version": "v8", "control_id": "4.8", "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v7", "control_id": "16.11", "control_title": "Lock Workstation Sessions After Inactivity", "implementation_groups": ["IG1", "IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": "MS-00000510",
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "4.8",
+          "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "16.11",
+          "control_title": "Lock Workstation Sessions After Inactivity",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

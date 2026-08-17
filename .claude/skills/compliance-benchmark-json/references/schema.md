@@ -25,9 +25,31 @@ One file per rule, named `<benchmark-slug>_<platform-slug>_<rule-id>.json` (e.g.
 | `remediation` | object | See below. Out of scope for the `check_command`/`output_check` redesign - remediation steps still use an older `command` / `expected_output` / `purpose` shape, since remediation is an action, not a compliance check. |
 | `default_value` | string \| null | The source's stated default, when given. |
 | `references` | array of strings | URLs only. `[]` if none (never `null`). Cross-reference metadata that shows up inside a source reference list but isn't actually a URL (a control-mapping ID, a minimum-platform-version note, etc.) should be pulled into its own field instead of left in this array. |
-| `grid_id`, `minimum_os_csp` | string \| null | Metadata specific to the CIS Intune-for-Windows benchmark (a CIS tracking ID and a minimum-CSP-version note), extracted out of the References list when present. Treat these as an example of "pull benchmark-specific metadata into its own named field" rather than as universal fields every benchmark will populate - a different source may have different reference-list metadata worth extracting the same way, under different field names. |
+| `minimum_os_csp` | string \| null | A minimum-OS/CSP-version note, extracted out of the References list when present. Generic enough to sit at the top level even though it isn't universal - a "minimum OS version to use this setting" concept plausibly recurs across benchmark families, unlike the more benchmark-specific fields below. |
 | `additional_information` | string \| object \| null | Free text, or a light structure when the source itself is structured. Only present when the source has an equivalent section. |
-| `cis_controls` | array | See "A note on benchmark-specific fields" in `SKILL.md` - this maps to CIS's own Controls v7/v8 framework specifically and may not apply to non-CIS sources. |
+| `extended_attributes` | object, optional | Namespaced home for fields specific to one benchmark family - see "A note on benchmark-specific fields" in `SKILL.md` and the `extended_attributes.cis` shape below. |
+
+## `extended_attributes`
+
+Optional top-level object, present only when the rule has benchmark-specific metadata worth keeping. Each key is a short benchmark-family slug (`"cis"` for any CIS benchmark); the value is that family's own shape. This exists so a field one family needs (`cis_controls`, `grid_id`) never has to fight over the top level with a differently-shaped field another family might need later - each family gets its own namespace instead.
+
+```json
+"extended_attributes": {
+  "cis": {
+    "grid_id": "MS-00000220",
+    "cis_controls": [ /* CIS Controls v7/v8 mapping, see below */ ]
+  }
+}
+```
+
+**`extended_attributes.cis`** - present on every CIS-sourced rule (macOS, Windows, Intune, or any other CIS benchmark), with both keys always present (`null`/`[]` when the source doesn't populate them for that specific rule):
+
+| Field | Type | Notes |
+|---|---|---|
+| `grid_id` | string \| null | A CIS tracking ID (source label: `GRID:`), specific to CIS's Intune-for-Windows-style benchmarks - `null` for CIS benchmarks that don't use GRID numbering (e.g. macOS) or for a rule the source didn't tag. |
+| `cis_controls` | array | Maps to CIS's own Controls v7/v8 framework with Implementation Group markers - `{ version, control_id, control_title, implementation_groups }` per entry. Applies across CIS benchmark families generally (not Intune-for-Windows-specific the way `grid_id` is). |
+
+A non-CIS source (a DISA STIG, a vendor guide) should add its own `extended_attributes.<family-slug>` with whatever shape honestly reflects what that source provides, rather than forcing data into `extended_attributes.cis`'s shape or leaving it flat at the top level. See SKILL.md's "A note on benchmark-specific fields" before inventing a new family key.
 
 ### Why `recommended_state` survives even though `recommended_state_mode` and `pass_criterion` didn't
 

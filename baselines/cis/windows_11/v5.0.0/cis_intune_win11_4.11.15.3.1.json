@@ -7,7 +7,9 @@
     "version": "5.0.0",
     "platform": "Windows 11 (Intune)"
   },
-  "profile_applicability": ["Level 1 (L1)"],
+  "profile_applicability": [
+    "Level 1 (L1)"
+  ],
   "recommended_state": "Disabled",
   "description": "This policy setting controls Event Log behavior when the log file reaches its maximum size.\n\nThe recommended state for this setting is: Disabled.\n\nNote: Old events may or may not be retained according to the 'Backup log automatically when full' policy setting.",
   "rationale": "If new events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of malicious users.",
@@ -27,7 +29,13 @@
             "output_description": "REG_SZ value of 0",
             "check_command_notes": "No original_command exists - CIS only gives the registry location and value, not a script. The value type is REG_SZ (string), not an integer.",
             "output_check": [
-              { "variable": "cis_intune_win11_4_11_15_3_1_retention", "data_type": "string", "operator": "eq", "value": "0", "value_source": "benchmark" }
+              {
+                "variable": "cis_intune_win11_4_11_15_3_1_retention",
+                "data_type": "string",
+                "operator": "eq",
+                "value": "0",
+                "value_source": "benchmark"
+              }
             ]
           }
         ]
@@ -54,11 +62,32 @@
     "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-eventlogservice#controleventlogbehavior",
     "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-eventlogservice#related-articles"
   ],
-  "grid_id": "MS-00000449",
   "minimum_os_csp": "Windows 10, version 1703 and later",
   "additional_information": null,
-  "cis_controls": [
-    { "version": "v8", "control_id": "8.3", "control_title": "Ensure Adequate Audit Log Storage", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v7", "control_id": "6.4", "control_title": "Ensure adequate storage for logs", "implementation_groups": ["IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": "MS-00000449",
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "8.3",
+          "control_title": "Ensure Adequate Audit Log Storage",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "6.4",
+          "control_title": "Ensure adequate storage for logs",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

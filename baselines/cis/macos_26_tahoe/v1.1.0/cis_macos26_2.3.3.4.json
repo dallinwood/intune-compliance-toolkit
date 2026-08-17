@@ -7,7 +7,9 @@
     "version": "1.1.0",
     "platform": "macOS"
   },
-  "profile_applicability": ["Level 1"],
+  "profile_applicability": [
+    "Level 1"
+  ],
   "recommended_state": "Disabled",
   "description": "Remote Login allows an interactive terminal connection to a computer.",
   "rationale": "Disabling Remote Login mitigates the risk of an unauthorized person gaining access to the system via Secure Shell (SSH). While SSH is an industry standard to connect to POSIX servers, the scope of the benchmark is for Apple macOS clients, not servers.\n\nmacOS does have an IP-based firewall available (pf, ipfw has been deprecated) that is not enabled or configured. There are more details and links in the Network sub-section. macOS no longer has TCP Wrappers support built in and does not have strong BruteForce password guessing mitigations, or frequent patching of OpenSSH by Apple. Since most macOS computers are mobile workstations, managing IP-based firewall rules on mobile devices can be very resource intensive. All of these factors can be parts of running a hardened SSH server.",
@@ -35,7 +37,13 @@
             "output_description": "Remote Login: Off",
             "check_command_notes": "Parses systemsetup's 'Remote Login: Off'/'Remote Login: On' output down to just the 'Off'/'On' token.",
             "output_check": [
-              { "variable": "cis_macos26_2_3_3_4_remote_login_status", "data_type": "string", "operator": "eq", "value": "Off", "value_source": "benchmark" }
+              {
+                "variable": "cis_macos26_2_3_3_4_remote_login_status",
+                "data_type": "string",
+                "operator": "eq",
+                "value": "Off",
+                "value_source": "benchmark"
+              }
             ]
           },
           {
@@ -45,7 +53,13 @@
             "check_command_verified": true,
             "output_description": "1",
             "output_check": [
-              { "variable": "cis_macos26_2_3_3_4_sshd_service_disabled_count", "data_type": "integer", "operator": "eq", "value": 1, "value_source": "benchmark" }
+              {
+                "variable": "cis_macos26_2_3_3_4_sshd_service_disabled_count",
+                "data_type": "integer",
+                "operator": "eq",
+                "value": 1,
+                "value_source": "benchmark"
+              }
             ]
           },
           {
@@ -55,7 +69,13 @@
             "check_command_verified": true,
             "output_description": "0",
             "output_check": [
-              { "variable": "cis_macos26_2_3_3_4_sshd_running_count", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+              {
+                "variable": "cis_macos26_2_3_3_4_sshd_running_count",
+                "data_type": "integer",
+                "operator": "eq",
+                "value": 0,
+                "value_source": "benchmark"
+              }
             ]
           }
         ]
@@ -88,13 +108,51 @@
   },
   "default_value": null,
   "references": [],
-  "grid_id": null,
   "minimum_os_csp": null,
   "additional_information": "man sshd_config",
-  "cis_controls": [
-    { "version": "v8", "control_id": "4.1", "control_title": "Establish and Maintain a Secure Configuration Process", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v8", "control_id": "4.8", "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v7", "control_id": "5.1", "control_title": "Establish Secure Configurations", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v7", "control_id": "9.2", "control_title": "Ensure Only Approved Ports, Protocols and Services Are Running", "implementation_groups": ["IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": null,
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "4.1",
+          "control_title": "Establish and Maintain a Secure Configuration Process",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v8",
+          "control_id": "4.8",
+          "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "5.1",
+          "control_title": "Establish Secure Configurations",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "9.2",
+          "control_title": "Ensure Only Approved Ports, Protocols and Services Are Running",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

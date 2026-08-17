@@ -7,7 +7,9 @@
     "version": "1.1.0",
     "platform": "macOS"
   },
-  "profile_applicability": ["Level 1"],
+  "profile_applicability": [
+    "Level 1"
+  ],
   "recommended_state": null,
   "description": "Apple has integrated Touch ID with macOS and allows fingerprint use for many common operations. All use of Touch ID requires the presence of a password and the use of that password after every reboot, or when more than 48 hours has elapsed since the device was last unlocked. Touch ID is not a password replacement. The use of Touch ID can, however, make the use of passwords more secure for authorized users with physical access to a Mac. Normal day-to-day work operations can eliminate the use of console password entry unless a reboot is required other than on Monday morning. The infrequency of password screen unlock can enable a more complicated pass phrase that is seldom used. When Touch ID is used it remediates the risk of shoulder surfing (including video surveillance) to capture console credentials. There have been many reported shoulder surfing password captures on iOS devices. Reports have not been widespread on Macs, but shoulder surfing password capture is simpler than the other methods of breaking in to an encrypted Mac.\n\nWhen a SmartCard or YubiKey is provisioned by an organization and is available for Console authentication, that is a much more secure option than the use of Touch ID and is preferred.",
   "rationale": "Touch ID allows for an account-enrolled fingerprint to access a key that uses a previously provided password.",
@@ -58,7 +60,7 @@
             "original_command": "/usr/bin/sudo /usr/bin/bioutil -r -s | /usr/bin/awk '/timeout/'",
             "check_command": "cis_macos26_2_12_2_touch_id_timeout_seconds=$(/usr/bin/bioutil -r -s | /usr/bin/awk -F': ' '/timeout/ {print $2}')",
             "check_command_verified": false,
-            "output_description": "Touch ID timeout (in seconds): <value≤172800>",
+            "output_description": "Touch ID timeout (in seconds): <value\u2264172800>",
             "check_command_notes": "172800 (48 hours) is the maximum macOS allows per the benchmark; it is a ceiling on the value, not itself a compliance target - the organization's actual desired timeout may be lower and is not specified by the benchmark.",
             "output_check": [
               {
@@ -98,7 +100,7 @@
             "purpose": "Use this command for Touch ID to use Apple Pay. Use 0 to disable Apple Pay or 1 to enable Apple Pay."
           },
           {
-            "command": "/usr/bin/sudo usr/bin/bioutil -w -s -o <value≤172800>",
+            "command": "/usr/bin/sudo usr/bin/bioutil -w -s -o <value\u2264172800>",
             "purpose": "Use this command to set the timeout at the system level."
           }
         ],
@@ -110,13 +112,52 @@
   "references": [
     "https://support.apple.com/guide/mac-help/touch-id-mchl16fbf90a/mac"
   ],
-  "grid_id": null,
   "minimum_os_csp": null,
   "additional_information": null,
-  "cis_controls": [
-    { "version": "v8", "control_id": "4.1", "control_title": "Establish and Maintain a Secure Configuration Process", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v8", "control_id": "5.2", "control_title": "Use Unique Passwords", "implementation_groups": ["IG1", "IG2", "IG3"] },
-    { "version": "v7", "control_id": "4.4", "control_title": "Use Unique Passwords", "implementation_groups": ["IG2", "IG3"] },
-    { "version": "v7", "control_id": "5.1", "control_title": "Establish Secure Configurations", "implementation_groups": ["IG1", "IG2", "IG3"] }
-  ]
+  "extended_attributes": {
+    "cis": {
+      "grid_id": null,
+      "cis_controls": [
+        {
+          "version": "v8",
+          "control_id": "4.1",
+          "control_title": "Establish and Maintain a Secure Configuration Process",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v8",
+          "control_id": "5.2",
+          "control_title": "Use Unique Passwords",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "4.4",
+          "control_title": "Use Unique Passwords",
+          "implementation_groups": [
+            "IG2",
+            "IG3"
+          ]
+        },
+        {
+          "version": "v7",
+          "control_id": "5.1",
+          "control_title": "Establish Secure Configurations",
+          "implementation_groups": [
+            "IG1",
+            "IG2",
+            "IG3"
+          ]
+        }
+      ]
+    }
+  }
 }

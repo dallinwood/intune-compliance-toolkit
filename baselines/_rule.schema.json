@@ -61,41 +61,45 @@
       "type": "array",
       "items": { "type": "string", "minLength": 1 }
     },
-    "grid_id": { "type": ["string", "null"] },
     "minimum_os_csp": { "type": ["string", "null"] },
     "additional_information": {
       "type": ["string", "object", "null"]
     },
-    "cis_controls": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["version", "control_id", "control_title", "implementation_groups"],
-        "properties": {
-          "version": { "type": "string", "minLength": 1 },
-          "control_id": { "type": "string", "minLength": 1 },
-          "control_title": { "type": "string", "minLength": 1 },
-          "implementation_groups": {
-            "type": "array",
-            "items": { "type": "string", "minLength": 1 }
+    "extended_attributes": {
+      "type": "object",
+      "description": "Namespaced home for fields specific to one benchmark family, keyed by a short family slug (e.g. \"cis\"). A field named/shaped for one family (cis_controls, grid_id) never has to worry about colliding with a differently-shaped field another family might need - each family gets its own key instead of fighting over the top level. See SKILL.md's 'A note on benchmark-specific fields'.",
+      "properties": {
+        "cis": { "$ref": "#/$defs/cisExtendedAttributes" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "cisExtendedAttributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grid_id", "cis_controls"],
+      "properties": {
+        "grid_id": { "type": ["string", "null"] },
+        "cis_controls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["version", "control_id", "control_title", "implementation_groups"],
+            "properties": {
+              "version": { "type": "string", "minLength": 1 },
+              "control_id": { "type": "string", "minLength": 1 },
+              "control_title": { "type": "string", "minLength": 1 },
+              "implementation_groups": {
+                "type": "array",
+                "items": { "type": "string", "minLength": 1 }
+              }
+            }
           }
         }
       }
     },
-    "control_mappings": {
-      "type": "array",
-      "description": "Non-CIS control-framework mappings (NIST 800-53, a vendor's own numbering, etc.) - see SKILL.md's 'A note on benchmark-specific fields'. Kept deliberately loose since the shape depends on the framework in use.",
-      "items": {
-        "type": "object",
-        "required": ["framework"],
-        "properties": {
-          "framework": { "type": "string", "minLength": 1 }
-        }
-      }
-    }
-  },
-  "$defs": {
     "auditMethod": {
       "type": "object",
       "additionalProperties": false,
