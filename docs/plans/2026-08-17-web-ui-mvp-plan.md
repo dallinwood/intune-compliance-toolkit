@@ -526,4 +526,5 @@ entry here, not just the session that wrote it.
   generation) and made `selectedAuditMethodIndex` nullable (defaults to
   "use the first scripted method" via `effectiveAuditMethodIndex()`, since
   a bare selection entry has no rule content to compute a real default
-  from). (commit follows this entry)
+  from). (`237fd28` fix: click-to-expand rows, replace method radio buttons
+  with detail cards)
