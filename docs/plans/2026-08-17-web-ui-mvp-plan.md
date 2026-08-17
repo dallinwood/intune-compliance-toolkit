@@ -619,4 +619,5 @@ entry here, not just the session that wrote it.
   `ManualAttestationReport`) is a new view reachable via a "Generate"
   button in `SelectionToolbar`, switched via plain `useState` in
   `AppShell` rather than the originally-planned Zustand slice (see
-  "State management" table). 83 tests passing total.
+  "State management" table). 83 tests passing total. (`beb7d96` feat:
+  generate and download Intune compliance bundles (Milestone 4))
