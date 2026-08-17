@@ -35,6 +35,12 @@ committed and iterated on across future sessions.
   **Phase 2**, not built now.
 - **Deployment**: GitHub Actions builds on push and deploys to GitHub Pages
   via `actions/deploy-pages`. No compiled output is committed to the repo.
+- **Package manager/runtime**: Bun, not npm/Node - the dev machine this was
+  built on has Bun but no Node.js/npm installed at all. Bun is a drop-in,
+  Node-compatible runtime and package manager, so this doesn't change
+  anything architecturally, but every command in this doc (`bun install`,
+  `bun run dev`/`build`/`test`) assumes Bun, and CI should use
+  `oven-sh/setup-bun` rather than `actions/setup-node`.
 - **Manual-but-scriptable rules**: "automatable" is a single computed fact —
   does the rule have a scripted audit method with a non-empty
   `output_check`? — independent of CIS's own `assessment_status` label.
@@ -73,7 +79,7 @@ This repo's schema already lines up with this mechanism almost exactly:
 ## Repo layout for the new app
 
 ```
-webui/                              # new, self-contained npm package
+webui/                              # new, self-contained package (Bun)
 ├── package.json / tsconfig.json / vite.config.ts / index.html
 ├── public/                         # static assets only (favicon etc.)
 ├── src/
@@ -83,7 +89,10 @@ webui/                              # new, self-contained npm package
 │   │                                 (fetch + in-memory cache, no library)
 │   ├── state/                      # filterStore.ts, selectionStore.ts (Zustand),
 │   │                                 persistence.ts (localStorage read/write)
-│   ├── lib/
+│   ├── logic/                      # NOT "lib/" - the repo's root .gitignore
+│   │   │                             already ignores any folder literally named
+│   │   │                             lib/ (Python venv convention), which
+│   │   │                             silently swallowed this in practice
 │   │   ├── naturalId.ts            # dotted-id comparator + top-level-section extraction
 │   │   ├── chunking.ts             # grouping/packing algorithm (pure, unit-tested)
 │   │   ├── operatorMap.ts          # eq/ne/gt/gte/lt/lte/contains/like -> Intune Operator
@@ -92,8 +101,7 @@ webui/                              # new, self-contained npm package
 │   │   ├── zipBundle.ts            # fflate wrapper -> downloadable .zip
 │   │   └── exportImport.ts         # settings-file (de)serialization + validation
 │   └── components/                 # layout, filters, rules, selection, generate
-├── tailwind.config.ts / postcss.config.js
-└── (Vitest tests colocated or under __tests__/)
+└── (Vitest tests colocated, e.g. naturalId.test.ts next to naturalId.ts)
 scripts/copy-baselines.mjs          # prebuild: copies ../baselines -> webui/public/baselines
 tools/generate_manifest.py          # new sibling to generate_index.py
 .github/workflows/deploy-pages.yml  # new
@@ -163,9 +171,12 @@ def is_automated(rule):
   selection/export schema keys on. `platform` is copied from the folder's
   rules purely for display/filtering.
 - **Getting `baselines/` into the built site**: `scripts/copy-baselines.mjs`
-  (Node's built-in `fs.cp`, zero dependencies) copies `../baselines/` into
-  `webui/public/baselines/` as an npm `prebuild` step, before both
-  `npm run dev` and `npm run build`. That copied folder is gitignored.
+  (Node's built-in `fs.cp`, zero dependencies - runs fine under Bun too)
+  copies `../baselines/` into `webui/public/baselines/`. `webui/package.json`'s
+  `dev`/`build` scripts chain it explicitly (`bun run copy-baselines && vite`
+  / `... && tsc -b && vite build`) rather than relying on npm's implicit
+  `pre<script>` lifecycle convention, so it runs the same way under any
+  runner. That copied folder is gitignored.
 - **Base path**: GitHub Pages serves this as a project site
   (`/intune-compliance-toolkit/`), so `vite.config.ts` sets that as `base`,
   and all fetches build URLs from `import.meta.env.BASE_URL`.
@@ -375,7 +386,7 @@ for each platform:
    check → build → deploy on push to main) plus a PR-triggered
    test+build-only job.
 
-Each milestone is expected to land as its own session/PR with its `lib/`
+Each milestone is expected to land as its own session/PR with its `logic/`
 unit tests included.
 
 ## Testing / verification
