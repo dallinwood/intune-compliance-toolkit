@@ -9,9 +9,11 @@ export function scriptKindForPlatform(platform: string): ScriptKind {
   throw new Error(`Don't know which script language to generate for platform "${platform}".`)
 }
 
-export function slugifyPlatform(platform: string): string {
-  return platform
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+// A short, human-readable label for filenames - kept in sync with
+// scriptKindForPlatform's classification above by using the same regexes,
+// so the two can't silently drift apart.
+export function platformLabel(platform: string): string {
+  if (/macos/i.test(platform)) return 'macOS'
+  if (/windows/i.test(platform)) return 'Windows'
+  throw new Error(`Don't know a display label for platform "${platform}".`)
 }

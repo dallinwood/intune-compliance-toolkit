@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { classifyRule, packChunks } from './chunking'
+import { classifyRule, packChunks, type GeneratableRule } from './chunking'
 import { createSelectionEntry, type RuleRef, type SelectionEntry } from './selectionEntry'
 import type { RuleDetail } from '../types/rule-detail'
 import type { IntuneRuleEntry } from './rulesJsonGen'
+import { generateBashScript } from './scriptGen/bash'
 
 const REF: RuleRef = { family: 'cis', product: 'macos_26_tahoe', version: 'v1.1.0', file: 'cis_macos26_1.6.json', id: '1.6' }
 
@@ -170,14 +171,34 @@ function ruleEntry(settingName: string, sizeFiller = ''): IntuneRuleEntry {
   }
 }
 
-function generatableRule(id: string, platform: string, entries: IntuneRuleEntry[]) {
+function generatableRule(id: string, platform: string, entries: IntuneRuleEntry[], refOverrides: Partial<RuleRef> = {}) {
   return {
-    ref: { family: 'cis', product: 'p', version: 'v1', file: `${id}.json`, id },
+    ref: { family: 'cis', product: 'p', version: 'v1', file: `${id}.json`, id, ...refOverrides },
     id,
     title: `Rule ${id}`,
     platform,
     steps: [],
     ruleEntries: entries,
+  }
+}
+
+function generatableRuleWithScript(id: string, platform: string, variable: string, checkCommand: string): GeneratableRule {
+  return {
+    ref: { family: 'cis', product: 'p', version: 'v1', file: `${id}.json`, id },
+    id,
+    title: `Rule ${id}`,
+    platform,
+    steps: [
+      {
+        step_role: 'compliance_check',
+        original_command: null,
+        check_command: checkCommand,
+        check_command_verified: true,
+        output_description: '',
+        output_check: [{ variable, data_type: 'string', operator: 'eq', value: 'x', value_source: 'benchmark' }],
+      },
+    ],
+    ruleEntries: [ruleEntry(variable)],
   }
 }
 
@@ -280,5 +301,52 @@ describe('packChunks', () => {
     ]
 
     expect(() => packChunks(rules)).toThrow(/duplicate_var/)
+  })
+
+  it('groups different product/version pairs on the same platform and section into separate chunks, even with spare room', () => {
+    const rules = [
+      generatableRule('1.1', 'macOS', [ruleEntry('sonoma_var')], { product: 'macos_14_sonoma', version: 'v1.0.0' }),
+      generatableRule('1.1', 'macOS', [ruleEntry('tahoe_var')], { product: 'macos_26_tahoe', version: 'v1.1.0' }),
+    ]
+
+    const chunks = packChunks(rules)
+
+    expect(chunks).toHaveLength(2)
+    expect(chunks.map((chunk) => chunk.product).sort()).toEqual(['macos_14_sonoma', 'macos_26_tahoe'])
+    expect(chunks.map((chunk) => chunk.version).sort()).toEqual(['v1.0.0', 'v1.1.0'])
+  })
+
+  it('redistributes an oversized section evenly by count instead of greedy-filling the first chunk (mirrors the 180-rule / 95-cap example)', () => {
+    const rules = Array.from({ length: 180 }, (_, index) => generatableRule(`1.${index + 1}`, 'macOS', [ruleEntry(`v${index}`)]))
+
+    const chunks = packChunks(rules)
+
+    expect(chunks).toHaveLength(2)
+    expect(chunks[0].rules).toHaveLength(90)
+    expect(chunks[1].rules).toHaveLength(90)
+  })
+
+  it('splits a section once the discovery-script byte cap is exceeded, even though rule count and JSON size are within limits', () => {
+    const bigCommand = 'echo ' + 'x'.repeat(3000)
+    const rules = Array.from({ length: 5 }, (_, index) =>
+      generatableRuleWithScript(`1.${index + 1}`, 'macOS', `var_${index}`, `${bigCommand}\nvar_${index}=1`),
+    )
+
+    const chunks = packChunks(rules, { maxRulesPerChunk: 1000, maxBytesPerChunk: 1_000_000, maxScriptBytesPerChunk: 5000 })
+
+    expect(chunks.length).toBeGreaterThan(1)
+    for (const chunk of chunks) {
+      const scriptBytes = new TextEncoder().encode(generateBashScript(chunk.rules)).length
+      expect(scriptBytes).toBeLessThanOrEqual(5000)
+    }
+  })
+
+  it("throws a clear error when a single rule's own discovery script alone exceeds the script-byte cap", () => {
+    const bigCommand = 'echo ' + 'x'.repeat(3000)
+    const rules = [generatableRuleWithScript('1.1', 'macOS', 'var_0', `${bigCommand}\nvar_0=1`)]
+
+    expect(() =>
+      packChunks(rules, { maxRulesPerChunk: 1000, maxBytesPerChunk: 1_000_000, maxScriptBytesPerChunk: 100 }),
+    ).toThrow(/1\.1/)
   })
 })

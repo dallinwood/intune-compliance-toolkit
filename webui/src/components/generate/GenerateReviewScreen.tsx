@@ -128,7 +128,10 @@ export function GenerateReviewScreen({ onBack }: { onBack: () => void }) {
 
       <div className="space-y-3">
         {chunks.map((chunk) => (
-          <BundleGroupCard key={`${chunk.platform}-${chunk.section}-${chunk.partNumber ?? 0}`} chunk={chunk} />
+          <BundleGroupCard
+            key={`${chunk.platform}-${chunk.product}-${chunk.version}-${chunk.section}-${chunk.partNumber ?? 0}`}
+            chunk={chunk}
+          />
         ))}
       </div>
 

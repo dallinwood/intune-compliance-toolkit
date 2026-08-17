@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { scriptKindForPlatform, slugifyPlatform } from './platformScriptKind'
+import { platformLabel, scriptKindForPlatform } from './platformScriptKind'
 
 describe('scriptKindForPlatform', () => {
   it('maps macOS to bash', () => {
@@ -15,9 +15,16 @@ describe('scriptKindForPlatform', () => {
   })
 })
 
-describe('slugifyPlatform', () => {
-  it('produces a filename-safe slug', () => {
-    expect(slugifyPlatform('macOS')).toBe('macos')
-    expect(slugifyPlatform('Windows 11 (Intune)')).toBe('windows-11-intune')
+describe('platformLabel', () => {
+  it('labels macOS as "macOS"', () => {
+    expect(platformLabel('macOS')).toBe('macOS')
+  })
+
+  it('labels any Windows platform string as "Windows"', () => {
+    expect(platformLabel('Windows 11 (Intune)')).toBe('Windows')
+  })
+
+  it('throws for an unrecognized platform rather than guessing', () => {
+    expect(() => platformLabel('Linux')).toThrow()
   })
 })
