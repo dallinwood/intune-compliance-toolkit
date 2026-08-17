@@ -580,4 +580,5 @@ entry here, not just the session that wrote it.
   no longer matches a currently-loaded rule. Extracted `SelectionToolbar`
   (selected count, clear, export/import) out of `AppShell`'s header, per
   the plan's original component breakdown. Added `setAllSelections` to
-  `selectionStore` for the wholesale replace.
+  `selectionStore` for the wholesale replace. (`f8b364b` feat: add
+  export/import of selections (Milestone 3))
