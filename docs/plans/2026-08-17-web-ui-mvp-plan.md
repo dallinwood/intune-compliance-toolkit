@@ -442,3 +442,40 @@ unit tests included.
   `family/product/version/file/id` ref shape from the MVP's selection
   schema as the join key against live Intune data, rather than inventing a
   second identity scheme.
+
+## Progress log
+
+Kept up to date per `CLAUDE.md` - every session touching this plan adds an
+entry here, not just the session that wrote it.
+
+- **2026-08-17** - Plan written and committed. (`28beafb` docs: add web UI
+  MVP plan)
+- **2026-08-17** - Reworked `tools/generate_index.py` so `_index.json`'s
+  `assessment_status` is computed from actual scriptability (a scripted
+  audit method with a non-empty `output_check`) instead of copied from
+  CIS's own label; added `source_assessment_status` to preserve the
+  original label. Regenerated all committed `_index.json` files.
+  (`432235f` fix: derive index assessment_status from scriptability, not
+  the CIS label)
+- **2026-08-17** - Added `tools/generate_manifest.py`, generating
+  `baselines/_manifest.json` so the static site can discover benchmark
+  folders without directory listing. (`1c27974` feat: add baselines
+  manifest generator)
+- **2026-08-17** - Scaffolded `webui/` (Milestone 1): React + TypeScript +
+  Vite + Tailwind v4, built/run with **Bun** (this machine has no
+  Node.js/npm - see "Confirmed decisions"). Read-only rule browser: fetches
+  the manifest and indexes, groups product → version → CIS section with a
+  tested natural-id comparator, filters by product/version/platform/
+  profile/automatability. Discovered and fixed a naming collision: the
+  repo's root `.gitignore` already ignores any folder literally named
+  `lib/` (Python venv convention), so the planned `lib/` folder was renamed
+  to `logic/` throughout. (`0f2c684` feat: scaffold webui rule browser
+  (Milestone 1))
+- **2026-08-17** - Milestone 2: row-expand now lazily fetches the full rule
+  JSON and shows description/rationale, audit/remediation method detail,
+  scripted check commands (flagged when unverified), organization-defined
+  value inputs, and references. Added a Zustand `selectionStore` persisted
+  to `localStorage` (same ref-based schema intended for the future export
+  file), plus a live selected-count/clear-selection control in the header.
+  (`c88d4cc` feat: add row-expand rule detail and selection state
+  (Milestone 2))
