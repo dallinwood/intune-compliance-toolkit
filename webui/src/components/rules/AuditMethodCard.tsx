@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { describeOutputCheck } from '../../logic/outputCheckText'
 import type { AuditMethod } from '../../types/rule-detail'
+import { OutputCheckRow } from './OutputCheckRow'
 
 export function AuditMethodCard({
   method,
@@ -44,23 +44,32 @@ export function AuditMethodCard({
       </div>
 
       {expanded && (
-        <div className="space-y-2 border-t border-slate-100 px-3 py-2 text-sm">
+        <div className="space-y-3 border-t border-slate-100 px-3 py-2 text-sm">
           <p className="whitespace-pre-line text-slate-600">{method.description}</p>
           {method.steps?.map((step, index) => (
-            <div key={index} className="rounded bg-slate-50 p-2">
+            <div key={index} className="space-y-2">
               {!step.check_command_verified && (
-                <p className="mb-1 text-xs font-medium text-amber-600">⚠ Unverified check command</p>
+                <p className="text-xs font-medium text-amber-600">⚠ Unverified check command</p>
               )}
-              <pre className="overflow-x-auto text-xs whitespace-pre-wrap text-slate-700">{step.check_command}</pre>
-              {step.output_description && <p className="mt-1 text-xs text-slate-500">{step.output_description}</p>}
-              {step.output_check.length > 0 && (
-                <ul className="mt-1 list-disc pl-4 text-xs text-slate-600">
-                  {step.output_check.map((check) => (
-                    <li key={check.variable} className="font-mono">
-                      {describeOutputCheck(check)}
-                    </li>
-                  ))}
-                </ul>
+              <div className="overflow-hidden rounded border border-slate-200">
+                <div className="border-b border-slate-200 bg-slate-100 px-2 py-1 text-[11px] font-semibold tracking-wide text-slate-500 uppercase">
+                  Command
+                </div>
+                <pre className="overflow-x-auto bg-slate-900 p-2 text-xs whitespace-pre-wrap text-slate-100">
+                  {step.check_command}
+                </pre>
+              </div>
+              {(step.output_description || step.output_check.length > 0) && (
+                <div className="space-y-1.5 rounded border border-slate-200 bg-slate-50 p-2">
+                  {step.output_description && <p className="text-xs text-slate-600">{step.output_description}</p>}
+                  {step.output_check.length > 0 && (
+                    <div className="space-y-1">
+                      {step.output_check.map((check) => (
+                        <OutputCheckRow key={check.variable} check={check} />
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           ))}

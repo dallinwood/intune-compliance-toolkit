@@ -528,3 +528,16 @@ entry here, not just the session that wrote it.
   a bare selection entry has no rule content to compute a real default
   from). (`237fd28` fix: click-to-expand rows, replace method radio buttons
   with detail cards)
+- **2026-08-17** - Visual follow-up after seeing the method cards rendered:
+  the check command and its pass/fail criteria were sharing one gray box
+  with no separation. Gave the command its own bordered block with a
+  "Command" header and dark code styling, distinct from a separate panel
+  below holding `output_description` and the checks. Replaced the
+  bullet-list prose rendering of each `output_check` with a compact
+  `variable` / operator-symbol / `value` badge row (new
+  `OutputCheckRow.tsx`), since the operator set is small and fixed (`=`,
+  `≠`, `>`, `≥`, `<`, `≤`, `contains`, `matches`) - added
+  `operatorSymbol()`/`formatCheckValue()` to `logic/outputCheckText.ts`
+  (unit-tested) for it. `describeOutputCheck()`'s full sentence is kept as
+  the row's hover tooltip. Applied the same command/config styling to
+  `RemediationMethodCard` for consistency.

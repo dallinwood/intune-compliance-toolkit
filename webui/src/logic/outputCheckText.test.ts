@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { describeOutputCheck } from './outputCheckText'
-import type { OutputCheck } from '../types/rule-detail'
+import { describeOutputCheck, formatCheckValue, operatorSymbol } from './outputCheckText'
+import type { Operator, OutputCheck } from '../types/rule-detail'
 
 describe('describeOutputCheck', () => {
   it('describes a benchmark-defined equality check', () => {
@@ -49,5 +49,45 @@ describe('describeOutputCheck', () => {
     }
 
     expect(describeOutputCheck(check)).toBe('cis_macos26_2_1_1_1_icloud_keychain_sync_allowed equals (organization-defined value)')
+  })
+})
+
+describe('operatorSymbol', () => {
+  it('has a compact symbol or word for every operator in the fixed set', () => {
+    const operators: Operator[] = ['eq', 'ne', 'gt', 'gte', 'lt', 'lte', 'contains', 'like']
+
+    for (const operator of operators) {
+      expect(operatorSymbol(operator)).toEqual(expect.any(String))
+      expect(operatorSymbol(operator).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('uses mathematical symbols for the comparison operators', () => {
+    expect(operatorSymbol('eq')).toBe('=')
+    expect(operatorSymbol('ne')).toBe('≠')
+    expect(operatorSymbol('gt')).toBe('>')
+    expect(operatorSymbol('gte')).toBe('≥')
+    expect(operatorSymbol('lt')).toBe('<')
+    expect(operatorSymbol('lte')).toBe('≤')
+  })
+})
+
+describe('formatCheckValue', () => {
+  it('stringifies a benchmark-defined value', () => {
+    expect(formatCheckValue({ variable: 'v', data_type: 'integer', operator: 'eq', value: 30, value_source: 'benchmark' })).toBe(
+      '30',
+    )
+  })
+
+  it('stringifies a boolean value', () => {
+    expect(formatCheckValue({ variable: 'v', data_type: 'boolean', operator: 'eq', value: true, value_source: 'benchmark' })).toBe(
+      'true',
+    )
+  })
+
+  it('renders a short placeholder for organization-defined values', () => {
+    expect(
+      formatCheckValue({ variable: 'v', data_type: 'boolean', operator: 'eq', value: null, value_source: 'organization_defined' }),
+    ).toBe('org-defined')
   })
 })
