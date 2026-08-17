@@ -621,3 +621,12 @@ entry here, not just the session that wrote it.
   `AppShell` rather than the originally-planned Zustand slice (see
   "State management" table). 83 tests passing total. (`beb7d96` feat:
   generate and download Intune compliance bundles (Milestone 4))
+- **2026-08-17** - Fixed a real bug in `OrgDefinedValueInput`'s boolean
+  case: a checkbox only has two states, so "never touched" and
+  "explicitly set to false" both rendered unchecked - meaning generation
+  would block until the admin clicked the box at least once (even if they
+  wanted `false`), and unchecking it after checking it left `false` stored
+  rather than reverting to "never answered". Replaced the checkbox with an
+  explicit three-button toggle (True / False / Clear) so "never answered"
+  is its own visible state, matching the same clear-reverts-to-placeholder
+  behavior the integer/string inputs already had.
