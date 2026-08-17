@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "baselines": [
+    {
+      "family": "cis",
+      "product": "macos_26_tahoe",
+      "version": "v1.1.0",
+      "platform": "macOS",
+      "indexPath": "cis/macos_26_tahoe/v1.1.0/_index.json",
+      "ruleCount": 5
+    },
+    {
+      "family": "cis",
+      "product": "windows_11",
+      "version": "v5.0.0",
+      "platform": "Windows 11 (Intune)",
+      "indexPath": "cis/windows_11/v5.0.0/_index.json",
+      "ruleCount": 7
+    }
+  ]
+}
