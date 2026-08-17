@@ -542,3 +542,16 @@ entry here, not just the session that wrote it.
   the row's hover tooltip. Applied the same command/config styling to
   `RemediationMethodCard` for consistency. (`3ebede1` fix: separate command
   block from checks, badge-style pass/fail criteria)
+- **2026-08-17** - Two more requests after reviewing the badge rework: (1)
+  moved "Organization-defined values" above the audit methods list, so the
+  admin sets a value before seeing which method's checks depend on it; (2)
+  `OutputCheckRow`'s value badge now reflects whatever value the admin has
+  actually entered for an organization-defined check (threaded
+  `selection.organizationDefinedValues` down through `AuditMethodList` →
+  `AuditMethodCard` → `OutputCheckRow`), instead of always showing a
+  placeholder. `describeOutputCheck()`/`formatCheckValue()` in
+  `logic/outputCheckText.ts` both take an optional
+  `organizationDefinedValues` map now and resolve the real value when one's
+  been entered; the not-yet-set case reads "(no value set yet)" /
+  "needs value" and the badge gets an amber "needs attention" style until a
+  value exists.

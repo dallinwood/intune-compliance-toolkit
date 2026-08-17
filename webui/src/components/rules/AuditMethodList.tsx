@@ -1,4 +1,5 @@
 import { effectiveAuditMethodIndex, scriptedMethodIndexes } from '../../logic/auditMethods'
+import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { AuditMethod } from '../../types/rule-detail'
 import { AuditMethodCard } from './AuditMethodCard'
 
@@ -6,10 +7,12 @@ export function AuditMethodList({
   methods,
   selectedIndex,
   onSelect,
+  organizationDefinedValues,
 }: {
   methods: AuditMethod[]
   selectedIndex: number | null
   onSelect: (index: number) => void
+  organizationDefinedValues: Record<string, OrgDefinedValue>
 }) {
   const effectiveIndex = effectiveAuditMethodIndex(methods, selectedIndex)
   // A selector only makes sense when there's an actual choice to make - one
@@ -26,6 +29,7 @@ export function AuditMethodList({
           isEffective={index === effectiveIndex}
           showSelector={needsSelector && method.type === 'scripted'}
           onSelect={() => onSelect(index)}
+          organizationDefinedValues={organizationDefinedValues}
         />
       ))}
     </div>

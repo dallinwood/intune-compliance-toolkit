@@ -39,7 +39,7 @@ describe('describeOutputCheck', () => {
     expect(describeOutputCheck(check)).toBe('cis_macos26_2_3_3_4_remote_login equals false')
   })
 
-  it('renders organization-defined values as a placeholder rather than null', () => {
+  it('renders a placeholder when no organization-defined value has been entered yet', () => {
     const check: OutputCheck = {
       variable: 'cis_macos26_2_1_1_1_icloud_keychain_sync_allowed',
       data_type: 'boolean',
@@ -48,7 +48,21 @@ describe('describeOutputCheck', () => {
       value_source: 'organization_defined',
     }
 
-    expect(describeOutputCheck(check)).toBe('cis_macos26_2_1_1_1_icloud_keychain_sync_allowed equals (organization-defined value)')
+    expect(describeOutputCheck(check)).toBe('cis_macos26_2_1_1_1_icloud_keychain_sync_allowed equals (no value set yet)')
+  })
+
+  it('reflects the value the admin has already entered for an organization-defined check', () => {
+    const check: OutputCheck = {
+      variable: 'cis_macos26_2_1_1_1_icloud_keychain_sync_allowed',
+      data_type: 'boolean',
+      operator: 'eq',
+      value: null,
+      value_source: 'organization_defined',
+    }
+
+    expect(describeOutputCheck(check, { cis_macos26_2_1_1_1_icloud_keychain_sync_allowed: false })).toBe(
+      'cis_macos26_2_1_1_1_icloud_keychain_sync_allowed equals false',
+    )
   })
 })
 
@@ -85,9 +99,21 @@ describe('formatCheckValue', () => {
     )
   })
 
-  it('renders a short placeholder for organization-defined values', () => {
+  it('renders a short placeholder when no organization-defined value has been entered yet', () => {
     expect(
       formatCheckValue({ variable: 'v', data_type: 'boolean', operator: 'eq', value: null, value_source: 'organization_defined' }),
-    ).toBe('org-defined')
+    ).toBe('needs value')
+  })
+
+  it('reflects the value the admin has already entered for an organization-defined check', () => {
+    const check: OutputCheck = { variable: 'v', data_type: 'string', operator: 'eq', value: null, value_source: 'organization_defined' }
+
+    expect(formatCheckValue(check, { v: 'Block' })).toBe('Block')
+  })
+
+  it('ignores an unrelated organization-defined value map entry', () => {
+    const check: OutputCheck = { variable: 'v', data_type: 'string', operator: 'eq', value: null, value_source: 'organization_defined' }
+
+    expect(formatCheckValue(check, { other_variable: 'Block' })).toBe('needs value')
   })
 })

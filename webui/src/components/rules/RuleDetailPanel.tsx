@@ -54,12 +54,6 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
         <p className="text-slate-600">{rule.rationale}</p>
       </div>
 
-      <AuditMethodList
-        methods={rule.audit.methods}
-        selectedIndex={selection.selectedAuditMethodIndex}
-        onSelect={(index) => setAuditMethodIndex(ruleRef, index)}
-      />
-
       {organizationDefinedChecks.length > 0 && (
         <div className="space-y-1">
           <h5 className="text-xs font-semibold tracking-wide text-slate-500 uppercase">Organization-defined values</h5>
@@ -73,6 +67,13 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
           ))}
         </div>
       )}
+
+      <AuditMethodList
+        methods={rule.audit.methods}
+        selectedIndex={selection.selectedAuditMethodIndex}
+        onSelect={(index) => setAuditMethodIndex(ruleRef, index)}
+        organizationDefinedValues={selection.organizationDefinedValues}
+      />
 
       <RemediationMethodList methods={rule.remediation.methods} />
 

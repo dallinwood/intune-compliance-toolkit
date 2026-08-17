@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { AuditMethod } from '../../types/rule-detail'
 import { OutputCheckRow } from './OutputCheckRow'
 
@@ -7,11 +8,13 @@ export function AuditMethodCard({
   isEffective,
   showSelector,
   onSelect,
+  organizationDefinedValues,
 }: {
   method: AuditMethod
   isEffective: boolean
   showSelector: boolean
   onSelect: () => void
+  organizationDefinedValues: Record<string, OrgDefinedValue>
 }) {
   const [expanded, setExpanded] = useState(false)
   const isScripted = method.type === 'scripted'
@@ -65,7 +68,7 @@ export function AuditMethodCard({
                   {step.output_check.length > 0 && (
                     <div className="space-y-1">
                       {step.output_check.map((check) => (
-                        <OutputCheckRow key={check.variable} check={check} />
+                        <OutputCheckRow key={check.variable} check={check} organizationDefinedValues={organizationDefinedValues} />
                       ))}
                     </div>
                   )}
