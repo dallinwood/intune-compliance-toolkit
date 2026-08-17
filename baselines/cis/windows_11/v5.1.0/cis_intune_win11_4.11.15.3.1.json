@@ -22,12 +22,12 @@
           {
             "step_role": "compliance_check",
             "original_command": null,
-            "check_command": "$retention = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup' -Name 'Retention' -ErrorAction SilentlyContinue).Retention",
+            "check_command": "$cis_intune_win11_4_11_15_3_1_retention = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup' -Name 'Retention' -ErrorAction SilentlyContinue).Retention",
             "check_command_verified": true,
             "output_description": "REG_SZ value of 0",
             "check_command_notes": "No original_command exists - CIS only gives the registry location and value, not a script. The value type is REG_SZ (string), not an integer.",
             "output_check": [
-              { "variable": "retention", "data_type": "string", "operator": "eq", "value": "0", "value_source": "benchmark" }
+              { "variable": "cis_intune_win11_4_11_15_3_1_retention", "data_type": "string", "operator": "eq", "value": "0", "value_source": "benchmark" }
             ]
           }
         ]

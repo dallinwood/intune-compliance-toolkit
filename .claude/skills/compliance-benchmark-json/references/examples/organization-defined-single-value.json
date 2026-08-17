@@ -27,13 +27,13 @@
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowCloudKeychainSync').js\nEOS",
-            "check_command": "i_cloud_keychain_sync_allowed=$(/usr/bin/osascript -l JavaScript << 'EOS'\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess').objectForKey('allowCloudKeychainSync').js\nEOS\n)",
+            "check_command": "cis_macos26_2_1_1_1_icloud_keychain_sync_allowed=$(/usr/bin/osascript -l JavaScript << 'EOS'\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess').objectForKey('allowCloudKeychainSync').js\nEOS\n)",
             "check_command_verified": true,
             "check_command_notes": "Drops the bare sudo (redundant under an already-elevated discovery script) and quotes the heredoc terminator ('EOS' instead of EOS) so the shell doesn't attempt to expand $.NSUserDefaults... before osascript sees it.",
             "output_description": "If the output is 'false', iCloud Passwords & Keychain Sync is disabled. If the output is 'true', iCloud Passwords & Keychain sync is enabled.",
             "output_check": [
               {
-                "variable": "i_cloud_keychain_sync_allowed",
+                "variable": "cis_macos26_2_1_1_1_icloud_keychain_sync_allowed",
                 "data_type": "boolean",
                 "operator": "eq",
                 "value": null,

@@ -22,12 +22,12 @@
           {
             "step_role": "compliance_check",
             "original_command": null,
-            "check_command": "$allowCustomSSPsAPs = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'AllowCustomSSPsAPs' -ErrorAction SilentlyContinue).AllowCustomSSPsAPs",
+            "check_command": "$cis_intune_win11_4_10_24_1_allow_custom_ssps_aps = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'AllowCustomSSPsAPs' -ErrorAction SilentlyContinue).AllowCustomSSPsAPs",
             "check_command_verified": true,
             "output_description": "REG_DWORD value of 0",
             "check_command_notes": "No original_command exists - CIS only gives the registry location and REG_DWORD value, not a script.",
             "output_check": [
-              { "variable": "allowCustomSSPsAPs", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+              { "variable": "cis_intune_win11_4_10_24_1_allow_custom_ssps_aps", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
             ]
           }
         ]

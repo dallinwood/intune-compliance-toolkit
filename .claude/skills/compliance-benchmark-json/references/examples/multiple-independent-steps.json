@@ -30,32 +30,32 @@
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo /usr/sbin/systemsetup -getremotelogin",
-            "check_command": "remote_login_status=$(/usr/sbin/systemsetup -getremotelogin | /usr/bin/awk -F': ' '{print $2}')",
+            "check_command": "cis_macos26_2_3_3_4_remote_login_status=$(/usr/sbin/systemsetup -getremotelogin | /usr/bin/awk -F': ' '{print $2}')",
             "check_command_verified": true,
             "output_description": "Remote Login: Off",
             "check_command_notes": "Parses systemsetup's 'Remote Login: Off'/'Remote Login: On' output down to just the 'Off'/'On' token.",
             "output_check": [
-              { "variable": "remote_login_status", "data_type": "string", "operator": "eq", "value": "Off", "value_source": "benchmark" }
+              { "variable": "cis_macos26_2_3_3_4_remote_login_status", "data_type": "string", "operator": "eq", "value": "Off", "value_source": "benchmark" }
             ]
           },
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo /bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled'",
-            "check_command": "sshd_service_disabled_count=$(/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled')",
+            "check_command": "cis_macos26_2_3_3_4_sshd_service_disabled_count=$(/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled')",
             "check_command_verified": true,
             "output_description": "1",
             "output_check": [
-              { "variable": "sshd_service_disabled_count", "data_type": "integer", "operator": "eq", "value": 1, "value_source": "benchmark" }
+              { "variable": "cis_macos26_2_3_3_4_sshd_service_disabled_count", "data_type": "integer", "operator": "eq", "value": 1, "value_source": "benchmark" }
             ]
           },
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo /bin/launchctl list | /usr/bin/grep -c \"com.openssh.sshd\"",
-            "check_command": "sshd_running_count=$(/bin/launchctl list | /usr/bin/grep -c \"com.openssh.sshd\")",
+            "check_command": "cis_macos26_2_3_3_4_sshd_running_count=$(/bin/launchctl list | /usr/bin/grep -c \"com.openssh.sshd\")",
             "check_command_verified": true,
             "output_description": "0",
             "output_check": [
-              { "variable": "sshd_running_count", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+              { "variable": "cis_macos26_2_3_3_4_sshd_running_count", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
             ]
           }
         ]

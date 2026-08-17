@@ -76,6 +76,21 @@ Each `output_check` entry:
 - `value: null` + `value_source: "organization_defined"` together mean: this is genuinely checkable, but the pass/fail target has to come from whoever configures the policy, not from the benchmark.
 - `operator: "contains"` shows up for "include" phrasing (e.g. audit-policy Success/Failure flags, where the actual state can hold more than the one required flag without failing compliance).
 
+### Variable naming
+
+Every variable a `check_command` assigns - every `output_check[].variable`, and any intermediate/lookup variable that only feeds a later step - must be prefixed with the rule's own file-slug: the rule's JSON filename without `.json`, lowercased, with every `.` replaced by `_`. E.g. rule file `cis_intune_win11_4.11.15.3.1.json` gives the prefix `cis_intune_win11_4_11_15_3_1_`. The rest of the name is `snake_case` and descriptive:
+
+```
+cis_intune_win11_4_11_15_3_1_retention
+cis_macos26_2_12_2_touch_id_timeout_seconds
+```
+
+This shape is identical for PowerShell (`$cis_intune_win11_4_11_15_3_1_retention`) and bash (`cis_macos26_2_12_2_touch_id_timeout_seconds`) - one naming convention for both interpreters, not two.
+
+**Why:** the eventual generator concatenates the `check_command` of every rule a user selects into one discovery script per platform. A short, generic capture name (`$retention`, `$status`, `$output`) reads fine in isolation but collides the moment two selected rules both use it in the same generated script, silently corrupting whichever check runs second - a real bug caught in `cis_intune_win11_4.11.15.3.1.json`, which originally captured to plain `$retention`. Prefixing with the file-slug costs nothing extra to guarantee, since that slug is already required to be globally unique by the file-naming convention above.
+
+This applies to `audit.methods[].steps[].check_command` only - `remediation` doesn't capture to named variables under its current (older) schema.
+
 ## `remediation`
 
 Lighter schema, not (yet) redesigned to match `audit`'s steps shape:
@@ -102,7 +117,9 @@ Note the field names here are the *old* generation (`command`/`expected_output`/
 
 ## Worked examples of each shape
 
-Frozen snapshots bundled in `references/examples/` alongside this file - not live pointers into wherever the project currently keeps its rule files, so they won't go stale if that location moves or the rules themselves get further edited. Each is a real, complete rule file illustrating one structural shape.
+Bundled copies in `references/examples/` alongside this file - not live pointers into wherever the project currently keeps its rule files, so they won't break if that location moves. Each is a real, complete rule file illustrating one structural shape.
+
+**Keep these in sync with the live ruleset.** "Not a live pointer" means these files are copied, not symlinked - it does NOT mean they're allowed to drift. Whenever a change touches schema, structure, or a documented convention (a field added/removed/renamed, a naming rule like the variable-prefixing convention below, a fidelity fix that changes how a field is populated), update every affected file under `references/examples/` in the same pass, and update this doc's prose to match. A stale example teaches the next session the wrong convention with more authority than prose alone, because it looks like proof by demonstration. The one thing that does NOT need to propagate here is an incidental edit to a live rule that isn't a convention change (e.g. a corrected typo transcribed from a source re-read) - only touch the example if the *shape* it's meant to illustrate changed.
 
 **`examples/single-scripted-check.json`** (LSASS SSP/AP) - one registry-property-lookup step, `original_command: null` since the source gave only a registry path, no runnable command.
 

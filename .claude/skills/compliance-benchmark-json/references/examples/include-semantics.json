@@ -27,12 +27,12 @@
           {
             "step_role": "compliance_check",
             "original_command": "auditpol /get /subcategory:\"{0cce9230-69ae-11d9-bed3-505054503030}\"",
-            "check_command": "$authPolicyChangeCsv = auditpol /get /subcategory:\"{0cce9230-69ae-11d9-bed3-505054503030}\" /r | ConvertFrom-Csv\n$authPolicyChangeSetting = $authPolicyChangeCsv.'Inclusion Setting'",
+            "check_command": "$cis_intune_win11_6_7_auth_policy_change_csv = auditpol /get /subcategory:\"{0cce9230-69ae-11d9-bed3-505054503030}\" /r | ConvertFrom-Csv\n$cis_intune_win11_6_7_auth_policy_change_setting = $cis_intune_win11_6_7_auth_policy_change_csv.'Inclusion Setting'",
             "check_command_verified": false,
             "output_description": "confirm it is set as prescribed",
             "check_command_notes": "Adds auditpol's /r (CSV report) flag, not present in the original command, so the value is machine-parseable instead of a formatted text table. Possible values include 'Success', 'Failure', 'Success and Failure', or 'No Auditing'; the recommended state requires this to include 'Success', which may also include 'Failure' without affecting compliance.",
             "output_check": [
-              { "variable": "authPolicyChangeSetting", "data_type": "string", "operator": "contains", "value": "Success", "value_source": "benchmark" }
+              { "variable": "cis_intune_win11_6_7_auth_policy_change_setting", "data_type": "string", "operator": "contains", "value": "Success", "value_source": "benchmark" }
             ]
           }
         ]

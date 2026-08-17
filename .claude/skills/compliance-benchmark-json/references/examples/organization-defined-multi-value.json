@@ -32,20 +32,20 @@
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo -u <username> /usr/bin/bioutil -r",
-            "check_command": "touch_id_output=$(/usr/bin/sudo -u <username> /usr/bin/bioutil -r 2>/dev/null)\ntouch_id_unlock_effective=$(echo \"$touch_id_output\" | /usr/bin/awk -F': ' '/Effective Touch ID for unlock/ {print $2}')\ntouch_id_applepay_effective=$(echo \"$touch_id_output\" | /usr/bin/awk -F': ' '/Effective Touch ID for ApplePay/ {print $2}')",
+            "check_command": "cis_macos26_2_12_2_touch_id_output=$(/usr/bin/sudo -u <username> /usr/bin/bioutil -r 2>/dev/null)\ncis_macos26_2_12_2_touch_id_unlock_effective=$(echo \"$cis_macos26_2_12_2_touch_id_output\" | /usr/bin/awk -F': ' '/Effective Touch ID for unlock/ {print $2}')\ncis_macos26_2_12_2_touch_id_applepay_effective=$(echo \"$cis_macos26_2_12_2_touch_id_output\" | /usr/bin/awk -F': ' '/Effective Touch ID for ApplePay/ {print $2}')",
             "check_command_verified": false,
             "output_description": "User Touch ID configuration:\n     Touch ID for unlock: <0,1>\n     Touch ID for ApplePay: <0,1>\n     Effective Touch ID for unlock: <0,1>\n     Effective Touch ID for ApplePay: <0,1>",
             "check_command_notes": "Parses the 'Effective Touch ID for unlock' and 'Effective Touch ID for ApplePay' lines out of bioutil's multi-line output into separate variables. 'sudo -u <username>' is kept, unlike plain elevation-only sudo dropped elsewhere, because it selects which user's Touch ID configuration is read.",
             "output_check": [
               {
-                "variable": "touch_id_unlock_effective",
+                "variable": "cis_macos26_2_12_2_touch_id_unlock_effective",
                 "data_type": "integer",
                 "operator": "eq",
                 "value": null,
                 "value_source": "organization_defined"
               },
               {
-                "variable": "touch_id_applepay_effective",
+                "variable": "cis_macos26_2_12_2_touch_id_applepay_effective",
                 "data_type": "integer",
                 "operator": "eq",
                 "value": null,
@@ -56,13 +56,13 @@
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo /usr/bin/bioutil -r -s | /usr/bin/awk '/timeout/'",
-            "check_command": "touch_id_timeout_seconds=$(/usr/bin/bioutil -r -s | /usr/bin/awk -F': ' '/timeout/ {print $2}')",
+            "check_command": "cis_macos26_2_12_2_touch_id_timeout_seconds=$(/usr/bin/bioutil -r -s | /usr/bin/awk -F': ' '/timeout/ {print $2}')",
             "check_command_verified": false,
             "output_description": "Touch ID timeout (in seconds): <value≤172800>",
             "check_command_notes": "172800 (48 hours) is the maximum macOS allows per the benchmark; it is a ceiling on the value, not itself a compliance target - the organization's actual desired timeout may be lower and is not specified by the benchmark.",
             "output_check": [
               {
-                "variable": "touch_id_timeout_seconds",
+                "variable": "cis_macos26_2_12_2_touch_id_timeout_seconds",
                 "data_type": "integer",
                 "operator": "lte",
                 "value": 172800,

@@ -22,12 +22,12 @@
           {
             "step_role": "compliance_check",
             "original_command": null,
-            "check_command": "$safeForScripting = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'SafeForScripting' -ErrorAction SilentlyContinue).SafeForScripting",
+            "check_command": "$cis_intune_win11_4_11_48_1_safe_for_scripting = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer' -Name 'SafeForScripting' -ErrorAction SilentlyContinue).SafeForScripting",
             "check_command_verified": true,
             "output_description": "REG_DWORD value of 0",
             "check_command_notes": "No original_command exists - CIS only gives the registry location and REG_DWORD value, not a script.",
             "output_check": [
-              { "variable": "safeForScripting", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+              { "variable": "cis_intune_win11_4_11_48_1_safe_for_scripting", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
             ]
           }
         ]

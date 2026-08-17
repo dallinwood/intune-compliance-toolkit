@@ -27,13 +27,13 @@
           {
             "step_role": "compliance_check",
             "original_command": "/usr/bin/sudo /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('enforcedSoftwareUpdateDelay').js\nEOS",
-            "check_command": "enforced_software_update_delay=$(/usr/bin/osascript -l JavaScript << 'EOS'\nvar enforcedDelayValue = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess').objectForKey('enforcedSoftwareUpdateDelay').js;\n(enforcedDelayValue === undefined || enforcedDelayValue === null) ? 0 : enforcedDelayValue;\nEOS\n)",
+            "check_command": "cis_macos26_1_6_enforced_software_update_delay=$(/usr/bin/osascript -l JavaScript << 'EOS'\nvar enforcedDelayValue = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess').objectForKey('enforcedSoftwareUpdateDelay').js;\n(enforcedDelayValue === undefined || enforcedDelayValue === null) ? 0 : enforcedDelayValue;\nEOS\n)",
             "check_command_verified": false,
             "output_description": "If there is an output, it should be <= 30. If your organization does not use a software deferment mobile configuration, there will be no output and will pass the audit.",
             "check_command_notes": "Normalizes the absent-output case from the source to 0 so a single numeric comparison (<= 30) covers both the 'no output' and 'output present' cases, rather than requiring a separate empty-output branch.",
             "output_check": [
               {
-                "variable": "enforced_software_update_delay",
+                "variable": "cis_macos26_1_6_enforced_software_update_delay",
                 "data_type": "integer",
                 "operator": "lte",
                 "value": 30,

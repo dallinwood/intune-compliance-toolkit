@@ -22,7 +22,7 @@
           {
             "step_role": "lookup",
             "original_command": null,
-            "check_command": "$winningProviderGuid = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\AboveLock' -Name 'AllowCortanaAboveLock_WinningProvider' -ErrorAction SilentlyContinue).AllowCortanaAboveLock_WinningProvider",
+            "check_command": "$cis_intune_win11_1_1_winning_provider_guid = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\AboveLock' -Name 'AllowCortanaAboveLock_WinningProvider' -ErrorAction SilentlyContinue).AllowCortanaAboveLock_WinningProvider",
             "check_command_verified": true,
             "output_description": "This value confirms under which User GUID the policy is set.",
             "output_check": []
@@ -30,12 +30,12 @@
           {
             "step_role": "compliance_check",
             "original_command": null,
-            "check_command": "$allowCortanaAboveLock = (Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\Providers\\$winningProviderGuid\\Default\\Device\\AboveLock\" -Name 'AllowCortanaAboveLock' -ErrorAction SilentlyContinue).AllowCortanaAboveLock",
+            "check_command": "$cis_intune_win11_1_1_allow_cortana_above_lock = (Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\Providers\\$cis_intune_win11_1_1_winning_provider_guid\\Default\\Device\\AboveLock\" -Name 'AllowCortanaAboveLock' -ErrorAction SilentlyContinue).AllowCortanaAboveLock",
             "check_command_verified": false,
             "output_description": "confirm the value is set to 0",
             "check_command_notes": "No original_command exists for either step in this method - CIS only describes the registry paths to navigate to, not a script. This step substitutes the WinningProvider GUID captured in step 1 in place of the source's literal '{GUID}' placeholder; check_command_verified is false because it's unconfirmed whether the captured value includes the enclosing braces the source's placeholder implies, which affects whether the substituted path resolves correctly.",
             "output_check": [
-              { "variable": "allowCortanaAboveLock", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
+              { "variable": "cis_intune_win11_1_1_allow_cortana_above_lock", "data_type": "integer", "operator": "eq", "value": 0, "value_source": "benchmark" }
             ]
           }
         ]
