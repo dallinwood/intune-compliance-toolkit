@@ -15,7 +15,11 @@ A number of rules already exist as worked examples covering every structural var
 
 ## The two hard constraints, in tension
 
-1. **Source fidelity.** Every fact taken from the benchmark (`description`, `rationale`, `impact`, `original_command`, `output_description`, table contents, etc.) must be reproduced with the original wording, including any typos the benchmark itself contains (don't silently correct the source's grammar). The one normalization that IS applied: rejoining words that PDF-to-markdown conversion broke across a line break (e.g. two fragments that should read as one compound word). If you're not sure whether an oddity is a genuine source typo or a conversion artifact, check the raw source text around it rather than guessing.
+1. **Source fidelity.** Every fact taken from the benchmark (`description`, `rationale`, `impact`, `original_command`, `output_description`, table contents, etc.) must be reproduced with the original wording, including any typos the benchmark itself contains (don't silently correct the source's grammar). Two normalizations ARE applied, and only these two:
+   - **PDF-linebreak rejoining**: two fragments that a PDF-to-markdown conversion broke across a line break get rejoined into one compound word/line.
+   - **Markdown-formatting-artifact stripping**: inline code-span backticks and the stray space they leave before adjacent punctuation - e.g. source `` is: `Block` . `` - are stripped to plain text (`is: Block.`) in JSON string fields. This is a markdown *rendering* artifact from the PDF conversion, not source prose from the benchmark's authors, and downstream consumers of this JSON aren't guaranteed to run it through a markdown renderer - a literal backtick sitting in a string a script generator reads would just be noise. This applies anywhere the pattern shows up (`description`, `output_description`, etc.), not just the "recommended state" sentence.
+
+   If you're not sure whether an oddity is a genuine source typo/formatting choice or a conversion artifact, check the raw source text around it rather than guessing - and if it doesn't match one of these two normalizations, transcribe it verbatim, typos included.
 2. **Automation-readiness.** Fields like `check_command` and `output_check` are engineered by you, not extracted - real technical judgment calls about how to make a check deterministic and machine-parseable.
 
 These two must never blur together. A field either holds source text (verbatim) or holds your engineering (clearly not pretending to be source text). See `references/schema.md` for exactly which fields are which, and the "Where fidelity broke down before" section below for what happens when this rule is skipped.
@@ -43,14 +47,21 @@ The benchmark rarely gives you something directly usable by an automated complia
 
 ## Validation
 
-Before calling a rule finished, check all of these (a short Python snippet over `json.load()` covers most of it in seconds):
+`baselines/_rule.schema.json` is the machine-checkable version of `references/schema.md` - it lives under `baselines/` rather than in this skill folder because it's a runtime dependency of `tools/validate_rules.py` and the project's other tooling, not skill documentation for Claude; the leading underscore marks it (like `_index.json`) as a generated/meta artifact, not a rule. Run `python tools/validate_rules.py <path-to-rule-or-folder>` (or the `tests/test_rule_schema.py` pytest suite, which runs it over every file under `baselines/` and every bundled example) before calling a rule finished. It catches everything a JSON Schema can express automatically:
 
-- File parses as JSON.
+- Valid JSON, required fields present, enums honored (`assessment_status`, `method.type`, `step_role`, `data_type`, `operator`, `value_source`, `remediation.type`).
+- No leftover fields from earlier schema iterations: `notes` (top-level), `derived`, `pass_criterion`, `recommended_state_mode`, `interpreter`, `registry_check`, or a step using the old `command`/`expected_output` names instead of `original_command`/`check_command`/`output_description`. These were all deliberately removed - see "Fields that were tried and removed" below for why, so you don't re-add them (the schema's `additionalProperties: false` rejects them outright).
+- Absent-value convention is consistent: `null` for a missing scalar, `[]` for a missing list (never `null` for a list field like `references`).
+- `value: null` is only allowed when `value_source: "organization_defined"`.
+
+The schema can't see filenames or cross-reference source text, so it can't catch these - check them yourself (`tools/validate_rules.py` also runs the first two automatically):
+
 - Every `output_check[].variable` string literally appears in that step's `check_command`.
 - Every variable any step assigns (`output_check` entries and intermediate/lookup variables alike) is prefixed with the rule's own file-slug - see `references/schema.md`'s "Variable naming" section. No bare generic names like `$retention` or `$status`.
-- Every non-null `original_command` matches the source document byte-for-byte (aside from the PDF-linebreak-rejoin normalization) - this has been the single most common regression when editing a file after the fact, because it's easy to "clean up" a command while touching something nearby.
-- No leftover fields from earlier schema iterations: `notes` (top-level), `derived`, `pass_criterion`, `recommended_state_mode`, `interpreter`, `registry_check`, or a step using the old `command`/`expected_output` names instead of `original_command`/`check_command`/`output_description`. These were all deliberately removed - see "Fields that were tried and removed" below for why, so you don't re-add them.
-- Absent-value convention is consistent: `null` for a missing scalar, `[]` for a missing list (never `null` for a list field like `references`).
+- Every non-null `original_command` matches the source document byte-for-byte (aside from the two normalizations above) - this has been the single most common regression when editing a file after the fact, because it's easy to "clean up" a command while touching something nearby.
+- `recommended_state` is populated whenever the source states a target *anywhere* - a body sentence or the rule's own title - not left `null` just because there's no separate "recommended state is" sentence. Only genuinely organization-defined or truly unstated rules get `null`. Keep it to just the value (`"30 Days"`, not `"Less Than or Equal to 30 Days"`) - the comparison belongs in `output_check.operator`.
+
+**If you add, rename, or remove a field**, update `baselines/_rule.schema.json` in the same pass as `schema.md` and the bundled examples - see "Keeping examples and this doc in sync" below. A project hook (see `.claude/settings.json`) also runs `tools/validate_rules.py` automatically whenever a rule JSON file under `baselines/` is created or edited, so a schema violation is caught the moment the file is written, not at the next manual review.
 
 ## Where fidelity broke down before (read this before extracting your first rule)
 
