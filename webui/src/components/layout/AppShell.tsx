@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { FilterSidebar } from '../filters/FilterSidebar'
+import { GenerateReviewScreen } from '../generate/GenerateReviewScreen'
 import { RuleTable } from '../rules/RuleTable'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { useFilterStore, type FilterState } from '../../state/filterStore'
@@ -21,7 +22,12 @@ function matchesFilters(row: RuleRow, filters: FilterValues): boolean {
   return true
 }
 
+// Two views, no router needed: a Zustand store would be overkill for a
+// single boolean owned by (and only ever read by) this one component.
+type View = 'browse' | 'generate'
+
 export function AppShell({ rows }: { rows: RuleRow[] }) {
+  const [view, setView] = useState<View>('browse')
   const filters = useFilterStore()
   const filteredRows = useMemo(() => rows.filter((row) => matchesFilters(row, filters)), [rows, filters])
 
@@ -33,15 +39,19 @@ export function AppShell({ rows }: { rows: RuleRow[] }) {
           <span className="text-sm text-slate-500">
             {filteredRows.length} of {rows.length} rules
           </span>
-          <SelectionToolbar rows={rows} />
+          <SelectionToolbar rows={rows} onGenerate={() => setView('generate')} />
         </div>
       </header>
-      <div className="flex flex-1 overflow-hidden">
-        <FilterSidebar rows={rows} />
-        <main className="flex-1 overflow-y-auto">
-          <RuleTable rows={filteredRows} />
-        </main>
-      </div>
+      {view === 'browse' ? (
+        <div className="flex flex-1 overflow-hidden">
+          <FilterSidebar rows={rows} />
+          <main className="flex-1 overflow-y-auto">
+            <RuleTable rows={filteredRows} />
+          </main>
+        </div>
+      ) : (
+        <GenerateReviewScreen onBack={() => setView('browse')} />
+      )}
     </div>
   )
 }

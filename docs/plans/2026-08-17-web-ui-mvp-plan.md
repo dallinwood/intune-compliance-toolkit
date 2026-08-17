@@ -194,7 +194,7 @@ def is_automated(rule):
 | Zip download | **fflate** (~8KB) | Browsers have no native zip API; needed to ship "script + rules JSON (+ manual-attestation report)" as one download instead of separate browser downloads per file. |
 | Styling | **Tailwind CSS** (build-time only, no runtime JS shipped) | Utility classes for a compact, information-dense table/filter UI without hand-building a spacing/color system. |
 | Data fetching/caching | None (no React Query) | Static JSON, fetched once per session into a plain `Map` cache in `src/data/*.ts`. Adding a data-fetching library for `fetch` + `Map` isn't justified. |
-| Routing | None | Two views (browse / generate-review) held as a Zustand UI-state slice, not URL routes. |
+| Routing | None | Two views (browse / generate-review) held as plain `useState` in `AppShell`, not URL routes. (Originally planned as a Zustand slice; a single boolean owned and read by one component didn't justify a store.) |
 
 ## Component / screen breakdown
 
@@ -247,8 +247,12 @@ def is_automated(rule):
   settings JSON and downloads it; import validates `schemaVersion` + each
   rule ref against the currently loaded manifest/index, reporting (not
   silently dropping) any ref that no longer resolves.
-- **`GenerateReviewScreen`** — fetches full JSON for every selected
-  automatable rule, runs the chunking algorithm, shows the resulting bundle
+- **`GenerateReviewScreen`** — fetches full JSON for every **enabled**
+  selection (not pre-filtered by the index's automatable flag - at today's
+  small rule-corpus scale it's simpler to classify off full data via
+  `classifyRule()` than to add an index-only pre-filter purely as a scale
+  optimization; revisit if the corpus grows large enough for that fetch
+  count to matter), runs the chunking algorithm, shows the resulting bundle
   plan (platform → section → chunk, with rule/setting counts and measured
   byte size) plus a preview of the `ManualAttestationReport` (rules selected
   but not automatable). Blocks download with a visible validation error
@@ -376,15 +380,25 @@ for each platform:
   `organizationDefinedValues` entry), `MoreInfoUrl` = `rule.references[0]`
   if present, `RemediationStrings` = `[{Language: "en_US", Title: rule.title,
   Description: rule.description}]`.
-- **Operator mapping** (`operatorMap.ts`): `eq→IsEquals`, `ne→NotEquals`,
-  `gt→GreaterThan`, `gte→GreaterEquals`, `lt→LessThan`, `lte→LessEquals`.
-  `contains`/`like` have no direct Intune operator — fallback: evaluate the
-  substring/pattern match **inside the discovery script** and emit a
-  boolean, then map to `DataType: "Boolean"`, `Operator: "IsEquals"`,
-  `Operand: true`. `data_type` maps `boolean→Boolean`, `integer→Int64`,
-  `string→String`. Flagged to re-verify against Microsoft's live
-  Operator/DataType enum at implementation time, since this whole mechanism
-  is compensating for gaps in Microsoft's own docs.
+- **Operator mapping** (`operatorMap.ts`) — **verified against Microsoft's
+  own schema doc** ("Create a JSON file for custom compliance settings in
+  Microsoft Intune", learn.microsoft.com, retrieved 2026-08-17), not just
+  the reference blog post: Intune's `Operator` enum is exactly `IsEquals`,
+  `NotEquals`, `GreaterThan`, `GreaterEquals`, `LessThan`, `LessEquals` —
+  no more, no less, confirming `eq/ne/gt/gte/lt/lte` map 1:1 and there is
+  **no native substring/pattern-match operator**. `DataType` additionally
+  documents `Double`, `DateTime`, `Version` beyond `Boolean`/`Int64`/
+  `String`, none of which this repo's schema currently needs.
+  `RemediationStrings[].Language` must be one of a fixed locale list;
+  `en_US` is required and is the only one this repo ever emits.
+  **`contains`/`like` scope decision**: properly supporting them would mean
+  rewriting a rule's `check_command` to compute a boolean via in-script
+  substring/pattern matching — a distinct, speculative feature with no
+  current data to validate it against (no rule in the repo uses either
+  operator today). Rather than half-implement that, `chunking.ts`'s
+  `classifyRule()` routes any selected rule using `contains`/`like` to
+  manual attestation with a clear reason, the same as a rule with no
+  scripted method at all. Revisit once a real rule needs it.
 
 ## Milestones
 
@@ -401,11 +415,16 @@ for each platform:
    Zustand `selectionStore` + localStorage persistence.
 3. **Export / import** — `exportImport.ts` + `ExportImportControls`,
    including unresolvable-ref reporting on import.
-4. **Generate / download bundles** — `naturalId.ts`, `chunking.ts`,
-   `operatorMap.ts`, `rulesJsonGen.ts`, `scriptGen/{bash,powershell}.ts`,
-   `zipBundle.ts`, `GenerateReviewScreen`. Highest-risk milestone (heredoc-
-   safe concatenation, real byte-size measurement) — its unit tests land in
-   the same PR, not after.
+4. **Generate / download bundles** — `naturalId.ts`, `chunking.ts`
+   (`classifyRule` + `packChunks`), `operatorMap.ts`, `rulesJsonGen.ts`,
+   `scriptGen/{bash,powershell}.ts`, `platformScriptKind.ts`,
+   `manualAttestationReport.ts`, `bundleFiles.ts` (assembles the previous
+   two plus the scripts/JSON into the final file list), `zipBundle.ts`,
+   `GenerateReviewScreen`. Highest-risk milestone (heredoc-safe
+   concatenation, real byte-size measurement) — its unit tests land in the
+   same PR, not after, and `scriptGen/*`'s tests actually execute the
+   generated script through real bash/pwsh rather than only asserting on
+   the generated text.
 5. **Polish** — empty/loading/error states, compact visual pass,
    accessibility on checkboxes/expand controls, responsive layout.
 6. **CI + Pages deploy** — `.github/workflows/deploy-pages.yml` (freshness
@@ -582,3 +601,22 @@ entry here, not just the session that wrote it.
   the plan's original component breakdown. Added `setAllSelections` to
   `selectionStore` for the wholesale replace. (`f8b364b` feat: add
   export/import of selections (Milestone 3))
+- **2026-08-17** - Milestone 4: generate/download compliance bundles - the
+  full pipeline from selection to a downloadable `.zip`. Before writing
+  code, verified Intune's actual `Operator`/`DataType` enum against
+  Microsoft's own schema doc (see "Operator mapping" above) rather than
+  trusting the reference blog post alone, and confirmed via a real
+  execution test (not just string assertions) that the hand-rolled bash
+  JSON-escaping helpers actually produce correct JSON when run through
+  real bash, and that the PowerShell generator's output runs under real
+  `pwsh` and parses correctly. New modules, all unit-tested: `operatorMap`,
+  `rulesJsonGen`, `chunking` (`classifyRule` - generatable/manual/blocked -
+  and `packChunks`), `scriptGen/bash`, `scriptGen/powershell`,
+  `platformScriptKind`, `manualAttestationReport`, `bundleFiles`,
+  `zipBundle`. Scoped `contains`/`like` operators to manual attestation
+  rather than implementing in-script boolean rewriting (see "Operator
+  mapping"). `GenerateReviewScreen` (+ `BundleGroupCard` +
+  `ManualAttestationReport`) is a new view reachable via a "Generate"
+  button in `SelectionToolbar`, switched via plain `useState` in
+  `AppShell` rather than the originally-planned Zustand slice (see
+  "State management" table). 83 tests passing total.
