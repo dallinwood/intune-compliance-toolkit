@@ -1,5 +1,9 @@
+import { Fragment, useState } from 'react'
 import { naturalIdCompare, topLevelSection } from '../../logic/naturalId'
+import { isEnabled, refKey } from '../../logic/selectionEntry'
+import { useSelectionStore } from '../../state/selectionStore'
 import type { RuleRow } from '../../types/rule-row'
+import { RuleDetailPanel } from './RuleDetailPanel'
 
 interface SectionGroup {
   section: string
@@ -80,27 +84,70 @@ export function RuleTable({ rows }: { rows: RuleRow[] }) {
 }
 
 function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
+  const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const selections = useSelectionStore((store) => store.selections)
+  const setEnabled = useSelectionStore((store) => store.setEnabled)
+
+  function toggleExpanded(key: string) {
+    setExpanded((current) => {
+      const next = new Set(current)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
   return (
     <div>
       <h4 className="px-6 py-1 text-xs font-semibold text-slate-500">Section {sectionGroup.section}</h4>
       <table className="w-full text-sm">
         <tbody>
-          {sectionGroup.rows.map((row) => (
-            <tr key={`${row.ref.product}-${row.ref.version}-${row.ref.file}`} className="hover:bg-slate-50">
-              <td className="w-20 px-6 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
-              <td className="px-2 py-1">{row.title}</td>
-              <td className="w-56 px-2 py-1">
-                <AssessmentBadge row={row} />
-              </td>
-              <td className="w-40 px-2 py-1 text-xs text-slate-500">{row.profileApplicability.join(', ')}</td>
-              <td
-                className="w-8 px-2 py-1 text-center text-xs"
-                title={row.requiresOrganizationDefinedValue ? 'Requires an organization-defined value' : ''}
-              >
-                {row.requiresOrganizationDefinedValue ? '⚙' : ''}
-              </td>
-            </tr>
-          ))}
+          {sectionGroup.rows.map((row) => {
+            const key = refKey(row.ref)
+            const isExpanded = expanded.has(key)
+            return (
+              <Fragment key={key}>
+                <tr className="hover:bg-slate-50">
+                  <td className="w-8 py-1 pl-6">
+                    <input
+                      type="checkbox"
+                      checked={isEnabled(selections, row.ref)}
+                      onChange={(event) => setEnabled(row.ref, event.target.checked)}
+                    />
+                  </td>
+                  <td className="w-6 py-1">
+                    <button
+                      type="button"
+                      onClick={() => toggleExpanded(key)}
+                      aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
+                      className="text-slate-400 hover:text-slate-700"
+                    >
+                      {isExpanded ? '▾' : '▸'}
+                    </button>
+                  </td>
+                  <td className="w-20 px-2 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
+                  <td className="px-2 py-1">{row.title}</td>
+                  <td className="w-56 px-2 py-1">
+                    <AssessmentBadge row={row} />
+                  </td>
+                  <td className="w-40 px-2 py-1 text-xs text-slate-500">{row.profileApplicability.join(', ')}</td>
+                  <td
+                    className="w-8 px-2 py-1 text-center text-xs"
+                    title={row.requiresOrganizationDefinedValue ? 'Requires an organization-defined value' : ''}
+                  >
+                    {row.requiresOrganizationDefinedValue ? '⚙' : ''}
+                  </td>
+                </tr>
+                {isExpanded && (
+                  <tr>
+                    <td colSpan={7} className="p-0">
+                      <RuleDetailPanel ruleRef={row.ref} />
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            )
+          })}
         </tbody>
       </table>
     </div>
