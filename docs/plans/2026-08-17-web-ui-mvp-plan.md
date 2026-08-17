@@ -554,4 +554,5 @@ entry here, not just the session that wrote it.
   `organizationDefinedValues` map now and resolve the real value when one's
   been entered; the not-yet-set case reads "(no value set yet)" /
   "needs value" and the badge gets an amber "needs attention" style until a
-  value exists.
+  value exists. (`84fa8d0` fix: move org-defined values above audit
+  methods, reflect entered values)
