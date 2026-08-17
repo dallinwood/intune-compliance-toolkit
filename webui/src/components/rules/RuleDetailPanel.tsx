@@ -15,6 +15,7 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
   const selections = useSelectionStore((store) => store.selections)
   const setAuditMethodIndex = useSelectionStore((store) => store.setAuditMethodIndex)
   const setOrganizationDefinedValue = useSelectionStore((store) => store.setOrganizationDefinedValue)
+  const clearOrganizationDefinedValue = useSelectionStore((store) => store.clearOrganizationDefinedValue)
 
   useEffect(() => {
     let cancelled = false
@@ -63,6 +64,7 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
               check={check}
               value={selection.organizationDefinedValues[check.variable]}
               onChange={(value) => setOrganizationDefinedValue(ruleRef, check.variable, value)}
+              onClear={() => clearOrganizationDefinedValue(ruleRef, check.variable)}
             />
           ))}
         </div>

@@ -556,3 +556,15 @@ entry here, not just the session that wrote it.
   "needs value" and the badge gets an amber "needs attention" style until a
   value exists. (`84fa8d0` fix: move org-defined values above audit
   methods, reflect entered values)
+- **2026-08-17** - Fixed an integer-input bug: `OrgDefinedValueInput`'s
+  number field bound its displayed value straight to the stored number and
+  coerced an empty field to `0` on every keystroke, so backspacing to
+  empty then typing "12" landed as "012" (the field silently became "0",
+  and the next digit appended after it instead of replacing it). The field
+  is now backed by a local text buffer that can sit empty mid-edit; a
+  keystroke only commits to the store once it parses as a real number.
+  Also added a real "clear" action (`clearOrganizationDefinedValue`,
+  deletes the key rather than storing an empty/zero value) fired on blur
+  when the field is left empty, so clicking off an emptied field reverts it
+  to "never answered" (the placeholder) instead of persisting a stray
+  value - applied to both the integer and string inputs.

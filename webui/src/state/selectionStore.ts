@@ -7,6 +7,7 @@ export interface SelectionState {
   setEnabled: (ref: RuleRef, enabled: boolean) => void
   setAuditMethodIndex: (ref: RuleRef, index: number) => void
   setOrganizationDefinedValue: (ref: RuleRef, variable: string, value: OrgDefinedValue) => void
+  clearOrganizationDefinedValue: (ref: RuleRef, variable: string) => void
   clearAll: () => void
 }
 
@@ -29,6 +30,16 @@ export const useSelectionStore = create<SelectionState>()(
             ...entry,
             organizationDefinedValues: { ...entry.organizationDefinedValues, [variable]: value },
           })),
+        })),
+      // Removes the key entirely rather than storing an empty/zero value,
+      // so a cleared field reads as "never answered" (the placeholder)
+      // instead of as an explicit 0/"" the admin didn't actually choose.
+      clearOrganizationDefinedValue: (ref, variable) =>
+        set((state) => ({
+          selections: upsertSelection(state.selections, ref, (entry) => {
+            const { [variable]: _removed, ...rest } = entry.organizationDefinedValues
+            return { ...entry, organizationDefinedValues: rest }
+          }),
         })),
       clearAll: () => set({ selections: {} }),
     }),
