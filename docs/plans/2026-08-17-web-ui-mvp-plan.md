@@ -629,4 +629,5 @@ entry here, not just the session that wrote it.
   rather than reverting to "never answered". Replaced the checkbox with an
   explicit three-button toggle (True / False / Clear) so "never answered"
   is its own visible state, matching the same clear-reverts-to-placeholder
-  behavior the integer/string inputs already had.
+  behavior the integer/string inputs already had. (`fc34639` fix: replace
+  boolean org-defined checkbox with an explicit tri-state toggle)
