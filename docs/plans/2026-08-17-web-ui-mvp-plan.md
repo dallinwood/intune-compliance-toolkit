@@ -69,8 +69,15 @@ time in case Microsoft's docs are fixed by then).
   `SettingName` must exactly, case-sensitively match a JSON key emitted by
   the script.
 - **Hard limits per policy**: max 100 rules, max 100 KB rules-JSON, max 1 MB
-  script, max 1 MB script output, 10-minute execution timeout, exactly one
-  script per policy. This is why generated bundles must be chunked.
+  discovery script, max 1 MB script output, exactly one script per policy.
+  Execution timeout is 5 minutes on Linux and 10 minutes on macOS/Windows.
+  This is why generated bundles must be chunked. Of these, only rule count,
+  rules-JSON bytes, and discovery-script bytes are things `packChunks` can
+  actually measure at generation time — script output and execution time
+  both depend on what a `check_command` captures/how long it runs on a real
+  device, which isn't known until the script actually runs. See "Grouping /
+  chunking algorithm" for exactly which limits are enforced and why the
+  other two aren't.
 
 This repo's schema already lines up with this mechanism almost exactly:
 `output_check.variable` → `SettingName`, `operator`/`value`/`data_type` →
@@ -94,10 +101,12 @@ webui/                              # new, self-contained package (Bun)
 │   │   │                             lib/ (Python venv convention), which
 │   │   │                             silently swallowed this in practice
 │   │   ├── naturalId.ts            # dotted-id comparator + top-level-section extraction
+│   │   ├── limitsConfig.ts         # Intune's hard limits + headroom factor -> generation caps
 │   │   ├── chunking.ts             # grouping/packing algorithm (pure, unit-tested)
 │   │   ├── operatorMap.ts          # eq/ne/gt/gte/lt/lte/contains/like -> Intune Operator
 │   │   ├── scriptGen/{bash,powershell}.ts
 │   │   ├── rulesJsonGen.ts         # builds the sibling Rules[] JSON per chunk
+│   │   ├── bundleFiles.ts          # names + assembles the downloadable file set per chunk
 │   │   ├── zipBundle.ts            # fflate wrapper -> downloadable .zip
 │   │   └── exportImport.ts         # settings-file (de)serialization + validation
 │   └── components/                 # layout, filters, rules, selection, generate
@@ -324,38 +333,96 @@ so this re-check is still required.
 **Packing** (operates on `GENERATABLE` only):
 
 ```
-group by platform := rule.benchmark.platform
-for each platform:
+group by benchmark := (rule.benchmark.platform, ref.family, ref.product, ref.version)
+for each benchmark group:
     group by topLevelSection := naturalFirstSegment(rule.id)     # "106.1.1" -> "106"
     sort sections by numeric value
     for each section (rules sorted by naturalIdCompare):
-        chunks = []; current = []
-        for rule in rules:
-            if outputCheckCount(rule) > MAX_RULES_PER_CHUNK:
-                HARD ERROR: "<id> alone exceeds the per-chunk cap"
-            candidate = current + [rule]
-            rulesJson = buildRulesJsonArray(candidate)             # real objects, not estimated
-            bytes = utf8ByteLength(JSON.stringify(rulesJson))
-            if outputCheckCount(candidate) > MAX_RULES_PER_CHUNK or bytes > MAX_BYTES_PER_CHUNK:
-                chunks.push(current); current = [rule]
-            else:
-                current = candidate
-        if current: chunks.push(current)
-        # only label "Part 1/2/..." if more than one chunk resulted
-# different top-level sections are NEVER combined into one chunk, even with spare room
+        packSection(rules, limits)
+# different top-level sections, or different benchmarks, are NEVER combined
+# into one chunk, even with spare room
 ```
 
+`packSection` packs greedily-then-evenly rather than pure greedy-fill, so an
+oversized section splits into parts of roughly equal size instead of one
+maxed-out part followed by a mostly-empty one:
+
+```
+packSection(rules, limits):
+    for rule in rules:
+        if not fitsWithinCaps([rule], limits):
+            HARD ERROR: "<id> alone exceeds a per-chunk limit"
+
+    chunkCount = greedyGroupCount(rules, limits)   # how many a plain greedy fill would need
+    loop:
+        groups = splitEvenlyByCount(rules, chunkCount)   # contiguous, by count, not round-robin
+        if every group fitsWithinCaps(group, limits):
+            return groups
+        chunkCount += 1   # only when rule sizes vary enough that an even split can't fit
+
+fitsWithinCaps(rules, limits):
+    entries = rules.flatMap(rule => rule.ruleEntries)
+    return entries.length <= limits.maxRulesPerChunk
+       and utf8ByteLength(JSON.stringify(entries)) <= limits.maxBytesPerChunk
+       and utf8ByteLength(generateDiscoveryScript(rules)) <= limits.maxScriptBytesPerChunk
+```
+
+Example: a 180-rule section against the default 95-rule cap needs at least 2
+chunks (`greedyGroupCount`), and splits evenly into 90 + 90 rather than the
+95 + 85 a pure greedy fill would produce. The per-rule upfront check
+guarantees this terminates — once every individual rule is known to fit
+alone, splitting far enough (at most one rule per chunk) always succeeds.
+
 - Capacity is counted in emitted `Rules[]`/`SettingName` entries
-  (`outputCheckCount`), not in number of rule files — one rule can contribute
+  (`entries.length`), not in number of rule files — one rule can contribute
   more than one `output_check`.
-- `MAX_RULES_PER_CHUNK = 90`, `MAX_BYTES_PER_CHUNK = 90 * 1024` — ~10%
-  headroom under Intune's hard 100-rule / 100 KB limits.
+- **Enforced limits**, from `logic/limitsConfig.ts` (see below): rule/setting
+  count, rules-JSON byte size, **and discovery-script byte size** — all
+  three are fully computable at generation time (the script text itself is
+  generated as part of the fit check).
+- **Not enforced**: script *output* size (1 MB) and execution timeout
+  (5-10 min). Both depend on values captured live on a real device or how
+  long a `check_command` actually takes to run there — neither is knowable
+  from the rule JSON alone, so there's nothing to statically check. In
+  practice the ~95-setting cap keeps typical output far under 1 MB, but this
+  is not a guarantee for pathological cases (e.g. a check that captures an
+  enormous string).
 - Before finalizing a chunk, assert no two `output_check.variable` values
   collide (cross-rule collision data already collected by `_index.json`'s
   `variables[]`) — Intune requires unique `SettingName` per policy.
 - `naturalId.ts`'s comparator must be used everywhere ordering/grouping
   matters (table grouping, chunker, manual-attestation report) — never the
   index's raw string sort.
+
+**Configurable limits** (`logic/limitsConfig.ts`): Intune's real hard limits
+(`INTUNE_HARD_LIMITS`) and a single `HEADROOM_FACTOR` (currently `0.95`) are
+kept separate from the derived per-chunk caps (`GENERATION_LIMITS`) that
+`packChunks` actually uses by default. This is a build-time config file, not
+a user-facing setting — editing the factor (or the derived values directly)
+before building changes the margin every generated bundle leaves below
+Intune's real caps. `packChunks`'s `options` parameter can still override
+any individual cap per call (used by tests to exercise small values without
+touching the shared config).
+
+**Bundle file naming** (`logic/bundleFiles.ts`): each chunk's discovery
+script and rules JSON are named
+`{platformLabel}-{family}-{product}-{version}-{firstId}-{lastId}-discovery.{sh|ps1}`
+/ `-rules.json` — e.g. `macOS-cis-macos_26_tahoe-v1.1.0-1.1.1-1.5.6-discovery.sh`
+— rather than an opaque `{platform}-section-{n}-part-{p}` label, so the id
+range covered is visible without opening the file. `firstId`/`lastId` come
+from the chunk's already naturally-sorted rules. `platformLabel()` (in
+`platformScriptKind.ts`, replacing the old `slugifyPlatform`) gives a clean
+display label (`macOS`, `Windows`) built from the same platform regexes as
+`scriptKindForPlatform`, so the two can't drift apart. Product and version
+are included specifically because two different benchmark versions on the
+same platform (e.g. a future macOS Sonoma benchmark alongside Tahoe) could
+otherwise cover the same id range and produce an identical filename;
+`packChunks`'s grouping key is `(platform, family, product, version,
+section)` for the same reason, so their rules are never merged into one
+chunk in the first place. `buildBundleFiles` also asserts no two resulting
+filenames collide, throwing a clear error rather than silently overwriting
+one file with another in the zip — this should be unreachable given the
+grouping key above, but is kept as a cheap safeguard.
 
 ## Script / compliance-JSON generation
 
@@ -631,3 +698,28 @@ entry here, not just the session that wrote it.
   is its own visible state, matching the same clear-reverts-to-placeholder
   behavior the integer/string inputs already had. (`fc34639` fix: replace
   boolean org-defined checkbox with an explicit tri-state toggle)
+- **2026-08-18** - Reworked bundle naming and limit enforcement per
+  follow-up feedback. Added `logic/limitsConfig.ts`: Intune's real hard
+  limits plus a single configurable `HEADROOM_FACTOR` (raised from the
+  implicit ~90% the old hardcoded constants gave to an explicit 95%), with
+  `packChunks` sourcing its defaults from it. Added discovery-script byte
+  size as a third, previously-unchecked packing dimension (script text is
+  now generated during the fit check, not just after packing) - script
+  *output* size and execution timeout remain unenforceable at generation
+  time and are documented as such rather than faked. Replaced greedy-fill
+  packing with greedy-count-then-redistribute-evenly (`packSection`), so an
+  oversized section splits into roughly equal parts instead of one maxed
+  part followed by a small leftover - verified against the requested
+  180-rule/95-cap example (90+90, not 95+85). Renamed bundle files from
+  `{platform}-section-{n}-part-{p}` to
+  `{platformLabel}-{family}-{product}-{version}-{firstId}-{lastId}` so the
+  id range is visible in the filename; this required also fixing
+  `packChunks`'s grouping key (previously `platform+section` only) to
+  include `family`/`product`/`version`, since two different benchmark
+  versions on the same platform could otherwise merge into one chunk or
+  collide on filename - `buildBundleFiles` also now asserts filenames are
+  unique as a defensive backstop. `platformScriptKind.ts`'s unused
+  `slugifyPlatform` was replaced by `platformLabel()` (deleted, not kept as
+  a shim, since nothing else referenced it). 93 tests passing total.
+  (`273173f` feat: rename bundle files by rule-id range, enforce
+  script-size cap, split evenly)
