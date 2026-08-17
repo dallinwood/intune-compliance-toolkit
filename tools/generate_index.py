@@ -19,6 +19,15 @@ collisions without re-parsing every full rule file. It deliberately omits a
 generated-at timestamp - re-running this script over an unchanged ruleset
 should produce a byte-identical file, so the index diffs cleanly in git and
 only changes when a rule actually changes.
+
+The indexed assessment_status is computed, not copied from the rule file:
+it's "Automated" if the rule has at least one scripted audit method with a
+real output_check attached, and "Manual" otherwise - regardless of what the
+benchmark itself calls the assessment method. This is what a rule-selection
+tool should filter/gate script generation on, since a benchmark's own label
+(e.g. CIS marking something "Manual") doesn't always match whether this repo
+has actually engineered a working check_command for it. The untouched
+original label is still available under source_assessment_status.
 """
 
 import json
@@ -91,6 +100,20 @@ def rule_variables(rule):
     return sorted(variables)
 
 
+def is_automated(rule):
+    """True if at least one scripted audit method has a real compliance
+    check attached - i.e. this repo can generate a script for it,
+    regardless of what the benchmark itself calls the assessment method.
+    CIS's own assessment_status label reflects the benchmark's general
+    judgment, not whether this repo has actually engineered a working
+    check_command for it, and real data already diverges on that point.
+    """
+    return any(
+        method.get("type") == "scripted" and any(step.get("output_check") for step in method.get("steps", []))
+        for method in rule.get("audit", {}).get("methods", [])
+    )
+
+
 def requires_organization_defined_value(rule):
     """True if selecting this rule leaves at least one output_check whose
     pass/fail target has to come from whoever configures the policy, not
@@ -111,7 +134,8 @@ def rule_summary(rule_path):
         "file": rule_path.name,
         "id": rule.get("id"),
         "title": rule.get("title"),
-        "assessment_status": rule.get("assessment_status"),
+        "assessment_status": "Automated" if is_automated(rule) else "Manual",
+        "source_assessment_status": rule.get("assessment_status"),
         "benchmark": rule.get("benchmark"),
         "profile_applicability": rule.get("profile_applicability"),
         "recommended_state": rule.get("recommended_state"),

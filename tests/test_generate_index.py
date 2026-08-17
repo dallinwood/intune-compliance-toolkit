@@ -126,6 +126,49 @@ def test_index_marks_rules_requiring_organization_defined_value(tmp_path):
     assert flags == {"1.1": False, "1.2": True}
 
 
+def test_index_computes_assessment_status_from_scripted_check_not_label(tmp_path):
+    folder = tmp_path / "benchmark" / "v1"
+    folder.mkdir(parents=True)
+
+    # Labeled "Manual" but has a scripted method with a real output_check -
+    # this repo can generate a script for it, so the index must say Automated.
+    manual_label_scripted = copy.deepcopy(MINIMAL_RULE)
+    manual_label_scripted["id"] = "1.1"
+    manual_label_scripted["assessment_status"] = "Manual"
+    (folder / "rule_a.json").write_text(json.dumps(manual_label_scripted), encoding="utf-8")
+
+    # Labeled "Automated" but the only audit method is manual (no scripted
+    # check at all) - the index must say Manual regardless of the label.
+    automated_label_manual_only = copy.deepcopy(MINIMAL_RULE)
+    automated_label_manual_only["id"] = "1.2"
+    automated_label_manual_only["assessment_status"] = "Automated"
+    automated_label_manual_only["audit"] = {
+        "methods": [{"method_name": "Graphical Method", "type": "manual", "description": "..."}]
+    }
+    (folder / "rule_b.json").write_text(json.dumps(automated_label_manual_only), encoding="utf-8")
+
+    index = build_index(list(folder.glob("*.json")))
+
+    statuses = {entry["id"]: entry["assessment_status"] for entry in index["rules"]}
+    assert statuses == {"1.1": "Automated", "1.2": "Manual"}
+
+
+def test_index_preserves_source_assessment_status_label(tmp_path):
+    folder = tmp_path / "benchmark" / "v1"
+    folder.mkdir(parents=True)
+
+    rule = copy.deepcopy(MINIMAL_RULE)
+    rule["id"] = "1.1"
+    rule["assessment_status"] = "Manual"
+    (folder / "rule_a.json").write_text(json.dumps(rule), encoding="utf-8")
+
+    index = build_index(list(folder.glob("*.json")))
+
+    entry = index["rules"][0]
+    assert entry["source_assessment_status"] == "Manual"
+    assert entry["assessment_status"] == "Automated"  # computed, per the test above
+
+
 def test_index_is_sorted_by_id(tmp_path):
     folder = tmp_path / "benchmark" / "v1"
     folder.mkdir(parents=True)

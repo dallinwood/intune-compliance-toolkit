@@ -5,6 +5,7 @@
       "id": "1.1",
       "title": "Ensure 'Allow Cortana Above Lock' is set to 'Block'",
       "assessment_status": "Automated",
+      "source_assessment_status": "Automated",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
@@ -25,6 +26,7 @@
       "id": "106.1.1",
       "title": "Ensure 'Device Health: BitLocker' is set to 'Require'",
       "assessment_status": "Manual",
+      "source_assessment_status": "Manual",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
@@ -42,6 +44,7 @@
       "id": "4.10.24.1",
       "title": "Ensure 'Allow Custom SSPs and APs to be loaded into LSASS' is set to 'Disabled'",
       "assessment_status": "Automated",
+      "source_assessment_status": "Automated",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
@@ -61,6 +64,7 @@
       "id": "4.11.15.3.1",
       "title": "Ensure 'Control Event Log behavior when the log file reaches its maximum size' is set to 'Disabled'",
       "assessment_status": "Automated",
+      "source_assessment_status": "Automated",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
@@ -80,6 +84,7 @@
       "id": "4.11.48.1",
       "title": "Ensure 'Prevent Internet Explorer security prompt for Windows Installer scripts' is set to 'Disabled'",
       "assessment_status": "Automated",
+      "source_assessment_status": "Automated",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
@@ -99,6 +104,7 @@
       "id": "4.11.7.2.1",
       "title": "Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'",
       "assessment_status": "Automated",
+      "source_assessment_status": "Automated",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
@@ -118,6 +124,7 @@
       "id": "6.7",
       "title": "Ensure 'Audit Authentication Policy Change' is set to include 'Success'",
       "assessment_status": "Automated",
+      "source_assessment_status": "Automated",
       "benchmark": {
         "product": "CIS Microsoft Intune for Windows 11 Benchmark",
         "version": "5.0.0",
