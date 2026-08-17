@@ -567,4 +567,5 @@ entry here, not just the session that wrote it.
   deletes the key rather than storing an empty/zero value) fired on blur
   when the field is left empty, so clicking off an emptied field reverts it
   to "never answered" (the placeholder) instead of persisting a stray
-  value - applied to both the integer and string inputs.
+  value - applied to both the integer and string inputs. (`de5e3c3` fix:
+  stop integer input coercing empty to 0, clear reverts to placeholder)
