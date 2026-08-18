@@ -1037,4 +1037,5 @@ entry here, not just the session that wrote it.
   the quiet period and asserts it's gone. Confirmed via screenshot that the
   disabled option actually renders greyed/struck-through, not just
   functionally disabled. 104 unit tests, 5 e2e tests, `tsc -b`, lint, and
-  `vite build` all pass. (item 5 commit pending)
+  `vite build` all pass. (`2a6e9a9` fix: stabilize facet filter lists
+  against reflow while clicking)
