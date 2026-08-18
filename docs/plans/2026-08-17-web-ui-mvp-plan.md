@@ -760,4 +760,5 @@ entry here, not just the session that wrote it.
   under the other filters (e.g. left over from a stale import) so it can
   still be unchecked instead of getting stuck invisible. 101 tests total
   (one pre-existing `pwsh`-subprocess test is flaky under load, confirmed
-  unrelated by passing in isolation).
+  unrelated by passing in isolation). (`75bbbed` feat: polish
+  accessibility/responsive layout, add facet cross-filtering)
