@@ -42,3 +42,25 @@ that by default - don't wait for an explicit "commit this" each time:
 - This does not cover destructive or history-rewriting operations
   (force-push, rebase, amend, `reset --hard`) - those still require asking
   first, per standard git safety practice.
+
+## Run Playwright after any visual change to the web UI
+
+`webui/`'s Vitest suite covers `logic/*` (pure functions) - it does not
+render anything, so it cannot catch a layout that looks wrong. Whenever a
+change touches `webui/` in a way that affects rendering or layout
+(component markup, Tailwind classes, responsive breakpoints, new UI
+states), verify it with Playwright before calling the change done, not
+just Vitest/typecheck/lint:
+
+- Run the e2e suite: `bun run test:e2e` (see the plan's "Package
+  manager/runtime" for why this one script needs real Node, not Bun).
+- For anything visual/layout/responsive specifically, also take an ad hoc
+  screenshot (or a few, at representative viewport widths, e.g. a narrow
+  ~375px width and a normal desktop width) via a short Playwright script
+  and actually look at it with the Read tool before claiming the change
+  works. A passing DOM assertion is not the same as a readable layout -
+  the Milestone 5 "responsive" table fix passed every test that existed
+  at the time while actually squeezing the title column into unreadable
+  single-word wrapping; only looking at a real screenshot caught it.
+- This supplements manual-in-browser verification and the existing e2e
+  spec, it doesn't replace either.
