@@ -1002,4 +1002,5 @@ entry here, not just the session that wrote it.
   expanded rows with short/long ids, and the boolean toggle's new left-to-
   right order). 101 unit tests, 4 e2e tests, `tsc -b`, lint, and `vite build`
   all pass - no test changes needed since none of the four touched behavior
-  the existing suite asserts on. (cleanup commit pending)
+  the existing suite asserts on. (`47a2803` fix: row layout and detail-panel
+  clarity cleanup)
