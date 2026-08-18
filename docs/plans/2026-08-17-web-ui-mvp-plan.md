@@ -1066,4 +1066,5 @@ entry here, not just the session that wrote it.
   different sections simultaneously. 104 unit tests, 5 e2e tests, `tsc -b`,
   lint, and `vite build` all pass; no test changes needed, since the
   existing suite only ever exercised one section at a time and so couldn't
-  have caught this either. (table-fixed commit pending)
+  have caught this either. (`f6df02d` fix: use table-fixed so column widths
+  don't depend on per-section content)
