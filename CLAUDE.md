@@ -19,3 +19,26 @@ when explicitly asked, and not only in the session that wrote the plan.
 Add the log entry in the same commit as the work it describes when
 practical; a small follow-up docs commit is fine when the work spans
 several commits.
+
+## Commit and push after finishing a change, without being asked
+
+This repo's history commits every completed milestone, bug fix, or
+requested round of changes as its own commit, then pushes it. Keep doing
+that by default - don't wait for an explicit "commit this" each time:
+
+- Once a coherent unit of work is complete and verified (tests pass,
+  typecheck/lint clean where applicable), create a commit for it.
+- Match the existing message style: a `type: summary` subject line
+  (`feat:`, `fix:`, `docs:`, ...), a body explaining *why* when it isn't
+  obvious from the diff, and the trailer
+  `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`.
+- Push the commit to the current branch's tracked remote right after
+  committing.
+- Keep each commit scoped to one coherent change - don't bundle unrelated
+  fixes together, and don't commit before the change is verified.
+- If the current branch is `main`, confirm with the user before pushing
+  instead of doing it automatically - everything else in this section still
+  applies without asking.
+- This does not cover destructive or history-rewriting operations
+  (force-push, rebase, amend, `reset --hard`) - those still require asking
+  first, per standard git safety practice.
