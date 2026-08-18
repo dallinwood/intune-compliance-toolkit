@@ -977,3 +977,29 @@ entry here, not just the session that wrote it.
   closes out the shadcn/ui component migration - all hand-rolled interactive
   controls across the app now use shadcn primitives. (`09827f6` feat:
   migrate RuleTable to shadcn/ui (increment 3 of 3))
+- **2026-08-18** - Four small cleanup requests after reviewing the completed
+  migration: (1) `OrgDefinedValueInput`'s boolean case had the True/False/
+  Clear toggle *before* the variable label, while the integer/string cases
+  put the label first - swapped the boolean case to match. (2) The id column
+  (`w-20`, 80px) was only ever a hint, since the table has no `table-layout:
+  fixed` - an 11-character id like `4.11.15.3.1` (the longest in the current
+  dataset) barely overflowed it, pushing the title's start position around
+  row to row. Widened to `min-w-24 whitespace-nowrap` (96px, clears the
+  longest id with margin) rather than reaching for `table-layout: fixed`
+  project-wide, which would also have locked the currently-flexible title
+  column. (3) The "requires an organization-defined value" indicator was a
+  tiny `⚙` glyph in its own column at the far right of the row - deleted that
+  column (`colSpan` on the detail row drops from 7 to 6) and moved a real
+  `lucide-react` `Settings2` icon inline right after the title text, sized
+  `size-4` (16px, versus the glyph's ~8px effective size at `text-xs`). (4)
+  Added a left-accent-border + background tint (`border-indigo-500
+  bg-indigo-50`) to both the header row and its detail row when expanded, so
+  adjacent expanded rows read as distinct connected blocks instead of
+  blurring into one region - the border is always rendered at `border-l-4`
+  (just transparent when collapsed) so toggling expand never shifts row
+  content, the same technique used for the remediation-card spacer fix
+  earlier in this plan. Confirmed all four via screenshot (two adjacent
+  expanded rows with short/long ids, and the boolean toggle's new left-to-
+  right order). 101 unit tests, 4 e2e tests, `tsc -b`, lint, and `vite build`
+  all pass - no test changes needed since none of the four touched behavior
+  the existing suite asserts on. (cleanup commit pending)

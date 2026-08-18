@@ -28,13 +28,13 @@ export function OrgDefinedValueInput({
   if (check.data_type === 'boolean') {
     return (
       <div className="flex items-center gap-2 text-sm">
+        <span className="font-mono text-xs text-slate-600">{check.variable}</span>
         <BooleanToggle
           variable={check.variable}
           value={typeof value === 'boolean' ? value : undefined}
           onChange={onChange}
           onClear={onClear}
         />
-        <span className="font-mono text-xs text-slate-600">{check.variable}</span>
       </div>
     )
   }

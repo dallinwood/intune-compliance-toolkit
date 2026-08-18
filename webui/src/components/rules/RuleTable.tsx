@@ -1,3 +1,4 @@
+import { Settings2 } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -104,20 +105,29 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
     <div>
       <h4 className="px-6 py-1 text-xs font-semibold text-slate-500">Section {sectionGroup.section}</h4>
       <div className="overflow-x-auto">
-        {/* Fixed columns alone total ~552px (checkbox 32 + chevron 24 + id 80
-            + badge 224 + profile 160 + org-value 32); min-w must clear that
-            plus room for the flexible title column, or title gets squeezed
-            to a sliver instead of the table actually scrolling. */}
+        {/* Fixed columns alone total ~536px (checkbox 32 + chevron 24 + id 96
+            + badge 224 + profile 160); min-w must clear that plus room for
+            the flexible title column, or title gets squeezed to a sliver
+            instead of the table actually scrolling. Id is `min-w-24
+            whitespace-nowrap` (96px) rather than the `w-20` (80px) an 11-char
+            id like "4.11.15.3.1" - the longest in the current dataset -
+            barely overflows, which without a fixed width previously pushed
+            the title's start position around row to row. */}
         <table className="w-full min-w-[860px] text-sm">
           <tbody>
             {sectionGroup.rows.map((row) => {
               const key = refKey(row.ref)
               const isExpanded = expanded.has(key)
               const detailId = `rule-detail-${key}`
+              // Always-reserved, normally-transparent left border (rather
+              // than one that appears/disappears) so toggling expand never
+              // shifts the row's contents - same technique as the
+              // remediation-card spacer fix elsewhere in this file's history.
+              const expandedAccent = isExpanded ? 'border-indigo-500 bg-indigo-50' : 'border-transparent'
               return (
                 <Fragment key={key}>
                   <tr
-                    className="cursor-pointer hover:bg-slate-50"
+                    className={`cursor-pointer border-l-4 ${expandedAccent} ${isExpanded ? 'hover:bg-indigo-100' : 'hover:bg-slate-50'}`}
                     onClick={(event) => {
                       // Let the checkbox (or any future button/link in the row)
                       // handle its own click instead of also toggling expand.
@@ -148,22 +158,27 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
                         {isExpanded ? '▾' : '▸'}
                       </Button>
                     </td>
-                    <td className="w-20 px-2 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
-                    <td className="px-2 py-1">{row.title}</td>
+                    <td className="min-w-24 px-2 py-1 font-mono text-xs whitespace-nowrap text-slate-500">
+                      {row.ref.id}
+                    </td>
+                    <td className="px-2 py-1">
+                      <span className="inline-flex items-center gap-1.5">
+                        {row.title}
+                        {row.requiresOrganizationDefinedValue && (
+                          <span title="Requires an organization-defined value" aria-label="Requires an organization-defined value">
+                            <Settings2 className="size-4 shrink-0 text-indigo-500" />
+                          </span>
+                        )}
+                      </span>
+                    </td>
                     <td className="w-56 px-2 py-1">
                       <AssessmentBadge row={row} />
                     </td>
                     <td className="w-40 px-2 py-1 text-xs text-slate-500">{row.profileApplicability.join(', ')}</td>
-                    <td
-                      className="w-8 px-2 py-1 text-center text-xs"
-                      title={row.requiresOrganizationDefinedValue ? 'Requires an organization-defined value' : ''}
-                    >
-                      {row.requiresOrganizationDefinedValue ? '⚙' : ''}
-                    </td>
                   </tr>
                   {isExpanded && (
-                    <tr id={detailId}>
-                      <td colSpan={7} className="p-0">
+                    <tr id={detailId} className={`border-l-4 ${expandedAccent}`}>
+                      <td colSpan={6} className="p-0">
                         <RuleDetailPanel ruleRef={row.ref} />
                       </td>
                     </tr>
