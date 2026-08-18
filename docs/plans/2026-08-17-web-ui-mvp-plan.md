@@ -975,5 +975,5 @@ entry here, not just the session that wrote it.
   fixed-width table columns without changing the `min-w-[860px]` math. 101
   unit tests, 4 e2e tests, `tsc -b`, lint, and `vite build` all pass. This
   closes out the shadcn/ui component migration - all hand-rolled interactive
-  controls across the app now use shadcn primitives. (increment 3 commit
-  pending)
+  controls across the app now use shadcn primitives. (`09827f6` feat:
+  migrate RuleTable to shadcn/ui (increment 3 of 3))
