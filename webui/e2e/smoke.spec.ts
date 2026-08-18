@@ -16,3 +16,23 @@ test('rule browser loads, lists rules, and expands a row', async ({ page }) => {
   await expandButton.click()
   await expect(expandButton).toHaveAttribute('aria-expanded', 'true')
 })
+
+// Covers the shadcn primitives migration (FilterSidebar's Checkbox/
+// RadioGroup) - a checkbox or radio that renders correctly but no longer
+// actually fires its change handler looks identical in a screenshot, so
+// this has to assert on the real filtering effect, not just presence.
+test('facet checkbox and radio actually filter the table', async ({ page }) => {
+  await page.goto('/')
+  const ruleCount = page.getByText(/^\d+ of \d+ rules$/)
+  await expect(ruleCount).toHaveText(/^(\d+) of \1 rules$/, { timeout: 10_000 })
+
+  // Product checkbox: narrows, then un-narrows back to the baseline.
+  await page.getByRole('checkbox', { name: 'windows_11' }).click()
+  await expect(ruleCount).not.toHaveText(/^(\d+) of \1 rules$/)
+  await page.getByRole('checkbox', { name: 'windows_11' }).click()
+  await expect(ruleCount).toHaveText(/^(\d+) of \1 rules$/)
+
+  // Automation radio: independently narrows too.
+  await page.getByRole('radio', { name: 'Automatable' }).click()
+  await expect(ruleCount).not.toHaveText(/^(\d+) of \1 rules$/)
+})

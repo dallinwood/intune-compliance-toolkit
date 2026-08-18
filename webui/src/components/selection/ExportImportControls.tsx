@@ -1,4 +1,5 @@
 import { useRef, useState, type ChangeEvent } from 'react'
+import { Button } from '@/components/ui/button'
 import { buildSettingsFile, resolveImportedSelections, serializeSettingsFile, validateSettingsFile } from '../../logic/exportImport'
 import { refKey } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
@@ -64,16 +65,15 @@ export function ExportImportControls({ rows }: { rows: RuleRow[] }) {
 
   return (
     <div className="flex items-center gap-2">
-      <button type="button" onClick={handleExport} className="rounded border border-slate-300 px-2 py-1 text-xs hover:bg-slate-50">
+      <Button type="button" variant="outline" size="xs" onClick={handleExport}>
         Export
-      </button>
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        className="rounded border border-slate-300 px-2 py-1 text-xs hover:bg-slate-50"
-      >
+      </Button>
+      <Button type="button" variant="outline" size="xs" onClick={() => fileInputRef.current?.click()}>
         Import
-      </button>
+      </Button>
+      {/* Left as a raw input, not the shadcn Input wrapper: it's driven by a
+          direct ref.click() call and there's no guarantee a wrapper
+          component forwards the ref/click the same way a real <input> does. */}
       <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleFileChosen} />
       {message && (
         <span role="status" className="text-xs text-slate-500">

@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { naturalIdCompare, topLevelSection } from '../../logic/naturalId'
 import { isEnabled, refKey } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
@@ -174,15 +175,18 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
 
 function AssessmentBadge({ row }: { row: RuleRow }) {
   const isAutomated = row.assessmentStatus === 'Automated'
+  // Semantic green/amber isn't one of the preset's badge variants, so it's
+  // applied as a className override on top of the base Badge rather than
+  // inventing a new cva variant as part of this primitives-only pass.
   const badgeClass = isAutomated ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
 
   return (
     <span className="inline-flex items-center gap-1">
-      <span className={`rounded px-1.5 py-0.5 text-xs font-medium ${badgeClass}`}>{row.assessmentStatus}</span>
+      <Badge className={badgeClass}>{row.assessmentStatus}</Badge>
       {row.sourceAssessmentStatus !== row.assessmentStatus && (
-        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-500" title="CIS's own label for this rule">
+        <Badge variant="secondary" title="CIS's own label for this rule">
           CIS: {row.sourceAssessmentStatus}
-        </span>
+        </Badge>
       )}
     </span>
   )

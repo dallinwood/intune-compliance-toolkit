@@ -888,3 +888,32 @@ entry here, not just the session that wrote it.
   incrementally rather than in one sweep, per this repo's usual
   milestone-per-commit pattern. (`f451ab2` feat: introduce shadcn/ui
   design system, fix alias/gitignore setup gaps)
+- **2026-08-18** - shadcn/ui migration increment 1 of 3 (primitives):
+  `SelectionToolbar` and `ExportImportControls`'s buttons -> shadcn
+  `Button` (kept the hidden file-input in `ExportImportControls` as a raw
+  `<input>` - it's driven by a direct `fileInputRef.current?.click()`, and
+  a wrapper wasn't worth risking on ref/click forwarding); `FilterSidebar`'s
+  search box -> `Input`, its Automation radios -> `RadioGroup`/
+  `RadioGroupItem`, its facet checkboxes -> `Checkbox`, all paired with a
+  new `Label`+`useId()`-based `FacetOption` helper rather than the old
+  `<label>`-wraps-`<input>` pattern - Base UI's `Checkbox`/`Radio` render
+  `role="checkbox"`/`role="radio"` elements, not native `<input>`s, so the
+  implicit label-association isn't guaranteed the way it is for a real
+  checkbox, and facet values are free text (`"Level 1 (L1)"`) that aren't
+  safe to use as raw DOM ids; `RuleTable`'s `AssessmentBadge` -> `Badge`
+  (green/amber applied as a `className` override since semantic
+  automated/manual colors aren't one of the preset's variants - touched
+  nothing else in that file, since `RuleTable` itself is this migration's
+  deliberately-last, highest-risk increment). `RadioGroup`'s
+  `onValueChange` hands back a plain `string`; narrowed it against
+  `AUTOMATABLE_OPTIONS` with a type guard rather than casting blind, so a
+  bad value can't silently reach `setAutomatable`. Extended
+  `webui/e2e/smoke.spec.ts` with a second test that actually clicks the
+  migrated product checkbox and Automation radio and asserts the rule
+  count changes - a checkbox that renders correctly but no longer fires
+  its handler would look identical in a screenshot, so this is the only
+  thing that would have caught a silently-dead control. Confirmed via
+  screenshot at 1280px and 375px (filters open) that the `base-luma`
+  preset's pill buttons/badges read fine in this dense admin layout - no
+  restyling needed. 101 unit tests, 2 e2e tests, `tsc -b`, and `vite
+  build` all pass.
