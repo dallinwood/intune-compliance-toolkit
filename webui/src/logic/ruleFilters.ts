@@ -53,3 +53,20 @@ export function facetOptions(
   for (const value of selected) present.add(value)
   return Array.from(present).sort((a, b) => a.localeCompare(b))
 }
+
+// Every distinct value for one facet dimension, across every row,
+// independent of any currently-applied filter. Used as a fixed reference
+// order so a facet's rows never reorder as filtering narrows which of them
+// are reachable - only their reachable/shown state changes (see
+// FilterSidebar's stabilization logic), so checking one box collapses at
+// most the rows that actually became unreachable instead of reshuffling
+// the whole list.
+export function allFacetValues(rows: RuleRow[], valueOf: (row: RuleRow) => string | string[]): string[] {
+  const present = new Set<string>()
+  for (const row of rows) {
+    const value = valueOf(row)
+    if (Array.isArray(value)) value.forEach((entry) => present.add(entry))
+    else present.add(value)
+  }
+  return Array.from(present).sort((a, b) => a.localeCompare(b))
+}

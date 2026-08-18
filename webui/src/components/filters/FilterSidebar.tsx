@@ -4,7 +4,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { facetOptions } from '../../logic/ruleFilters'
+import { useStableFacetShown } from '@/hooks/useStableFacetShown'
+import { allFacetValues, facetOptions } from '../../logic/ruleFilters'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
 import type { RuleRow } from '../../types/rule-row'
 
@@ -71,37 +72,41 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
         </RadioGroup>
       </FacetGroup>
 
-      <FacetGroup title="Product">
-        {products.map((product) => (
-          <FacetOption key={product} label={product}>
-            <Checkbox checked={filters.products.has(product)} onCheckedChange={() => filters.toggleProduct(product)} />
-          </FacetOption>
-        ))}
-      </FacetGroup>
+      <StableFacetGroup
+        title="Product"
+        rows={rows}
+        valueOf={(row) => row.ref.product}
+        reachable={products}
+        selected={filters.products}
+        onToggle={filters.toggleProduct}
+      />
 
-      <FacetGroup title="Version">
-        {versions.map((version) => (
-          <FacetOption key={version} label={version}>
-            <Checkbox checked={filters.versions.has(version)} onCheckedChange={() => filters.toggleVersion(version)} />
-          </FacetOption>
-        ))}
-      </FacetGroup>
+      <StableFacetGroup
+        title="Version"
+        rows={rows}
+        valueOf={(row) => row.ref.version}
+        reachable={versions}
+        selected={filters.versions}
+        onToggle={filters.toggleVersion}
+      />
 
-      <FacetGroup title="Platform">
-        {platforms.map((platform) => (
-          <FacetOption key={platform} label={platform}>
-            <Checkbox checked={filters.platforms.has(platform)} onCheckedChange={() => filters.togglePlatform(platform)} />
-          </FacetOption>
-        ))}
-      </FacetGroup>
+      <StableFacetGroup
+        title="Platform"
+        rows={rows}
+        valueOf={(row) => row.platform}
+        reachable={platforms}
+        selected={filters.platforms}
+        onToggle={filters.togglePlatform}
+      />
 
-      <FacetGroup title="Profile applicability">
-        {profiles.map((profile) => (
-          <FacetOption key={profile} label={profile}>
-            <Checkbox checked={filters.profiles.has(profile)} onCheckedChange={() => filters.toggleProfile(profile)} />
-          </FacetOption>
-        ))}
-      </FacetGroup>
+      <StableFacetGroup
+        title="Profile applicability"
+        rows={rows}
+        valueOf={(row) => row.profileApplicability}
+        reachable={profiles}
+        selected={filters.profiles}
+        onToggle={filters.toggleProfile}
+      />
 
       <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
         Clear filters
@@ -126,16 +131,63 @@ function FacetGroup({ title, children }: { title: string; children: ReactNode })
 // for a real <input type="checkbox">. Facet values are free text
 // ("Level 1 (L1)") so they aren't usable as DOM ids directly - useId()
 // sidesteps that entirely.
-function FacetOption({ label, children }: { label: string; children: ReactNode }) {
+function FacetOption({ label, disabled, children }: { label: string; disabled?: boolean; children: ReactNode }) {
   const id = useId()
   const control = isValidElement<{ id?: string }>(children) ? cloneElement(children, { id }) : children
 
   return (
     <div className="flex items-center gap-2 py-0.5">
       {control}
-      <Label htmlFor={id} className="truncate text-sm font-normal">
+      <Label
+        htmlFor={id}
+        className={disabled ? 'truncate text-sm font-normal text-slate-400 line-through' : 'truncate text-sm font-normal'}
+      >
         {label}
       </Label>
     </div>
+  )
+}
+
+// A facet checkbox list, rendered in a fixed reference order (every value
+// that ever occurs for this dimension, regardless of filters) rather than
+// the dynamic reachable-only order `facetOptions` returns on its own - so
+// checking a box collapses at most the rows that actually became
+// unreachable instead of reshuffling the whole section. Values that fall
+// out of `reachable` don't vanish immediately: `useStableFacetShown` keeps
+// them rendered, disabled and struck-through, for a short quiet period
+// (see that hook's comment) so a run of quick clicks doesn't make the panel
+// keep reflowing under the user's cursor.
+function StableFacetGroup({
+  title,
+  rows,
+  valueOf,
+  reachable,
+  selected,
+  onToggle,
+}: {
+  title: string
+  rows: RuleRow[]
+  valueOf: (row: RuleRow) => string | string[]
+  reachable: string[]
+  selected: ReadonlySet<string>
+  onToggle: (value: string) => void
+}) {
+  const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf), [rows, valueOf])
+  const reachableSet = useMemo(() => new Set(reachable), [reachable])
+  const shown = useStableFacetShown(reachable)
+
+  return (
+    <FacetGroup title={title}>
+      {canonicalOrder
+        .filter((value) => shown.has(value))
+        .map((value) => {
+          const isReachable = reachableSet.has(value)
+          return (
+            <FacetOption key={value} label={value} disabled={!isReachable}>
+              <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
+            </FacetOption>
+          )
+        })}
+    </FacetGroup>
   )
 }

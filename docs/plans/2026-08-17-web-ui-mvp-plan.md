@@ -1004,3 +1004,37 @@ entry here, not just the session that wrote it.
   all pass - no test changes needed since none of the four touched behavior
   the existing suite asserts on. (`47a2803` fix: row layout and detail-panel
   clarity cleanup)
+- **2026-08-18** - Fifth cleanup request, given its own commit since it
+  touches `FilterSidebar`, `ruleFilters.ts`, and adds a hook (per review
+  advice, to keep the diff reviewable and revertible independent of the
+  simpler items 1-4 above): stabilized the facet lists so picking one filter
+  doesn't make every other facet section immediately reflow, which made a
+  run of clicks awkward. Root cause was two separate things. First,
+  `facetOptions` sorts only the *currently reachable* values, so removing
+  one value could reorder everything after it - fixed by anchoring every
+  facet's rendering to a new `allFacetValues()` (every distinct value for
+  that dimension across all rows, independent of any filter - unit-tested
+  in `ruleFilters.test.ts`), so a value leaving now collapses exactly the
+  one row it occupied and nothing else moves. Second, per the user's own
+  proposed design: a facet value that becomes unreachable no longer vanishes
+  immediately - it renders disabled and struck-through for a short quiet
+  period (`useStableFacetShown`, a new hook in `src/hooks/`; 1200ms), and
+  only collapses out of the list once nothing has changed for that long.
+  Values becoming newly reachable still reappear immediately - only removal
+  is delayed. Two correctness requirements from this: a disabled option must
+  not be clickable (would otherwise let the user land on a zero-row table -
+  passed `disabled` straight to the `Checkbox`, not just a strikethrough
+  class), and an already-*selected* value must never be struck through or
+  removed even if unreachable, since `facetOptions` already force-includes
+  selected values in what it returns as "reachable" for exactly that reason
+  - reusing that existing return value directly as the disabled/enabled
+  source meant this fell out for free rather than needing new logic. The
+  hook's timer isn't unit-testable in this project's vitest setup (no
+  jsdom/RTL, and not worth adding for one hook per the plan's existing
+  "logic/* only" testing scope) - verified instead with a new e2e test that
+  clicks a product filter, asserts a now-unreachable version option is
+  present and disabled (and confirms it can't be checked), then waits past
+  the quiet period and asserts it's gone. Confirmed via screenshot that the
+  disabled option actually renders greyed/struck-through, not just
+  functionally disabled. 104 unit tests, 5 e2e tests, `tsc -b`, lint, and
+  `vite build` all pass. (item 5 commit pending)

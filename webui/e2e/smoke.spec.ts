@@ -85,3 +85,32 @@ test('row checkbox selects without expanding the row', async ({ page }) => {
   await expect(page.getByText('1 selected')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Organization-defined values' })).not.toBeVisible()
 })
+
+// Covers the facet-list stabilization added after user feedback that
+// picking a filter made every other facet section immediately reflow,
+// making a run of clicks awkward. An option that becomes unreachable now
+// stays visible, disabled, for a quiet period instead of vanishing (or
+// remaining clickable, which would land the user on a zero-row table) -
+// verifying only "the count changed" (as the older facet-filtering test
+// does) can't see either half of that.
+test('an unreachable facet option greys out before disappearing', async ({ page }) => {
+  await page.goto('/')
+
+  const macosVersion = page.getByRole('checkbox', { name: 'v1.1.0' })
+  await expect(macosVersion).toBeVisible({ timeout: 10_000 })
+  await expect(macosVersion).toBeEnabled()
+
+  // windows_11 rules never use version v1.1.0, so this makes it unreachable.
+  await page.getByRole('checkbox', { name: 'windows_11' }).click()
+
+  // It doesn't vanish immediately - it stays, visibly disabled, so a quick
+  // run of other clicks isn't disrupted by the panel reflowing.
+  await expect(macosVersion).toBeVisible()
+  await expect(macosVersion).toBeDisabled()
+  // A disabled option must not be clickable into a zero-row table.
+  await expect(macosVersion).not.toBeChecked()
+
+  // Once the quiet period elapses with no further filter changes, it
+  // collapses out of the list.
+  await expect(macosVersion).not.toBeVisible({ timeout: 5_000 })
+})

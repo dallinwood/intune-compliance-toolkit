@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { RuleRow } from '../types/rule-row'
-import { facetOptions, matchesFilters, type FilterValues } from './ruleFilters'
+import { allFacetValues, facetOptions, matchesFilters, type FilterValues } from './ruleFilters'
 
 function row(overrides: Partial<RuleRow> = {}): RuleRow {
   return {
@@ -85,5 +85,25 @@ describe('facetOptions', () => {
   it('flattens array-valued facets like profile applicability', () => {
     const options = facetOptions(rows, emptyFilters(), 'profiles', (r) => r.profileApplicability, [])
     expect(options).toEqual(['Level 1', 'Level 2'])
+  })
+})
+
+describe('allFacetValues', () => {
+  it('lists every distinct value regardless of any filter', () => {
+    expect(allFacetValues(rows, (r) => r.ref.product)).toEqual(['macos_26_tahoe', 'windows_11'])
+  })
+
+  it('flattens array-valued facets like profile applicability', () => {
+    expect(allFacetValues(rows, (r) => r.profileApplicability)).toEqual(['Level 1', 'Level 2'])
+  })
+
+  it('does not change when another filter narrows facetOptions to fewer values', () => {
+    // This is the whole point of the function: it's the fixed reference
+    // order FilterSidebar renders against, so a value's position never
+    // moves as filters make other values reachable/unreachable.
+    const filters = emptyFilters({ products: new Set(['windows_11']) })
+    const onlyWindowsVersionReachable = facetOptions(rows, filters, 'versions', (r) => r.ref.version, filters.versions)
+    expect(onlyWindowsVersionReachable).toEqual(['v5.0.0'])
+    expect(allFacetValues(rows, (r) => r.ref.version)).toEqual(['v1.1.0', 'v5.0.0'])
   })
 })
