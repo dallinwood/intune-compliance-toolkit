@@ -886,4 +886,5 @@ entry here, not just the session that wrote it.
   only; migrating the existing 15 hand-rolled components to shadcn's
   primitives is intentionally deferred to its own follow-up work, done
   incrementally rather than in one sweep, per this repo's usual
-  milestone-per-commit pattern.
+  milestone-per-commit pattern. (`f451ab2` feat: introduce shadcn/ui
+  design system, fix alias/gitignore setup gaps)
