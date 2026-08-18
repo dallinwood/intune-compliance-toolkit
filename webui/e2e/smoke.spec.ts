@@ -36,3 +36,31 @@ test('facet checkbox and radio actually filter the table', async ({ page }) => {
   await page.getByRole('radio', { name: 'Automatable' }).click()
   await expect(ruleCount).not.toHaveText(/^(\d+) of \1 rules$/)
 })
+
+// Covers the shadcn primitives migration in RuleDetailPanel (Increment 2):
+// OutputCheckRow's variable/operator/value chips -> Badge, and the
+// tri-state BooleanToggle's True/False/Clear buttons -> Button. A Button
+// that renders but no longer fires onClick, or a tri-state that collapsed
+// to two states, looks identical in a screenshot - this asserts on the
+// actual value flowing from the toggle into the rendered output-check badge.
+test('org-defined boolean toggle updates the output check value badge', async ({ page }) => {
+  await page.goto('/')
+
+  await page.getByPlaceholder('Search title or id…').fill('Audit iCloud Passwords & Keychain')
+  const row = page.locator('table tbody tr').filter({ hasText: 'Audit iCloud Passwords & Keychain' })
+  await expect(row).toHaveCount(1)
+  await row.getByRole('button').click()
+
+  await expect(page.getByRole('heading', { name: 'Organization-defined values' })).toBeVisible()
+  await page.getByRole('button', { name: 'Terminal Method' }).click()
+
+  const valueBadge = page.getByText('needs value')
+  await expect(valueBadge).toBeVisible()
+
+  await page.getByRole('button', { name: 'True', exact: true }).click()
+  await expect(valueBadge).not.toBeVisible()
+  await expect(page.getByText('true', { exact: true })).toBeVisible()
+
+  await page.getByRole('button', { name: 'Clear', exact: true }).click()
+  await expect(valueBadge).toBeVisible()
+})

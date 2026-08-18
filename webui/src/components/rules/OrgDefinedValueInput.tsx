@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { OutputCheck } from '../../types/rule-detail'
 
@@ -41,9 +43,9 @@ export function OrgDefinedValueInput({
     return (
       <label className="flex items-center gap-2 text-sm">
         <span className="font-mono text-xs text-slate-600">{check.variable}</span>
-        <input
+        <Input
           type="number"
-          className="w-24 rounded border border-slate-300 px-1 py-0.5 text-xs"
+          className="h-7 w-24 rounded text-xs"
           value={text}
           onChange={(event) => {
             const raw = event.target.value
@@ -66,9 +68,9 @@ export function OrgDefinedValueInput({
   return (
     <label className="flex items-center gap-2 text-sm">
       <span className="font-mono text-xs text-slate-600">{check.variable}</span>
-      <input
+      <Input
         type="text"
-        className="w-48 rounded border border-slate-300 px-1 py-0.5 text-xs"
+        className="h-7 w-48 rounded text-xs"
         value={text}
         onChange={(event) => {
           setText(event.target.value)
@@ -99,40 +101,37 @@ function BooleanToggle({
   onClear: () => void
 }) {
   return (
-    <div role="group" aria-label={`${variable} value`} className="inline-flex overflow-hidden rounded border border-slate-300 text-xs">
-      <button
+    <div role="group" aria-label={`${variable} value`} className="inline-flex items-center gap-1">
+      <Button
         type="button"
+        size="xs"
+        variant="outline"
         onClick={() => onChange(true)}
         aria-pressed={value === true}
-        className={
-          value === true
-            ? 'bg-emerald-600 px-2 py-0.5 font-medium text-white'
-            : 'bg-white px-2 py-0.5 text-slate-500 hover:bg-slate-50'
-        }
+        className={value === true ? 'border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-600/90' : ''}
       >
         True
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        size="xs"
+        variant="outline"
         onClick={() => onChange(false)}
         aria-pressed={value === false}
-        className={
-          value === false
-            ? 'border-l border-slate-300 bg-rose-600 px-2 py-0.5 font-medium text-white'
-            : 'border-l border-slate-300 bg-white px-2 py-0.5 text-slate-500 hover:bg-slate-50'
-        }
+        className={value === false ? 'border-rose-600 bg-rose-600 text-white hover:bg-rose-600/90' : ''}
       >
         False
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        size="xs"
+        variant="outline"
         onClick={onClear}
         disabled={value === undefined}
         title="Clear - treat as never answered"
-        className="border-l border-slate-300 bg-white px-2 py-0.5 text-slate-400 enabled:hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
       >
         Clear
-      </button>
+      </Button>
     </div>
   )
 }

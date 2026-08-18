@@ -918,3 +918,33 @@ entry here, not just the session that wrote it.
   restyling needed. 101 unit tests, 2 e2e tests, `tsc -b`, and `vite
   build` all pass. (`fcff766` feat: migrate primitives to shadcn/ui
   (increment 1 of 3))
+- **2026-08-18** - shadcn/ui migration increment 2 of 3 (`RuleDetailPanel`'s
+  cards), deliberately narrowed in scope before starting: the original plan
+  for this increment also considered wrapping `AuditMethodCard`/
+  `RemediationMethodCard` in a `Card` component and their expand/collapse in
+  `Collapsible`, and restructuring `AuditMethodCard`'s per-card radio into a
+  single Base UI `RadioGroup`. Cut all three - they're a rewrite of working,
+  hand-verified `aria-expanded`/`aria-controls` and `radioGroupName`
+  behavior from the Milestone 5 polish pass, not a primitives swap, and none
+  of it was requested. Shipped only the three 1:1-safe swaps: `OutputCheckRow`'s
+  variable/operator/value chips -> `Badge` (using its `render` prop to keep
+  the variable/value chips as `<code>` elements, matching pre-migration
+  markup, with `font-mono` re-added explicitly since `Badge`'s base classes
+  don't include it); `OrgDefinedValueInput`'s integer/string `<input>`s ->
+  `Input` (safe 1:1 - `Input` renders a real native `<input>`, so the
+  existing `<label>`-wraps-`<input>` pattern needed no change, unlike the
+  facet checkboxes in increment 1); and `BooleanToggle`'s three `<button>`s
+  -> `Button` (kept the tri-state logic hand-rolled rather than also
+  reaching for a `Toggle` component, which would have added a second,
+  redundant pressed-state channel fed from state already owned by
+  `OrgDefinedValueInput`). Added a third e2e test that expands a rule with an
+  org-defined boolean check (`2.1.1.1`, "Audit iCloud Passwords & Keychain"),
+  clicks `True`, and asserts the `OutputCheckRow` value badge actually
+  flips from "needs value" to "true" and back after `Clear` - the same class
+  of check as increment 1's filter test, since a `Button`/`Badge` that
+  renders but no longer wires through a real value change looks identical
+  in a screenshot. Confirmed via screenshot of the expanded row (not just
+  the collapsed table, which increment 1's screenshots covered) that the
+  new pill-shaped Button/Badge styling reads fine in the detail panel. 101
+  unit tests, 3 e2e tests, `tsc -b`, lint, and `vite build` all pass.
+  (increment 2 commit pending)

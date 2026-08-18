@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { describeOutputCheck, formatCheckValue, operatorSymbol } from '../../logic/outputCheckText'
 import type { OutputCheck } from '../../types/rule-detail'
@@ -17,21 +18,22 @@ export function OutputCheckRow({
 
   return (
     <div className="flex flex-wrap items-center gap-1.5" title={describeOutputCheck(check, organizationDefinedValues)}>
-      <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-slate-700 ring-1 ring-slate-200">
+      <Badge render={<code />} className="rounded bg-white font-mono text-xs text-slate-700 ring-1 ring-slate-200">
         {check.variable}
-      </code>
-      <span className="rounded-full bg-indigo-50 px-2 py-0.5 font-mono text-xs font-semibold text-indigo-700 ring-1 ring-indigo-100">
+      </Badge>
+      <Badge className="rounded-full bg-indigo-50 font-mono text-xs font-semibold text-indigo-700 ring-1 ring-indigo-100">
         {operatorSymbol(check.operator)}
-      </span>
-      <code
+      </Badge>
+      <Badge
+        render={<code />}
         className={
           needsValue
-            ? 'rounded bg-amber-50 px-1.5 py-0.5 font-mono text-xs text-amber-700 italic ring-1 ring-amber-200'
-            : 'rounded bg-white px-1.5 py-0.5 font-mono text-xs text-slate-700 ring-1 ring-slate-200'
+            ? 'rounded bg-amber-50 font-mono text-xs text-amber-700 italic ring-1 ring-amber-200'
+            : 'rounded bg-white font-mono text-xs text-slate-700 ring-1 ring-slate-200'
         }
       >
         {formatCheckValue(check, organizationDefinedValues)}
-      </code>
+      </Badge>
     </div>
   )
 }
