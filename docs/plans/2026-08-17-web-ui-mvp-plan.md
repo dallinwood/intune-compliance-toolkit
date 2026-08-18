@@ -916,4 +916,5 @@ entry here, not just the session that wrote it.
   screenshot at 1280px and 375px (filters open) that the `base-luma`
   preset's pill buttons/badges read fine in this dense admin layout - no
   restyling needed. 101 unit tests, 2 e2e tests, `tsc -b`, and `vite
-  build` all pass.
+  build` all pass. (`fcff766` feat: migrate primitives to shadcn/ui
+  (increment 1 of 3))
