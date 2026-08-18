@@ -949,3 +949,31 @@ entry here, not just the session that wrote it.
   unit tests, 3 e2e tests, `tsc -b`, lint, and `vite build` all pass.
   (`2647dcc` feat: migrate RuleDetailPanel's cards to shadcn/ui (increment 2
   of 3))
+- **2026-08-18** - shadcn/ui migration increment 3 of 3 (`RuleTable`, the
+  deliberately-last, highest-risk increment): the row-selection checkbox ->
+  `Checkbox`, the expand/collapse chevron -> `Button` (`variant="ghost"
+  size="icon-xs"`, dropped the old `className="w-full cursor-pointer"` since
+  it fights the fixed `icon-xs` sizing). Left `groupRows`, the section
+  headers, and the row-click-to-expand handler's structure untouched - only
+  the two raw controls inside the row changed. This surfaced a real bug
+  before it could ship: the row's click handler skips toggling expand when
+  the click landed on an interactive control, matched via
+  `.closest('input, a, button')` - but Base UI's `Checkbox` renders
+  `role="checkbox"` on a plain element, not a real `<input>`, so that
+  selector would have silently missed it and every checkbox click would have
+  both selected *and* expanded the row. Fixed by adding
+  `[data-slot="checkbox"]` to the selector (the attribute the shadcn wrapper
+  sets unconditionally, rather than depending on Base UI's internal element
+  choice) and proved it with a new e2e test that clicks the checkbox and
+  asserts the selected count changes *and* the detail panel does not open -
+  caught nothing today only because the fix landed first, but this is
+  exactly the kind of dead-control regression a screenshot alone can't see.
+  Also narrowed `onCheckedChange`'s value with `checked === true` before
+  calling `setEnabled`, same defensive pattern as increment 1's `RadioGroup`
+  narrowing. Confirmed via screenshot (one row checked, one row expanded,
+  1280px and 375px) that the new checkbox/button styling fits the existing
+  fixed-width table columns without changing the `min-w-[860px]` math. 101
+  unit tests, 4 e2e tests, `tsc -b`, lint, and `vite build` all pass. This
+  closes out the shadcn/ui component migration - all hand-rolled interactive
+  controls across the app now use shadcn primitives. (increment 3 commit
+  pending)

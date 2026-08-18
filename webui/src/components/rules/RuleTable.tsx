@@ -1,5 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { naturalIdCompare, topLevelSection } from '../../logic/naturalId'
 import { isEnabled, refKey } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
@@ -119,29 +121,32 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
                     onClick={(event) => {
                       // Let the checkbox (or any future button/link in the row)
                       // handle its own click instead of also toggling expand.
-                      if ((event.target as HTMLElement).closest('input, a, button')) return
+                      // Base UI's Checkbox renders role="checkbox", not a real
+                      // <input>, so it needs its own selector here rather than
+                      // relying on `input` to match it.
+                      if ((event.target as HTMLElement).closest('input, a, button, [data-slot="checkbox"]')) return
                       toggleExpanded(key)
                     }}
                   >
                     <td className="w-8 py-1 pl-6">
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         aria-label={`Select ${row.ref.id} ${row.title}`}
                         checked={isEnabled(selections, row.ref)}
-                        onChange={(event) => setEnabled(row.ref, event.target.checked)}
+                        onCheckedChange={(checked) => setEnabled(row.ref, checked === true)}
                       />
                     </td>
                     <td className="w-6 py-1 text-center text-slate-400">
-                      <button
+                      <Button
                         type="button"
-                        className="w-full cursor-pointer"
+                        variant="ghost"
+                        size="icon-xs"
                         aria-expanded={isExpanded}
                         aria-controls={detailId}
                         aria-label={isExpanded ? `Collapse ${row.ref.id}` : `Expand ${row.ref.id}`}
                         onClick={() => toggleExpanded(key)}
                       >
                         {isExpanded ? '▾' : '▸'}
-                      </button>
+                      </Button>
                     </td>
                     <td className="w-20 px-2 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
                     <td className="px-2 py-1">{row.title}</td>

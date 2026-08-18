@@ -64,3 +64,24 @@ test('org-defined boolean toggle updates the output check value badge', async ({
   await page.getByRole('button', { name: 'Clear', exact: true }).click()
   await expect(valueBadge).toBeVisible()
 })
+
+// Covers the shadcn primitives migration in RuleTable (Increment 3): the
+// row checkbox -> Checkbox and the expand chevron -> Button. The row's
+// onClick handler skips toggling expand when the click landed on the
+// checkbox (or any other interactive control), matched via a DOM selector
+// (`input, a, button, [data-slot="checkbox"]`) - Base UI's Checkbox renders
+// role="checkbox", not a real <input>, so a selector that only listed
+// `input` would silently both select AND expand the row on every checkbox
+// click. That would look identical in a screenshot to correct behavior.
+test('row checkbox selects without expanding the row', async ({ page }) => {
+  await page.goto('/')
+
+  await page.getByPlaceholder('Search title or id…').fill('Audit iCloud Passwords & Keychain')
+  const row = page.locator('table tbody tr').filter({ hasText: 'Audit iCloud Passwords & Keychain' })
+  await expect(row).toHaveCount(1)
+
+  await expect(page.getByText('0 selected')).toBeVisible()
+  await row.getByRole('checkbox').click()
+  await expect(page.getByText('1 selected')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Organization-defined values' })).not.toBeVisible()
+})
