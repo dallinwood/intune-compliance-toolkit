@@ -1068,3 +1068,31 @@ entry here, not just the session that wrote it.
   existing suite only ever exercised one section at a time and so couldn't
   have caught this either. (`f6df02d` fix: use table-fixed so column widths
   don't depend on per-section content)
+- **2026-08-18** - Follow-up on the facet-list stabilization: the debounced
+  removal snapped the collapsing option away and jumped the sections below
+  it, rather than transitioning smoothly - and the 1200ms quiet period
+  should be doubled to 2400ms. `useStableFacetShown` (`src/hooks/`) now
+  returns `{ shown, leaving }` instead of a single set: once the quiet
+  period elapses, values about to be removed move into `leaving` first and
+  only actually leave `shown` after a further `FACET_EXIT_TRANSITION_MS`
+  (300ms, exported so the CSS transition duration in `FilterSidebar` can't
+  drift out of sync with it) - reachability-regained still cancels a
+  pending exit immediately, no fade-in needed since re-appearing isn't the
+  reported problem. `StableFacetGroup` wraps each option in a `grid`
+  container animating `grid-template-rows` from `1fr` to `0fr` alongside
+  opacity - the standard CSS-only technique for animating an intrinsically-
+  sized ("auto"-height) element, which a plain `height`/`max-height`
+  transition can't do without measuring the row in JS first. `min-h-0` on
+  the inner wrapper is the part that's easy to miss and silently breaks the
+  whole effect (a grid item's default `min-height` floors it at content
+  height). Sections below a collapsing row slide up smoothly for free, with
+  no extra work - that's just normal block layout reflowing every frame in
+  response to the shrinking box above it, exactly per the user's request.
+  Extended the facet-stabilization e2e test to assert the transition is
+  actually interpolating (reads opacity partway through the exit window and
+  asserts it's strictly between 0 and 1) rather than only asserting
+  eventual removal, and bumped its timeout margins generously - this runs
+  against the Vite dev server under `StrictMode`, and one local run showed
+  the quiet-period timer firing a little later than its nominal 2400ms
+  under load. 104 unit tests, 5 e2e tests, `tsc -b`, lint, and `vite build`
+  all pass. (facet-animation commit pending)

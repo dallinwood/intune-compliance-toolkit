@@ -93,12 +93,16 @@ test('row checkbox selects without expanding the row', async ({ page }) => {
 // remaining clickable, which would land the user on a zero-row table) -
 // verifying only "the count changed" (as the older facet-filtering test
 // does) can't see either half of that.
-test('an unreachable facet option greys out before disappearing', async ({ page }) => {
+test('an unreachable facet option greys out, fades, then disappears', async ({ page }) => {
   await page.goto('/')
 
   const macosVersion = page.getByRole('checkbox', { name: 'v1.1.0' })
+  // The animated wrapper div useStableFacetShown/FilterSidebar toggle
+  // data-leaving on - see FilterSidebar's StableFacetGroup.
+  const macosVersionRow = page.locator('[data-leaving]', { has: macosVersion })
   await expect(macosVersion).toBeVisible({ timeout: 10_000 })
   await expect(macosVersion).toBeEnabled()
+  await expect(macosVersionRow).toHaveAttribute('data-leaving', 'false')
 
   // windows_11 rules never use version v1.1.0, so this makes it unreachable.
   await page.getByRole('checkbox', { name: 'windows_11' }).click()
@@ -109,8 +113,20 @@ test('an unreachable facet option greys out before disappearing', async ({ page 
   await expect(macosVersion).toBeDisabled()
   // A disabled option must not be clickable into a zero-row table.
   await expect(macosVersion).not.toBeChecked()
+  await expect(macosVersionRow).toHaveAttribute('data-leaving', 'false')
 
-  // Once the quiet period elapses with no further filter changes, it
-  // collapses out of the list.
-  await expect(macosVersion).not.toBeVisible({ timeout: 5_000 })
+  // Once the (doubled, 2400ms) quiet period elapses with no further filter
+  // changes, it starts fading/collapsing out - assert the transition is
+  // genuinely interpolating (not an instant snap to 0) partway through the
+  // 300ms exit window, rather than just that removal eventually happens.
+  // Generous margin above the nominal 2400ms: this runs against the Vite
+  // dev server under StrictMode, and timer firing can lag under load.
+  await expect(macosVersionRow).toHaveAttribute('data-leaving', 'true', { timeout: 8_000 })
+  await page.waitForTimeout(150)
+  const midTransitionOpacity = await macosVersionRow.evaluate((el) => Number(getComputedStyle(el).opacity))
+  expect(midTransitionOpacity).toBeGreaterThan(0)
+  expect(midTransitionOpacity).toBeLessThan(1)
+
+  // The exit transition then finishes and it leaves the DOM entirely.
+  await expect(macosVersion).not.toBeVisible({ timeout: 4_000 })
 })

@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useStableFacetShown } from '@/hooks/useStableFacetShown'
+import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStableFacetShown'
 import { allFacetValues, facetOptions } from '../../logic/ruleFilters'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
 import type { RuleRow } from '../../types/rule-row'
@@ -174,7 +174,7 @@ function StableFacetGroup({
 }) {
   const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf), [rows, valueOf])
   const reachableSet = useMemo(() => new Set(reachable), [reachable])
-  const shown = useStableFacetShown(reachable)
+  const { shown, leaving } = useStableFacetShown(reachable)
 
   return (
     <FacetGroup title={title}>
@@ -182,10 +182,31 @@ function StableFacetGroup({
         .filter((value) => shown.has(value))
         .map((value) => {
           const isReachable = reachableSet.has(value)
+          const isLeaving = leaving.has(value)
           return (
-            <FacetOption key={value} label={value} disabled={!isReachable}>
-              <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
-            </FacetOption>
+            // The grid-rows 1fr->0fr trick animates height even though the
+            // row's content height is intrinsic ("auto"), which a plain
+            // height/max-height transition can't do without measuring it in
+            // JS first. `min-h-0` on the inner wrapper is load-bearing: a
+            // grid item's default min-height is its content's height, which
+            // would stop this from ever visually reaching zero. Rows below
+            // this one naturally slide up as it shrinks - that's just normal
+            // block layout responding to the shrinking box each frame, no
+            // extra work needed for it.
+            <div
+              key={value}
+              data-leaving={isLeaving}
+              className={`grid overflow-hidden transition-[grid-template-rows,opacity] ease-in-out ${
+                isLeaving ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
+              }`}
+              style={{ transitionDuration: `${FACET_EXIT_TRANSITION_MS}ms` }}
+            >
+              <div className="min-h-0">
+                <FacetOption label={value} disabled={!isReachable}>
+                  <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
+                </FacetOption>
+              </div>
+            </div>
           )
         })}
     </FacetGroup>
