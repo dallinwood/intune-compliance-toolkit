@@ -811,4 +811,5 @@ entry here, not just the session that wrote it.
   `node node_modules/@playwright/test/cli.js test` directly, never
   `bunx playwright test`) and gitignored
   `test-results/`/`playwright-report/`/`blob-report/`. 101 unit tests
-  still passing; 1 e2e test passing.
+  still passing; 1 e2e test passing. (`42cbd9b` feat: add Playwright e2e
+  testing, fix responsive table min-width bug)
