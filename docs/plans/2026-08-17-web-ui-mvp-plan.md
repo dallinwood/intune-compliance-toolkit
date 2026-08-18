@@ -947,4 +947,5 @@ entry here, not just the session that wrote it.
   the collapsed table, which increment 1's screenshots covered) that the
   new pill-shaped Button/Badge styling reads fine in the detail panel. 101
   unit tests, 3 e2e tests, `tsc -b`, lint, and `vite build` all pass.
-  (increment 2 commit pending)
+  (`2647dcc` feat: migrate RuleDetailPanel's cards to shadcn/ui (increment 2
+  of 3))
