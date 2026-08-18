@@ -1095,4 +1095,5 @@ entry here, not just the session that wrote it.
   against the Vite dev server under `StrictMode`, and one local run showed
   the quiet-period timer firing a little later than its nominal 2400ms
   under load. 104 unit tests, 5 e2e tests, `tsc -b`, lint, and `vite build`
-  all pass. (facet-animation commit pending)
+  all pass. (`7392bfb` fix: animate the debounced facet collapse instead of
+  snapping)
