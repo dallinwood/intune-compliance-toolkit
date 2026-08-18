@@ -16,6 +16,11 @@ dist-ssr
 # baselines/ itself is the source of truth, this is just a build artifact.
 public/baselines
 
+# Playwright e2e output
+/test-results/
+/playwright-report/
+/blob-report/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

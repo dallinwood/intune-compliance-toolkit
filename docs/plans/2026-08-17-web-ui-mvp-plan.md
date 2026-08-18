@@ -41,6 +41,18 @@ committed and iterated on across future sessions.
   anything architecturally, but every command in this doc (`bun install`,
   `bun run dev`/`build`/`test`) assumes Bun, and CI should use
   `oven-sh/setup-bun` rather than `actions/setup-node`.
+  **One documented exception**: `bun test:e2e` (Playwright) must run under
+  real Node, not Bun - Bun 1.3.14 has a confirmed Windows bug
+  ([oven-sh/bun#27977](https://github.com/oven-sh/bun/issues/27977): extra
+  `child_process` stdio pipes (fd 3+) silently drop writes) that hangs
+  Playwright's browser-launch handshake indefinitely. The fix already
+  landed upstream but only ships from `1.4.0-canary` onward, not yet in a
+  stable release. `package.json`'s `test:e2e` script therefore invokes
+  `node node_modules/@playwright/test/cli.js test` explicitly (not
+  `bunx playwright test`, which would run the same broken code path under
+  Bun's own runtime) - this is the only place Node.js needs to be
+  installed on this machine, scoped to running that one script. Revisit
+  once Bun ships a stable release containing the fix.
 - **Manual-but-scriptable rules**: "automatable" is a single computed fact —
   does the rule have a scripted audit method with a non-empty
   `output_check`? — independent of CIS's own `assessment_status` label.
@@ -516,6 +528,17 @@ unit tests included.
 - **Manual browser verification**: visual/layout polish, zip download and
   file-import behavior, and an end-to-end pass selecting a handful of real
   rules → generate → eyeball the resulting `.sh`/`.ps1`/`.json`.
+- **E2e (Playwright, `webui/e2e/`)**: a real Chromium instance driving the
+  app against a running dev server - real rendering, real click/keyboard
+  interaction, real accessibility-tree queries (`getByRole`), and
+  screenshots - as a supplement to, not a replacement for, manual browser
+  verification. Run via `bun run test:e2e` (see "Package manager/runtime"
+  above for why this one script needs real Node). Locate elements by role
+  and stable structure (e.g. row position), not by accessible names that
+  change with the state under test (an expand button's name flips
+  "Expand X" → "Collapse X" on click) - a name-based locator re-resolves to
+  a *different* element once the original stops matching, which looks like
+  the assertion silently failed when it's actually a locator bug.
 - **Python-side**: update `tests/test_generate_index.py` to assert
   `assessment_status` reflects `is_automated(rule)` rather than the source
   label — including a case mirroring the real `cis_macos26_2.1.1.1.json`
@@ -762,3 +785,30 @@ entry here, not just the session that wrote it.
   (one pre-existing `pwsh`-subprocess test is flaky under load, confirmed
   unrelated by passing in isolation). (`75bbbed` feat: polish
   accessibility/responsive layout, add facet cross-filtering)
+- **2026-08-18** - Added Playwright e2e testing (`webui/e2e/`, see "E2e
+  (Playwright...)" under "Testing / verification" and the Bun exception
+  under "Package manager/runtime" above). Hit and confirmed a real, known
+  Bun-on-Windows bug first: `bunx playwright test` launched Chromium but
+  hung for 180s on the launch handshake every time - root-caused to
+  oven-sh/bun#27977 (extra `child_process` stdio pipes silently drop
+  writes on Windows in Bun 1.3.14; fixed upstream but only from
+  `1.4.0-canary` on). Installed Node.js LTS via `winget` scoped to running
+  this one script rather than pin to an unstable canary build or hand-roll
+  a manual CDP-connection workaround. Once running under real Node, the
+  smoke test itself surfaced a locator bug, not an app bug: querying by
+  the expand button's accessible name broke because that name flips
+  `"Expand X"` -> `"Collapse X"` on click, so Playwright's retry-polling
+  re-resolved the assertion against a different, still-collapsed row -
+  fixed by locating by row position instead. Used the now-working setup to
+  actually look at the Milestone 5 polish pass for the first time
+  (screenshots, not just code review) and found the responsive table fix
+  from that milestone was broken: `min-w-[640px]` was smaller than the sum
+  of the other fixed columns (checkbox+chevron+id+badge+profile+org-value
+  is about 552px), leaving the flexible title column only ~88px and
+  wrapping it into a wall of single-word lines instead of the table
+  actually scrolling - raised to `min-w-[860px]` and confirmed via
+  screenshot. Added `test:e2e` to `package.json` (invokes
+  `node node_modules/@playwright/test/cli.js test` directly, never
+  `bunx playwright test`) and gitignored
+  `test-results/`/`playwright-report/`/`blob-report/`. 101 unit tests
+  still passing; 1 e2e test passing.

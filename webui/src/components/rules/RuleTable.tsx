@@ -101,7 +101,11 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
     <div>
       <h4 className="px-6 py-1 text-xs font-semibold text-slate-500">Section {sectionGroup.section}</h4>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] text-sm">
+        {/* Fixed columns alone total ~552px (checkbox 32 + chevron 24 + id 80
+            + badge 224 + profile 160 + org-value 32); min-w must clear that
+            plus room for the flexible title column, or title gets squeezed
+            to a sliver instead of the table actually scrolling. */}
+        <table className="w-full min-w-[860px] text-sm">
           <tbody>
             {sectionGroup.rows.map((row) => {
               const key = refKey(row.ref)
