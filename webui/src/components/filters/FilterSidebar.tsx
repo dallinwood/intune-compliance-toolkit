@@ -1,10 +1,7 @@
 import { useMemo, type ReactNode } from 'react'
+import { facetOptions } from '../../logic/ruleFilters'
 import { useFilterStore } from '../../state/filterStore'
 import type { RuleRow } from '../../types/rule-row'
-
-function distinctSorted(values: Iterable<string>): string[] {
-  return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b))
-}
 
 const AUTOMATABLE_OPTIONS = [
   { value: 'all', label: 'All rules' },
@@ -17,15 +14,32 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
 
   // Facets are derived from whatever data is actually loaded - never a
   // hardcoded list - so a new benchmark/profile shows up automatically.
-  const products = useMemo(() => distinctSorted(rows.map((row) => row.ref.product)), [rows])
-  const versions = useMemo(() => distinctSorted(rows.map((row) => row.ref.version)), [rows])
-  const platforms = useMemo(() => distinctSorted(rows.map((row) => row.platform)), [rows])
-  const profiles = useMemo(() => distinctSorted(rows.flatMap((row) => row.profileApplicability)), [rows])
+  // Each facet is also narrowed by every *other* currently-applied filter
+  // (picking product "windows_11" narrows the version list to versions
+  // that actually occur under it), so a facet never offers a choice that
+  // would filter the table down to zero rows.
+  const products = useMemo(
+    () => facetOptions(rows, filters, 'products', (row) => row.ref.product, filters.products),
+    [rows, filters],
+  )
+  const versions = useMemo(
+    () => facetOptions(rows, filters, 'versions', (row) => row.ref.version, filters.versions),
+    [rows, filters],
+  )
+  const platforms = useMemo(
+    () => facetOptions(rows, filters, 'platforms', (row) => row.platform, filters.platforms),
+    [rows, filters],
+  )
+  const profiles = useMemo(
+    () => facetOptions(rows, filters, 'profiles', (row) => row.profileApplicability, filters.profiles),
+    [rows, filters],
+  )
 
   return (
-    <aside className="w-64 shrink-0 overflow-y-auto border-r border-slate-200 p-4 text-sm">
+    <aside className="max-h-64 w-full overflow-y-auto border-b border-slate-200 p-4 text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
       <input
         type="search"
+        aria-label="Search title or id"
         placeholder="Search title or id…"
         value={filters.search}
         onChange={(event) => filters.setSearch(event.target.value)}

@@ -26,7 +26,12 @@ export function OrgDefinedValueInput({
   if (check.data_type === 'boolean') {
     return (
       <div className="flex items-center gap-2 text-sm">
-        <BooleanToggle value={typeof value === 'boolean' ? value : undefined} onChange={onChange} onClear={onClear} />
+        <BooleanToggle
+          variable={check.variable}
+          value={typeof value === 'boolean' ? value : undefined}
+          onChange={onChange}
+          onClear={onClear}
+        />
         <span className="font-mono text-xs text-slate-600">{check.variable}</span>
       </div>
     )
@@ -83,19 +88,22 @@ export function OrgDefinedValueInput({
 // This makes "never answered" its own explicit, visible state instead of
 // an accidental side effect of default-unchecked.
 function BooleanToggle({
+  variable,
   value,
   onChange,
   onClear,
 }: {
+  variable: string
   value: boolean | undefined
   onChange: (value: boolean) => void
   onClear: () => void
 }) {
   return (
-    <div className="inline-flex overflow-hidden rounded border border-slate-300 text-xs">
+    <div role="group" aria-label={`${variable} value`} className="inline-flex overflow-hidden rounded border border-slate-300 text-xs">
       <button
         type="button"
         onClick={() => onChange(true)}
+        aria-pressed={value === true}
         className={
           value === true
             ? 'bg-emerald-600 px-2 py-0.5 font-medium text-white'
@@ -107,6 +115,7 @@ function BooleanToggle({
       <button
         type="button"
         onClick={() => onChange(false)}
+        aria-pressed={value === false}
         className={
           value === false
             ? 'border-l border-slate-300 bg-rose-600 px-2 py-0.5 font-medium text-white'

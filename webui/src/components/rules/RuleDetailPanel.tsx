@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchRuleDetail } from '../../data/ruleDetail'
 import { effectiveAuditMethodIndex } from '../../logic/auditMethods'
-import { getSelection, type RuleRef } from '../../logic/selectionEntry'
+import { getSelection, refKey, type RuleRef } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
 import type { RuleDetail } from '../../types/rule-detail'
 import { AuditMethodList } from './AuditMethodList'
@@ -75,6 +75,7 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
         selectedIndex={selection.selectedAuditMethodIndex}
         onSelect={(index) => setAuditMethodIndex(ruleRef, index)}
         organizationDefinedValues={selection.organizationDefinedValues}
+        radioGroupName={`audit-method-${refKey(ruleRef)}`}
       />
 
       <RemediationMethodList methods={rule.remediation.methods} />

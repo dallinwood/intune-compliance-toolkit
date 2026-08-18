@@ -8,11 +8,13 @@ export function AuditMethodList({
   selectedIndex,
   onSelect,
   organizationDefinedValues,
+  radioGroupName,
 }: {
   methods: AuditMethod[]
   selectedIndex: number | null
   onSelect: (index: number) => void
   organizationDefinedValues: Record<string, OrgDefinedValue>
+  radioGroupName: string
 }) {
   const effectiveIndex = effectiveAuditMethodIndex(methods, selectedIndex)
   // A selector only makes sense when there's an actual choice to make - one
@@ -28,6 +30,7 @@ export function AuditMethodList({
           method={method}
           isEffective={index === effectiveIndex}
           showSelector={needsSelector && method.type === 'scripted'}
+          radioGroupName={radioGroupName}
           onSelect={() => onSelect(index)}
           organizationDefinedValues={organizationDefinedValues}
         />

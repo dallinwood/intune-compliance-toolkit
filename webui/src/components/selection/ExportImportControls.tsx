@@ -75,7 +75,11 @@ export function ExportImportControls({ rows }: { rows: RuleRow[] }) {
         Import
       </button>
       <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleFileChosen} />
-      {message && <span className="text-xs text-slate-500">{message}</span>}
+      {message && (
+        <span role="status" className="text-xs text-slate-500">
+          {message}
+        </span>
+      )}
     </div>
   )
 }

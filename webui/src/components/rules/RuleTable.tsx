@@ -100,57 +100,70 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
   return (
     <div>
       <h4 className="px-6 py-1 text-xs font-semibold text-slate-500">Section {sectionGroup.section}</h4>
-      <table className="w-full text-sm">
-        <tbody>
-          {sectionGroup.rows.map((row) => {
-            const key = refKey(row.ref)
-            const isExpanded = expanded.has(key)
-            return (
-              <Fragment key={key}>
-                <tr
-                  className="cursor-pointer hover:bg-slate-50"
-                  onClick={(event) => {
-                    // Let the checkbox (or any future button/link in the row)
-                    // handle its own click instead of also toggling expand.
-                    if ((event.target as HTMLElement).closest('input, a, button')) return
-                    toggleExpanded(key)
-                  }}
-                >
-                  <td className="w-8 py-1 pl-6">
-                    <input
-                      type="checkbox"
-                      checked={isEnabled(selections, row.ref)}
-                      onChange={(event) => setEnabled(row.ref, event.target.checked)}
-                    />
-                  </td>
-                  <td className="w-6 py-1 text-center text-slate-400" aria-hidden="true">
-                    {isExpanded ? '▾' : '▸'}
-                  </td>
-                  <td className="w-20 px-2 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
-                  <td className="px-2 py-1">{row.title}</td>
-                  <td className="w-56 px-2 py-1">
-                    <AssessmentBadge row={row} />
-                  </td>
-                  <td className="w-40 px-2 py-1 text-xs text-slate-500">{row.profileApplicability.join(', ')}</td>
-                  <td
-                    className="w-8 px-2 py-1 text-center text-xs"
-                    title={row.requiresOrganizationDefinedValue ? 'Requires an organization-defined value' : ''}
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
+          <tbody>
+            {sectionGroup.rows.map((row) => {
+              const key = refKey(row.ref)
+              const isExpanded = expanded.has(key)
+              const detailId = `rule-detail-${key}`
+              return (
+                <Fragment key={key}>
+                  <tr
+                    className="cursor-pointer hover:bg-slate-50"
+                    onClick={(event) => {
+                      // Let the checkbox (or any future button/link in the row)
+                      // handle its own click instead of also toggling expand.
+                      if ((event.target as HTMLElement).closest('input, a, button')) return
+                      toggleExpanded(key)
+                    }}
                   >
-                    {row.requiresOrganizationDefinedValue ? '⚙' : ''}
-                  </td>
-                </tr>
-                {isExpanded && (
-                  <tr>
-                    <td colSpan={7} className="p-0">
-                      <RuleDetailPanel ruleRef={row.ref} />
+                    <td className="w-8 py-1 pl-6">
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${row.ref.id} ${row.title}`}
+                        checked={isEnabled(selections, row.ref)}
+                        onChange={(event) => setEnabled(row.ref, event.target.checked)}
+                      />
+                    </td>
+                    <td className="w-6 py-1 text-center text-slate-400">
+                      <button
+                        type="button"
+                        className="w-full cursor-pointer"
+                        aria-expanded={isExpanded}
+                        aria-controls={detailId}
+                        aria-label={isExpanded ? `Collapse ${row.ref.id}` : `Expand ${row.ref.id}`}
+                        onClick={() => toggleExpanded(key)}
+                      >
+                        {isExpanded ? '▾' : '▸'}
+                      </button>
+                    </td>
+                    <td className="w-20 px-2 py-1 font-mono text-xs text-slate-500">{row.ref.id}</td>
+                    <td className="px-2 py-1">{row.title}</td>
+                    <td className="w-56 px-2 py-1">
+                      <AssessmentBadge row={row} />
+                    </td>
+                    <td className="w-40 px-2 py-1 text-xs text-slate-500">{row.profileApplicability.join(', ')}</td>
+                    <td
+                      className="w-8 px-2 py-1 text-center text-xs"
+                      title={row.requiresOrganizationDefinedValue ? 'Requires an organization-defined value' : ''}
+                    >
+                      {row.requiresOrganizationDefinedValue ? '⚙' : ''}
                     </td>
                   </tr>
-                )}
-              </Fragment>
-            )
-          })}
-        </tbody>
-      </table>
+                  {isExpanded && (
+                    <tr id={detailId}>
+                      <td colSpan={7} className="p-0">
+                        <RuleDetailPanel ruleRef={row.ref} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

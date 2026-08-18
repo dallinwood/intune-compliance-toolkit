@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { AuditMethod } from '../../types/rule-detail'
 import { OutputCheckRow } from './OutputCheckRow'
@@ -7,16 +7,19 @@ export function AuditMethodCard({
   method,
   isEffective,
   showSelector,
+  radioGroupName,
   onSelect,
   organizationDefinedValues,
 }: {
   method: AuditMethod
   isEffective: boolean
   showSelector: boolean
+  radioGroupName: string
   onSelect: () => void
   organizationDefinedValues: Record<string, OrgDefinedValue>
 }) {
   const [expanded, setExpanded] = useState(false)
+  const detailId = useId()
   const isScripted = method.type === 'scripted'
 
   return (
@@ -25,9 +28,10 @@ export function AuditMethodCard({
         {showSelector ? (
           <input
             type="radio"
-            name="audit-method"
+            name={radioGroupName}
             checked={isEffective}
             onChange={onSelect}
+            aria-label={`Use ${method.method_name} for the generated script`}
             title="Use this method's check for the generated script"
           />
         ) : (
@@ -38,6 +42,8 @@ export function AuditMethodCard({
         <button
           type="button"
           onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          aria-controls={detailId}
           className="flex flex-1 items-center gap-2 text-left text-sm"
         >
           <span className="text-slate-400">{expanded ? '▾' : '▸'}</span>
@@ -47,7 +53,7 @@ export function AuditMethodCard({
       </div>
 
       {expanded && (
-        <div className="space-y-3 border-t border-slate-100 px-3 py-2 text-sm">
+        <div id={detailId} className="space-y-3 border-t border-slate-100 px-3 py-2 text-sm">
           <p className="whitespace-pre-line text-slate-600">{method.description}</p>
           {method.steps?.map((step, index) => (
             <div key={index} className="space-y-2">

@@ -91,7 +91,7 @@ export function GenerateReviewScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-lg font-semibold text-slate-900">Review &amp; generate</h2>
         <button type="button" onClick={onBack} className="text-xs text-slate-500 underline hover:text-slate-700">
           Back to browse
@@ -112,7 +112,7 @@ export function GenerateReviewScreen({ onBack }: { onBack: () => void }) {
         </div>
       )}
 
-      <div className="mb-4 flex items-center gap-4 text-slate-600">
+      <div className="mb-4 flex flex-wrap items-center gap-4 text-slate-600">
         <span>{chunks.length} bundle(s)</span>
         <span>{totalSettings} setting(s) total</span>
         <span>{manual.length} rule(s) need manual attestation</span>

@@ -1,23 +1,32 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { RemediationMethod } from '../../types/rule-detail'
 
 export function RemediationMethodCard({ method }: { method: RemediationMethod }) {
   const [expanded, setExpanded] = useState(false)
+  const detailId = useId()
 
   return (
     <div className="rounded border border-slate-200 bg-white">
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        className="flex w-full items-center gap-2 px-2 py-1 text-left text-sm"
-      >
-        <span className="text-slate-400">{expanded ? '▾' : '▸'}</span>
-        <span className="font-medium text-slate-700">{method.method_name}</span>
-        <span className="text-xs text-slate-400">({method.type})</span>
-      </button>
+      <div className="flex items-center gap-2 px-2 py-1">
+        {/* Blank spacer matching AuditMethodCard's leading radio/checkmark
+            column, so the chevron/title lines up between the two lists -
+            remediation methods never get a selection control. */}
+        <span className="w-4" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          aria-controls={detailId}
+          className="flex flex-1 items-center gap-2 text-left text-sm"
+        >
+          <span className="text-slate-400">{expanded ? '▾' : '▸'}</span>
+          <span className="font-medium text-slate-700">{method.method_name}</span>
+          <span className="text-xs text-slate-400">({method.type})</span>
+        </button>
+      </div>
 
       {expanded && (
-        <div className="space-y-3 border-t border-slate-100 px-3 py-2 text-sm">
+        <div id={detailId} className="space-y-3 border-t border-slate-100 px-3 py-2 text-sm">
           <p className="whitespace-pre-line text-slate-600">{method.description}</p>
           {method.config_keys?.map((configKey, index) => (
             <div key={index} className="overflow-hidden rounded border border-slate-200">

@@ -723,3 +723,41 @@ entry here, not just the session that wrote it.
   a shim, since nothing else referenced it). 93 tests passing total.
   (`273173f` feat: rename bundle files by rule-id range, enforce
   script-size cap, split evenly)
+- **2026-08-18** - Milestone 5: polish pass. Audited empty/loading/error
+  state coverage across the app first and found it already complete from
+  earlier milestones (`App.tsx`, `RuleDetailPanel`, `GenerateReviewScreen`,
+  `RuleTable`'s zero-results case) - nothing to add there. Accessibility:
+  the rule table's row expand/collapse is now keyboard-operable via a real
+  button with `aria-expanded`/`aria-controls` instead of a mouse-only row
+  click handler; fixed a real bug (not just a11y) where every
+  `AuditMethodCard`'s scripted-method radio shared the literal
+  `name="audit-method"` across the whole table, so selecting a method in
+  one expanded row could silently uncheck another row's selection - scoped
+  per rule now via a threaded `radioGroupName`. Added `aria-expanded` to
+  the audit/remediation method card toggles, `role="group"`/`aria-pressed`
+  to the boolean org-defined-value toggle, `aria-label`s to the row
+  checkbox and filter search input, and `role="status"` to the
+  import/export result message. Responsive layout: the filter sidebar
+  collapses behind a "Filters" toggle below the `md` breakpoint instead of
+  squeezing the table into a fixed 256px-narrowed remainder; the header
+  and generate-review summary bar wrap instead of overflowing; the rule
+  table scrolls horizontally on narrow screens. Did not attempt a
+  speculative broad visual redesign, since this project's established
+  pattern (several rounds already in this log) is show-the-user-then-react
+  to specific feedback rather than guessing blind. Follow-up from
+  reviewing the pass: `RemediationMethodCard`'s toggle had no leading
+  indicator column, so its chevron/title didn't line up with
+  `AuditMethodCard`'s (which has a leading radio/checkmark column before
+  its toggle) - added a matching blank spacer rather than removing the
+  audit card's indicator, per feedback. Also added faceted-filter
+  cross-narrowing: `FilterSidebar`'s product/version/platform/profile
+  facets now only list values reachable under every other currently-applied
+  filter (e.g. picking product `windows_11` narrows the version list down
+  to `v5.0.0`), via a new `logic/ruleFilters.ts` (`matchesFilters`,
+  extracted out of `AppShell` so both share one implementation with an
+  `excludeDimension` option, plus `facetOptions`), unit-tested; a value
+  already selected in a facet stays visible even if it becomes unreachable
+  under the other filters (e.g. left over from a stale import) so it can
+  still be unchecked instead of getting stuck invisible. 101 tests total
+  (one pre-existing `pwsh`-subprocess test is flaky under load, confirmed
+  unrelated by passing in isolation).
