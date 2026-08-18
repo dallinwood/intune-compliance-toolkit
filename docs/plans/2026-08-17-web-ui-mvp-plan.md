@@ -214,8 +214,64 @@ def is_automated(rule):
 | Filter + selection state | **Zustand** (~1KB) | Selector-based subscriptions so toggling a filter or a single row's checkbox doesn't re-render the whole rule table once the corpus grows past a handful of rules. Plain Context would need hand-rolled memoization to match this. |
 | Zip download | **fflate** (~8KB) | Browsers have no native zip API; needed to ship "script + rules JSON (+ manual-attestation report)" as one download instead of separate browser downloads per file. |
 | Styling | **Tailwind CSS** (build-time only, no runtime JS shipped) | Utility classes for a compact, information-dense table/filter UI without hand-building a spacing/color system. |
+| Component library | **shadcn/ui** (`bunx shadcn add <component>`, source copied into `src/components/ui/`, not an installed dependency) | Standardized, accessible primitives (Radix/Base UI under the hood) instead of hand-rolling every button/toggle/card. Applied via a preset from shadcn's visual customization tool (style `base-luma`, base color `zinc`, Base UI primitives, Geist font) - see "shadcn/ui setup" below for the alias-path fixes this needed and the `.gitignore` gotcha it hit. Existing hand-rolled components are migrated incrementally, not in one sweep - see the progress log entry for the setup and whichever entries follow it for the migration itself. |
 | Data fetching/caching | None (no React Query) | Static JSON, fetched once per session into a plain `Map` cache in `src/data/*.ts`. Adding a data-fetching library for `fetch` + `Map` isn't justified. |
 | Routing | None | Two views (browse / generate-review) held as plain `useState` in `AppShell`, not URL routes. (Originally planned as a Zustand slice; a single boolean owned and read by one component didn't justify a store.) |
+
+## shadcn/ui setup
+
+`bunx --bun shadcn@latest apply --preset <id>` (from shadcn's visual
+customization tool) writes `components.json`, theme CSS variables +
+`@layer base` rules into `src/index.css`, and adds
+`@base-ui/react`/`class-variance-authority`/`clsx`/`tailwind-merge`/
+`lucide-react`/`@fontsource-variable/geist` to `package.json`. `apply`
+alone only sets up the design system (theme/font/config) - it does not add
+any component files; those come one at a time via `bunx shadcn add
+<component>`, which writes real source files into the repo (not an
+installed package) using the paths `components.json`'s `aliases` specify.
+
+Two problems surfaced immediately, both fixed as part of the setup itself
+rather than left for the first component migration to trip over:
+
+- **The `@/*` alias didn't actually resolve anywhere.** The CLI wrote
+  `"@/*": ["./*"]` into the root `tsconfig.json` only, and generated
+  `components/ui/button.tsx` / `lib/utils.ts` at the `webui/` root (sibling
+  to `src/`, matching that `./*` mapping) rather than under `src/` like
+  the rest of this app's code. Two separate failures, confirmed by
+  actually importing the generated `Button` from `App.tsx`: (1) `tsc -b`
+  passed even though nothing was fetched - `tsconfig.app.json` (the
+  project that actually compiles `src/**`, since project references don't
+  inherit `compilerOptions` across each other) had no `paths` at all, and
+  neither generated file was even inside anything's `include`; separately
+  it reported `TS2307: Cannot find module '@/components/ui/button'` once
+  actually imported. (2) `vite build` failed outright - Rolldown had no
+  `resolve.alias` for `@` to fall back on. Fixed by moving both generated
+  files under `src/` (`src/components/ui/`, `src/lib/`) to match this
+  app's existing structure, adding `"paths": {"@/*": ["./src/*"]}` to
+  `tsconfig.app.json` directly (not just the inert root `tsconfig.json`),
+  and adding a matching `resolve.alias` in `vite.config.ts`. (`baseUrl` was
+  deliberately left off both tsconfigs - this TypeScript version deprecates
+  it, and `paths` alone resolves relative to the tsconfig file under
+  `moduleResolution: "bundler"`.) Confirmed by re-running the same import
+  test: `tsc -b` and `vite build` both clean.
+- **`src/lib/` would have been silently untracked.** The root `.gitignore`
+  already has a bare `lib/` rule (Python packaging boilerplate - this repo
+  has no `setup.py`/`pyproject.toml`, so it protects no real build
+  artifact here; the actual venv exclusion is the separate `.venv`/`venv/`
+  rules) that matches any directory literally named `lib` anywhere in the
+  tree - the same class of gotcha `webui/`'s own `logic/` folder was
+  renamed to dodge (see "Repo layout for the new app"). This time, rather
+  than rename shadcn's conventional `lib/utils` path, added a scoped
+  `!webui/src/lib/` exception to the root `.gitignore` (with a comment
+  explaining why) - confirmed unignored via `git check-ignore -v`. Kept
+  the standard shadcn path since nothing else in the repo needs the bare
+  `lib/` pattern to actually protect anything real.
+
+Verified after the fix: 101 unit tests, `tsc -b`, `vite build`, and the
+Playwright e2e suite all pass; screenshots at 1280px and 375px confirm the
+existing hand-rolled UI renders unchanged (the new theme is inert until
+components actually migrate to use its semantic color classes instead of
+raw Tailwind utilities).
 
 ## Component / screen breakdown
 
@@ -813,3 +869,21 @@ entry here, not just the session that wrote it.
   `test-results/`/`playwright-report/`/`blob-report/`. 101 unit tests
   still passing; 1 e2e test passing. (`42cbd9b` feat: add Playwright e2e
   testing, fix responsive table min-width bug)
+- **2026-08-18** - Introduced shadcn/ui as the component library (see
+  "shadcn/ui setup" above), applying a preset from shadcn's visual
+  customization tool. Fixed two real problems the setup itself surfaced
+  before any component migration could hit them: the `@/*` alias didn't
+  resolve in either `tsc -b` or `vite build` (moved the generated files
+  under `src/` to match this app's structure, added `paths` to
+  `tsconfig.app.json` specifically - not just the inert root
+  `tsconfig.json` - and a matching Vite `resolve.alias`), and
+  `webui/src/lib/` would have been silently untracked by the root
+  `.gitignore`'s Python-oriented bare `lib/` rule (added a scoped,
+  commented exception rather than deviate from shadcn's conventional
+  path, since that rule protects no real Python build artifact in this
+  repo). Confirmed via screenshot that the existing UI renders unchanged -
+  the new theme is inert until components migrate to it. This is setup
+  only; migrating the existing 15 hand-rolled components to shadcn's
+  primitives is intentionally deferred to its own follow-up work, done
+  incrementally rather than in one sweep, per this repo's usual
+  milestone-per-commit pattern.

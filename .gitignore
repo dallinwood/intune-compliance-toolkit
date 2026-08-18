@@ -228,6 +228,12 @@ __marimo__/
 # Dependencies
 node_modules/
 
+# webui/src/lib/ (shadcn/ui's cn() helper, see webui/components.json) would
+# otherwise be silently swallowed by the Python "lib/" rule above - this repo
+# has no setup.py/pyproject.toml, so that rule protects no real Python build
+# artifact here; the actual venv exclusion is the .venv/venv/env/ rules below.
+!webui/src/lib/
+
 # Build output
 dist/
 build/

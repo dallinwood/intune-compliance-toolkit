@@ -16,6 +16,16 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Path alias - project references don't inherit compilerOptions, so
+       this must be repeated here (not just in the root tsconfig.json) or
+       @/ imports type-check fine at the root but fail wherever tsc -b
+       actually compiles src/**. No baseUrl: it's deprecated as of this
+       TypeScript version - "paths" alone resolves relative to this file
+       in bundler moduleResolution mode. */
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
