@@ -105,15 +105,19 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
     <div>
       <h4 className="px-6 py-1 text-xs font-semibold text-slate-500">Section {sectionGroup.section}</h4>
       <div className="overflow-x-auto">
-        {/* Fixed columns alone total ~536px (checkbox 32 + chevron 24 + id 96
-            + badge 224 + profile 160); min-w must clear that plus room for
-            the flexible title column, or title gets squeezed to a sliver
-            instead of the table actually scrolling. Id is `min-w-24
-            whitespace-nowrap` (96px) rather than the `w-20` (80px) an 11-char
-            id like "4.11.15.3.1" - the longest in the current dataset -
-            barely overflows, which without a fixed width previously pushed
-            the title's start position around row to row. */}
-        <table className="w-full min-w-[860px] text-sm">
+        {/* table-fixed is load-bearing, not cosmetic: each section renders
+            its own <table>, so under the default auto layout every section
+            (and every expand/collapse, since a colSpan detail row also
+            perturbs the calculation) computed its own independent column
+            widths from its own content - the exact reason the id column and
+            title's start position drifted between sections and shifted the
+            first time a row expanded. table-fixed makes every column honor
+            its declared width unconditionally, so widths never depend on
+            that table's own content: checkbox 48 + chevron 32 + id 96 +
+            badge 224 + profile 160 = 560px fixed; min-w must clear that plus
+            room for the flexible title column, or title gets squeezed to a
+            sliver instead of the table actually scrolling. */}
+        <table className="w-full min-w-[860px] table-fixed text-sm">
           <tbody>
             {sectionGroup.rows.map((row) => {
               const key = refKey(row.ref)
@@ -138,14 +142,14 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
                       toggleExpanded(key)
                     }}
                   >
-                    <td className="w-8 py-1 pl-6">
+                    <td className="w-12 py-1 pl-6">
                       <Checkbox
                         aria-label={`Select ${row.ref.id} ${row.title}`}
                         checked={isEnabled(selections, row.ref)}
                         onCheckedChange={(checked) => setEnabled(row.ref, checked === true)}
                       />
                     </td>
-                    <td className="w-6 py-1 text-center text-slate-400">
+                    <td className="w-8 py-1 text-center text-slate-400">
                       <Button
                         type="button"
                         variant="ghost"
@@ -158,7 +162,7 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
                         {isExpanded ? '▾' : '▸'}
                       </Button>
                     </td>
-                    <td className="min-w-24 px-2 py-1 font-mono text-xs whitespace-nowrap text-slate-500">
+                    <td className="w-24 px-2 py-1 font-mono text-xs whitespace-nowrap text-slate-500">
                       {row.ref.id}
                     </td>
                     <td className="px-2 py-1">

@@ -1039,3 +1039,31 @@ entry here, not just the session that wrote it.
   functionally disabled. 104 unit tests, 5 e2e tests, `tsc -b`, lint, and
   `vite build` all pass. (`2a6e9a9` fix: stabilize facet filter lists
   against reflow while clicking)
+- **2026-08-18** - Follow-up after seeing the cleanup pass in a screenshot
+  spanning multiple sections: the id-column and expand-shift fixes from the
+  previous entry weren't actually fixed - they'd only been verified with a
+  single section's table in view, which hid the real cause. `RuleTable`
+  renders one `<table>` *per section*, and under the browser's default
+  auto layout every table computes its own column widths from only its own
+  rows' content - so the id column (and everything after it) landed at a
+  different width in every section, and inserting a colSpan detail row
+  perturbed that same per-table calculation once on first expand (matching
+  the reported "titles shift once per section" exactly). Fixed at the root
+  with `table-fixed`: column widths now come only from each column's
+  declared `width`, never from content, so they're identical across every
+  section's table and never move on expand. `min-w-24` on the id cell
+  became a no-op under `table-fixed` (fixed layout reads `width`, not
+  `min-width`) - changed to `w-24`. The checkbox and chevron cells were
+  under-sized for their own content (`w-8` holding `pl-6` (24px) + a 16px
+  `Checkbox` = 40px; `w-6` holding an exactly-24px chevron `Button` with no
+  slack) - harmless under auto layout, which grows a column to fit, but
+  `table-fixed` clips instead - widened to `w-12` and `w-8`. Fixed columns
+  now total 560px (was 536); `min-w-[860px]` still leaves the title column
+  ~300px. Verified with the screenshot that actually matters here - every
+  section across both products, at once, with both short (`1.6`) and long
+  (`4.11.15.3.1`, `106.1.1`) ids in view - confirming titles now start at
+  the same x position everywhere, collapsed and with rows expanded in two
+  different sections simultaneously. 104 unit tests, 5 e2e tests, `tsc -b`,
+  lint, and `vite build` all pass; no test changes needed, since the
+  existing suite only ever exercised one section at a time and so couldn't
+  have caught this either. (table-fixed commit pending)
