@@ -7,6 +7,7 @@
       "version": "v1.1.0",
       "platform": "macOS",
       "indexPath": "cis/macos_26_tahoe/v1.1.0/_index.json",
+      "metadataPath": "cis/macos_26_tahoe/v1.1.0/_metadata.json",
       "ruleCount": 5
     },
     {
@@ -15,6 +16,7 @@
       "version": "v5.0.0",
       "platform": "Windows 11 (Intune)",
       "indexPath": "cis/windows_11/v5.0.0/_index.json",
+      "metadataPath": "cis/windows_11/v5.0.0/_metadata.json",
       "ruleCount": 7
     }
   ]

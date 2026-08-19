@@ -73,9 +73,22 @@ def test_build_manifest_lists_family_product_version_platform_and_count(tmp_path
             "version": "v1.1.0",
             "platform": "macOS",
             "indexPath": "cis/macos_26_tahoe/v1.1.0/_index.json",
+            "metadataPath": None,
             "ruleCount": 2,
         }
     ]
+
+
+def test_build_manifest_includes_metadata_path_when_metadata_json_exists(tmp_path):
+    folder = tmp_path / "cis" / "macos_26_tahoe" / "v1.1.0"
+    folder.mkdir(parents=True)
+    write_rule(folder, "1.1", "rule_a.json", platform="macOS")
+    (folder / "_metadata.json").write_text("{}", encoding="utf-8")
+
+    folders = find_rule_folders(tmp_path)
+    manifest = build_manifest(folders, baselines_root=tmp_path)
+
+    assert manifest["baselines"][0]["metadataPath"] == "cis/macos_26_tahoe/v1.1.0/_metadata.json"
 
 
 def test_build_manifest_is_sorted_by_family_product_version(tmp_path):

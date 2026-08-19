@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from tools.generate_index import build_index, find_rule_folders, write_index
+from tools.generate_index import build_index, find_rule_folders, looks_like_rule_file, write_index
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINES_DIR = REPO_ROOT / "baselines"
@@ -199,7 +199,9 @@ def test_committed_index_matches_its_folder(index_path):
     """Catches a rule added/edited/removed without re-running generate_index.py -
     nothing else notices a committed _index.json going stale."""
     folder = index_path.parent
-    rule_files = [p for p in folder.glob("*.json") if p.name != "_index.json"]
+    rule_files = [
+        p for p in folder.glob("*.json") if not p.name.startswith("_") and looks_like_rule_file(p)
+    ]
 
     rebuilt = json.dumps(build_index(rule_files), indent=2) + "\n"
     committed = index_path.read_text(encoding="utf-8")

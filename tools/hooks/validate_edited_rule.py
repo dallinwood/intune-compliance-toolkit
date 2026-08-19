@@ -1,10 +1,11 @@
-"""PostToolUse hook: validate a rule JSON file against baselines/_rule.schema.json right after it's written.
+"""PostToolUse hook: validate a rule or _metadata.json file right after it's written.
 
 Reads the Write/Edit tool's hook payload from stdin. If the touched file is a
 rule file under baselines/ (not an underscore-prefixed generated artifact
 like _index.json or _rule.schema.json itself), runs tools/validate_rules.py
-against just that file so a schema violation surfaces immediately instead of
-at the next manual review.
+against just that file. If it's a _metadata.json file, runs
+tools/validate_metadata.py instead. Either way, this surfaces a schema
+violation immediately instead of at the next manual review.
 """
 
 import json
@@ -26,14 +27,28 @@ def is_rule_file(path):
     return "baselines" in path.parts and path.suffix == ".json" and not path.name.startswith("_")
 
 
+def is_metadata_file(path):
+    path = Path(path)
+    return "baselines" in path.parts and path.name == "_metadata.json"
+
+
+def validator_script_for(path):
+    if is_metadata_file(path):
+        return "validate_metadata.py"
+    if is_rule_file(path):
+        return "validate_rules.py"
+    return None
+
+
 def main():
     payload = json.load(sys.stdin)
     file_path = touched_file_path(payload)
-    if not file_path or not is_rule_file(file_path):
+    script_name = validator_script_for(file_path) if file_path else None
+    if script_name is None:
         return 0
 
     result = subprocess.run(
-        [sys.executable, str(REPO_ROOT / "tools" / "validate_rules.py"), file_path],
+        [sys.executable, str(REPO_ROOT / "tools" / script_name), file_path],
         capture_output=True,
         text=True,
     )

@@ -21,6 +21,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
 from tools.generate_index import INDEX_FILENAME, find_rule_folders  # noqa: E402
+from tools.generate_metadata import METADATA_FILENAME  # noqa: E402
 
 BASELINES_DIR = REPO_ROOT / "baselines"
 MANIFEST_PATH = BASELINES_DIR / "_manifest.json"
@@ -45,12 +46,15 @@ def folder_entry(folder, rule_files, baselines_root):
     first_rule = json.loads(rule_files[0].read_text(encoding="utf-8"))
     platform = first_rule.get("benchmark", {}).get("platform")
 
+    has_metadata = (folder / METADATA_FILENAME).is_file()
+
     return {
         "family": family,
         "product": product,
         "version": version,
         "platform": platform,
         "indexPath": "/".join((*relative_parts, INDEX_FILENAME)),
+        "metadataPath": "/".join((*relative_parts, METADATA_FILENAME)) if has_metadata else None,
         "ruleCount": len(rule_files),
     }
 
