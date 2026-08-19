@@ -1132,4 +1132,5 @@ entry here, not just the session that wrote it.
   didn't have, so the CSV column name/casing assumption still needs
   confirming on an elevated session before trusting 6.7's result in
   production. 115 unit tests, `tsc -b`, and lint all pass; no e2e/screenshot
-  pass needed, this only touched `logic/*`. (commit hash pending)
+  pass needed, this only touched `logic/*`. (`a94a367` feat: support
+  contains operator via in-script evaluation)
