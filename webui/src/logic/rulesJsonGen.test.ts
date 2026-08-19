@@ -56,8 +56,35 @@ describe('buildRuleEntry', () => {
     expect(() => buildRuleEntry(ORG_DEFINED_CHECK, RULE_SUMMARY, {})).toThrow()
   })
 
-  it('throws for an operator Intune has no native equivalent for', () => {
-    expect(() => buildRuleEntry({ ...BENCHMARK_CHECK, operator: 'contains' }, RULE_SUMMARY, {})).toThrow()
+  it('throws for an operator Intune has no native equivalent for and no in-script fallback', () => {
+    expect(() => buildRuleEntry({ ...BENCHMARK_CHECK, operator: 'like' }, RULE_SUMMARY, {})).toThrow()
+  })
+
+  it('routes a contains check to an IsEquals/Boolean entry against the derived compliance variable', () => {
+    const entry = buildRuleEntry(
+      { variable: 'cis_intune_win11_6_7_auth_policy_change_setting', data_type: 'string', operator: 'contains', value: 'Success', value_source: 'benchmark' },
+      RULE_SUMMARY,
+      {},
+    )
+
+    expect(entry).toEqual({
+      SettingName: 'cis_intune_win11_6_7_auth_policy_change_setting__compliant',
+      Operator: 'IsEquals',
+      DataType: 'Boolean',
+      Operand: true,
+      MoreInfoUrl: RULE_SUMMARY.references[0],
+      RemediationStrings: [{ Language: 'en_US', Title: RULE_SUMMARY.title, Description: RULE_SUMMARY.description }],
+    })
+  })
+
+  it('throws for a contains check with an organization-defined value - not wired through the script generator yet', () => {
+    expect(() =>
+      buildRuleEntry(
+        { variable: 'cis_macos26_2_1_1_1_some_setting', data_type: 'string', operator: 'contains', value: null, value_source: 'organization_defined' },
+        RULE_SUMMARY,
+        { cis_macos26_2_1_1_1_some_setting: 'anything' },
+      ),
+    ).toThrow()
   })
 })
 

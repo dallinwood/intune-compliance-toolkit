@@ -142,4 +142,57 @@ describe('generateBashScript', () => {
       test_empty_var: null,
     })
   })
+
+  it('computes a case-insensitive, literal (non-wildcard) contains check as a derived boolean', () => {
+    const script = generateBashScript([
+      {
+        id: '6.7',
+        title: "Ensure 'Audit Authentication Policy Change' is set to include 'Success'",
+        steps: [
+          {
+            step_role: 'compliance_check',
+            original_command: null,
+            check_command: "test_setting='success and A*B'",
+            check_command_verified: true,
+            output_description: '',
+            output_check: [{ variable: 'test_setting', data_type: 'string', operator: 'contains', value: 'A*B', value_source: 'benchmark' }],
+          },
+        ],
+      },
+    ])
+
+    const { stdout, syntaxOk } = runScript(script)
+    expect(syntaxOk).toBe(true)
+    const parsed = JSON.parse(stdout.trim())
+
+    // Case-insensitive, and the '*' in the value must be matched literally,
+    // not as a glob wildcard - a value of just 'success' with no 'A*B'
+    // substring must NOT match.
+    expect(parsed).toEqual({ test_setting: 'success and A*B', test_setting__compliant: true })
+  })
+
+  it('reports false, not a script error, when the captured value has no match', () => {
+    const script = generateBashScript([
+      {
+        id: '6.7',
+        title: 'x',
+        steps: [
+          {
+            step_role: 'compliance_check',
+            original_command: null,
+            check_command: 'test_setting=""',
+            check_command_verified: true,
+            output_description: '',
+            output_check: [{ variable: 'test_setting', data_type: 'string', operator: 'contains', value: 'Success', value_source: 'benchmark' }],
+          },
+        ],
+      },
+    ])
+
+    const { stdout, syntaxOk } = runScript(script)
+    expect(syntaxOk).toBe(true)
+    const parsed = JSON.parse(stdout.trim())
+
+    expect(parsed).toEqual({ test_setting: null, test_setting__compliant: false })
+  })
 })

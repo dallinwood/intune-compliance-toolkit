@@ -526,14 +526,27 @@ grouping key above, but is kept as a cheap safeguard.
   `String`, none of which this repo's schema currently needs.
   `RemediationStrings[].Language` must be one of a fixed locale list;
   `en_US` is required and is the only one this repo ever emits.
-  **`contains`/`like` scope decision**: properly supporting them would mean
-  rewriting a rule's `check_command` to compute a boolean via in-script
-  substring/pattern matching — a distinct, speculative feature with no
-  current data to validate it against (no rule in the repo uses either
-  operator today). Rather than half-implement that, `chunking.ts`'s
-  `classifyRule()` routes any selected rule using `contains`/`like` to
-  manual attestation with a clear reason, the same as a rule with no
-  scripted method at all. Revisit once a real rule needs it.
+  **`contains`/`like` scope decision (updated 2026-08-19 — see progress
+  log)**: originally deferred both operators to manual attestation, since
+  supporting them meant computing a boolean via in-script substring/pattern
+  matching and no rule in the repo used either operator yet. CIS Intune
+  Windows 11 rule 6.7 (`cis_intune_win11_6.7.json`) forced a revisit — it's
+  a real `contains` check ("include Success"). `contains` is now supported:
+  the rule JSON itself is untouched (`operator`/`value` already fully
+  describe the comparison), and `scriptGen/{bash,powershell}.ts` append a
+  generated line that computes a case-insensitive, literal substring test
+  and assigns it to a derived `<variable>__compliant` boolean
+  (`operatorMap.ts`'s `deriveComplianceVariableName`); `rulesJsonGen.ts`
+  then points the Intune `Rules[]` entry at that boolean with
+  `IsEquals`/`true` instead of at the raw value. Scoped to
+  `value_source: "benchmark"` only — a `contains` check with an
+  organization-defined value still routes to manual attestation, since the
+  comparison literal has to be known at script-generation time and that
+  value isn't threaded through the script generators (only through
+  `rulesJsonGen.ts`). `like` is still unimplemented and still routes to
+  manual attestation — no rule uses it, and its semantics (glob pattern?
+  something else?) were never defined; revisit the same way 6.7 forced this
+  revisit for `contains`.
 
 ## Milestones
 
@@ -1097,3 +1110,26 @@ entry here, not just the session that wrote it.
   under load. 104 unit tests, 5 e2e tests, `tsc -b`, lint, and `vite build`
   all pass. (`7392bfb` fix: animate the debounced facet collapse instead of
   snapping)
+- **2026-08-19** - Implemented in-script evaluation for the `contains`
+  operator (see the updated "contains/like scope decision" note above for
+  the full design), unblocking CIS Intune Windows 11 rule 6.7 ("Audit
+  Authentication Policy Change") from manual attestation. `operatorMap.ts`
+  gained `hasInScriptFallback()` and `deriveComplianceVariableName()`;
+  `scriptGen/powershell.ts` and `scriptGen/bash.ts` each emit a
+  case-insensitive, literal (non-wildcard) substring-test line for any
+  `contains` check, verified by actually executing the generated output
+  through real PowerShell and bash respectively (including a value
+  containing a literal `*` to prove it's never treated as a glob);
+  `rulesJsonGen.ts`'s `buildRuleEntry()` routes a `contains` check to
+  `IsEquals`/`Boolean`/`true` against the derived variable; `chunking.ts`'s
+  `classifyRule()` narrowed its manual-attestation gate accordingly, with a
+  new guard keeping a `contains` check with an organization-defined value on
+  manual attestation (not wired through the script generators yet). No rule
+  JSON was edited to make this work - `operator`/`value` in
+  `cis_intune_win11_6.7.json` already fully described the comparison, only
+  the generator changed. Left `check_command_verified: false` on that rule's
+  `auditpol` capture as-is - `auditpol` requires elevation this session
+  didn't have, so the CSV column name/casing assumption still needs
+  confirming on an elevated session before trusting 6.7's result in
+  production. 115 unit tests, `tsc -b`, and lint all pass; no e2e/screenshot
+  pass needed, this only touched `logic/*`. (commit hash pending)

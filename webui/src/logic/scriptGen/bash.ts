@@ -1,3 +1,4 @@
+import { deriveComplianceVariableName, hasInScriptFallback } from '../operatorMap'
 import type { AuditStep, OutputDataType } from '../../types/rule-detail'
 
 // One rule's worth of script content for a single chunk - just the id/title
@@ -44,6 +45,35 @@ const JSON_HELPER_LINES = [
   '}',
 ]
 
+// Embeds `text` as a literal (no glob/expansion) segment of a bash `case`
+// pattern by single-quoting it - the standard shell-escaping idiom: end the
+// quote, insert an escaped literal quote, resume quoting.
+function bashSingleQuote(text: string): string {
+  return `'${text.replace(/'/g, "'\\''")}'`
+}
+
+// A "contains" check has no native Intune operator, so the discovery
+// script itself computes the substring test and reports a plain boolean
+// under a derived variable name (see operatorMap.ts) - rulesJsonGen.ts then
+// points the Intune Rules[] entry at that boolean with IsEquals instead of
+// at the raw captured value. Managed Macs ship bash 3.2 (Apple never
+// upgrades past GPLv2), which has no `${var,,}` case-folding, so
+// case-insensitivity is done by lower-casing the literal at generation
+// time (a compile-time constant) and lower-casing the captured value at
+// runtime via `tr`, then a `case` pattern whose literal portion is
+// single-quoted so any `*`/`?` inside the value can't be read as a glob.
+function containsCheckLines(variable: string, value: string): string[] {
+  const derived = deriveComplianceVariableName(variable)
+  const loweredLiteral = bashSingleQuote(value.toLowerCase())
+  return [
+    `${variable}__lower=$(printf '%s' "$${variable}" | tr '[:upper:]' '[:lower:]')`,
+    `case "$${variable}__lower" in`,
+    `  *${loweredLiteral}*) ${derived}=true ;;`,
+    `  *) ${derived}=false ;;`,
+    'esac',
+  ]
+}
+
 function jsonHelperCall(variable: string, dataType: OutputDataType): string {
   const helper = dataType === 'boolean' ? '__json_bool' : dataType === 'integer' ? '__json_int' : '__json_str'
   return `"$(${helper} "$${variable}")"`
@@ -68,6 +98,10 @@ export function generateBashScript(rules: ScriptableRule[]): string {
       lines.push(step.check_command)
       for (const check of step.output_check) {
         variables.push({ variable: check.variable, data_type: check.data_type })
+        if (hasInScriptFallback(check.operator)) {
+          lines.push(...containsCheckLines(check.variable, String(check.value)))
+          variables.push({ variable: deriveComplianceVariableName(check.variable), data_type: 'boolean' })
+        }
       }
     }
     lines.push('')

@@ -106,4 +106,59 @@ describe('generatePowerShellScript', () => {
 
     expect(parsed).toEqual({ test_bool_var: true, test_str_var: 'he said "hi"' })
   })
+
+  it('computes a case-insensitive, literal (non-wildcard) contains check as a derived boolean', () => {
+    const rules: ScriptableRule[] = [
+      {
+        id: '6.7',
+        title: "Ensure 'Audit Authentication Policy Change' is set to include 'Success'",
+        steps: [
+          {
+            step_role: 'compliance_check',
+            original_command: null,
+            check_command: "$test_setting = 'success and A*B'",
+            check_command_verified: true,
+            output_description: '',
+            output_check: [{ variable: 'test_setting', data_type: 'string', operator: 'contains', value: 'A*B', value_source: 'benchmark' }],
+          },
+        ],
+      },
+    ]
+
+    const script = generatePowerShellScript(rules)
+    const stdout = runScript(script)
+    const parsed = JSON.parse(stdout.trim())
+
+    // Case-insensitive ('success' matched despite the captured value being
+    // lowercase while the benchmark value 'A*B' is upper), and the '*' in
+    // the value is treated as a literal character to match, not a wildcard
+    // (IndexOf, not -like) - a captured value of just 'success' with no
+    // 'A*B' substring must NOT match.
+    expect(parsed).toEqual({ test_setting: 'success and A*B', test_setting__compliant: true })
+  })
+
+  it('reports false, not a thrown error, when the captured value has no match', () => {
+    const rules: ScriptableRule[] = [
+      {
+        id: '6.7',
+        title: 'x',
+        steps: [
+          {
+            step_role: 'compliance_check',
+            original_command: null,
+            check_command: '$test_setting = $null',
+            check_command_verified: true,
+            output_description: '',
+            output_check: [{ variable: 'test_setting', data_type: 'string', operator: 'contains', value: 'Success', value_source: 'benchmark' }],
+          },
+        ],
+      },
+    ]
+
+    const script = generatePowerShellScript(rules)
+    const stdout = runScript(script)
+    const parsed = JSON.parse(stdout.trim())
+
+    expect(parsed).toEqual({ test_setting: null, test_setting__compliant: false })
+  })
 })

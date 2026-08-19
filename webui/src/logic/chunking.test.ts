@@ -67,9 +67,28 @@ describe('classifyRule', () => {
     expect(result.kind).toBe('manual')
   })
 
-  it('classifies a rule using an unsupported operator (contains/like) as manual', () => {
+  it('classifies a benchmark-defined contains check as generatable via in-script evaluation', () => {
     const rule = minimalRule()
-    rule.audit.methods[0].steps![0].output_check[0].operator = 'contains'
+    rule.audit.methods[0].steps![0].output_check[0] = {
+      variable: 'test_var',
+      data_type: 'string',
+      operator: 'contains',
+      value: 'Success',
+      value_source: 'benchmark',
+    }
+
+    const result = classifyRule(REF, rule, createSelectionEntry(REF))
+
+    expect(result.kind).toBe('generatable')
+    if (result.kind === 'generatable') {
+      expect(result.rule.ruleEntries).toHaveLength(1)
+      expect(result.rule.ruleEntries[0]).toMatchObject({ SettingName: 'test_var__compliant', Operator: 'IsEquals', DataType: 'Boolean', Operand: true })
+    }
+  })
+
+  it('classifies a rule using an operator with no native or in-script support (like) as manual', () => {
+    const rule = minimalRule()
+    rule.audit.methods[0].steps![0].output_check[0].operator = 'like'
 
     const result = classifyRule(REF, rule, createSelectionEntry(REF))
 
@@ -77,6 +96,21 @@ describe('classifyRule', () => {
     if (result.kind === 'manual') {
       expect(result.entry.reason).toMatch(/operator/i)
     }
+  })
+
+  it('classifies a contains check with an organization-defined value as manual - not wired through the script generator yet', () => {
+    const rule = minimalRule()
+    rule.audit.methods[0].steps![0].output_check[0] = {
+      variable: 'test_var',
+      data_type: 'string',
+      operator: 'contains',
+      value: null,
+      value_source: 'organization_defined',
+    }
+
+    const result = classifyRule(REF, rule, createSelectionEntry(REF))
+
+    expect(result.kind).toBe('manual')
   })
 
   it('classifies a rule missing a required organization-defined value as blocked, not manual', () => {

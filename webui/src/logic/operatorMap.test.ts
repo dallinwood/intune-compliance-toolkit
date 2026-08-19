@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isSupportedOperator, mapDataType, mapOperator } from './operatorMap'
+import { deriveComplianceVariableName, hasInScriptFallback, isSupportedOperator, mapDataType, mapOperator } from './operatorMap'
 
 describe('isSupportedOperator', () => {
   it('is true for every comparison operator Intune natively supports', () => {
@@ -38,5 +38,29 @@ describe('mapDataType', () => {
     expect(mapDataType('boolean')).toBe('Boolean')
     expect(mapDataType('integer')).toBe('Int64')
     expect(mapDataType('string')).toBe('String')
+  })
+})
+
+describe('hasInScriptFallback', () => {
+  it('is true only for contains - like has no defined semantics yet', () => {
+    expect(hasInScriptFallback('contains')).toBe(true)
+    expect(hasInScriptFallback('like')).toBe(false)
+  })
+
+  it('is false for every natively-supported operator', () => {
+    expect(hasInScriptFallback('eq')).toBe(false)
+    expect(hasInScriptFallback('ne')).toBe(false)
+    expect(hasInScriptFallback('gt')).toBe(false)
+    expect(hasInScriptFallback('gte')).toBe(false)
+    expect(hasInScriptFallback('lt')).toBe(false)
+    expect(hasInScriptFallback('lte')).toBe(false)
+  })
+})
+
+describe('deriveComplianceVariableName', () => {
+  it('appends the generator-owned __compliant suffix', () => {
+    expect(deriveComplianceVariableName('cis_intune_win11_6_7_auth_policy_change_setting')).toBe(
+      'cis_intune_win11_6_7_auth_policy_change_setting__compliant',
+    )
   })
 })
