@@ -118,10 +118,12 @@ workflow) is designed but not yet built - see "Phase 2 design" below.
 
 ## Progress log
 
-- **2026-08-19** - Built the full Phase 1 deterministic pipeline described
+- **2026-08-19** - Fixed the `pdf_to_markdown.py` source-directory bug
+  (`4e1af7f` fix: point pdf_to_markdown.py at the actual PDF source
+  directory), then built the full Phase 1 deterministic pipeline described
   above: markdown parsing module, `_metadata.json` schema/generator/
   validator, rule-body field extractor, and the acceptance test against all
-  12 rule files that existed before this session. Fixed the
-  `pdf_to_markdown.py` source-directory bug. Generated `_metadata.json` for
-  both existing benchmark versions and regenerated `_index.json`/
-  `_manifest.json`. All 90+ tests pass. (commit TBD)
+  12 rule files that existed before this session. Generated `_metadata.json`
+  for both existing benchmark versions and regenerated `_index.json`/
+  `_manifest.json`. All 90+ tests pass. (`8bb4af5` feat: deterministic
+  benchmark markdown parser + per-version metadata (Phase 1))
