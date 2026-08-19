@@ -14,6 +14,7 @@ Table detection is unaffected: it runs through a separate `find_tables()`
 code path that this patch does not touch.
 """
 
+import argparse
 from pathlib import Path
 
 import pymupdf
@@ -49,12 +50,39 @@ def find_pdfs(root_dir):
     return sorted(p for p in Path(root_dir).rglob("*") if p.suffix.lower() == ".pdf")
 
 
-def main():
-    references_dir = Path(__file__).resolve().parent.parent / "references"
-    for pdf_path in find_pdfs(references_dir):
-        output_path = convert_file(pdf_path, pdf_path.parent)
+DEFAULT_SOURCE_DIR = Path(__file__).resolve().parent.parent / "baseline-references" / "cis-benchmarks"
+
+
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--source-dir",
+        type=Path,
+        default=DEFAULT_SOURCE_DIR,
+        help=f"Directory to search for PDFs (recursively). Default: {DEFAULT_SOURCE_DIR}",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=None,
+        help="Directory to write .md files into. Default: next to each source PDF.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    pdf_paths = find_pdfs(args.source_dir)
+    if not pdf_paths:
+        print(f"No PDFs found under {args.source_dir}")
+        return 1
+
+    for pdf_path in pdf_paths:
+        output_dir = args.output_dir if args.output_dir is not None else pdf_path.parent
+        output_path = convert_file(pdf_path, output_dir)
         print(f"{pdf_path} -> {output_path}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
