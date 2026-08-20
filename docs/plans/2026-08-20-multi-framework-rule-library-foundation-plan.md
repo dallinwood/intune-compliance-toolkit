@@ -108,8 +108,8 @@ control:
     "framework": "essential_eight",
     "framework_product": null,
     "framework_version": "2023-11",
-    "control_id": "ML2-PatchApps-1",
-    "framework_level": ["Maturity Level 2"],
+    "control_id": "PatchApps-1",
+    "framework_level": ["Maturity Level 1", "Maturity Level 2"],
     "checked_date": "2026-08-20"
   }
 ]
@@ -118,12 +118,18 @@ control:
 - `framework_product` is `null` where the framework has no product axis
   (ISM and Essential Eight are organised by topic/strategy, not by product).
 - `framework_level`: a required array of strings, e.g. `["Level 1"]` for a
-  CIS profile/Implementation Group, `["Maturity Level 2"]` for an Essential
-  Eight maturity level. A control can sit at more than one level (hence an
-  array), and an empty array is valid for a framework whose controls don't
-  carry a tiering concept at all. This is a short, standard classification
-  label - a factual system-of-organisation name, not descriptive prose -
-  same category as a control ID, so it's fine on the same terms.
+  CIS profile/Implementation Group, or `["Maturity Level 1", "Maturity
+  Level 2"]` for an Essential Eight control. It's an array not merely
+  because a rule can cover more than one distinct control, but because a
+  *single* mapping entry (one `control_id`) can legitimately carry more
+  than one level for cumulative tiering models: Essential Eight's maturity
+  levels are cumulative, so a control that satisfies Maturity Level 2 also
+  satisfies Maturity Level 1 for that same control, and both belong on the
+  one mapping entry, not split across two. An empty array is valid for a
+  framework whose controls don't carry a tiering concept at all. This is a
+  short, standard classification label - a factual system-of-organisation
+  name, not descriptive prose - same category as a control ID, so it's
+  fine on the same terms.
 - No citation, title, or descriptive text field beyond `framework_level` -
   identifiers only. A secondary taxonomy within a framework (e.g. CIS
   Controls v8) is just another entry with its own `framework`/`control_id`,
