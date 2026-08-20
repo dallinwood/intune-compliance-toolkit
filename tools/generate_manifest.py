@@ -44,7 +44,8 @@ def folder_entry(folder, rule_files, baselines_root):
     family, product, version = relative_parts
 
     first_rule = json.loads(rule_files[0].read_text(encoding="utf-8"))
-    platform = first_rule.get("benchmark", {}).get("platform")
+    platforms = (first_rule.get("policy_classification") or {}).get("platforms") or []
+    platform = platforms[0] if platforms else None
 
     has_metadata = (folder / METADATA_FILENAME).is_file()
 
@@ -76,10 +77,6 @@ def write_manifest(folders, baselines_root, manifest_path):
 def main():
     root_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else BASELINES_DIR
     folders = find_rule_folders(root_dir)
-
-    if not folders:
-        print(f"No rule files found under {root_dir}")
-        return 1
 
     manifest_path = write_manifest(folders, baselines_root=root_dir, manifest_path=MANIFEST_PATH)
     print(f"{manifest_path} <- {len(folders)} folder(s)")

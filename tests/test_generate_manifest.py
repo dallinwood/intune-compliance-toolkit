@@ -1,3 +1,4 @@
+import copy
 import json
 from pathlib import Path
 
@@ -10,8 +11,22 @@ MINIMAL_RULE = {
     "id": "1.1",
     "title": "Ensure Something",
     "assessment_status": "Automated",
-    "benchmark": {"product": "Test Benchmark", "version": "1.0.0", "platform": "Test Platform"},
-    "profile_applicability": ["Level 1"],
+    "authoring_mode": "independent",
+    "framework_mappings": [
+        {
+            "framework": "example",
+            "framework_product": "example_product",
+            "framework_version": "1.0.0",
+            "control_id": "1.1",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+    "policy_classification": {
+        "control_surface": "device_config_profile",
+        "platforms": ["Test Platform"],
+        "management_channels": ["intune_settings_catalog"],
+    },
     "recommended_state": "Disabled",
     "description": "prose",
     "rationale": "prose",
@@ -25,7 +40,6 @@ MINIMAL_RULE = {
                 "steps": [
                     {
                         "step_role": "compliance_check",
-                        "original_command": None,
                         "check_command": "$test_rule_a_status = 1",
                         "check_command_verified": True,
                         "output_description": "...",
@@ -35,7 +49,7 @@ MINIMAL_RULE = {
                                 "data_type": "integer",
                                 "operator": "eq",
                                 "value": 1,
-                                "value_source": "benchmark",
+                                "value_source": "rule_defined",
                             }
                         ],
                     }
@@ -51,8 +65,9 @@ MINIMAL_RULE = {
 
 
 def write_rule(path, rule_id, filename, platform="Test Platform"):
-    rule = {**MINIMAL_RULE, "id": rule_id}
-    rule["benchmark"] = {**MINIMAL_RULE["benchmark"], "platform": platform}
+    rule = copy.deepcopy(MINIMAL_RULE)
+    rule["id"] = rule_id
+    rule["policy_classification"]["platforms"] = [platform]
     (path / filename).write_text(json.dumps(rule), encoding="utf-8")
 
 
@@ -132,6 +147,14 @@ def test_write_manifest_is_deterministic(tmp_path):
     )
 
     assert first_pass == second_pass
+
+
+def test_write_manifest_handles_zero_folders(tmp_path):
+    manifest_path = tmp_path / "_manifest.json"
+
+    written_path = write_manifest({}, baselines_root=tmp_path, manifest_path=manifest_path)
+
+    assert json.loads(written_path.read_text(encoding="utf-8")) == {"schemaVersion": 1, "baselines": []}
 
 
 def test_committed_manifest_matches_repo_baselines():
