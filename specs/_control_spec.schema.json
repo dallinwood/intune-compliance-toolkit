@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intune-compliance-toolkit/schemas/control-spec.schema.json",
+  "title": "Independent-authoring control spec",
+  "description": "Fact-only specification consumed by the content-authoring step of the independent-authoring pipeline. Holds no source framework's own copyrightable expression by construction: mechanism facts (a fact, not expression), a fixed rationale vocabulary, and the spec author's own independently-written statement of intent - never a paraphrase of a source framework's specific wording. additionalProperties: false everywhere in this schema is deliberate: it is the mechanism that keeps a stray free-text field from becoming a smuggled paraphrase.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mechanism", "platform", "applicability_tags", "rationale_tags",
+    "description_intent", "rationale_intent", "framework_mapping_refs"
+  ],
+  "properties": {
+    "mechanism": { "$ref": "#/$defs/mechanism" },
+    "platform": { "type": "string", "minLength": 1 },
+    "applicability_tags": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "enterprise", "small_business", "high_security",
+          "regulated_environment", "byod", "shared_device", "remote_workforce"
+        ]
+      }
+    },
+    "rationale_tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "reduces_attack_surface", "enforces_least_privilege",
+          "prevents_credential_exposure", "prevents_unauthorized_access",
+          "ensures_auditability", "prevents_data_exfiltration",
+          "reduces_persistence_risk", "enforces_secure_defaults",
+          "maintains_patch_currency", "prevents_privilege_escalation"
+        ]
+      }
+    },
+    "description_intent": { "type": "string", "minLength": 1 },
+    "rationale_intent": { "type": "string", "minLength": 1 },
+    "framework_mapping_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/frameworkMappingRef" }
+    }
+  },
+  "$defs": {
+    "mechanism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "identifier", "data_type", "secure_value", "current_default"],
+      "properties": {
+        "type": {
+          "enum": [
+            "registry_value", "csp_uri", "plist_key", "gpo_setting",
+            "command_output", "file_permission", "service_state",
+            "account_policy", "process_attestation", "other_structured"
+          ]
+        },
+        "identifier": { "type": "string", "minLength": 1 },
+        "data_type": { "enum": ["boolean", "integer", "string"] },
+        "secure_value": { "type": ["string", "number", "boolean"] },
+        "current_default": { "type": ["string", "number", "boolean", "null"] }
+      }
+    },
+    "frameworkMappingRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "control_id", "framework_version", "framework_level", "checked_date"],
+      "properties": {
+        "framework": { "type": "string", "minLength": 1 },
+        "control_id": { "type": "string", "minLength": 1 },
+        "framework_version": { "type": "string", "minLength": 1 },
+        "framework_level": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "checked_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    }
+  }
+}
