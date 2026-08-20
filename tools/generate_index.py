@@ -58,7 +58,7 @@ def is_skipped_dir(dirname):
     return dirname.startswith(".") or dirname in SKIPPED_DIR_NAMES
 
 
-REQUIRED_RULE_KEYS = {"id", "title", "benchmark"}
+REQUIRED_RULE_KEYS = {"id", "title", "framework_mappings"}
 
 
 def looks_like_rule_file(path):
@@ -136,8 +136,8 @@ def rule_summary(rule_path):
         "title": rule.get("title"),
         "assessment_status": "Automated" if is_automated(rule) else "Manual",
         "source_assessment_status": rule.get("assessment_status"),
-        "benchmark": rule.get("benchmark"),
-        "profile_applicability": rule.get("profile_applicability"),
+        "framework_mappings": rule.get("framework_mappings"),
+        "policy_classification": rule.get("policy_classification"),
         "recommended_state": rule.get("recommended_state"),
         "requires_organization_defined_value": requires_organization_defined_value(rule),
         "variables": rule_variables(rule),

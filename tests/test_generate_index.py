@@ -14,8 +14,22 @@ MINIMAL_RULE = {
     "id": "1.1",
     "title": "Ensure Something",
     "assessment_status": "Automated",
-    "benchmark": {"product": "Test Benchmark", "version": "1.0.0", "platform": "Test"},
-    "profile_applicability": ["Level 1"],
+    "authoring_mode": "independent",
+    "framework_mappings": [
+        {
+            "framework": "example",
+            "framework_product": "example_product",
+            "framework_version": "1.0.0",
+            "control_id": "1.1",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+    "policy_classification": {
+        "control_surface": "device_config_profile",
+        "platforms": ["windows_11"],
+        "management_channels": ["intune_settings_catalog"],
+    },
     "recommended_state": "Disabled",
     "description": "long prose that should not end up in the index",
     "rationale": "more prose",
@@ -29,7 +43,6 @@ MINIMAL_RULE = {
                 "steps": [
                     {
                         "step_role": "compliance_check",
-                        "original_command": None,
                         "check_command": "$test_rule_a_status = 1",
                         "check_command_verified": True,
                         "output_description": "...",
@@ -39,7 +52,7 @@ MINIMAL_RULE = {
                                 "data_type": "integer",
                                 "operator": "eq",
                                 "value": 1,
-                                "value_source": "benchmark",
+                                "value_source": "rule_defined",
                             }
                         ],
                     }
@@ -104,6 +117,8 @@ def test_index_omits_prose_fields_and_captures_variables(tmp_path):
 
     entry = index["rules"][0]
     assert entry["variables"] == ["test_rule_a_status"]
+    assert entry["framework_mappings"] == MINIMAL_RULE["framework_mappings"]
+    assert entry["policy_classification"] == MINIMAL_RULE["policy_classification"]
     assert "description" not in entry
     assert "rationale" not in entry
 
