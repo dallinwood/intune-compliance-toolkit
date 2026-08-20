@@ -101,13 +101,15 @@ control:
     "framework_product": "windows_11",
     "framework_version": "5.0.0",
     "control_id": "18.9.31.2",
+    "framework_level": ["Level 1"],
     "checked_date": "2026-08-20"
   },
   {
-    "framework": "ism",
+    "framework": "essential_eight",
     "framework_product": null,
-    "framework_version": "2025-03",
-    "control_id": "ISM-1546",
+    "framework_version": "2023-11",
+    "control_id": "ML2-PatchApps-1",
+    "framework_level": ["Maturity Level 2"],
     "checked_date": "2026-08-20"
   }
 ]
@@ -115,13 +117,26 @@ control:
 
 - `framework_product` is `null` where the framework has no product axis
   (ISM and Essential Eight are organised by topic/strategy, not by product).
-- No citation, title, or descriptive text field - identifiers only. A
-  secondary taxonomy within a framework (e.g. CIS Controls v8) is just
-  another entry with its own `framework`/`control_id`, not a special field
-  on the primary one.
+- `framework_level`: a required array of strings, e.g. `["Level 1"]` for a
+  CIS profile/Implementation Group, `["Maturity Level 2"]` for an Essential
+  Eight maturity level. A control can sit at more than one level (hence an
+  array), and an empty array is valid for a framework whose controls don't
+  carry a tiering concept at all. This is a short, standard classification
+  label - a factual system-of-organisation name, not descriptive prose -
+  same category as a control ID, so it's fine on the same terms.
+- No citation, title, or descriptive text field beyond `framework_level` -
+  identifiers only. A secondary taxonomy within a framework (e.g. CIS
+  Controls v8) is just another entry with its own `framework`/`control_id`,
+  not a special field on the primary one.
 - `checked_date` records when this specific mapping was last verified
   against the framework's currently published text, independent of when the
   rule's own content was last touched.
+
+This is also what lets the web UI (sub-project 4) show, for a selected
+rule, something like "Aligns with: CIS Windows 11 v5.0.0 (Level 1) ·
+Essential Eight (Maturity Level 2)" - composed directly from
+`framework`/`framework_version`/`framework_level` with one simple display
+template, no framework-specific rendering logic needed.
 
 ### `authoring_mode`
 
@@ -227,7 +242,7 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
   "description_intent": "Plain-English, independently-written statement of what the control requires and why, for the content-authoring step to write from.",
   "rationale_intent": "Plain-English, independently-written statement of the underlying security concern.",
   "framework_mapping_refs": [
-    { "framework": "cis", "control_id": "18.9.31.2", "framework_version": "5.0.0", "checked_date": "2026-08-20" }
+    { "framework": "cis", "control_id": "18.9.31.2", "framework_version": "5.0.0", "framework_level": ["Level 1"], "checked_date": "2026-08-20" }
   ]
 }
 ```
