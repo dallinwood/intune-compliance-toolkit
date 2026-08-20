@@ -323,6 +323,1494 @@ whether git history needs rewriting to fully unpublish CIS text that was
 in prior commits (removing the files from HEAD in step 1 doesn't do that -
 same caveat the review already recorded).
 
+## Implementation plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Ship schema v2 (`baselines/_rule.schema.json`), the independent-authoring spec schema (`specs/_control_spec.schema.json`), updated `tools/generate_index.py`/`tools/generate_manifest.py`, updated `compliance-benchmark-json` skill docs/examples, a dual-licence note in `README.md`, and removal of the 12 existing CIS rule files from `baselines/` (per "Decisions already made" above).
+
+**Architecture:** Same JSON-Schema-plus-Python-tooling architecture already in this repo (`baselines/_rule.schema.json` validated by `tools/validate_rules.py` via `jsonschema`, indexed by `tools/generate_index.py`/`tools/generate_manifest.py`, exercised by `pytest`). No new frameworks or dependencies.
+
+**Tech Stack:** Python 3, `jsonschema`, `pytest` (already in `requirements.txt`/`requirements-dev.txt`).
+
+**Spec:** This document's "Schema v2", "Independent-authoring pipeline: the fact-only spec", and "Tooling impact" sections above.
+
+## Global Constraints
+
+- `additionalProperties: false` on every object in both schemas - no undocumented fields slip through.
+- No framework-identifying branding outside `framework_mappings`/`source_license`/`framework_mapping_refs` - see "Decisions already made" above. Bundled skill examples use `"framework": "example"`, never a real framework name, so nobody mistakes a fixture for real mapping data.
+- Dates are `YYYY-MM-DD` strings throughout (`checked_date`, `retrieved_date`).
+- Every task ends with `pytest` green before its commit.
+- Follow this repo's `.claude/CLAUDE.md`: commit after each verified task with a `type: summary` message plus `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`, push to the current branch (`rework`) right after, and add a Progress log entry (below) as work lands.
+
+---
+
+### Task 1: Rule schema v2
+
+**Files:**
+- Modify: `baselines/_rule.schema.json` (full rewrite)
+- Modify: `tests/test_rule_schema.py` (full rewrite of fixtures/assertions)
+
+**Interfaces:**
+- Produces: the v2 rule shape every later task assumes - `framework_mappings[]` (`framework`, `framework_product`, `framework_version`, `control_id`, `framework_level[]`, `checked_date`), `authoring_mode` (`"independent"` | `"licensed_adaptation"`), `source_license` (required iff `authoring_mode == "licensed_adaptation"`), `policy_classification` (`control_surface`, `platforms[]`, `management_channels[]`). `audit`/`remediation`/`references`/`default_value`/`additional_information`/`minimum_os_csp`/`recommended_state` are unchanged from v1.
+
+- [ ] **Step 1: Rewrite `tests/test_rule_schema.py`'s fixture and tests for the v2 shape**
+
+Replace the file's contents with:
+
+```python
+import copy
+import json
+from pathlib import Path
+
+import jsonschema
+import pytest
+
+from tools.validate_rules import (
+    convention_errors,
+    file_slug,
+    find_rule_files,
+    load_schema,
+    schema_errors,
+)
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+BASELINES_DIR = REPO_ROOT / "baselines"
+EXAMPLES_DIR = REPO_ROOT / ".claude" / "skills" / "compliance-benchmark-json" / "references" / "examples"
+
+MINIMAL_VALID_RULE = {
+    "id": "1.1",
+    "title": "Ensure Something",
+    "assessment_status": "Automated",
+    "authoring_mode": "independent",
+    "framework_mappings": [
+        {
+            "framework": "example",
+            "framework_product": "example_product",
+            "framework_version": "1.0.0",
+            "control_id": "1.1",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+    "policy_classification": {
+        "control_surface": "device_config_profile",
+        "platforms": ["windows_11"],
+        "management_channels": ["intune_settings_catalog"],
+    },
+    "recommended_state": "Disabled",
+    "description": "...",
+    "rationale": "...",
+    "impact": "...",
+    "audit": {
+        "methods": [
+            {
+                "method_name": "Terminal Method",
+                "type": "scripted",
+                "description": "...",
+                "steps": [
+                    {
+                        "step_role": "compliance_check",
+                        "original_command": None,
+                        "check_command": "test_1_1_status=1",
+                        "check_command_verified": True,
+                        "output_description": "...",
+                        "output_check": [
+                            {
+                                "variable": "test_1_1_status",
+                                "data_type": "integer",
+                                "operator": "eq",
+                                "value": 1,
+                                "value_source": "benchmark",
+                            }
+                        ],
+                    }
+                ],
+            }
+        ]
+    },
+    "remediation": {"methods": [{"method_name": "x", "type": "manual_steps", "description": "..."}]},
+    "default_value": None,
+    "references": [],
+    "additional_information": None,
+}
+
+
+@pytest.fixture(scope="module")
+def validator():
+    return jsonschema.Draft202012Validator(load_schema())
+
+
+def test_minimal_valid_rule_matches_schema(validator):
+    assert schema_errors(MINIMAL_VALID_RULE, validator) == []
+
+
+def test_organization_defined_value_source_requires_null_value(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    output_check = rule["audit"]["methods"][0]["steps"][0]["output_check"][0]
+    output_check["value_source"] = "organization_defined"
+    output_check["value"] = 5
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_lookup_step_requires_empty_output_check(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["audit"]["methods"][0]["steps"][0]["step_role"] = "lookup"
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_manual_method_forbids_steps(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["audit"]["methods"][0]["type"] = "manual"
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_schema_file_is_itself_valid():
+    jsonschema.Draft202012Validator.check_schema(load_schema())
+
+
+def test_framework_mappings_requires_at_least_one_entry(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["framework_mappings"] = []
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_licensed_adaptation_requires_source_license(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["authoring_mode"] = "licensed_adaptation"
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_licensed_adaptation_with_source_license_is_valid(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["authoring_mode"] = "licensed_adaptation"
+    rule["source_license"] = {
+        "framework": "example",
+        "license_name": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "rights_holder": "Example Rights Holder",
+        "source_url": "https://example.invalid/source",
+        "retrieved_date": "2026-08-20",
+        "modified": True,
+    }
+
+    assert schema_errors(rule, validator) == []
+
+
+def test_independent_mode_forbids_source_license(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["source_license"] = {
+        "framework": "example",
+        "license_name": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "rights_holder": "Example Rights Holder",
+        "source_url": "https://example.invalid/source",
+        "retrieved_date": "2026-08-20",
+        "modified": True,
+    }
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_framework_level_accepts_multiple_cumulative_levels(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["framework_mappings"][0]["framework_level"] = ["Maturity Level 1", "Maturity Level 2"]
+
+    assert schema_errors(rule, validator) == []
+
+
+@pytest.mark.parametrize("rule_path", find_rule_files(BASELINES_DIR), ids=lambda p: p.name)
+def test_baseline_rule_matches_schema(rule_path, validator):
+    rule = json.loads(rule_path.read_text(encoding="utf-8"))
+
+    assert schema_errors(rule, validator) == []
+
+
+@pytest.mark.parametrize("rule_path", find_rule_files(BASELINES_DIR), ids=lambda p: p.name)
+def test_baseline_rule_follows_variable_conventions(rule_path):
+    rule = json.loads(rule_path.read_text(encoding="utf-8"))
+
+    assert convention_errors(rule, file_slug(rule_path)) == []
+
+
+@pytest.mark.parametrize("example_path", sorted(EXAMPLES_DIR.glob("*.json")), ids=lambda p: p.name)
+def test_bundled_example_matches_schema(example_path, validator):
+    rule = json.loads(example_path.read_text(encoding="utf-8"))
+
+    assert schema_errors(rule, validator) == []
+```
+
+- [ ] **Step 2: Run the tests to confirm they fail against the current (v1) schema**
+
+Run: `python -m pytest tests/test_rule_schema.py -v`
+Expected: FAIL - `MINIMAL_VALID_RULE` is missing v1-required `benchmark`/`profile_applicability` and has v1-unknown `authoring_mode`/`framework_mappings`/`policy_classification`, so `additionalProperties: false` and missing-required-field errors fire. (The two parametrized tests over `BASELINES_DIR`/`EXAMPLES_DIR` still pass at this point since v1 files still validate against the still-v1 schema - that's expected and fine.)
+
+- [ ] **Step 3: Rewrite `baselines/_rule.schema.json`**
+
+Replace the file's contents with:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intune-compliance-toolkit/schemas/rule.schema.json",
+  "title": "Compliance rule",
+  "description": "Machine-checkable version of references/schema.md. Any change to this file that isn't specific to one rule's content must be mirrored in schema.md and the bundled examples in the same pass - see SKILL.md's 'Keeping examples and this doc in sync'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "title", "assessment_status", "authoring_mode", "framework_mappings",
+    "policy_classification", "recommended_state", "description", "rationale",
+    "impact", "audit", "remediation", "default_value", "references",
+    "additional_information"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "assessment_status": { "enum": ["Automated", "Manual"] },
+    "authoring_mode": { "enum": ["independent", "licensed_adaptation"] },
+    "framework_mappings": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/frameworkMapping" }
+    },
+    "source_license": { "$ref": "#/$defs/sourceLicense" },
+    "policy_classification": { "$ref": "#/$defs/policyClassification" },
+    "recommended_state": { "type": ["string", "null"] },
+    "description": { "type": "string", "minLength": 1 },
+    "rationale": { "type": "string", "minLength": 1 },
+    "impact": { "type": "string", "minLength": 1 },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["methods"],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/auditMethod" }
+        }
+      }
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["methods"],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/remediationMethod" }
+        }
+      }
+    },
+    "default_value": { "type": ["string", "null"] },
+    "references": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "minimum_os_csp": { "type": ["string", "null"] },
+    "additional_information": {
+      "type": ["string", "object", "null"]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "authoring_mode": { "const": "licensed_adaptation" } }, "required": ["authoring_mode"] },
+      "then": { "required": ["source_license"] }
+    },
+    {
+      "if": { "properties": { "authoring_mode": { "const": "independent" } }, "required": ["authoring_mode"] },
+      "then": { "not": { "required": ["source_license"] } }
+    }
+  ],
+  "$defs": {
+    "frameworkMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "framework_product", "framework_version", "control_id", "framework_level", "checked_date"],
+      "properties": {
+        "framework": { "type": "string", "minLength": 1 },
+        "framework_product": { "type": ["string", "null"] },
+        "framework_version": { "type": "string", "minLength": 1 },
+        "control_id": { "type": "string", "minLength": 1 },
+        "framework_level": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "checked_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "sourceLicense": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "license_name", "license_url", "rights_holder", "source_url", "retrieved_date", "modified"],
+      "properties": {
+        "framework": { "type": "string", "minLength": 1 },
+        "license_name": { "type": "string", "minLength": 1 },
+        "license_url": { "type": "string", "minLength": 1 },
+        "rights_holder": { "type": "string", "minLength": 1 },
+        "source_url": { "type": "string", "minLength": 1 },
+        "retrieved_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "modified": { "const": true }
+      }
+    },
+    "policyClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["control_surface", "platforms", "management_channels"],
+      "properties": {
+        "control_surface": {
+          "enum": ["device_config_profile", "device_compliance_check", "server_infrastructure_config", "process_administrative"]
+        },
+        "platforms": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "management_channels": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "auditMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method_name", "type", "description"],
+      "properties": {
+        "method_name": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["manual", "scripted"] },
+        "description": { "type": "string", "minLength": 1 },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "example": { "type": "string", "minLength": 1 },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/auditStep" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "scripted" } } },
+          "then": { "required": ["steps"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "manual" } } },
+          "then": { "not": { "required": ["steps"] } }
+        }
+      ]
+    },
+    "auditStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_role", "original_command", "check_command",
+        "check_command_verified", "output_description", "output_check"
+      ],
+      "properties": {
+        "step_role": { "enum": ["compliance_check", "lookup"] },
+        "original_command": { "type": ["string", "null"] },
+        "check_command": { "type": "string", "minLength": 1 },
+        "check_command_verified": { "type": "boolean" },
+        "output_description": { "type": "string", "minLength": 1 },
+        "check_command_notes": { "type": "string", "minLength": 1 },
+        "output_check": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/outputCheck" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "step_role": { "const": "lookup" } } },
+          "then": {
+            "properties": { "output_check": { "maxItems": 0 } }
+          }
+        }
+      ]
+    },
+    "outputCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variable", "data_type", "operator", "value", "value_source"],
+      "properties": {
+        "variable": { "type": "string", "minLength": 1 },
+        "data_type": { "enum": ["boolean", "integer", "string"] },
+        "operator": { "enum": ["eq", "ne", "gt", "gte", "lt", "lte", "contains", "like"] },
+        "value": { "type": ["string", "number", "boolean", "null"] },
+        "value_source": { "enum": ["benchmark", "organization_defined"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "value_source": { "const": "organization_defined" } } },
+          "then": { "properties": { "value": { "const": null } } }
+        }
+      ]
+    },
+    "remediationMethod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method_name", "type", "description"],
+      "properties": {
+        "method_name": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["configuration_profile", "manual_steps", "scripted"] },
+        "description": { "type": "string", "minLength": 1 },
+        "config_keys": {
+          "type": "array",
+          "items": { "type": "object", "minProperties": 1 }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/remediationStep" }
+        },
+        "example": { "type": "string", "minLength": 1 },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "remediationStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command"],
+      "properties": {
+        "command": { "type": "string", "minLength": 1 },
+        "expected_output": { "type": "string", "minLength": 1 },
+        "result_note": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
+```
+
+- [ ] **Step 4: Run the tests to confirm they now pass**
+
+Run: `python -m pytest tests/test_rule_schema.py -v`
+Expected: PASS - all tests, including the two parametrized ones (now covering zero files, since `baselines/` and `EXAMPLES_DIR` still hold v1-shaped content that Task 5/6 haven't touched yet... note: at this exact point in the plan, the parametrized `test_baseline_rule_matches_schema`/`test_bundled_example_matches_schema` tests WILL fail, because the 12 real files and 8 bundled examples are still v1-shaped and the schema is now v2. This is expected and resolved by Tasks 5 and 6 respectively - don't try to make this task's tests fully green in isolation; run `python -m pytest tests/test_rule_schema.py -v -k "not baseline_rule and not bundled_example"` instead to confirm just this task's own new/changed tests pass, and note the two known-red parametrized tests in the commit message.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add baselines/_rule.schema.json tests/test_rule_schema.py
+git commit -m "$(cat <<'EOF'
+feat: rule schema v2 (framework_mappings, authoring_mode, policy_classification)
+
+Replaces the single benchmark object and CIS-namespaced extended_attributes
+with a framework_mappings array (so one rule can cross-reference multiple
+frameworks), an authoring_mode + source_license pair (so rule content
+records whether it was independently authored or adapted from an openly
+licensed source), and a policy_classification taxonomy (control surface,
+platforms, management channels) for browsing beyond Intune.
+
+Known red until Tasks 5/6 land: test_baseline_rule_matches_schema and
+test_bundled_example_matches_schema still cover v1-shaped files.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Task 2: Independent-authoring control spec schema
+
+**Files:**
+- Create: `specs/_control_spec.schema.json`
+- Create: `tools/validate_specs.py`
+- Create: `tests/test_control_spec_schema.py`
+
+**Interfaces:**
+- Consumes: nothing from Task 1 (independent artifact type).
+- Produces: `load_schema()`/`schema_errors()` in `tools/validate_specs.py`, mirroring `tools/validate_rules.py`'s functions of the same name, for sub-project 2 to build on. The spec shape: `mechanism` (`type`, `identifier`, `data_type`, `secure_value`, `current_default`), `platform`, `applicability_tags[]`, `rationale_tags[]` (fixed enum), `description_intent`, `rationale_intent`, `framework_mapping_refs[]` (`framework`, `control_id`, `framework_version`, `framework_level[]`, `checked_date`).
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/test_control_spec_schema.py`:
+
+```python
+import copy
+
+import jsonschema
+import pytest
+
+from tools.validate_specs import load_schema, schema_errors
+
+MINIMAL_VALID_SPEC = {
+    "mechanism": {
+        "type": "registry_value",
+        "identifier": "HKLM:\\SOFTWARE\\Example\\Setting",
+        "data_type": "integer",
+        "secure_value": 1,
+        "current_default": 0,
+    },
+    "platform": "windows_11",
+    "applicability_tags": ["enterprise"],
+    "rationale_tags": ["reduces_attack_surface"],
+    "description_intent": "Plain-English statement of what the control requires, written independently of any source framework's own wording.",
+    "rationale_intent": "Plain-English statement of the underlying security concern, written independently.",
+    "framework_mapping_refs": [
+        {
+            "framework": "example",
+            "control_id": "1.1",
+            "framework_version": "1.0.0",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+}
+
+
+@pytest.fixture(scope="module")
+def validator():
+    return jsonschema.Draft202012Validator(load_schema())
+
+
+def test_minimal_valid_spec_matches_schema(validator):
+    assert schema_errors(MINIMAL_VALID_SPEC, validator) == []
+
+
+def test_schema_file_is_itself_valid():
+    jsonschema.Draft202012Validator.check_schema(load_schema())
+
+
+def test_rationale_tags_must_be_from_the_fixed_vocabulary(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["rationale_tags"] = ["made_up_tag_not_in_vocabulary"]
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_rationale_tags_requires_at_least_one_entry(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["rationale_tags"] = []
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_framework_mapping_refs_requires_at_least_one_entry(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["framework_mapping_refs"] = []
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_no_free_text_field_beyond_the_two_intent_fields(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["notes"] = "a free-text field that must not be allowed to exist"
+
+    assert schema_errors(spec, validator) != []
+```
+
+- [ ] **Step 2: Run to verify it fails**
+
+Run: `python -m pytest tests/test_control_spec_schema.py -v`
+Expected: FAIL with `ModuleNotFoundError: No module named 'tools.validate_specs'` (the module doesn't exist yet).
+
+- [ ] **Step 3: Create `tools/validate_specs.py`**
+
+```python
+"""Validate control spec JSON files against specs/_control_spec.schema.json.
+
+A control spec is the fact-only intermediate artifact the independent-
+authoring pipeline (sub-project 2) produces: mechanism facts, a fixed
+rationale vocabulary, and the spec author's own independently-written
+statement of intent. It holds no source framework's own copyrightable
+expression by construction - see docs/plans/2026-08-20-multi-framework-
+rule-library-foundation-plan.md.
+"""
+
+import json
+import sys
+from pathlib import Path
+
+import jsonschema
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SCHEMA_PATH = REPO_ROOT / "specs" / "_control_spec.schema.json"
+
+
+def load_schema():
+    return json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+def find_spec_files(root_dir):
+    root_dir = Path(root_dir)
+    if root_dir.is_file():
+        return [] if root_dir.name.startswith("_") else [root_dir]
+    return sorted(
+        path for path in root_dir.rglob("*.json")
+        if not path.name.startswith("_")
+    )
+
+
+def schema_errors(spec, validator):
+    return [f"{error.json_path}: {error.message}" for error in validator.iter_errors(spec)]
+
+
+def validate_spec_file(spec_path, validator):
+    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    return schema_errors(spec, validator)
+
+
+def main():
+    root_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else REPO_ROOT / "specs"
+    validator = jsonschema.Draft202012Validator(load_schema())
+
+    spec_files = find_spec_files(root_dir)
+    if not spec_files:
+        print(f"No spec files found under {root_dir}")
+        return 0
+
+    failed = False
+    for spec_path in spec_files:
+        errors = validate_spec_file(spec_path, validator)
+        if errors:
+            failed = True
+            print(f"FAIL {spec_path}")
+            for error in errors:
+                print(f"  - {error}")
+
+    if not failed:
+        print(f"OK - {len(spec_files)} spec file(s) valid under {root_dir}")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 4: Create `specs/_control_spec.schema.json`**
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://intune-compliance-toolkit/schemas/control-spec.schema.json",
+  "title": "Independent-authoring control spec",
+  "description": "Fact-only specification consumed by the content-authoring step of the independent-authoring pipeline. Holds no source framework's own copyrightable expression by construction: mechanism facts (a fact, not expression), a fixed rationale vocabulary, and the spec author's own independently-written statement of intent - never a paraphrase of a source framework's specific wording. additionalProperties: false everywhere in this schema is deliberate: it is the mechanism that keeps a stray free-text field from becoming a smuggled paraphrase.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mechanism", "platform", "applicability_tags", "rationale_tags",
+    "description_intent", "rationale_intent", "framework_mapping_refs"
+  ],
+  "properties": {
+    "mechanism": { "$ref": "#/$defs/mechanism" },
+    "platform": { "type": "string", "minLength": 1 },
+    "applicability_tags": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "enterprise", "small_business", "high_security",
+          "regulated_environment", "byod", "shared_device", "remote_workforce"
+        ]
+      }
+    },
+    "rationale_tags": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "reduces_attack_surface", "enforces_least_privilege",
+          "prevents_credential_exposure", "prevents_unauthorized_access",
+          "ensures_auditability", "prevents_data_exfiltration",
+          "reduces_persistence_risk", "enforces_secure_defaults",
+          "maintains_patch_currency", "prevents_privilege_escalation"
+        ]
+      }
+    },
+    "description_intent": { "type": "string", "minLength": 1 },
+    "rationale_intent": { "type": "string", "minLength": 1 },
+    "framework_mapping_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/frameworkMappingRef" }
+    }
+  },
+  "$defs": {
+    "mechanism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "identifier", "data_type", "secure_value", "current_default"],
+      "properties": {
+        "type": {
+          "enum": [
+            "registry_value", "csp_uri", "plist_key", "gpo_setting",
+            "command_output", "file_permission", "service_state",
+            "account_policy", "process_attestation", "other_structured"
+          ]
+        },
+        "identifier": { "type": "string", "minLength": 1 },
+        "data_type": { "enum": ["boolean", "integer", "string"] },
+        "secure_value": { "type": ["string", "number", "boolean"] },
+        "current_default": { "type": ["string", "number", "boolean", "null"] }
+      }
+    },
+    "frameworkMappingRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "control_id", "framework_version", "framework_level", "checked_date"],
+      "properties": {
+        "framework": { "type": "string", "minLength": 1 },
+        "control_id": { "type": "string", "minLength": 1 },
+        "framework_version": { "type": "string", "minLength": 1 },
+        "framework_level": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "checked_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    }
+  }
+}
+```
+
+`applicability_tags`/`rationale_tags` are first-pass vocabularies - extend the enum list when a real spec needs a value that isn't there yet; never add a free-text escape hatch instead.
+
+- [ ] **Step 5: Run to verify it passes**
+
+Run: `python -m pytest tests/test_control_spec_schema.py -v`
+Expected: PASS - all 6 tests.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add specs/_control_spec.schema.json tools/validate_specs.py tests/test_control_spec_schema.py
+git commit -m "$(cat <<'EOF'
+feat: independent-authoring control spec schema
+
+Adds the fact-only spec shape the independent-authoring pipeline
+(sub-project 2) will produce and consume: mechanism facts, fixed
+applicability/rationale vocabularies, and two independently-written intent
+fields the content-authoring step writes final rule prose from.
+additionalProperties: false throughout is what keeps a stray free-text
+field from becoming a smuggled paraphrase of a source framework's wording.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Task 3: `tools/generate_index.py` for v2
+
+**Files:**
+- Modify: `tools/generate_index.py`
+- Modify: `tests/test_generate_index.py`
+
+**Interfaces:**
+- Consumes: v2 rule shape from Task 1 (`framework_mappings`, `policy_classification`).
+- Produces: `rule_summary()` now returns `framework_mappings`/`policy_classification` keys instead of `benchmark`; `looks_like_rule_file()` duck-types on `{"id", "title", "framework_mappings"}`.
+
+- [ ] **Step 1: Update `tests/test_generate_index.py`'s fixture and assertions**
+
+In `tests/test_generate_index.py`, replace the `MINIMAL_RULE` dict (lines 13-54) with:
+
+```python
+MINIMAL_RULE = {
+    "id": "1.1",
+    "title": "Ensure Something",
+    "assessment_status": "Automated",
+    "authoring_mode": "independent",
+    "framework_mappings": [
+        {
+            "framework": "example",
+            "framework_product": "example_product",
+            "framework_version": "1.0.0",
+            "control_id": "1.1",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+    "policy_classification": {
+        "control_surface": "device_config_profile",
+        "platforms": ["windows_11"],
+        "management_channels": ["intune_settings_catalog"],
+    },
+    "recommended_state": "Disabled",
+    "description": "long prose that should not end up in the index",
+    "rationale": "more prose",
+    "impact": "more prose",
+    "audit": {
+        "methods": [
+            {
+                "method_name": "Terminal Method",
+                "type": "scripted",
+                "description": "...",
+                "steps": [
+                    {
+                        "step_role": "compliance_check",
+                        "original_command": None,
+                        "check_command": "$test_rule_a_status = 1",
+                        "check_command_verified": True,
+                        "output_description": "...",
+                        "output_check": [
+                            {
+                                "variable": "test_rule_a_status",
+                                "data_type": "integer",
+                                "operator": "eq",
+                                "value": 1,
+                                "value_source": "benchmark",
+                            }
+                        ],
+                    }
+                ],
+            }
+        ]
+    },
+    "remediation": {"methods": [{"method_name": "x", "type": "manual_steps", "description": "..."}]},
+    "default_value": None,
+    "references": [],
+    "additional_information": None,
+}
+```
+
+Then update `test_index_omits_prose_fields_and_captures_variables` (originally lines 98-109) to assert on the new key set:
+
+```python
+def test_index_omits_prose_fields_and_captures_variables(tmp_path):
+    folder = tmp_path / "benchmark" / "v1"
+    folder.mkdir(parents=True)
+    write_rule(folder, "1.1", "rule_a.json")
+
+    index = build_index(list(folder.glob("*.json")))
+
+    entry = index["rules"][0]
+    assert entry["variables"] == ["test_rule_a_status"]
+    assert entry["framework_mappings"] == MINIMAL_RULE["framework_mappings"]
+    assert entry["policy_classification"] == MINIMAL_RULE["policy_classification"]
+    assert "description" not in entry
+    assert "rationale" not in entry
+```
+
+Leave every other test in the file unchanged - they exercise `assessment_status`/`requires_organization_defined_value`/sort order/determinism, none of which read `benchmark`.
+
+- [ ] **Step 2: Run to verify the new/changed tests fail**
+
+Run: `python -m pytest tests/test_generate_index.py -v`
+Expected: FAIL on `test_index_omits_prose_fields_and_captures_variables` (current `rule_summary()` doesn't emit `framework_mappings`/`policy_classification`) and on every other test that calls `write_rule`/`build_index` with the new `MINIMAL_RULE` shape, because `looks_like_rule_file`'s `REQUIRED_RULE_KEYS = {"id", "title", "benchmark"}` no longer matches (`benchmark` is gone), so `find_rule_folders` silently finds nothing.
+
+- [ ] **Step 3: Update `tools/generate_index.py`**
+
+In `tools/generate_index.py`, change:
+
+```python
+REQUIRED_RULE_KEYS = {"id", "title", "benchmark"}
+```
+
+to:
+
+```python
+REQUIRED_RULE_KEYS = {"id", "title", "framework_mappings"}
+```
+
+And change `rule_summary()` (currently):
+
+```python
+def rule_summary(rule_path):
+    rule = json.loads(rule_path.read_text(encoding="utf-8"))
+    return {
+        "file": rule_path.name,
+        "id": rule.get("id"),
+        "title": rule.get("title"),
+        "assessment_status": "Automated" if is_automated(rule) else "Manual",
+        "source_assessment_status": rule.get("assessment_status"),
+        "benchmark": rule.get("benchmark"),
+        "profile_applicability": rule.get("profile_applicability"),
+        "recommended_state": rule.get("recommended_state"),
+        "requires_organization_defined_value": requires_organization_defined_value(rule),
+        "variables": rule_variables(rule),
+    }
+```
+
+to:
+
+```python
+def rule_summary(rule_path):
+    rule = json.loads(rule_path.read_text(encoding="utf-8"))
+    return {
+        "file": rule_path.name,
+        "id": rule.get("id"),
+        "title": rule.get("title"),
+        "assessment_status": "Automated" if is_automated(rule) else "Manual",
+        "source_assessment_status": rule.get("assessment_status"),
+        "framework_mappings": rule.get("framework_mappings"),
+        "policy_classification": rule.get("policy_classification"),
+        "recommended_state": rule.get("recommended_state"),
+        "requires_organization_defined_value": requires_organization_defined_value(rule),
+        "variables": rule_variables(rule),
+    }
+```
+
+- [ ] **Step 4: Run to verify tests pass**
+
+Run: `python -m pytest tests/test_generate_index.py -v`
+Expected: PASS - all tests.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add tools/generate_index.py tests/test_generate_index.py
+git commit -m "$(cat <<'EOF'
+feat: generate_index.py indexes framework_mappings/policy_classification
+
+Duck-typing and the per-rule index summary follow schema v2's field names
+(framework_mappings replaces benchmark; policy_classification is newly
+indexed) so a v2 rule is recognized and its filter-relevant metadata
+actually reaches _index.json.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Task 4: `tools/generate_manifest.py` for v2, and tolerate zero folders
+
+**Files:**
+- Modify: `tools/generate_manifest.py`
+- Modify: `tests/test_generate_manifest.py`
+
+**Interfaces:**
+- Consumes: v2 rule shape from Task 1 (`policy_classification.platforms`).
+- Produces: `folder_entry()` reads `platform` from `policy_classification.platforms[0]` instead of `benchmark.platform`; `main()` writes an empty manifest (`{"schemaVersion": 1, "baselines": []}`) instead of aborting when there are zero rule folders, since that's the real state Task 5 puts the repo into.
+
+- [ ] **Step 1: Update `tests/test_generate_manifest.py`'s fixture and `write_rule` helper**
+
+Replace the `MINIMAL_RULE` dict and `write_rule` function (lines 9-56) with:
+
+```python
+MINIMAL_RULE = {
+    "id": "1.1",
+    "title": "Ensure Something",
+    "assessment_status": "Automated",
+    "authoring_mode": "independent",
+    "framework_mappings": [
+        {
+            "framework": "example",
+            "framework_product": "example_product",
+            "framework_version": "1.0.0",
+            "control_id": "1.1",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+    "policy_classification": {
+        "control_surface": "device_config_profile",
+        "platforms": ["Test Platform"],
+        "management_channels": ["intune_settings_catalog"],
+    },
+    "recommended_state": "Disabled",
+    "description": "prose",
+    "rationale": "prose",
+    "impact": "prose",
+    "audit": {
+        "methods": [
+            {
+                "method_name": "Terminal Method",
+                "type": "scripted",
+                "description": "...",
+                "steps": [
+                    {
+                        "step_role": "compliance_check",
+                        "original_command": None,
+                        "check_command": "$test_rule_a_status = 1",
+                        "check_command_verified": True,
+                        "output_description": "...",
+                        "output_check": [
+                            {
+                                "variable": "test_rule_a_status",
+                                "data_type": "integer",
+                                "operator": "eq",
+                                "value": 1,
+                                "value_source": "benchmark",
+                            }
+                        ],
+                    }
+                ],
+            }
+        ]
+    },
+    "remediation": {"methods": [{"method_name": "x", "type": "manual_steps", "description": "..."}]},
+    "default_value": None,
+    "references": [],
+    "additional_information": None,
+}
+
+
+def write_rule(path, rule_id, filename, platform="Test Platform"):
+    rule = copy.deepcopy(MINIMAL_RULE)
+    rule["id"] = rule_id
+    rule["policy_classification"]["platforms"] = [platform]
+    (path / filename).write_text(json.dumps(rule), encoding="utf-8")
+```
+
+Add `import copy` to the file's existing imports (`json`, `pathlib.Path`, `pytest`).
+
+Add a new test for the empty-manifest behavior:
+
+```python
+def test_write_manifest_handles_zero_folders(tmp_path):
+    manifest_path = tmp_path / "_manifest.json"
+
+    written_path = write_manifest({}, baselines_root=tmp_path, manifest_path=manifest_path)
+
+    assert json.loads(written_path.read_text(encoding="utf-8")) == {"schemaVersion": 1, "baselines": []}
+```
+
+Every other test in the file (`test_build_manifest_lists_family_product_version_platform_and_count`, `test_build_manifest_includes_metadata_path_when_metadata_json_exists`, `test_build_manifest_is_sorted_by_family_product_version`, `test_build_manifest_rejects_folder_not_exactly_family_product_version`, `test_write_manifest_is_deterministic`, `test_committed_manifest_matches_repo_baselines`) is unchanged.
+
+- [ ] **Step 2: Run to verify the new/changed tests fail**
+
+Run: `python -m pytest tests/test_generate_manifest.py -v`
+Expected: FAIL - the `platform` assertions fail because `folder_entry()` still reads `benchmark.platform` (now absent, so `None`), and `test_write_manifest_handles_zero_folders` fails because `main()`'s early-return-on-empty behavior means `write_manifest` was never reached in that path (it currently would still run fine standalone, actually - re-check: `write_manifest` itself has no empty-folders guard, only `main()` does. So this specific test may already pass. Verify by running it in isolation before assuming; either way, run the whole file and fix whatever's red.)
+
+- [ ] **Step 3: Update `tools/generate_manifest.py`**
+
+Change `folder_entry()`'s platform line from:
+
+```python
+    first_rule = json.loads(rule_files[0].read_text(encoding="utf-8"))
+    platform = first_rule.get("benchmark", {}).get("platform")
+```
+
+to:
+
+```python
+    first_rule = json.loads(rule_files[0].read_text(encoding="utf-8"))
+    platforms = (first_rule.get("policy_classification") or {}).get("platforms") or []
+    platform = platforms[0] if platforms else None
+```
+
+Change `main()` from:
+
+```python
+def main():
+    root_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else BASELINES_DIR
+    folders = find_rule_folders(root_dir)
+
+    if not folders:
+        print(f"No rule files found under {root_dir}")
+        return 1
+
+    manifest_path = write_manifest(folders, baselines_root=root_dir, manifest_path=MANIFEST_PATH)
+    print(f"{manifest_path} <- {len(folders)} folder(s)")
+    return 0
+```
+
+to:
+
+```python
+def main():
+    root_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else BASELINES_DIR
+    folders = find_rule_folders(root_dir)
+
+    manifest_path = write_manifest(folders, baselines_root=root_dir, manifest_path=MANIFEST_PATH)
+    print(f"{manifest_path} <- {len(folders)} folder(s)")
+    return 0
+```
+
+(`write_manifest`/`build_manifest` already handle an empty `folders` dict correctly - `sorted(...)` over nothing is `[]` - so no change is needed there, only to `main()`'s guard.)
+
+- [ ] **Step 4: Run to verify tests pass**
+
+Run: `python -m pytest tests/test_generate_manifest.py -v`
+Expected: PASS - all tests, including `test_committed_manifest_matches_repo_baselines` (still comparing against the current, pre-Task-5 committed manifest with 2 real entries - that's still correct at this point since Task 5 hasn't run yet).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add tools/generate_manifest.py tests/test_generate_manifest.py
+git commit -m "$(cat <<'EOF'
+feat: generate_manifest.py reads platform from policy_classification
+
+folder_entry() derives the manifest's platform field from
+policy_classification.platforms (schema v2) instead of the retired
+benchmark.platform. main() now always writes the manifest, including the
+empty-baselines case Task 5 is about to produce, instead of aborting
+without writing anything.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Task 5: Remove the 12 existing CIS rule files
+
+**Files:**
+- Delete: `baselines/cis/macos_26_tahoe/v1.1.0/cis_macos26_1.6.json`, `cis_macos26_2.1.1.1.json`, `cis_macos26_2.1.1.4.json`, `cis_macos26_2.12.2.json`, `cis_macos26_2.3.3.4.json`, `_index.json`, `_metadata.json`
+- Delete: `baselines/cis/windows_11/v5.0.0/cis_intune_win11_1.1.json`, `cis_intune_win11_106.1.1.json`, `cis_intune_win11_4.10.24.1.json`, `cis_intune_win11_4.11.15.3.1.json`, `cis_intune_win11_4.11.48.1.json`, `cis_intune_win11_4.11.7.2.1.json`, `cis_intune_win11_6.7.json`, `_index.json`, `_metadata.json`
+- Modify: `baselines/_manifest.json` (regenerated to the empty state)
+
+**Interfaces:** none - this task only removes content and regenerates a derived artifact using Task 4's already-updated tooling.
+
+- [ ] **Step 1: Remove the files**
+
+```bash
+git rm baselines/cis/macos_26_tahoe/v1.1.0/*.json baselines/cis/windows_11/v5.0.0/*.json
+```
+
+(This removes every file in both version folders, including their `_index.json`/`_metadata.json` - there is nothing else in either folder.)
+
+- [ ] **Step 2: Regenerate `baselines/_manifest.json`**
+
+Run: `python tools/generate_manifest.py`
+Expected output: `baselines/_manifest.json <- 0 folder(s)`, and the file's contents become:
+
+```json
+{
+  "schemaVersion": 1,
+  "baselines": []
+}
+```
+
+- [ ] **Step 3: Run the full test suite to confirm nothing else references the removed files**
+
+Run: `python -m pytest -v`
+Expected: PASS. In particular: `tests/test_rule_schema.py::test_baseline_rule_matches_schema` and `test_baseline_rule_follows_variable_conventions` now collect zero parametrized cases (vacuously pass); `tests/test_generate_index.py::test_committed_index_matches_its_folder` likewise collects zero cases; `tests/test_generate_manifest.py::test_committed_manifest_matches_repo_baselines` now compares against the empty manifest and matches.
+
+- [ ] **Step 4: Mark `tools/verify_extraction.py` as retired**
+
+It's a standalone acceptance script (not a pytest suite, not wired into any hook), and after this task it has zero rule files left to diff against - running it will just find nothing to check, which could read as "the parser is broken" rather than "there's nothing to compare against yet." Add a note to its module docstring (top of the file, after the existing text) making that explicit:
+
+```python
+Retired for now: the CIS rule corpus this compared against was removed
+(see docs/plans/2026-08-20-multi-framework-rule-library-foundation-plan.md,
+"Decisions already made"). Running this after that removal will find zero
+rule files and have nothing to diff - that's expected, not a sign the
+parser broke. The same fidelity-checking logic may get a second life
+adapted to the licensed-adaptation pipeline (sub-project 3, ISM/Essential
+Eight), where being faithful to the source is actually the goal.
+"""
+```
+
+(Append this paragraph before the module docstring's closing `"""` - don't remove any of the existing text, which is still accurate background.)
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add baselines/_manifest.json tools/verify_extraction.py
+git commit -m "$(cat <<'EOF'
+feat: remove the 12 pre-v2 CIS rule files from baselines/
+
+Their content doesn't fit schema v2's authoring model (see docs/plans/
+2026-08-20-multi-framework-rule-library-foundation-plan.md's "Decisions
+already made") - re-creating them through the independent-authoring
+pipeline is sub-project 2's job. baselines/ legitimately holds zero rules
+until that lands; _manifest.json is regenerated to reflect that.
+tools/verify_extraction.py is marked retired since it has nothing left to
+diff against.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Task 6: Update the `compliance-benchmark-json` skill for v2
+
+**Files:**
+- Modify: `.claude/skills/compliance-benchmark-json/references/schema.md`
+- Modify: `.claude/skills/compliance-benchmark-json/SKILL.md`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/single-scripted-check.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/multiple-independent-steps.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/sequential-dependency.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/organization-defined-single-value.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/organization-defined-multi-value.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/include-semantics.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/manual-no-script-device-side.json`
+- Modify: `.claude/skills/compliance-benchmark-json/references/examples/manual-no-script-cloud-only.json`
+
+**Interfaces:** none - documentation and fixtures only. `tests/test_rule_schema.py::test_bundled_example_matches_schema` (from Task 1) is this task's test.
+
+- [ ] **Step 1: Confirm the test is currently red for this reason**
+
+Run: `python -m pytest tests/test_rule_schema.py -k test_bundled_example_matches_schema -v`
+Expected: FAIL - all 8 bundled examples are still v1-shaped (`benchmark`, `extended_attributes.cis`, no `authoring_mode`/`policy_classification`).
+
+- [ ] **Step 2: Rewrite `single-scripted-check.json` fully (worked example for this task's recipe)**
+
+Replace its contents with:
+
+```json
+{
+  "id": "1.1",
+  "title": "Ensure Example Setting Is Configured To A Secure Value",
+  "assessment_status": "Automated",
+  "authoring_mode": "independent",
+  "framework_mappings": [
+    {
+      "framework": "example",
+      "framework_product": "example_windows",
+      "framework_version": "1.0.0",
+      "control_id": "1.1",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-20"
+    }
+  ],
+  "policy_classification": {
+    "control_surface": "device_config_profile",
+    "platforms": ["windows_11"],
+    "management_channels": ["intune_settings_catalog"]
+  },
+  "recommended_state": "Disabled",
+  "description": "Illustrative example: a setting backed by a single registry value, with no runnable audit command given by the framework - only a location and expected value.",
+  "rationale": "Illustrative example rationale text - not real source prose.",
+  "impact": "Illustrative example impact text - not real source prose.",
+  "audit": {
+    "methods": [
+      {
+        "method_name": "Registry Check",
+        "type": "scripted",
+        "description": "Illustrative example audit method description.",
+        "steps": [
+          {
+            "step_role": "compliance_check",
+            "original_command": null,
+            "check_command": "$example_1_1_setting = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Example\\Setting' -Name 'ExampleValue' -ErrorAction SilentlyContinue).ExampleValue",
+            "check_command_verified": true,
+            "output_description": "Illustrative example output description.",
+            "check_command_notes": "No original_command exists in this illustrative example - only a registry location and value.",
+            "output_check": [
+              {
+                "variable": "example_1_1_setting",
+                "data_type": "integer",
+                "operator": "eq",
+                "value": 0,
+                "value_source": "benchmark"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "remediation": {
+    "methods": [
+      {
+        "method_name": "Settings Catalog",
+        "type": "configuration_profile",
+        "description": "Illustrative example remediation description.",
+        "config_keys": [
+          {
+            "settings_catalog_path": "Example > Category\\Example Setting",
+            "value": "Disabled"
+          }
+        ]
+      }
+    ]
+  },
+  "default_value": "Enabled (illustrative example default).",
+  "references": [
+    "https://learn.microsoft.com/en-us/windows/win32/secauthn/ssp-aps-versus-ssps"
+  ],
+  "minimum_os_csp": null,
+  "additional_information": null
+}
+```
+
+- [ ] **Step 3: Apply the same recipe to the remaining 7 examples**
+
+For each file below, apply this transformation (matching what Step 2 just did): replace `benchmark` with `authoring_mode: "independent"` + a single-entry `framework_mappings` (`framework: "example"`, invented `framework_product`/`control_id` matching the file's original id, `framework_version: "1.0.0"`, a plausible `framework_level`, `checked_date: "2026-08-20"`); add a `policy_classification` block (pick a plausible `control_surface`/`platforms`/`management_channels` for the platform the original example illustrated); delete `extended_attributes` entirely (its `cis_controls`/`grid_id` content doesn't carry forward); replace every prose field (`title`, `description`, `rationale`, `impact`, `default_value`, and every `output_description`/`check_command_notes`) with clearly-invented illustrative text that preserves the original's structural shape - same number of methods/steps/output_checks, same `type`/`step_role`/`operator`/`value_source` values, same use of `original_command: null` vs a real string. Do not reuse any of the original file's specific wording, even paraphrased - invent new sentences.
+
+| File | What structural shape it illustrates (keep this exactly) | Original `id` → new `control_id` |
+|---|---|---|
+| `multiple-independent-steps.json` | 3 steps in one method, each independently `check_command_verified: true`, each mapping to a separate original command | `4.10.24.1` → `1.2` |
+| `sequential-dependency.json` | step 1 `step_role: "lookup"` (empty `output_check`) feeds step 2; step 2 is `check_command_verified: false` with a genuine unresolved-format note | `4.11.7.2.1` → `1.3` |
+| `organization-defined-single-value.json` | `assessment_status: "Manual"` in the top-level tag despite a real scripted check existing; `output_check.value_source: "organization_defined"`, `value: null` | `4.11.15.3.1` → `1.4` |
+| `organization-defined-multi-value.json` | one step yields two `output_check` entries; a second step has `value_source: "benchmark"` (a fixed ceiling) explicitly distinct from the org-defined value | `4.11.48.1` → `1.5` |
+| `include-semantics.json` | `operator: "contains"` (an "include X" pass condition, not exact-match) | `106.1.1` → `1.6` |
+| `manual-no-script-device-side.json` | no `audit.methods[].steps` at all - device-side state genuinely unreadable by script | `6.7` → `1.7` |
+| `manual-no-script-cloud-only.json` | no `audit.methods[].steps`, but `recommended_state` is still populated (cloud-evaluated setting, no local backing to query) | `1.1` (macOS) → `1.8` |
+
+- [ ] **Step 4: Run to verify all 8 examples now pass**
+
+Run: `python -m pytest tests/test_rule_schema.py -k test_bundled_example_matches_schema -v`
+Expected: PASS - 8 passed.
+
+- [ ] **Step 5: Rewrite `references/schema.md`'s top-level table and `extended_attributes` section**
+
+Replace the "Top level" table (current lines 15-30) with:
+
+```markdown
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | The framework's own section/rule number, verbatim (e.g. `"4.11.15.3.1"`, `"106.1.1"`, `"ISM-1546"`). Always a string - some IDs aren't semantically numeric. |
+| `title` | string | This toolkit's own title for the rule, without a trailing status tag like `(Automated)`/`(Manual)`. Never a specific framework's own title text - see "Authoring model" below. |
+| `assessment_status` | `"Automated"` \| `"Manual"` | The tag the rule's own authoring process assigns. |
+| `authoring_mode` | `"independent"` \| `"licensed_adaptation"` | See "Authoring model" below. |
+| `framework_mappings` | array | Every framework control this rule satisfies - see "Framework mappings" below. At least one entry required. |
+| `source_license` | object | Required when `authoring_mode` is `"licensed_adaptation"`, forbidden when `"independent"` - see "Authoring model" below. |
+| `policy_classification` | object | `{ control_surface, platforms, management_channels }` - see "Policy classification" below. |
+| `recommended_state` | string \| null | The target *value* this rule enforces (e.g. `"Block"`, `"Disabled"`, `"30 Days"`) - never the comparison itself. `null` only when genuinely organization-defined or truly unstated. Don't bake an operator/comparison into this string - that belongs in `output_check.operator`. |
+| `description`, `rationale`, `impact` | string | This toolkit's own prose. For `independent`-mode rules: written from a control spec (see `specs/_control_spec.schema.json`) without reference to any source framework's own wording - see the foundation design doc for the fidelity-vs-paraphrase distinction. For `licensed_adaptation`-mode rules: adapted from the one framework named in `source_license`, with modification indicated per that licence's terms. |
+| `audit` | object | See below - unchanged from before. |
+| `remediation` | object | See below - unchanged from before. |
+| `default_value` | string \| null | The stated default, when known. |
+| `references` | array of strings | URLs only. `[]` if none (never `null`). |
+| `minimum_os_csp` | string \| null | A minimum-OS/CSP-version note, when applicable. |
+| `additional_information` | string \| object \| null | Free text, or a light structure, when there's something worth keeping that doesn't fit elsewhere. |
+
+## Authoring model
+
+Every rule declares `authoring_mode`:
+
+- **`independent`** - this toolkit authored the rule's prose itself, from a control spec (`specs/_control_spec.schema.json`), with no exposure to any single mapped framework's own wording during that authoring step. Always the safe choice regardless of how many frameworks the rule maps to - use it whenever a rule touches a restrictively-licensed framework.
+- **`licensed_adaptation`** - the rule's prose is adapted from one specific framework's own openly-licensed published text. Requires a `source_license` object: `{ framework, license_name, license_url, rights_holder, source_url, retrieved_date, modified: true }`. Only use this when the *entire* rule's content came from nothing but that one permissively-licensed source - if a rule also maps to a more restrictively-licensed framework, use `independent` instead, even though the permissive framework's mapping alone would have allowed `licensed_adaptation`.
+
+## Framework mappings
+
+```json
+"framework_mappings": [
+  {
+    "framework": "cis",
+    "framework_product": "windows_11",
+    "framework_version": "5.0.0",
+    "control_id": "18.9.31.2",
+    "framework_level": ["Level 1"],
+    "checked_date": "2026-08-20"
+  }
+]
+```
+
+- `framework_product`: `null` where the framework has no product axis.
+- `framework_level`: an array - not just because a rule can cover more than one distinct control, but because a single mapping entry can carry more than one level under a cumulative tiering model (e.g. a control satisfying Essential Eight Maturity Level 2 also satisfies Maturity Level 1 for that same control - both belong on the one entry).
+- No citation, title, or descriptive text field - identifiers only, ever. A secondary taxonomy within a framework (e.g. CIS Controls v8) is just another entry with its own `framework`/`control_id`, not a special field on the primary one.
+- `checked_date`: when this specific mapping was last verified against the framework's currently published text.
+
+## Policy classification
+
+```json
+"policy_classification": {
+  "control_surface": "device_config_profile",
+  "platforms": ["windows_11"],
+  "management_channels": ["intune_settings_catalog", "group_policy"]
+}
+```
+
+- `control_surface`: `device_config_profile` | `device_compliance_check` | `server_infrastructure_config` | `process_administrative`
+- `platforms`: e.g. `windows_11`, `windows_server_2022`, `macos`, `linux`, `network_device`, `organization_wide`
+- `management_channels`: e.g. `intune_settings_catalog`, `intune_compliance_policy`, `group_policy`, `registry`, `macos_profile`, `manual_process`
+```
+
+Delete the old `extended_attributes` section (current lines 32-52) entirely - CIS Controls mappings and GRID IDs are now just `framework_mappings` entries (`framework: "cis_controls"`, `framework: "cis_grid"`, etc.), not a namespaced sub-object.
+
+- [ ] **Step 6: Update `SKILL.md`'s "A note on benchmark-specific fields" section**
+
+Replace that entire section (current lines 95-99) with:
+
+```markdown
+## Framework mappings and authoring mode
+
+There is no per-family namespaced field anymore. Every framework a rule maps to - CIS, ISM, Essential Eight, CIS's own Controls taxonomy, anything else - is just another entry in `framework_mappings` (see `references/schema.md`). A rule's `title`/`description`/`rationale`/etc. never names which framework prompted it; the only place a framework name appears on a rule is that mapping list, as plain identifiers (framework, control ID, version, level, date checked) - never prose, never a title, never a citation string.
+
+Every rule also declares `authoring_mode`. `licensed_adaptation` rules are adapted directly from one specific framework's own openly-licensed text (see that framework's `source_license` requirements in `references/schema.md`). `independent` rules are authored by this toolkit from a control spec (`specs/_control_spec.schema.json`) with no exposure to any mapped framework's own wording during that authoring step - use this mode whenever a rule touches a framework whose licence doesn't clearly permit adaptation, and it's always a safe default even for a permissively-licensed framework.
+```
+
+- [ ] **Step 7: Run the full skill-related test suite**
+
+Run: `python -m pytest tests/test_rule_schema.py -v`
+Expected: PASS - all tests, including all 8 bundled-example cases.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add .claude/skills/compliance-benchmark-json/
+git commit -m "$(cat <<'EOF'
+docs: update compliance-benchmark-json skill for schema v2
+
+Rewrites schema.md's field reference and SKILL.md's benchmark-specific-
+fields section for framework_mappings/authoring_mode/policy_classification,
+and replaces all 8 bundled examples with schema-v2-shaped, non-benchmark-
+sourced illustrative content (framework: "example" throughout) - closing
+the licensing review's separate finding that these examples used real CIS
+rule text.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Task 7: Dual-licence note in `README.md`
+
+**Files:**
+- Modify: `README.md`
+
+**Interfaces:** none.
+
+- [ ] **Step 1: Add a licensing section to `README.md`**
+
+Current full contents of `README.md` are just `# intune-compliance-toolkit`. Replace with:
+
+```markdown
+# intune-compliance-toolkit
+
+## Licensing
+
+This repository's own code, schemas, and independently-authored rule
+content (`authoring_mode: "independent"`) are licensed under AGPL-3.0 (see
+`LICENSE`).
+
+Rule content marked `authoring_mode: "licensed_adaptation"` is adapted
+from an openly-licensed third-party source - each such rule's
+`source_license` field names the specific licence, rights holder, and
+source URL. As of this writing that applies to content sourced from the
+Australian Signals Directorate's Information Security Manual and Essential
+Eight guidance, both released by the Commonwealth of Australia under CC BY
+4.0. AGPL-3.0 governs this repository's own code and structure around that
+adapted content; the adapted content itself remains subject to its
+original CC BY 4.0 terms (attribution, indication of modification) as well.
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add README.md
+git commit -m "$(cat <<'EOF'
+docs: note the two licence layers rule content can carry
+
+Independently-authored rule content and the toolkit's own code are AGPL;
+content adapted from an openly-licensed source (ISM/Essential Eight, CC BY
+4.0) additionally carries that source's own licence terms. Makes this
+explicit so a downstream user of the repo isn't misled into thinking
+everything is uniformly AGPL-only.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+EOF
+)"
+git push
+```
+
+---
+
+### Final check: full suite
+
+- [ ] Run: `python -m pytest -v`
+- [ ] Expected: PASS, zero failures, zero errors.
+- [ ] Add a Progress log entry below recording the date and the commit range this plan landed in.
+
 ## Progress log
 
 (none yet - entries land here as work against this plan is completed)
