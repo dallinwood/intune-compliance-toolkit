@@ -1,33 +1,32 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://intune-compliance-toolkit/schemas/rule.schema.json",
-  "title": "Compliance benchmark rule",
+  "title": "Compliance rule",
   "description": "Machine-checkable version of references/schema.md. Any change to this file that isn't specific to one rule's content must be mirrored in schema.md and the bundled examples in the same pass - see SKILL.md's 'Keeping examples and this doc in sync'.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "id", "title", "assessment_status", "benchmark", "profile_applicability",
-    "recommended_state", "description", "rationale", "impact",
-    "audit", "remediation", "default_value", "references", "additional_information"
+    "id", "title", "assessment_status", "authoring_mode", "framework_mappings",
+    "policy_classification", "recommended_state", "description", "rationale",
+    "impact", "audit", "remediation", "default_value", "references",
+    "additional_information"
   ],
   "properties": {
-    "id": { "type": "string", "minLength": 1 },
+    "id": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "description": "A toolkit-assigned identifier, unique across the whole rule library - never a framework's own numbering (that lives in framework_mappings[].control_id). Allocated by scanning every rule's id for the current maximum and adding one, not a tracked counter file."
+    },
     "title": { "type": "string", "minLength": 1 },
     "assessment_status": { "enum": ["Automated", "Manual"] },
-    "benchmark": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["product", "version", "platform"],
-      "properties": {
-        "product": { "type": "string", "minLength": 1 },
-        "version": { "type": "string", "minLength": 1 },
-        "platform": { "type": "string", "minLength": 1 }
-      }
-    },
-    "profile_applicability": {
+    "authoring_mode": { "enum": ["independent", "licensed_adaptation"] },
+    "framework_mappings": {
       "type": "array",
-      "items": { "type": "string", "minLength": 1 }
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/frameworkMapping" }
     },
+    "source_license": { "$ref": "#/$defs/sourceLicense" },
+    "policy_classification": { "$ref": "#/$defs/policyClassification" },
     "recommended_state": { "type": ["string", "null"] },
     "description": { "type": "string", "minLength": 1 },
     "rationale": { "type": "string", "minLength": 1 },
@@ -64,39 +63,65 @@
     "minimum_os_csp": { "type": ["string", "null"] },
     "additional_information": {
       "type": ["string", "object", "null"]
-    },
-    "extended_attributes": {
-      "type": "object",
-      "description": "Namespaced home for fields specific to one benchmark family, keyed by a short family slug (e.g. \"cis\"). A field named/shaped for one family (cis_controls, grid_id) never has to worry about colliding with a differently-shaped field another family might need - each family gets its own key instead of fighting over the top level. See SKILL.md's 'A note on benchmark-specific fields'.",
-      "properties": {
-        "cis": { "$ref": "#/$defs/cisExtendedAttributes" }
-      },
-      "additionalProperties": true
     }
   },
+  "allOf": [
+    {
+      "if": { "properties": { "authoring_mode": { "const": "licensed_adaptation" } }, "required": ["authoring_mode"] },
+      "then": { "required": ["source_license"] }
+    },
+    {
+      "if": { "properties": { "authoring_mode": { "const": "independent" } }, "required": ["authoring_mode"] },
+      "then": { "not": { "required": ["source_license"] } }
+    }
+  ],
   "$defs": {
-    "cisExtendedAttributes": {
+    "frameworkMapping": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["grid_id", "cis_controls"],
+      "required": ["framework", "framework_product", "framework_version", "control_id", "framework_level", "checked_date"],
       "properties": {
-        "grid_id": { "type": ["string", "null"] },
-        "cis_controls": {
+        "framework": { "type": "string", "minLength": 1 },
+        "framework_product": { "type": ["string", "null"] },
+        "framework_version": { "type": "string", "minLength": 1 },
+        "control_id": { "type": "string", "minLength": 1 },
+        "framework_level": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["version", "control_id", "control_title", "implementation_groups"],
-            "properties": {
-              "version": { "type": "string", "minLength": 1 },
-              "control_id": { "type": "string", "minLength": 1 },
-              "control_title": { "type": "string", "minLength": 1 },
-              "implementation_groups": {
-                "type": "array",
-                "items": { "type": "string", "minLength": 1 }
-              }
-            }
-          }
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "checked_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+      }
+    },
+    "sourceLicense": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "license_name", "license_url", "rights_holder", "source_url", "retrieved_date", "modified"],
+      "properties": {
+        "framework": { "type": "string", "minLength": 1 },
+        "license_name": { "type": "string", "minLength": 1 },
+        "license_url": { "type": "string", "minLength": 1 },
+        "rights_holder": { "type": "string", "minLength": 1 },
+        "source_url": { "type": "string", "minLength": 1 },
+        "retrieved_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "modified": { "const": true }
+      }
+    },
+    "policyClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["control_surface", "platforms", "management_channels"],
+      "properties": {
+        "control_surface": {
+          "enum": ["device_config_profile", "device_compliance_check", "server_infrastructure_config", "process_administrative"]
+        },
+        "platforms": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "management_channels": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
         }
       }
     },
@@ -134,12 +159,11 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "step_role", "original_command", "check_command",
+        "step_role", "check_command",
         "check_command_verified", "output_description", "output_check"
       ],
       "properties": {
         "step_role": { "enum": ["compliance_check", "lookup"] },
-        "original_command": { "type": ["string", "null"] },
         "check_command": { "type": "string", "minLength": 1 },
         "check_command_verified": { "type": "boolean" },
         "output_description": { "type": "string", "minLength": 1 },
@@ -167,7 +191,7 @@
         "data_type": { "enum": ["boolean", "integer", "string"] },
         "operator": { "enum": ["eq", "ne", "gt", "gte", "lt", "lte", "contains", "like"] },
         "value": { "type": ["string", "number", "boolean", "null"] },
-        "value_source": { "enum": ["benchmark", "organization_defined"] }
+        "value_source": { "enum": ["rule_defined", "organization_defined"] }
       },
       "allOf": [
         {

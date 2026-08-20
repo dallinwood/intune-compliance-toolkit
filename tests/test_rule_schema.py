@@ -18,11 +18,25 @@ BASELINES_DIR = REPO_ROOT / "baselines"
 EXAMPLES_DIR = REPO_ROOT / ".claude" / "skills" / "compliance-benchmark-json" / "references" / "examples"
 
 MINIMAL_VALID_RULE = {
-    "id": "1.1",
+    "id": "12",
     "title": "Ensure Something",
     "assessment_status": "Automated",
-    "benchmark": {"product": "Test Benchmark", "version": "1.0.0", "platform": "Test"},
-    "profile_applicability": ["Level 1"],
+    "authoring_mode": "independent",
+    "framework_mappings": [
+        {
+            "framework": "example",
+            "framework_product": "example_product",
+            "framework_version": "1.0.0",
+            "control_id": "1.1",
+            "framework_level": ["Level 1"],
+            "checked_date": "2026-08-20",
+        }
+    ],
+    "policy_classification": {
+        "control_surface": "device_config_profile",
+        "platforms": ["windows_11"],
+        "management_channels": ["intune_settings_catalog"],
+    },
     "recommended_state": "Disabled",
     "description": "...",
     "rationale": "...",
@@ -36,17 +50,16 @@ MINIMAL_VALID_RULE = {
                 "steps": [
                     {
                         "step_role": "compliance_check",
-                        "original_command": None,
-                        "check_command": "test_1_1_status=1",
+                        "check_command": "test_12_status=1",
                         "check_command_verified": True,
                         "output_description": "...",
                         "output_check": [
                             {
-                                "variable": "test_1_1_status",
+                                "variable": "test_12_status",
                                 "data_type": "integer",
                                 "operator": "eq",
                                 "value": 1,
-                                "value_source": "benchmark",
+                                "value_source": "rule_defined",
                             }
                         ],
                     }
@@ -95,6 +108,79 @@ def test_manual_method_forbids_steps(validator):
 
 def test_schema_file_is_itself_valid():
     jsonschema.Draft202012Validator.check_schema(load_schema())
+
+
+def test_framework_mappings_requires_at_least_one_entry(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["framework_mappings"] = []
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_licensed_adaptation_requires_source_license(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["authoring_mode"] = "licensed_adaptation"
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_licensed_adaptation_with_source_license_is_valid(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["authoring_mode"] = "licensed_adaptation"
+    rule["source_license"] = {
+        "framework": "example",
+        "license_name": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "rights_holder": "Example Rights Holder",
+        "source_url": "https://example.invalid/source",
+        "retrieved_date": "2026-08-20",
+        "modified": True,
+    }
+
+    assert schema_errors(rule, validator) == []
+
+
+def test_independent_mode_forbids_source_license(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["source_license"] = {
+        "framework": "example",
+        "license_name": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "rights_holder": "Example Rights Holder",
+        "source_url": "https://example.invalid/source",
+        "retrieved_date": "2026-08-20",
+        "modified": True,
+    }
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_framework_level_accepts_multiple_cumulative_levels(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["framework_mappings"][0]["framework_level"] = ["Maturity Level 1", "Maturity Level 2"]
+
+    assert schema_errors(rule, validator) == []
+
+
+def test_id_rejects_a_framework_shaped_value(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["id"] = "4.11.15.3.1"  # a framework's own dotted numbering, not a toolkit id
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_id_accepts_a_plain_toolkit_assigned_integer(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["id"] = "347"
+
+    assert schema_errors(rule, validator) == []
+
+
+def test_audit_step_has_no_original_command_field(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["audit"]["methods"][0]["steps"][0]["original_command"] = None
+
+    assert schema_errors(rule, validator) != []
 
 
 @pytest.mark.parametrize("rule_path", find_rule_files(BASELINES_DIR), ids=lambda p: p.name)
