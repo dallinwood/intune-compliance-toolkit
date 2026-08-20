@@ -1315,8 +1315,10 @@ def rule_summary(rule_path):
 
 - [ ] **Step 4: Run to verify tests pass**
 
-Run: `python -m pytest tests/test_generate_index.py -v`
-Expected: PASS - all tests.
+Run: `python -m pytest tests/test_generate_index.py -v -k "not test_committed_index_matches_its_folder"`
+Expected: PASS - all tests except the one excluded above.
+
+`test_committed_index_matches_its_folder` is expected to still be RED at this point, for a reason outside this task's own change: it parametrizes over the 2 real `_index.json` files still committed under `baselines/` (still v1-shaped - Task 5 hasn't run yet), and rebuilds each using the `looks_like_rule_file()` this step just changed. Since the real v1 files have no `framework_mappings` key, they no longer duck-type as rule files at all, so the rebuilt index is empty while the committed one still lists the old rules - a mismatch. This isn't a regression to fix here; it resolves itself once Task 5 removes those 12 files (at which point the test collects zero parametrized cases and passes vacuously). Confirm this specific test is red for that reason (not some other cause) by running `python -m pytest tests/test_generate_index.py::test_committed_index_matches_its_folder -v` and reading the diff in the failure output - it should show the committed file's real rule entries against an empty rebuilt `{"rules": []}`.
 
 - [ ] **Step 5: Commit**
 
@@ -1329,6 +1331,10 @@ Duck-typing and the per-rule index summary follow schema v2's field names
 (framework_mappings replaces benchmark; policy_classification is newly
 indexed) so a v2 rule is recognized and its filter-relevant metadata
 actually reaches _index.json.
+
+Known red until Task 5 lands: test_committed_index_matches_its_folder,
+since the still-committed v1 _index.json files no longer duck-type as
+rule files under the new REQUIRED_RULE_KEYS.
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 EOF
@@ -1486,8 +1492,10 @@ def main():
 
 - [ ] **Step 4: Run to verify tests pass**
 
-Run: `python -m pytest tests/test_generate_manifest.py -v`
-Expected: PASS - all tests, including `test_committed_manifest_matches_repo_baselines` (still comparing against the current, pre-Task-5 committed manifest with 2 real entries - that's still correct at this point since Task 5 hasn't run yet).
+Run: `python -m pytest tests/test_generate_manifest.py -v -k "not test_committed_manifest_matches_repo_baselines"`
+Expected: PASS - all tests except the one excluded above.
+
+`test_committed_manifest_matches_repo_baselines` is expected to still be RED at this point, and not because of anything this task changed: Task 3 already changed `looks_like_rule_file()`'s duck-typing (`REQUIRED_RULE_KEYS` now requires `framework_mappings`), so `find_rule_folders(BASELINES_DIR)` - called by this very test - already finds zero folders, since the 12 real v1 files under `baselines/` don't have `framework_mappings` and haven't been removed yet (that's Task 5). The test rebuilds an empty manifest and compares it against the still-committed `_manifest.json`, which still lists the old 2 real entries - a mismatch that exists independent of this task's own changes and resolves once Task 5 regenerates `_manifest.json` to match. Confirm this by running `python -m pytest tests/test_generate_manifest.py::test_committed_manifest_matches_repo_baselines -v` and reading the diff - it should show the committed file's 2 real entries against a rebuilt `{"schemaVersion": 1, "baselines": []}`.
 
 - [ ] **Step 5: Commit**
 
@@ -1501,6 +1509,10 @@ policy_classification.platforms (schema v2) instead of the retired
 benchmark.platform. main() now always writes the manifest, including the
 empty-baselines case Task 5 is about to produce, instead of aborting
 without writing anything.
+
+Known red until Task 5 lands: test_committed_manifest_matches_repo_baselines
+- a side effect of Task 3's looks_like_rule_file() change, not this task's,
+since the real committed baseline files haven't been removed yet.
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
 EOF
@@ -1541,8 +1553,10 @@ Expected output: `baselines/_manifest.json <- 0 folder(s)`, and the file's conte
 
 - [ ] **Step 3: Run the full test suite to confirm nothing else references the removed files**
 
-Run: `python -m pytest -v`
-Expected: PASS. In particular: `tests/test_rule_schema.py::test_baseline_rule_matches_schema` and `test_baseline_rule_follows_variable_conventions` now collect zero parametrized cases (vacuously pass); `tests/test_generate_index.py::test_committed_index_matches_its_folder` likewise collects zero cases; `tests/test_generate_manifest.py::test_committed_manifest_matches_repo_baselines` now compares against the empty manifest and matches.
+Run: `python -m pytest -v -k "not test_bundled_example_matches_schema"`
+Expected: PASS - every test that was known-red from Tasks 1/3/4 is now green: `tests/test_rule_schema.py::test_baseline_rule_matches_schema` and `test_baseline_rule_follows_variable_conventions` now collect zero parametrized cases (vacuously pass); `tests/test_generate_index.py::test_committed_index_matches_its_folder` likewise collects zero cases; `tests/test_generate_manifest.py::test_committed_manifest_matches_repo_baselines` now compares against the empty manifest and matches.
+
+`tests/test_rule_schema.py::test_bundled_example_matches_schema` is excluded above because it's still red for a reason this task doesn't touch: the 8 bundled skill examples under `.claude/skills/compliance-benchmark-json/references/examples/` are still v1-shaped until Task 6 rewrites them. Confirm it's red for exactly that reason (not something this task broke) by running `python -m pytest tests/test_rule_schema.py -k test_bundled_example_matches_schema -v` and checking the failures are all in that examples directory, all `additionalProperties`/missing-required-field errors consistent with a v1-shaped file hitting the v2 schema.
 
 - [ ] **Step 4: Mark `tools/verify_extraction.py` as retired**
 
