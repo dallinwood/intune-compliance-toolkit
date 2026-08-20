@@ -26,15 +26,24 @@ security policy/rule library that:
 
 This is the first of four sub-projects (see "Sequencing" below). It defines
 the schema, taxonomy, and authoring-process changes everything else builds
-on. It does not itself ingest ISM/Essential Eight content, rebuild the web
-UI, or touch the 12 existing CIS rule files.
+on, and removes the 12 existing CIS rule files from `baselines/` since
+their content doesn't conform to the new authoring model. It does not
+itself ingest ISM/Essential Eight content, rebuild the web UI, or re-author
+replacements for the removed CIS rules - that's sub-project 2.
 
 ## Decisions already made
 
-- **The 12 existing CIS rule files are out of scope.** They keep validating
-  against the current (now frozen) schema, unchanged. Bringing them onto the
-  new authoring model is a separate, later decision - not part of this
-  project.
+- **No dual schema, no legacy grandfathering.** There is exactly one
+  `_rule.schema.json` going forward, and it's the v2 shape described below.
+  The 12 existing CIS rule files don't get a preserved legacy schema to keep
+  validating against - their structure already did its job informing what
+  v2 needs to capture, but their content (CIS's own prose, in fields the
+  new authoring model doesn't allow for `independent`-mode rules) doesn't
+  carry forward. They come out of `baselines/` when v2 lands; re-creating
+  them is sub-project 2's job (the independent-authoring pipeline), not
+  this one. `baselines/` legitimately holds zero rules in the interim - at
+  12 rules total, that's an acceptable gap, not a regression worth
+  engineering around.
 - **ISM and Essential Eight use direct extraction with attribution**, not
   the independent-authoring pipeline CIS content requires. Their CC BY 4.0
   licence permits adaptation and relicensing (including under this repo's
@@ -64,15 +73,21 @@ UI, or touch the 12 existing CIS rule files.
 
 ### Versioning
 
-`baselines/_rule.schema.json` freezes as-is and keeps governing the 12
-existing files (none of which carry a `schemaVersion` field - its absence
-means "validate against the frozen v1 shape"). A new `_rule.schema.v2.json`
-governs every new rule, which must carry `"schemaVersion": 2`.
-`tools/validate_rules.py` picks the schema per file based on that field.
-`tools/verify_extraction.py` (the fidelity-to-source acceptance test) stays
-scoped to exactly the original 12 files - it has no job to do against v2
-content, independently-authored content having nothing in the source to be
-faithful to.
+`baselines/_rule.schema.json` is replaced in place with the v2 shape below
+- one schema, no `schemaVersion` dispatch, no parallel v1 file.
+`tools/validate_rules.py` needs no schema-selection logic as a result: every
+rule file in `baselines/` validates against the one current schema.
+
+The 12 existing CIS rule files are removed from `baselines/` as part of
+this change (see "Decisions already made"). `tools/verify_extraction.py`'s
+job - checking deterministic extraction stayed faithful to CIS's source
+text - has no remaining corpus to run against once those files are gone, so
+it's retired rather than kept scoped to an empty set. The same fidelity
+question is legitimate for the licensed-adaptation pipeline (sub-project 3,
+ISM/Essential Eight) - being faithful to the source is exactly what
+attribution requires there - so this logic may get a second life adapted
+to that pipeline rather than being deleted outright; that's sub-project 3's
+call, not this one's.
 
 ### `framework_mappings` (replaces the singular `benchmark` object)
 
@@ -240,14 +255,18 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
 
 - `tools/generate_index.py`'s `looks_like_rule_file` duck-types on
   `{"id", "title", "benchmark"}`; v2 rules have `framework_mappings`
-  instead of `benchmark`, so this needs a schemaVersion-aware check or it
-  silently stops indexing v2 rules.
+  instead of `benchmark`, so this key set needs updating or it silently
+  stops indexing every rule.
 - `tools/generate_manifest.py`'s `folder_entry` reads
   `first_rule["benchmark"]["platform"]` for the manifest's `platform` field;
-  v2 rules need an equivalent read from `policy_classification.platforms`.
+  needs an equivalent read from `policy_classification.platforms`.
 - `.claude/skills/compliance-benchmark-json/references/schema.md` and its
-  bundled examples document the v1 shape; they need a v2 counterpart (or a
-  clear split) so the skill doesn't teach the frozen shape for new rules.
+  bundled examples get updated in place to teach the v2 shape only - no
+  split needed, since there's only one schema now. This also closes an item
+  the licensing review flagged separately: some bundled examples (e.g.
+  `single-scripted-check.json`) use real CIS rule text as illustrations:
+  those get replaced with v2-shaped examples that don't source from any
+  framework's actual text.
 - The repo's `LICENSE`/`README` need a short note that AGPL covers the
   toolkit's own code, schema, and independently-authored rule content, while
   `licensed_adaptation` rule content is additionally under CC BY 4.0
@@ -257,9 +276,14 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
 
 ## Sequencing (sub-projects; each gets its own design/plan cycle)
 
-1. **This project** - schema v2, taxonomy, authoring model.
+1. **This project** - schema v2, taxonomy, authoring model, and removing
+   the 12 existing CIS rule files from `baselines/` (their content doesn't
+   carry forward; see "Decisions already made").
 2. Independent-authoring pipeline tooling for CIS-mapped content (spec
-   extraction + the content-authoring handoff), applied to new rules only.
+   extraction + the content-authoring handoff) - covers both new rules and
+   re-creating replacements for the 12 rules removed in step 1.
+   `baselines/` has no CIS-mapped rules between step 1 landing and this
+   step delivering replacements.
 3. Licensed-adaptation pipeline for ISM/Essential Eight: source acquisition,
    deterministic extraction (adapted from the existing CIS Phase 1
    pipeline), attribution metadata. Essential Eight is small enough to
@@ -272,9 +296,11 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
    identifier don't share one ordering), with the current Intune-specific
    screens becoming a filtered projection of the same data.
 
-Deferred, not part of any of the four: bringing the 12 existing CIS files
-onto the v2/independent-authoring model, and bulk ISM ingestion beyond the
-pilot slice.
+Deferred, not part of any of the four: bulk ISM ingestion beyond the pilot
+slice, and the still-open question from the licensing review about
+whether git history needs rewriting to fully unpublish CIS text that was
+in prior commits (removing the files from HEAD in step 1 doesn't do that -
+same caveat the review already recorded).
 
 ## Progress log
 
