@@ -24,6 +24,14 @@ this against every rule file that existed when this tool was built:
 
 Read the diffs, don't just count PASS/FAIL - a mismatch here doesn't
 necessarily mean the parser is wrong.
+
+Retired for now: the CIS rule corpus this compared against was removed
+(see docs/plans/2026-08-20-multi-framework-rule-library-foundation-plan.md,
+"Decisions already made"). Running this after that removal will find zero
+rule files and have nothing to diff - that's expected, not a sign the
+parser broke. The same fidelity-checking logic may get a second life
+adapted to the licensed-adaptation pipeline (sub-project 3, ISM/Essential
+Eight), where being faithful to the source is actually the goal.
 """
 
 import json
