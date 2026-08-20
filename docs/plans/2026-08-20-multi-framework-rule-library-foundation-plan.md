@@ -89,6 +89,39 @@ attribution requires there - so this logic may get a second life adapted
 to that pipeline rather than being deleted outright; that's sub-project 3's
 call, not this one's.
 
+### `id` is toolkit-generated, not a framework's own numbering
+
+In v1, `id` was the source framework's own section/rule number (e.g.
+`"4.11.15.3.1"`). That doesn't work once a rule can map to several
+frameworks at once - there's no longer one framework whose numbering the
+rule "is." `id` is now a plain identifier this project assigns itself:
+a string holding a positive integer with no leading zero (`"1"`, `"12"`,
+`"347"`), unique across the whole rule library regardless of framework,
+platform, or authoring mode. Every framework-specific number a rule
+satisfies lives only in that mapping's `framework_mappings[].control_id` -
+never in the rule's own top-level `id`.
+
+Allocating the next `id` is deterministic, not a tracked counter file:
+scan every rule file's `id` for the current maximum and add one. No extra
+state to keep in sync or let drift.
+
+**Open question, not resolved by this plan:** `references/schema.md`'s
+file-naming convention (`<benchmark-slug>_<platform-slug>_<rule-id>.json`)
+assumed `id` was a specific framework's own number, which is how a
+filename could name "the" benchmark it came from. That assumption no
+longer holds. Task 6 below updates the convention to
+`<id>_<short-title-slug>.json` (e.g. `12_ensure-something.json`) so a
+filename stays human-scannable without implying single-framework
+ownership - but it leaves the surrounding `baselines/<family>/<product>/
+<version>/` folder layout itself untouched, since no real content is
+being organized into folders by this plan (the only two folders that
+existed are removed in Task 5, and nothing recreates them). Whether that
+three-level folder convention still makes sense once a rule doesn't belong
+to one family/product/version, or whether rules should live in one flat
+directory instead, is a decision for whichever of sub-projects 2/3 first
+authors real content under the new schema - flagged here so it isn't
+forgotten, not decided here.
+
 ### `framework_mappings` (replaces the singular `benchmark` object)
 
 An array, since one rule commonly satisfies more than one framework's
@@ -352,7 +385,7 @@ same caveat the review already recorded).
 - Modify: `tests/test_rule_schema.py` (full rewrite of fixtures/assertions)
 
 **Interfaces:**
-- Produces: the v2 rule shape every later task assumes - `framework_mappings[]` (`framework`, `framework_product`, `framework_version`, `control_id`, `framework_level[]`, `checked_date`), `authoring_mode` (`"independent"` | `"licensed_adaptation"`), `source_license` (required iff `authoring_mode == "licensed_adaptation"`), `policy_classification` (`control_surface`, `platforms[]`, `management_channels[]`). `audit`/`remediation`/`references`/`default_value`/`additional_information`/`minimum_os_csp`/`recommended_state` are unchanged from v1.
+- Produces: the v2 rule shape every later task assumes - `id` (a toolkit-assigned positive-integer string, pattern `^[1-9][0-9]*$`, never a framework's own number), `framework_mappings[]` (`framework`, `framework_product`, `framework_version`, `control_id`, `framework_level[]`, `checked_date`), `authoring_mode` (`"independent"` | `"licensed_adaptation"`), `source_license` (required iff `authoring_mode == "licensed_adaptation"`), `policy_classification` (`control_surface`, `platforms[]`, `management_channels[]`). `audit.methods[].steps[]` no longer has `original_command` - `check_command` is always this project's own engineering, never a preserved original. `output_check[].value_source` is `"rule_defined" | "organization_defined"` (renamed from `"benchmark"`, since a value can be rule-defined without being any one benchmark's). `remediation`/`references`/`default_value`/`additional_information`/`minimum_os_csp`/`recommended_state` are unchanged from v1.
 
 - [ ] **Step 1: Rewrite `tests/test_rule_schema.py`'s fixture and tests for the v2 shape**
 
@@ -379,7 +412,7 @@ BASELINES_DIR = REPO_ROOT / "baselines"
 EXAMPLES_DIR = REPO_ROOT / ".claude" / "skills" / "compliance-benchmark-json" / "references" / "examples"
 
 MINIMAL_VALID_RULE = {
-    "id": "1.1",
+    "id": "12",
     "title": "Ensure Something",
     "assessment_status": "Automated",
     "authoring_mode": "independent",
@@ -411,17 +444,16 @@ MINIMAL_VALID_RULE = {
                 "steps": [
                     {
                         "step_role": "compliance_check",
-                        "original_command": None,
-                        "check_command": "test_1_1_status=1",
+                        "check_command": "test_12_status=1",
                         "check_command_verified": True,
                         "output_description": "...",
                         "output_check": [
                             {
-                                "variable": "test_1_1_status",
+                                "variable": "test_12_status",
                                 "data_type": "integer",
                                 "operator": "eq",
                                 "value": 1,
-                                "value_source": "benchmark",
+                                "value_source": "rule_defined",
                             }
                         ],
                     }
@@ -524,6 +556,27 @@ def test_framework_level_accepts_multiple_cumulative_levels(validator):
     assert schema_errors(rule, validator) == []
 
 
+def test_id_rejects_a_framework_shaped_value(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["id"] = "4.11.15.3.1"  # a framework's own dotted numbering, not a toolkit id
+
+    assert schema_errors(rule, validator) != []
+
+
+def test_id_accepts_a_plain_toolkit_assigned_integer(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["id"] = "347"
+
+    assert schema_errors(rule, validator) == []
+
+
+def test_audit_step_has_no_original_command_field(validator):
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    rule["audit"]["methods"][0]["steps"][0]["original_command"] = None
+
+    assert schema_errors(rule, validator) != []
+
+
 @pytest.mark.parametrize("rule_path", find_rule_files(BASELINES_DIR), ids=lambda p: p.name)
 def test_baseline_rule_matches_schema(rule_path, validator):
     rule = json.loads(rule_path.read_text(encoding="utf-8"))
@@ -569,7 +622,11 @@ Replace the file's contents with:
     "additional_information"
   ],
   "properties": {
-    "id": { "type": "string", "minLength": 1 },
+    "id": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "description": "A toolkit-assigned identifier, unique across the whole rule library - never a framework's own numbering (that lives in framework_mappings[].control_id). Allocated by scanning every rule's id for the current maximum and adding one, not a tracked counter file."
+    },
     "title": { "type": "string", "minLength": 1 },
     "assessment_status": { "enum": ["Automated", "Manual"] },
     "authoring_mode": { "enum": ["independent", "licensed_adaptation"] },
@@ -712,12 +769,11 @@ Replace the file's contents with:
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "step_role", "original_command", "check_command",
+        "step_role", "check_command",
         "check_command_verified", "output_description", "output_check"
       ],
       "properties": {
         "step_role": { "enum": ["compliance_check", "lookup"] },
-        "original_command": { "type": ["string", "null"] },
         "check_command": { "type": "string", "minLength": 1 },
         "check_command_verified": { "type": "boolean" },
         "output_description": { "type": "string", "minLength": 1 },
@@ -745,7 +801,7 @@ Replace the file's contents with:
         "data_type": { "enum": ["boolean", "integer", "string"] },
         "operator": { "enum": ["eq", "ne", "gt", "gte", "lt", "lte", "contains", "like"] },
         "value": { "type": ["string", "number", "boolean", "null"] },
-        "value_source": { "enum": ["benchmark", "organization_defined"] }
+        "value_source": { "enum": ["rule_defined", "organization_defined"] }
       },
       "allOf": [
         {
@@ -810,7 +866,11 @@ with a framework_mappings array (so one rule can cross-reference multiple
 frameworks), an authoring_mode + source_license pair (so rule content
 records whether it was independently authored or adapted from an openly
 licensed source), and a policy_classification taxonomy (control surface,
-platforms, management channels) for browsing beyond Intune.
+platforms, management channels) for browsing beyond Intune. id is now a
+toolkit-assigned integer, never a framework's own numbering; audit steps
+no longer carry original_command, since check_command is always this
+project's own engineering; output_check.value_source's "benchmark" value
+is renamed to "rule_defined" to match.
 
 Known red until Tasks 5/6 land: test_baseline_rule_matches_schema and
 test_bundled_example_matches_schema still cover v1-shaped files.
@@ -1152,7 +1212,6 @@ MINIMAL_RULE = {
                 "steps": [
                     {
                         "step_role": "compliance_check",
-                        "original_command": None,
                         "check_command": "$test_rule_a_status = 1",
                         "check_command_verified": True,
                         "output_description": "...",
@@ -1162,7 +1221,7 @@ MINIMAL_RULE = {
                                 "data_type": "integer",
                                 "operator": "eq",
                                 "value": 1,
-                                "value_source": "benchmark",
+                                "value_source": "rule_defined",
                             }
                         ],
                     }
@@ -1327,7 +1386,6 @@ MINIMAL_RULE = {
                 "steps": [
                     {
                         "step_role": "compliance_check",
-                        "original_command": None,
                         "check_command": "$test_rule_a_status = 1",
                         "check_command_verified": True,
                         "output_description": "...",
@@ -1337,7 +1395,7 @@ MINIMAL_RULE = {
                                 "data_type": "integer",
                                 "operator": "eq",
                                 "value": 1,
-                                "value_source": "benchmark",
+                                "value_source": "rule_defined",
                             }
                         ],
                     }
@@ -1553,7 +1611,7 @@ Replace its contents with:
 
 ```json
 {
-  "id": "1.1",
+  "id": "1",
   "title": "Ensure Example Setting Is Configured To A Secure Value",
   "assessment_status": "Automated",
   "authoring_mode": "independent",
@@ -1585,18 +1643,17 @@ Replace its contents with:
         "steps": [
           {
             "step_role": "compliance_check",
-            "original_command": null,
             "check_command": "$example_1_1_setting = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Example\\Setting' -Name 'ExampleValue' -ErrorAction SilentlyContinue).ExampleValue",
             "check_command_verified": true,
             "output_description": "Illustrative example output description.",
-            "check_command_notes": "No original_command exists in this illustrative example - only a registry location and value.",
+            "check_command_notes": "Illustrative example: a plain registry-property capture, engineered from the mechanism identity in the control spec - there is no 'original' command to explain a difference from.",
             "output_check": [
               {
                 "variable": "example_1_1_setting",
                 "data_type": "integer",
                 "operator": "eq",
                 "value": 0,
-                "value_source": "benchmark"
+                "value_source": "rule_defined"
               }
             ]
           }
@@ -1630,17 +1687,17 @@ Replace its contents with:
 
 - [ ] **Step 3: Apply the same recipe to the remaining 7 examples**
 
-For each file below, apply this transformation (matching what Step 2 just did): replace `benchmark` with `authoring_mode: "independent"` + a single-entry `framework_mappings` (`framework: "example"`, invented `framework_product`/`control_id` matching the file's original id, `framework_version: "1.0.0"`, a plausible `framework_level`, `checked_date: "2026-08-20"`); add a `policy_classification` block (pick a plausible `control_surface`/`platforms`/`management_channels` for the platform the original example illustrated); delete `extended_attributes` entirely (its `cis_controls`/`grid_id` content doesn't carry forward); replace every prose field (`title`, `description`, `rationale`, `impact`, `default_value`, and every `output_description`/`check_command_notes`) with clearly-invented illustrative text that preserves the original's structural shape - same number of methods/steps/output_checks, same `type`/`step_role`/`operator`/`value_source` values, same use of `original_command: null` vs a real string. Do not reuse any of the original file's specific wording, even paraphrased - invent new sentences.
+For each file below, apply this transformation (matching what Step 2 just did): set the root `id` to the file's assigned toolkit id from the table (a plain positive-integer string - distinct from any framework's own numbering); replace `benchmark` with `authoring_mode: "independent"` + a single-entry `framework_mappings` (`framework: "example"`, invented `framework_product`/`control_id` matching the file's original v1 id, `framework_version: "1.0.0"`, a plausible `framework_level`, `checked_date: "2026-08-20"`); add a `policy_classification` block (pick a plausible `control_surface`/`platforms`/`management_channels` for the platform the original example illustrated); delete `extended_attributes` entirely (its `cis_controls`/`grid_id` content doesn't carry forward); delete every `original_command` field (there's no more "original" to preserve - `check_command` is always this project's own engineering); rename every `output_check[].value_source` value of `"benchmark"` to `"rule_defined"`; replace every prose field (`title`, `description`, `rationale`, `impact`, `default_value`, and every `output_description`/`check_command_notes`) with clearly-invented illustrative text that preserves the original's structural shape - same number of methods/steps/output_checks, same `type`/`step_role`/`operator`/`value_source` values. Do not reuse any of the original file's specific wording, even paraphrased - invent new sentences.
 
-| File | What structural shape it illustrates (keep this exactly) | Original `id` → new `control_id` |
-|---|---|---|
-| `multiple-independent-steps.json` | 3 steps in one method, each independently `check_command_verified: true`, each mapping to a separate original command | `4.10.24.1` → `1.2` |
-| `sequential-dependency.json` | step 1 `step_role: "lookup"` (empty `output_check`) feeds step 2; step 2 is `check_command_verified: false` with a genuine unresolved-format note | `4.11.7.2.1` → `1.3` |
-| `organization-defined-single-value.json` | `assessment_status: "Manual"` in the top-level tag despite a real scripted check existing; `output_check.value_source: "organization_defined"`, `value: null` | `4.11.15.3.1` → `1.4` |
-| `organization-defined-multi-value.json` | one step yields two `output_check` entries; a second step has `value_source: "benchmark"` (a fixed ceiling) explicitly distinct from the org-defined value | `4.11.48.1` → `1.5` |
-| `include-semantics.json` | `operator: "contains"` (an "include X" pass condition, not exact-match) | `106.1.1` → `1.6` |
-| `manual-no-script-device-side.json` | no `audit.methods[].steps` at all - device-side state genuinely unreadable by script | `6.7` → `1.7` |
-| `manual-no-script-cloud-only.json` | no `audit.methods[].steps`, but `recommended_state` is still populated (cloud-evaluated setting, no local backing to query) | `1.1` (macOS) → `1.8` |
+| File | What structural shape it illustrates (keep this exactly) | New root `id` | Original v1 `id` → new `control_id` |
+|---|---|---|---|
+| `multiple-independent-steps.json` | 3 steps in one method, each independently `check_command_verified: true` | `2` | `4.10.24.1` → `1.2` |
+| `sequential-dependency.json` | step 1 `step_role: "lookup"` (empty `output_check`) feeds step 2; step 2 is `check_command_verified: false` with a genuine unresolved-format note | `3` | `4.11.7.2.1` → `1.3` |
+| `organization-defined-single-value.json` | `assessment_status: "Manual"` in the top-level tag despite a real scripted check existing; `output_check.value_source: "organization_defined"`, `value: null` | `4` | `4.11.15.3.1` → `1.4` |
+| `organization-defined-multi-value.json` | one step yields two `output_check` entries; a second step has `value_source: "rule_defined"` (a fixed ceiling) explicitly distinct from the org-defined value | `5` | `4.11.48.1` → `1.5` |
+| `include-semantics.json` | `operator: "contains"` (an "include X" pass condition, not exact-match) | `6` | `106.1.1` → `1.6` |
+| `manual-no-script-device-side.json` | no `audit.methods[].steps` at all - device-side state genuinely unreadable by script | `7` | `6.7` → `1.7` |
+| `manual-no-script-cloud-only.json` | no `audit.methods[].steps`, but `recommended_state` is still populated (cloud-evaluated setting, no local backing to query) | `8` | `1.1` (macOS) → `1.8` |
 
 - [ ] **Step 4: Run to verify all 8 examples now pass**
 
@@ -1654,7 +1711,7 @@ Replace the "Top level" table (current lines 15-30) with:
 ```markdown
 | Field | Type | Notes |
 |---|---|---|
-| `id` | string | The framework's own section/rule number, verbatim (e.g. `"4.11.15.3.1"`, `"106.1.1"`, `"ISM-1546"`). Always a string - some IDs aren't semantically numeric. |
+| `id` | string | A toolkit-assigned identifier (`"1"`, `"12"`, `"347"` - a positive integer, no leading zero), unique across the whole rule library, never a framework's own numbering - a framework's own control number belongs solely in that mapping's `framework_mappings[].control_id`. Allocated by scanning every rule's `id` for the current maximum and adding one, not a tracked counter file. |
 | `title` | string | This toolkit's own title for the rule, without a trailing status tag like `(Automated)`/`(Manual)`. Never a specific framework's own title text - see "Authoring model" below. |
 | `assessment_status` | `"Automated"` \| `"Manual"` | The tag the rule's own authoring process assigns. |
 | `authoring_mode` | `"independent"` \| `"licensed_adaptation"` | See "Authoring model" below. |
@@ -1714,7 +1771,33 @@ Every rule declares `authoring_mode`:
 
 Delete the old `extended_attributes` section (current lines 32-52) entirely - CIS Controls mappings and GRID IDs are now just `framework_mappings` entries (`framework: "cis_controls"`, `framework: "cis_grid"`, etc.), not a namespaced sub-object.
 
-- [ ] **Step 6: Update `SKILL.md`'s "A note on benchmark-specific fields" section**
+- [ ] **Step 6: Update `references/schema.md`'s file-naming convention and `audit`/`steps` sections**
+
+Replace the "File naming and location" section's naming-convention sentence (current line 7):
+
+> One file per rule, named `<benchmark-slug>_<platform-slug>_<rule-id>.json` (e.g. the initial CIS macOS and Intune rules used `cis_macos26_2.3.3.4.json`, `cis_intune_win11_4.11.15.3.1.json` - the `cis_` prefix reflects that specific source, not a fixed convention; a non-CIS source should use its own slug instead).
+
+with:
+
+> One file per rule, named `<id>_<short-title-slug>.json` (e.g. `12_ensure-example-setting-is-configured.json`) - `id` is the rule's own toolkit-assigned identifier (see "Top level" below), not any framework's numbering, since one rule can map to several frameworks at once. The title slug is a lowercased, hyphenated shortening of `title`, kept short enough to stay scannable; it exists for humans browsing a folder listing and carries no meaning the JSON itself doesn't already state - the filename is never authoritative, `id` inside the file is.
+
+In the `steps` table (current "### `steps` (scripted methods only)" section), delete the `original_command` row entirely - `check_command` is always this project's own engineering now; there is no preserved "original" to diverge from or explain a difference against. Update the `check_command_notes` row's description from referencing "why `check_command` differs from `original_command`" to: "Optional. Your own explanation of a non-obvious engineering choice in `check_command` (e.g. why a particular flag or extraction approach was used). Only add this when there's something non-obvious to explain."
+
+Update the `output_check` entry shape example (current line 96) from:
+
+```
+{ "variable": "...", "data_type": "boolean|integer|string", "operator": "eq|ne|gt|gte|lt|lte|contains|like", "value": <target or null>, "value_source": "benchmark" | "organization_defined" }
+```
+
+to:
+
+```
+{ "variable": "...", "data_type": "boolean|integer|string", "operator": "eq|ne|gt|gte|lt|lte|contains|like", "value": <target or null>, "value_source": "rule_defined" | "organization_defined" }
+```
+
+and its explanatory bullet below (current line 100) from "`value: null` + `value_source: "organization_defined"` together mean..." - keep that sentence, but where the surrounding prose refers to "the benchmark" as the source of a `rule_defined` value, say "this rule" instead (e.g. "the pass/fail target has to come from whoever configures the policy, not from this rule's own fixed value").
+
+- [ ] **Step 7: Update `SKILL.md`'s "A note on benchmark-specific fields" section**
 
 Replace that entire section (current lines 95-99) with:
 
@@ -1726,23 +1809,27 @@ There is no per-family namespaced field anymore. Every framework a rule maps to 
 Every rule also declares `authoring_mode`. `licensed_adaptation` rules are adapted directly from one specific framework's own openly-licensed text (see that framework's `source_license` requirements in `references/schema.md`). `independent` rules are authored by this toolkit from a control spec (`specs/_control_spec.schema.json`) with no exposure to any mapped framework's own wording during that authoring step - use this mode whenever a rule touches a framework whose licence doesn't clearly permit adaptation, and it's always a safe default even for a permissively-licensed framework.
 ```
 
-- [ ] **Step 7: Run the full skill-related test suite**
+- [ ] **Step 8: Run the full skill-related test suite**
 
 Run: `python -m pytest tests/test_rule_schema.py -v`
 Expected: PASS - all tests, including all 8 bundled-example cases.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add .claude/skills/compliance-benchmark-json/
 git commit -m "$(cat <<'EOF'
 docs: update compliance-benchmark-json skill for schema v2
 
-Rewrites schema.md's field reference and SKILL.md's benchmark-specific-
-fields section for framework_mappings/authoring_mode/policy_classification,
-and replaces all 8 bundled examples with schema-v2-shaped, non-benchmark-
-sourced illustrative content (framework: "example" throughout) - closing
-the licensing review's separate finding that these examples used real CIS
+Rewrites schema.md's field reference (including the file-naming convention,
+now <id>_<title-slug>.json since id is toolkit-assigned rather than any
+one framework's number) and SKILL.md's benchmark-specific-fields section
+for framework_mappings/authoring_mode/policy_classification, drops
+original_command from the steps table, renames value_source's "benchmark"
+to "rule_defined", and replaces all 8 bundled examples with schema-v2-shaped,
+non-benchmark-sourced illustrative content (framework: "example" throughout)
+- closing the licensing review's separate finding that these examples used
+real CIS
 rule text.
 
 Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
