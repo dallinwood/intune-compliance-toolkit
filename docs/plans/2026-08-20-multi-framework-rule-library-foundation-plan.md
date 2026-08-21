@@ -1935,4 +1935,37 @@ git push
 
 ## Progress log
 
-(none yet - entries land here as work against this plan is completed)
+- **2026-08-20** - Tasks 1-7 implemented and individually reviewed. Schema v2
+  landed (`framework_mappings`/`authoring_mode`/`source_license`/
+  `policy_classification`, integer `id`, no `original_command`,
+  `value_source: "rule_defined"`), the independent-authoring control spec
+  schema and its validator were added, `generate_index.py`/
+  `generate_manifest.py` were migrated to the v2 fields, the 12 pre-v2 CIS
+  rule files were removed and the manifest regenerated to the empty state,
+  the `compliance-benchmark-json` skill's docs and all 8 bundled examples
+  were rewritten for v2 with deliberately-invented content, and `README.md`
+  gained the dual-licence note. Commits `378b984..428a5ac`:
+  `2e51fe5 feat: rule schema v2`, `6744572 feat: independent-authoring
+  control spec schema`, `dce7bdf feat: generate_index.py indexes
+  framework_mappings/policy_classification`, `1f7d9bc feat:
+  generate_manifest.py reads platform from policy_classification`,
+  `8efe956 feat: remove the 12 pre-v2 CIS rule files from baselines/`,
+  `94c1a08 docs: update compliance-benchmark-json skill for schema v2`,
+  `95387d9 fix: remove residual real-source wording/constant from bundled
+  examples`, `428a5ac docs: note the two licence layers rule content can
+  carry`.
+- **2026-08-21** - Final whole-branch review's single fix wave. Resolved the
+  cross-task defect the per-task reviews couldn't see (the file-naming and
+  variable-naming conventions were mutually unsatisfiable, now
+  `rule_<id>_<title-slug>.json` with hyphen-folding in `file_slug()`, plus an
+  end-to-end regression test), rewrote `SKILL.md`'s provenance framing so it
+  no longer mandates verbatim reproduction of a source framework's wording,
+  brought `schema.md`'s remaining v1-framed field descriptions onto the
+  `authoring_mode` split, fixed stale docstrings, made
+  `generate_index.py`/`generate_manifest.py` agree on zero folders being a
+  valid state, and stopped `generate_manifest.py` writing the real manifest
+  for a foreign scan root. Also recorded the tracked `webui/` consequences
+  and the unenforced cross-field invariants above. Commit
+  `784b6f8 fix: resolve final whole-branch review findings for schema v2`.
+  Full suite green: 78 passed, 4 skipped (all four skips are empty
+  parametrize sets over the deliberately-empty `baselines/`).
