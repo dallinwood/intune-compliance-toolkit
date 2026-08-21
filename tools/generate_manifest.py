@@ -31,9 +31,9 @@ def folder_entry(folder, rule_files, baselines_root):
     """Describe one rule folder as {family, product, version, platform,
     indexPath, ruleCount}. family/product/version are the folder slugs
     (e.g. "macos_26_tahoe", "v1.1.0"), not the human-readable
-    benchmark.product/version strings inside the rule JSON - slugs are what
-    deterministically reconstruct a fetch URL, so a consumer never has to
-    guess a path from display text.
+    framework_mappings[].framework_product/framework_version strings inside
+    the rule JSON - slugs are what deterministically reconstruct a fetch URL,
+    so a consumer never has to guess a path from display text.
     """
     relative_parts = folder.relative_to(baselines_root).parts
     if len(relative_parts) != 3:
@@ -76,6 +76,20 @@ def write_manifest(folders, baselines_root, manifest_path):
 
 def main():
     root_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else BASELINES_DIR
+
+    # The manifest path is fixed while the scan root is an argument, so a
+    # narrower or unrelated root would otherwise silently overwrite the real
+    # manifest with whatever it happened to find - including an empty list,
+    # now that zero folders is a valid, written result rather than an early
+    # return. Enforce the docstring's "only pass baselines/ itself" instead
+    # of trusting it.
+    if root_dir.resolve() != BASELINES_DIR.resolve():
+        print(
+            f"Refusing to write {MANIFEST_PATH} for a scan rooted at {root_dir} - "
+            f"only {BASELINES_DIR} is a valid root for this script."
+        )
+        return 1
+
     folders = find_rule_folders(root_dir)
 
     manifest_path = write_manifest(folders, baselines_root=root_dir, manifest_path=MANIFEST_PATH)

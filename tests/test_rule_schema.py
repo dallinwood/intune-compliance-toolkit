@@ -11,6 +11,7 @@ from tools.validate_rules import (
     find_rule_files,
     load_schema,
     schema_errors,
+    validate_rule_file,
 )
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -181,6 +182,29 @@ def test_audit_step_has_no_original_command_field(validator):
     rule["audit"]["methods"][0]["steps"][0]["original_command"] = None
 
     assert schema_errors(rule, validator) != []
+
+
+def test_a_rule_named_by_the_file_naming_convention_passes_every_check(tmp_path, validator):
+    """End-to-end proof that the file-naming convention and the variable-naming
+    convention are mutually satisfiable.
+
+    Both derive from the same filename, and a mismatch between them is
+    invisible to every other test here: the schema never sees a filename, and
+    the parametrized baseline tests collect nothing while baselines/ holds no
+    rules. An earlier `<id>_<title-slug>.json` convention was in fact
+    unsatisfiable - the derived variable prefix started with the id's digit
+    and kept the title slug's hyphens, neither of which is legal in a
+    PowerShell or bash identifier.
+    """
+    rule_path = tmp_path / "rule_12_ensure-example-setting-is-configured.json"
+    variable = f"{file_slug(rule_path)}_status"
+    rule = copy.deepcopy(MINIMAL_VALID_RULE)
+    step = rule["audit"]["methods"][0]["steps"][0]
+    step["check_command"] = f"${variable} = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Example' -Name 'Status').Status"
+    step["output_check"][0]["variable"] = variable
+    rule_path.write_text(json.dumps(rule), encoding="utf-8")
+
+    assert validate_rule_file(rule_path, validator) == []
 
 
 @pytest.mark.parametrize("rule_path", find_rule_files(BASELINES_DIR), ids=lambda p: p.name)

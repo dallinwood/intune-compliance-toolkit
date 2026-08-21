@@ -305,6 +305,14 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
   they produced - an auditable record of what each rule's content was
   authored from.
 
+Two cross-field invariants the schema states in its own field descriptions
+but nothing currently enforces: `id` uniqueness across the whole rule
+library, and consistency between `source_license.framework` and the
+frameworks actually listed in `framework_mappings`.
+`tools/validate_rules.py`'s `convention_errors()` is the established home
+for schema-can't-express checks like these - worth adding there once
+sub-project 2 is producing real rules to check.
+
 ## Tooling impact (to work out in the implementation plan, flagged here so it isn't missed)
 
 - `tools/generate_index.py`'s `looks_like_rule_file` duck-types on
@@ -327,6 +335,12 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
   (Commonwealth of Australia) - two licence layers on different files, not
   a conflict, but worth stating explicitly so a downstream user of the repo
   isn't misled into thinking everything is uniformly AGPL-only.
+- `tools/rule_extraction.py` (from the prior Phase 1 pipeline) still extracts
+  v1-shaped fields (`profile_applicability`, `cis_controls`, `grid_id`,
+  source-verbatim prose) that have no home in schema v2. It breaks no test
+  today and this plan doesn't touch it, but whichever of sub-project 2/3
+  builds real extraction tooling should explicitly decide its fate (retire
+  it, or adapt it) rather than rediscover it as dead code.
 
 ## Sequencing (sub-projects; each gets its own design/plan cycle)
 
@@ -349,6 +363,13 @@ Spec shape (new schema, e.g. `specs/_control_spec.schema.json`,
    `4.11.49`, `ISM-1546`, and an Essential Eight strategy+maturity-level
    identifier don't share one ordering), with the current Intune-specific
    screens becoming a filtered projection of the same data.
+
+### Known consequences for `webui/` (tracked, not fixed by this plan)
+
+This plan deliberately didn't touch `webui/` (that's sub-project 4), but two of its changes have real, currently-latent effects there, caught by the final whole-branch review:
+
+- **`webui/e2e/smoke.spec.ts` is now red.** All 5 Playwright specs depend on the real CIS rule content Task 5 removed (they search for specific real rule titles and assert on specific facet values). This isn't caught by `pytest` and wasn't tracked anywhere until now. Whoever next needs a working e2e suite - most likely sub-project 2, once it re-populates `baselines/` with real content - should either give the specs synthetic fixture data independent of any specific rule's real title/content, or explicitly skip them while `baselines/` is empty.
+- **`webui/src/data/ruleRows.ts`, `webui/src/components/rules/RuleTable.tsx`, and `webui/src/logic/ruleFilters.ts` still read the now-removed `profile_applicability` index field non-defensively.** With zero rules today this never executes, so nothing crashes yet - but the first real v2 rule indexed by sub-project 2 will crash the browser the moment `webui/` tries to render it, unless that coupling is fixed first. This is an explicit prerequisite for sub-project 2 (or must be sequenced after sub-project 4's UI rework, if that's done first) - not something to silently discover later.
 
 Deferred, not part of any of the four: bulk ISM ingestion beyond the pilot
 slice, and the still-open question from the licensing review about

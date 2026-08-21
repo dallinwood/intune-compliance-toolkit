@@ -7,14 +7,15 @@ benchmark/platform/version folders are picked up automatically; nothing
 about the folder layout is hardcoded here.
 
 Only pass a root that's baselines/ itself (or a folder under it) - a rule
-file is duck-typed (JSON object with id/title/benchmark keys) to keep the
-usual case safe, but a broad enough root can still contain other JSON that
-happens to match that shape and pick up an unwanted _index.json alongside it.
+file is duck-typed (JSON object with id/title/framework_mappings keys) to
+keep the usual case safe, but a broad enough root can still contain other
+JSON that happens to match that shape and pick up an unwanted _index.json
+alongside it.
 
 Each _index.json holds only the scalar metadata a consumer needs to filter
-and browse rules (id, title, assessment_status, benchmark, profile
-applicability, recommended_state) plus every variable a rule's check_command
-steps assign, so a rule-selection tool can flag cross-rule variable
+and browse rules (id, title, assessment_status, framework_mappings,
+policy_classification, recommended_state) plus every variable a rule's
+check_command steps assign, so a rule-selection tool can flag cross-rule variable
 collisions without re-parsing every full rule file. It deliberately omits a
 generated-at timestamp - re-running this script over an unchanged ruleset
 should produce a byte-identical file, so the index diffs cleanly in git and
@@ -163,9 +164,12 @@ def main():
     root_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else REPO_ROOT / "baselines"
     folders = find_rule_folders(root_dir)
 
+    # Zero rule folders is a valid state, not an error - baselines/ can
+    # legitimately hold no rules between a schema migration and the content
+    # that replaces the old corpus. Same stance as generate_manifest.py.
     if not folders:
         print(f"No rule files found under {root_dir}")
-        return 1
+        return 0
 
     for folder in sorted(folders):
         index_path = write_index(folder, folders[folder])

@@ -45,7 +45,14 @@ def assigned_variables(check_command):
 
 
 def file_slug(rule_path):
-    return rule_path.stem.lower().replace(".", "_")
+    """The variable-name prefix a rule's own filename dictates: the stem,
+    lowercased, with `.` and `-` folded to `_`. Both folds matter - the
+    file-naming convention hyphenates its title slug, and a hyphen is not a
+    legal character in a PowerShell or bash identifier. The convention's
+    leading `rule_` is what keeps the prefix from starting with the rule's
+    id digit, which no identifier may do either.
+    """
+    return rule_path.stem.lower().replace(".", "_").replace("-", "_")
 
 
 def schema_errors(rule, validator):

@@ -13,16 +13,20 @@ The schema was designed against CIS benchmarks for Apple macOS and Microsoft Int
 
 A number of rules already exist as worked examples covering every structural variant this schema needs to handle - search the repo for existing rule JSON files (they follow the naming convention in `references/schema.md`) and skim 2-3 of the closest-matching ones before extracting something new. Don't assume they live in any particular folder - their location isn't fixed by this skill.
 
-## The two hard constraints, in tension
+## Content provenance and check_command engineering
 
-1. **Source fidelity.** Every fact taken from the benchmark (`description`, `rationale`, `impact`, `original_command`, `output_description`, table contents, etc.) must be reproduced with the original wording, including any typos the benchmark itself contains (don't silently correct the source's grammar). Two normalizations ARE applied, and only these two:
-   - **PDF-linebreak rejoining**: two fragments that a PDF-to-markdown conversion broke across a line break get rejoined into one compound word/line.
-   - **Markdown-formatting-artifact stripping**: inline code-span backticks and the stray space they leave before adjacent punctuation - e.g. source `` is: `Block` . `` - are stripped to plain text (`is: Block.`) in JSON string fields. This is a markdown *rendering* artifact from the PDF conversion, not source prose from the benchmark's authors, and downstream consumers of this JSON aren't guaranteed to run it through a markdown renderer - a literal backtick sitting in a string a script generator reads would just be noise. This applies anywhere the pattern shows up (`description`, `output_description`, etc.), not just the "recommended state" sentence.
+Every rule declares `authoring_mode` (see "Framework mappings and authoring mode" below) - this governs where a rule's prose (`title`/`description`/`rationale`/`impact`/`default_value`/`output_description`) comes from:
 
-   If you're not sure whether an oddity is a genuine source typo/formatting choice or a conversion artifact, check the raw source text around it rather than guessing - and if it doesn't match one of these two normalizations, transcribe it verbatim, typos included.
-2. **Automation-readiness.** Fields like `check_command` and `output_check` are engineered by you, not extracted - real technical judgment calls about how to make a check deterministic and machine-parseable.
+- **`independent` rules:** this toolkit's own prose, authored from a control spec (`specs/_control_spec.schema.json`) with no exposure to any mapped framework's own wording during that authoring step. Never transcribe or paraphrase a framework's own text into these fields under this mode - that's the entire point of the mode.
+- **`licensed_adaptation` rules:** prose adapted from the one framework named in `source_license`'s own openly-licensed published text, with modification indicated per that licence's terms. Fidelity to that one named source's wording is expected here (including its typos - don't silently correct the source's grammar), aside from two mechanical normalizations:
+  - **PDF-linebreak rejoining**: two fragments a PDF-to-markdown conversion broke across a line break get rejoined into one compound word/line.
+  - **Markdown-formatting-artifact stripping**: inline code-span backticks and the stray space they leave before adjacent punctuation are stripped to plain text in JSON string fields - a markdown *rendering* artifact from the PDF conversion, not the source's own prose.
 
-These two must never blur together. A field either holds source text (verbatim) or holds your engineering (clearly not pretending to be source text). See `references/schema.md` for exactly which fields are which, and the "Where fidelity broke down before" section below for what happens when this rule is skipped.
+  If you're not sure whether an oddity is a genuine source typo/formatting choice or a conversion artifact, check the raw source text around it rather than guessing - and if it doesn't match one of these two normalizations, transcribe it verbatim. Never blend a second framework's wording or your own invented commentary into these fields under this mode.
+
+`check_command`/`output_check` are always this project's own engineering, regardless of `authoring_mode` - there is no field that preserves a source script verbatim (see "Designing check_command" below for why the schema doesn't have one).
+
+See `references/schema.md` for exactly which fields are which.
 
 ## Workflow for adding a rule
 
@@ -36,21 +40,20 @@ These two must never blur together. A field either holds source text (verbatim) 
 
 ## Designing check_command
 
-The benchmark rarely gives you something directly usable by an automated compliance check. Your job is to turn what it does give you into a command that produces exactly one comparable value per check, while leaving a clear trail back to the original:
+A source framework rarely gives you something directly usable by an automated compliance check. Your job is to turn what it does give you into a command that produces exactly one comparable value per check:
 
 - **Every variable name must be prefixed with the rule's file-slug** (`references/schema.md`'s "Variable naming" section has the exact format). The eventual generator concatenates many rules' `check_command`s into one script per platform, so a generic capture name like `$retention` or `$status` will collide with another rule's identically-named variable the moment both are selected together. This applies in both PowerShell and bash, and to every variable a step assigns - not just the ones referenced in `output_check` - since a lookup step's intermediate variable can collide just as easily as a compliance-check one.
-- **If the source gives a literal command**, put it verbatim in `original_command`, then write a modified version in `check_command` that captures the result into a named shell/PowerShell variable. Typical modifications: drop a bare `sudo` (the discovery script already runs elevated, so plain elevation is redundant - but keep a user-switching form like `sudo -u <username>` where it's selecting *which user's* context to read, not just requesting privilege), add a flag that changes the output format to something parseable (e.g. a CSV/report flag instead of a formatted table), or pipe through a text-processing tool to extract just the field you need.
-- **If the source gives no command at all** (common for registry-backed or setting-based rules that only state a location and expected value) - `original_command` is `null`, and `check_command` is entirely your construction (e.g. a registry-read one-liner). This is fine and expected; just say so in `check_command_notes` so nobody mistakes it for something the source actually wrote.
+- **However the source states the check** (a literal command, a bare setting/registry description, or nothing at all) - `check_command` is always your own engineered capture into a named variable. There's no separate field that preserves a source script verbatim; for `licensed_adaptation` extraction, let the source's own command inform your approach, but write `check_command` fresh either way. Typical engineering: drop a bare `sudo` (the discovery script already runs elevated, so plain elevation is redundant - but keep a user-switching form like `sudo -u <username>` where it's selecting *which user's* context to read, not just requesting privilege), add a flag that changes the output format to something parseable (e.g. a CSV/report flag instead of a formatted table), or pipe through a text-processing tool to extract just the field you need.
 - **If a step's result is only used to compute the next step** (e.g. a two-stage lookup - resolve an identifier, then read the value at that resolved location), keep them as separate entries in `steps` in order, and mark the first one `"step_role": "lookup"` with an empty `output_check: []`. Don't try to force a dependent lookup into one line - the ordering *is* the information.
 - **If the benchmark's pass/fail language is "matches your organization's requirements"** rather than a fixed value, this is `value_source: "organization_defined"` with `value: null` - the check is still worth generating (the variable capture is real), but the comparison target has to come from whoever configures the policy, not from the benchmark. Don't invent a plausible-looking default value to fill the gap.
-- **Never invent output text.** `output_description` must be the benchmark's own wording about what the output means (or, if the source gave nothing beyond a generic confirmation instruction, use that literal phrase - don't pad it out). Anything you add to explain the tweak - why a flag was added, why a value defaults to something when absent - goes in `check_command_notes`, a separate field, never blended into `output_description`.
+- **`output_description` follows the same provenance split as the rest of the rule's prose.** For `licensed_adaptation` rules, use the named source framework's own wording (per the fidelity note above) - or, if the source gave nothing beyond a generic confirmation instruction, that literal phrase, not something more specific you write yourself. For `independent` rules, write your own clear explanation of what the output means, from the control spec - this is expected, authored content. Anything you add to explain a `check_command` tweak (why a flag was added, why a value defaults to something when absent) goes in `check_command_notes`, never blended into `output_description`.
 
 ## Validation
 
 `baselines/_rule.schema.json` is the machine-checkable version of `references/schema.md` - it lives under `baselines/` rather than in this skill folder because it's a runtime dependency of `tools/validate_rules.py` and the project's other tooling, not skill documentation for Claude; the leading underscore marks it (like `_index.json`) as a generated/meta artifact, not a rule. Run `python tools/validate_rules.py <path-to-rule-or-folder>` (or the `tests/test_rule_schema.py` pytest suite, which runs it over every file under `baselines/` and every bundled example) before calling a rule finished. It catches everything a JSON Schema can express automatically:
 
 - Valid JSON, required fields present, enums honored (`assessment_status`, `method.type`, `step_role`, `data_type`, `operator`, `value_source`, `remediation.type`).
-- No leftover fields from earlier schema iterations: `notes` (top-level), `derived`, `pass_criterion`, `recommended_state_mode`, `interpreter`, `registry_check`, or a step using the old `command`/`expected_output` names instead of `original_command`/`check_command`/`output_description`. These were all deliberately removed - see "Fields that were tried and removed" below for why, so you don't re-add them (the schema's `additionalProperties: false` rejects them outright).
+- No leftover fields from earlier schema iterations: `notes` (top-level), `derived`, `pass_criterion`, `recommended_state_mode`, `interpreter`, `registry_check`, `original_command`, or a step using the old `command`/`expected_output` names instead of `check_command`/`output_description`. These were all deliberately removed - see "Fields that were tried and removed" below for why, so you don't re-add them (the schema's `additionalProperties: false` rejects them outright).
 - Absent-value convention is consistent: `null` for a missing scalar, `[]` for a missing list (never `null` for a list field like `references`).
 - `value: null` is only allowed when `value_source: "organization_defined"`.
 
@@ -58,12 +61,13 @@ The schema can't see filenames or cross-reference source text, so it can't catch
 
 - Every `output_check[].variable` string literally appears in that step's `check_command`.
 - Every variable any step assigns (`output_check` entries and intermediate/lookup variables alike) is prefixed with the rule's own file-slug - see `references/schema.md`'s "Variable naming" section. No bare generic names like `$retention` or `$status`.
-- Every non-null `original_command` matches the source document byte-for-byte (aside from the two normalizations above) - this has been the single most common regression when editing a file after the fact, because it's easy to "clean up" a command while touching something nearby.
 - `recommended_state` is populated whenever the source states a target *anywhere* - a body sentence or the rule's own title - not left `null` just because there's no separate "recommended state is" sentence. Only genuinely organization-defined or truly unstated rules get `null`. Keep it to just the value (`"30 Days"`, not `"Less Than or Equal to 30 Days"`) - the comparison belongs in `output_check.operator`.
 
 **If you add, rename, or remove a field**, update `baselines/_rule.schema.json` in the same pass as `schema.md` and the bundled examples - see "Keeping examples and this doc in sync" below. A project hook (see `.claude/settings.json`) also runs `tools/validate_rules.py` automatically whenever a rule JSON file under `baselines/` is created or edited, so a schema violation is caught the moment the file is written, not at the next manual review.
 
-## Where fidelity broke down before (read this before extracting your first rule)
+## Where fidelity broke down before (licensed_adaptation extraction)
+
+These all happened during `licensed_adaptation`-mode extraction from an openly-licensed source - `independent`-mode authoring has a different discipline (never touching the source's wording at all while writing a control spec, then authoring content from that spec alone) covered in the foundation design doc's "Independent-authoring pipeline" section, not here.
 
 Every one of these was caught by a second-pass review, meaning it shipped once already and had to be fixed:
 
@@ -80,7 +84,7 @@ These appeared in early iterations of this schema and were deliberately cut - if
 
 - **`pass_criterion`** (top-level `"deterministic"` / `"organization_defined"`) - duplicated `output_check[].value_source`, which lives at the right granularity (per-check, not per-rule) and is the one an actual generator reads.
 - **`recommended_state_mode`** (`"set"` / `"include"`) - duplicated `output_check[].operator` (`"eq"` vs `"contains"`). Kept `recommended_state` itself, though - see `references/schema.md` for why that one field is NOT redundant even though its sibling was.
-- **`interpreter`** (`"zsh"` / `"powershell"` per method) - fully derivable from `benchmark.platform`; the target platform's own compliance mechanism fixes the scripting language anyway, so there's no actual choice being recorded.
+- **`interpreter`** (`"zsh"` / `"powershell"` per method) - fully derivable from `policy_classification.platforms`; the target platform's own compliance mechanism fixes the scripting language anyway, so there's no actual choice being recorded.
 - **`registry_check`** (a separate object shape for registry-only audits) - collapsed into the same `steps` shape everything else uses, so a consumer only has to handle one pattern instead of two.
 - **`related_events`** (a structured `{event_id, description}` array, tried on the Audit Authentication Policy Change rule) - only one rule ever populated it. A structured field only earns its keep if a script generator can read it across many rules; a one-off array that no generator logic touches is just prose wearing a schema costume, and prose belongs in `description` (as a verbatim `\n- ` bullet list, same as any other source bullet list). If a genuinely recurring, cross-rule pattern like this shows up again (e.g. several rules all list associated event IDs), it's worth re-introducing as a proper shared field at that point - not before.
 

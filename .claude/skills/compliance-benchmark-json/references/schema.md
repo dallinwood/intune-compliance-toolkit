@@ -4,11 +4,11 @@ Field-by-field reference for this project's per-rule JSON files. Read the parent
 
 ## File naming and location
 
-One file per rule, named `<id>_<short-title-slug>.json` (e.g. `12_ensure-example-setting-is-configured.json`) - `id` is the rule's own toolkit-assigned identifier (see "Top level" below), not any framework's numbering, since one rule can map to several frameworks at once. The title slug is a lowercased, hyphenated shortening of `title`, kept short enough to stay scannable; it exists for humans browsing a folder listing and carries no meaning the JSON itself doesn't already state - the filename is never authoritative, `id` inside the file is. JSON only, no YAML.
+One file per rule, named `rule_<id>_<short-title-slug>.json` (e.g. `rule_12_ensure-example-setting-is-configured.json`) - `id` is the rule's own toolkit-assigned identifier (see "Top level" below), not any framework's numbering, since one rule can map to several frameworks at once. The title slug is a lowercased, hyphenated shortening of `title`, kept short enough to stay scannable; it exists for humans browsing a folder listing and carries no meaning the JSON itself doesn't already state - the filename is never authoritative, `id` inside the file is. The literal `rule_` prefix isn't decoration: the filename is also the source of every variable-name prefix in the rule's `check_command`s (see "Variable naming" below), and an identifier may not begin with a digit in either PowerShell or bash, which a bare `<id>_...` name would. JSON only, no YAML.
 
 **Don't assume a fixed output folder.** The rule files' storage location is a project decision, not part of this schema, and it can change over time. If you need to find existing rules to use as reference examples, search the repo for files matching the naming pattern above rather than assuming a specific directory.
 
-**A leading underscore marks a generated/meta artifact, not a rule.** Any folder holding rule files may also have an `_index.json`, produced by `tools/generate_index.py` - a lightweight per-folder manifest (id/title/status/benchmark/organization-defined marker/variables per rule) for tools that need to query many rules without opening every file. Never hand-author or hand-edit it, and don't count it when validating/searching rule files - regenerate it (`python tools/generate_index.py <path>`) after adding, removing, or editing rules in a folder. `baselines/_rule.schema.json` (the machine-checkable version of this doc, see `SKILL.md`'s "Validation" section) follows the same underscore convention and lives at the root of `baselines/` rather than alongside this file - it's a runtime dependency of the project's own tooling (`tools/validate_rules.py`, the pytest suite, the pre-write hook), not documentation for Claude, so it belongs with the data it validates rather than under `.claude/`.
+**A leading underscore marks a generated/meta artifact, not a rule.** Any folder holding rule files may also have an `_index.json`, produced by `tools/generate_index.py` - a lightweight per-folder manifest (id/title/status/framework_mappings/policy_classification/organization-defined marker/variables per rule) for tools that need to query many rules without opening every file. Never hand-author or hand-edit it, and don't count it when validating/searching rule files - regenerate it (`python tools/generate_index.py <path>`) after adding, removing, or editing rules in a folder. `baselines/_rule.schema.json` (the machine-checkable version of this doc, see `SKILL.md`'s "Validation" section) follows the same underscore convention and lives at the root of `baselines/` rather than alongside this file - it's a runtime dependency of the project's own tooling (`tools/validate_rules.py`, the pytest suite, the pre-write hook), not documentation for Claude, so it belongs with the data it validates rather than under `.claude/`.
 
 ## Top level
 
@@ -73,7 +73,7 @@ Every rule declares `authoring_mode`:
 
 ### Why `recommended_state` survives even though `recommended_state_mode` and `pass_criterion` didn't
 
-For manual-only rules with no `output_check` at all, `recommended_state` is the *only* place the target value is recorded - nothing to be redundant with. For scripted rules, `recommended_state` is the benchmark's human-facing label and `output_check.value` is the raw technical value the script actually compares - these are usually two different encodings of the same fact, not two copies of it (e.g. `"Block"` vs `0`, `"Disabled"` vs `0`, `"Enabled"` vs `1`). The one case where they do coincide exactly (an audit-policy rule where both are literally `"Success"`) is a real, acknowledged exception - some settings have no separate raw encoding layer, so the label *is* the check value there.
+For manual-only rules with no `output_check` at all, `recommended_state` is the *only* place the target value is recorded - nothing to be redundant with. For scripted rules, `recommended_state` is the human-facing label for the target value and `output_check.value` is the raw technical value the script actually compares - these are usually two different encodings of the same fact, not two copies of it (e.g. `"Block"` vs `0`, `"Disabled"` vs `0`, `"Enabled"` vs `1`). The one case where they do coincide exactly (an audit-policy rule where both are literally `"Success"`) is a real, acknowledged exception - some settings have no separate raw encoding layer, so the label *is* the check value there.
 
 ## `audit`
 
@@ -87,11 +87,11 @@ Each method:
 
 | Field | Notes |
 |---|---|
-| `method_name` | The source's own name for the method (e.g. `"Graphical Method"`, `"Terminal Method"`, `"Registry Check"`, `"Console Navigation"`, a specific CLI tool name). |
+| `method_name` | This method's name - the source framework's own name for `licensed_adaptation` rules, or this toolkit's own name for `independent` rules (e.g. `"Graphical Method"`, `"Terminal Method"`, `"Registry Check"`, `"Console Navigation"`, a specific CLI tool name). |
 | `type` | `"manual"` or `"scripted"`. |
 | `description` | The method's intro prose from source. |
-| `notes` | Optional array of strings - verbatim source callouts that belong to *this specific method*, not the rule as a whole. |
-| `example` | Optional string - a worked example block from source, kept verbatim. |
+| `notes` | Optional array of strings - callouts that belong to *this specific method*, not the rule as a whole (verbatim from the source for `licensed_adaptation` rules, freshly authored for `independent` rules). |
+| `example` | Optional string - a worked example block, verbatim from the source for `licensed_adaptation` rules or freshly authored for `independent` rules. |
 | `steps` | Present only for `type: "scripted"` methods. See below. |
 
 A `type: "manual"` method has no `steps` - just `method_name`, `type`, `description`, optionally `notes`.
@@ -105,7 +105,7 @@ Array, even when there's only one entry - keeps the shape uniform whether a meth
 | `step_role` | `"compliance_check"` (this step's output is itself a pass/fail check) or `"lookup"` (this step's output only feeds the next step - e.g. resolving an identifier before reading the value at that location). A `"lookup"` step has `output_check: []`. |
 | `check_command` | Your engineered version: captures one comparable result into a named variable. See SKILL.md's "Designing check_command" for the tweaks this typically involves. |
 | `check_command_verified` | `true` if the tweak is a straightforward, high-confidence capture (e.g. a standard registry-property lookup, or removing redundant elevation and assigning to a variable); `false` if you can't be sure of the exact output format without running it (parsing a CLI's structured-report columns, parsing multi-line text with specific whitespace). |
-| `output_description` | The benchmark's own text about what the output means / should be. Raw source wording - if the source gave nothing beyond a generic confirmation instruction, use that literal phrase rather than writing something more specific yourself. |
+| `output_description` | Follows the same provenance split as the rest of the rule (see `SKILL.md`'s "Content provenance and check_command engineering") - the named source framework's own wording for `licensed_adaptation` rules, or this toolkit's own authored explanation for `independent` rules. |
 | `check_command_notes` | Optional. Your own explanation of a non-obvious engineering choice in `check_command` (e.g. why a particular flag or extraction approach was used). Only add this when there's something non-obvious to explain. |
 | `output_check` | Array (always an array, even for one check - a single step can produce more than one comparable value). `[]` for lookup steps. |
 
@@ -121,16 +121,18 @@ Each `output_check` entry:
 
 ### Variable naming
 
-Every variable a `check_command` assigns - every `output_check[].variable`, and any intermediate/lookup variable that only feeds a later step - must be prefixed with the rule's own file-slug: the rule's JSON filename without `.json`, lowercased, with every `.` replaced by `_`. E.g. rule file `cis_intune_win11_4.11.15.3.1.json` gives the prefix `cis_intune_win11_4_11_15_3_1_`. The rest of the name is `snake_case` and descriptive:
+Every variable a `check_command` assigns - every `output_check[].variable`, and any intermediate/lookup variable that only feeds a later step - must be prefixed with the rule's own file-slug: the rule's JSON filename without `.json`, lowercased, with every `.` and `-` replaced by `_`. E.g. rule file `rule_12_ensure-example-setting-is-configured.json` gives the prefix `rule_12_ensure_example_setting_is_configured_`. The rest of the name is `snake_case` and descriptive:
 
 ```
-cis_intune_win11_4_11_15_3_1_retention
-cis_macos26_2_12_2_touch_id_timeout_seconds
+rule_12_ensure_example_setting_is_configured_retention
+rule_12_ensure_example_setting_is_configured_timeout_seconds
 ```
 
-This shape is identical for PowerShell (`$cis_intune_win11_4_11_15_3_1_retention`) and bash (`cis_macos26_2_12_2_touch_id_timeout_seconds`) - one naming convention for both interpreters, not two.
+This shape is identical for PowerShell (`$rule_12_ensure_example_setting_is_configured_retention`) and bash (`rule_12_ensure_example_setting_is_configured_retention`) - one naming convention for both interpreters, not two.
 
-**Why:** the eventual generator concatenates the `check_command` of every rule a user selects into one discovery script per platform. A short, generic capture name (`$retention`, `$status`, `$output`) reads fine in isolation but collides the moment two selected rules both use it in the same generated script, silently corrupting whichever check runs second - a real bug caught in `cis_intune_win11_4.11.15.3.1.json`, which originally captured to plain `$retention`. Prefixing with the file-slug costs nothing extra to guarantee, since that slug is already required to be globally unique by the file-naming convention above.
+Both folds are load-bearing, and so is the filename's `rule_` prefix: a hyphen is not a legal character in a PowerShell or bash identifier, and neither interpreter accepts an identifier that starts with a digit - which is exactly what a slug derived from a bare `<id>_<title-slug>` filename would do. Keep the file-naming convention and this one in step; a filename that can't produce a legal identifier prefix can't satisfy this rule at all.
+
+**Why:** the eventual generator concatenates the `check_command` of every rule a user selects into one discovery script per platform. A short, generic capture name (`$retention`, `$status`, `$output`) reads fine in isolation but collides the moment two selected rules both use it in the same generated script, silently corrupting whichever check runs second - a real bug caught in an early rule that captured to plain `$retention`. Prefixing with the file-slug costs nothing extra to guarantee, since that slug is already required to be globally unique by the file-naming convention above.
 
 This applies to `audit.methods[].steps[].check_command` only - `remediation` doesn't capture to named variables under its current (older) schema.
 
@@ -156,7 +158,7 @@ Lighter schema, not (yet) redesigned to match `audit`'s steps shape:
 }
 ```
 
-Note the field names here are the *old* generation (`command`/`expected_output`/`purpose`), not `original_command`/`check_command`/`output_check` - remediation wasn't in scope when the audit section was redesigned. If a future session extends the same rigor to remediation, treat that as a deliberate schema change to discuss, not an oversight to silently "fix" mid-extraction.
+Note the field names here are the *old* generation (`command`/`expected_output`/`purpose`), not `check_command`/`output_check` - remediation wasn't in scope when the audit section was redesigned. If a future session extends the same rigor to remediation, treat that as a deliberate schema change to discuss, not an oversight to silently "fix" mid-extraction.
 
 ## Worked examples of each shape
 
