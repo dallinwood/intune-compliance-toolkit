@@ -39,7 +39,7 @@
             "check_command": "$example_6_policy_change_csv = examplepol /get /subcategory:\"{00000000-0000-0000-0000-000000000000}\" /r | ConvertFrom-Csv\n$example_6_policy_change_setting = $example_6_policy_change_csv.'Inclusion Setting'",
             "check_command_verified": false,
             "output_description": "Illustrative example output description.",
-            "check_command_notes": "Illustrative example: possible values include 'Success', 'Failure', 'Success and Failure', or 'No Auditing'; the recommended state requires this to include 'Success', which may also include 'Failure' without affecting compliance.",
+            "check_command_notes": "Illustrative example: this compares with 'contains' rather than an exact match, since the reported setting can legitimately hold more than one flag at once - a device auditing both outcomes together still satisfies the requirement as long as the required flag is somewhere in that combined string.",
             "output_check": [
               {
                 "variable": "example_6_policy_change_setting",

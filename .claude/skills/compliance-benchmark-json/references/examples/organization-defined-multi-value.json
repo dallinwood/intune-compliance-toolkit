@@ -66,13 +66,13 @@
             "check_command": "example_5_timeout_seconds=$(/usr/bin/examplebioutil -r -s | /usr/bin/awk -F': ' '/timeout/ {print $2}')",
             "check_command_verified": false,
             "output_description": "Illustrative example output description for the timeout value.",
-            "check_command_notes": "Illustrative example: the maximum this feature allows is a ceiling on the value, not itself a compliance target - the organization's actual desired timeout may be lower and is not fixed by this rule.",
+            "check_command_notes": "Illustrative example: this output_check only confirms the value never exceeds the feature's hard-coded upper bound; it says nothing about what the organization actually wants configured, which could legitimately sit anywhere below that bound.",
             "output_check": [
               {
                 "variable": "example_5_timeout_seconds",
                 "data_type": "integer",
                 "operator": "lte",
-                "value": 172800,
+                "value": 604800,
                 "value_source": "rule_defined"
               }
             ]
@@ -102,7 +102,7 @@
             "purpose": "Illustrative example purpose text for the WalletPay toggle."
           },
           {
-            "command": "/usr/bin/examplebioutil -w -s -o <value≤172800>",
+            "command": "/usr/bin/examplebioutil -w -s -o <value≤604800>",
             "purpose": "Illustrative example purpose text for the system-level timeout."
           }
         ]

@@ -41,7 +41,7 @@
             "check_command": "$example_3_allow_widget_above_lock = (Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Example\\PolicyManager\\Providers\\$example_3_widget_winning_provider_guid\\Default\\Device\\AboveLock\" -Name 'AllowExampleWidgetAboveLock' -ErrorAction SilentlyContinue).AllowExampleWidgetAboveLock",
             "check_command_verified": false,
             "output_description": "Illustrative example output description for the compliance-relevant value.",
-            "check_command_notes": "Illustrative example: this step substitutes the provider identifier captured in step 1 into its own registry path; check_command_verified is false because it is unconfirmed whether the captured identifier includes the enclosing braces the path segment expects, which affects whether the substituted path resolves correctly.",
+            "check_command_notes": "Illustrative example: check_command_verified is false here because nobody has confirmed the exact string shape the first step hands off - if it arrives without the surrounding braces this path segment needs, the lookup quietly resolves to nothing instead of raising an obvious error.",
             "output_check": [
               {
                 "variable": "example_3_allow_widget_above_lock",
