@@ -4,7 +4,7 @@ Field-by-field reference for this project's per-rule JSON files. Read the parent
 
 ## File naming and location
 
-One file per rule, named `<benchmark-slug>_<platform-slug>_<rule-id>.json` (e.g. the initial CIS macOS and Intune rules used `cis_macos26_2.3.3.4.json`, `cis_intune_win11_4.11.15.3.1.json` - the `cis_` prefix reflects that specific source, not a fixed convention; a non-CIS source should use its own slug instead). JSON only, no YAML.
+One file per rule, named `<id>_<short-title-slug>.json` (e.g. `12_ensure-example-setting-is-configured.json`) - `id` is the rule's own toolkit-assigned identifier (see "Top level" below), not any framework's numbering, since one rule can map to several frameworks at once. The title slug is a lowercased, hyphenated shortening of `title`, kept short enough to stay scannable; it exists for humans browsing a folder listing and carries no meaning the JSON itself doesn't already state - the filename is never authoritative, `id` inside the file is. JSON only, no YAML.
 
 **Don't assume a fixed output folder.** The rule files' storage location is a project decision, not part of this schema, and it can change over time. If you need to find existing rules to use as reference examples, search the repo for files matching the naming pattern above rather than assuming a specific directory.
 
@@ -14,42 +14,62 @@ One file per rule, named `<benchmark-slug>_<platform-slug>_<rule-id>.json` (e.g.
 
 | Field | Type | Notes |
 |---|---|---|
-| `id` | string | The benchmark's own section/rule number, verbatim (e.g. `"4.11.15.3.1"`, `"106.1.1"`). Always a string - some IDs aren't semantically numeric. |
-| `title` | string | The recommendation title, without a trailing status tag like `(Automated)`/`(Manual)`. |
-| `assessment_status` | `"Automated"` \| `"Manual"` | The tag the benchmark itself gives the rule, if it uses this convention. Does **not** always agree with whether a scripted check exists - see the iCloud Keychain example below. |
-| `benchmark` | object | `{ product, version, platform }` - identifies which benchmark document and which platform this rule targets. No `source_file` path (removed - product/version already identifies it, and file paths move). |
-| `profile_applicability` | array of strings | Raw strings from source, e.g. `["Level 1"]`, `["Level 1 (L1)"]`, `["BitLocker (BL)"]`. Don't parse profile codes out - keep them as the source wrote them, since not every benchmark follows the same code scheme. |
-| `recommended_state` | string \| null | The benchmark's own label for the target *value* (e.g. `"Block"`, `"Disabled"`, `"Success"`, `"30 Days"`) - never the comparison itself. Usually drawn from a body sentence like "The recommended state for this setting is: X" (common in the CIS Intune-for-Windows benchmark), but some benchmark families never use that sentence and instead encode the target directly in the rule's own title (e.g. CIS macOS's `"Ensure Remote Login Is Disabled"` → `"Disabled"`, `"Ensure Software Update Deferment Is Less Than or Equal to 30 Days"` → `"30 Days"`, dropping the "Ensure ... Is" framing and the comparison wording) - in that case, pull just the value out of the title's own wording instead of leaving the field `null`. Don't bake an operator/comparison into this string (`"Less Than or Equal to 30 Days"` reads like a `recommended_state_mode` in disguise) - the comparison itself belongs solely in `output_check.operator`, same reasoning as why that field was cut (see "Fields that were tried and removed" in `SKILL.md`). `null` is reserved for when the rule is genuinely organization-defined with no fixed target (`output_check.value_source: "organization_defined"`), or the source truly never phrases a recommended value anywhere (title included). **Not redundant** with `output_check.value` even when a check exists - see below. |
-| `description`, `rationale`, `impact` | string | Verbatim source prose. Multi-paragraph text uses `\n\n` between paragraphs; embedded bullet lists use `\n- ` per item, in the same string. Any source note/callout that appeared under the same heading gets folded into this same string. |
-| `audit` | object | See below. |
-| `remediation` | object | See below. Out of scope for the `check_command`/`output_check` redesign - remediation steps still use an older `command` / `expected_output` / `purpose` shape, since remediation is an action, not a compliance check. |
-| `default_value` | string \| null | The source's stated default, when given. |
-| `references` | array of strings | URLs only. `[]` if none (never `null`). Cross-reference metadata that shows up inside a source reference list but isn't actually a URL (a control-mapping ID, a minimum-platform-version note, etc.) should be pulled into its own field instead of left in this array. |
-| `minimum_os_csp` | string \| null | A minimum-OS/CSP-version note, extracted out of the References list when present. Generic enough to sit at the top level even though it isn't universal - a "minimum OS version to use this setting" concept plausibly recurs across benchmark families, unlike the more benchmark-specific fields below. |
-| `additional_information` | string \| object \| null | Free text, or a light structure when the source itself is structured. Only present when the source has an equivalent section. |
-| `extended_attributes` | object, optional | Namespaced home for fields specific to one benchmark family - see "A note on benchmark-specific fields" in `SKILL.md` and the `extended_attributes.cis` shape below. |
+| `id` | string | A toolkit-assigned identifier (`"1"`, `"12"`, `"347"` - a positive integer, no leading zero), unique across the whole rule library, never a framework's own numbering - a framework's own control number belongs solely in that mapping's `framework_mappings[].control_id`. Allocated by scanning every rule's `id` for the current maximum and adding one, not a tracked counter file. |
+| `title` | string | This toolkit's own title for the rule, without a trailing status tag like `(Automated)`/`(Manual)`. Never a specific framework's own title text - see "Authoring model" below. |
+| `assessment_status` | `"Automated"` \| `"Manual"` | The tag the rule's own authoring process assigns. |
+| `authoring_mode` | `"independent"` \| `"licensed_adaptation"` | See "Authoring model" below. |
+| `framework_mappings` | array | Every framework control this rule satisfies - see "Framework mappings" below. At least one entry required. |
+| `source_license` | object | Required when `authoring_mode` is `"licensed_adaptation"`, forbidden when `"independent"` - see "Authoring model" below. |
+| `policy_classification` | object | `{ control_surface, platforms, management_channels }` - see "Policy classification" below. |
+| `recommended_state` | string \| null | The target *value* this rule enforces (e.g. `"Block"`, `"Disabled"`, `"30 Days"`) - never the comparison itself. `null` only when genuinely organization-defined or truly unstated. Don't bake an operator/comparison into this string - that belongs in `output_check.operator`. |
+| `description`, `rationale`, `impact` | string | This toolkit's own prose. For `independent`-mode rules: written from a control spec (see `specs/_control_spec.schema.json`) without reference to any source framework's own wording - see the foundation design doc for the fidelity-vs-paraphrase distinction. For `licensed_adaptation`-mode rules: adapted from the one framework named in `source_license`, with modification indicated per that licence's terms. |
+| `audit` | object | See below - unchanged from before. |
+| `remediation` | object | See below - unchanged from before. |
+| `default_value` | string \| null | The stated default, when known. |
+| `references` | array of strings | URLs only. `[]` if none (never `null`). |
+| `minimum_os_csp` | string \| null | A minimum-OS/CSP-version note, when applicable. |
+| `additional_information` | string \| object \| null | Free text, or a light structure, when there's something worth keeping that doesn't fit elsewhere. |
 
-## `extended_attributes`
+## Authoring model
 
-Optional top-level object, present only when the rule has benchmark-specific metadata worth keeping. Each key is a short benchmark-family slug (`"cis"` for any CIS benchmark); the value is that family's own shape. This exists so a field one family needs (`cis_controls`, `grid_id`) never has to fight over the top level with a differently-shaped field another family might need later - each family gets its own namespace instead.
+Every rule declares `authoring_mode`:
+
+- **`independent`** - this toolkit authored the rule's prose itself, from a control spec (`specs/_control_spec.schema.json`), with no exposure to any single mapped framework's own wording during that authoring step. Always the safe choice regardless of how many frameworks the rule maps to - use it whenever a rule touches a restrictively-licensed framework.
+- **`licensed_adaptation`** - the rule's prose is adapted from one specific framework's own openly-licensed published text. Requires a `source_license` object: `{ framework, license_name, license_url, rights_holder, source_url, retrieved_date, modified: true }`. Only use this when the *entire* rule's content came from nothing but that one permissively-licensed source - if a rule also maps to a more restrictively-licensed framework, use `independent` instead, even though the permissive framework's mapping alone would have allowed `licensed_adaptation`.
+
+## Framework mappings
 
 ```json
-"extended_attributes": {
-  "cis": {
-    "grid_id": "MS-00000220",
-    "cis_controls": [ /* CIS Controls v7/v8 mapping, see below */ ]
+"framework_mappings": [
+  {
+    "framework": "cis",
+    "framework_product": "windows_11",
+    "framework_version": "5.0.0",
+    "control_id": "18.9.31.2",
+    "framework_level": ["Level 1"],
+    "checked_date": "2026-08-20"
   }
+]
+```
+
+- `framework_product`: `null` where the framework has no product axis.
+- `framework_level`: an array - not just because a rule can cover more than one distinct control, but because a single mapping entry can carry more than one level under a cumulative tiering model (e.g. a control satisfying Essential Eight Maturity Level 2 also satisfies Maturity Level 1 for that same control - both belong on the one entry).
+- No citation, title, or descriptive text field - identifiers only, ever. A secondary taxonomy within a framework (e.g. CIS Controls v8) is just another entry with its own `framework`/`control_id`, not a special field on the primary one.
+- `checked_date`: when this specific mapping was last verified against the framework's currently published text.
+
+## Policy classification
+
+```json
+"policy_classification": {
+  "control_surface": "device_config_profile",
+  "platforms": ["windows_11"],
+  "management_channels": ["intune_settings_catalog", "group_policy"]
 }
 ```
 
-**`extended_attributes.cis`** - present on every CIS-sourced rule (macOS, Windows, Intune, or any other CIS benchmark), with both keys always present (`null`/`[]` when the source doesn't populate them for that specific rule):
-
-| Field | Type | Notes |
-|---|---|---|
-| `grid_id` | string \| null | A CIS tracking ID (source label: `GRID:`), specific to CIS's Intune-for-Windows-style benchmarks - `null` for CIS benchmarks that don't use GRID numbering (e.g. macOS) or for a rule the source didn't tag. |
-| `cis_controls` | array | Maps to CIS's own Controls v7/v8 framework with Implementation Group markers - `{ version, control_id, control_title, implementation_groups }` per entry. Applies across CIS benchmark families generally (not Intune-for-Windows-specific the way `grid_id` is). |
-
-A non-CIS source (a DISA STIG, a vendor guide) should add its own `extended_attributes.<family-slug>` with whatever shape honestly reflects what that source provides, rather than forcing data into `extended_attributes.cis`'s shape or leaving it flat at the top level. See SKILL.md's "A note on benchmark-specific fields" before inventing a new family key.
+- `control_surface`: `device_config_profile` | `device_compliance_check` | `server_infrastructure_config` | `process_administrative`
+- `platforms`: e.g. `windows_11`, `windows_server_2022`, `macos`, `linux`, `network_device`, `organization_wide`
+- `management_channels`: e.g. `intune_settings_catalog`, `intune_compliance_policy`, `group_policy`, `registry`, `macos_profile`, `manual_process`
 
 ### Why `recommended_state` survives even though `recommended_state_mode` and `pass_criterion` didn't
 
@@ -83,21 +103,20 @@ Array, even when there's only one entry - keeps the shape uniform whether a meth
 | Field | Notes |
 |---|---|
 | `step_role` | `"compliance_check"` (this step's output is itself a pass/fail check) or `"lookup"` (this step's output only feeds the next step - e.g. resolving an identifier before reading the value at that location). A `"lookup"` step has `output_check: []`. |
-| `original_command` | The command **exactly as the source wrote it**, or `null` if the source gave no runnable command at all (common for setting/registry-backed rules that only state a location and expected value). Must match source byte-for-byte aside from PDF-linebreak-rejoining. |
 | `check_command` | Your engineered version: captures one comparable result into a named variable. See SKILL.md's "Designing check_command" for the tweaks this typically involves. |
 | `check_command_verified` | `true` if the tweak is a straightforward, high-confidence capture (e.g. a standard registry-property lookup, or removing redundant elevation and assigning to a variable); `false` if you can't be sure of the exact output format without running it (parsing a CLI's structured-report columns, parsing multi-line text with specific whitespace). |
 | `output_description` | The benchmark's own text about what the output means / should be. Raw source wording - if the source gave nothing beyond a generic confirmation instruction, use that literal phrase rather than writing something more specific yourself. |
-| `check_command_notes` | Optional. Your own explanation of *why* `check_command` differs from `original_command` (or why there's no `original_command` at all). Only add this when there's something non-obvious to explain - a near-verbatim variable capture doesn't need one. Never merge this reasoning into `output_description`. |
+| `check_command_notes` | Optional. Your own explanation of a non-obvious engineering choice in `check_command` (e.g. why a particular flag or extraction approach was used). Only add this when there's something non-obvious to explain. |
 | `output_check` | Array (always an array, even for one check - a single step can produce more than one comparable value). `[]` for lookup steps. |
 
 Each `output_check` entry:
 
 ```json
-{ "variable": "...", "data_type": "boolean|integer|string", "operator": "eq|ne|gt|gte|lt|lte|contains|like", "value": <target or null>, "value_source": "benchmark" | "organization_defined" }
+{ "variable": "...", "data_type": "boolean|integer|string", "operator": "eq|ne|gt|gte|lt|lte|contains|like", "value": <target or null>, "value_source": "rule_defined" | "organization_defined" }
 ```
 
 - `variable` must literally appear inside that step's `check_command` string - this is checked during validation.
-- `value: null` + `value_source: "organization_defined"` together mean: this is genuinely checkable, but the pass/fail target has to come from whoever configures the policy, not from the benchmark.
+- `value: null` + `value_source: "organization_defined"` together mean: this is genuinely checkable, but the pass/fail target has to come from whoever configures the policy, not from this rule's own fixed value.
 - `operator: "contains"` shows up for "include" phrasing (e.g. audit-policy Success/Failure flags, where the actual state can hold more than the one required flag without failing compliance).
 
 ### Variable naming
@@ -145,16 +164,18 @@ Bundled copies in `references/examples/` alongside this file - not live pointers
 
 **Keep these in sync with the live ruleset.** "Not a live pointer" means these files are copied, not symlinked - it does NOT mean they're allowed to drift. Whenever a change touches schema, structure, or a documented convention (a field added/removed/renamed, a naming rule like the variable-prefixing convention below, a fidelity fix that changes how a field is populated), update every affected file under `references/examples/` in the same pass, and update this doc's prose to match. A stale example teaches the next session the wrong convention with more authority than prose alone, because it looks like proof by demonstration. The one thing that does NOT need to propagate here is an incidental edit to a live rule that isn't a convention change (e.g. a corrected typo transcribed from a source re-read) - only touch the example if the *shape* it's meant to illustrate changed.
 
-**`examples/single-scripted-check.json`** (LSASS SSP/AP) - one registry-property-lookup step, `original_command: null` since the source gave only a registry path, no runnable command.
+All 8 are deliberately-invented illustrative content (`framework: "example"` throughout) - never real framework rule text - so they can be read, copied, and modified freely without touching anyone's licensed benchmark prose. Each still preserves the specific structural shape its filename names.
 
-**`examples/multiple-independent-steps.json`** (Remote Login) - 3 steps in one method, each mapping 1:1 to a separate command the source gave, each independently `check_command_verified: true`.
+**`examples/single-scripted-check.json`** - one registry-property-lookup step; there's no runnable command to preserve from any source, since `check_command` is always this project's own engineering now.
 
-**`examples/sequential-dependency.json`** (Cortana Above Lock) - step 1 (`step_role: "lookup"`) resolves an identifier; step 2's `check_command` references that identifier from step 1. Also shows `check_command_verified: false` used honestly - step 2's substitution logic has a genuine unresolved question about the identifier's exact format.
+**`examples/multiple-independent-steps.json`** - 3 steps in one method, each independently `check_command_verified: true`.
 
-**`examples/organization-defined-single-value.json`** (iCloud Keychain) - tagged `assessment_status: "Manual"` in source despite having a runnable script-based check; `output_check.value_source: "organization_defined"` because the pass/fail target is "matches your organization's requirements," not a fixed value. Shows the tag and the schema fields are independent facts.
+**`examples/sequential-dependency.json`** - step 1 (`step_role: "lookup"`) resolves an identifier; step 2's `check_command` references that identifier from step 1. Also shows `check_command_verified: false` used honestly - step 2's substitution logic has a genuine unresolved question about the identifier's exact format.
 
-**`examples/organization-defined-multi-value.json`** (Touch ID) - one step yields two `output_check` entries from a single command's multi-line output; a second step shows a `value_source: "benchmark"` ceiling (172800, the OS-enforced max) that is explicitly *not* the same thing as the organization's actual desired value.
+**`examples/organization-defined-single-value.json`** - tagged `assessment_status: "Manual"` despite having a runnable script-based check; `output_check.value_source: "organization_defined"` because the pass/fail target is "matches your organization's requirements," not a fixed value. Shows the tag and the schema fields are independent facts.
 
-**`examples/include-semantics.json`** (Audit Authentication Policy Change) - `operator: "contains"` rather than `"eq"`, because the recommended state is "include Success" and a state of "Success and Failure" should still pass.
+**`examples/organization-defined-multi-value.json`** - one step yields two `output_check` entries from a single command's multi-line output; a second step shows a `value_source: "rule_defined"` ceiling (a fixed maximum) that is explicitly *not* the same thing as the organization's actual desired value.
 
-**`examples/manual-no-script-device-side.json`** (Security Keys) and **`examples/manual-no-script-cloud-only.json`** (BitLocker Device Health) - two different reasons a rule can have no `audit.methods[].steps` at all: the first because the device-side state genuinely can't be read by a script, the second because the setting is evaluated by a cloud service with no local registry/CSP backing to query. Note the second still has a populated `recommended_state` - the value exists, there's just nothing on the device to check it against.
+**`examples/include-semantics.json`** - `operator: "contains"` rather than `"eq"`, because the recommended state is "include Success" and a state of "Success and Failure" should still pass.
+
+**`examples/manual-no-script-device-side.json`** and **`examples/manual-no-script-cloud-only.json`** - two different reasons a rule can have no `audit.methods[].steps` at all: the first because the device-side state genuinely can't be read by a script, the second because the setting is evaluated by a cloud service with no local registry/CSP backing to query. Note the second still has a populated `recommended_state` - the value exists, there's just nothing on the device to check it against.

@@ -1,80 +1,85 @@
 {
-  "id": "2.3.3.4",
-  "title": "Ensure Remote Login Is Disabled",
+  "id": "2",
+  "title": "Ensure Example Remote Support Service Is Disabled",
   "assessment_status": "Automated",
-  "benchmark": {
-    "product": "CIS Apple macOS 26 (Tahoe) Benchmark",
-    "version": "1.1.0",
-    "platform": "macOS"
-  },
-  "profile_applicability": [
-    "Level 1"
+  "authoring_mode": "independent",
+  "framework_mappings": [
+    {
+      "framework": "example",
+      "framework_product": "example_macos",
+      "framework_version": "1.0.0",
+      "control_id": "1.2",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-20"
+    }
   ],
+  "policy_classification": {
+    "control_surface": "device_config_profile",
+    "platforms": ["macos"],
+    "management_channels": ["macos_profile"]
+  },
   "recommended_state": "Disabled",
-  "description": "Remote Login allows an interactive terminal connection to a computer.",
-  "rationale": "Disabling Remote Login mitigates the risk of an unauthorized person gaining access to the system via Secure Shell (SSH). While SSH is an industry standard to connect to POSIX servers, the scope of the benchmark is for Apple macOS clients, not servers.\n\nmacOS does have an IP-based firewall available (pf, ipfw has been deprecated) that is not enabled or configured. There are more details and links in the Network sub-section. macOS no longer has TCP Wrappers support built in and does not have strong BruteForce password guessing mitigations, or frequent patching of OpenSSH by Apple. Since most macOS computers are mobile workstations, managing IP-based firewall rules on mobile devices can be very resource intensive. All of these factors can be parts of running a hardened SSH server.",
-  "impact": "The SSH server built into macOS should not be enabled on a standard user computer, particularly one that changes locations and IP addresses. A standard user that runs local applications, including email, web browser, and productivity tools, should not use the same device as a server. There are Enterprise management toolsets that do utilize SSH. If they are in use, the computer should be locked down to only respond to known, trusted IP addresses and appropriate administrator service accounts.\n\nFor macOS computers that are being used for specialized functions, there are several options to harden the SSH server to protect against unauthorized access, including brute force attacks. There are some basic criteria that need to be considered:\n- Do not open an SSH server to the internet without controls in place to mitigate SSH brute force attacks. This is particularly important for systems bound to Directory environments. It is great to have controls in place to protect the system, but if they trigger after the user is already locked out of their account, they are not optimal. If authorization happens after authentication, directory accounts for users that don't even use the system can be locked out.\n- Do not use SSH key pairs when there is no insight to the security on the client system that will authenticate into the server with a private key. If an attacker gets access to the remote system and can find the key, they may not need a password or a key logger to access the SSH server.\n- Detailed instructions on hardening an SSH server, if needed, are available in the CIS Linux Benchmarks, but it is beyond the scope of this benchmark.",
+  "description": "Illustrative example: an example remote support service that exposes an interactive session to the device over the network when left enabled.",
+  "rationale": "Illustrative example rationale text - not real source prose.",
+  "impact": "Illustrative example impact text - not real source prose.",
   "audit": {
     "methods": [
       {
         "method_name": "Graphical Method",
         "type": "manual",
-        "description": "Perform the following steps to ensure that Remote Login is disabled:\n1. Open System Settings\n2. Select General\n3. Select Sharing\n4. Verify that Remote Login is not enabled"
+        "description": "Illustrative example: steps to inspect the example remote support service from the settings UI."
       },
       {
         "method_name": "Terminal Method",
         "type": "scripted",
-        "description": "Run the following commands to verify that Remote Login is disabled:",
+        "description": "Illustrative example: commands to independently verify the example remote support service's configured state, disabled state, and running state.",
         "notes": [
-          "Previously the audit was only using systemsetup but after testing it was discovered that the service can still be enabled through Terminal. Going forward the audit will check the systemsetup, if the service is disabled, and that the service is not running at the time of the audit."
+          "Illustrative example note about why three independent checks are used rather than one."
         ],
         "steps": [
           {
             "step_role": "compliance_check",
-            "original_command": "/usr/bin/sudo /usr/sbin/systemsetup -getremotelogin",
-            "check_command": "cis_macos26_2_3_3_4_remote_login_status=$(/usr/sbin/systemsetup -getremotelogin | /usr/bin/awk -F': ' '{print $2}')",
+            "check_command": "example_2_remote_support_status=$(/usr/sbin/examplesetup -getremotesupport | /usr/bin/awk -F': ' '{print $2}')",
             "check_command_verified": true,
-            "output_description": "Remote Login: Off",
-            "check_command_notes": "Parses systemsetup's 'Remote Login: Off'/'Remote Login: On' output down to just the 'Off'/'On' token.",
+            "output_description": "Illustrative example output description for the configured-state check.",
+            "check_command_notes": "Illustrative example: parses a colon-delimited status line down to just the on/off token.",
             "output_check": [
               {
-                "variable": "cis_macos26_2_3_3_4_remote_login_status",
+                "variable": "example_2_remote_support_status",
                 "data_type": "string",
                 "operator": "eq",
                 "value": "Off",
-                "value_source": "benchmark"
+                "value_source": "rule_defined"
               }
             ]
           },
           {
             "step_role": "compliance_check",
-            "original_command": "/usr/bin/sudo /bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled'",
-            "check_command": "cis_macos26_2_3_3_4_sshd_service_disabled_count=$(/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled')",
+            "check_command": "example_2_remote_support_disabled_count=$(/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.example.remotesupportd\" => disabled')",
             "check_command_verified": true,
-            "output_description": "1",
+            "output_description": "Illustrative example output description for the disabled-count check.",
             "output_check": [
               {
-                "variable": "cis_macos26_2_3_3_4_sshd_service_disabled_count",
+                "variable": "example_2_remote_support_disabled_count",
                 "data_type": "integer",
                 "operator": "eq",
                 "value": 1,
-                "value_source": "benchmark"
+                "value_source": "rule_defined"
               }
             ]
           },
           {
             "step_role": "compliance_check",
-            "original_command": "/usr/bin/sudo /bin/launchctl list | /usr/bin/grep -c \"com.openssh.sshd\"",
-            "check_command": "cis_macos26_2_3_3_4_sshd_running_count=$(/bin/launchctl list | /usr/bin/grep -c \"com.openssh.sshd\")",
+            "check_command": "example_2_remote_support_running_count=$(/bin/launchctl list | /usr/bin/grep -c \"com.example.remotesupportd\")",
             "check_command_verified": true,
-            "output_description": "0",
+            "output_description": "Illustrative example output description for the running-count check.",
             "output_check": [
               {
-                "variable": "cis_macos26_2_3_3_4_sshd_running_count",
+                "variable": "example_2_remote_support_running_count",
                 "data_type": "integer",
                 "operator": "eq",
                 "value": 0,
-                "value_source": "benchmark"
+                "value_source": "rule_defined"
               }
             ]
           }
@@ -87,20 +92,20 @@
       {
         "method_name": "Graphical Method",
         "type": "manual_steps",
-        "description": "Perform the following steps to disable Remote Login:\n1. Open System Settings\n2. Select General\n3. Select Sharing\n4. Set Remote Login to disabled"
+        "description": "Illustrative example: steps to disable the example remote support service from the settings UI."
       },
       {
         "method_name": "Terminal Method",
         "type": "scripted",
-        "description": "Run the following command to disable Remote Login:",
+        "description": "Illustrative example: command to disable the example remote support service.",
         "notes": [
-          "This command will disable the service as well as stop it running in time."
+          "Illustrative example note about the remediation command also stopping the running service."
         ],
         "steps": [
           {
-            "command": "/usr/bin/sudo /usr/sbin/systemsetup -setremotelogin off",
-            "expected_output": "Do you really want to turn remote login off? If you do, you will lose this connection and can only turn it back on locally at the server (yes/no)?",
-            "result_note": "Entering yes will disable remote login."
+            "command": "/usr/sbin/examplesetup -setremotesupport off",
+            "expected_output": "Illustrative example expected prompt text.",
+            "result_note": "Illustrative example result note."
           }
         ]
       }
@@ -109,50 +114,5 @@
   "default_value": null,
   "references": [],
   "minimum_os_csp": null,
-  "additional_information": "man sshd_config",
-  "extended_attributes": {
-    "cis": {
-      "grid_id": null,
-      "cis_controls": [
-        {
-          "version": "v8",
-          "control_id": "4.1",
-          "control_title": "Establish and Maintain a Secure Configuration Process",
-          "implementation_groups": [
-            "IG1",
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v8",
-          "control_id": "4.8",
-          "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software",
-          "implementation_groups": [
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v7",
-          "control_id": "5.1",
-          "control_title": "Establish Secure Configurations",
-          "implementation_groups": [
-            "IG1",
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v7",
-          "control_id": "9.2",
-          "control_title": "Ensure Only Approved Ports, Protocols and Services Are Running",
-          "implementation_groups": [
-            "IG2",
-            "IG3"
-          ]
-        }
-      ]
-    }
-  }
+  "additional_information": "Illustrative example additional information text."
 }

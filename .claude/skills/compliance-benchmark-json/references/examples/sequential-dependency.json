@@ -1,48 +1,54 @@
 {
-  "id": "1.1",
-  "title": "Ensure 'Allow Cortana Above Lock' is set to 'Block'",
+  "id": "3",
+  "title": "Ensure 'Allow Example Widget Above Lock' Is Set To 'Block'",
   "assessment_status": "Automated",
-  "benchmark": {
-    "product": "CIS Microsoft Intune for Windows 11 Benchmark",
-    "version": "5.0.0",
-    "platform": "Windows 11 (Intune)"
-  },
-  "profile_applicability": [
-    "Level 1 (L1)"
+  "authoring_mode": "independent",
+  "framework_mappings": [
+    {
+      "framework": "example",
+      "framework_product": "example_windows",
+      "framework_version": "1.0.0",
+      "control_id": "1.3",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-20"
+    }
   ],
+  "policy_classification": {
+    "control_surface": "device_config_profile",
+    "platforms": ["windows_11"],
+    "management_channels": ["intune_settings_catalog"]
+  },
   "recommended_state": "Block",
-  "description": "This policy setting determines whether or not the user can interact with Cortana using speech while the system is locked.\n\nThe recommended state for this setting is: Block.",
-  "rationale": "Access to any computer resource should not be allowed when the device is locked.",
-  "impact": "The system will need to be unlocked for the user to interact with Cortana using speech.",
+  "description": "Illustrative example: a setting whose backing registry value lives under a per-provider key, so the provider's identifying value has to be looked up before the actual compliance-relevant value can be read.",
+  "rationale": "Illustrative example rationale text - not real source prose.",
+  "impact": "Illustrative example impact text - not real source prose.",
   "audit": {
     "methods": [
       {
         "method_name": "Registry Check",
         "type": "scripted",
-        "description": "1. Navigate to the following registry location and note the WinningProvider GUID. This value confirms under which User GUID the policy is set.\n2. Navigate to the following registry location and confirm the value is set to 0.",
+        "description": "Illustrative example: first resolve the winning provider identifier, then read the setting stored under that provider's key.",
         "steps": [
           {
             "step_role": "lookup",
-            "original_command": null,
-            "check_command": "$cis_intune_win11_1_1_winning_provider_guid = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\AboveLock' -Name 'AllowCortanaAboveLock_WinningProvider' -ErrorAction SilentlyContinue).AllowCortanaAboveLock_WinningProvider",
+            "check_command": "$example_3_widget_winning_provider_guid = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Example\\PolicyManager\\current\\device\\AboveLock' -Name 'AllowExampleWidgetAboveLock_WinningProvider' -ErrorAction SilentlyContinue).AllowExampleWidgetAboveLock_WinningProvider",
             "check_command_verified": true,
-            "output_description": "This value confirms under which User GUID the policy is set.",
+            "output_description": "Illustrative example: the provider identifier that the second step substitutes into its own registry path.",
             "output_check": []
           },
           {
             "step_role": "compliance_check",
-            "original_command": null,
-            "check_command": "$cis_intune_win11_1_1_allow_cortana_above_lock = (Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\Providers\\$cis_intune_win11_1_1_winning_provider_guid\\Default\\Device\\AboveLock\" -Name 'AllowCortanaAboveLock' -ErrorAction SilentlyContinue).AllowCortanaAboveLock",
+            "check_command": "$example_3_allow_widget_above_lock = (Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Example\\PolicyManager\\Providers\\$example_3_widget_winning_provider_guid\\Default\\Device\\AboveLock\" -Name 'AllowExampleWidgetAboveLock' -ErrorAction SilentlyContinue).AllowExampleWidgetAboveLock",
             "check_command_verified": false,
-            "output_description": "confirm the value is set to 0",
-            "check_command_notes": "No original_command exists for either step in this method - CIS only describes the registry paths to navigate to, not a script. This step substitutes the WinningProvider GUID captured in step 1 in place of the source's literal '{GUID}' placeholder; check_command_verified is false because it's unconfirmed whether the captured value includes the enclosing braces the source's placeholder implies, which affects whether the substituted path resolves correctly.",
+            "output_description": "Illustrative example output description for the compliance-relevant value.",
+            "check_command_notes": "Illustrative example: this step substitutes the provider identifier captured in step 1 into its own registry path; check_command_verified is false because it is unconfirmed whether the captured identifier includes the enclosing braces the path segment expects, which affects whether the substituted path resolves correctly.",
             "output_check": [
               {
-                "variable": "cis_intune_win11_1_1_allow_cortana_above_lock",
+                "variable": "example_3_allow_widget_above_lock",
                 "data_type": "integer",
                 "operator": "eq",
                 "value": 0,
-                "value_source": "benchmark"
+                "value_source": "rule_defined"
               }
             ]
           }
@@ -55,46 +61,18 @@
       {
         "method_name": "Settings Catalog",
         "type": "configuration_profile",
-        "description": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to 'Block'.",
+        "description": "Illustrative example remediation description.",
         "config_keys": [
           {
-            "settings_catalog_path": "Above Lock\\Allow Cortana Above Lock",
+            "settings_catalog_path": "Above Lock\\Allow Example Widget Above Lock",
             "value": "Block"
           }
         ]
       }
     ]
   },
-  "default_value": "Enabled. (The user can interact with Cortana using speech while the system is locked.)",
-  "references": [
-    "https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-abovelock#allowcortanaabovelock"
-  ],
-  "minimum_os_csp": "Windows 10, Version 1607 and later",
-  "additional_information": null,
-  "extended_attributes": {
-    "cis": {
-      "grid_id": "MS-00000510",
-      "cis_controls": [
-        {
-          "version": "v8",
-          "control_id": "4.8",
-          "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software",
-          "implementation_groups": [
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v7",
-          "control_id": "16.11",
-          "control_title": "Lock Workstation Sessions After Inactivity",
-          "implementation_groups": [
-            "IG1",
-            "IG2",
-            "IG3"
-          ]
-        }
-      ]
-    }
-  }
+  "default_value": "Illustrative example default value text.",
+  "references": [],
+  "minimum_os_csp": "Illustrative example: Windows 10, Version 1809 and later.",
+  "additional_information": null
 }

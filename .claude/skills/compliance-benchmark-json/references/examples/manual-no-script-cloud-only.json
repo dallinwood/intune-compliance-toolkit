@@ -1,25 +1,33 @@
 {
-  "id": "106.1.1",
-  "title": "Ensure 'Device Health: BitLocker' is set to 'Require'",
+  "id": "8",
+  "title": "Ensure 'Device Health: Example Disk Encryption' Is Set To 'Require'",
   "assessment_status": "Manual",
-  "benchmark": {
-    "product": "CIS Microsoft Intune for Windows 11 Benchmark",
-    "version": "5.0.0",
-    "platform": "Windows 11 (Intune)"
-  },
-  "profile_applicability": [
-    "Level 1 (L1)"
+  "authoring_mode": "independent",
+  "framework_mappings": [
+    {
+      "framework": "example",
+      "framework_product": "example_windows",
+      "framework_version": "1.0.0",
+      "control_id": "1.8",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-20"
+    }
   ],
+  "policy_classification": {
+    "control_surface": "device_compliance_check",
+    "platforms": ["windows_11"],
+    "management_channels": ["intune_compliance_policy"]
+  },
   "recommended_state": "Require",
-  "description": "This policy setting ensures that BitLocker Drive Encryption is active on Windows devices. When this policy is set to require, Intune uses the Windows Health Attestation Service (HAS) to verify that BitLocker is enabled and protecting the operating system volume at the time of device check-in. The recommended state for this setting is: Require.",
-  "rationale": "Full-disk encryption protects data stored on end-user devices from unauthorized access in the event of loss or theft. Without BitLocker, a threat actor who gains physical access to a device can mount the drive externally and read data in plaintext, bypassing all operating system access controls. BitLocker encryption ensures that data at rest remains protected by a cryptographic key bound to the device's hardware security stack.",
-  "impact": "Devices that do not have BitLocker enabled including devices where encryption was initiated but have not completed will be marked non-compliant. Non-compliant devices may lose access to corporate resources until encryption is confirmed.",
+  "description": "Illustrative example: a fictional disk-encryption attestation setting that is evaluated entirely in the cloud against health-attestation data reported at check-in - there is no local value to read, but the target state itself is still known and fixed.",
+  "rationale": "Illustrative example rationale text - not real source prose.",
+  "impact": "Illustrative example impact text - not real source prose.",
   "audit": {
     "methods": [
       {
         "method_name": "Console Navigation",
         "type": "manual",
-        "description": "Navigate to the UI Path articulated in the Remediation section and confirm it is set as prescribed."
+        "description": "Illustrative example: navigate to the UI path articulated in the remediation section and confirm it is set as prescribed."
       }
     ]
   },
@@ -28,31 +36,12 @@
       {
         "method_name": "Intune Admin Center",
         "type": "manual_steps",
-        "description": "To establish the recommended configuration from Microsoft Intune Admin Center:\n1. Navigate to Endpoint security - Compliance policies.\n2. Create or edit a Compliance policy.\n3. Under Device Health, set BitLocker to Require."
+        "description": "Illustrative example: steps to set the example disk encryption requirement from the admin center."
       }
     ]
   },
-  "default_value": "Not Configured",
-  "references": [
-    "https://learn.microsoft.com/en-us/intune/device-security/compliance/overview"
-  ],
+  "default_value": "Illustrative example default value text.",
+  "references": [],
   "minimum_os_csp": null,
-  "additional_information": null,
-  "extended_attributes": {
-    "cis": {
-      "grid_id": null,
-      "cis_controls": [
-        {
-          "version": "v8",
-          "control_id": "3.6",
-          "control_title": "Encrypt Data on End-User Devices",
-          "implementation_groups": [
-            "IG1",
-            "IG2",
-            "IG3"
-          ]
-        }
-      ]
-    }
-  }
+  "additional_information": null
 }

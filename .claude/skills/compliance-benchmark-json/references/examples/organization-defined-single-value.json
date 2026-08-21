@@ -1,41 +1,48 @@
 {
-  "id": "2.1.1.1",
-  "title": "Audit iCloud Passwords & Keychain",
+  "id": "4",
+  "title": "Audit Example Cloud Sync Service",
   "assessment_status": "Manual",
-  "benchmark": {
-    "product": "CIS Apple macOS 26 (Tahoe) Benchmark",
-    "version": "1.1.0",
-    "platform": "macOS"
-  },
-  "profile_applicability": [
-    "Level 2"
+  "authoring_mode": "independent",
+  "framework_mappings": [
+    {
+      "framework": "example",
+      "framework_product": "example_macos",
+      "framework_version": "1.0.0",
+      "control_id": "1.4",
+      "framework_level": ["Level 2"],
+      "checked_date": "2026-08-20"
+    }
   ],
+  "policy_classification": {
+    "control_surface": "device_config_profile",
+    "platforms": ["macos"],
+    "management_channels": ["macos_profile"]
+  },
   "recommended_state": null,
-  "description": "The iCloud Passwords & Keychain is Apple's synchronization service that works with Apple Accounts to synchronize password, passkey, and credit card information across macOS, iOS, iPadOS. The capability allows users to use synced password, passkey, and credit card information in either macOS, iOS, or iPadOS for use in Safari and other applications. The password, passkey, and credit card information stored on macOS in the keychain is stored in Apple's cloud, including on Enterprise-managed computers. When using personal Apple Accounts, credentials and payment information may include both enterprise-related and personal data, depending on user behavior and account usage patterns.",
-  "rationale": "Ensure that iCloud Passwords and Keychain usage aligns with organizational requirements, taking into account whether personal or managed Apple Accounts are being utilized.",
-  "impact": "When iCloud Passwords & Keychain is turned off, password, passkey, and credit card information are no longer synchronized across devices signed in with the same Apple Account. Passwords, passkeys, and credit card information can still be stored locally and accessed through the Passwords and Keychain apps, even when iCloud Passwords & Keychain is turned off.",
+  "description": "Illustrative example: a fictional cloud sync service whose acceptable state depends on organizational policy rather than a single universally-correct value.",
+  "rationale": "Illustrative example rationale text - not real source prose.",
+  "impact": "Illustrative example impact text - not real source prose.",
   "audit": {
     "methods": [
       {
         "method_name": "Graphical Method",
         "type": "manual",
-        "description": "Perform the following steps to verify a profile is installed for the iCloud Passwords & Keychain sync service:\n1. Open System Settings\n2. Select General\n3. Select Device Management\n4. Verify that an installed profile has 'Disallow iCloud Keychain Sync' set to your organization's requirements"
+        "description": "Illustrative example: steps to inspect the example cloud sync service's installed profile from the settings UI."
       },
       {
         "method_name": "Terminal Method",
         "type": "scripted",
-        "description": "Run the following command to verify that a profile is installed that sets iCloud Passwords & Keychain sync to your organization's settings:",
+        "description": "Illustrative example: command to read the example cloud sync service's currently configured state.",
         "steps": [
           {
             "step_role": "compliance_check",
-            "original_command": "/usr/bin/sudo /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('allowCloudKeychainSync').js\nEOS",
-            "check_command": "cis_macos26_2_1_1_1_icloud_keychain_sync_allowed=$(/usr/bin/osascript -l JavaScript << 'EOS'\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess').objectForKey('allowCloudKeychainSync').js\nEOS\n)",
+            "check_command": "example_4_cloud_sync_allowed=$(/usr/bin/osascript -l JavaScript << 'EOS'\n$.NSUserDefaults.alloc.initWithSuiteName('com.example.applicationaccess').objectForKey('allowExampleCloudSync').js\nEOS\n)",
             "check_command_verified": true,
-            "check_command_notes": "Drops the bare sudo (redundant under an already-elevated discovery script) and quotes the heredoc terminator ('EOS' instead of EOS) so the shell doesn't attempt to expand $.NSUserDefaults... before osascript sees it.",
-            "output_description": "If the output is 'false', iCloud Passwords & Keychain Sync is disabled. If the output is 'true', iCloud Passwords & Keychain sync is enabled.",
+            "check_command_notes": "Illustrative example: quotes the heredoc terminator so the shell doesn't attempt to expand the script body before the interpreter sees it.",
+            "output_description": "Illustrative example: 'true' if the example cloud sync service is allowed, 'false' if it is disallowed.",
             "output_check": [
               {
-                "variable": "cis_macos26_2_1_1_1_icloud_keychain_sync_allowed",
+                "variable": "example_4_cloud_sync_allowed",
                 "data_type": "boolean",
                 "operator": "eq",
                 "value": null,
@@ -52,12 +59,12 @@
       {
         "method_name": "Profile Method",
         "type": "configuration_profile",
-        "description": "Create or edit a configuration profile with the following information.",
+        "description": "Illustrative example remediation description.",
         "config_keys": [
           {
-            "payload_type": "com.apple.applicationaccess",
-            "key": "allowCloudKeychainSync",
-            "value": "<true/>, to allow iCloud Passwords & Keychain syncing, or <false/>, to disable it, based on your organization's requirements"
+            "payload_type": "com.example.applicationaccess",
+            "key": "allowExampleCloudSync",
+            "value": "Illustrative example: <true/> to allow, or <false/> to disable, per your organization's requirements."
           }
         ]
       }
@@ -66,59 +73,5 @@
   "default_value": null,
   "references": [],
   "minimum_os_csp": null,
-  "additional_information": null,
-  "extended_attributes": {
-    "cis": {
-      "grid_id": null,
-      "cis_controls": [
-        {
-          "version": "v8",
-          "control_id": "4.1",
-          "control_title": "Establish and Maintain a Secure Configuration Process",
-          "implementation_groups": [
-            "IG1",
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v8",
-          "control_id": "4.8",
-          "control_title": "Uninstall or Disable Unnecessary Services on Enterprise Assets and Software",
-          "implementation_groups": [
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v8",
-          "control_id": "15.3",
-          "control_title": "Classify Service Providers",
-          "implementation_groups": [
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v7",
-          "control_id": "5.1",
-          "control_title": "Establish Secure Configurations",
-          "implementation_groups": [
-            "IG1",
-            "IG2",
-            "IG3"
-          ]
-        },
-        {
-          "version": "v7",
-          "control_id": "9.2",
-          "control_title": "Ensure Only Approved Ports, Protocols and Services Are Running",
-          "implementation_groups": [
-            "IG2",
-            "IG3"
-          ]
-        }
-      ]
-    }
-  }
+  "additional_information": null
 }
