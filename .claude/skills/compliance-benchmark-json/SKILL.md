@@ -1,6 +1,6 @@
 ---
 name: compliance-benchmark-json
-description: Converts security/compliance benchmark documents (CIS, DISA STIG, vendor hardening guides, or any similarly-structured benchmark - typically markdown converted from a source PDF) into this project's per-rule JSON schema, and answers questions about that schema. Use this skill whenever the user asks to add, extract, convert, or generate a rule/control from a benchmark into JSON, whenever they reference a benchmark section/rule number in the context of this repo, or whenever they ask about the meaning of a field in one of the existing rule JSON files (output_check, check_command, recommended_state, etc.). This encodes hard-won conventions from prior sessions - always follow it rather than inventing a new shape from scratch.
+description: Converts security/compliance benchmark documents (CIS, DISA STIG, vendor hardening guides, or any similarly-structured benchmark - typically markdown converted from a source PDF) into this project's per-rule JSON schema, and answers questions about that schema. Use this skill whenever the user asks to add, extract, convert, or generate a rule/control from a benchmark into JSON, whenever they reference a benchmark section/rule number in the context of this repo, or whenever they ask about the meaning of a field in one of the existing rule JSON files (output_check, check_command, recommended_state, etc.). Also use it whenever a session is asked to produce a fact-only control spec from a benchmark's real source text, or to author rule content from a control spec alone - including sessions given only spec files, with no access to the benchmark source at all. This encodes hard-won conventions from prior sessions - always follow it rather than inventing a new shape from scratch.
 ---
 
 # Benchmark → JSON Rule Extraction
@@ -12,6 +12,16 @@ This project is building a machine-readable representation of security/complianc
 The schema was designed against CIS benchmarks for Apple macOS and Microsoft Intune for Windows, but is meant to generalize to other benchmark sources too (other CIS benchmarks, DISA STIGs, vendor-specific hardening guides, anything with the same basic rule shape: a title, applicability, description/rationale/impact, an audit procedure, and a remediation procedure). Don't assume the source is CIS, and don't hardcode CIS-specific filenames or paths anywhere - find the actual source document(s) and existing rule files by asking the user or searching the repo, since both may move or multiply over time.
 
 A number of rules already exist as worked examples covering every structural variant this schema needs to handle - search the repo for existing rule JSON files (they follow the naming convention in `references/schema.md`) and skim 2-3 of the closest-matching ones before extracting something new. Don't assume they live in any particular folder - their location isn't fixed by this skill.
+
+## Which workflow applies to you
+
+This skill covers three distinct jobs, done by different people/sessions with different access to the real benchmark source. Work out which one you're doing before reading anything else in this file:
+
+- **You were handed one or more control spec files and asked to author rule content from them.** This is the common `independent`-mode case (e.g. CIS, whose licence terms don't permit adaptation). Go straight to "Workflow: authoring rule content from a spec" below - together with the "Designing check_command" and "Validation" sections it points to, that section is everything you need. Skip the rest of this document, and **do not open `baseline-references/`, or any file that describes a specific CIS/ISM/Essential Eight rule's real content, under any circumstance.** The entire point of this workflow is that you have never seen that text and could not have paraphrased it - opening it now, even "just to check," is exactly what would make the resulting rule content unsafe to publish.
+- **You have access to a benchmark's real source text and were asked to turn a section of it into a control spec.** This is the first `independent`-mode step - go to "Workflow: producing a spec (`independent`-mode content)" below.
+- **You have access to a benchmark's real source text and were asked to extract a rule directly from it, for a framework whose own licence permits source-faithful adaptation with attribution** (ISM, Essential Eight - not CIS). This is `licensed_adaptation`-mode extraction - go to "Workflow: extracting a `licensed_adaptation` rule directly from source" below.
+
+If you're not sure which of these you are, ask rather than guessing: the design depends on the spec-to-content handoff staying a hard boundary, not a judgment call made under time pressure.
 
 ## Content provenance and check_command engineering
 
@@ -26,17 +36,36 @@ Every rule declares `authoring_mode` (see "Framework mappings and authoring mode
 
 `check_command`/`output_check` are always this project's own engineering, regardless of `authoring_mode` - there is no field that preserves a source script verbatim (see "Designing check_command" below for why the schema doesn't have one).
 
-See `references/schema.md` for exactly which fields are which.
+See `references/schema.md` for exactly which fields are which. See "Workflow: producing a spec" and "Workflow: authoring rule content from a spec" below for how the two `independent`-mode steps actually work in practice.
 
-## Workflow for adding a rule
+## Workflow: producing a spec (`independent`-mode content)
+
+This is the first of the two `independent`-mode authoring steps: someone who has read the real benchmark source produces a fact-only control spec, so that whoever writes the actual rule content afterward (see "Workflow: authoring rule content from a spec" below) never has to touch the source's own wording at all. See `specs/_control_spec.schema.json` for the spec's full field-by-field shape.
 
 1. **Locate the source document and the section within it.** If the user hasn't pointed you at a specific file, ask or search the repo for the relevant benchmark document. Grep the target ID/title - section numbers aren't always sequential with the document's heading levels (some benchmarks number a late section with far deeper nesting than its neighbors), so search by title text if the ID search comes up empty.
-2. **Read the full section**, not just Audit/Remediation - also check for a `Default Value`, `References` (and whether any reference-list entries are actually cross-reference metadata - e.g. a control-mapping ID or a minimum-OS note - rather than a URL - pull those into their own fields), any "Additional Information"-type section, and any controls-mapping table at the end.
-3. **Fill the schema** per `references/schema.md`. Work out, for each audit method, whether it's `manual` or `scripted`, and for scripted methods whether the benchmark gave a literal runnable command or only a location/description to confirm (e.g. a registry path, a UI setting).
-4. **Engineer `check_command`.** This is the part that takes real thought - see "Designing check_command" below.
-5. **Validate before showing the result.** Run the checks in "Validation" below. Every one of them has caught a real bug in earlier sessions - they are not busywork.
-6. **Say what you're unsure of.** If you can't verify a command's exact output format without running it (e.g. a CLI's CSV column names, or whether a parser handles the source's exact whitespace), set `check_command_verified: false` and say so - don't present unverified syntax as settled.
-7. **Save the output where the project's rule files actually live**, or ask if that's unclear. Don't default to any specific folder name from memory - the storage location for rule JSON files is a project decision that can change, not something this skill should assume.
+2. **Read the full section**, not just Audit/Remediation - also check for a `Default Value`, `References` (and whether any reference-list entries are actually cross-reference metadata - e.g. a control-mapping ID or a minimum-OS note - rather than a URL), any "Additional Information"-type section, and any controls-mapping table at the end. You need the whole picture before you can separate mechanism fact from framework prose.
+3. **Extract mechanism facts only into the spec's `mechanism` block** (`type`/`identifier`/`data_type`/`secure_value`/`current_default`). A registry path, plist key, CSP URI, or CLI identifier is a fact - typically Microsoft's or Apple's own public documentation, not the framework's expression of it - so it belongs here verbatim. The framework's prose *around* that fact (why it matters, how it phrases the requirement) does not belong in this block at all.
+4. **Fill `applicability_tags`/`rationale_tags`/`control_surface`/`management_channels`/`framework_mapping_refs`.** `applicability_tags` and `rationale_tags` are drawn from this schema's own fixed vocabularies (`specs/_control_spec.schema.json`), not the source's own categorization language - pick whichever tags actually fit the control, even if the source never uses comparable terms. `framework_mapping_refs` records identifiers only (framework, control ID, version, level, checked date) - the same discipline as a rule's own `framework_mappings`.
+5. **Close the source, then write `description_intent`/`rationale_intent` independently.** These are plain-English statements, in your own words, of what the control requires and why - never by transcribing or paraphrasing the source's sentences, structure, or examples. If you find yourself needing the source open while writing these two fields, stop and close it first: needing to check back is itself a sign you're about to paraphrase rather than independently restate.
+6. **Validate with `tools/validate_specs.py`** (`python tools/validate_specs.py <path-to-spec-or-folder>`) before calling the spec finished.
+7. **Save to `specs/<framework>/<product>/<version>/<control_id>.json`** (e.g. `specs/cis/windows_11/5.0.0/18.9.31.2.json`) - `<control_id>` is the source framework's own numbering for this control. Specs are committed publicly like any other file in this repo: by construction they hold no framework's copyrightable expression, so they need no gitignoring.
+
+## Workflow: authoring rule content from a spec
+
+This is the second `independent`-mode authoring step, done by whoever has never seen (and must not go looking for) the benchmark's real source text - only the spec(s) produced by "Workflow: producing a spec" above. This separation is what makes the resulting rule content legally safe to publish: whoever writes the fields below literally cannot have paraphrased something they never read. "Designing check_command" and "Validation" below apply to this workflow directly - you don't need anything else in this document to do this job.
+
+1. **Read the spec file(s) for one rule.** Usually one spec maps to one rule, but a rule can draw on more than one spec if its mechanism genuinely spans more than one control.
+2. **Write `title`/`description`/`rationale`/`impact`/`default_value` from the spec's intent fields, in your own words.** `description_intent`/`rationale_intent` are your starting point for `description`/`rationale`; `impact` and `default_value` come from `mechanism.current_default` and the surrounding facts. If a sentence here reads like it's echoing a specific framework's own wording, that's a sign the spec itself leaked source language - flag it rather than silently rewording it, since you have no source text of your own to check it against.
+3. **Engineer `check_command`/`output_check` from `mechanism`.** This is the same engineering job "Designing check_command" below describes - the spec's `mechanism.identifier`/`type`/`data_type` gives you the fact to build a check around, the same role a source command would have played in the older single-step workflow.
+4. **Set `authoring_mode: "independent"`, copy `framework_mapping_refs` into `framework_mappings`, and build `policy_classification`** from the spec's `control_surface` and `management_channels` directly, and its single `platform` string wrapped into the one-element `policy_classification.platforms` array (unless you're deliberately merging more than one spec's platform into the same rule).
+5. **Allocate the next `id`.** Scan `baselines/rules/*.json` for the current maximum `id` and add one - `baselines/rules/` may not exist yet for the very first rule authored under this schema, in which case start at `id: "1"`.
+6. **Save as `baselines/rules/rule_<id>_<title-slug>.json`.**
+7. **Validate with `tools/validate_rules.py`** (`python tools/validate_rules.py baselines/rules/rule_<id>_<title-slug>.json`) before calling the rule finished - see "Validation" below for what it checks and what it can't.
+8. **Regenerate the folder's index**: `python tools/generate_index.py baselines/rules`.
+
+## Workflow: extracting a `licensed_adaptation` rule directly from source
+
+Not designed in detail yet - ISM/Essential Eight source acquisition hasn't happened as of this writing. When it lands, expect this workflow to look close to the original single-pass "read source, then author the rule directly" shape that the two workflows above replaced for `independent`-mode content, rather than the spec/content split those use: `licensed_adaptation` content is allowed to be source-faithful, with attribution recorded in `source_license`, so there's no legal reason to force the same author-blind handoff `independent`-mode content needs. Until this section is filled in, treat the "Content provenance and check_command engineering" section above (the `licensed_adaptation` bullet), the notes in "Where fidelity broke down before" below, and `references/schema.md`'s `source_license`/"Authoring model" documentation as the working guidance for this mode.
 
 ## Designing check_command
 
@@ -67,7 +96,7 @@ The schema can't see filenames or cross-reference source text, so it can't catch
 
 ## Where fidelity broke down before (licensed_adaptation extraction)
 
-These all happened during `licensed_adaptation`-mode extraction from an openly-licensed source - `independent`-mode authoring has a different discipline (never touching the source's wording at all while writing a control spec, then authoring content from that spec alone) covered in the foundation design doc's "Independent-authoring pipeline" section, not here.
+These all happened during `licensed_adaptation`-mode extraction from an openly-licensed source - `independent`-mode authoring has a different discipline (never touching the source's wording at all while writing a control spec, then authoring content from that spec alone) covered in "Workflow: producing a spec" and "Workflow: authoring rule content from a spec" above, not here.
 
 Every one of these was caught by a second-pass review, meaning it shipped once already and had to be fixed:
 
@@ -100,7 +129,7 @@ Before introducing a new structured key beyond the general schema, check whether
 
 There is no per-family namespaced field anymore. Every framework a rule maps to - CIS, ISM, Essential Eight, CIS's own Controls taxonomy, anything else - is just another entry in `framework_mappings` (see `references/schema.md`). A rule's `title`/`description`/`rationale`/etc. never names which framework prompted it; the only place a framework name appears on a rule is that mapping list, as plain identifiers (framework, control ID, version, level, date checked) - never prose, never a title, never a citation string.
 
-Every rule also declares `authoring_mode`. `licensed_adaptation` rules are adapted directly from one specific framework's own openly-licensed text (see that framework's `source_license` requirements in `references/schema.md`). `independent` rules are authored by this toolkit from a control spec (`specs/_control_spec.schema.json`) with no exposure to any mapped framework's own wording during that authoring step - use this mode whenever a rule touches a framework whose licence doesn't clearly permit adaptation, and it's always a safe default even for a permissively-licensed framework.
+Every rule also declares `authoring_mode`. `licensed_adaptation` rules are adapted directly from one specific framework's own openly-licensed text (see that framework's `source_license` requirements in `references/schema.md`). `independent` rules are authored by this toolkit from a control spec (`specs/_control_spec.schema.json`) with no exposure to any mapped framework's own wording during that authoring step - use this mode whenever a rule touches a framework whose licence doesn't clearly permit adaptation, and it's always a safe default even for a permissively-licensed framework. See "Which workflow applies to you" near the top of this document for how a spec turns into a rule in practice.
 
 ## Further reading
 
