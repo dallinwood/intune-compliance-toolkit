@@ -68,6 +68,15 @@ replacements for the removed CIS rules - that's sub-project 2.
   process (a fact-only specification, then content authored from the spec
   alone by someone/something with no exposure to the source text) but named
   for what it does, not for the legal doctrine behind it.
+- **`baselines/` flattens to one directory** once real content exists,
+  since a rule no longer belongs to one framework/product/version. See the
+  `id` section below for the full reasoning and what implementing this
+  requires of `tools/generate_manifest.py`.
+- **Git history is left as-is.** The 12 removed files' CIS-sourced text
+  remains recoverable from prior commits (removing them from HEAD doesn't
+  unpublish that history) - a deliberate choice not to run a history
+  rewrite now, revisited only if it becomes a real problem later, not
+  forgotten in the meantime.
 
 ## Schema v2
 
@@ -105,22 +114,42 @@ Allocating the next `id` is deterministic, not a tracked counter file:
 scan every rule file's `id` for the current maximum and add one. No extra
 state to keep in sync or let drift.
 
-**Open question, not resolved by this plan:** `references/schema.md`'s
-file-naming convention (`<benchmark-slug>_<platform-slug>_<rule-id>.json`)
-assumed `id` was a specific framework's own number, which is how a
-filename could name "the" benchmark it came from. That assumption no
-longer holds. Task 6 below updates the convention to
-`<id>_<short-title-slug>.json` (e.g. `12_ensure-something.json`) so a
-filename stays human-scannable without implying single-framework
-ownership - but it leaves the surrounding `baselines/<family>/<product>/
-<version>/` folder layout itself untouched, since no real content is
-being organized into folders by this plan (the only two folders that
-existed are removed in Task 5, and nothing recreates them). Whether that
-three-level folder convention still makes sense once a rule doesn't belong
-to one family/product/version, or whether rules should live in one flat
-directory instead, is a decision for whichever of sub-projects 2/3 first
-authors real content under the new schema - flagged here so it isn't
-forgotten, not decided here.
+`references/schema.md`'s file-naming convention originally assumed `id`
+was a specific framework's own number, which is how a filename could name
+"the" benchmark it came from. That assumption no longer holds; the
+implementation settled on `rule_<id>_<short-title-slug>.json` (e.g.
+`rule_12_ensure-something.json` - see Task 6 and the naming-convention fix
+recorded in the Progress log) so a filename stays human-scannable and
+produces a valid variable-name prefix without implying single-framework
+ownership.
+
+**Decided (not by this plan's own implementation - by the project owner,
+after this plan landed): `baselines/` flattens to one directory.** The
+surrounding `baselines/<family>/<product>/<version>/` folder layout - a
+structure that meant "this is CIS's ruleset for this product/version" -
+no longer means anything once a rule can map to several frameworks and
+isn't owned by any one of them. `baselines/` becomes a single flat
+directory of rule files (e.g. `baselines/rules/<filename>.json`), with all
+filtering and browsing done via `framework_mappings`/`policy_classification`
+fields, never folder location. `specs/` keeps its existing
+`<framework>/<product>/<version>/<rule-id>.json` layout unchanged - a
+spec genuinely is produced while processing one specific framework's
+content, so that hierarchy still means something there.
+
+This decision is recorded here for whichever of sub-projects 2/3 first
+authors real content under the new schema to implement - it wasn't acted
+on by this (already-completed and reviewed) plan, since `baselines/` is
+still empty and no code currently depends on where rules will eventually
+live. Implementing it will require revisiting `tools/generate_manifest.py`'s
+`folder_entry()`, which currently asserts a rule folder sits exactly three
+levels under `baselines_root` (`family/product/version`) and raises
+`ValueError` otherwise - a flat single directory violates that assumption,
+and the whole "one manifest entry per ruleset" concept the manifest exists
+for becomes close to degenerate once there's only one directory (the web
+UI could plausibly just fetch one `_index.json` directly without a manifest
+enumerating folders at all). Sub-project 2 should treat "does `_manifest.json`
+still need to exist, and in what shape" as part of its own design, not
+assume the current shape carries over unchanged.
 
 ### `framework_mappings` (replaces the singular `benchmark` object)
 
@@ -372,10 +401,10 @@ This plan deliberately didn't touch `webui/` (that's sub-project 4), but two of 
 - **`webui/src/data/ruleRows.ts`, `webui/src/components/rules/RuleTable.tsx`, and `webui/src/logic/ruleFilters.ts` still read the now-removed `profile_applicability` index field non-defensively.** With zero rules today this never executes, so nothing crashes yet - but the first real v2 rule indexed by sub-project 2 will crash the browser the moment `webui/` tries to render it, unless that coupling is fixed first. This is an explicit prerequisite for sub-project 2 (or must be sequenced after sub-project 4's UI rework, if that's done first) - not something to silently discover later.
 
 Deferred, not part of any of the four: bulk ISM ingestion beyond the pilot
-slice, and the still-open question from the licensing review about
-whether git history needs rewriting to fully unpublish CIS text that was
-in prior commits (removing the files from HEAD in step 1 doesn't do that -
-same caveat the review already recorded).
+slice. The licensing review's git-history question (whether to rewrite
+history to fully unpublish CIS text that was in prior commits, since
+removing the files from HEAD doesn't do that) has been decided, not just
+deferred - see "Decisions already made" above: left as-is for now.
 
 ## Implementation plan
 
@@ -1969,3 +1998,10 @@ git push
   `784b6f8 fix: resolve final whole-branch review findings for schema v2`.
   Full suite green: 78 passed, 4 skipped (all four skips are empty
   parametrize sets over the deliberately-empty `baselines/`).
+- **2026-08-21** - Closed the two items this document itself flagged as
+  unresolved, by asking the project owner rather than assuming: `baselines/`
+  will flatten to one directory (no repurposed `family/product/version`
+  hierarchy), and git history is left as-is for now (not rewritten to
+  unpublish the removed CIS text). No code changed - both were design-doc
+  decisions recorded in "Decisions already made" and the `id` section, for
+  sub-project 2/3 to act on. Docs-only commit, no new code.
