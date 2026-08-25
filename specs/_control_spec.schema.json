@@ -77,9 +77,10 @@
     "frameworkMappingRef": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["framework", "control_id", "framework_version", "framework_level", "checked_date"],
+      "required": ["framework", "framework_product", "control_id", "framework_version", "framework_level", "checked_date"],
       "properties": {
         "framework": { "type": "string", "minLength": 1 },
+        "framework_product": { "type": ["string", "null"] },
         "control_id": { "type": "string", "minLength": 1 },
         "framework_version": { "type": "string", "minLength": 1 },
         "framework_level": {

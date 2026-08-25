@@ -21,6 +21,7 @@ MINIMAL_VALID_SPEC = {
     "framework_mapping_refs": [
         {
             "framework": "example",
+            "framework_product": "windows_11",
             "control_id": "1.1",
             "framework_version": "1.0.0",
             "framework_level": ["Level 1"],
@@ -92,3 +93,17 @@ def test_management_channels_is_required(validator):
     del spec["management_channels"]
 
     assert schema_errors(spec, validator) != []
+
+
+def test_framework_product_is_required(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    del spec["framework_mapping_refs"][0]["framework_product"]
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_framework_product_accepts_null(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["framework_mapping_refs"][0]["framework_product"] = None
+
+    assert schema_errors(spec, validator) == []
