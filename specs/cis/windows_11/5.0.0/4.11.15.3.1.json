@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "registry_value",
+    "identifier": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\EventLog\\Setup:Retention",
+    "data_type": "string",
+    "secure_value": "0",
+    "current_default": "0"
+  },
+  "platform": "windows_11",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment"],
+  "rationale_tags": ["ensures_auditability"],
+  "description_intent": "Windows event logs are fixed-size files, so once one fills up there are only two ways for it to behave: stop accepting new entries until someone intervenes, or keep going by discarding its own oldest entries to make room for new ones. This control selects the second behavior for the operating system's core event logging, so a full log rolls forward and keeps recording rather than freezing in place.",
+  "rationale_intent": "A log that halts the moment it is full creates exactly the kind of blind spot an investigator can least afford: whatever happens after that point, whether an ordinary spike in activity or an attacker actively working on the box, goes unrecorded until an administrator notices and manually clears space. Letting the log recycle its oldest entries instead keeps it perpetually able to capture what is happening right now, trading away some very old history in exchange for a guarantee that today's events are never silently dropped for lack of log-writing capacity. For most environments, a rolling window of recent activity that is guaranteed complete is more useful for detecting and reconstructing an incident than a store of indefinitely old records purchased at the risk of missing whatever happens next.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "windows_11",
+      "control_id": "4.11.15.3.1",
+      "framework_version": "5.0.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_config_profile",
+  "management_channels": ["intune_settings_catalog", "group_policy"]
+}
