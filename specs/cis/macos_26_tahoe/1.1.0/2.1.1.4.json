@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "account_policy",
+    "identifier": "Apple Account: Password & Security > Security Keys enrollment",
+    "data_type": "boolean",
+    "secure_value": true,
+    "current_default": false
+  },
+  "platform": "macos",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment"],
+  "rationale_tags": ["prevents_unauthorized_access", "prevents_credential_exposure"],
+  "description_intent": "Whether an Apple Account is protected by a hardware security key is a binary fact about that account, not a device setting a management profile can push: either one or more physical tokens have been registered against the account as an authentication factor, or none have. Nothing about this state lives in a plist key or a settings-catalog policy - it is read back by opening the account's own security settings and looking at what is listed there, which is why the check is a manual look rather than a scripted one. The benchmark leaves the enrollment decision itself to the organization's own requirements, with an explicit allowance for legacy or test devices that can't meet it; this spec records enrollment (true) as the hardening direction the control's own rationale points toward.",
+  "rationale_intent": "A password and a one-time code both travel as data a person can be tricked into typing into the wrong place - a convincing login page captures either one exactly as easily as the real service would have accepted it. A hardware security key does not work that way: it answers a cryptographic challenge tied to the specific origin asking for it, so a copy of that exchange handed to a lookalike site simply does not verify anywhere else, and there is no code or string for a person to be talked into repeating. Registering a key against an Apple Account replaces a factor that can be captured and reused with one that only ever proves itself to the genuine service - that substitution, not merely the addition of a second factor, is the actual gap this control closes.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "macos_26_tahoe",
+      "control_id": "2.1.1.4",
+      "framework_version": "1.1.0",
+      "framework_level": ["Level 2"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "process_administrative",
+  "management_channels": ["manual_process"]
+}
