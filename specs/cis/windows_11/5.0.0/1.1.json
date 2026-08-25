@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "csp_uri",
+    "identifier": "./Device/Vendor/MSFT/Policy/Config/AboveLock/AllowCortanaAboveLock",
+    "data_type": "integer",
+    "secure_value": 0,
+    "current_default": 1
+  },
+  "platform": "windows_11",
+  "applicability_tags": ["enterprise", "high_security", "shared_device", "remote_workforce"],
+  "rationale_tags": ["prevents_unauthorized_access", "reduces_attack_surface"],
+  "description_intent": "Controls whether Cortana's speech-driven interaction remains reachable on the lock screen. The secure configuration turns that voice channel off entirely while the screen is locked, leaving it available only inside an already-authenticated session.",
+  "rationale_intent": "A lock screen exists to be the one gate that stands between an unattended device and anyone nearby; a voice channel that still listens and responds while locked pokes a hole through that gate, letting someone who merely has physical proximity to the device - not valid credentials - trigger actions or extract information via spoken commands. Disabling voice interaction above the lock screen keeps that gate intact so unlocking remains the only way in.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "windows_11",
+      "control_id": "1.1",
+      "framework_version": "5.0.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_config_profile",
+  "management_channels": ["intune_settings_catalog", "group_policy"]
+}

@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "process_attestation",
+    "identifier": "windows10CompliancePolicy.bitLockerEnabled",
+    "data_type": "boolean",
+    "secure_value": true,
+    "current_default": null
+  },
+  "platform": "windows_11",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment", "remote_workforce"],
+  "rationale_tags": ["prevents_unauthorized_access", "prevents_data_exfiltration"],
+  "description_intent": "A compliance rule that treats an unencrypted, or attestation-unconfirmed, operating system volume as a failing condition: at every check-in, a device must supply health-attestation evidence that its system volume is protected, and any device that cannot produce that evidence is marked non-compliant until it can.",
+  "rationale_intent": "Disk encryption only reduces risk if it is actually turned on, and encryption state on an endpoint is not something a central service can simply assume - it has to be reported and re-checked. Turning this into a compliance requirement means a device that cannot produce attestation evidence of its encryption state is treated as unverified rather than trusted by default, closing the gap between a control that was configured once on paper and one whose effectiveness is continuously confirmed on every device that connects.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "windows_11",
+      "control_id": "106.1.1",
+      "framework_version": "5.0.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_compliance_check",
+  "management_channels": ["intune_compliance_policy"]
+}
