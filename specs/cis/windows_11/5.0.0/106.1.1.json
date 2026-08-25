@@ -9,7 +9,7 @@
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "regulated_environment", "remote_workforce"],
   "rationale_tags": ["prevents_unauthorized_access", "prevents_data_exfiltration"],
-  "description_intent": "A compliance rule that treats an unencrypted, or attestation-unconfirmed, operating system volume as a failing condition: at every check-in, a device must supply health-attestation evidence that its system volume is protected, and any device that cannot produce that evidence is marked non-compliant until it can.",
+  "description_intent": "This setting makes disk encryption something Intune actually measures rather than assumes is in place: a device only counts as compliant once it can back that claim with attestation evidence about its system drive, and lacking such evidence gets it classified as failing no matter what its real encryption state happens to be.",
   "rationale_intent": "Disk encryption only reduces risk if it is actually turned on, and encryption state on an endpoint is not something a central service can simply assume - it has to be reported and re-checked. Turning this into a compliance requirement means a device that cannot produce attestation evidence of its encryption state is treated as unverified rather than trusted by default, closing the gap between a control that was configured once on paper and one whose effectiveness is continuously confirmed on every device that connects.",
   "framework_mapping_refs": [
     {
