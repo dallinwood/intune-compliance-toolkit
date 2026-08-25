@@ -7,7 +7,8 @@
   "additionalProperties": false,
   "required": [
     "mechanism", "platform", "applicability_tags", "rationale_tags",
-    "description_intent", "rationale_intent", "framework_mapping_refs"
+    "description_intent", "rationale_intent", "framework_mapping_refs",
+    "control_surface", "management_channels"
   ],
   "properties": {
     "mechanism": { "$ref": "#/$defs/mechanism" },
@@ -40,6 +41,18 @@
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/frameworkMappingRef" }
+    },
+    "control_surface": {
+      "enum": [
+        "device_config_profile",
+        "device_compliance_check",
+        "server_infrastructure_config",
+        "process_administrative"
+      ]
+    },
+    "management_channels": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
     }
   },
   "$defs": {

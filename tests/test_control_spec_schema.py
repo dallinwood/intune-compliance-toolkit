@@ -27,6 +27,8 @@ MINIMAL_VALID_SPEC = {
             "checked_date": "2026-08-20",
         }
     ],
+    "control_surface": "device_config_profile",
+    "management_channels": ["intune_settings_catalog"],
 }
 
 
@@ -67,5 +69,20 @@ def test_framework_mapping_refs_requires_at_least_one_entry(validator):
 def test_no_free_text_field_beyond_the_two_intent_fields(validator):
     spec = copy.deepcopy(MINIMAL_VALID_SPEC)
     spec["notes"] = "a free-text field that must not be allowed to exist"
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_control_surface_must_be_from_the_fixed_enum(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["control_surface"] = "made_up_surface"
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_control_surface_and_management_channels_are_required(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    del spec["control_surface"]
+    del spec["management_channels"]
 
     assert schema_errors(spec, validator) != []
