@@ -116,32 +116,75 @@ Build A-C, then produce 12 real spec files (workflow 1, run by this session/its 
 - [ ] Read the fully rewritten `SKILL.md`/`schema.md` end to end for internal consistency (the same self-review discipline the foundation plan's final review had to apply after the fact - do it inline this time).
 - [ ] Commit: `docs: split compliance-benchmark-json into spec-production, content-authoring, and licensed-adaptation workflows`.
 
-### Tasks 4-9: Produce the 12 specs
+### Tasks 4-9: Produce the 12 specs (shared instructions)
 
-Six tasks of 2 specs each (Windows 11 rules paired, macOS rules paired + one group of 1), each independently reviewed for the one property that matters most here: **no source expression survived, even paraphrased.**
+Six tasks of 2 specs each (Windows 11 rules paired, macOS rules paired), each independently reviewed for the one property that matters most here: **no source expression survived, even paraphrased.**
 
-Source: `baseline-references/cis-benchmarks/CIS_Microsoft_Intune_for_Windows_11_Benchmark_v5.0.0.md` and `CIS_Apple_macOS_26_Tahoe_Benchmark_v1.1.0.md` (gitignored, on disk).
+Source: `baseline-references/cis-benchmarks/CIS_Microsoft_Intune_for_Windows_11_Benchmark_v5.0.0.md` and `CIS_Apple_macOS_26_Tahoe_Benchmark_v1.1.0.md` (gitignored, on disk - not in git, read them directly from the filesystem).
 
-Original rule → CIS section, for locating the source (the removed rule files themselves are only in git history now, at commit `8efe956~1` if a worked example is needed to confirm a section's location, but the source markdown is the primary source to read from):
+The removed rule files themselves are only in git history now, at commit `8efe956~1`, if a worked example is needed to confirm a section's location or its old structural shape - but the source markdown is the primary source to derive `description_intent`/`rationale_intent` from, never the old rule file's own prose (which was itself CIS's wording, exactly what must not carry forward).
 
-| Task | Rules (CIS section → old file, for reference only) |
-|---|---|
-| 4 | 1.1, 106.1.1 |
-| 5 | 4.10.24.1, 4.11.15.3.1 |
-| 6 | 4.11.48.1, 4.11.7.2.1 |
-| 7 | 6.7 (Windows), 1.6 (macOS) |
-| 8 | 2.1.1.1, 2.1.1.4 (macOS) |
-| 9 | 2.12.2, 2.3.3.4 (macOS) |
-
-- [ ] For each pair: follow `SKILL.md`'s "Workflow: producing a spec" section exactly. Save both specs.
-- [ ] Run `python -m pytest tests/test_control_spec_schema.py -v` plus `python tools/validate_specs.py specs` after each pair - confirm both validate.
+Every one of Tasks 4-9 follows the same steps:
+- [ ] Follow `SKILL.md`'s "Workflow: producing a spec" section exactly, for each of this task's two CIS sections.
+- [ ] Run `python -m pytest tests/test_control_spec_schema.py -v` plus `python tools/validate_specs.py specs` after both specs are written - confirm both validate.
 - [ ] Self-check each spec's `description_intent`/`rationale_intent` against the source section one more time before committing: would a reader familiar with the CIS wording recognize a specific sentence, clause order, or distinctive phrase carried over? If yes, rewrite it structurally differently, not just with synonyms.
-- [ ] Commit each pair: `feat: add control spec for <framework> <control_id>, <control_id>`.
+- [ ] Commit both specs together: `feat: add control specs for CIS <control_id>, <control_id>`.
 
-### Final task: adversarial copyright-safety review of all 12 specs
+### Task 4: Control specs for CIS Windows 11 1.1 and 106.1.1
+
+**Files:**
+- Create: `specs/cis/windows_11/5.0.0/1.1.json`
+- Create: `specs/cis/windows_11/5.0.0/106.1.1.json`
+
+Follow the shared instructions above (in "Tasks 4-9: Produce the 12 specs"). Source: `CIS_Microsoft_Intune_for_Windows_11_Benchmark_v5.0.0.md`, sections 1.1 and 106.1.1.
+
+### Task 5: Control specs for CIS Windows 11 4.10.24.1 and 4.11.15.3.1
+
+**Files:**
+- Create: `specs/cis/windows_11/5.0.0/4.10.24.1.json`
+- Create: `specs/cis/windows_11/5.0.0/4.11.15.3.1.json`
+
+Follow the shared instructions above. Source: `CIS_Microsoft_Intune_for_Windows_11_Benchmark_v5.0.0.md`, sections 4.10.24.1 and 4.11.15.3.1.
+
+### Task 6: Control specs for CIS Windows 11 4.11.48.1 and 4.11.7.2.1
+
+**Files:**
+- Create: `specs/cis/windows_11/5.0.0/4.11.48.1.json`
+- Create: `specs/cis/windows_11/5.0.0/4.11.7.2.1.json`
+
+Follow the shared instructions above. Source: `CIS_Microsoft_Intune_for_Windows_11_Benchmark_v5.0.0.md`, sections 4.11.48.1 and 4.11.7.2.1.
+
+### Task 7: Control specs for CIS Windows 11 6.7 and CIS macOS 1.6
+
+**Files:**
+- Create: `specs/cis/windows_11/5.0.0/6.7.json`
+- Create: `specs/cis/macos_26_tahoe/1.1.0/1.6.json`
+
+Follow the shared instructions above. Sources: `CIS_Microsoft_Intune_for_Windows_11_Benchmark_v5.0.0.md` section 6.7, and `CIS_Apple_macOS_26_Tahoe_Benchmark_v1.1.0.md` section 1.6.
+
+### Task 8: Control specs for CIS macOS 2.1.1.1 and 2.1.1.4
+
+**Files:**
+- Create: `specs/cis/macos_26_tahoe/1.1.0/2.1.1.1.json`
+- Create: `specs/cis/macos_26_tahoe/1.1.0/2.1.1.4.json`
+
+Follow the shared instructions above. Source: `CIS_Apple_macOS_26_Tahoe_Benchmark_v1.1.0.md`, sections 2.1.1.1 and 2.1.1.4.
+
+### Task 9: Control specs for CIS macOS 2.12.2 and 2.3.3.4
+
+**Files:**
+- Create: `specs/cis/macos_26_tahoe/1.1.0/2.12.2.json`
+- Create: `specs/cis/macos_26_tahoe/1.1.0/2.3.3.4.json`
+
+Follow the shared instructions above. Source: `CIS_Apple_macOS_26_Tahoe_Benchmark_v1.1.0.md`, sections 2.12.2 and 2.3.3.4.
+
+### Task 10: Adversarial copyright-safety review of all 12 specs
+
+**Files:** none created or modified by this task unless a finding requires a fix to a spec from Tasks 4-9.
 
 - [ ] Dispatch a review (fresh eyes, ideally a subagent that reads only the 12 committed spec files plus the real CIS source markdown, told explicitly to try to find any surviving transcription/close paraphrase) against every `description_intent`/`rationale_intent` in all 12 specs. Treat any finding the same way the foundation plan's final review treated leaked text: fix before calling this project done, not after.
 - [ ] Run the full test suite once more (`python -m pytest -v`) to confirm nothing regressed across all prior tasks.
+- [ ] Commit any fixes: `fix: address copyright-safety review findings in control specs`.
 
 ## Progress log
 
