@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "registry_value",
+    "identifier": "HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE:OSRecovery",
+    "data_type": "integer",
+    "secure_value": 1,
+    "current_default": 0
+  },
+  "platform": "windows_11",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment", "remote_workforce"],
+  "rationale_tags": ["enforces_secure_defaults", "prevents_credential_exposure"],
+  "description_intent": "BitLocker's operating-system-drive recovery has a built-in, unconfigured fallback that applies unless something more specific is set: Windows decides the terms of recovery on its own, independent of anything the organization would otherwise choose to require across its fleet. This setting is the switch that turns that fallback off, so whichever recovery choices the organization sets within this same policy group actually take effect on a device instead of Windows' own unconfigured behavior applying by default.",
+  "rationale_intent": "A BitLocker recovery key is a credential that can unlock everything stored on the volume it protects, so the more consequential question is rarely whether one exists - one gets generated the moment encryption turns on - but whose choices decided where it ends up and who controls it. Until this policy is enabled, that answer defaults to whatever Windows assumes on its own, with no organization-level input into the outcome across any of the machines it manages. Turning the policy on does not by itself change where any single key lives, but it is the precondition for every other recovery-configuration decision in this policy group to actually take hold instead of being silently overridden by Windows' own built-in defaults - without it, none of the fleet-wide choices an organization might otherwise make about recovery custody have any effect at all.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "windows_11",
+      "control_id": "4.11.7.2.1",
+      "framework_version": "5.0.0",
+      "framework_level": ["BitLocker"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_config_profile",
+  "management_channels": ["intune_settings_catalog", "group_policy"]
+}

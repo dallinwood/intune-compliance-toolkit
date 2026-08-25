@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "registry_value",
+    "identifier": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:SafeForScripting",
+    "data_type": "integer",
+    "secure_value": 0,
+    "current_default": 0
+  },
+  "platform": "windows_11",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment", "byod"],
+  "rationale_tags": ["reduces_attack_surface", "prevents_unauthorized_access"],
+  "description_intent": "Windows Installer keeps a single scripting-safety switch it checks before carrying out an install request that originated from script content rather than a person directly launching a package. Left in its restrictive position, that switch means a script-triggered install request still surfaces a confirmation prompt asking whether to proceed, rather than the script's own say-so being treated as enough to move straight to installation.",
+  "rationale_intent": "The confirmation dialog exists specifically to put a human decision between 'a webpage asked to install something' and 'software actually landed on this device' - it is the one point where an install driven by content the user never deliberately sought out gets a chance to be recognized and refused. A single browsing session can load script from dozens of origins, most of them outside any relationship the organization vetted, so removing that checkpoint would make 'did a script ask' the deciding factor for whether code gets installed, instead of 'did the person in front of the screen agree' - a distinction that matters far more once ordinary browsing routinely touches the open internet than it did when this setting was first written for a smaller, more contained set of sites.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "windows_11",
+      "control_id": "4.11.48.1",
+      "framework_version": "5.0.0",
+      "framework_level": ["Level 2"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_config_profile",
+  "management_channels": ["intune_settings_catalog", "group_policy"]
+}
