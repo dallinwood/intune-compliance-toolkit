@@ -400,6 +400,10 @@ This plan deliberately didn't touch `webui/` (that's sub-project 4), but two of 
 - **`webui/e2e/smoke.spec.ts` is now red.** All 5 Playwright specs depend on the real CIS rule content Task 5 removed (they search for specific real rule titles and assert on specific facet values). This isn't caught by `pytest` and wasn't tracked anywhere until now. Whoever next needs a working e2e suite - most likely sub-project 2, once it re-populates `baselines/` with real content - should either give the specs synthetic fixture data independent of any specific rule's real title/content, or explicitly skip them while `baselines/` is empty.
 - **`webui/src/data/ruleRows.ts`, `webui/src/components/rules/RuleTable.tsx`, and `webui/src/logic/ruleFilters.ts` still read the now-removed `profile_applicability` index field non-defensively.** With zero rules today this never executes, so nothing crashes yet - but the first real v2 rule indexed by sub-project 2 will crash the browser the moment `webui/` tries to render it, unless that coupling is fixed first. This is an explicit prerequisite for sub-project 2 (or must be sequenced after sub-project 4's UI rework, if that's done first) - not something to silently discover later.
 
+A later change (sub-project 2's `baselines/` flattening) added a third, related consequence:
+
+- **`scripts/copy-baselines.mjs` and `webui/src/data/manifest.ts` still hardcode a fetch/copy of `baselines/_manifest.json`.** Sub-project 2 retired that file outright (it no longer exists in any form, not even an empty `{"baselines": []}`), so this is no longer a valid-empty-response case - it's a 404, and whoever picks up sub-project 4's UI rework needs to replace this fetch with direct `_index.json` discovery rather than just handling an empty manifest.
+
 Deferred, not part of any of the four: bulk ISM ingestion beyond the pilot
 slice. The licensing review's git-history question (whether to rewrite
 history to fully unpublish CIS text that was in prior commits, since
