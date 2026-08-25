@@ -80,9 +80,15 @@ def test_control_surface_must_be_from_the_fixed_enum(validator):
     assert schema_errors(spec, validator) != []
 
 
-def test_control_surface_and_management_channels_are_required(validator):
+def test_control_surface_is_required(validator):
     spec = copy.deepcopy(MINIMAL_VALID_SPEC)
     del spec["control_surface"]
+
+    assert schema_errors(spec, validator) != []
+
+
+def test_management_channels_is_required(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
     del spec["management_channels"]
 
     assert schema_errors(spec, validator) != []
