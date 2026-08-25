@@ -145,4 +145,4 @@ Original rule → CIS section, for locating the source (the removed rule files t
 
 ## Progress log
 
-(none yet - entries land here as work against this plan is completed)
+- **2026-08-25** - Task 2 done: deleted `tools/generate_manifest.py`, `baselines/_manifest.json`, and `tests/test_generate_manifest.py`; left `tools/generate_index.py` untouched (its folder-discovery already works on a flat folder); added a note to the foundation plan's "Known consequences for `webui/`" section about `_manifest.json` no longer existing at all. Full `pytest` suite still passes (74 passed, 4 skipped). Commit `e7839bb feat: retire generate_manifest.py - baselines/ is one flat folder now, not multiple rulesets`.
