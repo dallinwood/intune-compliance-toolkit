@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "gpo_setting",
+    "identifier": "auditpol subcategory {0cce9230-69ae-11d9-bed3-505054503030}; Settings Catalog path Auditing\\Audit Authentication Policy Change",
+    "data_type": "string",
+    "secure_value": "Success",
+    "current_default": "Success"
+  },
+  "platform": "windows_11",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment"],
+  "rationale_tags": ["ensures_auditability"],
+  "description_intent": "Windows tracks the boundaries between domains and forests, and the policy that governs how accounts authenticate across them, as configuration state that can be changed at any time - a trust can be created or torn down, Kerberos policy can be edited, and an account can be granted or stripped of system security access, all without any inherent record of who did it or when. This setting turns that class of change into a logged event: it requires that the successful completion of a trust or authentication-policy modification be written to the security log, rather than leaving those changes to happen silently against whatever state currently exists.",
+  "rationale_intent": "A trust relationship and an account's authentication policy are what decide which side of a boundary a set of credentials is allowed to reach - redraw either one and you have changed who can get where, without touching a single file or password. That kind of change is far more consequential than most configuration edits, because its effect isn't visible at the moment it happens; it only becomes visible later, when someone or something crosses a boundary that used to be closed. If the change itself was never logged, there is no way afterward to establish when a boundary shifted, who shifted it, or whether it was even authorized - the absence of a record doesn't just slow an investigation down, it can make the question permanently unanswerable. Logging the successful change is what keeps that question answerable.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "windows_11",
+      "control_id": "6.7",
+      "framework_version": "5.0.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_config_profile",
+  "management_channels": ["intune_settings_catalog"]
+}

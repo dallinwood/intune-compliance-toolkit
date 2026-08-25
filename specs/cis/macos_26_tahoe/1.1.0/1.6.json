@@ -1,0 +1,26 @@
+{
+  "mechanism": {
+    "type": "plist_key",
+    "identifier": "com.apple.applicationaccess:enforcedSoftwareUpdateDelay",
+    "data_type": "integer",
+    "secure_value": 30,
+    "current_default": null
+  },
+  "platform": "macos",
+  "applicability_tags": ["enterprise", "high_security"],
+  "rationale_tags": ["maintains_patch_currency", "reduces_attack_surface"],
+  "description_intent": "macOS treats the length of an update deferral as a configurable number an administrator sets, not a fixed built-in waiting period baked into the operating system - an organization can choose to hold back a released software update for some number of days before it installs. This control puts a ceiling on that configurable number itself: whatever number an organization sets, it may not exceed 30 days.",
+  "rationale_intent": "A software update becomes a public disclosure of what needed fixing the moment it ships - the fix and the knowledge of the defect it closes arrive together, whether or not any given device has installed it yet. A deferral window exists so that compatibility testing doesn't have to be skipped, but an unbounded one erases the distinction between 'still testing' and 'never catching up' - both look identical in the moment, and only a ceiling on the deferral forces that difference to actually show up. Capping the number at 30 days keeps the trade-off an organization is allowed to make bounded: some room to test, but not so much that a defect already known to be fixed elsewhere sits open on this device indefinitely.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "macos_26_tahoe",
+      "control_id": "1.6",
+      "framework_version": "1.1.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_config_profile",
+  "management_channels": ["macos_profile"]
+}
