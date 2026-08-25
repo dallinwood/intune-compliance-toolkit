@@ -9,7 +9,7 @@
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "shared_device", "remote_workforce"],
   "rationale_tags": ["prevents_unauthorized_access", "reduces_attack_surface"],
-  "description_intent": "Controls whether Cortana's speech-driven interaction remains reachable on the lock screen. The secure configuration turns that voice channel off entirely while the screen is locked, leaving it available only inside an already-authenticated session.",
+  "description_intent": "By default, Windows lets Cortana accept and respond to spoken commands even while the device sits at the lock screen. This control removes that spoken-command channel from the lock screen entirely, confining Cortana's voice interface to sessions where a user is already signed in.",
   "rationale_intent": "A lock screen exists to be the one gate that stands between an unattended device and anyone nearby; a voice channel that still listens and responds while locked pokes a hole through that gate, letting someone who merely has physical proximity to the device - not valid credentials - trigger actions or extract information via spoken commands. Disabling voice interaction above the lock screen keeps that gate intact so unlocking remains the only way in.",
   "framework_mapping_refs": [
     {
