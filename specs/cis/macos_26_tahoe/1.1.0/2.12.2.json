@@ -1,0 +1,27 @@
+{
+  "mechanism": {
+    "type": "command_output",
+    "identifier": "bioutil -r: Touch ID for unlock",
+    "data_type": "boolean",
+    "secure_value": null,
+    "current_default": false,
+    "value_source": "organization_defined"
+  },
+  "platform": "macos",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment"],
+  "rationale_tags": ["prevents_unauthorized_access", "prevents_credential_exposure"],
+  "description_intent": "This control covers a small cluster of options that exist independently of any single account-setup step: whether an enrolled fingerprint may unlock the session, whether that same fingerprint may authorize Apple Pay, and how long the system may go before it stops trusting the fingerprint alone and demands the underlying password again. The first two are set per user; the timeout is a single system-wide value with a hard ceiling - macOS itself will not accept anything past 172800 seconds (48 hours) - and all three toggles are independently settable rather than bundled into one on/off switch.",
+  "rationale_intent": "A fingerprint sensor does not add a second, independent secret to the account the way a hardware token would - it sits in front of the same password that was protecting the account before Touch ID was ever turned on, and enabling it changes only how often the system insists that password be shown directly rather than removing the password from the picture. That makes the real variable here one of exposure over time: the longer the interval before a fresh password check is forced, the longer a device that is lost, stolen, or left unattended while unlocked can be reopened by a fingerprint alone, with the underlying credential never having to prove itself again in that window. Extending the same fingerprint gate to Apple Pay raises a related but distinct question, since it puts a biometric that was chosen for unlocking a screen in charge of authorizing a financial transaction instead - a different consequence if that gate is ever bypassed, and reason enough for an organization to set the unlock and payment toggles independently rather than treating Touch ID as a single all-or-nothing choice.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "macos_26_tahoe",
+      "control_id": "2.12.2",
+      "framework_version": "1.1.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "process_administrative",
+  "management_channels": ["manual_process"]
+}

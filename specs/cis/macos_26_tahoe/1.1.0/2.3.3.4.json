@@ -1,0 +1,27 @@
+{
+  "mechanism": {
+    "type": "service_state",
+    "identifier": "com.openssh.sshd",
+    "data_type": "boolean",
+    "secure_value": false,
+    "current_default": false,
+    "value_source": "rule_defined"
+  },
+  "platform": "macos",
+  "applicability_tags": ["enterprise", "high_security", "regulated_environment"],
+  "rationale_tags": ["reduces_attack_surface", "prevents_unauthorized_access"],
+  "description_intent": "The Remote Login setting decides whether the operating system's SSH daemon is present and listening for inbound network connections at all, separately from whatever authentication that daemon would otherwise demand once reached. With the daemon off, there is no socket accepting connection attempts over the network in the first place; with it on, a listener exists that will respond to anyone able to reach the machine on that port, before any credential is even checked.",
+  "rationale_intent": "A service that listens for a network connection is discoverable and reachable by definition, which makes it a standing target the moment it exists, independent of how well the credentials guarding it are chosen. A personal computing device that has no operational need to accept inbound remote sessions gains no benefit from keeping that listener present, since every legitimate use of the machine already happens at the console in front of it; the only thing a dormant SSH daemon adds is a second, network-reachable path to the same machine that an attacker can probe without ever touching the keyboard. Removing the listener entirely - rather than merely restricting who may authenticate to it - eliminates that path as a target altogether instead of leaving it standing and hoping the gate in front of it holds.",
+  "framework_mapping_refs": [
+    {
+      "framework": "cis",
+      "framework_product": "macos_26_tahoe",
+      "control_id": "2.3.3.4",
+      "framework_version": "1.1.0",
+      "framework_level": ["Level 1"],
+      "checked_date": "2026-08-25"
+    }
+  ],
+  "control_surface": "device_compliance_check",
+  "management_channels": ["intune_compliance_policy"]
+}
