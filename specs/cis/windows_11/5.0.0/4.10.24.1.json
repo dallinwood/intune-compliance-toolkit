@@ -4,7 +4,8 @@
     "identifier": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:AllowCustomSSPsAPs",
     "data_type": "integer",
     "secure_value": 0,
-    "current_default": 1
+    "current_default": 1,
+    "value_source": "rule_defined"
   },
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "regulated_environment", "remote_workforce"],

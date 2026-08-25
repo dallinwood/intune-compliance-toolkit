@@ -12,6 +12,7 @@ MINIMAL_VALID_SPEC = {
         "data_type": "integer",
         "secure_value": 1,
         "current_default": 0,
+        "value_source": "rule_defined",
     },
     "platform": "windows_11",
     "applicability_tags": ["enterprise"],
@@ -44,6 +45,22 @@ def test_minimal_valid_spec_matches_schema(validator):
 
 def test_schema_file_is_itself_valid():
     jsonschema.Draft202012Validator.check_schema(load_schema())
+
+
+def test_organization_defined_value_source_allows_null_secure_value(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["mechanism"]["value_source"] = "organization_defined"
+    spec["mechanism"]["secure_value"] = None
+
+    assert schema_errors(spec, validator) == []
+
+
+def test_organization_defined_value_source_requires_null_secure_value(validator):
+    spec = copy.deepcopy(MINIMAL_VALID_SPEC)
+    spec["mechanism"]["value_source"] = "organization_defined"
+    spec["mechanism"]["secure_value"] = 1
+
+    assert schema_errors(spec, validator) != []
 
 
 def test_rationale_tags_must_be_from_the_fixed_vocabulary(validator):

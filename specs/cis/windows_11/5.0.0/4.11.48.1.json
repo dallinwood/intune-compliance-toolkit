@@ -4,7 +4,8 @@
     "identifier": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer:SafeForScripting",
     "data_type": "integer",
     "secure_value": 0,
-    "current_default": 0
+    "current_default": 0,
+    "value_source": "rule_defined"
   },
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "regulated_environment", "byod"],

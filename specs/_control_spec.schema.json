@@ -59,7 +59,7 @@
     "mechanism": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["type", "identifier", "data_type", "secure_value", "current_default"],
+      "required": ["type", "identifier", "data_type", "secure_value", "current_default", "value_source"],
       "properties": {
         "type": {
           "enum": [
@@ -70,9 +70,16 @@
         },
         "identifier": { "type": "string", "minLength": 1 },
         "data_type": { "enum": ["boolean", "integer", "string"] },
-        "secure_value": { "type": ["string", "number", "boolean"] },
-        "current_default": { "type": ["string", "number", "boolean", "null"] }
-      }
+        "secure_value": { "type": ["string", "number", "boolean", "null"] },
+        "current_default": { "type": ["string", "number", "boolean", "null"] },
+        "value_source": { "enum": ["rule_defined", "organization_defined"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "value_source": { "const": "organization_defined" } } },
+          "then": { "properties": { "secure_value": { "const": null } } }
+        }
+      ]
     },
     "frameworkMappingRef": {
       "type": "object",

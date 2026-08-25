@@ -3,14 +3,15 @@
     "type": "plist_key",
     "identifier": "com.apple.applicationaccess:allowCloudKeychainSync",
     "data_type": "boolean",
-    "secure_value": false,
-    "current_default": null
+    "secure_value": null,
+    "current_default": null,
+    "value_source": "organization_defined"
   },
   "platform": "macos",
   "applicability_tags": ["enterprise", "high_security", "byod", "regulated_environment"],
   "rationale_tags": ["prevents_credential_exposure", "prevents_data_exfiltration"],
-  "description_intent": "iCloud Keychain sync is a replication feature: whatever the local keychain is currently holding for a signed-in Apple Account gets copied up and reappears on every other device signed into that same account, without regard to whose account it happens to be. The plist key at the center of this control is a single on/off switch for that replication path - setting it false stops copies from leaving the device through this channel at all, while leaving it unset or true keeps the path open. The benchmark states no fixed target for this key and leaves the choice to the organization's own policy; this spec records false as the hardening direction, on the basis that closing a replication channel is what actually reduces what can leave the device's boundary.",
-  "rationale_intent": "Every credential this feature copies off the device gains a second home outside the boundary the organization can inspect or revoke on its own terms - the data doesn't stop existing locally when it syncs, it simply exists somewhere else too, indefinitely, alongside whatever else that Apple Account happens to touch. That's a straightforward trade: the convenience of not re-entering a password on a second device, against a duplicate of that same password sitting in an account the organization may not own, administer, or even know the contents of. Closing the replication path removes that second copy from the equation entirely, so whatever protections apply to the device itself are the only protections that have to hold - rather than being one of two places the same secret has to stay safe.",
+  "description_intent": "iCloud Keychain sync is a replication feature: whatever the local keychain is currently holding for a signed-in Apple Account gets copied to iCloud and reappears on every other device signed into that same account. The plist key at the center of this control is a single on/off switch for that replication path - true, or the key being absent, keeps the path open, while false closes it and stops copies from leaving the device through this channel at all.",
+  "rationale_intent": "What this switch decides is where a copy of the device's stored credentials is allowed to live. With the replication path open, a credential no longer has just one location - it also exists inside whatever else that Apple Account touches, a boundary the organization did not necessarily draw and cannot necessarily see into or revoke from directly. With the path closed, the device's own protections are the only protections that credential ever depends on, at the cost of that same credential having to be re-entered on the next device instead of following the user there automatically.",
   "framework_mapping_refs": [
     {
       "framework": "cis",

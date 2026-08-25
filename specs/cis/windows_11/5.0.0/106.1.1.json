@@ -4,7 +4,8 @@
     "identifier": "windows10CompliancePolicy.bitLockerEnabled",
     "data_type": "boolean",
     "secure_value": true,
-    "current_default": null
+    "current_default": null,
+    "value_source": "rule_defined"
   },
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "regulated_environment", "remote_workforce"],

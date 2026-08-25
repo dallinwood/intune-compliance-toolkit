@@ -4,7 +4,8 @@
     "identifier": "com.apple.applicationaccess:enforcedSoftwareUpdateDelay",
     "data_type": "integer",
     "secure_value": 30,
-    "current_default": null
+    "current_default": null,
+    "value_source": "rule_defined"
   },
   "platform": "macos",
   "applicability_tags": ["enterprise", "high_security"],

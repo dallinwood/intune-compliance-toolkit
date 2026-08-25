@@ -4,7 +4,8 @@
     "identifier": "auditpol subcategory {0cce9230-69ae-11d9-bed3-505054503030}; Settings Catalog path Auditing\\Audit Authentication Policy Change",
     "data_type": "string",
     "secure_value": "Success",
-    "current_default": "Success"
+    "current_default": "Success",
+    "value_source": "rule_defined"
   },
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "regulated_environment"],

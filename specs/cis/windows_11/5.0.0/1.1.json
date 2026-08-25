@@ -4,7 +4,8 @@
     "identifier": "./Device/Vendor/MSFT/Policy/Config/AboveLock/AllowCortanaAboveLock",
     "data_type": "integer",
     "secure_value": 0,
-    "current_default": 1
+    "current_default": 1,
+    "value_source": "rule_defined"
   },
   "platform": "windows_11",
   "applicability_tags": ["enterprise", "high_security", "shared_device", "remote_workforce"],
