@@ -30,8 +30,8 @@ that by default - don't wait for an explicit "commit this" each time:
   typecheck/lint clean where applicable), create a commit for it.
 - Match the existing message style: a `type: summary` subject line
   (`feat:`, `fix:`, `docs:`, ...), a body explaining *why* when it isn't
-  obvious from the diff, and the trailer
-  `Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>`.
+  obvious from the diff. Do not add a `Co-Authored-By` trailer or any
+  other AI attribution line to commits or PR descriptions.
 - Push the commit to the current branch's tracked remote right after
   committing.
 - Keep each commit scoped to one coherent change - don't bundle unrelated

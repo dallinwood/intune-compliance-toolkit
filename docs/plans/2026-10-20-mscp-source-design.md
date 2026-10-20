@@ -231,7 +231,7 @@ The UI keeps its look, layout and flow. Changes are under the hood:
   line.
 - **Organization-defined values**: reuse the existing ODV input and
   "needs a value" flow (`OrgDefinedValueInput.tsx`, `selectionStore.ts`),
-  keyed by rule id. (My call:) prefill with mSCP's `recommended` value and
+  keyed by rule id. A rule that uses an organization-defined value is still automated: it has a runnable check, the admin just supplies the value. If mSCP gives no default for the value, the admin must enter one before the rule can be generated. (My call:) otherwise prefill with mSCP's `recommended` value and
   show the per-benchmark values (e.g. "CIS L1: 60d OR 5G, STIG: 7d") as
   quick picks, mirroring mSCP's own behaviour of defaulting to
   `recommended`. Validate input against `odv.hint.validation`
@@ -256,7 +256,7 @@ Keep the existing generator structure (`logic/scriptGen/bash.ts`,
 - **ODV substitution**: replace `$ODV` in the check shell and in the
   expected result by text replacement, exactly as mSCP does, after the value
   passes validation.
-- **Revised 2026-10-20 (proposed, pending maintainer confirmation; replaces the fallback rule in the next bullet):** a rule applies to a device only if the device's macOS major version is one the rule lists in `applicability`, or is newer than every version the imported release covers. On a version the release covers but the rule does not list, the rule is not applicable and the script reports the expected value (passes), the same as the architecture case. On a version newer than the import, run the rule's newest-version check (`by_version` for the highest listed version if present, else `default`). Reason: in `release_27.0`, `os_messages_app_disable_familycontrols` is automated with no default check, 28 rules have no 27.0 entry, and several were deliberately replaced by 27.0-only rules, so running every rule's default everywhere would report false non-compliance across a mixed fleet.
+- **Revised 2026-10-20 (confirmed by the maintainer; replaces the fallback rule in the next bullet):** a rule applies to a device only if the device's macOS major version is one the rule lists in `applicability`, or is newer than every version the imported release covers. On a version the release covers but the rule does not list, the rule is not applicable and the script reports the expected value (passes), the same as the architecture case. On a version newer than the import, run the rule's newest-version check (`by_version` for the highest listed version if present, else `default`). Reason: in `release_27.0`, `os_messages_app_disable_familycontrols` is automated with no default check, 28 rules have no 27.0 entry, and several were deliberately replaced by 27.0-only rules, so running every rule's default everywhere would report false non-compliance across a mixed fleet.
 - **Per-version checks**: when a rule has `by_version` overrides, the script
   reads the macOS major version (`sw_vers -productVersion`) at run time and
   runs the matching check, falling back to `default` for any other version,
@@ -407,4 +407,4 @@ own commit(s), per the repo's CLAUDE.md:
 ## Progress log
 
 - 2026-10-20: Plan 1 (import) completed in db33dc0 chore: remove CIS PDF pipeline, specs and benchmark skill through 80da465 fix: address final review of mSCP import (350 rules from release_27.0). Plan 2 notes from the final review are recorded in docs/plans/2026-10-20-mscp-import-plan.md.
-- 2026-10-20: Section 6 per-version fallback revised (proposed, pending maintainer confirmation) after the Plan 1 final review showed "fall back to default for any other version" is wrong for real mSCP data.
+- 2026-10-20: Section 6 per-version fallback revised and confirmed by the maintainer after the Plan 1 final review showed "fall back to default for any other version" is wrong for real mSCP data.
