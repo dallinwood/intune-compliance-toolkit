@@ -26,7 +26,7 @@ export interface CheckResult {
 }
 
 export interface RuleCheck {
-  shell: string
+  shell: string | null
   result: CheckResult | null
   additional_info: string | null
 }

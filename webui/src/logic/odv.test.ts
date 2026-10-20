@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
-import { displayWithOdv, effectiveOdvValue, odvQuickPicks, odvShellContext, substituteOdv, validateOdvValue } from './odv'
+import { canonicalOdvValue, displayWithOdv,effectiveOdvValue, odvQuickPicks, odvShellContext, substituteOdv, validateOdvValue } from './odv'
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
@@ -47,8 +47,8 @@ describe('odvShellContext', () => {
     expect(odvShellContext(ruleWithChecks('a="$ODV"; b=$ODV'))).toBe('other')
   })
 
-  it('is other when the placeholder is embedded in a larger quoted string', () => {
-    expect(odvShellContext(ruleWithChecks('echo "value=$ODV"'))).toBe('other')
+  it('is double_quoted when the placeholder is embedded in a larger double-quoted string', () => {
+    expect(odvShellContext(ruleWithChecks('echo "value=$ODV"'))).toBe('double_quoted')
   })
 
   it('considers by_version shells too', () => {
@@ -74,7 +74,6 @@ describe('validateOdvValue datatype rules', () => {
   it('rejects non-integer numbers', () => {
     expect(validateOdvValue(odv(), 1.5, 'none')).toBe('Value must be a whole number.')
     expect(validateOdvValue(odv(), '1e3', 'none')).toBe('Value must be a whole number.')
-    expect(validateOdvValue(odv(), '', 'none')).toBe('Value must be a whole number.')
   })
 
   it('accepts a negative integer and a numeric string for a number datatype', () => {
@@ -171,6 +170,91 @@ describe('validateOdvValue shell context rules', () => {
       const enumOdv = odv({ datatype: 'enum', validation: { enumValues: ["it's"] }, recommended: "it's" })
       expect(validateOdvValue(enumOdv, "it's", 'other')).toBe('Value must not contain a single quote.')
     })
+  })
+})
+
+describe('odvShellContext quote tracking', () => {
+  function ruleWithShell(shell: string | null): Rule {
+    return { check: { default: { shell, result: null, additional_info: null }, by_version: {} } } as unknown as Rule
+  }
+
+  it.each([
+    ['x=""$ODV""', 'other'],
+    ["x='\"$ODV\"'", 'other'],
+    ['awk \'{ if ($2 == "$ODV") print }\'', 'other'],
+    ['cat <<EOF\n"$ODV"\nEOF', 'other'],
+    ['bannerText="$ODV"', 'double_quoted'],
+    ['[[ "${SS_RULE}" == "$ODV" ]]', 'double_quoted'],
+    ['x="a \\" b $ODV"', 'double_quoted'],
+    ['x=\\"$ODV"', 'other'],
+    ['x="a" y=$ODV', 'other'],
+  ])('classifies %j as %s', (shell, expectedContext) => {
+    expect(odvShellContext(ruleWithShell(shell))).toBe(expectedContext)
+  })
+
+  it('treats a heredoc in any check shell as other even when the placeholder is double quoted', () => {
+    const rule = {
+      check: {
+        default: { shell: 'echo "$ODV"', result: null, additional_info: null },
+        by_version: { '26.0': { shell: 'cat <<EOF\nEOF', result: null, additional_info: null } },
+      },
+    } as unknown as Rule
+    expect(odvShellContext(rule)).toBe('other')
+  })
+
+  it('handles a null check shell', () => {
+    expect(odvShellContext(ruleWithShell(null))).toBe('none')
+  })
+})
+
+describe('validateOdvValue hardening', () => {
+  it.each(['', '   ', '\t'])('rejects the empty or whitespace-only value %j for every datatype', (value) => {
+    expect(validateOdvValue(odv(), value, 'none')).toBe('Value must not be empty.')
+    expect(validateOdvValue(odv({ datatype: 'string' }), value, 'none')).toBe('Value must not be empty.')
+    expect(validateOdvValue(odv({ datatype: 'regex' }), value, 'none')).toBe('Value must not be empty.')
+    expect(validateOdvValue(odv({ datatype: 'enum', validation: { enumValues: [' '] } }), value, 'none')).toBe(
+      'Value must not be empty.',
+    )
+  })
+
+  it('returns a reason instead of throwing when validation.regex does not compile', () => {
+    const brokenOdv = odv({ datatype: 'string', validation: { regex: '(unclosed' } })
+    expect(validateOdvValue(brokenOdv, 'abc', 'none')).toBe(
+      'This rule defines a validation pattern that is not a valid regular expression.',
+    )
+  })
+
+  describe('regex datatype in other context', () => {
+    const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
+
+    it.each(['a b', 'a\tb', 'a;b', 'a|b', 'a&b', 'a<b', 'a>b', 'x$HOME', 'x$_y', 'x$ODV'])('rejects %j', (value) => {
+      expect(validateOdvValue(regexOdv, value, 'other')).not.toBeNull()
+    })
+
+    it('accepts a lookahead regex ending in a bare dollar', () => {
+      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'other')).toBeNull()
+    })
+
+    it('does not apply the extra restrictions in none or double_quoted context', () => {
+      expect(validateOdvValue(regexOdv, 'a b;c', 'none')).toBeNull()
+    })
+  })
+})
+
+describe('canonicalOdvValue', () => {
+  it('converts a numeric string to a number for a number datatype', () => {
+    expect(canonicalOdvValue(odv(), '007')).toBe(7)
+    expect(canonicalOdvValue(odv(), '-5')).toBe(-5)
+    expect(canonicalOdvValue(odv(), 12)).toBe(12)
+  })
+
+  it('leaves an invalid number input unchanged', () => {
+    expect(canonicalOdvValue(odv(), '1.5')).toBe('1.5')
+  })
+
+  it('leaves non-number datatypes unchanged', () => {
+    expect(canonicalOdvValue(odv({ datatype: 'string' }), '007')).toBe('007')
+    expect(canonicalOdvValue(odv({ datatype: 'enum' }), '007')).toBe('007')
   })
 })
 
