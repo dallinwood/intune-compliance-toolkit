@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from tools import mscp_fetch
 from tools.mscp_fetch import (
     MSCP_REPOSITORY,
     download_tarball,
@@ -91,7 +92,7 @@ def test_symlink_and_hardlink_skipped(tarball, tmp_path):
         "src/mscp/data/rules/../../../evil",
         "/etc/evil",
         "src/mscp/data/rules/c:evil",
-        "src/mscp/data/rules/back\slash",
+        "src/mscp/data/rules/back\\slash",
     ],
 )
 def test_unsafe_path_raises_and_leaves_upstream_unchanged(tmp_path, member_name):
@@ -202,3 +203,46 @@ def test_fetch_writes_upstream_and_source_lock(tmp_path, tarball):
     assert read_source_lock(sources_dir / "source.json") == lock
     assert lock.retrieved_date == "2026-10-20"
     assert (sources_dir / "upstream/LICENSE.md").read_bytes() == b"CC BY 4.0"
+
+
+@pytest.mark.parametrize("bad_tag", ["", ".", "..", "../x", "a/b", "a b", "a\\b", "tag?x"])
+def test_invalid_tag_rejected(tmp_path, bad_tag):
+    opener = FakeOpener({})
+    with pytest.raises(ValueError, match="Invalid tag"):
+        resolve_tag_commit(bad_tag, opener)
+    with pytest.raises(ValueError, match="Invalid tag"):
+        download_tarball(bad_tag, tmp_path, opener)
+    with pytest.raises(ValueError, match="Invalid tag"):
+        fetch(bad_tag, tmp_path, "2026-10-20", opener)
+    assert opener.requests == []
+
+
+@pytest.mark.parametrize(
+    "reference_body",
+    [
+        {"object": {"type": "tree", "sha": "abc"}},
+        {"object": {"type": "tag", "sha": "abc", "url": TAG_OBJECT_URL}},
+        {"object": {"type": "commit"}},
+        {},
+    ],
+)
+def test_non_commit_resolution_raises(reference_body):
+    opener = FakeOpener(
+        {
+            REF_URL: json.dumps(reference_body).encode(),
+            TAG_OBJECT_URL: json.dumps({"object": {"type": "tag", "sha": "d", "url": "x"}}).encode(),
+        }
+    )
+    with pytest.raises(ValueError, match="release_27.0"):
+        resolve_tag_commit("release_27.0", opener)
+
+
+def test_default_opener_passes_timeout(monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        mscp_fetch.urllib.request,
+        "urlopen",
+        lambda request, timeout: calls.append(timeout) or "response",
+    )
+    assert mscp_fetch.default_opener("request") == "response"
+    assert calls == [60]

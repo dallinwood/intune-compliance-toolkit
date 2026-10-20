@@ -1,14 +1,17 @@
 import json
+import re
 import shutil
 import tarfile
 import tempfile
 import urllib.request
 from pathlib import Path, PurePosixPath
 
+from tools.directory_swap import replace_directory
 from tools.mscp_source_lock import SourceLock, write_source_lock
 
 MSCP_REPOSITORY = "usnistgov/macos_security"
 REPOSITORY_URL = f"https://github.com/{MSCP_REPOSITORY}"
+NETWORK_TIMEOUT_SECONDS = 60
 USER_AGENT = "intune-compliance-toolkit-mscp-import"
 DATA_PREFIX = ("src", "mscp", "data")
 ROOT_FILES = ("LICENSE.md", "CHANGELOG.md")
@@ -20,6 +23,15 @@ UPSTREAM_SUBSET = (
     "LICENSE.md",
     "CHANGELOG.md",
 )
+
+
+def default_opener(request: urllib.request.Request):
+    return urllib.request.urlopen(request, timeout=NETWORK_TIMEOUT_SECONDS)
+
+
+def validate_tag(tag: str) -> None:
+    if not re.fullmatch(r"[A-Za-z0-9._-]+", tag) or tag in (".", ".."):
+        raise ValueError(f"Invalid tag name: {tag!r}")
 
 
 def build_request(url: str, accept: str | None = None) -> urllib.request.Request:
@@ -34,17 +46,21 @@ def get_json(url: str, opener) -> dict:
         return json.loads(response.read())
 
 
-def resolve_tag_commit(tag: str, opener=urllib.request.urlopen) -> str:
+def resolve_tag_commit(tag: str, opener=default_opener) -> str:
+    validate_tag(tag)
     reference = get_json(
         f"https://api.github.com/repos/{MSCP_REPOSITORY}/git/ref/tags/{tag}", opener
     )
-    target = reference["object"]
-    if target["type"] == "tag":
-        target = get_json(target["url"], opener)["object"]
+    target = reference.get("object", {})
+    if target.get("type") == "tag" and "url" in target:
+        target = get_json(target["url"], opener).get("object", {})
+    if target.get("type") != "commit" or "sha" not in target:
+        raise ValueError(f"Tag {tag!r} does not resolve to a commit")
     return target["sha"]
 
 
-def download_tarball(tag: str, destination_dir: Path, opener=urllib.request.urlopen) -> Path:
+def download_tarball(tag: str, destination_dir: Path, opener=default_opener) -> Path:
+    validate_tag(tag)
     url = f"{REPOSITORY_URL}/archive/refs/tags/{tag}.tar.gz"
     tarball_path = destination_dir / f"{tag}.tar.gz"
     with opener(build_request(url)) as response:
@@ -103,16 +119,15 @@ def extract_upstream_subset(tarball_path: Path, upstream_dir: Path) -> list[str]
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 target_path.write_bytes(archive.extractfile(member).read())
                 written.append(destination)
-        if upstream_dir.exists():
-            shutil.rmtree(upstream_dir)
-        staging_dir.rename(upstream_dir)
+        replace_directory(staging_dir, upstream_dir)
     except BaseException:
         shutil.rmtree(staging_dir, ignore_errors=True)
         raise
     return sorted(written)
 
 
-def fetch(tag: str, sources_dir: Path, today: str, opener=urllib.request.urlopen) -> SourceLock:
+def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> SourceLock:
+    validate_tag(tag)
     commit_sha = resolve_tag_commit(tag, opener)
     with tempfile.TemporaryDirectory() as download_dir:
         tarball_path = download_tarball(tag, Path(download_dir), opener)
