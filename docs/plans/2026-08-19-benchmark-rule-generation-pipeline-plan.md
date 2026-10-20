@@ -128,4 +128,4 @@ workflow) is designed but not yet built - see "Phase 2 design" below.
   `_manifest.json`. All 90+ tests pass. (`8bb4af5` feat: deterministic
   benchmark markdown parser + per-version metadata (Phase 1))
 
-- 2026-10-20: Superseded by docs/plans/2026-10-20-mscp-source-design.md; the CIS pipeline code described by this plan was removed. Landed in this commit (chore: remove CIS PDF pipeline, specs and benchmark skill).
+- 2026-10-20: Superseded by docs/plans/2026-10-20-mscp-source-design.md; the CIS pipeline code described by this plan was removed. Landed in db33dc0 chore: remove CIS PDF pipeline, specs and benchmark skill.

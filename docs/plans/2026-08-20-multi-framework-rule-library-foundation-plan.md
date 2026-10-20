@@ -2010,4 +2010,4 @@ git push
   decisions recorded in "Decisions already made" and the `id` section, for
   sub-project 2/3 to act on. Docs-only commit, no new code.
 
-- 2026-10-20: Superseded by docs/plans/2026-10-20-mscp-source-design.md; the CIS pipeline code described by this plan was removed. Landed in this commit (chore: remove CIS PDF pipeline, specs and benchmark skill).
+- 2026-10-20: Superseded by docs/plans/2026-10-20-mscp-source-design.md; the CIS pipeline code described by this plan was removed. Landed in db33dc0 chore: remove CIS PDF pipeline, specs and benchmark skill.
