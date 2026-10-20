@@ -114,16 +114,20 @@ def _normalize_fix(fix, where: str, rule_id: str) -> dict:
 
 
 def _enforcement_info(container: dict, where: str, rule_id: str) -> dict:
-    info = container.get("enforcement_info") or {}
+    info = container.get("enforcement_info", {})
     _require_known_keys(info, ENFORCEMENT_INFO_KEYS, f"{where} enforcement_info", rule_id)
     return info
 
 
 def _normalize_applicability(version_entry: dict, where: str, rule_id: str) -> list:
-    benchmarks = version_entry.get("benchmarks") or []
+    benchmarks = version_entry.get("benchmarks", [])
+    if not isinstance(benchmarks, list):
+        raise UnsupportedUpstreamData(f"{rule_id}: {where} benchmarks must be a list")
     applicability = []
     for benchmark in benchmarks:
         _require_known_keys(benchmark, {"name", "severity"}, f"{where} benchmark", rule_id)
+        if not isinstance(benchmark.get("name"), str):
+            raise UnsupportedUpstreamData(f"{rule_id}: {where} benchmark needs a string name")
         applicability.append({"name": benchmark["name"], "severity": benchmark.get("severity")})
     return applicability
 
@@ -180,10 +184,14 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
             f"{rule_id}: contains {VENDOR_DESCRIPTION_MARKER!r} text, which is excluded from the licence grant"
         )
 
-    platforms = upstream.get("platforms") or {}
-    macos = platforms.get("macOS")
-    if macos is None:
+    platforms = upstream.get("platforms", {})
+    if not isinstance(platforms, dict):
+        raise UnsupportedUpstreamData(f"{rule_id}: platforms must be a mapping")
+    if "macOS" not in platforms:
         return None
+    macos = platforms["macOS"]
+    if not isinstance(macos, dict):
+        raise UnsupportedUpstreamData(f"{rule_id}: platforms.macOS must be a mapping")
 
     version_keys = [key for key in macos if VERSION_KEY_PATTERN.match(str(key))]
     _require_known_keys(macos, MACOS_FIXED_KEYS | set(version_keys), "platforms.macOS", rule_id)
@@ -232,7 +240,10 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
     if check is not None and ODV_PLACEHOLDER in json.dumps(check) and upstream.get("odv") is None:
         raise UnsupportedUpstreamData(f"{rule_id}: check uses {ODV_PLACEHOLDER} but the rule has no odv block")
 
-    tags = sorted(upstream.get("tags") or [])
+    raw_tags = upstream.get("tags", [])
+    if not isinstance(raw_tags, list) or not all(isinstance(tag, str) for tag in raw_tags):
+        raise UnsupportedUpstreamData(f"{rule_id}: tags must be a list of strings")
+    tags = sorted(raw_tags)
     manual_reason = _manual_reason(tags, rule_id, check is not None)
     if manual_reason is None and check is not None:
         every_check = [default_check, *check_by_version.values()]

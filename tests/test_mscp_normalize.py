@@ -412,3 +412,43 @@ def test_fix_nested_in_default_check_raises():
     platform = "enforcement_info:\n  check:\n    shell: x\n    result:\n      integer: 1\n    fix:\n      shell: y\n"
     with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
         normalize(rule_with(platform))
+
+
+@pytest.mark.parametrize("bad_tags", ["tags: manual\n", "tags: [1, 2]\n", "tags:\n"])
+def test_non_list_of_strings_tags_raise(bad_tags):
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(rule_with("'27.0':\n  benchmarks: []\n", bad_tags))
+
+
+@pytest.mark.parametrize(
+    "platform_block",
+    [
+        "'27.0':\n  benchmarks:\n    - severity: high\n",
+        "'27.0':\n  benchmarks:\n    - name: 5\n",
+        "'27.0':\n  benchmarks: cis_lvl1\n",
+        "'27.0':\n  enforcement_info: []\n",
+        "'27.0':\n  enforcement_info:\n    check: text\n",
+        "enforcement_info:\n  check:\n    shell: x\n    result: 5\n",
+        "enforcement_info:\n  check:\n    shell: x\n    result:\n      integer: 1\n  fix: text\n",
+    ],
+)
+def test_malformed_shapes_raise_with_rule_id(platform_block):
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(rule_with(platform_block))
+
+
+def test_non_mapping_platforms_raises():
+    text = "id: some_rule\ntitle: T\ndiscussion: D\nplatforms: [macOS]\n"
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(text)
+
+
+@pytest.mark.parametrize("macos_value", ["null", "[]", "text"])
+def test_present_but_non_mapping_macos_raises(macos_value):
+    text = f"id: some_rule\ntitle: T\ndiscussion: D\nplatforms:\n  macOS: {macos_value}\n"
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(text)
+
+
+def test_missing_macos_key_still_returns_none():
+    assert normalize("id: some_rule\ntitle: T\ndiscussion: D\nplatforms:\n  iOS: {}\n") is None
