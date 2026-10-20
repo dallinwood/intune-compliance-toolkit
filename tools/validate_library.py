@@ -21,20 +21,16 @@ def schema_errors(instance: dict, schema_name: str = "rule") -> list[str]:
     return [f"{error.json_path}: {error.message}" for error in errors]
 
 
-def _load_json(path: Path, errors: list[str]):
+def _validate_document(path: Path, schema_name: str, errors: list[str]) -> dict | None:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        document = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
         errors.append(f"{path}: file not found")
+        return None
     except (OSError, ValueError) as problem:
         errors.append(f"{path}: cannot read JSON ({problem})")
-    return None
-
-
-def _validate_document(path: Path, schema_name: str, errors: list[str]):
-    document = _load_json(path, errors)
-    if document is None:
         return None
+
     schema_problems = schema_errors(document, schema_name)
     errors.extend(f"{path}: {problem}" for problem in schema_problems)
     return None if schema_problems else document

@@ -10,7 +10,7 @@
   ],
   "properties": {
     "schema_version": { "const": 3 },
-    "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+$" },
+    "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+(?![\\s\\S])" },
     "platform": { "const": "macOS" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
@@ -24,7 +24,7 @@
       "properties": {
         "name": { "const": "mscp" },
         "release_tag": { "type": "string" },
-        "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}(?![\\s\\S])" },
         "upstream_rule_id": { "type": "string" },
         "upstream_path": { "type": "string" },
         "upstream_url": { "type": "string" },
@@ -48,7 +48,7 @@
     "architecture": { "enum": ["arm64", "i386", null] },
     "applicability": {
       "type": "object",
-      "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+      "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
       "additionalProperties": {
         "type": "array",
         "items": {
@@ -74,7 +74,7 @@
         },
         "by_version": {
           "type": "object",
-          "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
           "additionalProperties": { "$ref": "#/$defs/check_entry" }
         }
       }
@@ -110,13 +110,13 @@
         "default": { "$ref": "#/$defs/remediation_entry" },
         "by_version": {
           "type": "object",
-          "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
           "additionalProperties": { "$ref": "#/$defs/remediation_entry" }
         },
         "mobileconfig_info": { "type": ["object", "array", "null"] },
         "mobileconfig_by_version": {
           "type": "object",
-          "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
           "additionalProperties": { "type": ["object", "array"] }
         },
         "ddm_info": { "type": ["object", "array", "null"] }

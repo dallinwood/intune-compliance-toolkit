@@ -2,7 +2,11 @@ import copy
 import json
 from pathlib import Path
 
+import pytest
+
 from tools.validate_library import schema_errors, validate_library
+
+BACKSLASH = chr(92)
 
 COMMIT_SHA = "a" * 40
 LICENSE = {
@@ -175,3 +179,79 @@ def test_validate_library_reports_id_mismatch(tmp_path):
     )
     errors = validate_library(tmp_path)
     assert any("mscp.something_else" in error for error in errors)
+
+
+def test_validate_library_rejects_malformed_manifest(tmp_path):
+    (tmp_path / "_manifest.json").write_text("{not json", encoding="utf-8")
+    assert validate_library(tmp_path)
+
+
+def test_validate_library_rejects_null_manifest(tmp_path):
+    (tmp_path / "_manifest.json").write_text("null", encoding="utf-8")
+    assert validate_library(tmp_path)
+
+
+def test_validate_library_rejects_null_rule_file(tmp_path):
+    write_library(tmp_path)
+    rule_path = tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json"
+    rule_path.parent.mkdir(parents=True, exist_ok=True)
+    rule_path.write_text("null", encoding="utf-8")
+    assert validate_library(tmp_path)
+
+
+@pytest.mark.parametrize(
+    "unsafe_path",
+    ["../escape.json", "rules/../../escape.json", "/abs.json", "rules" + BACKSLASH + "x.json", "C:/x.json", "C:x.json", "rules/x.json\n"],
+)
+def test_index_rejects_unsafe_file_path(unsafe_path):
+    index = {
+        "schema_version": 3,
+        "source": "mscp",
+        "rules": [index_entry_for(MINIMAL_RULE, unsafe_path)],
+    }
+    assert schema_errors(index, "index")
+
+
+def test_index_accepts_safe_file_path():
+    index = {
+        "schema_version": 3,
+        "source": "mscp",
+        "rules": [index_entry_for(MINIMAL_RULE, "rules/os..x.json")],
+    }
+    assert schema_errors(index, "index") == []
+
+
+def test_index_rejects_entry_missing_required_key():
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    del entry["has_odv"]
+    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+
+
+def read_manifest(baselines_dir: Path) -> dict:
+    return json.loads((baselines_dir / "_manifest.json").read_text(encoding="utf-8"))
+
+
+@pytest.mark.parametrize("unsafe_path", ["../_index.json", "/abs/_index.json", "C:/_index.json", "a" + BACKSLASH + "b.json"])
+def test_manifest_rejects_unsafe_index_path(tmp_path, unsafe_path):
+    write_library(tmp_path)
+    manifest = read_manifest(tmp_path)
+    manifest["sources"][0]["index_path"] = unsafe_path
+    assert schema_errors(manifest, "manifest")
+
+
+def test_manifest_valid_after_write_library(tmp_path):
+    write_library(tmp_path)
+    assert schema_errors(read_manifest(tmp_path), "manifest") == []
+
+
+def test_validate_library_reports_rule_count_mismatch(tmp_path):
+    write_library(tmp_path)
+    write_json(tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json", make_rule())
+    manifest = read_manifest(tmp_path)
+    manifest["sources"][0]["rule_count"] = 5
+    write_json(tmp_path / "_manifest.json", manifest)
+    assert any("rule_count" in error for error in validate_library(tmp_path))
+
+
+def test_rejects_id_with_trailing_newline():
+    assert schema_errors(make_rule(id="mscp.foo\n"))

@@ -17,11 +17,11 @@
           "applicability", "tags", "has_odv"
         ],
         "properties": {
-          "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+$" },
+          "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+(?![\\s\\S])" },
           "title": { "type": "string" },
           "file": {
             "type": "string",
-            "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$))[^\\\\]+$"
+            "pattern": "^(?!/)(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+(?![\\s\\S])"
           },
           "assessment": {
             "type": "object",
@@ -40,7 +40,7 @@
           "architecture": { "enum": ["arm64", "i386", null] },
           "applicability": {
             "type": "object",
-            "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+            "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
             "additionalProperties": {
               "type": "array",
               "items": {
