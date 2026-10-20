@@ -48,11 +48,13 @@ MINIMAL_RULE = {
     "check": {
         "default": {
             "shell": "/usr/sbin/spctl --status",
+            "additional_info": None,
             "result": {"type": "string", "value": "PASS"},
         },
         "by_version": {
             "15.0": {
                 "shell": "defaults read com.apple.x",
+                "additional_info": None,
                 "result": {"type": "integer", "value": 1},
             }
         },
@@ -255,3 +257,7 @@ def test_validate_library_reports_rule_count_mismatch(tmp_path):
 
 def test_rejects_id_with_trailing_newline():
     assert schema_errors(make_rule(id="mscp.foo\n"))
+
+
+def test_hyphenated_rule_id_is_valid():
+    assert schema_errors(make_rule(id="mscp.os_mfa_network_non-priv")) == []

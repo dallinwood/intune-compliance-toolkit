@@ -10,7 +10,7 @@
   ],
   "properties": {
     "schema_version": { "const": 3 },
-    "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+(?![\\s\\S])" },
+    "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_-]+(?![\\s\\S])" },
     "platform": { "const": "macOS" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
@@ -87,7 +87,7 @@
           "additionalProperties": false,
           "required": ["datatype", "description", "validation", "recommended", "by_benchmark"],
           "properties": {
-            "datatype": { "enum": ["number", "string", "enum"] },
+            "datatype": { "enum": ["number", "string", "enum", "regex"] },
             "description": { "type": "string" },
             "validation": { "type": ["object", "null"] },
             "recommended": { "type": ["integer", "string"] },
@@ -138,11 +138,12 @@
     "check_entry": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["shell", "result"],
+      "required": ["shell", "result", "additional_info"],
       "properties": {
         "shell": { "type": ["string", "null"] },
+        "additional_info": { "type": ["string", "null"] },
         "result": {
-          "type": "object",
+          "type": ["object", "null"],
           "additionalProperties": false,
           "required": ["type", "value"],
           "properties": {
