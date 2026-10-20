@@ -1,4 +1,4 @@
-import type { Manifest } from '../types/index-manifest'
+import type { Manifest } from '../types/library'
 
 let cachedManifest: Promise<Manifest> | null = null
 

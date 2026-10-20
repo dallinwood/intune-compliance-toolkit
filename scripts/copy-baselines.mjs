@@ -8,7 +8,7 @@
 // from webui/.
 
 import { cp, rm } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -16,6 +16,11 @@ const source = join(repoRoot, "baselines");
 const destination = join(repoRoot, "webui", "public", "baselines");
 
 await rm(destination, { recursive: true, force: true });
-await cp(source, destination, { recursive: true });
+// Dot-prefixed entries (editor/OS droppings, local scratch files) are not
+// part of the published library at any depth.
+await cp(source, destination, {
+  recursive: true,
+  filter: (entryPath) => !basename(entryPath).startsWith("."),
+});
 
 console.log(`Copied ${source} -> ${destination}`);

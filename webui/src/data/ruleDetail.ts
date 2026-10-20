@@ -1,23 +1,18 @@
 import type { RuleRef } from '../logic/selectionEntry'
-import type { RuleDetail } from '../types/rule-detail'
+import type { Rule } from '../types/library'
 
-const cache = new Map<string, Promise<RuleDetail>>()
+const cache = new Map<string, Promise<Rule>>()
 
-function rulePath(ref: RuleRef): string {
-  return `${ref.family}/${ref.product}/${ref.version}/${ref.file}`
-}
-
-export function fetchRuleDetail(ref: RuleRef): Promise<RuleDetail> {
-  const path = rulePath(ref)
-  let entry = cache.get(path)
+export function fetchRule(ref: RuleRef): Promise<Rule> {
+  let entry = cache.get(ref.id)
   if (!entry) {
-    entry = fetch(`${import.meta.env.BASE_URL}baselines/${path}`).then((response) => {
+    entry = fetch(`${import.meta.env.BASE_URL}baselines/${ref.path}`).then((response) => {
       if (!response.ok) {
-        throw new Error(`Failed to load rule ${path} (${response.status} ${response.statusText})`)
+        throw new Error(`Failed to load rule ${ref.id} (${response.status} ${response.statusText})`)
       }
-      return response.json() as Promise<RuleDetail>
+      return response.json() as Promise<Rule>
     })
-    cache.set(path, entry)
+    cache.set(ref.id, entry)
   }
   return entry
 }

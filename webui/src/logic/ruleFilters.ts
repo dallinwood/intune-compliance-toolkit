@@ -1,36 +1,55 @@
 import type { FilterState } from '../state/filterStore'
 import type { RuleRow } from '../types/rule-row'
 
-export type FilterValues = Pick<FilterState, 'search' | 'products' | 'versions' | 'platforms' | 'profiles' | 'automatable'>
+export type FilterValues = Pick<FilterState, 'search' | 'osVersions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
 
 // The Set-valued facets matchesFilters can be asked to ignore - used to
 // compute "what values are still reachable in this facet, given every
 // other currently-applied filter" for faceted-search-style narrowing.
-export type FilterDimension = 'products' | 'versions' | 'platforms' | 'profiles'
+export type FilterDimension = 'osVersions' | 'benchmarks' | 'sections' | 'tags'
+
+const MSCP_ID_PREFIX = 'mscp.'
+
+// A benchmark only counts for the macOS versions it is listed under, so when
+// versions are selected, a benchmark listed only under other versions must
+// not match.
+function matchesBenchmarks(row: RuleRow, filters: FilterValues, excludeDimension?: FilterDimension): boolean {
+  const versionsToConsider =
+    excludeDimension !== 'osVersions' && filters.osVersions.size > 0
+      ? row.osVersions.filter((version) => filters.osVersions.has(version))
+      : row.osVersions
+  return versionsToConsider.some((version) =>
+    (row.applicability[version] ?? []).some((benchmark) => filters.benchmarks.has(benchmark.name)),
+  )
+}
 
 export function matchesFilters(row: RuleRow, filters: FilterValues, excludeDimension?: FilterDimension): boolean {
-  if (excludeDimension !== 'products' && filters.products.size > 0 && !filters.products.has(row.ref.product)) return false
-  if (excludeDimension !== 'versions' && filters.versions.size > 0 && !filters.versions.has(row.ref.version)) return false
-  if (excludeDimension !== 'platforms' && filters.platforms.size > 0 && !filters.platforms.has(row.platform)) return false
   if (
-    excludeDimension !== 'profiles' &&
-    filters.profiles.size > 0 &&
-    !row.profileApplicability.some((profile) => filters.profiles.has(profile))
+    excludeDimension !== 'osVersions' &&
+    filters.osVersions.size > 0 &&
+    !row.osVersions.some((version) => filters.osVersions.has(version))
   )
     return false
-  if (filters.automatable === 'automatable' && row.assessmentStatus !== 'Automated') return false
-  if (filters.automatable === 'manual' && row.assessmentStatus !== 'Manual') return false
+  if (excludeDimension !== 'benchmarks' && filters.benchmarks.size > 0 && !matchesBenchmarks(row, filters, excludeDimension))
+    return false
+  if (excludeDimension !== 'sections' && filters.sections.size > 0 && !filters.sections.has(row.section)) return false
+  if (excludeDimension !== 'tags' && filters.tags.size > 0 && !row.tags.some((tag) => filters.tags.has(tag))) return false
+  if (filters.automatable === 'automatable' && row.assessment.status !== 'automated') return false
+  if (filters.automatable === 'manual' && row.assessment.status !== 'manual') return false
 
   const needle = filters.search.trim().toLowerCase()
-  if (needle && !row.title.toLowerCase().includes(needle) && !row.ref.id.includes(needle)) return false
+  if (needle) {
+    const upstreamId = row.ref.id.startsWith(MSCP_ID_PREFIX) ? row.ref.id.slice(MSCP_ID_PREFIX.length) : row.ref.id
+    if (!row.title.toLowerCase().includes(needle) && !upstreamId.toLowerCase().includes(needle)) return false
+  }
 
   return true
 }
 
 // Facet-narrowing for the filter sidebar: which values remain reachable in
 // one facet once every *other* currently-applied filter is taken into
-// account (e.g. picking product "windows_11" narrows the version list down
-// to versions that actually exist under that product). The facet being
+// account (e.g. picking a benchmark narrows the version list down
+// to versions that list that benchmark). The facet being
 // computed is excluded from its own narrowing, or picking a value could
 // never un-narrow itself. Any already-selected value is always included
 // even if it no longer matches - otherwise a selection that becomes

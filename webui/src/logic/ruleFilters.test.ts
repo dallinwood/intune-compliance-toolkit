@@ -4,13 +4,18 @@ import { allFacetValues, facetOptions, matchesFilters, type FilterValues } from 
 
 function row(overrides: Partial<RuleRow> = {}): RuleRow {
   return {
-    ref: { family: 'cis', product: 'macos_26_tahoe', version: 'v1.1.0', file: 'rule.json', id: '1.1' },
-    title: 'Example rule',
-    assessmentStatus: 'Automated',
-    sourceAssessmentStatus: 'Automated',
-    platform: 'macOS',
-    profileApplicability: ['Level 1'],
-    requiresOrganizationDefinedValue: false,
+    ref: { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' },
+    title: 'Enable Gatekeeper',
+    section: 'os',
+    sourceName: 'mscp',
+    releaseTag: 'release_27.0',
+    assessment: { status: 'automated', manual_reason: null },
+    architecture: null,
+    applicability: { '26.0': [{ name: 'cis_lvl1', severity: null }] },
+    osVersions: ['26.0'],
+    benchmarks: ['cis_lvl1'],
+    tags: ['800-53r5_high'],
+    hasOdv: false,
     ...overrides,
   }
 }
@@ -18,92 +23,152 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
 function emptyFilters(overrides: Partial<FilterValues> = {}): FilterValues {
   return {
     search: '',
-    products: new Set(),
-    versions: new Set(),
-    platforms: new Set(),
-    profiles: new Set(),
+    osVersions: new Set(),
+    benchmarks: new Set(),
+    sections: new Set(),
+    tags: new Set(),
     automatable: 'all',
     ...overrides,
   }
 }
 
-const macosRow = row()
-const windowsRow = row({
-  ref: { family: 'cis', product: 'windows_11', version: 'v5.0.0', file: 'win.json', id: '2.1' },
-  platform: 'Windows',
-  profileApplicability: ['Level 2'],
-  assessmentStatus: 'Manual',
-  sourceAssessmentStatus: 'Manual',
+const gatekeeperRow = row()
+const passwordRow = row({
+  ref: { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' },
+  title: 'Require a Minimum Password Length of $ODV Characters',
+  section: 'pwpolicy',
+  assessment: { status: 'manual', manual_reason: 'manual' },
+  applicability: {
+    '27.0': [{ name: 'disa_stig', severity: 'medium' }],
+    '26.0': [{ name: 'disa_stig', severity: 'medium' }, { name: 'cis_lvl2', severity: null }],
+  },
+  osVersions: ['27.0', '26.0'],
+  benchmarks: ['cis_lvl2', 'disa_stig'],
+  tags: ['cisv8'],
+  hasOdv: true,
 })
-const rows = [macosRow, windowsRow]
+const rows = [gatekeeperRow, passwordRow]
 
 describe('matchesFilters', () => {
   it('matches everything when no filters are set', () => {
-    expect(matchesFilters(macosRow, emptyFilters())).toBe(true)
-    expect(matchesFilters(windowsRow, emptyFilters())).toBe(true)
+    expect(matchesFilters(gatekeeperRow, emptyFilters())).toBe(true)
+    expect(matchesFilters(passwordRow, emptyFilters())).toBe(true)
   })
 
-  it('filters by product', () => {
-    const filters = emptyFilters({ products: new Set(['windows_11']) })
-    expect(matchesFilters(macosRow, filters)).toBe(false)
-    expect(matchesFilters(windowsRow, filters)).toBe(true)
+  it('filters by OS version when the row lists at least one selected version', () => {
+    const filters = emptyFilters({ osVersions: new Set(['27.0']) })
+    expect(matchesFilters(gatekeeperRow, filters)).toBe(false)
+    expect(matchesFilters(passwordRow, filters)).toBe(true)
+  })
+
+  it('filters by section', () => {
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
+    expect(matchesFilters(gatekeeperRow, filters)).toBe(false)
+    expect(matchesFilters(passwordRow, filters)).toBe(true)
+  })
+
+  it('filters by tag using any match', () => {
+    const filters = emptyFilters({ tags: new Set(['cisv8', 'unrelated']) })
+    expect(matchesFilters(gatekeeperRow, filters)).toBe(false)
+    expect(matchesFilters(passwordRow, filters)).toBe(true)
+  })
+
+  it('filters by assessment status', () => {
+    expect(matchesFilters(gatekeeperRow, emptyFilters({ automatable: 'automatable' }))).toBe(true)
+    expect(matchesFilters(passwordRow, emptyFilters({ automatable: 'automatable' }))).toBe(false)
+    expect(matchesFilters(gatekeeperRow, emptyFilters({ automatable: 'manual' }))).toBe(false)
+    expect(matchesFilters(passwordRow, emptyFilters({ automatable: 'manual' }))).toBe(true)
+  })
+
+  it('matches a benchmark on any version when no versions are selected', () => {
+    const filters = emptyFilters({ benchmarks: new Set(['cis_lvl1']) })
+    expect(matchesFilters(gatekeeperRow, filters)).toBe(true)
+    expect(matchesFilters(passwordRow, filters)).toBe(false)
+  })
+
+  it('scopes a benchmark to the selected versions', () => {
+    const cisLevelOneOnTwentySixOnly = row({
+      applicability: {
+        '27.0': [{ name: 'disa_stig', severity: null }],
+        '26.0': [{ name: 'cis_lvl1', severity: null }],
+      },
+      osVersions: ['27.0', '26.0'],
+      benchmarks: ['cis_lvl1', 'disa_stig'],
+    })
+
+    const onTwentySeven = emptyFilters({ osVersions: new Set(['27.0']), benchmarks: new Set(['cis_lvl1']) })
+    const onTwentySix = emptyFilters({ osVersions: new Set(['26.0']), benchmarks: new Set(['cis_lvl1']) })
+
+    expect(matchesFilters(cisLevelOneOnTwentySixOnly, onTwentySeven)).toBe(false)
+    expect(matchesFilters(cisLevelOneOnTwentySixOnly, onTwentySix)).toBe(true)
+  })
+
+  it('does not scope the benchmark match by versions when osVersions is the excluded dimension', () => {
+    const filters = emptyFilters({ osVersions: new Set(['27.0']), benchmarks: new Set(['cis_lvl2']) })
+    expect(matchesFilters(passwordRow, filters)).toBe(false)
+    expect(matchesFilters(passwordRow, filters, 'osVersions')).toBe(true)
+  })
+
+  it('searches the title case-insensitively', () => {
+    expect(matchesFilters(passwordRow, emptyFilters({ search: 'MINIMUM PASSWORD' }))).toBe(true)
+    expect(matchesFilters(gatekeeperRow, emptyFilters({ search: 'MINIMUM PASSWORD' }))).toBe(false)
+  })
+
+  it('searches by upstream id without the mscp. prefix', () => {
+    expect(matchesFilters(passwordRow, emptyFilters({ search: 'pwpolicy_minimum' }))).toBe(true)
+    expect(matchesFilters(passwordRow, emptyFilters({ search: 'PWPOLICY_MINIMUM' }))).toBe(true)
+    expect(matchesFilters(gatekeeperRow, emptyFilters({ search: 'pwpolicy_minimum' }))).toBe(false)
+  })
+
+  it('does not match the mscp. prefix itself', () => {
+    expect(matchesFilters(passwordRow, emptyFilters({ search: 'mscp.' }))).toBe(false)
   })
 
   it('ignores the excluded dimension', () => {
-    const filters = emptyFilters({ products: new Set(['windows_11']) })
-    expect(matchesFilters(macosRow, filters, 'products')).toBe(true)
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
+    expect(matchesFilters(gatekeeperRow, filters, 'sections')).toBe(true)
   })
 })
 
 describe('facetOptions', () => {
   it('offers every value present when nothing else is selected', () => {
-    const options = facetOptions(rows, emptyFilters(), 'versions', (r) => r.ref.version, [])
-    expect(options).toEqual(['v1.1.0', 'v5.0.0'])
+    const options = facetOptions(rows, emptyFilters(), 'sections', (r) => r.section, [])
+    expect(options).toEqual(['os', 'pwpolicy'])
   })
 
   it('narrows to only the values reachable under the other applied filters', () => {
-    const filters = emptyFilters({ products: new Set(['windows_11']) })
-    const options = facetOptions(rows, filters, 'versions', (r) => r.ref.version, filters.versions)
-    expect(options).toEqual(['v5.0.0'])
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
+    const options = facetOptions(rows, filters, 'osVersions', (r) => r.osVersions, filters.osVersions)
+    expect(options).toEqual(['26.0', '27.0'])
+
+    const narrower = emptyFilters({ osVersions: new Set(['27.0']) })
+    expect(facetOptions(rows, narrower, 'sections', (r) => r.section, narrower.sections)).toEqual(['pwpolicy'])
   })
 
   it('does not narrow a facet by its own selection', () => {
-    const filters = emptyFilters({ products: new Set(['windows_11', 'macos_26_tahoe']) })
-    const options = facetOptions(rows, filters, 'products', (r) => r.ref.product, filters.products)
-    expect(options).toEqual(['macos_26_tahoe', 'windows_11'])
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
+    const options = facetOptions(rows, filters, 'sections', (r) => r.section, filters.sections)
+    expect(options).toEqual(['os', 'pwpolicy'])
   })
 
   it('keeps an already-selected value visible even once it becomes unreachable', () => {
-    // A previously-selected version that no row in the whole dataset has -
-    // e.g. left over from an import - must not silently disappear with no
-    // way left to uncheck it.
-    const filters = emptyFilters({ products: new Set(['windows_11']), versions: new Set(['v9.9.9']) })
-    const options = facetOptions(rows, filters, 'versions', (r) => r.ref.version, filters.versions)
-    expect(options).toEqual(['v5.0.0', 'v9.9.9'])
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']), osVersions: new Set(['9.9']) })
+    const options = facetOptions(rows, filters, 'osVersions', (r) => r.osVersions, filters.osVersions)
+    expect(options).toEqual(['26.0', '27.0', '9.9'])
   })
 
-  it('flattens array-valued facets like profile applicability', () => {
-    const options = facetOptions(rows, emptyFilters(), 'profiles', (r) => r.profileApplicability, [])
-    expect(options).toEqual(['Level 1', 'Level 2'])
+  it('flattens array-valued facets like benchmarks', () => {
+    const options = facetOptions(rows, emptyFilters(), 'benchmarks', (r) => r.benchmarks, [])
+    expect(options).toEqual(['cis_lvl1', 'cis_lvl2', 'disa_stig'])
   })
 })
 
 describe('allFacetValues', () => {
   it('lists every distinct value regardless of any filter', () => {
-    expect(allFacetValues(rows, (r) => r.ref.product)).toEqual(['macos_26_tahoe', 'windows_11'])
+    expect(allFacetValues(rows, (r) => r.section)).toEqual(['os', 'pwpolicy'])
   })
 
-  it('flattens array-valued facets like profile applicability', () => {
-    expect(allFacetValues(rows, (r) => r.profileApplicability)).toEqual(['Level 1', 'Level 2'])
-  })
-
-  it('does not change when another filter narrows facetOptions to fewer values', () => {
-    // This is the whole point of the function: it's the fixed reference
-    // order FilterSidebar renders against, so a value's position never
-    // moves as filters make other values reachable/unreachable.
-    const filters = emptyFilters({ products: new Set(['windows_11']) })
-    const onlyWindowsVersionReachable = facetOptions(rows, filters, 'versions', (r) => r.ref.version, filters.versions)
-    expect(onlyWindowsVersionReachable).toEqual(['v5.0.0'])
-    expect(allFacetValues(rows, (r) => r.ref.version)).toEqual(['v1.1.0', 'v5.0.0'])
+  it('flattens array-valued facets', () => {
+    expect(allFacetValues(rows, (r) => r.benchmarks)).toEqual(['cis_lvl1', 'cis_lvl2', 'disa_stig'])
   })
 })

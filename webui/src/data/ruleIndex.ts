@@ -1,4 +1,4 @@
-import type { RuleIndex } from '../types/rule'
+import type { RuleIndex } from '../types/library'
 
 const cache = new Map<string, Promise<RuleIndex>>()
 

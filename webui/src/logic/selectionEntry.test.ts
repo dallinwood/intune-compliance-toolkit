@@ -1,30 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { createSelectionEntry, getSelection, isEnabled, refKey, upsertSelection } from './selectionEntry'
+import {
+  createSelectionEntry,
+  getSelection,
+  isEnabled,
+  migratePersistedSelections,
+  refKey,
+  upsertSelection,
+} from './selectionEntry'
 import type { RuleRef } from './selectionEntry'
 
-const REF_A: RuleRef = { family: 'cis', product: 'macos_26_tahoe', version: 'v1.1.0', file: 'cis_macos26_1.6.json', id: '1.6' }
-const REF_B: RuleRef = { ...REF_A, file: 'cis_macos26_2.1.1.1.json', id: '2.1.1.1' }
+const REF_A: RuleRef = { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' }
+const REF_B: RuleRef = { id: 'mscp.os_firewall_enable', path: 'mscp/rules/os_firewall_enable.json' }
 
 describe('refKey', () => {
-  it('produces the same key for identical refs', () => {
-    expect(refKey(REF_A)).toBe(refKey({ ...REF_A }))
+  it('is the rule id', () => {
+    expect(refKey(REF_A)).toBe('mscp.os_gatekeeper_enable')
   })
 
-  it('produces a different key when the file differs', () => {
+  it('produces a different key for a different rule', () => {
     expect(refKey(REF_A)).not.toBe(refKey(REF_B))
   })
 })
 
 describe('createSelectionEntry', () => {
-  it('defaults to not enabled, no explicit audit method choice, and no organization-defined values', () => {
-    const entry = createSelectionEntry(REF_A)
-
-    expect(entry).toEqual({
-      ref: REF_A,
-      enabled: false,
-      selectedAuditMethodIndex: null,
-      organizationDefinedValues: {},
-    })
+  it('defaults to not enabled with no ODV value', () => {
+    expect(createSelectionEntry(REF_A)).toEqual({ ref: REF_A, enabled: false, odvValue: null })
   })
 })
 
@@ -39,9 +39,9 @@ describe('upsertSelection', () => {
     const existingB = createSelectionEntry(REF_B)
     const initial = { [refKey(REF_A)]: createSelectionEntry(REF_A), [refKey(REF_B)]: existingB }
 
-    const result = upsertSelection(initial, REF_A, (entry) => ({ ...entry, selectedAuditMethodIndex: 1 }))
+    const result = upsertSelection(initial, REF_A, (entry) => ({ ...entry, odvValue: 15 }))
 
-    expect(result[refKey(REF_A)].selectedAuditMethodIndex).toBe(1)
+    expect(result[refKey(REF_A)].odvValue).toBe(15)
     expect(result[refKey(REF_B)]).toBe(existingB)
   })
 })
@@ -64,8 +64,35 @@ describe('getSelection', () => {
   })
 
   it('returns the stored entry when one exists', () => {
-    const selections = upsertSelection({}, REF_A, (entry) => ({ ...entry, selectedAuditMethodIndex: 2 }))
+    const selections = upsertSelection({}, REF_A, (entry) => ({ ...entry, odvValue: 'abc' }))
 
-    expect(getSelection(selections, REF_A).selectedAuditMethodIndex).toBe(2)
+    expect(getSelection(selections, REF_A).odvValue).toBe('abc')
+  })
+})
+
+describe('migratePersistedSelections', () => {
+  const legacyState = {
+    selections: {
+      'cis/macos_26_tahoe/v1.1.0/cis_macos26_1.6.json': {
+        ref: { family: 'cis', product: 'macos_26_tahoe', version: 'v1.1.0', file: 'cis_macos26_1.6.json', id: '1.6' },
+        enabled: true,
+        selectedAuditMethodIndex: null,
+        organizationDefinedValues: {},
+      },
+    },
+  }
+
+  it('discards version 1 selections', () => {
+    expect(migratePersistedSelections(legacyState, 1)).toEqual({ selections: {} })
+  })
+
+  it('discards state with no version', () => {
+    expect(migratePersistedSelections(legacyState, 0)).toEqual({ selections: {} })
+  })
+
+  it('keeps current-version state unchanged', () => {
+    const currentState = { selections: { [refKey(REF_A)]: createSelectionEntry(REF_A) } }
+
+    expect(migratePersistedSelections(currentState, 2)).toBe(currentState)
   })
 })

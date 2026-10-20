@@ -3,41 +3,31 @@
 // over these functions.
 
 export interface RuleRef {
-  family: string
-  product: string
-  version: string
-  file: string
   id: string
+  // Relative to baselines/, e.g. mscp/rules/os_gatekeeper_enable.json
+  path: string
 }
 
-export type OrgDefinedValue = string | number | boolean
+export type OrgDefinedValue = string | number
 
 export interface SelectionEntry {
   ref: RuleRef
   enabled: boolean
-  // null = no explicit choice; resolved via logic/auditMethods.ts's
-  // effectiveAuditMethodIndex(), which defaults to the rule's first
-  // scripted method. Only ever needs to be non-null when a rule has 2+
-  // scripted methods and the admin picked a specific one. There is no
-  // remediation-method selection - remediation is informational only and
-  // never feeds a generated script.
-  selectedAuditMethodIndex: number | null
-  organizationDefinedValues: Record<string, OrgDefinedValue>
+  // null = the admin has not chosen a value; the effective value then falls
+  // back to mSCP's recommended value (see logic/odv.ts).
+  odvValue: OrgDefinedValue | null
 }
 
 export type SelectionMap = Record<string, SelectionEntry>
 
+export const PERSIST_VERSION = 2
+
 export function refKey(ref: RuleRef): string {
-  return `${ref.family}/${ref.product}/${ref.version}/${ref.file}`
+  return ref.id
 }
 
 export function createSelectionEntry(ref: RuleRef): SelectionEntry {
-  return {
-    ref,
-    enabled: false,
-    selectedAuditMethodIndex: null,
-    organizationDefinedValues: {},
-  }
+  return { ref, enabled: false, odvValue: null }
 }
 
 // A rule only gets an entry in the map once the user first interacts with
@@ -58,4 +48,11 @@ export function getSelection(selections: SelectionMap, ref: RuleRef): SelectionE
 
 export function isEnabled(selections: SelectionMap, ref: RuleRef): boolean {
   return getSelection(selections, ref).enabled
+}
+
+// Selections persisted by the CIS-era app (version 1) reference rules that
+// no longer exist, so they are discarded rather than converted.
+export function migratePersistedSelections(persistedState: unknown, version: number): { selections: SelectionMap } {
+  if (version < PERSIST_VERSION) return { selections: {} }
+  return persistedState as { selections: SelectionMap }
 }

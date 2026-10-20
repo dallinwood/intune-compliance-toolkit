@@ -1,42 +1,42 @@
 import { refKey, type OrgDefinedValue, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
 
-export const SETTINGS_SCHEMA_VERSION = 1
+export const SETTINGS_SCHEMA_VERSION = 2
 
-// The same shape backs localStorage persistence and the exported/imported
-// settings file - a rule is referenced by identity only, never by embedding
-// its content, so exporting never duplicates anything already in the repo.
-export interface SettingsFileV1 {
-  schemaVersion: 1
+// A rule is referenced by identity only, never by embedding its content, so
+// exporting never duplicates anything already in the repo. libraryReleases
+// records which library release the selections were made against.
+export interface SettingsFileV2 {
+  schemaVersion: 2
   generatedAt: string
+  libraryReleases: Record<string, string>
   selections: SelectionEntry[]
 }
 
-export function buildSettingsFile(selections: SelectionMap, generatedAt: string): SettingsFileV1 {
+export function buildSettingsFile(
+  selections: SelectionMap,
+  generatedAt: string,
+  libraryReleases: Record<string, string>,
+): SettingsFileV2 {
   return {
     schemaVersion: SETTINGS_SCHEMA_VERSION,
     generatedAt,
+    libraryReleases,
     selections: Object.values(selections),
   }
 }
 
-export function serializeSettingsFile(file: SettingsFileV1): string {
+export function serializeSettingsFile(file: SettingsFileV2): string {
   return JSON.stringify(file, null, 2)
 }
 
 function isRuleRef(value: unknown): value is RuleRef {
   if (typeof value !== 'object' || value === null) return false
   const ref = value as Record<string, unknown>
-  return (
-    typeof ref.family === 'string' &&
-    typeof ref.product === 'string' &&
-    typeof ref.version === 'string' &&
-    typeof ref.file === 'string' &&
-    typeof ref.id === 'string'
-  )
+  return typeof ref.id === 'string' && typeof ref.path === 'string'
 }
 
 function isOrgDefinedValue(value: unknown): value is OrgDefinedValue {
-  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
+  return typeof value === 'string' || (typeof value === 'number' && Number.isFinite(value))
 }
 
 function isSelectionEntry(value: unknown): value is SelectionEntry {
@@ -44,12 +44,15 @@ function isSelectionEntry(value: unknown): value is SelectionEntry {
   const entry = value as Record<string, unknown>
   if (!isRuleRef(entry.ref)) return false
   if (typeof entry.enabled !== 'boolean') return false
-  if (entry.selectedAuditMethodIndex !== null && typeof entry.selectedAuditMethodIndex !== 'number') return false
-  if (typeof entry.organizationDefinedValues !== 'object' || entry.organizationDefinedValues === null) return false
-  return Object.values(entry.organizationDefinedValues as Record<string, unknown>).every(isOrgDefinedValue)
+  return entry.odvValue === null || isOrgDefinedValue(entry.odvValue)
 }
 
-export type SettingsFileValidation = { valid: true; file: SettingsFileV1 } | { valid: false; error: string }
+function isStringRecord(value: unknown): value is Record<string, string> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false
+  return Object.values(value).every((entry) => typeof entry === 'string')
+}
+
+export type SettingsFileValidation = { valid: true; file: SettingsFileV2 } | { valid: false; error: string }
 
 // Validates untrusted, user-uploaded JSON before it ever touches the
 // selection store - a malformed or hand-edited file must be rejected with
@@ -66,13 +69,21 @@ export function validateSettingsFile(raw: unknown): SettingsFileValidation {
   if (typeof candidate.generatedAt !== 'string') {
     return { valid: false, error: 'Settings file is missing its generatedAt timestamp.' }
   }
+  if (!isStringRecord(candidate.libraryReleases)) {
+    return { valid: false, error: "Settings file's libraryReleases is missing or malformed." }
+  }
   if (!Array.isArray(candidate.selections) || !candidate.selections.every(isSelectionEntry)) {
-    return { valid: false, error: 'Settings file\'s selections list is missing or malformed.' }
+    return { valid: false, error: "Settings file's selections list is missing or malformed." }
   }
 
   return {
     valid: true,
-    file: { schemaVersion: SETTINGS_SCHEMA_VERSION, generatedAt: candidate.generatedAt, selections: candidate.selections },
+    file: {
+      schemaVersion: SETTINGS_SCHEMA_VERSION,
+      generatedAt: candidate.generatedAt,
+      libraryReleases: candidate.libraryReleases,
+      selections: candidate.selections,
+    },
   }
 }
 
@@ -85,13 +96,13 @@ export interface ImportResolution {
 // currently-loaded rule and ones that don't (a rule renamed/removed since
 // export) - the latter are reported to the admin rather than silently
 // dropped, per the settings-import contract.
-export function resolveImportedSelections(file: SettingsFileV1, knownRefKeys: ReadonlySet<string>): ImportResolution {
+export function resolveImportedSelections(file: SettingsFileV2, knownIds: ReadonlySet<string>): ImportResolution {
   const selections: SelectionMap = {}
   const unresolvedRefs: RuleRef[] = []
 
   for (const entry of file.selections) {
     const key = refKey(entry.ref)
-    if (knownRefKeys.has(key)) {
+    if (knownIds.has(key)) {
       selections[key] = entry
     } else {
       unresolvedRefs.push(entry.ref)
