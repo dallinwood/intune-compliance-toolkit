@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
-import { canonicalOdvValue, displayWithOdv,effectiveOdvValue, odvQuickPicks, odvShellContext, substituteOdv, validateOdvValue } from './odv'
+import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvQuickPicks, odvShellContext, substituteOdv, validateOdvValue } from './odv'
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
@@ -188,6 +188,20 @@ describe('odvShellContext quote tracking', () => {
     ['x="a \\" b $ODV"', 'double_quoted'],
     ['x=\\"$ODV"', 'other'],
     ['x="a" y=$ODV', 'other'],
+    ['x=\\$ODV', 'other'],
+    ['echo "\\$ODV"', 'other'],
+    ['echo "$ODV"; x=\\$ODV', 'other'],
+    ['echo "$(echo $ODV)"', 'other'],
+    ['echo "`echo $ODV`"', 'other'],
+    ["x=$'a\\' \"$ODV\"'", 'other'],
+    ['# "$ODV"', 'other'],
+    ['echo ok # "$ODV"', 'other'],
+    ['echo "$ODV', 'other'],
+    ['sshCheck=$(/usr/bin/ssh -G . | /usr/bin/grep -c "^serveralivecountmax $ODV")', 'double_quoted'],
+    ['"$(echo "$ODV")"', 'double_quoted'],
+    ['x=$( (a) ); y="$ODV"', 'double_quoted'],
+    ['x=$( (a) ) $ODV', 'other'],
+    ['echo a#b "$ODV"', 'double_quoted'],
   ])('classifies %j as %s', (shell, expectedContext) => {
     expect(odvShellContext(ruleWithShell(shell))).toBe(expectedContext)
   })

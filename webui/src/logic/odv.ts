@@ -45,56 +45,144 @@ const ODV_PLACEHOLDER = '$ODV'
 interface OdvOccurrences {
   total: number
   insideDoubleQuotes: number
+  endedAtTopLevel: boolean
 }
 
-// Walks the shell text tracking quote state the way bash does: no escapes
-// inside single quotes, backslash escapes the next character everywhere else.
+type ScanContextKind = 'unquoted' | 'single' | 'ansi' | 'double' | 'cmdsub' | 'backtick'
+
+interface ScanContext {
+  kind: ScanContextKind
+  parenthesisDepth: number
+}
+
+const COMMENT_PRECEDING_CHARACTERS = new Set([' ', '\t', '\n', ';', '(', '|', '&', '`'])
+
+// A small context-stack scanner for bash quoting. It only has to answer
+// "is each $ODV directly inside a double-quoted string", so anything it
+// cannot place with confidence must end up as not double-quoted.
 function countOdvOccurrences(shellText: string): OdvOccurrences {
-  const occurrences: OdvOccurrences = { total: 0, insideDoubleQuotes: 0 }
-  let quoteState: 'unquoted' | 'single' | 'double' = 'unquoted'
+  const occurrences: OdvOccurrences = { total: 0, insideDoubleQuotes: 0, endedAtTopLevel: true }
+  const stack: ScanContext[] = [{ kind: 'unquoted', parenthesisDepth: 0 }]
   let position = 0
+
+  const recordOccurrence = (insideDoubleQuotes: boolean) => {
+    occurrences.total += 1
+    if (insideDoubleQuotes) occurrences.insideDoubleQuotes += 1
+    position += ODV_PLACEHOLDER.length
+  }
+
   while (position < shellText.length) {
+    const context = stack[stack.length - 1]
+    const character = shellText[position]
+
     if (shellText.startsWith(ODV_PLACEHOLDER, position)) {
-      occurrences.total += 1
-      if (quoteState === 'double') occurrences.insideDoubleQuotes += 1
-      position += ODV_PLACEHOLDER.length
+      recordOccurrence(context.kind === 'double')
       continue
     }
-    const character = shellText[position]
-    if (quoteState === 'single') {
-      if (character === "'") quoteState = 'unquoted'
-    } else if (character === '\\') {
-      position += 1
-    } else if (quoteState === 'double') {
-      if (character === '"') quoteState = 'unquoted'
-    } else if (character === "'") {
-      quoteState = 'single'
-    } else if (character === '"') {
-      quoteState = 'double'
+
+    if (character === '\\' && context.kind !== 'single') {
+      // substituteOdv replaces an escaped \$ODV too, so it still counts.
+      if (shellText.startsWith(ODV_PLACEHOLDER, position + 1)) {
+        position += 1
+        recordOccurrence(false)
+      } else {
+        position += 2
+      }
+      continue
     }
+
+    if (context.kind === 'single') {
+      if (character === "'") stack.pop()
+      position += 1
+      continue
+    }
+
+    if (context.kind === 'ansi') {
+      if (character === "'") stack.pop()
+      position += 1
+      continue
+    }
+
+    if (character === '`') {
+      if (context.kind === 'backtick') stack.pop()
+      else stack.push({ kind: 'backtick', parenthesisDepth: 0 })
+      position += 1
+      continue
+    }
+
+    if (character === '$' && shellText[position + 1] === '(') {
+      stack.push({ kind: 'cmdsub', parenthesisDepth: 0 })
+      position += 2
+      continue
+    }
+
+    if (context.kind === 'double') {
+      if (character === '"') stack.pop()
+      position += 1
+      continue
+    }
+
+    if (character === '$' && shellText[position + 1] === "'") {
+      stack.push({ kind: 'ansi', parenthesisDepth: 0 })
+      position += 2
+      continue
+    }
+    if (character === "'") {
+      stack.push({ kind: 'single', parenthesisDepth: 0 })
+      position += 1
+      continue
+    }
+    if (character === '"') {
+      stack.push({ kind: 'double', parenthesisDepth: 0 })
+      position += 1
+      continue
+    }
+
+    if (context.kind === 'cmdsub') {
+      if (character === '(') context.parenthesisDepth += 1
+      else if (character === ')') {
+        if (context.parenthesisDepth > 0) context.parenthesisDepth -= 1
+        else stack.pop()
+      }
+    }
+
+    const startsWord = position === 0 || COMMENT_PRECEDING_CHARACTERS.has(shellText[position - 1])
+    if (character === '#' && startsWord) {
+      let commentEnd = shellText.indexOf('\n', position)
+      if (commentEnd === -1) commentEnd = shellText.length
+      const commentText = shellText.slice(position, commentEnd)
+      const commentOccurrenceCount = commentText.split(ODV_PLACEHOLDER).length - 1
+      occurrences.total += commentOccurrenceCount
+      position = commentEnd
+      continue
+    }
+
     position += 1
   }
+
+  occurrences.endedAtTopLevel = stack.length === 1
   return occurrences
 }
 
 // Classifies where $ODV appears in the rule's check shell text, because that
 // decides what the value may contain: a value substituted into a quoted
-// string needs different protection than one spliced into bare shell. Any
-// heredoc makes the quote analysis unreliable, so it forces 'other'.
+// string needs different protection than one spliced into bare shell. A
+// heredoc or a shell that ends inside an open quote makes the analysis
+// unreliable, so either forces 'other'.
 export function odvShellContext(rule: Rule): OdvShellContext {
   const shellTexts = [rule.check?.default?.shell, ...Object.values(rule.check?.by_version ?? {}).map((check) => check.shell)]
   let total = 0
   let insideDoubleQuotes = 0
-  let hasHeredoc = false
+  let isAnalysisReliable = true
   for (const shellText of shellTexts) {
     if (!shellText) continue
     const occurrences = countOdvOccurrences(shellText)
     total += occurrences.total
     insideDoubleQuotes += occurrences.insideDoubleQuotes
-    if (shellText.includes('<<')) hasHeredoc = true
+    if (shellText.includes('<<') || !occurrences.endedAtTopLevel) isAnalysisReliable = false
   }
   if (total === 0) return 'none'
-  return total === insideDoubleQuotes && !hasHeredoc ? 'double_quoted' : 'other'
+  return total === insideDoubleQuotes && isAnalysisReliable ? 'double_quoted' : 'other'
 }
 
 function compileRegex(pattern: string): RegExp | null {
