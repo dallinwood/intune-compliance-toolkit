@@ -310,11 +310,22 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
     return normalized
 
 
+def section_of(rule: dict) -> str:
+    upstream_path = rule["source"]["upstream_path"]
+    parts = upstream_path.split("/")
+    if len(parts) != 3 or parts[0] != "rules" or not parts[1] or not parts[2].endswith(".yaml"):
+        raise UnsupportedUpstreamData(
+            f"{rule['id']}: upstream path {upstream_path!r} is not of the form rules/<section>/<file>.yaml"
+        )
+    return parts[1]
+
+
 def index_entry(rule: dict, file: str) -> dict:
     return {
         "id": rule["id"],
         "title": rule["title"],
         "file": file,
+        "section": section_of(rule),
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],

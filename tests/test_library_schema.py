@@ -81,6 +81,7 @@ def index_entry_for(rule, file_path):
         "id": rule["id"],
         "title": rule["title"],
         "file": file_path,
+        "section": "os",
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],
@@ -221,6 +222,19 @@ def test_index_accepts_safe_file_path():
         "rules": [index_entry_for(MINIMAL_RULE, "rules/os..x.json")],
     }
     assert schema_errors(index, "index") == []
+
+
+def test_index_rejects_entry_missing_section():
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    del entry["section"]
+    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+
+
+@pytest.mark.parametrize("bad_section", ["", "OS", "os/x", "os\n"])
+def test_index_rejects_bad_section(bad_section):
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    entry["section"] = bad_section
+    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_required_key():

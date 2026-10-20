@@ -370,12 +370,25 @@ def test_index_entry_fields():
     rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     entry = index_entry(rule, "rules/os_gatekeeper_enable.json")
     assert set(entry) == {
-        "id", "title", "file", "assessment", "architecture",
+        "id", "title", "file", "section", "assessment", "architecture",
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
     wrapped = {"schema_version": 3, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
+
+
+def test_index_entry_section_from_upstream_path():
+    rule = normalize(GATEKEEPER_YAML, "rules/system_settings/x.yaml")
+    assert index_entry(rule, "rules/x.json")["section"] == "system_settings"
+
+
+@pytest.mark.parametrize("bad_path", ["os/x.yaml", "rules/x.yaml", "rules/os/sub/x.yaml", "other/os/x.yaml"])
+def test_index_entry_rejects_unexpected_upstream_path(bad_path):
+    rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
+    rule["source"]["upstream_path"] = bad_path
+    with pytest.raises(UnsupportedUpstreamData, match="mscp.os_gatekeeper_enable"):
+        index_entry(rule, "rules/x.json")
 
 
 def test_empty_result_on_manual_rule_normalizes_to_null():

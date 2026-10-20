@@ -13,7 +13,7 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "id", "title", "file", "assessment", "architecture",
+          "id", "title", "file", "section", "assessment", "architecture",
           "applicability", "tags", "has_odv"
         ],
         "properties": {
@@ -23,6 +23,7 @@
             "type": "string",
             "pattern": "^(?!/)(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+(?![\\s\\S])"
           },
+          "section": { "type": "string", "pattern": "^[a-z0-9_]+(?![\\s\\S])" },
           "assessment": {
             "type": "object",
             "additionalProperties": false,
