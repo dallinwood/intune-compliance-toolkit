@@ -43,7 +43,11 @@ def discover_rule_paths(upstream_dir: Path) -> list[Path]:
     if not rules_dir.is_dir():
         raise ValueError(f"{rules_dir}: upstream rules directory not found")
     rule_paths = sorted(
-        (path for path in rules_dir.rglob("*") if path.is_file()),
+        (
+            path
+            for path in rules_dir.rglob("*")
+            if path.is_file() and not path.name.startswith(".")
+        ),
         key=lambda path: path.relative_to(upstream_dir).as_posix(),
     )
     for path in rule_paths:
@@ -185,8 +189,41 @@ def build_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def read_index_summary(index_path: Path) -> tuple[set[str], set[str]] | None:
+    if not index_path.is_file():
+        return None
+    try:
+        rules = json.loads(index_path.read_text(encoding="utf-8"))["rules"]
+        return (
+            {rule["id"] for rule in rules},
+            {tag for rule in rules for tag in rule["tags"]},
+        )
+    except (ValueError, KeyError, TypeError):
+        return None
+
+
+def print_change_summary(
+    previous: tuple[set[str], set[str]] | None, current: tuple[set[str], set[str]] | None
+) -> None:
+    if previous is None or current is None:
+        return
+    previous_ids, previous_tags = previous
+    current_ids, current_tags = current
+    changes = (
+        ("Added rules", current_ids - previous_ids),
+        ("Removed rules", previous_ids - current_ids),
+        ("New tags", current_tags - previous_tags),
+        ("Tags no longer present", previous_tags - current_tags),
+    )
+    for label, values in changes:
+        if values:
+            print(f"{label}: {', '.join(sorted(values))}")
+
+
 def main(argv: list[str] | None = None) -> int:
     arguments = build_argument_parser().parse_args(argv)
+    index_path = arguments.baselines_dir / SOURCE_NAME / "_index.json"
+    previous_summary = read_index_summary(index_path)
     try:
         if arguments.offline:
             lock, rule_count = import_offline(arguments.sources_dir, arguments.baselines_dir)
@@ -199,6 +236,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Import failed: {problem}", file=sys.stderr)
         return 1
     print(f"Imported {rule_count} mSCP rules from {lock.tag} ({lock.commit_sha[:7]})")
+    print_change_summary(previous_summary, read_index_summary(index_path))
     return 0
 
 

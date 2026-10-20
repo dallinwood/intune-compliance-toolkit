@@ -2,16 +2,20 @@
 
 ## Licensing
 
-This repository's own code, schemas, and independently-authored rule
-content (`authoring_mode: "independent"`) are licensed under AGPL-3.0 (see
-`LICENSE`).
+This repository's own code is licensed under AGPL-3.0 (see `LICENSE`).
 
-Rule content marked `authoring_mode: "licensed_adaptation"` is adapted
-from an openly-licensed third-party source - each such rule's
-`source_license` field names the specific licence, rights holder, and
-source URL. As of this writing that applies to content sourced from the
-Australian Signals Directorate's Information Security Manual and Essential
-Eight guidance, both released by the Commonwealth of Australia under CC BY
-4.0. AGPL-3.0 governs this repository's own code and structure around that
-adapted content; the adapted content itself remains subject to its
-original CC BY 4.0 terms (attribution, indication of modification) as well.
+The macOS rule content in `sources/mscp/` and `baselines/mscp/` comes from
+the [NIST macOS Security Compliance Project](https://github.com/usnistgov/macos_security),
+licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+This project has modified it (converted to a normalized format). The
+upstream licence text is vendored in `sources/mscp/upstream/LICENSE.md`.
+
+## Updating the mSCP rules
+
+Requires Python 3.10 or newer.
+
+1. `python -m pip install -r requirements.txt`
+2. `python tools/import_mscp.py --tag <release tag>`
+3. Review `git diff sources/mscp/` and `git diff baselines/`.
+4. `python -m pytest`
+5. Commit the result.

@@ -1,6 +1,7 @@
 import textwrap
 
 import pytest
+import yaml
 
 from tools.mscp_normalize import (
     UnsupportedUpstreamData,
@@ -275,7 +276,31 @@ def test_integer_result_string_other_than_odv_raises():
 
 def test_vendor_description_raises():
     with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
-        normalize(rule_with("'27.0':\n  benchmarks: []\n", "references:\n  x: [Vendor Description foo]\n"))
+        normalize(rule_with("'27.0':\n  benchmarks: []\n", "tags: [Vendor Description foo]\n"))
+
+
+def test_odv_placeholder_only_in_title_raises():
+    text = rule_with("'27.0':\n  benchmarks: []\n").replace("title: T", "title: Uses $ODV here")
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(text)
+
+
+def test_duplicate_mapping_key_raises():
+    with pytest.raises(yaml.YAMLError, match="duplicate mapping key 'references'"):
+        load_mscp_yaml("id: a\nreferences: {}\nreferences:\n  x: [1]\n")
+
+
+def test_empty_result_in_version_check_on_automated_rule_raises():
+    platform = """\
+    '27.0':
+      benchmarks: []
+      enforcement_info:
+        check:
+          shell: read this
+          result: {}
+    """
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(rule_with(platform))
 
 
 def test_both_architectures_raise():

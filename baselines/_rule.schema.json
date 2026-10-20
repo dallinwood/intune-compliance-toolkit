@@ -89,7 +89,21 @@
           "properties": {
             "datatype": { "enum": ["number", "string", "enum", "regex"] },
             "description": { "type": "string" },
-            "validation": { "type": ["object", "null"] },
+            "validation": {
+              "oneOf": [
+                { "type": "null" },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "min": { "type": "number" },
+                    "max": { "type": "number" },
+                    "regex": { "type": "string" },
+                    "enumValues": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              ]
+            },
             "recommended": { "type": ["integer", "string"] },
             "by_benchmark": {
               "type": "object",

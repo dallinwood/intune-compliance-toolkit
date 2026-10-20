@@ -16,6 +16,8 @@ from tools.mscp_fetch import (
 from tools.mscp_source_lock import read_source_lock
 
 TOP_FOLDER = "macos_security-release_27.0"
+COMMIT_SHA = "0123456789abcdef0123456789abcdef01234567"
+TARBALL_URL = f"https://github.com/{MSCP_REPOSITORY}/archive/{COMMIT_SHA}.tar.gz"
 RULE_BYTES = b"id: a\r\ntitle: caf\xc3\xa9\r\n"
 
 
@@ -32,6 +34,10 @@ def build_tarball(path, extra_members=()):
         add_file(archive, "src/mscp/data/baselines/ios/y.yaml", b"y")
         add_file(archive, "src/mscp/data/schema/mscp_rule.json", b"{}")
         add_file(archive, "src/mscp/data/schema/other.json", b"{}")
+        add_file(archive, "src/mscp/data/templates/shell_scripts/check.jinja", b"check")
+        add_file(archive, "src/mscp/data/templates/shell_scripts/compliance_script.sh.jinja", b"script")
+        add_file(archive, "src/mscp/data/templates/shell_scripts/other.jinja", b"other")
+        add_file(archive, "src/mscp/data/templates/plist/check.jinja", b"plist")
         add_file(archive, "LICENSE.md", b"CC BY 4.0")
         add_file(archive, "CHANGELOG.md", b"changes")
         add_file(archive, "README.md", b"readme")
@@ -65,6 +71,8 @@ def test_extracts_only_subset(tarball, tmp_path):
         "baselines/macos/x.yaml",
         "rules/os/a.yaml",
         "schema/mscp_rule.json",
+        "templates/shell_scripts/check.jinja",
+        "templates/shell_scripts/compliance_script.sh.jinja",
     ]
     assert sorted(
         path.relative_to(tmp_path / "upstream").as_posix()
@@ -104,6 +112,28 @@ def test_unsafe_path_raises_and_leaves_upstream_unchanged(tmp_path, member_name)
         extract_upstream_subset(tarball_path, upstream_dir)
     assert [path.name for path in upstream_dir.iterdir()] == ["keep.txt"]
     assert [path.name for path in tmp_path.iterdir() if path.is_dir()] == ["upstream"]
+
+
+def test_case_insensitive_collision_raises_before_writing(tmp_path):
+    tarball_path = build_tarball(
+        tmp_path / "collide.tar.gz",
+        [("src/mscp/data/rules/os/A.yaml", b"other case")],
+    )
+    upstream_dir = tmp_path / "upstream"
+    upstream_dir.mkdir()
+    (upstream_dir / "keep.txt").write_text("keep")
+    with pytest.raises(ValueError, match="case-insensitive"):
+        extract_upstream_subset(tarball_path, upstream_dir)
+    assert [path.name for path in upstream_dir.iterdir()] == ["keep.txt"]
+    assert [path.name for path in tmp_path.iterdir() if path.is_dir()] == ["upstream"]
+
+
+def test_case_collision_outside_subset_is_ignored(tmp_path):
+    tarball_path = build_tarball(
+        tmp_path / "ignored.tar.gz",
+        [("docs/Readme.md", b"a"), ("docs/README.md", b"b")],
+    )
+    extract_upstream_subset(tarball_path, tmp_path / "upstream")
 
 
 def test_absolute_path_member_raises(tmp_path):
@@ -177,28 +207,27 @@ def test_resolve_lightweight_tag():
 
 
 def test_download_tarball(tmp_path, tarball):
-    url = f"https://github.com/{MSCP_REPOSITORY}/archive/refs/tags/release_27.0.tar.gz"
-    opener = FakeOpener({url: tarball.read_bytes()})
+    opener = FakeOpener({TARBALL_URL: tarball.read_bytes()})
     destination_dir = tmp_path / "downloads"
     destination_dir.mkdir()
-    downloaded = download_tarball("release_27.0", destination_dir, opener)
+    downloaded = download_tarball(COMMIT_SHA, destination_dir, opener)
     assert downloaded.parent == destination_dir
     assert downloaded.read_bytes() == tarball.read_bytes()
     assert opener.requests[0].get_header("User-agent") == "intune-compliance-toolkit-mscp-import"
 
 
 def test_fetch_writes_upstream_and_source_lock(tmp_path, tarball):
-    tarball_url = f"https://github.com/{MSCP_REPOSITORY}/archive/refs/tags/release_27.0.tar.gz"
     opener = FakeOpener(
         {
-            REF_URL: json.dumps({"object": {"type": "commit", "sha": "deadbeef"}}).encode(),
-            tarball_url: tarball.read_bytes(),
+            REF_URL: json.dumps({"object": {"type": "commit", "sha": COMMIT_SHA}}).encode(),
+            TARBALL_URL: tarball.read_bytes(),
         }
     )
     sources_dir = tmp_path / "sources"
     sources_dir.mkdir()
     lock = fetch("release_27.0", sources_dir, "2026-10-20", opener)
-    assert lock.commit_sha == "deadbeef"
+    assert lock.commit_sha == COMMIT_SHA
+    assert [request.full_url for request in opener.requests][-1] == TARBALL_URL
     assert lock.repository_url == "https://github.com/usnistgov/macos_security"
     assert read_source_lock(sources_dir / "source.json") == lock
     assert lock.retrieved_date == "2026-10-20"
@@ -211,9 +240,15 @@ def test_invalid_tag_rejected(tmp_path, bad_tag):
     with pytest.raises(ValueError, match="Invalid tag"):
         resolve_tag_commit(bad_tag, opener)
     with pytest.raises(ValueError, match="Invalid tag"):
-        download_tarball(bad_tag, tmp_path, opener)
-    with pytest.raises(ValueError, match="Invalid tag"):
         fetch(bad_tag, tmp_path, "2026-10-20", opener)
+    assert opener.requests == []
+
+
+@pytest.mark.parametrize("bad_sha", ["", "abc", "../x", "A" * 40, "g" * 40, COMMIT_SHA + "0"])
+def test_invalid_commit_sha_rejected(tmp_path, bad_sha):
+    opener = FakeOpener({})
+    with pytest.raises(ValueError, match="Invalid commit sha"):
+        download_tarball(bad_sha, tmp_path, opener)
     assert opener.requests == []
 
 

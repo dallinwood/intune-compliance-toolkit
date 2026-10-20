@@ -173,6 +173,53 @@ def test_non_yaml_rule_file_raises(workspace, capsys):
     assert "notes.txt" in capsys.readouterr().err
 
 
+def test_hidden_files_among_rules_are_ignored(workspace):
+    sources_dir, baselines_dir = workspace
+    (sources_dir / "upstream" / "rules" / "os" / ".DS_Store").write_bytes(b"\x00\x01")
+    assert run_import(sources_dir, baselines_dir, "--offline") == 0
+
+
+def test_duplicate_yaml_key_reports_file_path(workspace, capsys):
+    sources_dir, baselines_dir = workspace
+    rule_path = sources_dir / "upstream" / "rules" / "os" / "os_inherent_example.yaml"
+    rule_path.write_text(
+        rule_path.read_text(encoding="utf-8") + "references: {}\n", encoding="utf-8"
+    )
+    assert run_import(sources_dir, baselines_dir, "--offline") == 1
+    error_output = capsys.readouterr().err
+    assert "os_inherent_example.yaml" in error_output
+    assert "duplicate mapping key" in error_output
+
+
+def test_change_summary_lists_added_removed_rules_and_tags(workspace, capsys):
+    sources_dir, baselines_dir = workspace
+    run_import(sources_dir, baselines_dir, "--offline")
+    capsys.readouterr()
+    rules_dir = sources_dir / "upstream" / "rules"
+    (rules_dir / "os" / "os_inherent_example.yaml").unlink()
+    (rules_dir / "os" / "os_new_example.yaml").write_text(
+        "id: os_new_example\ntitle: T\ndiscussion: D\nreferences: {}\n"
+        "platforms:\n  macOS:\n    '27.0':\n      benchmarks: []\ntags:\n  - manual\n  - fresh_tag\n",
+        encoding="utf-8",
+    )
+    assert run_import(sources_dir, baselines_dir, "--offline") == 0
+    output_lines = capsys.readouterr().out.strip().splitlines()
+    assert output_lines[1:] == [
+        "Added rules: mscp.os_new_example",
+        "Removed rules: mscp.os_inherent_example",
+        "New tags: fresh_tag, manual",
+        "Tags no longer present: inherent",
+    ]
+
+
+def test_change_summary_is_silent_when_nothing_changed(workspace, capsys):
+    sources_dir, baselines_dir = workspace
+    run_import(sources_dir, baselines_dir, "--offline")
+    capsys.readouterr()
+    run_import(sources_dir, baselines_dir, "--offline")
+    assert len(capsys.readouterr().out.strip().splitlines()) == 1
+
+
 def test_duplicate_rule_id_raises(workspace, capsys):
     sources_dir, baselines_dir = workspace
     rules_dir = sources_dir / "upstream" / "rules"

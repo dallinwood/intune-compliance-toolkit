@@ -1,2 +1,4 @@
 sources/mscp/upstream/** -text
 baselines/** text eol=lf
+sources/mscp/*.json text eol=lf
+tests/fixtures/mscp_upstream/** -text

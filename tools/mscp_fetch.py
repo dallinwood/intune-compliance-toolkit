@@ -16,13 +16,13 @@ USER_AGENT = "intune-compliance-toolkit-mscp-import"
 DATA_PREFIX = ("src", "mscp", "data")
 ROOT_FILES = ("LICENSE.md", "CHANGELOG.md")
 
-UPSTREAM_SUBSET = (
-    "src/mscp/data/rules/**",
-    "src/mscp/data/baselines/macos/**",
-    "src/mscp/data/schema/mscp_rule.json",
-    "LICENSE.md",
-    "CHANGELOG.md",
+SUBSET_DIRECTORIES = (("rules",), ("baselines", "macos"))
+SUBSET_DATA_FILES = (
+    ("schema", "mscp_rule.json"),
+    ("templates", "shell_scripts", "compliance_script.sh.jinja"),
+    ("templates", "shell_scripts", "check.jinja"),
 )
+COMMIT_SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 
 
 def default_opener(request: urllib.request.Request):
@@ -59,10 +59,15 @@ def resolve_tag_commit(tag: str, opener=default_opener) -> str:
     return target["sha"]
 
 
-def download_tarball(tag: str, destination_dir: Path, opener=default_opener) -> Path:
-    validate_tag(tag)
-    url = f"{REPOSITORY_URL}/archive/refs/tags/{tag}.tar.gz"
-    tarball_path = destination_dir / f"{tag}.tar.gz"
+def validate_commit_sha(commit_sha: str) -> None:
+    if not COMMIT_SHA_PATTERN.fullmatch(commit_sha):
+        raise ValueError(f"Invalid commit sha: {commit_sha!r}")
+
+
+def download_tarball(commit_sha: str, destination_dir: Path, opener=default_opener) -> Path:
+    validate_commit_sha(commit_sha)
+    url = f"{REPOSITORY_URL}/archive/{commit_sha}.tar.gz"
+    tarball_path = destination_dir / f"{commit_sha}.tar.gz"
     with opener(build_request(url)) as response:
         tarball_path.write_bytes(response.read())
     return tarball_path
@@ -89,13 +94,27 @@ def subset_destination(relative_name: str) -> str | None:
     if parts[:3] != DATA_PREFIX:
         return None
     data_parts = parts[3:]
-    if data_parts[:1] == ("rules",) and len(data_parts) > 1:
-        return "/".join(data_parts)
-    if data_parts[:2] == ("baselines", "macos") and len(data_parts) > 2:
-        return "/".join(data_parts)
-    if data_parts == ("schema", "mscp_rule.json"):
+    in_subset_directory = any(
+        data_parts[: len(directory)] == directory and len(data_parts) > len(directory)
+        for directory in SUBSET_DIRECTORIES
+    )
+    if in_subset_directory or data_parts in SUBSET_DATA_FILES:
         return "/".join(data_parts)
     return None
+
+
+def reject_case_insensitive_collisions(destinations: list[str | None]) -> None:
+    # Windows and default macOS filesystems would silently merge such files.
+    seen: dict[str, str] = {}
+    for destination in destinations:
+        if destination is None:
+            continue
+        previous = seen.setdefault(destination.casefold(), destination)
+        if previous != destination:
+            raise ValueError(
+                f"Tarball members collide on case-insensitive filesystems: "
+                f"{previous!r} and {destination!r}"
+            )
 
 
 def extract_upstream_subset(tarball_path: Path, upstream_dir: Path) -> list[str]:
@@ -109,10 +128,12 @@ def extract_upstream_subset(tarball_path: Path, upstream_dir: Path) -> list[str]
             members = archive.getmembers()
             # Validate every member before writing anything.
             relative_names = [strip_top_folder(member.name) for member in members]
-            for member, relative_name in zip(members, relative_names):
-                if not member.isreg():
-                    continue
-                destination = subset_destination(relative_name)
+            destinations = [
+                subset_destination(relative_name) if member.isreg() else None
+                for member, relative_name in zip(members, relative_names)
+            ]
+            reject_case_insensitive_collisions(destinations)
+            for member, destination in zip(members, destinations):
                 if destination is None:
                     continue
                 target_path = staging_dir / destination
@@ -130,7 +151,7 @@ def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> Sou
     validate_tag(tag)
     commit_sha = resolve_tag_commit(tag, opener)
     with tempfile.TemporaryDirectory() as download_dir:
-        tarball_path = download_tarball(tag, Path(download_dir), opener)
+        tarball_path = download_tarball(commit_sha, Path(download_dir), opener)
         extract_upstream_subset(tarball_path, sources_dir / "upstream")
     lock = SourceLock(
         tag=tag,

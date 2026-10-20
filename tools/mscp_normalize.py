@@ -52,6 +52,21 @@ _FloatFreeSafeLoader.yaml_implicit_resolvers = {
 }
 
 
+def _construct_mapping_rejecting_duplicates(loader, node, deep=False):
+    seen_keys = set()
+    for key_node, _ in node.value:
+        key = loader.construct_object(key_node, deep=deep)
+        if key in seen_keys:
+            raise yaml.constructor.ConstructorError(
+                None, None, f"duplicate mapping key {key!r}", key_node.start_mark
+            )
+        seen_keys.add(key)
+    return yaml.SafeLoader.construct_mapping(loader, node, deep=deep)
+
+
+_FloatFreeSafeLoader.construct_mapping = _construct_mapping_rejecting_duplicates
+
+
 def load_mscp_yaml(text: str) -> dict:
     return yaml.load(text, Loader=_FloatFreeSafeLoader)
 
@@ -237,9 +252,6 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         else None
     )
 
-    if check is not None and ODV_PLACEHOLDER in json.dumps(check) and upstream.get("odv") is None:
-        raise UnsupportedUpstreamData(f"{rule_id}: check uses {ODV_PLACEHOLDER} but the rule has no odv block")
-
     raw_tags = upstream.get("tags", [])
     if not isinstance(raw_tags, list) or not all(isinstance(tag, str) for tag in raw_tags):
         raise UnsupportedUpstreamData(f"{rule_id}: tags must be a list of strings")
@@ -253,7 +265,7 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         benchmark["name"] for benchmarks in applicability.values() for benchmark in benchmarks
     }
 
-    return {
+    normalized = {
         "schema_version": 3,
         "id": f"mscp.{rule_id}",
         "platform": "macOS",
@@ -289,6 +301,13 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
             "ddm_info": upstream.get("ddm_info"),
         },
     }
+    if normalized["odv"] is None and any(
+        ODV_PLACEHOLDER in text for text in _iter_strings(normalized)
+    ):
+        raise UnsupportedUpstreamData(
+            f"{rule_id}: uses {ODV_PLACEHOLDER} but the rule has no odv block"
+        )
+    return normalized
 
 
 def index_entry(rule: dict, file: str) -> dict:

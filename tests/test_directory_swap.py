@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+from tools import directory_swap
 from tools.directory_swap import replace_directory
 
 
@@ -42,3 +43,32 @@ def test_failed_staging_rename_restores_target(tmp_path, monkeypatch):
     assert [path.name for path in target.iterdir()] == ["old.txt"]
     assert (target / "old.txt").read_text() == "old"
     assert sorted(path.name for path in tmp_path.iterdir()) == ["staging", "target"]
+
+
+def test_transient_permission_error_is_retried(tmp_path, monkeypatch):
+    staging = make_directory(tmp_path / "staging", "new.txt", "new")
+    original_rename = Path.rename
+    failures_remaining = [2]
+
+    def flaky_rename(self, destination):
+        if self == staging and failures_remaining[0] > 0:
+            failures_remaining[0] -= 1
+            raise PermissionError("simulated scanner lock")
+        return original_rename(self, destination)
+
+    monkeypatch.setattr(Path, "rename", flaky_rename)
+    monkeypatch.setattr(directory_swap, "RENAME_RETRY_DELAY_SECONDS", 0)
+    replace_directory(staging, tmp_path / "target")
+    assert (tmp_path / "target" / "new.txt").read_text() == "new"
+
+
+def test_persistent_permission_error_is_raised(tmp_path, monkeypatch):
+    staging = make_directory(tmp_path / "staging", "new.txt", "new")
+
+    def locked_rename(self, destination):
+        raise PermissionError("simulated scanner lock")
+
+    monkeypatch.setattr(Path, "rename", locked_rename)
+    monkeypatch.setattr(directory_swap, "RENAME_RETRY_DELAY_SECONDS", 0)
+    with pytest.raises(PermissionError):
+        replace_directory(staging, tmp_path / "target")
