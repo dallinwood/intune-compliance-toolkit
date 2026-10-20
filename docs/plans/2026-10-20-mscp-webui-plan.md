@@ -18,12 +18,17 @@
 - **Rule content:** rule content shown in the UI comes from the generated `baselines/` JSON only. The UI never reads `sources/`.
 - **Automated vs manual:** a rule is "Automated" exactly when `assessment.status === "automated"`. ODVs never make a rule manual.
 - **ODV defaults:** the effective ODV value is the admin's value if set, else mSCP's `recommended`, else none. A rule with an ODV and no effective value blocks generation, with a visible message naming the rule.
-- **ODV validation**, applied to every ODV value before it can be stored or substituted:
-  - datatype `number`: integer matching `^-?[0-9]+$`, within `validation.min`/`max` when present
+- **ODV validation** (revised during execution; see the ledger ruling), applied to every ODV value before it can be stored or substituted. First, datatype rules:
+  - `number`: integer matching `^-?[0-9]+$`, within `validation.min`/`max` when present
   - `enum`: one of `validation.enumValues`
   - `string`/`regex`: matches `validation.regex` when present
   - `regex` datatype: must also compile as a JavaScript `RegExp`
-  - all datatypes: reject any value containing `'`, `"`, a backtick, `\`, a newline, a carriage return, `$(` or `${`
+  - all: never a carriage return or NUL
+
+  Then a shell-context rule, from `odvShellContext(rule)`, which classifies where `$ODV` appears in the rule's check shell text (default and by_version):
+  - `none` (`$ODV` is not in any check shell): no further limit. The value reaches the script only as a generator-quoted literal.
+  - `double_quoted` (every occurrence is exactly `"$ODV"`): additionally reject `"`, `$`, a backtick and `\`. Newlines are allowed (multi-line STIG banners).
+  - `other`: additionally reject `'`, `"`, a backtick, `\`, a newline, `$(` and `${`. A `string` datatype value must also match `^[A-Za-z0-9._:+-]+$` (for example `date -v -$ODV` is unquoted).
 - **ODV substitution:** substitute by plain text replacement of every `$ODV` in check shell text and expected values, as mSCP does. For a `base64` result, the expected value is the base64 (UTF-8) encoding of the substituted value, as mSCP does (`macsecurityrule.py:312`).
 - **Per-version rule** (design section 6, confirmed):
   - a rule applies on a device whose macOS major version appears among the rule's `applicability` keys
@@ -98,7 +103,8 @@ This task leaves components referring to removed types, so `bun run build` fails
 - `logic/exportImport.ts`: `SETTINGS_SCHEMA_VERSION = 2`, `SettingsFileV2 = { schemaVersion: 2; generatedAt: string; libraryReleases: Record<string, string>; selections: SelectionEntry[] }`. `libraryReleases` maps source name to release tag at export time. `validateSettingsFile` rejects other versions with `Unsupported settings schema version: <v>.` `resolveImportedSelections(file, knownIds: ReadonlySet<string>)` returns `{ selections, unresolvedRefs }`.
 - `logic/odv.ts`:
   - `effectiveOdvValue(odv: Odv | null, selected: OrgDefinedValue | null): OrgDefinedValue | null`
-  - `validateOdvValue(odv: Odv, value: OrgDefinedValue): string | null` (null means valid; otherwise a human-readable reason, per Global Constraints)
+  - `odvShellContext(rule: Rule): 'none' | 'double_quoted' | 'other'`
+  - `validateOdvValue(odv: Odv, value: OrgDefinedValue, context: 'none' | 'double_quoted' | 'other'): string | null` (null means valid; otherwise a human-readable reason, per Global Constraints)
   - `substituteOdv(text: string, value: OrgDefinedValue): string`
   - `displayWithOdv(text: string, value: OrgDefinedValue | null): string`, which substitutes the value, or `[value]` when it is null
   - `odvQuickPicks(odv: Odv): { label: string; value: OrgDefinedValue }[]`, giving "Recommended" first (when present) and then one entry per `by_benchmark` key, labelled via `benchmarkLabel`, with duplicate values merged into one label such as `CIS Level 1, CIS Level 2`
