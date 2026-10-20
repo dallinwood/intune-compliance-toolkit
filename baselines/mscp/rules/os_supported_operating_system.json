@@ -1,0 +1,83 @@
+{
+  "applicability": {
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": null
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "inherent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Unsupported software and systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.\n\nSoftware and systems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.\n\nWhen maintenance updates and patches are no longer available, software is no longer considered supported and should be upgraded or decommissioned.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "id": "mscp.os_supported_operating_system",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-003376"
+      ],
+      "disa_stig": {
+        "macos_26": [
+          "APPL-26-006000"
+        ],
+        "macos_27": [
+          "APPL-27-006000"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000830-GPOS-00300"
+      ]
+    },
+    "nist": {
+      "cce": {
+        "macos_26": [
+          "CCE-95604-5"
+        ],
+        "macos_27": [
+          "CCE-97227-3"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The technology inherently meets this requirement. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_supported_operating_system.yaml",
+    "upstream_rule_id": "os_supported_operating_system",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_supported_operating_system.yaml"
+  },
+  "tags": [
+    "inherent"
+  ],
+  "title": "The macOS Version Must Be Supported by the Vendor"
+}

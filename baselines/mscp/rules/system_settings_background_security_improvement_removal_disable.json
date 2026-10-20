@@ -1,0 +1,113 @@
+{
+  "applicability": {
+    "26.0": [
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "false"
+      },
+      "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.enableRapidSecurityResponseRollback'"
+    }
+  },
+  "discussion": "The ability for the user to roll back Background Security Improvements _MUST_ be disabled.\n",
+  "id": "mscp.system_settings_background_security_improvement_removal_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.08"
+      ]
+    },
+    "disa": {
+      "cmmc": [
+        "SI.L1-3.14.1",
+        "SI.L1-3.14.2",
+        "SI.L1-3.14.4"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.14.01",
+        "03.14.02"
+      ],
+      "800-53r5": [
+        "SI-2",
+        "SI-2(5)",
+        "SI-3"
+      ],
+      "cce": {
+        "ios_26": [
+          "CCE-96729-9"
+        ],
+        "ios_27": [
+          "CCE-97410-5"
+        ],
+        "macos_26": [
+          "CCE-96726-5"
+        ],
+        "macos_27": [
+          "CCE-97130-9"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": {
+      "ddm_key": "RapidSecurityResponse",
+      "ddm_value": {
+        "EnableRollback": false
+      },
+      "declarationtype": "com.apple.configuration.softwareupdate.settings"
+    },
+    "default": {
+      "additional_info": "This is implemented by Declarative Device Management (DDM).",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/system_settings/system_settings_background_security_improvement_removal_disable.yaml",
+    "upstream_rule_id": "system_settings_background_security_improvement_removal_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_background_security_improvement_removal_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Disable rollback of Background Security Improvements using DDM."
+}

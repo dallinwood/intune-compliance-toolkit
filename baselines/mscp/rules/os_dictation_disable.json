@@ -1,0 +1,189 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": []
+  },
+  "architecture": "i386",
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {
+      "15.0": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowDictation\")) == false && s.objectIsForcedForKey(\"allowDictation\")) ? \"PASS\" : \"FAIL\"'"
+      }
+    },
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.ironwood.support\"); (ObjC.unwrap(s.objectForKey(\"Ironwood Allowed\")) == false && s.objectIsForcedForKey(\"Ironwood Allowed\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "Dictation _MUST_ be disabled on Intel based Macs as the feature On Device Dictation is only available on Apple Silicon devices. When enabled on Apple Silicon Macs, on device dictation _MUST_ be enabled as well to prevent data from being sent off device.\n",
+  "id": "mscp.os_dictation_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bsi": {
+      "indigo": {
+        "ios_17": [
+          "ANNEX K"
+        ],
+        "ios_18": [
+          "ANNEX K"
+        ],
+        "ios_26": [
+          "ANNEX K"
+        ]
+      }
+    },
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000381"
+      ],
+      "cmmc": [
+        "AC.L1-B.1.III",
+        "AC.L1-3.1.20",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002230"
+        ],
+        "macos_15": [
+          "APPL-15-002230"
+        ],
+        "macos_26": [
+          "APPL-26-002230"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000095-GPOS-00049"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20",
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "AC-20",
+        "CM-7",
+        "CM-7(1)",
+        "SC-7(10)"
+      ],
+      "cce": {
+        "ios_17": [
+          "CCE-93498-4"
+        ],
+        "ios_18": [
+          "CCE-94550-1"
+        ],
+        "ios_26": [
+          "CCE-95525-2"
+        ],
+        "ios_27": [
+          "CCE-97305-7"
+        ],
+        "macos_14": [
+          "CCE-93017-2"
+        ],
+        "macos_15": [
+          "CCE-94180-7"
+        ],
+        "macos_26": [
+          "CCE-95180-6"
+        ],
+        "macos_27": [
+          "CCE-97016-0"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": {
+      "ddm_key": "AllowDictation",
+      "ddm_value": false,
+      "declarationtype": "com.apple.configuration.keyboard.settings"
+    },
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "allowDictation": false
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_dictation_disable.yaml",
+    "upstream_rule_id": "os_dictation_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_dictation_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cmmc_lvl3",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp",
+    "i386"
+  ],
+  "title": "Disable Dictation"
+}

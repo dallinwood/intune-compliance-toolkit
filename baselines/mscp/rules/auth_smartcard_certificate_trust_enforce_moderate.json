@@ -1,0 +1,146 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 2
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\\n.objectForKey('checkCertificateTrust').js\nEOS"
+    }
+  },
+  "discussion": "The macOS system _MUST_ be configured to block access to users who are no longer authorized (i.e., users with revoked certificates).\n\nTo prevent the use of untrusted certificates, the certificates on a smartcard card _MUST_ meet the following criteria: its issuer has a system-trusted certificate, the certificate is not expired, its \"valid-after\" date is in the past, and it passes Certificate Revocation List (CRL) and Online Certificate Status Protocol (OCSP) checking.\n\nBy setting the smartcard certificate trust level to moderate, the system will execute a soft revocation, i.e., if the OCSP/CRL server is unreachable, authentication will still succeed.\n\nNOTE: Before applying this setting, please see the smartcard supplemental guidance.\n",
+  "id": "mscp.auth_smartcard_certificate_trust_enforce_moderate",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000186",
+        "CCI-001953",
+        "CCI-001954",
+        "CCI-001991",
+        "CCI-002470",
+        "CCI-004068"
+      ],
+      "cmmc": [
+        "SC.L2-3.13.10"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-001060"
+        ],
+        "macos_15": [
+          "APPL-15-001060"
+        ],
+        "macos_26": [
+          "APPL-26-001060"
+        ],
+        "macos_27": [
+          "APPL-27-001060"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000384-GPOS-00167",
+        "SRG-OS-000403-GPOS-00182",
+        "SRG-OS-000377-GPOS-00162",
+        "SRG-OS-000066-GPOS-00034"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "3.L.A",
+        "3.L.C"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "IA-5(2)",
+        "SC-17"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92737-6"
+        ],
+        "macos_15": [
+          "CCE-94137-7"
+        ],
+        "macos_26": [
+          "CCE-95137-6"
+        ],
+        "macos_27": [
+          "CCE-96982-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "checkCertificateTrust": 2
+          }
+        ],
+        "PayloadType": "com.apple.security.smartcard"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/auth/auth_smartcard_certificate_trust_enforce_moderate.yaml",
+    "upstream_rule_id": "auth_smartcard_certificate_trust_enforce_moderate",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/auth/auth_smartcard_certificate_trust_enforce_moderate.yaml"
+  },
+  "tags": [
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Set Smartcard Certificate Trust to Moderate"
+}

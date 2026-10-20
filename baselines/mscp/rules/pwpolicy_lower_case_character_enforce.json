@@ -1,0 +1,110 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "pass"
+      },
+      "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"minimumAlphaCharactersLowerCase\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1 >= $ODV ) {print \"pass\"} else {print \"fail\"}}'"
+    }
+  },
+  "discussion": "The macOS _MUST_ be configured to require at least one lower-case character be used when a password is created.\n\nThis rule enforces password complexity by requiring users to set passwords that are less vulnerable to malicious users.\n\nNOTE: To comply with Executive Order 14028, \"Improving the Nation's Cybersecurity\", OMB M-22-09, \"Moving the U.S. Government Toward Zero Trust Cybersecurity Principles\", and NIST SP-800-63b, \"Digital Identity Guidelines: Authentication and Lifecycle Management\" federal, military, and intelligence communities must adopt the following configuration settings. Password policies must not require the use of complexity policies such as upper characters, lower characters, or special characters. Password policies must also not require the use of regular rotation. Password policies should define a minimum length. Multifactor authentication should be used where ever possible.\n\nNOTE: macOS 14 supports password policy complexity with custom regex deployed with a mobileconfig file. To use a mobileconfig file use *pwpolicy_custom_regex_enforce*.\n",
+  "id": "mscp.pwpolicy_lower_case_character_enforce",
+  "odv": {
+    "by_benchmark": {},
+    "datatype": "number",
+    "description": "Number of lowercase characters, e.g. 1",
+    "recommended": 1,
+    "validation": {
+      "min": 1
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "5.2"
+      ]
+    },
+    "disa": {
+      "cmmc": [
+        "IA.L2-3.5.7",
+        "IA.L2-3.5.8",
+        "IA.L2-3.5.9"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "3.L.C"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.05.07"
+      ],
+      "800-53r5": [
+        "IA-5(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92933-1"
+        ],
+        "macos_15": [
+          "CCE-94338-1"
+        ],
+        "macos_26": [
+          "CCE-95344-8"
+        ],
+        "macos_27": [
+          "CCE-97118-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "This setting may be enforced using local policy or by a directory service.\n\nTo set local policy to require at least $ODV lowercase letter, edit the current password policy to contain the following <dict> within the \"policyCategoryPasswordContent\":\n\n[source,xml]\n-          <dict>\n<key>policyContent</key>\n<string>policyAttributePassword matches &apos;(.*[a-z].*){$ODV,}+&apos;</string>\n<key>policyIdentifier</key>\n<string>Must have at least $ODV lowercase letter</string>\n<key>policyParameters</key>\n<dict>\n<key>minimumAlphaCharactersLowerCase</key>\n<integer>$ODV</integer>\n</dict>\n</dict>\n-          After saving the file and exiting to the command prompt, run the following command to load the new policy file, substituting the path to the file in place of \"$pwpolicy_file\".\n\n[source,bash]\n-          /usr/bin/pwpolicy setaccountpolicies $pwpolicy_file\n-          NOTE: See the password policy supplemental on more information on how to implement password policies on macOS.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/pwpolicy/pwpolicy_lower_case_character_enforce.yaml",
+    "upstream_rule_id": "pwpolicy_lower_case_character_enforce",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/pwpolicy/pwpolicy_lower_case_character_enforce.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Require Passwords Contain a Minimum of One Lowercase Character"
+}

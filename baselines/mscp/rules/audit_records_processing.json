@@ -1,0 +1,81 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "permanent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The macOS should be configured to provide and implement the capability to process, sort, and search audit records for events of interest based on organizationally defined fields.\n\nEvents of interest can be identified by the content of audit records, including system resources involved, information objects accessed, identities of individuals, event types, event locations, event dates and times, Internet Protocol addresses involved, or event success or failure. Organizations may define event criteria to any degree of granularity required, such as locations selectable by a general networking location or by specific system component.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
+  "id": "mscp.audit_records_processing",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cmmc": [
+        "AU.L2-3.3.6"
+      ],
+      "srg": [
+        "SRG-OS-000350-GPOS-00138",
+        "SRG-OS-000054-GPOS-00025"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "AU-7(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92729-3"
+        ],
+        "macos_15": [
+          "CCE-94129-4"
+        ],
+        "macos_26": [
+          "CCE-95129-3"
+        ],
+        "macos_27": [
+          "CCE-97237-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/audit/audit_records_processing.yaml",
+    "upstream_rule_id": "audit_records_processing",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_records_processing.yaml"
+  },
+  "tags": [
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_moderate",
+    "permanent"
+  ],
+  "title": "Audit Record Reduction and Report Generation"
+}

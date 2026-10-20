@@ -1,0 +1,197 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "Yes"
+      },
+      "shell": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= $ODV) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'"
+    }
+  },
+  "discussion": "The install.log _MUST_ be configured to require records be kept for a organizational defined value before deletion, unless the system uses a central audit record storage facility.\n",
+  "id": "mscp.os_install_log_retention_configure",
+  "odv": {
+    "by_benchmark": {
+      "cis_lvl1": 365,
+      "cis_lvl2": 365,
+      "disa_stig": 365,
+      "nlmapgov_plus": 365
+    },
+    "datatype": "number",
+    "description": "Number of days, e.g. 365",
+    "recommended": 365,
+    "validation": {
+      "min": 1
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.19",
+        "8.19.01"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "3.3 (level 1)"
+        ],
+        "macos_15": [
+          "3.3 (level 1)"
+        ],
+        "macos_26": [
+          "3.3 (level 1)"
+        ],
+        "macos_27": [
+          "3.3 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "8.1",
+        "8.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-001849"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.1"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-004050"
+        ],
+        "macos_15": [
+          "APPL-15-004050"
+        ],
+        "macos_26": [
+          "APPL-26-004050"
+        ],
+        "macos_27": [
+          "APPL-27-004050"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000341-GPOS-00132"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.03"
+      ],
+      "800-53r5": [
+        "AU-11",
+        "AU-4"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92811-9"
+        ],
+        "macos_15": [
+          "CCE-94212-8"
+        ],
+        "macos_26": [
+          "CCE-95211-9"
+        ],
+        "macos_27": [
+          "CCE-97035-0"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "NOTE: If there are multiple configuration files in /etc/asl that are set to process the file /var/log/install.log, these files will have to be manually removed.",
+      "shell": "/usr/bin/sed -i '' \"s/\\* file \\/var\\/log\\/install.log.*/\\* file \\/var\\/log\\/install.log format='\\$\\(\\(Time\\)\\(JZ\\)\\) \\$Host \\$\\(Sender\\)\\[\\$\\(PID\\\\)\\]: \\$Message' rotate=utc compress file_max=50M size_only ttl=$ODV/g\" /etc/asl/com.apple.install"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_install_log_retention_configure.yaml",
+    "upstream_rule_id": "os_install_log_retention_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_install_log_retention_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure Install.log Retention to $ODV"
+}

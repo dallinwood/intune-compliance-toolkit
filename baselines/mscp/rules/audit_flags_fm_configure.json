@@ -1,0 +1,170 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec '^fm'"
+    }
+  },
+  "discussion": "The audit system _MUST_ be configured to record enforcement actions of attempts to modify file attributes (fm).\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. One common and effective enforcement action method is using access restrictions (i.e., modifications to a file by applying file permissions).\n\nThis configuration ensures that audit lists include events in which enforcement actions attempts to modify a file.\n\nWithout auditing the enforcement of access restrictions, it is difficult to identify attempted attacks, as there is no audit trail available for forensic investigation.\n",
+  "id": "mscp.audit_flags_fm_configure",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000162",
+        "CCI-000163",
+        "CCI-000164",
+        "CCI-000172",
+        "CCI-001493",
+        "CCI-001494",
+        "CCI-001495",
+        "CCI-001814",
+        "CCI-002884",
+        "CCI-003938"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.3",
+        "AU.L2-3.3.6",
+        "AU.L2-3.3.8",
+        "SI.L2-3.14.3"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-001021"
+        ],
+        "macos_15": [
+          "APPL-15-001021"
+        ],
+        "macos_26": [
+          "APPL-26-001021"
+        ],
+        "macos_27": [
+          "APPL-27-001021"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000392-GPOS-00172",
+        "SRG-OS-000256-GPOS-00097",
+        "SRG-OS-000365-GPOS-00152",
+        "SRG-OS-000057-GPOS-00027",
+        "SRG-OS-000064-GPOS-00033",
+        "SRG-OS-000463-GPOS-00207",
+        "SRG-OS-000467-GPOS-00211",
+        "SRG-OS-000465-GPOS-00209",
+        "SRG-OS-000468-GPOS-00212",
+        "SRG-OS-000466-GPOS-00210",
+        "SRG-OS-000059-GPOS-00029",
+        "SRG-OS-000462-GPOS-00206",
+        "SRG-OS-000257-GPOS-00098",
+        "SRG-OS-000258-GPOS-00099",
+        "SRG-OS-000458-GPOS-00203",
+        "SRG-OS-000058-GPOS-00028"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "3.L.C",
+        "8.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.01",
+        "03.03.03",
+        "03.03.08"
+      ],
+      "800-53r5": [
+        "AC-2(12)",
+        "AU-12",
+        "AU-2",
+        "AU-9",
+        "CM-5(1)",
+        "MA-4(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92719-4"
+        ],
+        "macos_15": [
+          "CCE-94119-5"
+        ],
+        "macos_26": [
+          "CCE-95119-4"
+        ],
+        "macos_27": [
+          "CCE-96967-5"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {
+      "26.0": {
+        "additional_info": null,
+        "shell": "/usr/bin/grep -qE \"^flags.*,\\s*fm\" /etc/security/audit_control || /usr/bin/sed -i.bak '/^flags/ s/$/,fm/' /etc/security/audit_control;/usr/sbin/audit -s"
+      }
+    },
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/grep -qE \"^flags.*fm\" /etc/security/audit_control || /usr/bin/sed -i.bak '/^flags/ s/$/,fm/' /etc/security/audit_control;/usr/sbin/audit -s"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/audit/audit_flags_fm_configure.yaml",
+    "upstream_rule_id": "audit_flags_fm_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_flags_fm_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Configure System to Audit All Changes of Object Attributes"
+}

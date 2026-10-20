@@ -1,0 +1,108 @@
+{
+  "applicability": {},
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "true"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n  .objectForKey('EnableLogging').js\n  let pref2 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n  .objectForKey('LoggingOption').js\n  if ( pref1 == true && pref2 == \"detail\" ){\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
+    }
+  },
+  "discussion": "Firewall logging _MUST_ be enabled.\n\nFirewall logging ensures that malicious network activity will be logged to the system.\n\nNOTE: The firewall data is logged to Apple's Unified Logging with the subsystem `com.apple.alf` and the data is marked as private. In order to enable private data, review the `com.apple.alf.private_data.mobileconfig` file in the project's `includes` folder.\n",
+  "id": "mscp.os_firewall_log_enable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "3.6 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "4.5",
+        "8.2",
+        "8.5"
+      ]
+    },
+    "disa": {
+      "cmmc": [
+        "AU.L2-3.3.6",
+        "SC.L1-3.13.1"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.03",
+        "03.13.01"
+      ],
+      "800-53r5": [
+        "AU-12",
+        "SC-7"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92793-9"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "EnableLogging": true
+          },
+          {
+            "LoggingOption": "detail"
+          }
+        ],
+        "PayloadType": "com.apple.security.firewall"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_firewall_log_enable.yaml",
+    "upstream_rule_id": "os_firewall_log_enable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_firewall_log_enable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Enable Firewall Logging"
+}

@@ -1,0 +1,68 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "n_a",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Check the accuracy, relevance, timeliness, and completeness of personally identifiable information across the information life cycle organization-defined frequency; and correct or delete inaccurate or outdated personally identifiable information.\n\nPersonally identifiable information quality operations include the steps that organizations take to confirm the accuracy and relevance of personally identifiable information throughout the information life cycle. The information life cycle includes the creation, collection, use, processing, storage, maintenance, dissemination, disclosure, and disposal of personally identifiable information. Personally identifiable information quality operations include editing and validating addresses as they are collected or entered into systems using automated address verification look-up application programming interfaces. Checking personally identifiable information quality includes the tracking of updates or changes to data over time, which enables organizations to know how and what personally identifiable information was changed should erroneous information be identified. The measures taken to protect personally identifiable information quality are based on the nature and context of the personally identifiable information, how it is to be used, how it was obtained, and the potential de-identification methods employed. The measures taken to validate the accuracy of personally identifiable information used to make determinations about the rights, benefits, or privileges of individuals covered under federal programs may be more comprehensive than the measures used to validate personally identifiable information used for less sensitive purposes.\n\nNOTE: This requirement is NA for this technology.",
+  "id": "mscp.os_pii_quality_control",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "nist": {
+      "800-53r5": [
+        "SI-18"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92849-9"
+        ],
+        "macos_15": [
+          "CCE-94253-2"
+        ],
+        "macos_26": [
+          "CCE-95256-4"
+        ],
+        "macos_27": [
+          "CCE-97261-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The requirement is NA. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_pii_quality_control.yaml",
+    "upstream_rule_id": "os_pii_quality_control",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_pii_quality_control.yaml"
+  },
+  "tags": [
+    "800-53r5_privacy",
+    "n_a"
+  ],
+  "title": "Personally Identifiable Information Quality Operations"
+}

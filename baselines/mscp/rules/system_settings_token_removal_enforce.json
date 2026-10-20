@@ -1,0 +1,135 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\\n.objectForKey('tokenRemovalAction').js\nEOS"
+    }
+  },
+  "discussion": "The screen lock _MUST_ be configured to initiate automatically when the smart token is removed from the system.\n\nSession locks are temporary actions taken when users stop work and move away from the immediate vicinity of the information system but do not want to log out because of the temporary nature of their absences. While a session lock is not an acceptable substitute for logging out of an information system for longer periods of time, they prevent a malicious user from accessing the information system when a user has removed their smart token.\n\n[IMPORTANT]\n====\nInformation System Security Officers (ISSOs) may make the risk-based decision not to enforce a session lock when a smart token is removed, so as to maintain necessary workflow capabilities, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
+  "id": "mscp.system_settings_token_removal_enforce",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000058"
+      ],
+      "cmmc": [
+        "AC.L2-3.1.10"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-000005"
+        ],
+        "macos_15": [
+          "APPL-15-000005"
+        ],
+        "macos_26": [
+          "APPL-26-000005"
+        ],
+        "macos_27": [
+          "APPL-27-000005"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000030-GPOS-00011"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.10"
+      ],
+      "800-53r5": [
+        "AC-11"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-93001-6"
+        ],
+        "macos_15": [
+          "CCE-94406-6"
+        ],
+        "macos_26": [
+          "CCE-95413-1"
+        ],
+        "macos_27": [
+          "CCE-97185-3"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "tokenRemovalAction": 1
+          }
+        ],
+        "PayloadType": "com.apple.security.smartcard"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/system_settings/system_settings_token_removal_enforce.yaml",
+    "upstream_rule_id": "system_settings_token_removal_enforce",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_token_removal_enforce.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure User Session Lock When a Smart Token is Removed"
+}

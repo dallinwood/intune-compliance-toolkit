@@ -1,0 +1,130 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/bin/grep -c \"logger -s -p\" /etc/security/audit_warn"
+    }
+  },
+  "discussion": "The audit service _MUST_ be configured to immediately print messages to the console or email administrator users when an auditing failure occurs.\n\nIt is critical for the appropriate personnel to be made aware immediately if a system is at risk of failing to process audit logs as required. Without a real-time alert, security personnel may be unaware of a potentially harmful failure in the auditing system's capability, and system operation may be adversely affected.\n",
+  "id": "mscp.audit_settings_failure_notify",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000140",
+        "CCI-001858"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.4"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-001031"
+        ],
+        "macos_15": [
+          "APPL-15-001031"
+        ],
+        "macos_26": [
+          "APPL-26-001031"
+        ],
+        "macos_27": [
+          "APPL-27-001031"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000047-GPOS-00023",
+        "SRG-OS-000344-GPOS-00135"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.04"
+      ],
+      "800-53r5": [
+        "AU-5(2)",
+        "AU-5"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92731-9"
+        ],
+        "macos_15": [
+          "CCE-94131-0"
+        ],
+        "macos_26": [
+          "CCE-95131-9"
+        ],
+        "macos_27": [
+          "CCE-96976-6"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/sed -i.bak 's/logger -p/logger -s -p/' /etc/security/audit_warn; /usr/sbin/audit -s"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/audit/audit_settings_failure_notify.yaml",
+    "upstream_rule_id": "audit_settings_failure_notify",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_settings_failure_notify.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure Audit Failure Notification"
+}

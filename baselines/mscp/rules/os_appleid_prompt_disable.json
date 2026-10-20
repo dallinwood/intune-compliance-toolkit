@@ -1,0 +1,166 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {
+      "15.0": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipCloudSetup').js\nEOS"
+      }
+    },
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"AppleID\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "The prompt for Apple ID setup during Setup Assistant _MUST_ be disabled.\n\nmacOS will automatically prompt new users to set up an Apple ID while they are going through Setup Assistant if this is not disabled, misleading new users to think they need to create Apple ID accounts upon their first login.\n",
+  "id": "mscp.os_appleid_prompt_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000381"
+      ],
+      "cmmc": [
+        "AC.L1-3.1.20"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002035"
+        ],
+        "macos_15": [
+          "APPL-15-002035"
+        ],
+        "macos_26": [
+          "APPL-26-002035"
+        ],
+        "macos_27": [
+          "APPL-27-002035"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000095-GPOS-00049"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20"
+      ],
+      "800-53r5": [
+        "AC-20"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92759-0"
+        ],
+        "macos_15": [
+          "CCE-94159-1"
+        ],
+        "macos_26": [
+          "CCE-95159-0"
+        ],
+        "macos_27": [
+          "CCE-97003-8"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {
+      "15.0": [
+        {
+          "PayloadContent": [
+            {
+              "SkipCloudSetup": true
+            }
+          ],
+          "PayloadType": "com.apple.SetupAssistant.managed"
+        }
+      ]
+    },
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "SkipSetupItems": [
+              "AppleID"
+            ]
+          }
+        ],
+        "PayloadType": "com.apple.SetupAssistant.managed"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_appleid_prompt_disable.yaml",
+    "upstream_rule_id": "os_appleid_prompt_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_appleid_prompt_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Disable Apple ID Setup during Setup Assistant"
+}

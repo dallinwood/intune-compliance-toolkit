@@ -1,0 +1,77 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "inherent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The information system _IS_ configured to implement non-executable data to protect memory from code execution.\n\nSome adversaries launch attacks with the intent of executing code in non-executable regions of memory or in memory locations that are prohibited (e.g., buffer overflow attacks). Security safeguards (e.g., data execution prevention and address space layout randomization) can be employed to protect non-executable regions of memory. Data execution prevention safeguards can either be hardware-enforced or software-enforced; hardware-enforced methods provide the greater strength of mechanism.\n\nmacOS supports address space layout randomization (ASLR), position-independent executable (PIE), Stack Canaries, and NX stack and heap protection.\n\nlink:https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/64bitPorting/transition/transition.html[]\n\nlink:https://developer.apple.com/library/archive/qa/qa1788/_index.html[]\n\nlink:https://www.apple.com/macos/security/[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "id": "mscp.os_implement_memory_protection",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "srg": [
+        "SRG-OS-000433-GPOS-00193",
+        "SRG-OS-000433-GPOS-00192"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "SI-16"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92809-3"
+        ],
+        "macos_15": [
+          "CCE-94210-2"
+        ],
+        "macos_26": [
+          "CCE-95209-3"
+        ],
+        "macos_27": [
+          "CCE-97201-8"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The technology inherently meets this requirement. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_implement_memory_protection.yaml",
+    "upstream_rule_id": "os_implement_memory_protection",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_implement_memory_protection.yaml"
+  },
+  "tags": [
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cnssi-1253_high",
+    "cnssi-1253_moderate",
+    "inherent"
+  ],
+  "title": "Configure the System to Protect Memory from Unauthorized Code Execution"
+}

@@ -1,0 +1,182 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      },
+      {
+        "name": "nlmapgov_base",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      },
+      {
+        "name": "nlmapgov_base",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Log when a command is allowed by sudoers\""
+    }
+  },
+  "discussion": "Sudo _MUST_ be configured to log privilege escalation.\n",
+  "id": "mscp.os_sudo_log_enforce",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.18",
+        "8.18.02"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_15": [
+          "5.11 (level 1)"
+        ],
+        "macos_26": [
+          "5.11 (level 1)"
+        ],
+        "macos_27": [
+          "5.11 (level 1)"
+        ]
+      }
+    },
+    "disa": {
+      "cci": [
+        "CCI-000172"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.3",
+        "AU.L2-3.3.6",
+        "SI.L2-3.14.3"
+      ],
+      "disa_stig": {
+        "macos_15": [
+          "APPL-15-000190"
+        ],
+        "macos_26": [
+          "APPL-26-000190"
+        ],
+        "macos_27": [
+          "APPL-27-000190"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000064-GPOS-00033"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.07"
+      ],
+      "800-53r5": [
+        "AC-6(9)"
+      ],
+      "cce": {
+        "macos_15": [
+          "CCE-94310-0"
+        ],
+        "macos_26": [
+          "CCE-95316-6"
+        ],
+        "macos_27": [
+          "CCE-97096-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/^Defaults[[:blank:]]*\\!log_allowed/s/^/# /' '{}' \\;\n/bin/echo \"Defaults log_allowed\" >> /etc/sudoers.d/mscp"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_sudo_log_enforce.yaml",
+    "upstream_rule_id": "os_sudo_log_enforce",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_sudo_log_enforce.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure Sudo To Log Events"
+}

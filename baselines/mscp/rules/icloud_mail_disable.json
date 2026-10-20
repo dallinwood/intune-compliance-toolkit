@@ -1,0 +1,161 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCloudMail\")) == false && s.objectIsForcedForKey(\"allowCloudMail\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "The macOS built-in Mail.app connection to Apple's iCloud service _MUST_ be disabled, unless the organization has explicitly authorized the use of iCloud as a approved mail management service.\n\nApple's iCloud service does not provide an organization with enough control over the storage and access of data and, therefore, automated mail synchronization _MUST_ be controlled by an organization approved service.\n\nThis requirement helps ensure that organizational contact data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
+  "id": "mscp.icloud_mail_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8",
+        "15.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000381",
+        "CCI-001774"
+      ],
+      "cmmc": [
+        "AC.L1-3.1.20",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002015"
+        ],
+        "macos_15": [
+          "APPL-15-002015"
+        ],
+        "macos_26": [
+          "APPL-26-002015"
+        ],
+        "macos_27": [
+          "APPL-27-002015"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000095-GPOS-00049"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.B",
+        "4.L.A",
+        "4.L.B"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20",
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "AC-20",
+        "AC-20(1)",
+        "CM-7",
+        "CM-7(1)",
+        "SC-7(10)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92749-1"
+        ],
+        "macos_15": [
+          "CCE-94148-4"
+        ],
+        "macos_26": [
+          "CCE-95148-3"
+        ],
+        "macos_27": [
+          "CCE-96993-1"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "allowCloudMail": false
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/icloud/icloud_mail_disable.yaml",
+    "upstream_rule_id": "icloud_mail_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/icloud/icloud_mail_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable iCloud Mail"
+}

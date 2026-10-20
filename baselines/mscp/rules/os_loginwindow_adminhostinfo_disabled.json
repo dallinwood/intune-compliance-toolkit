@@ -1,0 +1,115 @@
+{
+  "applicability": {
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": -1
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.integerForKey('AdminHostInfo')\nEOS"
+    }
+  },
+  "discussion": "The system _MUST_ be configured to not display sensitive information at the login window. If the key `AdminHostInfo` is configured with a string value, it will allow the HostName, IP Address, and operating system version and build to be displayed when clicking on the clock area of the login window.\n\nConfiguring this key to be an integer value, since it expects a string value, will effectively disable the behavior.\n\nNOTE: This configuration requires it to be deployed via Managed Preferences rather than directly to com.apple.loginwindow.\n",
+  "id": "mscp.os_loginwindow_adminhostinfo_disabled",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000060"
+      ],
+      "disa_stig": {
+        "macos_26": [
+          "APPL-26-000009"
+        ],
+        "macos_277": [
+          "APPL-27-000009"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000031-GPOS-00012"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.10"
+      ],
+      "800-53r5": [
+        "AC-11(1)"
+      ],
+      "cce": {
+        "macos_26": [
+          "CCE-95600-3"
+        ],
+        "macos_27": [
+          "CCE-97039-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "com.apple.loginwindow": {
+              "AdminHostInfo": -1
+            }
+          }
+        ],
+        "PayloadType": "com.apple.ManagedClient.preferences"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_loginwindow_adminhostinfo_disabled.yaml",
+    "upstream_rule_id": "os_loginwindow_adminhostinfo_disabled",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_loginwindow_adminhostinfo_disabled.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Prevent AdminHostInfo from Being Available at Login Window"
+}

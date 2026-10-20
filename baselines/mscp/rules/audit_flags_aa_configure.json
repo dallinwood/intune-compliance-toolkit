@@ -1,0 +1,191 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'aa'"
+    }
+  },
+  "discussion": "The auditing system _MUST_ be configured to flag authorization and authentication (aa) events.\n\nAuthentication events contain information about the identity of a user, server, or client. Authorization events contain information about permissions, rights, and rules. If audit records do not include aa events, it is difficult to identify incidents and to correlate incidents to subsequent events.\n\nAudit records can be generated from various components within the information system (e.g., via a module or policy filter).\n",
+  "id": "mscp.audit_flags_aa_configure",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "3.2 (level 2)"
+        ],
+        "macos_15": [
+          "3.2 (level 2)"
+        ],
+        "macos_26": [
+          "3.2 (level 2)"
+        ],
+        "macos_27": [
+          "3.2 (level 2)"
+        ]
+      },
+      "controls_v8": [
+        "3.14",
+        "8.2",
+        "8.5"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000172",
+        "CCI-001814",
+        "CCI-002884",
+        "CCI-003938"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.3",
+        "AU.L2-3.3.6",
+        "SI.L2-3.14.3"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-001044"
+        ],
+        "macos_15": [
+          "APPL-15-001044"
+        ],
+        "macos_26": [
+          "APPL-26-001044"
+        ],
+        "macos_27": [
+          "APPL-27-001044"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000392-GPOS-00172",
+        "SRG-OS-000365-GPOS-00152",
+        "SRG-OS-000475-GPOS-00220",
+        "SRG-OS-000463-GPOS-00207",
+        "SRG-OS-000467-GPOS-00211",
+        "SRG-OS-000465-GPOS-00209",
+        "SRG-OS-000477-GPOS-00222",
+        "SRG-OS-000471-GPOS-00216",
+        "SRG-OS-000466-GPOS-00210",
+        "SRG-OS-000471-GPOS-00215",
+        "SRG-OS-000458-GPOS-00203",
+        "SRG-OS-000468-GPOS-00212"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "3.L.B",
+        "3.L.C",
+        "8.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.01",
+        "03.03.03"
+      ],
+      "800-53r5": [
+        "AC-2(12)",
+        "AU-12",
+        "AU-2",
+        "MA-4(1)",
+        "CM-5(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92715-2"
+        ],
+        "macos_15": [
+          "CCE-94115-3"
+        ],
+        "macos_26": [
+          "CCE-95115-2"
+        ],
+        "macos_27": [
+          "CCE-96963-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/grep -qE \"^flags.*[^-]aa\" /etc/security/audit_control || /usr/bin/sed -i.bak '/^flags/ s/$/,aa/' /etc/security/audit_control; /usr/sbin/audit -s"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/audit/audit_flags_aa_configure.yaml",
+    "upstream_rule_id": "audit_flags_aa_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_flags_aa_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "800-53r5_privacy",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Configure System to Audit All Authorization and Authentication Events"
+}

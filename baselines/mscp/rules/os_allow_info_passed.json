@@ -1,0 +1,75 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "inherent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The information system _IS_ configured to allow the transfer of information to and from other operating systems and users.\n\nThe macOS is a UNIX 03-compliant operating system, which allows owners of object to have discretion over who should be authorized to access information.\n\nlink:https://developer.apple.com/library/archive/documentation/Security/Conceptual/AuthenticationAndAuthorizationGuide/Permissions/Permissions.html[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "id": "mscp.os_allow_info_passed",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "srg": [
+        "SRG-OS-000312-GPOS-00122"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "AC-3(4)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92757-4"
+        ],
+        "macos_15": [
+          "CCE-94157-5"
+        ],
+        "macos_26": [
+          "CCE-95157-4"
+        ],
+        "macos_27": [
+          "CCE-97192-9"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The technology inherently meets this requirement. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_allow_info_passed.yaml",
+    "upstream_rule_id": "os_allow_info_passed",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_allow_info_passed.yaml"
+  },
+  "tags": [
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "inherent"
+  ],
+  "title": "Allow Information Transfer with Other Operating Systems"
+}

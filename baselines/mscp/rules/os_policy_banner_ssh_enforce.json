@@ -1,0 +1,135 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/sbin/sshd -G | /usr/bin/grep -c \"^banner /etc/banner\""
+    }
+  },
+  "discussion": "SSH _MUST_ be configured to display a policy banner.\n\nDisplaying a standardized and approved use notification before granting access to the operating system ensures that users are provided with privacy and security notification verbiage that is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via login interfaces with human users and are not required when such human interfaces do not exist\n\nNOTE: /etc/ssh/sshd_config will be automatically modified to its original state following any update or major upgrade to the operating system.\n",
+  "id": "mscp.os_policy_banner_ssh_enforce",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000048",
+        "CCI-000050"
+      ],
+      "cmmc": [
+        "AC.L2-3.1.9"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-000024"
+        ],
+        "macos_15": [
+          "APPL-15-000024"
+        ],
+        "macos_26": [
+          "APPL-26-000024"
+        ],
+        "macos_27": [
+          "APPL-27-000024"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000024-GPOS-00007",
+        "SRG-OS-000023-GPOS-00006"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.09"
+      ],
+      "800-53r5": [
+        "AC-8"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92852-3"
+        ],
+        "macos_15": [
+          "CCE-94256-5"
+        ],
+        "macos_26": [
+          "CCE-95259-8"
+        ],
+        "macos_27": [
+          "CCE-97061-6"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": {
+      "config_file": "sshd_config",
+      "configuration_key": "Banner",
+      "configuration_value": "/etc/banner",
+      "declarationtype": "com.apple.configuration.services.configuration-files",
+      "service": "com.apple.sshd"
+    },
+    "default": {
+      "additional_info": null,
+      "shell": "include_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\n/usr/bin/grep -qxF 'banner /etc/banner' \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"banner /etc/banner\" >> \"${include_dir}01-mscp-sshd.conf\"\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_policy_banner_ssh_enforce.yaml",
+    "upstream_rule_id": "os_policy_banner_ssh_enforce",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_policy_banner_ssh_enforce.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Enforce SSH to Display Policy Banner"
+}

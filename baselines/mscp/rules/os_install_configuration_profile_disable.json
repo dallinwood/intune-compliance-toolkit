@@ -1,0 +1,187 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowUIConfigurationProfileInstallation\")) == false && s.objectIsForcedForKey(\"allowUIConfigurationProfileInstallation\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "Configuration profiles _MUST_ be installed via an organization's MDM.\n",
+  "id": "mscp.os_install_configuration_profile_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bsi": {
+      "indigo": {
+        "ios_17": [
+          "ANNEX D (Section 5.6.1 - Mail)"
+        ],
+        "ios_18": [
+          "ANNEX D (Section 5.6.1 - Mail)"
+        ],
+        "ios_26": [
+          "ANNEX K"
+        ]
+      }
+    },
+    "bzk": {
+      "bio": [
+        "8.27"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "ios_17": [
+          "3.2.1.15 (level 1 - Institutionally-Owned Devices)"
+        ],
+        "ios_18": [
+          "3.2.1.15 (level 1 - Institutionally-Owned Devices)"
+        ],
+        "ios_26": [
+          "3.2.1.15 (level 1 - Institutionally-Owned Devices)"
+        ],
+        "macos_26": [
+          "2.3.5.1 (level 2)"
+        ],
+        "macos_27": [
+          "2.3.5.1 (level 2)"
+        ]
+      },
+      "controls_v8": [
+        "4.1"
+      ]
+    },
+    "disa": {
+      "cmmc": [
+        "AU.L2-3.3.3",
+        "CM.L2-3.4.1",
+        "CM.L2-3.4.2",
+        "CM.L2-3.4.5",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ],
+      "disa_stig": {
+        "ios_18": [
+          "AIOS-18-015500"
+        ],
+        "ios_26": [
+          "AIOS-26-015500"
+        ]
+      }
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.05"
+      ],
+      "800-53r5": [
+        "CM-5",
+        "CM-6",
+        "CM-7",
+        "CM-7(1)"
+      ],
+      "cce": {
+        "ios_17": [
+          "CCE-93429-9"
+        ],
+        "ios_18": [
+          "CCE-94444-7"
+        ],
+        "ios_26": [
+          "CCE-95484-2"
+        ],
+        "ios_27": [
+          "CCE-97335-4"
+        ],
+        "macos_14": [
+          "CCE-92777-2"
+        ],
+        "macos_15": [
+          "CCE-94177-3"
+        ],
+        "macos_26": [
+          "CCE-95177-2"
+        ],
+        "macos_27": [
+          "CCE-97034-3"
+        ],
+        "visionos_26": [
+          "CCE-95581-5"
+        ],
+        "visionos_27": [
+          "CCE-97448-5"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "allowUIConfigurationProfileInstallation": false
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_install_configuration_profile_disable.yaml",
+    "upstream_rule_id": "os_install_configuration_profile_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_install_configuration_profile_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl2",
+    "cmmc_lvl3",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Ensure Allow Installing Configuration Profiles is Set to Disabled"
+}

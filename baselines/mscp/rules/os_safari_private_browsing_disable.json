@@ -1,0 +1,92 @@
+{
+  "applicability": {
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowSafariPrivateBrowsing\")) == false && s.objectIsForcedForKey(\"allowSafariPrivateBrowsing\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "Private browsing _MUST_ be disabled in Safari.\n",
+  "id": "mscp.os_safari_private_browsing_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bsi": {
+      "indigo": {
+        "ios_26": [
+          "ANNEX K"
+        ]
+      }
+    },
+    "nist": {
+      "cce": {
+        "ios_26": [
+          "CCE-96736-4"
+        ],
+        "ios_27": [
+          "CCE-97374-3"
+        ],
+        "macos_26": [
+          "CCE-95599-7"
+        ],
+        "macos_27": [
+          "CCE-97070-7"
+        ],
+        "visionos_27": [
+          "CCE-97463-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "allowSafariPrivateBrowsing": false
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_safari_private_browsing_disable.yaml",
+    "upstream_rule_id": "os_safari_private_browsing_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_safari_private_browsing_disable.yaml"
+  },
+  "tags": [
+    "none"
+  ],
+  "title": "Ensure Private Browsing in Safari Is Disabled"
+}

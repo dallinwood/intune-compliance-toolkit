@@ -1,0 +1,206 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "pass"
+      },
+      "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeExpiresEveryNDays\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 <= $ODV ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
+    }
+  },
+  "discussion": "The system _MUST_ be configured to enforce a maximum password lifetime limit of $ODV days.\n\nThis rule ensures that users are forced to change their passwords frequently enough to prevent malicious users from gaining and maintaining access to the system.\n\nNOTE: To comply with Executive Order 14028, “Improving the Nation's Cybersecurity”, OMB M-22-09, “Moving the U.S. Government Toward Zero Trust Cybersecurity Principles”, and NIST SP-800-63b, “Digital Identity Guidelines: Authentication and Lifecycle Management” federal, military, and intelligence communities must adopt the following configuration settings. Password policies must not require the use of complexity policies such as upper characters, lower characters, or special characters. Password policies must also not require the use of regular rotation. Password policies should define a minimum length. Multifactor authentication should be used where ever possible.\n",
+  "id": "mscp.pwpolicy_max_lifetime_enforce",
+  "odv": {
+    "by_benchmark": {
+      "cis_lvl1": 365,
+      "cis_lvl2": 365,
+      "disa_stig": 180
+    },
+    "datatype": "number",
+    "description": "Number of days, e.g. 60",
+    "recommended": 60,
+    "validation": {
+      "min": 1
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "5.2.7 (level 1)"
+        ],
+        "macos_15": [
+          "5.2.7 (level 1)"
+        ],
+        "macos_26": [
+          "5.2.7 (level 1)"
+        ],
+        "macos_27": [
+          "5.2.7 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "5.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000199",
+        "CCI-004066"
+      ],
+      "cmmc": [
+        "IA.L2-3.5.8",
+        "IA.L2-3.5.9"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-003008"
+        ],
+        "macos_15": [
+          "APPL-15-003008"
+        ],
+        "macos_26": [
+          "APPL-26-003008"
+        ],
+        "macos_27": [
+          "APPL-27-003008"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000076-GPOS-00044",
+        "SRG-OS-000775-GPOS-00230"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "3.L.C"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.05.12"
+      ],
+      "800-53r5": [
+        "IA-5"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92935-6"
+        ],
+        "macos_15": [
+          "CCE-94339-9"
+        ],
+        "macos_26": [
+          "CCE-95345-5"
+        ],
+        "macos_27": [
+          "CCE-97119-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": {
+      "ddm_key": "MaximumPasscodeAgeInDays",
+      "ddm_value": "$ODV",
+      "declarationtype": "com.apple.configuration.passcode.settings"
+    },
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "maxPINAgeInDays": "$ODV"
+          }
+        ],
+        "PayloadType": "com.apple.mobiledevice.passwordpolicy"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/pwpolicy/pwpolicy_max_lifetime_enforce.yaml",
+    "upstream_rule_id": "pwpolicy_max_lifetime_enforce",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/pwpolicy/pwpolicy_max_lifetime_enforce.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Restrict Maximum Password Lifetime to $ODV Days"
+}

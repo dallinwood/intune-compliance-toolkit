@@ -1,0 +1,122 @@
+{
+  "applicability": {
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 4
+      },
+      "shell": "apple_intelligence_servers=(\"127.0.0.1 apple-relay.cloudflare.com\" \"127.0.0.1 apple-relay.fastly-edge.com\" \"127.0.0.1 cp4.cloudflare.com\" \"127.0.0.1 apple-relay.apple.com\")\ntotal=0\nfor config in $apple_intelligence_servers; do\n  total=$(expr $(/usr/bin/grep -i -c \"^$config\" /etc/hosts) + $total)\ndone\necho $total"
+    }
+  },
+  "discussion": "Apple Intelligence Private Cloud Compute sends data to off-device infrastructure that is not directly controlled by the organization. Therefore, Apple Intelligence features that rely on off-device processing _MUST_ be disabled unless explicitly approved by the organization.\n\nThis requirement helps ensure that organizational data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n\nData may be sent to Apple Intelligence Private Cloud Compute even when Apple's provided controls around Apple Intelligence are disabled. Therefore, organizations should ensure that Apple Intelligence Private Cloud Compute is disabled by blocking access to the following domains:\n- apple-relay.apple.com\n- apple-relay.fastly-edge.com\n- apple-relay.cloudflare.com\n- cp4.cloudflare.com\n",
+  "id": "mscp.os_apple_intelligence_pcc_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8",
+        "15.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000381",
+        "CCI-001774"
+      ],
+      "cmmc": [
+        "AC.L1-3.1.20",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ],
+      "disa_stig": {
+        "macos_27": [
+          "APPL-27-005180"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000095-GPOS-00049"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "4.L.A",
+        "4.L.B"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20",
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "AC-20",
+        "AC-20(1)",
+        "CM-7",
+        "CM-7(1)",
+        "SC-7(10)"
+      ],
+      "cce": {
+        "macos_27": [
+          "CCE-97002-0"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "note=\"### Apple Intelligence Private Cloud Compute is disabled by the organization (apple-relay, cp4.cloudflare.com, etc). Added by the mSCP ###\"\napple_intelligence_servers=(\"127.0.0.1 apple-relay.cloudflare.com\" \"127.0.0.1 apple-relay.fastly-edge.com\" \"127.0.0.1 cp4.cloudflare.com\" \"127.0.0.1 apple-relay.apple.com\")\n\nhost_file=$(/bin/cat /etc/hosts)\n\nif ! /usr/bin/grep -qxF \"$note\" \"$hosts_file\" 2>/dev/null; then\n  echo \"$note\" >> \"$hosts_file\"\nfi\nfor config in $apple_intelligence_servers; do\n  if ! echo $host_file | /usr/bin/grep -q -i \"^$config\" 2>/dev/null; then\n    /usr/bin/grep -qxF \"^$config\" \"/etc/hosts\" 2>/dev/null || echo \"$config\" >> \"/etc/hosts\"\n  fi\ndone"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_apple_intelligence_pcc_disable.yaml",
+    "upstream_rule_id": "os_apple_intelligence_pcc_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_apple_intelligence_pcc_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable Apple Intelligence Private Cloud Compute"
+}

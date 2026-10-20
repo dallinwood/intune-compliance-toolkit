@@ -1,0 +1,170 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {
+      "15.0": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipPrivacySetup').js\nEOS"
+      }
+    },
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"Privacy\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "The prompt for Privacy Setup services during Setup Assistant _MUST_ be disabled.\n\nOrganizations _MUST_ apply organization-wide configuration settings. The macOS Privacy Setup services prompt guides new users through enabling their own specific privacy settings; this is not essential and, therefore, _MUST_ be disabled to prevent against the risk of individuals electing privacy settings with the potential to override organization-wide settings.\n",
+  "id": "mscp.os_privacy_setup_prompt_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000381"
+      ],
+      "cmmc": [
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002036"
+        ],
+        "macos_15": [
+          "APPL-15-002036"
+        ],
+        "macos_26": [
+          "APPL-26-002036"
+        ],
+        "macos_27": [
+          "APPL-27-002036"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000095-GPOS-00049"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "CM-7",
+        "CM-7(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92860-6"
+        ],
+        "macos_15": [
+          "CCE-94264-9"
+        ],
+        "macos_26": [
+          "CCE-95267-1"
+        ],
+        "macos_27": [
+          "CCE-97062-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {
+      "15.0": [
+        {
+          "PayloadContent": [
+            {
+              "SkipPrivacySetup": true
+            }
+          ],
+          "PayloadType": "com.apple.SetupAssistant.managed"
+        }
+      ]
+    },
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "SkipSetupItems": [
+              "Privacy"
+            ]
+          }
+        ],
+        "PayloadType": "com.apple.SetupAssistant.managed"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_privacy_setup_prompt_disable.yaml",
+    "upstream_rule_id": "os_privacy_setup_prompt_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_privacy_setup_prompt_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable Privacy Setup Services During Setup Assistant"
+}

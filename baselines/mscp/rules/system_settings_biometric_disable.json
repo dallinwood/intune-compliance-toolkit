@@ -1,0 +1,150 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowFingerprintForUnlock\")) == false && s.objectIsForcedForKey(\"allowFingerprintForUnlock\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "TouchID and OpticID enables the ability to unlock an Apple device with a user's fingerprint or iris.\n\nTouchID _MUST_ be disabled for \"Unlocking your Mac\" on all macOS devices that are capable of using Touch ID. OpticID _MUST_ be disabled for \"Unlocking your device\" on all devices that are capable of using OpticID.\n\nThe system _MUST_ remain locked until the user establishes access using an authorized identification and authentication method.\n\nNOTE: TouchID and OpticID is not an approved biometric authenticator for US Federal Government usage as it has not been verified to meet the strength requirements outlined in NIST SP 800-63.\n",
+  "id": "mscp.system_settings_biometric_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000056"
+      ],
+      "cmmc": [
+        "AC.L2-3.1.10"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002090"
+        ],
+        "macos_15": [
+          "APPL-15-002090"
+        ],
+        "macos_26": [
+          "APPL-26-002090"
+        ],
+        "macos_27": [
+          "APPL-27-002090"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000028-GPOS-00009"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "3.L.A",
+        "3.L.B",
+        "2.L.B"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.05.12"
+      ],
+      "800-53r5": [
+        "IA-5"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-93003-2"
+        ],
+        "macos_15": [
+          "CCE-94408-2"
+        ],
+        "macos_26": [
+          "CCE-95415-6"
+        ],
+        "macos_27": [
+          "CCE-97131-7"
+        ],
+        "visionos_26": [
+          "CCE-95597-1"
+        ],
+        "visionos_27": [
+          "CCE-97477-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "allowFingerprintForUnlock": false
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/system_settings/system_settings_biometric_disable.yaml",
+    "upstream_rule_id": "system_settings_biometric_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_biometric_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable TouchID/OpticID for Unlocking the Device"
+}

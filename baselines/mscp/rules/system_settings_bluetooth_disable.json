@@ -1,0 +1,158 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "high"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "high"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "high"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "true"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCXBluetooth')\\\n.objectForKey('DisableBluetooth').js\nEOS"
+    }
+  },
+  "discussion": "The macOS system _MUST_ be configured to disable Bluetooth unless there is an approved device connected.\n\n[IMPORTANT]\n====\nInformation System Security Officers (ISSOs) may make the risk-based decision not to disable Bluetooth, so as to maintain necessary functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
+  "id": "mscp.system_settings_bluetooth_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.8",
+        "12.6",
+        "13.9"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-001967",
+        "CCI-002418"
+      ],
+      "cmmc": [
+        "AC.L2-3.1.16"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002062"
+        ],
+        "macos_15": [
+          "APPL-15-002062"
+        ],
+        "macos_26": [
+          "APPL-26-002062"
+        ],
+        "macos_27": [
+          "APPL-27-002062"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000423-GPOS-00187",
+        "SRG-OS-000481-GPOS-00481",
+        "SRG-OS-000480-GPOS-00228"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.16",
+        "03.13.08"
+      ],
+      "800-53r5": [
+        "AC-18",
+        "SC-8",
+        "AC-18(3)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92949-7"
+        ],
+        "macos_15": [
+          "CCE-94352-2"
+        ],
+        "macos_26": [
+          "CCE-95358-8"
+        ],
+        "macos_27": [
+          "CCE-97132-5"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "com.apple.MCXBluetooth": {
+              "DisableBluetooth": true
+            }
+          }
+        ],
+        "PayloadType": "com.apple.ManagedClient.preferences"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/system_settings/system_settings_bluetooth_disable.yaml",
+    "upstream_rule_id": "system_settings_bluetooth_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_bluetooth_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable Bluetooth When no Approved Device is Connected"
+}

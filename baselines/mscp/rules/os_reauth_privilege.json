@@ -1,0 +1,80 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "inherent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Without reauthentication, users may access resources or perform tasks for which they do not have authorization. When operating systems provide the capability to escalate a functional capability, it is critical the user reauthenticate.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "id": "mscp.os_reauth_privilege",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "srg": [
+        "SRG-OS-000373-GPOS-00157",
+        "SRG-OS-000373-GPOS-00156"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.05.01"
+      ],
+      "800-53r5": [
+        "IA-11"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92868-9"
+        ],
+        "macos_15": [
+          "CCE-94272-2"
+        ],
+        "macos_26": [
+          "CCE-95275-4"
+        ],
+        "macos_27": [
+          "CCE-97219-0"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The technology inherently meets this requirement. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_reauth_privilege.yaml",
+    "upstream_rule_id": "os_reauth_privilege",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_reauth_privilege.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "inherent"
+  ],
+  "title": "Require users to reauthenticate for privilege escalation"
+}

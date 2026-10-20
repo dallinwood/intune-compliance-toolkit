@@ -1,0 +1,68 @@
+id: os_messages_app_disable
+title: Disable Messages App
+discussion: |
+  The macOS built-in Messages.app _MUST_ be disabled.
+
+  The Messages.app establishes a connection to Apple's iCloud service, even when security controls to disable iCloud access have been put in place.
+
+  [IMPORTANT]
+  ====
+  Preventing the launch of any application using the DeniedBinaries key will also prevent the launching of ad-hoc signed binaries and unsigned binaries.
+  ====
+
+  [NOTE]
+  =====
+  Apple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.alr will also block the launching of binaries.
+  =====
+references:
+  nist:
+    cce:
+      macos_27:
+        - CCE-97043-4
+    800-53r5:
+      - AC-20
+      - CM-7
+      - CM-7(1)
+    800-171r3:
+      - 03.01.20
+      - 03.04.06
+  disa:
+    cmmc:
+      - AC.L1-3.1.20
+      - CM.L2-3.4.6
+      - CM.L2-3.4.7
+  hhs:
+    hicp:
+      - 2.L.A
+      - 4.L.A
+      - 4.L.B
+  cis:
+    controls_v8:
+      - 4.1
+      - 4.8
+platforms:
+  macOS:
+    '27.0': {}
+    enforcement_info:
+      check:
+        shell: |-
+          /usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName("com.apple.alr"); var list = ObjC.unwrap(s.objectForKey("DenyList")) || []; (list.some(function(item) { return ObjC.unwrap(item.objectForKey("SigningID")) == "com.apple.MobileSMS"; }) && s.objectIsForcedForKey("DenyList")) ? "PASS" : "FAIL"'
+        result:
+          string: 'PASS'
+    introduced: '27.0'
+tags:
+  - cnssi-1253_low
+  - cnssi-1253_high
+  - cnssi-1253_moderate
+  - hicp_lp
+  - 800-171
+mobileconfig_info:
+  - PayloadType: com.apple.alr
+    PayloadContent:
+      - DenyList:
+          - SigningID:
+              - com.apple.MobileSMS
+ddm_info:
+  declarationtype: com.apple.configuration.app.settings
+  ddm_key: Allowed
+  ddm_value: {'DeniedBinaries': ["SigningID": "com.apple.MobileSMS"]}

@@ -1,0 +1,142 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return item.PathPrefix == \"/System/Applications/FaceTime.app\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "The macOS built-in FaceTime.app _MUST_ be disabled, unless FaceTime is an approved collaboration tool.\n\nThe FaceTime.app establishes a connection to Apple's iCloud service, even when security controls have been put in place to disable iCloud access.\n\n[IMPORTANT]\n====\nApple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.applicationaccess.new.yaml#L67-L70[application restriction controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
+  "id": "mscp.os_facetime_app_disable_familycontrols",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000381"
+      ],
+      "cmmc": [
+        "AC.L1-3.1.20",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002010"
+        ],
+        "macos_15": [
+          "APPL-15-002010"
+        ],
+        "macos_26": [
+          "APPL-26-002010"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000095-GPOS-00049"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20",
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "AC-20",
+        "CM-7",
+        "CM-7(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92788-9"
+        ],
+        "macos_15": [
+          "CCE-94189-8"
+        ],
+        "macos_26": [
+          "CCE-95189-7"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "familyControlsEnabled": true
+          },
+          {
+            "pathBlackList": [
+              "/Applications/FaceTime.app"
+            ]
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess.new"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_facetime_app_disable_familycontrols.yaml",
+    "upstream_rule_id": "os_facetime_app_disable_familycontrols",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_facetime_app_disable_familycontrols.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable FaceTime.app"
+}

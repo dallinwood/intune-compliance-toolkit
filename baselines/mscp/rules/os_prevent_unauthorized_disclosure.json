@@ -1,0 +1,85 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "inherent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The information system _IS_ configured to ensure that the unauthorized disclosure of data does not occur when resources are shared.\n\nThe inherent configuration of the macOS does not allow for resources to be shared between users without authorization.\n\nlink:https://developer.apple.com/library/archive/documentation/Security/Conceptual/AuthenticationAndAuthorizationGuide/Permissions/Permissions.html[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "id": "mscp.os_prevent_unauthorized_disclosure",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cmmc": [
+        "SC.L2-3.13.4"
+      ],
+      "srg": [
+        "SRG-OS-000138-GPOS-00069"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.13.04"
+      ],
+      "800-53r5": [
+        "SC-4"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92858-0"
+        ],
+        "macos_15": [
+          "CCE-94262-3"
+        ],
+        "macos_26": [
+          "CCE-95265-5"
+        ],
+        "macos_27": [
+          "CCE-97216-6"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The technology inherently meets this requirement. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_prevent_unauthorized_disclosure.yaml",
+    "upstream_rule_id": "os_prevent_unauthorized_disclosure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_prevent_unauthorized_disclosure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "inherent"
+  ],
+  "title": "Configure the System to Prevent the Unauthorized Disclosure of Data via Shared Resources"
+}

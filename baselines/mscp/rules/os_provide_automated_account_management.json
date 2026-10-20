@@ -1,0 +1,92 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "permanent",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The organization should employ automated mechanisms to support the management of information system accounts.\n\nThe use of automated mechanisms prevents against human error and provide a faster and more efficient means of relaying time-sensitive information and account management.\n\nTo employ automated mechanisms for account management functions, many operating systems can be integrated with an enterprise-level directory service that meets or exceeds this requirement.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
+  "id": "mscp.os_provide_automated_account_management",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "5.16.02",
+        "5.16"
+      ]
+    },
+    "disa": {
+      "srg": [
+        "SRG-OS-000001-GPOS-00001"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "AC-2(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92863-0"
+        ],
+        "macos_15": [
+          "CCE-94267-2"
+        ],
+        "macos_26": [
+          "CCE-95270-5"
+        ],
+        "macos_27": [
+          "CCE-97248-9"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_provide_automated_account_management.yaml",
+    "upstream_rule_id": "os_provide_automated_account_management",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_provide_automated_account_management.yaml"
+  },
+  "tags": [
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cnssi-1253_high",
+    "cnssi-1253_moderate",
+    "permanent"
+  ],
+  "title": "Employ Automated Mechanisms for Account Management Functions"
+}

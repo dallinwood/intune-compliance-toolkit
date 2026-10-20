@@ -1,0 +1,142 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": "$ODV"
+      },
+      "shell": "/usr/sbin/sshd -G | /usr/bin/awk '/clientalivecountmax/{print $2}'"
+    }
+  },
+  "discussion": "If SSHD is enabled it _MUST_ be configured with the Client Alive Maximum Count set to $ODV.\n\nThis will set the number of client alive messages which may be sent without the SSH server receiving any messages back from the client.  If this threshold is reached while client alive messages are being sent, the SSH server will disconnect the client, terminating the session.  The client alive messages are sent through the encrypted channel and therefore will not be spoofable.  The client alive mechanism is valuable when the client or server depend on knowing when a connection has become unresponsive.\n\nNOTE: This setting is not intended to manage idle user sessions where there is no input from the client. Its purpose is to monitor for interruptions in network connectivity and force the session to terminate after the connection appears to be broken.\n\nNOTE: /etc/ssh/sshd_config will be automatically modified to its original state following any update or major upgrade to the operating system.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
+  "id": "mscp.os_sshd_client_alive_count_max_configure",
+  "odv": {
+    "by_benchmark": {
+      "disa_stig": 1
+    },
+    "datatype": "number",
+    "description": "Number of seconds, e.g. 0",
+    "recommended": 0,
+    "validation": {
+      "min": 0
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-001133"
+      ],
+      "cmmc": [
+        "SC.L2-3.13.9"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-000052"
+        ],
+        "macos_15": [
+          "APPL-15-000052"
+        ],
+        "macos_26": [
+          "APPL-26-000052"
+        ],
+        "macos_27": [
+          "APPL-27-000052"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000163-GPOS-00072"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.13.09"
+      ],
+      "800-53r5": [
+        "SC-10"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92898-6"
+        ],
+        "macos_15": [
+          "CCE-94303-5"
+        ],
+        "macos_26": [
+          "CCE-95308-3"
+        ],
+        "macos_27": [
+          "CCE-97089-7"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": {
+      "config_file": "sshd_config",
+      "configuration_key": "ClientAliveCountMax",
+      "configuration_value": "$ODV",
+      "declarationtype": "com.apple.configuration.services.configuration-files",
+      "service": "com.apple.sshd"
+    },
+    "default": {
+      "additional_info": null,
+      "shell": "include_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\n/usr/bin/grep -qxF 'clientalivecountmax $ODV' \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"clientalivecountmax $ODV\" >> \"${include_dir}01-mscp-sshd.conf\"\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_sshd_client_alive_count_max_configure.yaml",
+    "upstream_rule_id": "os_sshd_client_alive_count_max_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_sshd_client_alive_count_max_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure SSHD ClientAliveCountMax to $ODV"
+}

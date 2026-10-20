@@ -1,0 +1,58 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "supplemental",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The supplemental guidance found in this section is applicable for the following rules:\n  * system_settings_filevault_enforce\n\nIn macOS the internal Apple File System (APFS) data volume can be protected by FileVault. The system volume is always cryptographically protected (T2 and Apple Silicon) and is a read-only volume.\n\nNOTE: FileVault uses an AES-XTS data encryption algorithm to protect full volumes of internal and external storage. Macs with a secure enclave (T2 and Apple Silicon) utilize the hardware security features of the architecture.\n\nFileVault is described in detail here: link:https://support.apple.com/guide/security/volume-encryption-with-filevault-sec4c6dc1b6e/web[].\n\nFileVault can be enabled in two ways within the macOS. It can be managed using the fdesetup command or by a Configuration Profile. When enabling FileVault via either of the aforementioned methods, you will be required to enter a username and password, which must be a local Open Directory account with a valid SecureToken password.\n\n[discrete]\n==== Using the fdesetup Command\nWhen enabling FileVault via the command line in the Terminal application, you can run the following command.\n[source,bash]\n----\n/usr/bin/fdesetup enable\n----\nRunning this command will prompt you for a username and password and then enable FileVault and return the personal recovery key. There are a number of management features available when managing FileVault via the command line that are not available when using a configuration profile. More information on these management features is available in the man page for `fdesetup`.\n\nNOTE: Apple has deprecated `fdesetup` command line tool from recognizing user name and password for security reasons and may remove the ability in future versions of macOS.\n\n[discrete]\n==== Using a Configuration Profile\n\nWhen managing FileVault with a configuration profile, you must deploy a profile with the payload type `com.apple.MCX.FileVault2`. When using the Enable key to enable FileVault with a configuration profile, you must include 1 of the following:\n\n[source,xml]\n----\n<key>Enable</key>\n<string>On</string>\n<key>Defer</key>\n<true/>\n----\n[source,xml]\n----\n<key>Enable</key>\n<string>On</string>\n<key>UserEntersMissingInfo</key>\n<true/>\n----\n\nIf using the Defer key it will prompt for the user name and password at logout.\n\nThe `UserEntersMissingInfo` key will only work if installed through manual installation, and it will prompt for the username and password immediately.\n\nWhen using a configuration profile, you can escrow the Recovery key to a Mobile Device Management (MDM) server. Documentation for that can be found on Apple's Developer site: link:https://developer.apple.com/documentation/devicemanagement/fderecoverykeyescrow[].\n\nIt's recommended that you use a Personal Recovery key instead of an Institutional key as it will generate a specific key for each device. You can find more guidance on choosing a recover key here: link:https://docs.jamf.com/technical-papers/jamf-pro/administering-filevault-macos/10.7.1/Choosing_a_Recovery_Key.html[].\n\nNOTE: On Intel Macs, FileVault only supports password-based unlock and cannot be done using a smartcard. Smartcard unlock for FileVault is supported on Apple Silicon Macs.\n",
+  "id": "mscp.supplemental_filevault",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "nist": {}
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/supplemental/supplemental_filevault.yaml",
+    "upstream_rule_id": "supplemental_filevault",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/supplemental/supplemental_filevault.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "800-53r5_privacy",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "supplemental"
+  ],
+  "title": "FileVault Supplemental"
+}

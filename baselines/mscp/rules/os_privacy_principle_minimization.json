@@ -1,0 +1,68 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "n_a",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Implement the privacy principle of minimization using organization-defined processes.\n\nThe principle of minimization states that organizations should only process personally identifiable information that is directly relevant and necessary to accomplish an authorized purpose and should only maintain personally identifiable information for as long as is necessary to accomplish the purpose. Organizations have processes in place, consistent with applicable laws and policies, to implement the principle of minimization.\n\nNOTE: This requirement is NA for this technology.",
+  "id": "mscp.os_privacy_principle_minimization",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "nist": {
+      "800-53r5": [
+        "SA-8(33)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92859-8"
+        ],
+        "macos_15": [
+          "CCE-94263-1"
+        ],
+        "macos_26": [
+          "CCE-95266-3"
+        ],
+        "macos_27": [
+          "CCE-97262-0"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The requirement is NA. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_privacy_principle_minimization.yaml",
+    "upstream_rule_id": "os_privacy_principle_minimization",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_privacy_principle_minimization.yaml"
+  },
+  "tags": [
+    "800-53r5_privacy",
+    "n_a"
+  ],
+  "title": "Implement the Privacy Principle of Minimization"
+}

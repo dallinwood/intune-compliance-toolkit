@@ -1,0 +1,121 @@
+{
+  "applicability": {
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return ObjC.unwrap(item.objectForKey(\"SigningID\")) == \"com.apple.MobileSMS\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "The macOS built-in Messages.app _MUST_ be disabled.\n\nThe Messages.app establishes a connection to Apple's iCloud service, even when security controls to disable iCloud access have been put in place.\n\n[IMPORTANT]\n====\nPreventing the launch of any application using the DeniedBinaries key will also prevent the launching of ad-hoc signed binaries and unsigned binaries.\n====\n\n[NOTE]\n=====\nApple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.alr will also block the launching of binaries.\n=====\n",
+  "id": "mscp.os_messages_app_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.1",
+        "4.8"
+      ]
+    },
+    "disa": {
+      "cmmc": [
+        "AC.L1-3.1.20",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "4.L.A",
+        "4.L.B"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20",
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "AC-20",
+        "CM-7",
+        "CM-7(1)"
+      ],
+      "cce": {
+        "macos_27": [
+          "CCE-97043-4"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": {
+      "ddm_key": "Allowed",
+      "ddm_value": {
+        "DeniedBinaries": [
+          {
+            "SigningID": "com.apple.MobileSMS"
+          }
+        ]
+      },
+      "declarationtype": "com.apple.configuration.app.settings"
+    },
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "DenyList": [
+              {
+                "SigningID": [
+                  "com.apple.MobileSMS"
+                ]
+              }
+            ]
+          }
+        ],
+        "PayloadType": "com.apple.alr"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_messages_app_disable.yaml",
+    "upstream_rule_id": "os_messages_app_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_messages_app_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable Messages App"
+}

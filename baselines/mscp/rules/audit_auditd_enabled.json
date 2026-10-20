@@ -1,0 +1,268 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      },
+      {
+        "name": "nlmapgov_base",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      },
+      {
+        "name": "nlmapgov_base",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {
+      "15.0": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "pass"
+        },
+        "shell": "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
+      }
+    },
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "pass"
+      },
+      "shell": "LAUNCHD_RUNNING=$(/bin/launchctl print system | /usr/bin/grep -c -E '\\tcom.apple.auditd')\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
+    }
+  },
+  "discussion": "The information system _MUST_ be configured to generate audit records.\n\nAudit records establish what types of events have occurred, when they occurred, and which users were involved. These records aid an organization in their efforts to establish, correlate, and investigate the events leading up to an outage or attack.\n\nThe content required to be captured in an audit record varies based on the impact level of an organization's system. Content that may be necessary to satisfy this requirement includes, for example, time stamps, source addresses, destination addresses, user identifiers, event descriptions, success/fail indications, filenames involved, and access or flow control rules invoked.\n\nThe information system initiates session audits at system start-up.\n\nNOTE: Security auditing is NOT enabled by default on macOS 14 and later.\n",
+  "id": "mscp.audit_auditd_enabled",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.18",
+        "8.18.02"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "3.1 (level 1)"
+        ],
+        "macos_15": [
+          "3.1 (level 1)"
+        ],
+        "macos_26": [
+          "3.1 (level 1)"
+        ],
+        "macos_27": [
+          "3.1 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "8.2",
+        "8.5"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000130",
+        "CCI-000131",
+        "CCI-000132",
+        "CCI-000133",
+        "CCI-000134",
+        "CCI-000135",
+        "CCI-000159",
+        "CCI-001464",
+        "CCI-001487",
+        "CCI-001889",
+        "CCI-001890",
+        "CCI-001914",
+        "CCI-002130",
+        "CCI-003938",
+        "CCI-004188"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.2",
+        "AU.L2-3.3.6"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-001003"
+        ],
+        "macos_15": [
+          "APPL-15-001003"
+        ],
+        "macos_26": [
+          "APPL-26-001003"
+        ],
+        "macos_27": [
+          "APPL-27-001003"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000255-GPOS-00096",
+        "SRG-OS-000474-GPOS-00219",
+        "SRG-OS-000465-GPOS-00209",
+        "SRG-OS-000473-GPOS-00218",
+        "SRG-OS-000337-GPOS-00129",
+        "SRG-OS-000359-GPOS-00146",
+        "SRG-OS-000472-GPOS-00217",
+        "SRG-OS-000257-GPOS-00098",
+        "SRG-OS-000466-GPOS-00210",
+        "SRG-OS-000042-GPOS-00020",
+        "SRG-OS-000468-GPOS-00212",
+        "SRG-OS-000392-GPOS-00172",
+        "SRG-OS-000463-GPOS-00207",
+        "SRG-OS-000039-GPOS-00017",
+        "SRG-OS-000467-GPOS-00211",
+        "SRG-OS-000470-GPOS-00214",
+        "SRG-OS-000461-GPOS-00205",
+        "SRG-OS-000258-GPOS-00099",
+        "SRG-OS-000471-GPOS-00215",
+        "SRG-OS-000458-GPOS-00203",
+        "SRG-OS-000037-GPOS-00015",
+        "SRG-OS-000040-GPOS-00018",
+        "SRG-OS-000471-GPOS-00216",
+        "SRG-OS-000476-GPOS-00221",
+        "SRG-OS-000254-GPOS-00095",
+        "SRG-OS-000042-GPOS-00021",
+        "SRG-OS-000358-GPOS-00145",
+        "SRG-OS-000477-GPOS-00222",
+        "SRG-OS-000365-GPOS-00152",
+        "SRG-OS-000475-GPOS-00220",
+        "SRG-OS-000041-GPOS-00019",
+        "SRG-OS-000038-GPOS-00016",
+        "SRG-OS-000462-GPOS-00206",
+        "SRG-OS-000055-GPOS-00026",
+        "SRG-OS-000755-GPOS-00220"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "8.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.02",
+        "03.03.03",
+        "03.03.07"
+      ],
+      "800-53r5": [
+        "AU-3",
+        "AU-3(1)",
+        "AU-8",
+        "AU-12",
+        "AU-12(1)",
+        "AU-12(3)",
+        "AU-14(1)",
+        "MA-4(1)",
+        "CM-5(1)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92704-6"
+        ],
+        "macos_15": [
+          "CCE-94104-7"
+        ],
+        "macos_26": [
+          "CCE-95104-6"
+        ],
+        "macos_27": [
+          "CCE-96953-5"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "if [[ ! -e /etc/security/audit_control ]] && [[ -e /etc/security/audit_control.example ]];then\n  /bin/cp /etc/security/audit_control.example /etc/security/audit_control\nfi\n\n/bin/launchctl enable system/com.apple.auditd\n/bin/launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.auditd.plist\n/usr/sbin/audit -i"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/audit/audit_auditd_enabled.yaml",
+    "upstream_rule_id": "audit_auditd_enabled",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_auditd_enabled.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Enable Security Auditing"
+}

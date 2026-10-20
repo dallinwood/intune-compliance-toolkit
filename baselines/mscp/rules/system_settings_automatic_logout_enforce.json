@@ -1,0 +1,148 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": "$ODV"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\\n.objectForKey('com.apple.autologout.AutoLogOutDelay').js\nEOS"
+    }
+  },
+  "discussion": "Auto logout _MUST_ be configured to automatically terminate a user session and log out the after $ODV seconds of inactivity.\n\nNOTE:The maximum that macOS can be configured for autologoff is $ODV seconds.\n\n[IMPORTANT]\n====\nThe automatic logout may cause disruptions to an organization's workflow and/or loss of data. Information System Security Officers (ISSOs) are advised to first fully weigh the potential risks posed to their organization before opting to disable the automatic logout setting.\n====\n",
+  "id": "mscp.system_settings_automatic_logout_enforce",
+  "odv": {
+    "by_benchmark": {
+      "disa_stig": 86400
+    },
+    "datatype": "number",
+    "description": "Number of seconds, e.g. 86400",
+    "recommended": 86400,
+    "validation": {
+      "min": 1
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-002361"
+      ],
+      "cmmc": [
+        "AC.L2-3.1.10",
+        "AC.L2-3.1.11"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-000160"
+        ],
+        "macos_15": [
+          "APPL-15-000160"
+        ],
+        "macos_26": [
+          "APPL-26-000160"
+        ],
+        "macos_27": [
+          "APPL-27-000160"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000279-GPOS-00109"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.01",
+        "03.01.11"
+      ],
+      "800-53r5": [
+        "AC-12",
+        "AC-2(5)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92948-9"
+        ],
+        "macos_15": [
+          "CCE-94351-4"
+        ],
+        "macos_26": [
+          "CCE-95357-0"
+        ],
+        "macos_27": [
+          "CCE-97129-1"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "com.apple.autologout.AutoLogOutDelay": "$ODV"
+          }
+        ],
+        "PayloadType": ".GlobalPreferences"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/system_settings/system_settings_automatic_logout_enforce.yaml",
+    "upstream_rule_id": "system_settings_automatic_logout_enforce",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_automatic_logout_enforce.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Enforce Auto Logout After $ODV Seconds of Inactivity"
+}

@@ -1,0 +1,51 @@
+id: os_safari_clear_history_disable
+title: Ensure Clearing of Browsing History in Safari Is Disabled
+discussion: |
+  Clearing of browser history _MUST_ be disabled in Safari.
+references:
+  nist:
+    cce:
+      macos_27:
+        - CCE-97067-3
+      macos_26:
+        - CCE-95601-1
+      ios_27:
+        - CCE-97367-7
+      ios_26:
+        - CCE-96734-9
+      visionos_27:
+        - CCE-97461-8
+  bsi:
+    indigo:
+      ios_26:
+        - ANNEX K
+platforms:
+  macOS:
+    '27.0': {}
+    '26.0': {}
+    enforcement_info:
+      check:
+        shell: |-
+          /usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName("com.apple.applicationaccess"); (ObjC.unwrap(s.objectForKey("allowSafariHistoryClearing")) == false && s.objectIsForcedForKey("allowSafariHistoryClearing")) ? "PASS" : "FAIL"'
+        result:
+          string: 'PASS'
+    introduced: '26.0'
+  iOS:
+    '27.0':
+      supervised: true
+    '26.0':
+      supervised: true
+      benchmarks:
+        - name: indigo_base
+          severity: high
+        - name: indigo_high
+          severity: high
+    introduced: '26.0'
+  visionOS:
+    '27.0':
+      supervised: true
+    introduced: '26.0'
+mobileconfig_info:
+  - PayloadType: com.apple.applicationaccess
+    PayloadContent:
+      - allowSafariHistoryClearing: false

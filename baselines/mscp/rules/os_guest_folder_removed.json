@@ -1,0 +1,118 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 0
+      },
+      "shell": "/bin/ls /Users/ | /usr/bin/grep -c \"Guest\""
+    }
+  },
+  "discussion": "The guest folder _MUST_ be deleted if present.\n",
+  "id": "mscp.os_guest_folder_removed",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "5.9 (level 1)"
+        ],
+        "macos_15": [
+          "5.9 (level 1)"
+        ],
+        "macos_26": [
+          "5.9 (level 1)"
+        ],
+        "macos_27": [
+          "5.9 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "4.1"
+      ]
+    },
+    "nist": {
+      "cce": {
+        "macos_14": [
+          "CCE-92798-8"
+        ],
+        "macos_15": [
+          "CCE-94198-9"
+        ],
+        "macos_26": [
+          "CCE-95198-8"
+        ],
+        "macos_27": [
+          "CCE-97027-7"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/bin/rm -Rf /Users/Guest"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_guest_folder_removed.yaml",
+    "upstream_rule_id": "os_guest_folder_removed",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_guest_folder_removed.yaml"
+  },
+  "tags": [],
+  "title": "Remove Guest Folder if Present"
+}

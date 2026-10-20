@@ -1,0 +1,144 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 1
+      },
+      "shell": "/usr/libexec/mdmclient QuerySecurityInfo 2>/dev/null | /usr/bin/grep -c \"SecureBootLevel = full\""
+    }
+  },
+  "discussion": "The Secure Boot security setting _MUST_ be set to full.\n\nFull security is the default Secure Boot setting in macOS. During startup, when Secure Boot is set to full security, the Mac will verify the integrity of the operating system before allowing the operating system to boot.\n\nNOTE: This will only return a proper result on a T2 or Apple Silicon Macs.\n",
+  "id": "mscp.os_secure_boot_verify",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.27",
+        "8.27.01"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-002696",
+        "CCI-002699",
+        "CCI-002702"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-005100"
+        ],
+        "macos_15": [
+          "APPL-15-005100"
+        ],
+        "macos_26": [
+          "APPL-26-005100"
+        ],
+        "macos_27": [
+          "APPL-27-005100"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000447-GPOS-00201",
+        "SRG-OS-000445-GPOS-00199",
+        "SRG-OS-000446-GPOS-00200"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.C"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "SI-7",
+        "SI-7(1)",
+        "SI-7(5)",
+        "SI-6"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92883-8"
+        ],
+        "macos_15": [
+          "CCE-94288-8"
+        ],
+        "macos_26": [
+          "CCE-95292-9"
+        ],
+        "macos_27": [
+          "CCE-97077-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "NOTE: Boot into Recovery Mode and enable Full Secure Boot",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_secure_boot_verify.yaml",
+    "upstream_rule_id": "os_secure_boot_verify",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_secure_boot_verify.yaml"
+  },
+  "tags": [
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cnssi-1253_high",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Ensure Secure Boot Level Set to Full"
+}

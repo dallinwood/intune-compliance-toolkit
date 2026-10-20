@@ -1,0 +1,42 @@
+id: os_live_text_disable
+title: Disable Live Text
+discussion: |
+  The user _MUST_ manually disable Live Text feature.
+
+  To disable open the Settings app. Tap General. Select Language & Region. Then turn off the Live Text Toggle.
+references:
+  nist:
+    cce:
+      ios_27:
+        - CCE-97340-4
+      ios_26:
+        - CCE-95664-9
+      ios_18:
+        - CCE-94538-6
+      ios_17:
+        - CCE-93487-7
+  bsi:
+    indigo:
+      ios_26:
+        - ANNEX K
+      ios_18:
+        - ANNEX K
+      ios_17:
+        - ANNEX K
+platforms:
+  iOS:
+    '27.0': {}
+    '26.0':
+      benchmarks:
+        - name: indigo_base
+        - name: indigo_high
+    '18.0':
+      benchmarks:
+        - name: indigo_base
+        - name: indigo_high
+    '17.0':
+      benchmarks:
+        - name: indigo_base
+        - name: indigo_high
+tags:
+  - manual

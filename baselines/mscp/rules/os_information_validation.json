@@ -1,0 +1,72 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": [],
+    "27.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "n_a",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Check the validity of the following information inputs: organization-defined information inputs to the systems.\n\nChecking the valid syntax and semantics of system inputs—including character set, length, numerical range, and acceptable values—verifies that inputs match specified definitions for format and content. For example, if the organization specifies that numerical values between 1-100 are the only acceptable inputs for a field in a given application, inputs of \"387,\" \"abc,\" or \"%K%\" are invalid inputs and are not accepted as input to the system. Valid inputs are likely to vary from field to field within a software application. Applications typically follow well-defined protocols that use structured messages (i.e., commands or queries) to communicate between software modules or system components. Structured messages can contain raw or unstructured data interspersed with metadata or control information. If software applications use attacker-supplied inputs to construct structured messages without properly encoding such messages, then the attacker could insert malicious commands or special characters that can cause the data to be interpreted as control information or metadata. Consequently, the module or component that receives the corrupted output will perform the wrong operations or otherwise interpret the data incorrectly. Prescreening inputs prior to passing them to interpreters prevents the content from being unintentionally interpreted as commands. Input validation ensures accurate and correct inputs and prevents attacks such as cross-site scripting and a variety of injection attacks.\n\nNOTE: This requirement is NA for this technology.",
+  "id": "mscp.os_information_validation",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "nist": {
+      "800-53r5": [
+        "SI-10"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92810-1"
+        ],
+        "macos_15": [
+          "CCE-94211-0"
+        ],
+        "macos_26": [
+          "CCE-95210-1"
+        ],
+        "macos_27": [
+          "CCE-97256-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": "The requirement is NA. No fix is required.",
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_information_validation.yaml",
+    "upstream_rule_id": "os_information_validation",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_information_validation.yaml"
+  },
+  "tags": [
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "n_a"
+  ],
+  "title": "Information Input Validation"
+}

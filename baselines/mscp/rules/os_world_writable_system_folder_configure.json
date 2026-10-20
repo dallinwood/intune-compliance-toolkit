@@ -1,0 +1,120 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 0
+      },
+      "shell": "/usr/bin/find /System/Volumes/Data/System -type d -perm -2 -ls | /usr/bin/grep -vE \"downloadDir|locks\" | /usr/bin/wc -l | /usr/bin/xargs"
+    }
+  },
+  "discussion": "Folders in /System/Volumes/Data/System _MUST_ not be world-writable.\n",
+  "id": "mscp.os_world_writable_system_folder_configure",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "5.1.6 (level 1)"
+        ],
+        "macos_15": [
+          "5.1.6 (level 1)"
+        ],
+        "macos_26": [
+          "5.1.6 (level 1)"
+        ],
+        "macos_27": [
+          "5.1.6 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "3.3"
+      ]
+    },
+    "nist": {
+      "cce": {
+        "macos_14": [
+          "CCE-92924-0"
+        ],
+        "macos_15": [
+          "CCE-94327-4"
+        ],
+        "macos_26": [
+          "CCE-95333-1"
+        ],
+        "macos_27": [
+          "CCE-97110-1"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "IFS=$'\\n'\nfor sysPermissions in $( /usr/bin/find /System/Volumes/Data/System -type d -perm -2 | /usr/bin/grep -vE \"downloadDir|locks\" ); do\n  /bin/chmod -R o-w \"$sysPermissions\"\ndone"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_world_writable_system_folder_configure.yaml",
+    "upstream_rule_id": "os_world_writable_system_folder_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_world_writable_system_folder_configure.yaml"
+  },
+  "tags": [
+    "cisv8"
+  ],
+  "title": "Ensure No World Writable Files Exist in the System Folder"
+}

@@ -1,0 +1,217 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript -e 'var s1 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SubmitDiagInfo\"); var s2 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); var v1 = ObjC.unwrap(s1.objectForKey(\"AutoSubmit\")); var v2 = ObjC.unwrap(s2.objectForKey(\"allowDiagnosticSubmission\")); var f1 = s1.objectIsForcedForKey(\"AutoSubmit\"); var f2 = s2.objectIsForcedForKey(\"allowDiagnosticSubmission\"); (v1 == false && v2 == false && f1 && f2) ? \"PASS\" : \"FAIL\"'"
+    }
+  },
+  "discussion": "The ability to submit diagnostic data to Apple _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling the submission of diagnostic and usage information will mitigate the risk of unwanted data being sent to Apple.\n",
+  "id": "mscp.system_settings_diagnostics_reports_disable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.12"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "2.6.3 (level 2)"
+        ],
+        "macos_15": [
+          "2.6.3.1 (level 1)",
+          "2.6.3.4 (level 1)"
+        ],
+        "macos_26": [
+          "2.6.3.1 (level 1)",
+          "2.6.3.4 (level 1)"
+        ],
+        "macos_27": [
+          "2.6.3.1 (level 1)",
+          "2.6.3.4 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "4.1",
+        "4.8"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-001312",
+        "CCI-001314"
+      ],
+      "cmmc": [
+        "AC.L1-3.1.20"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-002021"
+        ],
+        "macos_15": [
+          "APPL-15-002021"
+        ],
+        "macos_26": [
+          "APPL-26-002021"
+        ],
+        "macos_27": [
+          "APPL-27-002021"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000206-GPOS-00084",
+        "SRG-OS-000205-GPOS-00083"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "4.L.A"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20"
+      ],
+      "800-53r5": [
+        "SI-11",
+        "AC-20",
+        "SC-7(10)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92956-2"
+        ],
+        "macos_15": [
+          "CCE-94359-7"
+        ],
+        "macos_26": [
+          "CCE-95364-6"
+        ],
+        "macos_27": [
+          "CCE-97138-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "AutoSubmit": false
+          }
+        ],
+        "PayloadType": "com.apple.SubmitDiagInfo"
+      },
+      {
+        "PayloadContent": [
+          {
+            "allowDiagnosticSubmission": false
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/system_settings/system_settings_diagnostics_reports_disable.yaml",
+    "upstream_rule_id": "system_settings_diagnostics_reports_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_diagnostics_reports_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable Sending Diagnostic and Usage Data to Apple"
+}

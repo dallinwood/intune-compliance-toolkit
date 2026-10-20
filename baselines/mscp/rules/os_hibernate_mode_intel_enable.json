@@ -1,0 +1,77 @@
+{
+  "applicability": {
+    "15.0": [],
+    "26.0": []
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {
+      "15.0": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "error_count=0\nif /usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice 2>&1 | /usr/bin/grep -q \"MacBook\"; then\n  hibernateMode=$(/usr/bin/pmset -b -g | /usr/bin/grep hibernatemode 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyLowValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelaylow 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyHighValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelayhigh 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyThreshValue=$(/usr/bin/pmset -g | /usr/bin/grep highstandbythreshold 2>&1 | /usr/bin/awk '{print $2}')\n\n  if [[ \"$hibernateStandbyLowValue\" == \"\" ]] || [[ \"$hibernateStandbyLowValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyHighValue\" == \"\" ]] || [[ \"$hibernateStandbyHighValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyThreshValue\" == \"\" ]] || [[ \"$hibernateStandbyThreshValue\" -lt 90 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateMode\" == \"\" ]] || [[ \"$hibernateMode\" != 25 ]]; then\n    ((error_count++))\n  fi\nfi\necho \"$error_count\""
+      }
+    },
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "integer",
+        "value": 0
+      },
+      "shell": "error_count=0\nif /usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice 2>&1 | /usr/bin/grep -Ei \"MacBook|Mac[0-9]\"; then\n  hibernateMode=$(/usr/bin/pmset -b -g | /usr/bin/grep hibernatemode 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyLowValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelaylow 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyHighValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelayhigh 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyThreshValue=$(/usr/bin/pmset -g | /usr/bin/grep highstandbythreshold 2>&1 | /usr/bin/awk '{print $2}')\n\n  if [[ \"$hibernateStandbyLowValue\" == \"\" ]] || [[ \"$hibernateStandbyLowValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyHighValue\" == \"\" ]] || [[ \"$hibernateStandbyHighValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyThreshValue\" == \"\" ]] || [[ \"$hibernateStandbyThreshValue\" -lt 90 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateMode\" == \"\" ]] || [[ \"$hibernateMode\" != 25 ]]; then\n    ((error_count++))\n  fi\nfi\necho \"$error_count\""
+    }
+  },
+  "discussion": "Hibernate mode _MUST_ be enabled.\n\nThis will store a copy of memory to persistent storage, and will remove power to memory. This setting will stop the potential for a cold-boot attack.\n",
+  "id": "mscp.os_hibernate_mode_intel_enable",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "nist": {
+      "cce": {
+        "macos_14": [
+          "CCE-92802-8"
+        ],
+        "macos_15": [
+          "CCE-94202-9"
+        ],
+        "macos_26": [
+          "CCE-95201-0"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/pmset -a standbydelaylow 900\n/usr/bin/pmset -a standbydelayhigh 900\n/usr/bin/pmset -a highstandbythreshold 90\n/usr/bin/pmset -a hibernatemode 25"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_hibernate_mode_intel_enable.yaml",
+    "upstream_rule_id": "os_hibernate_mode_intel_enable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_hibernate_mode_intel_enable.yaml"
+  },
+  "tags": [],
+  "title": "Enable Hibernate Mode (Intel)"
+}

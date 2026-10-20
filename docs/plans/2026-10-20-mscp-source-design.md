@@ -1,7 +1,7 @@
 # Design: macOS rules sourced from the NIST macOS Security Compliance Project
 
 Date: 2026-10-20
-Status: Draft, awaiting approval
+Status: Approved; Plan 1 (import) implemented
 
 ## 1. Intent
 
@@ -402,3 +402,7 @@ own commit(s), per the repo's CLAUDE.md:
 - Whether the importer is one script or a small package with a CLI.
 - Test structure, including running a few generated checks through bash
   in Vitest as the existing `bash.test.ts` does.
+
+## Progress log
+
+- 2026-10-20: Plan 1 (import) completed; commit range db33dc0..this commit (feat: import mSCP release_27.0).

@@ -1,0 +1,210 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "low"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      },
+      {
+        "name": "nlmapgov_base",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "low"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      },
+      {
+        "name": "nlmapgov_base",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "low"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "$ODV"
+      },
+      "shell": "/usr/bin/awk -F: '/expire-after/{print $2}' /etc/security/audit_control"
+    }
+  },
+  "discussion": "The audit service _MUST_ be configured to require records be kept for a organizational defined value before deletion, unless the system uses a central audit record storage facility.\n\nWhen \"expire-after\" is set to \"$ODV\", the audit service will not delete audit logs until the log data criteria is met.\n",
+  "id": "mscp.audit_retention_configure",
+  "odv": {
+    "by_benchmark": {
+      "cis_lvl1": "60d OR 5G",
+      "cis_lvl2": "60d OR 5G",
+      "disa_stig": "7d",
+      "nlmapgov_base": "180d",
+      "nlmapgov_plus": "180d"
+    },
+    "datatype": "string",
+    "description": "Time or disk size, e.g. 60d OR 5G, see the man page for audit_control",
+    "recommended": "7d",
+    "validation": {
+      "regex": "^\\d+[shdyBKMG](\\s(AND|OR)\\s\\d+[shdyBKMG])?$"
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.18",
+        "8.18.02"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "3.4 (level 1)"
+        ],
+        "macos_15": [
+          "3.4 (level 1)"
+        ],
+        "macos_26": [
+          "3.4 (level 1)"
+        ],
+        "macos_27": [
+          "3.4 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "8.1",
+        "8.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-001849"
+      ],
+      "cmmc": [
+        "AU.L2-3.3.1"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-001029"
+        ],
+        "macos_15": [
+          "APPL-15-001029"
+        ],
+        "macos_26": [
+          "APPL-26-001029"
+        ],
+        "macos_27": [
+          "APPL-27-001029"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000341-GPOS-00132"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.03"
+      ],
+      "800-53r5": [
+        "AU-11",
+        "AU-4"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92730-1"
+        ],
+        "macos_15": [
+          "CCE-94130-2"
+        ],
+        "macos_26": [
+          "CCE-95130-1"
+        ],
+        "macos_27": [
+          "CCE-96975-8"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/sed -i.bak 's/^expire-after.*/expire-after:$ODV/' /etc/security/audit_control; /usr/sbin/audit -s"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/audit/audit_retention_configure.yaml",
+    "upstream_rule_id": "audit_retention_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_retention_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "800-53r5_privacy",
+    "cisv8",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure Audit Retention to $ODV"
+}

@@ -1,0 +1,142 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "26.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ],
+    "27.0": [
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "true"
+      },
+      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS"
+    }
+  },
+  "discussion": "Users _MUST_ not be allowed to install software.\n\nAllowing regular users to install software, without explicit privileges, presents the risk of untested and potentially malicious software being installed on the system. Explicit privileges (escalated or administrative privileges) provide the regular user with explicit capabilities and control that exceeds the rights of a regular user.\n\nOn macOS, restrict users from installing and running software from the /Users/ folder.\n\n[IMPORTANT]\n====\nFor macOS, Apple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.applicationaccess.new.yaml#L67-L70[application restriction controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
+  "id": "mscp.os_user_app_installation_prohibit",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-001812",
+        "CCI-003980"
+      ],
+      "cmmc": [
+        "CM.L2-3.4.9"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-005080"
+        ],
+        "macos_15": [
+          "APPL-15-005080"
+        ],
+        "macos_26": [
+          "APPL-26-005080"
+        ],
+        "macos_27": [
+          "APPL-27-005080"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000362-GPOS-00149"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "2.L.B"
+      ]
+    },
+    "nist": {
+      "800-53r5": [
+        "CM-11(2)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92920-8"
+        ],
+        "macos_15": [
+          "CCE-94323-3"
+        ],
+        "macos_26": [
+          "CCE-95329-9"
+        ],
+        "macos_27": [
+          "CCE-97106-9"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": null
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "familyControlsEnabled": true
+          },
+          {
+            "pathBlackList": [
+              "/Users/"
+            ]
+          }
+        ],
+        "PayloadType": "com.apple.applicationaccess.new"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_user_app_installation_prohibit.yaml",
+    "upstream_rule_id": "os_user_app_installation_prohibit",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_user_app_installation_prohibit.yaml"
+  },
+  "tags": [
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Prohibit User Installation of Software into /Users/"
+}

@@ -1,0 +1,217 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "PASS"
+      },
+      "shell": "RESULT=\"FAIL\"\nSS_RULE=$(/usr/bin/security -q authorizationdb read system.login.screensaver  2>&1 | /usr/bin/xmllint --xpath \"//dict/key[.='rule']/following-sibling::array[1]/string/text()\" -)\n\nif [[ \"${SS_RULE}\" == \"$ODV\" ]]; then\n    RESULT=\"PASS\"\nelse\n    PSSO_CHECK=$(/usr/bin/security -q authorizationdb read \"$SS_RULE\"  2>&1 | /usr/bin/xmllint --xpath '//key[.=\"rule\"]/following-sibling::array[1]/string/text()' -)\n    if /usr/bin/grep -Fxq \"$ODV\" <<<\"$PSSO_CHECK\"; then\n        RESULT=\"PASS\"\n    fi\nfi\n\necho $RESULT"
+    }
+  },
+  "discussion": "The ability to log in to another user's active or locked session _MUST_ be disabled.\n\nmacOS has a privilege that can be granted to any user that will allow that user to unlock active user's sessions. Disabling the admins and/or user's ability to log into another user's active and locked session prevents unauthorized persons from viewing potentially sensitive and/or personal information.\n\nNOTE: Configuring this setting will change the user experience and disable TouchID from unlocking the screensaver. A configuration profile will be generated to include the setting that restores the expected behavior. You can also apply the settings using `/usr/bin/sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow screenUnlockMode -int 1`.\n\nWARNING: Do not apply this rule if your organization uses smartcards and Platform Single Sign-On (PSSO).\n",
+  "id": "mscp.os_unlock_active_user_session_disable",
+  "odv": {
+    "by_benchmark": {
+      "cis_lvl1": "authenticate-session-owner",
+      "cis_lvl2": "authenticate-session-owner",
+      "disa_stig": "authenticate-session-owner",
+      "nlmapgov_plus": "authenticate-session-owner"
+    },
+    "datatype": "enum",
+    "description": "Refer to system.login.screensaver in /System/Library/Security/authorization.plist",
+    "recommended": "authenticate-session-owner",
+    "validation": {
+      "enumValues": [
+        "authenticate-session-owner",
+        "authenticate-session-owner-or-admin",
+        "use-login-window-ui"
+      ]
+    }
+  },
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.27",
+        "8.27.01"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "5.7 (level 1)"
+        ],
+        "macos_15": [
+          "5.7 (level 1)"
+        ],
+        "macos_26": [
+          "5.7 (level 1)"
+        ],
+        "macos_27": [
+          "5.7 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "4.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-000764",
+        "CCI-000770",
+        "CCI-004045"
+      ],
+      "cmmc": [
+        "IA.L1-3.5.1",
+        "IA.L1-3.5.2"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-000090"
+        ],
+        "macos_15": [
+          "APPL-15-000090"
+        ],
+        "macos_26": [
+          "APPL-26-000090"
+        ],
+        "macos_27": [
+          "APPL-27-000090"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000109-GPOS-00056",
+        "SRG-OS-000104-GPOS-00051"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.05.01"
+      ],
+      "800-53r5": [
+        "IA-2",
+        "IA-2(5)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92919-0"
+        ],
+        "macos_15": [
+          "CCE-94322-5"
+        ],
+        "macos_26": [
+          "CCE-95328-1"
+        ],
+        "macos_27": [
+          "CCE-97105-1"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "SS_RULE=$(/usr/bin/security -q authorizationdb read system.login.screensaver 2>&1 | /usr/bin/xmllint --xpath \"//dict/key[.='rule']/following-sibling::array[1]/string/text()\" -)\n\nif [[ \"$SS_RULE\" == *psso* ]]; then\n    /usr/bin/security -q authorizationdb read psso-screensaver > \"/tmp/psso-screensaver-mscp.plist\"\n    /usr/bin/sed -i.bak 's/<string>authenticate-session-owner-or-admin<\\/string>/<string>$ODV<\\/string>/' /tmp/psso-screensaver-mscp.plist\n    /usr/bin/security -q authorizationdb write psso-screensaver-mscp < /tmp/psso-screensaver-mscp.plist\n    /usr/bin/security -q authorizationdb write system.login.screensaver psso-screensaver-mscp 2>&1\nelse\n    /usr/bin/security -q authorizationdb write system.login.screensaver \"$ODV\" 2>&1\nfi"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": [
+      {
+        "PayloadContent": [
+          {
+            "screenUnlockMode": 1
+          }
+        ],
+        "PayloadType": "com.apple.loginwindow"
+      }
+    ]
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_unlock_active_user_session_disable.yaml",
+    "upstream_rule_id": "os_unlock_active_user_session_disable",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_unlock_active_user_session_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Disable Login to Other User's Active and Locked Sessions"
+}

@@ -1,0 +1,116 @@
+id: os_screenshots_disable
+title: Ensure Allow Screenshots and Screen Recording is Set to Disabled
+discussion: |
+  Screenshots and screen recordings _MUST_ be disabled.
+references:
+  nist:
+    cce:
+      macos_27:
+        - CCE-97076-4
+      ios_27:
+        - CCE-97378-4
+      ios_26:
+        - CCE-95521-1
+      ios_18:
+        - CCE-94463-7
+      ios_17:
+        - CCE-93446-3
+      visionos_26:
+        - CCE-95592-2
+      visionos_27:
+        - CCE-97465-9
+    800-53r5:
+      - CM-7
+      - CM-7(1)
+      - SC-7(10)
+  disa:
+    cci:
+      - CCI-000366
+    disa_stig:
+      ios_26:
+        - AIOS-26-018000
+      visionos_26:
+        - AVOS-26-018000
+    sfr:
+      - 'FMT_MOF_EXT.1.2 #47'
+    cmmc:
+      - CM.L2-3.4.6
+      - CM.L2-3.4.7
+  hhs:
+    hicp:
+      - 2.L.A
+      - 4.L.A
+      - 4.L.B
+  bsi:
+    indigo:
+      ios_26:
+        - ANNEX K
+      ios_18:
+        - ANNEX K
+      ios_17:
+        - ANNEX K
+  cis:
+    benchmark:
+      ios_26:
+        - 3.2.1.1 (level 2 - Institutionally-Owned Devices)
+      ios_18:
+        - 3.2.1.1 (level 2 - Institutionally-Owned Devices)
+      ios_17:
+        - 3.2.1.1 (level 2 - Institutionally-Owned Devices)
+    controls_v8:
+      - 3.3
+platforms:
+  macOS:
+    '27.0': {}
+    enforcement_info:
+      check:
+        shell: |-
+          /usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName("com.apple.applicationaccess"); (ObjC.unwrap(s.objectForKey("allowScreenShot")) == false && s.objectIsForcedForKey("allowScreenShot")) ? "PASS" : "FAIL"'
+        result:
+          string: 'PASS'
+    introduced: '10.14.4'
+  iOS:
+    '27.0': {}
+    '26.0':
+      supervised: false
+      benchmarks:
+        - name: cis_lvl2_enterprise
+        - name: ios_stig
+        - name: indigo_base
+        - name: indigo_high
+    '18.0':
+      supervised: false
+      benchmarks:
+        - name: cis_lvl2_enterprise
+        - name: indigo_base
+        - name: indigo_high
+    '17.0':
+      supervised: false
+      benchmarks:
+        - name: cis_lvl2_enterprise
+        - name: indigo_base
+        - name: indigo_high
+    introduced: '3.1'
+  visionOS:
+    '27.0': {}
+    '26.0':
+      supervised: false
+      benchmarks:
+        - name: visionos_stig
+          severity: low
+    introduced: '2.0'
+tags:
+  - 800-53r5_low
+  - 800-53r5_moderate
+  - 800-53r5_high
+  - cisv8
+  - cmmc_lvl2
+  - cmmc_lvl3
+  - cnssi-1253_moderate
+  - cnssi-1253_low
+  - cnssi-1253_high
+  - hicp_lp
+mobileconfig_info:
+  - PayloadType: com.apple.applicationaccess
+    PayloadContent:
+      - allowScreenShot: false

@@ -291,4 +291,9 @@ Expected: automated 262; manual: inherent 43, permanent 20, n_a 9, supplemental 
 
 ## Progress log
 
-(none yet)
+- 2026-10-20, Task 1: removed the CIS PDF pipeline, specs and benchmark skill, and recorded the supersession in the older plans. Commit: db33dc0 chore: remove CIS PDF pipeline, specs and benchmark skill.
+- 2026-10-20, Task 2: added the v3 rule, index and manifest schemas and the library validator, then hardened the validator against null documents and unsafe paths. Commits: 2738712 feat: add v3 rule, index and manifest schemas with library validator; a4630fb fix: harden library validator against null documents and unsafe paths. Deviations: check objects gained `additional_info` and a nullable `result`; the odv datatype gained `regex`; rule ids allow hyphens.
+- 2026-10-20, Task 3: added the mSCP rule normalizer, then made it reject malformed upstream shapes. Commits: c86b6b1 feat: add mSCP rule normalizer; 7f47815 fix: reject malformed upstream shapes in mSCP normalizer.
+- 2026-10-20, Task 4: added the mSCP release fetcher, then hardened the directory swap, tag validation and network calls. Commits: 5b07952 feat: add mSCP release fetcher; 9ad3dbc fix: harden mSCP fetcher swap, tag validation and network calls. Deviation: a tools/directory_swap.py helper was added for the atomic swap.
+- 2026-10-20, Task 5: added the one-command import CLI and made its failure tests transactional-sensitive. Commits: 5abc0e3 feat: add one-command mSCP import CLI; f792102 fix: make import failure tests transactional-sensitive and harden inputs. Deviation: --tag stages the fetch so a failed import leaves sources and baselines untouched.
+- 2026-10-20, Task 6: imported release_27.0 (350 macOS rules, commit c1e6cf9) and added tests that keep the committed library valid, regenerable byte-for-byte, LF-only and licensed. Commit: this commit (feat: import mSCP release_27.0).

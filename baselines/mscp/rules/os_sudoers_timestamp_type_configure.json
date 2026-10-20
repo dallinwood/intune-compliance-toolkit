@@ -1,0 +1,183 @@
+{
+  "applicability": {
+    "15.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "26.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      },
+      {
+        "name": "nlmapgov_plus",
+        "severity": null
+      }
+    ],
+    "27.0": [
+      {
+        "name": "cis_lvl1",
+        "severity": null
+      },
+      {
+        "name": "cis_lvl2",
+        "severity": null
+      },
+      {
+        "name": "disa_stig",
+        "severity": "medium"
+      }
+    ]
+  },
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "by_version": {},
+    "default": {
+      "additional_info": null,
+      "result": {
+        "type": "string",
+        "value": "tty"
+      },
+      "shell": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/awk -F\": \" '/Type of authentication timestamp record/{print $2}'"
+    }
+  },
+  "discussion": "The file /etc/sudoers _MUST_ be configured to not include a timestamp_type of global or ppid and be configured for timestamp record types of tty.\n\nThis rule ensures that the \"sudo\" command will prompt for the administrator's password at least once in each newly opened terminal window. This prevents a malicious user from taking advantage of an unlocked computer or an abandoned logon session by bypassing the normal password prompt requirement.\n",
+  "id": "mscp.os_sudoers_timestamp_type_configure",
+  "odv": null,
+  "platform": "macOS",
+  "references": {
+    "bzk": {
+      "bio": [
+        "8.27",
+        "8.27.01"
+      ]
+    },
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "5.5 (level 1)"
+        ],
+        "macos_15": [
+          "5.5 (level 1)"
+        ],
+        "macos_26": [
+          "5.5 (level 1)"
+        ],
+        "macos_27": [
+          "5.5 (level 1)"
+        ]
+      },
+      "controls_v8": [
+        "4.3"
+      ]
+    },
+    "disa": {
+      "cci": [
+        "CCI-002038"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-004060"
+        ],
+        "macos_15": [
+          "APPL-15-004060"
+        ],
+        "macos_26": [
+          "APPL-26-004060"
+        ],
+        "macos_27": [
+          "APPL-27-004060"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000373-GPOS-00157",
+        "SRG-OS-000373-GPOS-00156"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.05.01"
+      ],
+      "800-53r5": [
+        "CM-5(1)",
+        "IA-11"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92909-1"
+        ],
+        "macos_15": [
+          "CCE-94312-6"
+        ],
+        "macos_26": [
+          "CCE-95318-2"
+        ],
+        "macos_27": [
+          "CCE-97098-8"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "by_version": {},
+    "ddm_info": null,
+    "default": {
+      "additional_info": null,
+      "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_type/d; /!tty_tickets/d' '{}' \\;"
+    },
+    "mobileconfig_by_version": {},
+    "mobileconfig_info": null
+  },
+  "schema_version": 3,
+  "source": {
+    "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.0",
+    "upstream_path": "rules/os/os_sudoers_timestamp_type_configure.yaml",
+    "upstream_rule_id": "os_sudoers_timestamp_type_configure",
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_sudoers_timestamp_type_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cisv8",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure Sudoers Timestamp Type"
+}
