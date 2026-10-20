@@ -19,6 +19,14 @@ LOCK = SourceLock(
 )
 
 
+OTHER_LOCK = SourceLock(
+    tag="release_28.0",
+    commit_sha="e" * 40,
+    retrieved_date="2026-11-01",
+    repository_url="https://github.com/usnistgov/macos_security",
+)
+
+
 def snapshot(directory: Path) -> dict[str, bytes]:
     return {
         path.relative_to(directory).as_posix(): path.read_bytes()
@@ -100,6 +108,7 @@ def test_failure_leaves_baselines_untouched(workspace, capsys):
     sources_dir, baselines_dir = workspace
     run_import(sources_dir, baselines_dir, "--offline")
     before = snapshot(baselines_dir)
+    write_source_lock(sources_dir / "source.json", OTHER_LOCK)
     add_bad_rule(sources_dir)
     assert run_import(sources_dir, baselines_dir, "--offline") == 1
     assert "zz_bad_rule" in capsys.readouterr().err
@@ -200,7 +209,8 @@ def test_tag_failure_in_normalizer_leaves_everything_untouched(workspace, monkey
     def fetch_bad_upstream(tag, staging_sources_dir, today, opener=None):
         populate_sources(staging_sources_dir)
         add_bad_rule(staging_sources_dir)
-        return LOCK
+        write_source_lock(staging_sources_dir / "source.json", OTHER_LOCK)
+        return OTHER_LOCK
 
     monkeypatch.setattr(import_mscp, "fetch", fetch_bad_upstream)
     assert run_import(sources_dir, baselines_dir, "--tag", "release_27.0") == 1
@@ -224,3 +234,39 @@ def test_tag_failure_in_fetch_leaves_everything_untouched(workspace, monkeypatch
     assert snapshot(sources_dir) == sources_before
     assert snapshot(baselines_dir) == {}
     assert top_level_names(sources_dir.parent) == ["mscp"]
+
+
+@pytest.mark.parametrize(
+    "manifest_text",
+    ["not json", "{}", "[]", '{"schema_version": 3, "sources": [{"display_name": "x"}]}'],
+)
+def test_malformed_existing_manifest_exits_one(workspace, capsys, manifest_text):
+    sources_dir, baselines_dir = workspace
+    (baselines_dir / "_manifest.json").write_text(manifest_text, encoding="utf-8")
+    before = snapshot(baselines_dir)
+    assert run_import(sources_dir, baselines_dir, "--offline") == 1
+    assert "_manifest.json" in capsys.readouterr().err
+    assert snapshot(baselines_dir) == before
+    assert top_level_names(baselines_dir.parent) == ["baselines", "sources"]
+
+
+@pytest.mark.parametrize("lock_text", ["{}", "[]", "not json"])
+def test_malformed_source_lock_exits_one(workspace, capsys, lock_text):
+    sources_dir, baselines_dir = workspace
+    (sources_dir / "source.json").write_text(lock_text, encoding="utf-8")
+    assert run_import(sources_dir, baselines_dir, "--offline") == 1
+    assert "source.json" in capsys.readouterr().err
+    assert snapshot(baselines_dir) == {}
+
+
+def test_upstream_id_with_trailing_newline_is_rejected(workspace, capsys):
+    sources_dir, baselines_dir = workspace
+    rule_path = sources_dir / "upstream" / "rules" / "os" / "os_gatekeeper_enable.yaml"
+    rule_text = rule_path.read_text(encoding="utf-8")
+    rule_path.write_text(
+        rule_text.replace("id: os_gatekeeper_enable", 'id: "os_gatekeeper_enable\\n"'),
+        encoding="utf-8",
+    )
+    assert run_import(sources_dir, baselines_dir, "--offline") == 1
+    assert "unsafe upstream rule id" in capsys.readouterr().err
+    assert snapshot(baselines_dir) == {}

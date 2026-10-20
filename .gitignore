@@ -260,3 +260,9 @@ coverage/
 # OS
 .DS_Store
 Thumbs.db
+
+# mSCP importer crash leftovers (temp, staging and swap backup directories)
+.mscp-validate-*/
+.mscp-sources-staging-*/
+.mscp-old-*/
+.manifest-*.tmp

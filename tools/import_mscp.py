@@ -65,7 +65,7 @@ def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int
         if rule is None:
             continue
         upstream_id = rule["id"].removeprefix(f"{SOURCE_NAME}.")
-        if not SAFE_UPSTREAM_ID.match(upstream_id):
+        if not SAFE_UPSTREAM_ID.fullmatch(upstream_id):
             raise ValueError(f"{upstream_path}: unsafe upstream rule id {upstream_id!r}")
         if upstream_id in entries_by_id:
             raise ValueError(f"{upstream_path}: duplicate upstream rule id {upstream_id}")
@@ -99,8 +99,13 @@ def merged_manifest(baselines_dir: Path, entry: dict) -> dict:
     manifest_path = baselines_dir / MANIFEST_FILE_NAME
     other_sources = []
     if manifest_path.exists():
-        existing = json.loads(manifest_path.read_text(encoding="utf-8"))
-        other_sources = [source for source in existing["sources"] if source["name"] != SOURCE_NAME]
+        try:
+            existing = json.loads(manifest_path.read_text(encoding="utf-8"))
+            other_sources = [
+                source for source in existing["sources"] if source["name"] != SOURCE_NAME
+            ]
+        except (ValueError, KeyError, TypeError) as problem:
+            raise ValueError(f"{manifest_path}: existing manifest is unusable ({problem!r})") from problem
     sources = sorted([*other_sources, entry], key=lambda source: source["name"])
     return {"schema_version": SCHEMA_VERSION, "sources": sources}
 
@@ -145,7 +150,10 @@ def import_offline(sources_dir: Path, baselines_dir: Path) -> tuple[SourceLock, 
         raise ValueError(f"{lock_path}: source lock not found; run with --tag first")
     if not upstream_dir.is_dir():
         raise ValueError(f"{upstream_dir}: upstream copy not found; run with --tag first")
-    lock = read_source_lock(lock_path)
+    try:
+        lock = read_source_lock(lock_path)
+    except (ValueError, TypeError) as problem:
+        raise ValueError(f"{lock_path}: source lock is unusable ({problem!r})") from problem
     return lock, generate_library(upstream_dir, lock, baselines_dir)
 
 
