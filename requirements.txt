@@ -1,3 +1,2 @@
-pymupdf==1.28.2
-pymupdf4llm==1.28.2
+PyYAML==6.0.3
 jsonschema==4.26.0

@@ -116,3 +116,7 @@ generated `_index.json` / manifest output.
 No remediation has been implemented as of this writing. This document
 records the findings so the decision and follow-up work can be picked up
 later without re-deriving the analysis.
+
+## Closing note (2026-10-20)
+
+CIS-derived content has been removed from the working tree. Published git history will be handled separately by the maintainer.
