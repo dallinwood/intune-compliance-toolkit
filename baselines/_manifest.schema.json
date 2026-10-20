@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Library manifest (v3)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sources"],
+  "properties": {
+    "schema_version": { "const": 3 },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name", "display_name", "release_tag", "commit_sha", "retrieved_date",
+          "repository_url", "license", "index_path", "rule_count"
+        ],
+        "properties": {
+          "name": { "type": "string" },
+          "display_name": { "type": "string" },
+          "release_tag": { "type": "string" },
+          "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "retrieved_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+          "repository_url": { "type": "string" },
+          "license": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "url", "rights_holder", "modified"],
+            "properties": {
+              "name": { "type": "string" },
+              "url": { "type": "string" },
+              "rights_holder": { "type": "string" },
+              "modified": { "const": true }
+            }
+          },
+          "index_path": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$))[^\\\\]+$"
+          },
+          "rule_count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

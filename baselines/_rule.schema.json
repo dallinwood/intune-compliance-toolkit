@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Normalized mSCP macOS rule (v3)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "id", "platform", "title", "discussion", "source",
+    "assessment", "architecture", "applicability", "tags", "references",
+    "check", "odv", "remediation"
+  ],
+  "properties": {
+    "schema_version": { "const": 3 },
+    "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+$" },
+    "platform": { "const": "macOS" },
+    "title": { "type": "string" },
+    "discussion": { "type": "string" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name", "release_tag", "commit_sha", "upstream_rule_id",
+        "upstream_path", "upstream_url", "license"
+      ],
+      "properties": {
+        "name": { "const": "mscp" },
+        "release_tag": { "type": "string" },
+        "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "upstream_rule_id": { "type": "string" },
+        "upstream_path": { "type": "string" },
+        "upstream_url": { "type": "string" },
+        "license": { "$ref": "#/$defs/license" }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "manual_reason"],
+      "properties": {
+        "status": { "enum": ["automated", "manual"] },
+        "manual_reason": {
+          "enum": ["manual", "inherent", "permanent", "n_a", "supplemental", "no_check", null]
+        }
+      },
+      "if": { "properties": { "status": { "const": "automated" } } },
+      "then": { "properties": { "manual_reason": { "type": "null" } } },
+      "else": { "properties": { "manual_reason": { "type": "string" } } }
+    },
+    "architecture": { "enum": ["arm64", "i386", null] },
+    "applicability": {
+      "type": "object",
+      "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "severity"],
+          "properties": {
+            "name": { "type": "string" },
+            "severity": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "references": { "type": "object" },
+    "check": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["default", "by_version"],
+      "properties": {
+        "default": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/check_entry" }]
+        },
+        "by_version": {
+          "type": "object",
+          "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+          "additionalProperties": { "$ref": "#/$defs/check_entry" }
+        }
+      }
+    },
+    "odv": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["datatype", "description", "validation", "recommended", "by_benchmark"],
+          "properties": {
+            "datatype": { "enum": ["number", "string", "enum"] },
+            "description": { "type": "string" },
+            "validation": { "type": ["object", "null"] },
+            "recommended": { "type": ["integer", "string"] },
+            "by_benchmark": {
+              "type": "object",
+              "additionalProperties": { "type": ["integer", "string"] }
+            }
+          }
+        }
+      ]
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default", "by_version", "mobileconfig_info",
+        "mobileconfig_by_version", "ddm_info"
+      ],
+      "properties": {
+        "default": { "$ref": "#/$defs/remediation_entry" },
+        "by_version": {
+          "type": "object",
+          "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+          "additionalProperties": { "$ref": "#/$defs/remediation_entry" }
+        },
+        "mobileconfig_info": { "type": ["object", "array", "null"] },
+        "mobileconfig_by_version": {
+          "type": "object",
+          "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+          "additionalProperties": { "type": ["object", "array"] }
+        },
+        "ddm_info": { "type": ["object", "array", "null"] }
+      }
+    }
+  },
+  "$defs": {
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "url", "rights_holder", "modified"],
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "type": "string" },
+        "rights_holder": { "type": "string" },
+        "modified": { "const": true }
+      }
+    },
+    "check_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shell", "result"],
+      "properties": {
+        "shell": { "type": ["string", "null"] },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "value"],
+          "properties": {
+            "type": { "enum": ["integer", "string", "base64"] },
+            "value": { "type": ["integer", "string"] }
+          },
+          "if": { "properties": { "type": { "const": "integer" } } },
+          "then": {
+            "properties": {
+              "value": { "oneOf": [{ "type": "integer" }, { "const": "$ODV" }] }
+            }
+          },
+          "else": {
+            "properties": { "value": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "remediation_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shell", "additional_info"],
+      "properties": {
+        "shell": { "type": ["string", "null"] },
+        "additional_info": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

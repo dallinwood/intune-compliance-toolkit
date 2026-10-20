@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rule index for one library source (v3)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "rules"],
+  "properties": {
+    "schema_version": { "const": 3 },
+    "source": { "type": "string" },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "title", "file", "assessment", "architecture",
+          "applicability", "tags", "has_odv"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_]+$" },
+          "title": { "type": "string" },
+          "file": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(^|/)\\.\\.(/|$))[^\\\\]+$"
+          },
+          "assessment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["status", "manual_reason"],
+            "properties": {
+              "status": { "enum": ["automated", "manual"] },
+              "manual_reason": {
+                "enum": ["manual", "inherent", "permanent", "n_a", "supplemental", "no_check", null]
+              }
+            },
+            "if": { "properties": { "status": { "const": "automated" } } },
+            "then": { "properties": { "manual_reason": { "type": "null" } } },
+            "else": { "properties": { "manual_reason": { "type": "string" } } }
+          },
+          "architecture": { "enum": ["arm64", "i386", null] },
+          "applicability": {
+            "type": "object",
+            "propertyNames": { "pattern": "^\\d+\\.\\d+$" },
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "severity"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "severity": { "type": ["string", "null"] }
+                }
+              }
+            }
+          },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "has_odv": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
