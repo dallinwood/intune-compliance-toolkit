@@ -289,6 +289,23 @@ Expected: automated 262; manual: inherent 43, permanent 20, n_a 9, supplemental 
 
 ---
 
+## Notes for Plan 2
+
+Findings from the final whole-branch review that Plan 2 (web UI, script generator, attribution, deploy) must account for:
+
+- **Version applicability, revisiting design section 6.** "Fall back to `default` for any other version" is wrong for real data. `os_messages_app_disable_familycontrols` is automated but has a null `check.default` (checks for 15.0 and 26.0 only). 28 rules have no 27.0 key, several of them deliberately replaced by 27.0-only rules. The generator must treat "a macOS version this release knows, with the rule absent" as not applicable, and only use `default` for versions newer than the import. That needs a covered-versions list in the data.
+- **Benchmark catalogue.** Tag-based baselines (800-53, 800-171, CMMC, cisv8, ...) mean "tag AND version key", not tag alone (the bare 800-171 tag overcounts mSCP's baseline by 20 rules). Which ODV value prefills depends on each baseline's `parent_values` (`recommended` for tag baselines, the benchmark itself for cis_lvl1/cis_lvl2/disa_stig), which lives only in the vendored baseline YAML. Add a small catalogue to the manifest or index: name, display name, kind (benchmark or tag), parent_values, covered OS versions.
+- `os_gatekeeper_rearm` and `os_firewall_log_enable` have empty `applicability`; decide whether to hide them.
+- `$ODV` appears in titles (19 rules, also in `_index.json`), discussion, mobileconfig_info and ddm_info. The UI needs substitution or a placeholder rendering. `system_settings_loginwindow_loginwindowtext_enable` has a base64 result of `$ODV`, so the generator must base64-encode the substituted value.
+- **ODV input.** Enforce the datatype as well as `validation` (24 number ODVs carry only `min`). Handle `regex` datatype values safely before substituting them into shell. Apply the conservative character set to the 6 ODVs without `validation`. Fall back to `recommended` when a selected benchmark has no `by_benchmark` value.
+- **Rule ids with hyphens** (`os_mfa_network_non-priv` and 2 others) must be sanitized when deriving shell and Intune variable names.
+- Filter `references` to `macos_*` keys for display. The index has no reference ids, so search by STIG/CIS id needs per-rule fetches or an index change (the index is 343 KB today).
+- The discovery-script preamble comes from the vendored `sources/mscp/upstream/templates/shell_scripts/compliance_script.sh.jinja`; `check.jinja` holds mSCP's exclusion-tag list.
+- `scripts/copy-baselines.mjs` must skip dot-prefixed entries so crash leftovers (`.mscp-old-*`, `.manifest-*.tmp`) never reach Pages.
+- README "Updating the mSCP rules" step 1 installs `requirements.txt`, but step 4 runs pytest, which is only in `requirements-dev.txt`. Fix this in Plan 2's README/NOTICE pass.
+- Upstream's own schema allows `result: boolean|exit_code` and `enforcement_info.default_state`. The importer rejects both by design, so a future release using them will fail the import loudly and need a normalizer update.
+- Never put hand-written files in `sources/mscp/` or `baselines/mscp/`: both are replaced wholesale on import.
+
 ## Progress log
 
 - 2026-10-20, Task 1: removed the CIS PDF pipeline, specs and benchmark skill, and recorded the supersession in the older plans. Commit: db33dc0 chore: remove CIS PDF pipeline, specs and benchmark skill.
@@ -296,5 +313,5 @@ Expected: automated 262; manual: inherent 43, permanent 20, n_a 9, supplemental 
 - 2026-10-20, Task 3: added the mSCP rule normalizer, then made it reject malformed upstream shapes. Commits: c86b6b1 feat: add mSCP rule normalizer; 7f47815 fix: reject malformed upstream shapes in mSCP normalizer.
 - 2026-10-20, Task 4: added the mSCP release fetcher, then hardened the directory swap, tag validation and network calls. Commits: 5b07952 feat: add mSCP release fetcher; 9ad3dbc fix: harden mSCP fetcher swap, tag validation and network calls. Deviation: a tools/directory_swap.py helper was added for the atomic swap.
 - 2026-10-20, Task 5: added the one-command import CLI and made its failure tests transactional-sensitive. Commits: 5abc0e3 feat: add one-command mSCP import CLI; f792102 fix: make import failure tests transactional-sensitive and harden inputs. Deviation: --tag stages the fetch so a failed import leaves sources and baselines untouched.
-- 2026-10-20, Task 6: imported release_27.0 (350 macOS rules, commit c1e6cf9) and added tests that keep the committed library valid, regenerable byte-for-byte, LF-only and licensed. Commit: this commit (feat: import mSCP release_27.0).
-- 2026-10-20, final review fix wave: renormalized line endings via .gitattributes, skipped hidden files among upstream rules, rewrote the README licensing section and added update steps, constrained odv.validation in the rule schema, scanned the whole normalized rule for $ODV, downloaded the tarball by resolved commit sha, printed an added/removed rules and tags summary after import, rejected duplicate YAML keys and case-insensitive tarball collisions, removed the dead UPSTREAM_SUBSET constant, vendored the two shell_scripts templates (350 rules re-imported, baselines unchanged), and added a retry for transient Windows PermissionError in the directory swap. Commit: this commit (fix: address final review of mSCP import).
+- 2026-10-20, Task 6: imported release_27.0 (350 macOS rules, commit c1e6cf9) and added tests that keep the committed library valid, regenerable byte-for-byte, LF-only and licensed. Commit: 04ffd38 feat: import mSCP release_27.0.
+- 2026-10-20, final review fix wave: renormalized line endings via .gitattributes, skipped hidden files among upstream rules, rewrote the README licensing section and added update steps, constrained odv.validation in the rule schema, scanned the whole normalized rule for $ODV, downloaded the tarball by resolved commit sha, printed an added/removed rules and tags summary after import, rejected duplicate YAML keys and case-insensitive tarball collisions, removed the dead UPSTREAM_SUBSET constant, vendored the two shell_scripts templates (350 rules re-imported, baselines unchanged), and added a retry for transient Windows PermissionError in the directory swap. Commit: 80da465 fix: address final review of mSCP import.
