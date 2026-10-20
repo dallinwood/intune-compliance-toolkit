@@ -1,0 +1,13 @@
+id: os_inherent_example
+title: Inherent Platform Protection
+discussion: |
+  This protection is inherent to macOS.
+references: {}
+platforms:
+  macOS:
+    '27.0':
+      benchmarks:
+        - name: cis_lvl1
+    introduced: '10.7'
+tags:
+  - inherent

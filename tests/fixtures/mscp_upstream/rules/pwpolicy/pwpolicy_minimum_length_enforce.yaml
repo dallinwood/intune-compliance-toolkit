@@ -1,0 +1,29 @@
+id: pwpolicy_minimum_length_enforce
+title: Enforce Minimum Password Length
+discussion: |
+  Passwords _MUST_ meet a minimum length.
+references: {}
+platforms:
+  macOS:
+    '27.0':
+      benchmarks:
+        - name: cis_lvl1
+        - name: disa_stig
+          severity: medium
+    enforcement_info:
+      check:
+        shell: test $ODV
+        result:
+          integer: $ODV
+    introduced: '10.7'
+odv:
+  hint:
+    datatype: number
+    description: Minimum length
+    validation:
+      min: 1
+  recommended: 6
+  cis_lvl1: 15
+  disa_stig: 14
+tags:
+  - cisv8

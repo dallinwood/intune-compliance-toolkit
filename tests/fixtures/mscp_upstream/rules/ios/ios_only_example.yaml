@@ -1,0 +1,10 @@
+id: ios_only_example
+title: iOS Only Rule
+discussion: |
+  Applies to iOS only.
+platforms:
+  iOS:
+    '26.0':
+      supervised: false
+tags:
+  - none

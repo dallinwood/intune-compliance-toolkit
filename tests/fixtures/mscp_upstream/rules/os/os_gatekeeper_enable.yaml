@@ -1,0 +1,33 @@
+id: os_gatekeeper_enable
+title: Enable Gatekeeper
+discussion: |
+  Gatekeeper _MUST_ be enabled.
+references:
+  nist:
+    800-53r5:
+      - CM-14
+platforms:
+  macOS:
+    '27.0':
+      benchmarks:
+        - name: disa_stig
+          severity: high
+        - name: cis_lvl1
+    '15.0':
+      benchmarks:
+        - name: cis_lvl1
+      enforcement_info:
+        check:
+          shell: /usr/sbin/spctl --status | /usr/bin/grep -c enabled
+          result:
+            integer: 1
+    enforcement_info:
+      check:
+        shell: /usr/sbin/spctl --status
+        result:
+          string: PASS
+      fix:
+        shell: /usr/sbin/spctl --global-enable
+    introduced: '10.7'
+tags:
+  - cisv8
