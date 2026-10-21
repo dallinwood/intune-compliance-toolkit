@@ -28,6 +28,13 @@ const PREAMBLE_LINES = [
   '',
   '__os_major=${ICT_TEST_OS_MAJOR:-$(/usr/bin/sw_vers -productVersion 2>/dev/null | /usr/bin/cut -d. -f1)}',
   '',
+  '# A compliance tool must not report compliant when it cannot tell which',
+  '# checks apply, so an unknown OS version reports null (non-compliant) for every rule.',
+  '__os_major_known=true',
+  'case "$__os_major" in',
+  "  ''|*[!0-9]*) __os_major_known=false ;;",
+  'esac',
+  '',
   "# Discards stderr like mSCP's run_scan() { ... } 2>/dev/null.",
   '__run_check() {',
   '  if [ -n "${ICT_TEST_CHECK_SHELL:-}" ]; then',
@@ -149,7 +156,9 @@ function assertPlanIsSafe(plan: RuleCheckPlan): void {
 function checkLines(plan: RuleCheckPlan, shell: string, expected: ExpectedResult): string[] {
   const variable = resultVariable(plan)
   const exportOdv = plan.exportedOdv === null ? '' : `export ODV=${bashSingleQuote(plan.exportedOdv)} ; `
-  const lines = [`  ${variable}=$( ${exportOdv}__run_check ${bashSingleQuote(shell)} )`]
+  // The trailing newline matches mSCP's `$( check\n)`, e.g. for a heredoc
+  // terminator on the check's last line.
+  const lines = [`  ${variable}=$( ${exportOdv}__run_check ${bashSingleQuote(`${shell}\n`)} )`]
   if (plan.reporting === 'boolean') {
     lines.push(
       `  if [ "$${variable}" = ${bashSingleQuote(String(expected.value))} ]; then ${variable}='true'; else ${variable}='false'; fi`,
@@ -161,7 +170,12 @@ function checkLines(plan: RuleCheckPlan, shell: string, expected: ExpectedResult
 function ruleLines(plan: RuleCheckPlan): string[] {
   const variable = resultVariable(plan)
   const passValue = plan.reporting === 'raw' ? String(plan.operand) : 'true'
-  const lines = [`# --- ${singleLineComment(`${plan.id}: ${plan.title}`)} ---`,`${variable}=${bashSingleQuote(passValue)}`]
+  // An empty result is reported as null by every JSON helper.
+  const lines = [
+    `# --- ${singleLineComment(`${plan.id}: ${plan.title}`)} ---`,
+    `${variable}=''`,
+    `if [ "$__os_major_known" = 'true' ]; then ${variable}=${bashSingleQuote(passValue)}; fi`,
+  ]
 
   const dispatch: string[] = []
   plan.branches.forEach((branch, index) => {

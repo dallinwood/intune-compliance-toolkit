@@ -88,7 +88,7 @@ describe('generateBashScript structure', () => {
     const script = generateBashScript([rawStringPlan()])
 
     expect(script).toContain('/bin/zsh --no-rcs -c "$1"')
-    expect(script).toContain("__result_raw_rule=$( __run_check 'echo LISTED' )")
+    expect(script).toContain("__result_raw_rule=$( __run_check 'echo LISTED\n' )")
   })
 
   it('throws when a shell or expected value still contains $ODV', () => {
@@ -132,6 +132,16 @@ describe('generateBashScript executed through bash', () => {
 
   it('passes on a major older than every covered one', () => {
     expect(runScript(script, { osMajor: '14' })).toEqual({ raw_rule: 'PASS', boolean_rule: true })
+  })
+
+  it.each(['', 'abc', '15.1'])('reports null for every rule when the OS major %j is not a whole number', (osMajor) => {
+    const failClosedScript = generateBashScript([
+      rawStringPlan(),
+      booleanPlan(),
+      rawStringPlan({ settingName: 'integer_rule', dataType: 'Int64', operand: 25, newerBranch: null }),
+      rawStringPlan({ settingName: 'arm_rule', architecture: 'arm64' }),
+    ])
+    expect(runScript(failClosedScript, { osMajor })).toEqual({ raw_rule: null, boolean_rule: null, integer_rule: null, arm_rule: null })
   })
 
   it('passes on a newer major when there is no newer branch', () => {
