@@ -34,12 +34,14 @@ function constraintHint(odv: Odv): string | null {
 }
 
 export function OrgDefinedValueInput({
+  ruleId,
   odv,
   mode,
   storedValue,
   onCommit,
   onClear,
 }: {
+  ruleId: string
   odv: Odv
   mode: OdvSubstitutionMode
   storedValue: OrgDefinedValue | null
@@ -61,11 +63,16 @@ export function OrgDefinedValueInput({
     setText(textOf(storedValue))
   }
 
-  const preparation = text === '' ? null : prepareOdvValue(odv, text, mode)
-  // Mirrors usableOdvValue: a stored value that fails validation (e.g. left
-  // by an older build) is not what the rest of the UI uses.
-  const storedValueIsUsable = storedValue !== null && validateOdvValue(odv, storedValue, mode) === null
+  const preparation = text === '' ? null : prepareOdvValue(odv, text, mode, ruleId)
+  // A stored value that fails validation (e.g. left by an older build)
+  // blocks generation on the review screen, so it must be reported as such
+  // rather than implying the recommended value will be used instead.
+  const storedValueProblem = storedValue === null ? null : validateOdvValue(odv, storedValue, mode, ruleId)
+  const storedValueIsUsable = storedValue !== null && storedValueProblem === null
   const error = preparation && !preparation.valid ? preparation.error : null
+  // While the field still shows the invalid saved value, its error is the
+  // saved value's problem, already reported by the saved-value message.
+  const showTypedError = error !== null && !(storedValueProblem !== null && text === textOf(storedValue))
 
   function handleChange(rawValue: string) {
     setText(rawValue)
@@ -74,7 +81,7 @@ export function OrgDefinedValueInput({
       onClear()
       return
     }
-    const next = prepareOdvValue(odv, rawValue, mode)
+    const next = prepareOdvValue(odv, rawValue, mode, ruleId)
     if (next.valid) {
       setSyncedValue(next.value)
       onCommit(next.value)
@@ -85,7 +92,7 @@ export function OrgDefinedValueInput({
   const commonProps = {
     id: inputId,
     value: text,
-    'aria-invalid': error !== null,
+    'aria-invalid': error !== null || storedValueProblem !== null,
     'aria-describedby': messageId,
   }
 
@@ -141,12 +148,24 @@ export function OrgDefinedValueInput({
       </Label>
       {field}
       <div id={messageId} className="space-y-0.5 text-xs">
-        {error && (
+        {storedValue !== null && storedValueProblem !== null && (
+          <div role="alert" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-red-600">
+            <p className="break-words">
+              Saved value '{shortened(storedValue, HINT_VALUE_LENGTH)}' is invalid: {storedValueProblem} Generation is
+              blocked until you fix or clear it.
+            </p>
+            <Button type="button" size="xs" variant="outline" onClick={() => handleChange('')}>
+              Clear saved value
+            </Button>
+          </div>
+        )}
+        {showTypedError && (
           <p role="alert" className="text-red-600">
             {error} {storedValueIsUsable && storedValue !== null && <>Not saved; still using {shortened(storedValue, HINT_VALUE_LENGTH)}.</>}
+            {storedValueProblem !== null && <>Not saved.</>}
           </p>
         )}
-        {!storedValueIsUsable && (
+        {storedValue === null && (
           <p className="break-words text-slate-500">
             Using recommended value: {shortened(odv.recommended, HINT_VALUE_LENGTH)}
           </p>
@@ -156,7 +175,7 @@ export function OrgDefinedValueInput({
       {quickPicks.length > 0 && (
         <div className="flex flex-wrap items-center gap-1">
           {quickPicks.map((pick) => {
-            const pickPreparation = prepareOdvValue(odv, pick.value, mode)
+            const pickPreparation = prepareOdvValue(odv, pick.value, mode, ruleId)
             const valueText = String(pick.value)
             const isShort = valueText.length <= SHORT_VALUE_LENGTH && !valueText.includes('\n')
             const isActive = pickPreparation.valid && storedValue === pickPreparation.value

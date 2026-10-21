@@ -3,8 +3,11 @@ import { FilterSidebar } from '../filters/FilterSidebar'
 import { GenerateReviewScreen } from '../generate/GenerateReviewScreen'
 import { RuleTable } from '../rules/RuleTable'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
+import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { matchesFilters } from '../../logic/ruleFilters'
+import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import { useFilterStore } from '../../state/filterStore'
+import { useSelectionStore } from '../../state/selectionStore'
 import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { AttributionFooter } from './AttributionFooter'
@@ -26,6 +29,14 @@ export function AppShell({
   const [filtersOpen, setFiltersOpen] = useState(false)
   const filters = useFilterStore()
   const filteredRows = useMemo(() => rows.filter((row) => matchesFilters(row, filters)), [rows, filters])
+  const selections = useSelectionStore((store) => store.selections)
+  const rowsById = useMemo(() => new Map(rows.map((row) => [row.ref.id, row])), [rows])
+  // Memoized so the review screen's fetch effect only re-runs when the
+  // selection itself changes.
+  const { known: knownSelections, unknownIds } = useMemo(
+    () => partitionSelectionsByLibrary(selections, rowsById),
+    [selections, rowsById],
+  )
 
   return (
     <div className="flex h-screen flex-col">
@@ -46,9 +57,15 @@ export function AppShell({
           <span className="text-sm text-slate-500">
             {filteredRows.length} of {rows.length} rules
           </span>
-          <SelectionToolbar rows={rows} sources={sources} onGenerate={() => setView('generate')} />
+          <SelectionToolbar
+            rows={rows}
+            sources={sources}
+            selectedCount={knownSelections.length}
+            onGenerate={() => setView('generate')}
+          />
         </div>
       </header>
+      <StaleSelectionsNotice unknownIds={unknownIds} />
       {view === 'browse' ? (
         <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
           <div id="filter-sidebar" className={`${filtersOpen ? 'block' : 'hidden'} md:block`}>
@@ -59,7 +76,11 @@ export function AppShell({
           </main>
         </div>
       ) : (
-        <GenerateReviewScreen coveredVersions={coveredVersions} onBack={() => setView('browse')} />
+        <GenerateReviewScreen
+          enabledEntries={knownSelections}
+          coveredVersions={coveredVersions}
+          onBack={() => setView('browse')}
+        />
       )}
       <AttributionFooter sources={sources} />
     </div>

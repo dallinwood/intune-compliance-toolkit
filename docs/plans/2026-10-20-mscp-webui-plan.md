@@ -233,7 +233,7 @@ This task leaves components referring to removed types, so `bun run build` fails
     - **Preamble:** copied from mSCP's vendored `compliance_script.sh.jinja` variable block (`CURRENT_USER`, `CURR_USER_UID`, `CURR_HOSTNAME`, `arch`, `plb`). `arch` is `${ICT_TEST_ARCH:-$(/usr/bin/arch)}`. `__os_major` is `${ICT_TEST_OS_MAJOR:-$(/usr/bin/sw_vers -productVersion | /usr/bin/cut -d. -f1)}`. The two `ICT_TEST_*` overrides exist only so tests can execute the script; a comment says so.
     - **Per rule:** dispatch on `__os_major`. A listed major runs its branch's shell captured as `$( <shell>\n)` (the newline before `)` keeps heredocs inside checks working, as mSCP does). A major greater than `newerThan` runs `newerBranch` (or passes if null). Anything else passes. An architecture mismatch passes.
     - **Pass value:** the operand for `raw`, `true` for `boolean`.
-    - **`boolean` reporting:** compares the trimmed captured output against the branch's expected value as a string, in-script.
+    - **`boolean` reporting:** compares the captured output exactly against the branch's expected value as a string, in-script. Nothing is trimmed beyond what command substitution itself strips (trailing newlines), mirroring mSCP. Revised during Task 4.
     - **Output:** one compact JSON object keyed by SettingName using the existing `__json_int`/`__json_str`/`__json_bool` helpers, printed last.
     - **Safety:** throws if any plan's shell or expected value still contains `$ODV`.
   - `buildRuleEntry(plan: RuleCheckPlan, rule: Rule): IntuneRuleEntry`:
@@ -327,9 +327,9 @@ This task leaves components referring to removed types, so `bun run build` fails
   - Point the Licensing section at NOTICE.
 - [ ] **Step 3: Deploy workflow.**
   - Triggers: push to `main` plus `workflow_dispatch`.
-  - Permissions: `contents: read`, `pages: write`, `id-token: write`. Concurrency group `pages`.
-  - Steps: checkout; `oven-sh/setup-bun@v2`; `bun install --frozen-lockfile` in `webui`; `bun run test`; `bun run build`; `actions/configure-pages@v5`; `actions/upload-pages-artifact@v3` with `path: webui/dist`; `actions/deploy-pages@v4`.
-  - Before writing, confirm each action's current major version on its GitHub releases page. If a newer major exists, use it and say so in the report.
+  - Permissions: none at workflow level (`permissions: {}`); the `build` job gets `contents: read` and the `deploy` job gets `pages: write` and `id-token: write`. Concurrency group `pages`.
+  - Steps: `build` job: checkout; `oven-sh/setup-bun`; `bun install --frozen-lockfile` in `webui`; `bun run test`; `bun run build`; `actions/upload-pages-artifact` with `path: webui/dist`. `deploy` job: `actions/deploy-pages`. No `actions/configure-pages` step: nothing reads its outputs, because the Vite base path is fixed in `vite.config.ts`.
+  - Every action is pinned by full commit SHA with its version in a trailing comment, at the current major (checkout v7, setup-bun v2, upload-pages-artifact v5, deploy-pages v5 when written). Revised in 5eacd5d and adf98fa.
   - Validate the YAML parses (`python -c "import yaml,sys; yaml.safe_load(open(sys.argv[1]))" .github/workflows/deploy-pages.yml`).
 - [ ] **Step 3b: Report the manual step.** The maintainer must set the repository's Pages source to "GitHub Actions" in GitHub settings. Report it; do not attempt it.
 - [ ] **Step 4: Progress logs.** Add one dated entry per task 1-6 with short hash and subject. Task 6 uses "this commit (docs: add attribution notice and Pages deploy)".
@@ -344,5 +344,7 @@ This task leaves components referring to removed types, so `bun run build` fails
 - 2026-10-21: Task 3 (rule browser): f26f3f6 feat: browse mSCP rules in the web UI; a2333a9 fix: wrap check code and clarify ODV notes in the rule browser
 - 2026-10-21: Task 4 (discovery script and Intune rules generation): 2f81c19 feat: generate mSCP discovery scripts and Intune rules; 03ddf66 fix: fail closed on an unknown macOS version in discovery scripts
 - 2026-10-21: Task 5 (bundle generation from the review screen): 65f6081 feat: generate mSCP compliance bundles from the review screen; 2bbc9d4 fix: measure the rules-JSON cap on the written file and allow manual-only bundles
-- 2026-10-21: Task 6 (attribution NOTICE, README, Pages deploy workflow): this commit (docs: add attribution notice and Pages deploy)
+- 2026-10-21: Task 6 (attribution NOTICE, README, Pages deploy workflow): ce5300c docs: add attribution notice and Pages deploy
+- 2026-10-21: Deploy workflow hardening: 5eacd5d ci: pin workflow actions by SHA and scope permissions per job; adf98fa ci: drop unused configure-pages step
+- 2026-10-21: Final-review fix wave (stale saved selections no longer break the review and can be removed, rule-specific ODV pattern for `system_settings_softwareupdate_current`, hardened rule fetch, explicit invalid saved-value message, README limitations and real-Mac checklist, test fixes): this commit (fix: address final review of mSCP web UI)
 - Plan revisions during execution: 9978e2d (context-aware ODV validation), 38af5f6 (reviewed variable allowlist replacing the quote scanner), 56c1284 (zsh per check from a bash script), e0c8552 (base64 with trailing newline)

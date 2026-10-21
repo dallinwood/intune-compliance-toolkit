@@ -29,7 +29,7 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
   const mode = odvSubstitutionMode(rule)
-  const odvValue = usableOdvValue(rule.odv, mode, storedValue)
+  const odvValue = usableOdvValue(rule.odv, mode, storedValue, rule.id)
   const { source } = rule
 
   return (
@@ -40,6 +40,7 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
         <div className="space-y-1">
           <SectionHeading>Organization-defined value</SectionHeading>
           <OrgDefinedValueInput
+            ruleId={rule.id}
             odv={rule.odv}
             mode={mode}
             storedValue={storedValue}

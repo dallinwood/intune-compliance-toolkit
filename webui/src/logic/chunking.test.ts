@@ -133,6 +133,19 @@ describe('classifyRule', () => {
     })
   })
 
+  it('blocks system_settings_softwareupdate_current on a stored value that date -v cannot use', () => {
+    const rule = realRule('system_settings_softwareupdate_current')
+
+    expect(classify(rule, '30d').kind).toBe('generatable')
+    for (const unusable of ['30', 'abc']) {
+      const result = classify(rule, unusable)
+      expect(result.kind).toBe('blocked')
+      expect(result.kind === 'blocked' && result.entry.reason).toBe(
+        'Organization value is invalid: Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
+      )
+    }
+  })
+
   it('classifies an automated rule the planner cannot script as manual, with the planner problem as the reason', () => {
     const rule = inlineRule({ overrides: { check: { default: ruleCheck(null, null), by_version: {} } } })
 

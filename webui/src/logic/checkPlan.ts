@@ -118,7 +118,7 @@ function resolveOdv(rule: Rule, selectedValue: OrgDefinedValue | null): Resolved
   if (effective === null) return { problem: 'This rule needs an organization-defined value.' }
 
   const canonical = canonicalOdvValue(rule.odv, effective)
-  const invalidReason = validateOdvValue(rule.odv, canonical, mode)
+  const invalidReason = validateOdvValue(rule.odv, canonical, mode, rule.id)
   if (invalidReason) return { problem: `The organization-defined value is invalid: ${invalidReason}` }
   return { value: canonical, mode }
 }

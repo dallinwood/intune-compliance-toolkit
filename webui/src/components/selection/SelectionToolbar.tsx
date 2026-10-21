@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { useSelectionStore } from '../../state/selectionStore'
 import type { ManifestSource } from '../../types/library'
@@ -8,15 +7,16 @@ import { ExportImportControls } from './ExportImportControls'
 export function SelectionToolbar({
   rows,
   sources,
+  selectedCount,
   onGenerate,
 }: {
   rows: RuleRow[]
   sources: ManifestSource[]
+  // Enabled selections whose rule is in the loaded library.
+  selectedCount: number
   onGenerate: () => void
 }) {
-  const selections = useSelectionStore((store) => store.selections)
   const clearAll = useSelectionStore((store) => store.clearAll)
-  const selectedCount = useMemo(() => Object.values(selections).filter((entry) => entry.enabled).length, [selections])
 
   return (
     <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">

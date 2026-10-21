@@ -208,6 +208,30 @@ describe('sanitizeImportedSelections', () => {
     expect(result.droppedValues).toEqual([{ id: PASSWORD_REF.id, reason: 'The rule details could not be loaded.' }])
   })
 
+  it('drops a softwareupdate_current deferral that BSD date -v cannot use', () => {
+    const deferralRef: RuleRef = {
+      id: 'mscp.system_settings_softwareupdate_current',
+      path: 'mscp/rules/system_settings_softwareupdate_current.json',
+    }
+    const deferralOdv: Odv = { datatype: 'string', description: 'Deferral', validation: null, recommended: '30d', by_benchmark: {} }
+    const deferralRows = new Map([[deferralRef.id, rowFor(deferralRef)]])
+    const deferralRules = new Map([[deferralRef.id, ruleWith(deferralRef.id, deferralOdv, 'date -v -$ODV "+%s"')]])
+
+    const result = sanitizeImportedSelections(
+      [entry(deferralRef, true, '30')],
+      deferralRows,
+      deferralRules,
+    )
+
+    expect(result.selections[deferralRef.id].odvValue).toBeNull()
+    expect(result.droppedValues).toEqual([
+      {
+        id: deferralRef.id,
+        reason: 'Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
+      },
+    ])
+  })
+
   it('trims trailing newlines from a variable-mode banner', () => {
     const result = sanitizeImportedSelections([entry(BANNER_REF, true, "It's ours\n")], rowsById, rulesById)
 

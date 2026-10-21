@@ -36,6 +36,19 @@ const UNSAFE_REGEX_CHARACTER_PATTERN = /[\s;|&<>]/
 const UNSAFE_REGEX_DOLLAR_PATTERN = /\$[A-Za-z_{(]/
 const ODV_PLACEHOLDER = '$ODV'
 
+export interface OdvRuleValuePattern {
+  pattern: RegExp
+  requirement: string
+}
+
+export const ODV_RULE_VALUE_PATTERNS: Readonly<Record<string, OdvRuleValuePattern>> = {
+  // `date -v -$ODV` needs BSD date's number-plus-unit form; on anything else it prints nothing and the check passes.
+  'mscp.system_settings_softwareupdate_current': {
+    pattern: /^[0-9]+[ymwdHMS]$/,
+    requirement: 'Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
+  },
+}
+
 // Entries are hand-reviewed check shells where `$ODV` is only ever expanded as a double-quoted variable, so the generator can define ODV as a variable instead of text-replacing.
 export const ODV_VARIABLE_ALLOWLIST: Readonly<Record<string, string>> = {
   'mscp.os_policy_banner_ssh_configure': 'bannerText="$ODV"\ntest "$(cat /etc/banner)" = "$bannerText" && echo "1" || echo "0"',
@@ -102,14 +115,22 @@ function validateAgainstDatatype(odv: Odv, text: string): string | null {
 }
 
 // Returns null when the value is acceptable, otherwise a human-readable
-// reason. Datatype rules run first, then the extra rules for values that are
-// text-replaced into the shell.
-export function validateOdvValue(odv: Odv, value: OrgDefinedValue, mode: OdvSubstitutionMode): string | null {
+// reason. Datatype rules run first, then any rule-specific pattern, then the
+// extra rules for values that are text-replaced into the shell.
+export function validateOdvValue(
+  odv: Odv,
+  value: OrgDefinedValue,
+  mode: OdvSubstitutionMode,
+  ruleId: string,
+): string | null {
   const text = String(value)
   if (text.trim() === '') return 'Value must not be empty.'
 
   const datatypeProblem = validateAgainstDatatype(odv, text)
   if (datatypeProblem) return datatypeProblem
+
+  const ruleValuePattern = ODV_RULE_VALUE_PATTERNS[ruleId]
+  if (ruleValuePattern && !ruleValuePattern.pattern.test(text)) return ruleValuePattern.requirement
 
   for (const { sequence, description } of ALWAYS_DENIED) {
     if (text.includes(sequence)) return `Value must not contain ${description}.`
@@ -175,9 +196,14 @@ const TRAILING_NEWLINES_PATTERN = /\n+$/
 // The single path from raw input (typed, quick-picked or imported) to a
 // storable value. In variable mode the check compares against `cat` output,
 // which loses trailing newlines, so a banner ending in one could never pass.
-export function prepareOdvValue(odv: Odv, value: OrgDefinedValue, mode: OdvSubstitutionMode): OdvPreparation {
+export function prepareOdvValue(
+  odv: Odv,
+  value: OrgDefinedValue,
+  mode: OdvSubstitutionMode,
+  ruleId: string,
+): OdvPreparation {
   const normalized = mode === 'variable' && typeof value === 'string' ? value.replace(TRAILING_NEWLINES_PATTERN, '') : value
-  const error = validateOdvValue(odv, normalized, mode)
+  const error = validateOdvValue(odv, normalized, mode, ruleId)
   if (error) return { valid: false, error }
   return { valid: true, value: canonicalOdvValue(odv, normalized) }
 }
@@ -189,8 +215,9 @@ export function usableOdvValue(
   odv: Odv | null,
   mode: OdvSubstitutionMode,
   selected: OrgDefinedValue | null,
+  ruleId: string,
 ): OrgDefinedValue | null {
   if (!odv) return null
-  const usableSelection = selected !== null && validateOdvValue(odv, selected, mode) === null ? selected : null
+  const usableSelection = selected !== null && validateOdvValue(odv, selected, mode, ruleId) === null ? selected : null
   return effectiveOdvValue(odv, usableSelection)
 }

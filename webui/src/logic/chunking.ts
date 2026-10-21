@@ -55,7 +55,7 @@ export function sectionOf(rule: Rule): string {
 export function classifyRule(rule: Rule, selection: SelectionEntry, coveredVersions: string[]): ClassificationResult {
   const odvMode = odvSubstitutionMode(rule)
   const manual = (reason: string): ClassificationResult => {
-    const displayOdv = usableOdvValue(rule.odv, odvMode, selection.odvValue)
+    const displayOdv = usableOdvValue(rule.odv, odvMode, selection.odvValue, rule.id)
     return {
       kind: 'manual',
       entry: {
@@ -78,7 +78,7 @@ export function classifyRule(rule: Rule, selection: SelectionEntry, coveredVersi
     const effective = effectiveOdvValue(rule.odv, selection.odvValue)
     if (effective === null) return blocked('Needs an organization value')
     const canonical = canonicalOdvValue(rule.odv, effective)
-    const invalidReason = validateOdvValue(rule.odv, canonical, odvMode)
+    const invalidReason = validateOdvValue(rule.odv, canonical, odvMode, rule.id)
     if (invalidReason) return blocked(`Organization value is invalid: ${invalidReason}`)
     odvValue = canonical
   }

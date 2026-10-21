@@ -46,5 +46,5 @@ export function useStoredOdvValue(ruleRef: RuleRef): OrgDefinedValue | null {
 export function useUsableOdvValue(rule: Rule | null, ruleRef: RuleRef): OrgDefinedValue | null {
   const stored = useStoredOdvValue(ruleRef)
   if (!rule) return null
-  return usableOdvValue(rule.odv, odvSubstitutionMode(rule), stored)
+  return usableOdvValue(rule.odv, odvSubstitutionMode(rule), stored, rule.id)
 }

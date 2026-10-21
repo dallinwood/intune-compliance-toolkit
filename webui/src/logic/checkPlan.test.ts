@@ -112,6 +112,18 @@ describe('planRuleCheck with real committed rules', () => {
     expect(customPlan).toMatchObject({ dataType: 'Int64', operand: 40, odvValue: 40 })
   })
 
+  it('refuses a system_settings_softwareupdate_current value that BSD date -v cannot use', () => {
+    const rule = realRule('system_settings_softwareupdate_current')
+
+    expect(expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null)).odvValue).toBe('30d')
+    expect(expectPlan(planRuleCheck(rule, COVERED_VERSIONS, '7d')).odvValue).toBe('7d')
+    for (const unusable of ['30', 'abc']) {
+      expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, unusable))).toMatch(
+        /^The organization-defined value is invalid: Value must be a whole number followed by one unit letter/,
+      )
+    }
+  })
+
   it('gives os_messages_app_disable_familycontrols no branch for 27 and a newer branch from 26', () => {
     const rule = realRule('os_messages_app_disable_familycontrols')
     const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))

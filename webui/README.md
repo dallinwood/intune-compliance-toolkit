@@ -1,32 +1,15 @@
-# React + TypeScript + Vite
+# webui
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The browser app that browses the mSCP rule library and generates Intune
+macOS compliance bundles. See the [root README](../README.md) for what it
+does, licensing, deployment and known limitations.
 
-Currently, two official plugins are available:
+Requires [Bun](https://bun.sh). From this directory:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- `bun install` installs dependencies.
+- `bun run dev` starts the dev server on http://localhost:5173.
+- `bun run build` type-checks and builds the static site into `dist/`.
+- `bun run test` runs the Vitest unit tests.
+- `bun run lint` runs oxlint.
+- `bun run test:e2e` runs the Playwright tests against an already running
+  `bun run dev` (set `PLAYWRIGHT_BASE_URL` for another port).

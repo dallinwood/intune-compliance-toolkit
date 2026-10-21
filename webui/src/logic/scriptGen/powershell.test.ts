@@ -6,18 +6,18 @@ import { describe, expect, it } from 'vitest'
 import { generatePowerShellScript, type ScriptableRule } from './powershell'
 import type { AuditStep } from './legacyWindowsTypes'
 
-// The real lookup -> compliance_check dependency case from
-// cis_intune_win11_1.1.json: the second step's check_command references
-// the first step's variable via string interpolation, so verbatim,
-// ordered concatenation matters - and the lookup step's own variable
-// (empty output_check) must never appear in the JSON output.
+// A synthetic lookup -> compliance_check dependency: the second step's
+// check_command reads a registry path built from the first step's variable
+// via string interpolation, so verbatim, ordered concatenation matters -
+// and the lookup step's own variable (empty output_check) must never
+// appear in the JSON output.
 const LOOKUP_STEP: AuditStep = {
   step_role: 'lookup',
   original_command: null,
   check_command:
-    "$cis_intune_win11_1_1_winning_provider_guid = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\AboveLock' -Name 'AllowCortanaAboveLock_WinningProvider' -ErrorAction SilentlyContinue).AllowCortanaAboveLock_WinningProvider",
+    "$example_rule_active_profile = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\ExampleVendor\\ExampleApp' -Name 'ActiveProfile' -ErrorAction SilentlyContinue).ActiveProfile",
   check_command_verified: true,
-  output_description: 'This value confirms under which User GUID the policy is set.',
+  output_description: 'The profile whose settings apply.',
   output_check: [],
 }
 
@@ -25,11 +25,11 @@ const COMPLIANCE_CHECK_STEP: AuditStep = {
   step_role: 'compliance_check',
   original_command: null,
   check_command:
-    '$cis_intune_win11_1_1_allow_cortana_above_lock = (Get-ItemProperty -Path "HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\Providers\\$cis_intune_win11_1_1_winning_provider_guid\\Default\\Device\\AboveLock" -Name \'AllowCortanaAboveLock\' -ErrorAction SilentlyContinue).AllowCortanaAboveLock',
+    '$example_rule_setting_value = (Get-ItemProperty -Path "HKLM:\\SOFTWARE\\ExampleVendor\\ExampleApp\\Profiles\\$example_rule_active_profile\\Settings" -Name \'ExampleSetting\' -ErrorAction SilentlyContinue).ExampleSetting',
   check_command_verified: false,
   output_description: 'confirm the value is set to 0',
   output_check: [
-    { variable: 'cis_intune_win11_1_1_allow_cortana_above_lock', data_type: 'integer', operator: 'eq', value: 0, value_source: 'benchmark' },
+    { variable: 'example_rule_setting_value', data_type: 'integer', operator: 'eq', value: 0, value_source: 'benchmark' },
   ],
 }
 
@@ -44,9 +44,9 @@ function runScript(script: string): string {
 }
 
 describe('generatePowerShellScript', () => {
-  it('emits both real steps verbatim and in order, warning on the unverified one', () => {
+  it('emits both steps verbatim and in order, warning on the unverified one', () => {
     const script = generatePowerShellScript([
-      { id: '1.1', title: "Ensure 'Allow Cortana Above Lock' is set to 'Block'", steps: [LOOKUP_STEP, COMPLIANCE_CHECK_STEP] },
+      { id: '1.1', title: "Example setting is set to 'Off'", steps: [LOOKUP_STEP, COMPLIANCE_CHECK_STEP] },
     ])
 
     expect(script).toContain(LOOKUP_STEP.check_command)
@@ -61,8 +61,8 @@ describe('generatePowerShellScript', () => {
     // The lookup command itself must still run verbatim (asserted above) -
     // only its presence as a hashtable *entry* (i.e. in the JSON output) is
     // what must be excluded.
-    expect(script).not.toContain("'cis_intune_win11_1_1_winning_provider_guid' =")
-    expect(script).toContain("'cis_intune_win11_1_1_allow_cortana_above_lock' =")
+    expect(script).not.toContain("'example_rule_active_profile' =")
+    expect(script).toContain("'example_rule_setting_value' =")
   })
 
   it('always exits 0', () => {
@@ -113,8 +113,8 @@ describe('generatePowerShellScript', () => {
   it('computes a case-insensitive, literal (non-wildcard) contains check as a derived boolean', () => {
     const rules: ScriptableRule[] = [
       {
-        id: '6.7',
-        title: "Ensure 'Audit Authentication Policy Change' is set to include 'Success'",
+        id: '2.1',
+        title: "Example audit setting includes 'Success'",
         steps: [
           {
             step_role: 'compliance_check',
@@ -143,7 +143,7 @@ describe('generatePowerShellScript', () => {
   it('reports false, not a thrown error, when the captured value has no match', () => {
     const rules: ScriptableRule[] = [
       {
-        id: '6.7',
+        id: '2.1',
         title: 'x',
         steps: [
           {

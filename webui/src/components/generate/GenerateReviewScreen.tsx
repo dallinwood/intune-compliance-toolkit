@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { fetchRule } from '../../data/ruleDetail'
 import { buildBundleFiles } from '../../logic/bundleFiles'
@@ -11,8 +11,8 @@ import {
   type ManualAttestationEntry,
 } from '../../logic/chunking'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
+import type { SelectionEntry } from '../../logic/selectionEntry'
 import { buildZip } from '../../logic/zipBundle'
-import { useSelectionStore } from '../../state/selectionStore'
 import { BundleGroupCard } from './BundleGroupCard'
 import { ManualAttestationReport } from './ManualAttestationReport'
 
@@ -37,9 +37,19 @@ function downloadZip(chunks: Chunk[], manual: ManualAttestationEntry[]): void {
   setTimeout(() => URL.revokeObjectURL(url), 0)
 }
 
-export function GenerateReviewScreen({ coveredVersions, onBack }: { coveredVersions: string[]; onBack: () => void }) {
-  const selections = useSelectionStore((store) => store.selections)
-  const enabledEntries = useMemo(() => Object.values(selections).filter((entry) => entry.enabled), [selections])
+// enabledEntries are the enabled selections whose rule is in the loaded
+// library, each carrying the library's ref (partitionSelectionsByLibrary),
+// so a saved selection for a rule the library no longer has never fails the
+// whole review.
+export function GenerateReviewScreen({
+  enabledEntries,
+  coveredVersions,
+  onBack,
+}: {
+  enabledEntries: SelectionEntry[]
+  coveredVersions: string[]
+  onBack: () => void
+}) {
   const [state, setState] = useState<ReviewState>({ status: 'loading' })
 
   useEffect(() => {
@@ -162,6 +172,10 @@ function DeploymentNote() {
         compliance &gt; Scripts (macOS) with "Run this script using the logged on credentials" set to No, because the
         checks assume root. Then create a custom compliance policy that uses that script and the matching{' '}
         <span className="font-mono">-rules.json</span>.
+      </p>
+      <p className="mt-1">
+        A rule reports compliant without running its check on a macOS version it does not list, including versions
+        older than this library covers, so pair these policies with Intune's minimum OS version compliance setting.
       </p>
     </div>
   )

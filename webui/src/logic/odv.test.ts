@@ -7,12 +7,15 @@ import {
   effectiveOdvValue,
   odvQuickPicks,
   odvSubstitutionMode,
+  ODV_RULE_VALUE_PATTERNS,
   ODV_VARIABLE_ALLOWLIST,
   prepareOdvValue,
   substituteOdv,
   usableOdvValue,
   validateOdvValue,
 } from './odv'
+
+const GENERIC_RULE_ID = 'mscp.example_rule'
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
@@ -82,34 +85,34 @@ describe('validateOdvValue modes', () => {
 
   describe('none', () => {
     it('allows an apostrophe, quotes, backslashes and newlines', () => {
-      expect(validateOdvValue(stringOdv, "Don't \"quote\" me \\ $(x) ${y} `z`\nnext", 'none')).toBeNull()
+      expect(validateOdvValue(stringOdv, "Don't \"quote\" me \\ $(x) ${y} `z`\nnext", 'none', GENERIC_RULE_ID)).toBeNull()
     })
   })
 
   describe('variable', () => {
     it('allows a multi-line SSH banner with apostrophes and quotes', () => {
-      expect(validateOdvValue(stringOdv, sshBanner, 'variable')).toBeNull()
-      expect(validateOdvValue(stringOdv, "Don't \"quote\" $(x)", 'variable')).toBeNull()
+      expect(validateOdvValue(stringOdv, sshBanner, 'variable', GENERIC_RULE_ID)).toBeNull()
+      expect(validateOdvValue(stringOdv, "Don't \"quote\" $(x)", 'variable', GENERIC_RULE_ID)).toBeNull()
     })
   })
 
   describe('text', () => {
     it('fails the multi-line SSH banner', () => {
-      expect(validateOdvValue(stringOdv, sshBanner, 'text')).not.toBeNull()
+      expect(validateOdvValue(stringOdv, sshBanner, 'text', GENERIC_RULE_ID)).not.toBeNull()
     })
 
     it('accepts a plain unquoted-safe string', () => {
-      expect(validateOdvValue(stringOdv, '30d', 'text')).toBeNull()
-      expect(validateOdvValue(stringOdv, 'time.apple.com', 'text')).toBeNull()
+      expect(validateOdvValue(stringOdv, '30d', 'text', GENERIC_RULE_ID)).toBeNull()
+      expect(validateOdvValue(stringOdv, 'time.apple.com', 'text', GENERIC_RULE_ID)).toBeNull()
     })
 
     it('rejects a string value with shell metacharacters', () => {
-      expect(validateOdvValue(stringOdv, '30d; rm -rf /', 'text')).not.toBeNull()
+      expect(validateOdvValue(stringOdv, '30d; rm -rf /', 'text', GENERIC_RULE_ID)).not.toBeNull()
     })
 
     it('rejects an apostrophe, which none allows', () => {
-      expect(validateOdvValue(stringOdv, "it's", 'text')).toBe('Value must not contain a single quote.')
-      expect(validateOdvValue(stringOdv, "it's", 'none')).toBeNull()
+      expect(validateOdvValue(stringOdv, "it's", 'text', GENERIC_RULE_ID)).toBe('Value must not contain a single quote.')
+      expect(validateOdvValue(stringOdv, "it's", 'none', GENERIC_RULE_ID)).toBeNull()
     })
 
     it.each([
@@ -121,17 +124,17 @@ describe('validateOdvValue modes', () => {
       ['${HOME}', '"${"'],
     ])('rejects %j because it contains %s', (value, description) => {
       const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
-      expect(validateOdvValue(regexOdv, value, 'text')).toBe(`Value must not contain ${description}.`)
+      expect(validateOdvValue(regexOdv, value, 'text', GENERIC_RULE_ID)).toBe(`Value must not contain ${description}.`)
     })
 
     it('does not apply the unquoted-string pattern to a regex datatype', () => {
       const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
-      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'text')).toBeNull()
+      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'text', GENERIC_RULE_ID)).toBeNull()
     })
 
     it('applies the denied characters to enum values too', () => {
       const enumOdv = odv({ datatype: 'enum', validation: { enumValues: ["it's"] }, recommended: "it's" })
-      expect(validateOdvValue(enumOdv, "it's", 'text')).toBe('Value must not contain a single quote.')
+      expect(validateOdvValue(enumOdv, "it's", 'text', GENERIC_RULE_ID)).toBe('Value must not contain a single quote.')
     })
   })
 })
@@ -139,72 +142,72 @@ describe('validateOdvValue modes', () => {
 describe('validateOdvValue datatype rules', () => {
   it('accepts an integer within min and max', () => {
     const numberOdv = odv({ validation: { min: 1, max: 10 } })
-    expect(validateOdvValue(numberOdv, 5, 'text')).toBeNull()
-    expect(validateOdvValue(numberOdv, 1, 'text')).toBeNull()
-    expect(validateOdvValue(numberOdv, 10, 'text')).toBeNull()
+    expect(validateOdvValue(numberOdv, 5, 'text', GENERIC_RULE_ID)).toBeNull()
+    expect(validateOdvValue(numberOdv, 1, 'text', GENERIC_RULE_ID)).toBeNull()
+    expect(validateOdvValue(numberOdv, 10, 'text', GENERIC_RULE_ID)).toBeNull()
   })
 
   it('rejects numbers outside min and max with a reason', () => {
     const numberOdv = odv({ validation: { min: 1, max: 10 } })
-    expect(validateOdvValue(numberOdv, 0, 'none')).toBe('Value must be at least 1.')
-    expect(validateOdvValue(numberOdv, 11, 'none')).toBe('Value must be at most 10.')
+    expect(validateOdvValue(numberOdv, 0, 'none', GENERIC_RULE_ID)).toBe('Value must be at least 1.')
+    expect(validateOdvValue(numberOdv, 11, 'none', GENERIC_RULE_ID)).toBe('Value must be at most 10.')
   })
 
   it('rejects non-integer numbers', () => {
-    expect(validateOdvValue(odv(), 1.5, 'none')).toBe('Value must be a whole number.')
-    expect(validateOdvValue(odv(), '1e3', 'none')).toBe('Value must be a whole number.')
+    expect(validateOdvValue(odv(), 1.5, 'none', GENERIC_RULE_ID)).toBe('Value must be a whole number.')
+    expect(validateOdvValue(odv(), '1e3', 'none', GENERIC_RULE_ID)).toBe('Value must be a whole number.')
   })
 
   it('rejects integers beyond the safe integer range, which would not survive canonicalisation', () => {
-    expect(validateOdvValue(odv(), '9007199254740993', 'none')).toBe('Value must be a whole number between -9007199254740991 and 9007199254740991.')
-    expect(validateOdvValue(odv(), 1e21, 'none')).toBe('Value must be a whole number.')
-    expect(validateOdvValue(odv(), 1e20, 'none')).toBe('Value must be a whole number between -9007199254740991 and 9007199254740991.')
-    expect(validateOdvValue(odv(), Number.MAX_SAFE_INTEGER, 'none')).toBeNull()
+    expect(validateOdvValue(odv(), '9007199254740993', 'none', GENERIC_RULE_ID)).toBe('Value must be a whole number between -9007199254740991 and 9007199254740991.')
+    expect(validateOdvValue(odv(), 1e21, 'none', GENERIC_RULE_ID)).toBe('Value must be a whole number.')
+    expect(validateOdvValue(odv(), 1e20, 'none', GENERIC_RULE_ID)).toBe('Value must be a whole number between -9007199254740991 and 9007199254740991.')
+    expect(validateOdvValue(odv(), Number.MAX_SAFE_INTEGER, 'none', GENERIC_RULE_ID)).toBeNull()
   })
 
   it('accepts a negative integer and a numeric string for a number datatype', () => {
-    expect(validateOdvValue(odv(), -5, 'text')).toBeNull()
-    expect(validateOdvValue(odv(), '42', 'text')).toBeNull()
+    expect(validateOdvValue(odv(), -5, 'text', GENERIC_RULE_ID)).toBeNull()
+    expect(validateOdvValue(odv(), '42', 'text', GENERIC_RULE_ID)).toBeNull()
   })
 
   it('requires an enum value to be one of enumValues', () => {
     const enumOdv = odv({ datatype: 'enum', validation: { enumValues: ['a', 'b'] }, recommended: 'a' })
-    expect(validateOdvValue(enumOdv, 'a', 'text')).toBeNull()
-    expect(validateOdvValue(enumOdv, 'c', 'text')).toBe('Value must be one of: a, b.')
+    expect(validateOdvValue(enumOdv, 'a', 'text', GENERIC_RULE_ID)).toBeNull()
+    expect(validateOdvValue(enumOdv, 'c', 'text', GENERIC_RULE_ID)).toBe('Value must be one of: a, b.')
   })
 
   it('applies validation.regex to string values', () => {
     const stringOdv = odv({ datatype: 'string', validation: { regex: '^[a-z]+$' }, recommended: 'abc' })
-    expect(validateOdvValue(stringOdv, 'abc', 'text')).toBeNull()
-    expect(validateOdvValue(stringOdv, 'ABC', 'text')).toBe('Value must match the pattern ^[a-z]+$.')
+    expect(validateOdvValue(stringOdv, 'abc', 'text', GENERIC_RULE_ID)).toBeNull()
+    expect(validateOdvValue(stringOdv, 'ABC', 'text', GENERIC_RULE_ID)).toBe('Value must match the pattern ^[a-z]+$.')
   })
 
   it('requires a regex datatype value to compile as a JavaScript RegExp', () => {
     const regexOdv = odv({ datatype: 'regex', recommended: '^a$' })
-    expect(validateOdvValue(regexOdv, '^a+$', 'none')).toBeNull()
-    expect(validateOdvValue(regexOdv, '(unclosed', 'none')).toBe('Value must be a valid regular expression.')
+    expect(validateOdvValue(regexOdv, '^a+$', 'none', GENERIC_RULE_ID)).toBeNull()
+    expect(validateOdvValue(regexOdv, '(unclosed', 'none', GENERIC_RULE_ID)).toBe('Value must be a valid regular expression.')
   })
 
   it.each(['none', 'variable', 'text'] as const)('always rejects a carriage return and NUL in %s', (context) => {
     const stringOdv = odv({ datatype: 'string', recommended: 'x' })
-    expect(validateOdvValue(stringOdv, 'a\rb', context)).toBe('Value must not contain a carriage return.')
-    expect(validateOdvValue(stringOdv, 'a\0b', context)).toBe('Value must not contain a NUL character.')
+    expect(validateOdvValue(stringOdv, 'a\rb', context, GENERIC_RULE_ID)).toBe('Value must not contain a carriage return.')
+    expect(validateOdvValue(stringOdv, 'a\0b', context, GENERIC_RULE_ID)).toBe('Value must not contain a NUL character.')
   })
 })
 
 describe('validateOdvValue hardening', () => {
   it.each(['', '   ', '\t'])('rejects the empty or whitespace-only value %j for every datatype', (value) => {
-    expect(validateOdvValue(odv(), value, 'none')).toBe('Value must not be empty.')
-    expect(validateOdvValue(odv({ datatype: 'string' }), value, 'none')).toBe('Value must not be empty.')
-    expect(validateOdvValue(odv({ datatype: 'regex' }), value, 'none')).toBe('Value must not be empty.')
-    expect(validateOdvValue(odv({ datatype: 'enum', validation: { enumValues: [' '] } }), value, 'none')).toBe(
+    expect(validateOdvValue(odv(), value, 'none', GENERIC_RULE_ID)).toBe('Value must not be empty.')
+    expect(validateOdvValue(odv({ datatype: 'string' }), value, 'none', GENERIC_RULE_ID)).toBe('Value must not be empty.')
+    expect(validateOdvValue(odv({ datatype: 'regex' }), value, 'none', GENERIC_RULE_ID)).toBe('Value must not be empty.')
+    expect(validateOdvValue(odv({ datatype: 'enum', validation: { enumValues: [' '] } }), value, 'none', GENERIC_RULE_ID)).toBe(
       'Value must not be empty.',
     )
   })
 
   it('returns a reason instead of throwing when validation.regex does not compile', () => {
     const brokenOdv = odv({ datatype: 'string', validation: { regex: '(unclosed' } })
-    expect(validateOdvValue(brokenOdv, 'abc', 'none')).toBe(
+    expect(validateOdvValue(brokenOdv, 'abc', 'none', GENERIC_RULE_ID)).toBe(
       'This rule defines a validation pattern that is not a valid regular expression.',
     )
   })
@@ -213,16 +216,53 @@ describe('validateOdvValue hardening', () => {
     const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
 
     it.each(['a b', 'a\tb', 'a;b', 'a|b', 'a&b', 'a<b', 'a>b', 'x$HOME', 'x$_y', 'x$ODV'])('rejects %j', (value) => {
-      expect(validateOdvValue(regexOdv, value, 'text')).not.toBeNull()
+      expect(validateOdvValue(regexOdv, value, 'text', GENERIC_RULE_ID)).not.toBeNull()
     })
 
     it('accepts a lookahead regex ending in a bare dollar', () => {
-      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'text')).toBeNull()
+      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'text', GENERIC_RULE_ID)).toBeNull()
     })
 
     it('does not apply the extra restrictions in none or variable mode', () => {
-      expect(validateOdvValue(regexOdv, 'a b;c', 'none')).toBeNull()
+      expect(validateOdvValue(regexOdv, 'a b;c', 'none', GENERIC_RULE_ID)).toBeNull()
     })
+  })
+})
+
+describe('validateOdvValue rule-specific value patterns', () => {
+  const softwareUpdateRuleId = 'mscp.system_settings_softwareupdate_current'
+  const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
+  const deferralRequirement = ODV_RULE_VALUE_PATTERNS[softwareUpdateRuleId].requirement
+
+  it.each(['30d', '7d', '2w', '1m', '12H'])('accepts the BSD date -v offset %j', (value) => {
+    expect(validateOdvValue(deferralOdv, value, 'text', softwareUpdateRuleId)).toBeNull()
+  })
+
+  it.each(['30', 'abc', 'd30', '30 d', '30dd', '-30d'])('rejects %j, which date -v cannot use', (value) => {
+    expect(validateOdvValue(deferralOdv, value, 'text', softwareUpdateRuleId)).toBe(deferralRequirement)
+  })
+
+  it('names the expected format in the reason', () => {
+    expect(validateOdvValue(deferralOdv, '30', 'text', softwareUpdateRuleId)).toBe(
+      'Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
+    )
+  })
+
+  it('applies in every substitution mode', () => {
+    expect(validateOdvValue(deferralOdv, '30', 'none', softwareUpdateRuleId)).toBe(deferralRequirement)
+    expect(validateOdvValue(deferralOdv, '30', 'variable', softwareUpdateRuleId)).toBe(deferralRequirement)
+  })
+
+  it('does not affect other rules', () => {
+    expect(validateOdvValue(deferralOdv, '30', 'text', GENERIC_RULE_ID)).toBeNull()
+  })
+
+  it('is enforced by prepareOdvValue and usableOdvValue', () => {
+    expect(prepareOdvValue(deferralOdv, 'abc', 'text', softwareUpdateRuleId)).toEqual({
+      valid: false,
+      error: deferralRequirement,
+    })
+    expect(usableOdvValue(deferralOdv, 'text', '30', softwareUpdateRuleId)).toBe('30d')
   })
 })
 
@@ -313,16 +353,16 @@ describe('odvQuickPicks', () => {
 
 describe('prepareOdvValue', () => {
   it('returns the canonical number for a valid number input', () => {
-    expect(prepareOdvValue(odv({ validation: { min: 1 } }), '007', 'text')).toEqual({ valid: true, value: 7 })
+    expect(prepareOdvValue(odv({ validation: { min: 1 } }), '007', 'text', GENERIC_RULE_ID)).toEqual({ valid: true, value: 7 })
   })
 
   it('returns the validation reason for an invalid input', () => {
-    expect(prepareOdvValue(odv(), "12'", 'text')).toEqual({ valid: false, error: 'Value must be a whole number.' })
+    expect(prepareOdvValue(odv(), "12'", 'text', GENERIC_RULE_ID)).toEqual({ valid: false, error: 'Value must be a whole number.' })
   })
 
   it('trims trailing newlines in variable mode, since a banner ending in one can never match cat output', () => {
     const banner = odv({ datatype: 'string', recommended: 'x' })
-    expect(prepareOdvValue(banner, 'Line one\nLine two\n\n', 'variable')).toEqual({
+    expect(prepareOdvValue(banner, 'Line one\nLine two\n\n', 'variable', GENERIC_RULE_ID)).toEqual({
       valid: true,
       value: 'Line one\nLine two',
     })
@@ -330,12 +370,12 @@ describe('prepareOdvValue', () => {
 
   it('keeps trailing newlines outside variable mode', () => {
     const banner = odv({ datatype: 'string', recommended: 'x' })
-    expect(prepareOdvValue(banner, 'Banner\n', 'none')).toEqual({ valid: true, value: 'Banner\n' })
+    expect(prepareOdvValue(banner, 'Banner\n', 'none', GENERIC_RULE_ID)).toEqual({ valid: true, value: 'Banner\n' })
   })
 
   it('rejects a value that is only newlines in variable mode', () => {
     const banner = odv({ datatype: 'string', recommended: 'x' })
-    expect(prepareOdvValue(banner, '\n\n', 'variable')).toEqual({ valid: false, error: 'Value must not be empty.' })
+    expect(prepareOdvValue(banner, '\n\n', 'variable', GENERIC_RULE_ID)).toEqual({ valid: false, error: 'Value must not be empty.' })
   })
 })
 
@@ -343,19 +383,19 @@ describe('usableOdvValue', () => {
   const rule = odv({ recommended: 6, validation: { min: 1 } })
 
   it('uses a valid stored value', () => {
-    expect(usableOdvValue(rule, 'text', 12)).toBe(12)
+    expect(usableOdvValue(rule, 'text', 12, GENERIC_RULE_ID)).toBe(12)
   })
 
   it('falls back to the recommended value when the stored value is invalid', () => {
-    expect(usableOdvValue(rule, 'text', "12'")).toBe(6)
-    expect(usableOdvValue(rule, 'text', 0)).toBe(6)
+    expect(usableOdvValue(rule, 'text', "12'", GENERIC_RULE_ID)).toBe(6)
+    expect(usableOdvValue(rule, 'text', 0, GENERIC_RULE_ID)).toBe(6)
   })
 
   it('falls back to the recommended value when nothing is stored', () => {
-    expect(usableOdvValue(rule, 'text', null)).toBe(6)
+    expect(usableOdvValue(rule, 'text', null, GENERIC_RULE_ID)).toBe(6)
   })
 
   it('is null for a rule without an ODV', () => {
-    expect(usableOdvValue(null, 'none', 12)).toBeNull()
+    expect(usableOdvValue(null, 'none', 12, GENERIC_RULE_ID)).toBeNull()
   })
 })

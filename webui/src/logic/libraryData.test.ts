@@ -115,7 +115,7 @@ describe('committed library data', () => {
             ]),
           ]
           for (const [location, value] of candidates) {
-            const reason = validateOdvValue(odv, value, mode)
+            const reason = validateOdvValue(odv, value, mode, rule.id)
             if (reason) failures.push(`${rule.id} ${location}=${JSON.stringify(value)}: ${reason}`)
           }
         }

@@ -149,7 +149,7 @@ function sanitizeOdvValue(
   if (!rule) return { odvValue: null, dropped: { id, reason: 'The rule details could not be loaded.' } }
   if (!rule.odv) return { odvValue: null, dropped: { id, reason: 'This rule has no organization-defined value.' } }
 
-  const preparation = prepareOdvValue(rule.odv, value, odvSubstitutionMode(rule))
+  const preparation = prepareOdvValue(rule.odv, value, odvSubstitutionMode(rule), rule.id)
   if (!preparation.valid) return { odvValue: null, dropped: { id, reason: preparation.error } }
   return { odvValue: preparation.value, dropped: null }
 }

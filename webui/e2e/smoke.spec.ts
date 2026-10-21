@@ -99,10 +99,10 @@ test('an ODV value with an apostrophe is rejected and not stored', async ({ page
   await expect(row).toContainText('Require a Minimum Password Length of 6 Characters')
 })
 
-// A value persisted by an older build can fail today's validation. The UI
-// must fall back to the recommended value everywhere and say so, rather
-// than claim the stale value is still in use.
-test('an invalid stored ODV value is reported and the recommended value is used', async ({ page }) => {
+// A value persisted by an older build can fail today's validation. The
+// review screen blocks generation on it, so the detail panel must say so
+// rather than imply the recommended value will be used instead.
+test('an invalid stored ODV value is reported as blocking generation until fixed or cleared', async ({ page }) => {
   await page.addInitScript(() => {
     const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
     const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
@@ -113,8 +113,16 @@ test('an invalid stored ODV value is reported and the recommended value is used'
   await expect(row).toContainText('Require a Minimum Password Length of 6 Characters')
 
   await row.getByRole('button', { name: /Expand/ }).click()
-  await expect(page.getByRole('alert')).toContainText('Value must be a whole number.')
-  await expect(page.getByRole('alert')).not.toContainText('still using')
+  const savedValueAlert = page.getByRole('alert')
+  await expect(savedValueAlert).toHaveCount(1)
+  await expect(savedValueAlert).toContainText(
+    "Saved value '12'' is invalid: Value must be a whole number. Generation is blocked until you fix or clear it.",
+  )
+  await expect(savedValueAlert).not.toContainText('still using')
+  await expect(page.getByText('Using recommended value: 6')).toHaveCount(0)
+
+  await savedValueAlert.getByRole('button', { name: 'Clear saved value' }).click()
+  await expect(page.getByRole('alert')).toHaveCount(0)
   await expect(page.getByText('Using recommended value: 6')).toBeVisible()
 })
 
@@ -132,36 +140,36 @@ test('an unreachable facet option greys out, fades, then disappears', async ({ p
   await expect(nlmapgovBase).toBeEnabled()
   await expect(nlmapgovBaseRow).toHaveAttribute('data-leaving', 'false')
 
+  // The leaving phase lasts only 300ms, which an expect() poll can miss
+  // entirely under parallel load (its retry interval grows to a second), so
+  // an observer in the page records the attribute flip instead. It is
+  // installed before the click and awaited after.
+  const rowHandle = await nlmapgovBaseRow.elementHandle()
+  if (!rowHandle) throw new Error('NLMAPGOV Base facet row not found')
+  const sawLeaving = rowHandle.evaluate(
+    (element) =>
+      new Promise<{ leaving: string | null; fadeClass: boolean }>((resolve) => {
+        const observer = new MutationObserver(() => {
+          if (element.getAttribute('data-leaving') !== 'true') return
+          observer.disconnect()
+          resolve({ leaving: element.getAttribute('data-leaving'), fadeClass: element.classList.contains('opacity-0') })
+        })
+        observer.observe(element, { attributes: true, attributeFilter: ['data-leaving'] })
+      }),
+  )
+
   // NLMAPGOV benchmarks are not listed under macOS 27 for any rule.
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
 
   await expect(nlmapgovBase).toBeVisible()
   await expect(nlmapgovBase).toBeDisabled()
   await expect(nlmapgovBase).not.toBeChecked()
-  await expect(nlmapgovBaseRow).toHaveAttribute('data-leaving', 'false')
 
-  // After the ~2400ms quiet period the option starts its 300ms exit.
-  // Sampling partway through proves the transition interpolates rather than
-  // snapping to 0. The wait and the sample both run in the page: an
-  // expect() poll can notice data-leaving up to a second late (its retry
-  // interval grows), by which point the fade has already finished.
-  const midTransitionOpacity = await nlmapgovBaseRow.evaluate(
-    (element) =>
-      new Promise<number>((resolve) => {
-        const sampleOnceLeaving = () => {
-          if (element.getAttribute('data-leaving') === 'true') {
-            setTimeout(() => resolve(Number(getComputedStyle(element).opacity)), 100)
-          } else {
-            requestAnimationFrame(sampleOnceLeaving)
-          }
-        }
-        sampleOnceLeaving()
-      }),
-  )
-  expect(midTransitionOpacity).toBeGreaterThan(0)
-  expect(midTransitionOpacity).toBeLessThan(1)
-
-  await expect(nlmapgovBase).not.toBeVisible({ timeout: 4_000 })
+  // After the ~2400ms quiet period the option is marked leaving, with the
+  // fade-out class, and then removed.
+  expect(await sawLeaving).toEqual({ leaving: 'true', fadeClass: true })
+  await expect(nlmapgovBaseRow).toHaveCount(0, { timeout: 10_000 })
+  await expect(nlmapgovBase).toHaveCount(0)
 })
 
 test('review & generate offers a download with defaults and lists an inherent rule for manual attestation', async ({ page }) => {
@@ -233,4 +241,53 @@ test('review & generate downloads a manual-only selection as a zip holding manua
 
   expect(Object.keys(files)).toEqual(['manual-attestation.md'])
   expect(new TextDecoder().decode(files['manual-attestation.md'])).toContain('**os_application_sandboxing**')
+})
+
+// A re-import can drop or rename a rule that is still saved as selected.
+// That entry must not break the review, count as selected, or linger
+// without the admin being told.
+test('a saved selection that is no longer in the library is reported and removable without blocking the review', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const knownRef = { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' }
+    const unknownRef = { id: 'mscp.removed_by_reimport', path: 'mscp/rules/removed_by_reimport.json' }
+    const odvRef = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
+    const persisted = {
+      state: {
+        selections: {
+          [knownRef.id]: { ref: knownRef, enabled: true, odvValue: null },
+          [unknownRef.id]: { ref: unknownRef, enabled: true, odvValue: null },
+          [odvRef.id]: { ref: odvRef, enabled: false, odvValue: 12 },
+        },
+      },
+      version: 2,
+    }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
+  })
+  await page.goto('/')
+  await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
+
+  await page.getByRole('button', { name: 'Generate' }).click()
+  await expect(page.getByRole('heading', { name: 'Review & generate' })).toBeVisible()
+
+  const notice = page.getByRole('status', { name: 'Saved selections not in this library' })
+  await expect(notice).toContainText('1 saved selection is no longer in this library: mscp.removed_by_reimport')
+  const download = page.getByRole('button', { name: 'Download bundle (.zip)' })
+  await expect(download).toBeEnabled({ timeout: 10_000 })
+  await expect(page.getByText('1 scripted rule(s)')).toBeVisible()
+  await expect(page.getByText('Could not prepare the bundle')).toHaveCount(0)
+
+  await notice.getByRole('button', { name: 'Remove it' }).click()
+  await expect(notice).toHaveCount(0)
+  await expect(page.getByText('1 selected')).toBeVisible()
+  await expect(download).toBeEnabled({ timeout: 10_000 })
+
+  const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem('intune-toolkit:selections') ?? '{}'))
+  expect(Object.keys(stored.state.selections).sort()).toEqual([
+    'mscp.os_gatekeeper_enable',
+    'mscp.pwpolicy_minimum_length_enforce',
+  ])
+  expect(stored.state.selections['mscp.pwpolicy_minimum_length_enforce'].odvValue).toBe(12)
+  expect(stored.state.selections['mscp.os_gatekeeper_enable'].enabled).toBe(true)
 })

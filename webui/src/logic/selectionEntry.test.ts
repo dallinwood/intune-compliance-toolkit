@@ -4,10 +4,12 @@ import {
   getSelection,
   isEnabled,
   migratePersistedSelections,
+  partitionSelectionsByLibrary,
   refKey,
+  removeSelections,
   upsertSelection,
 } from './selectionEntry'
-import type { RuleRef } from './selectionEntry'
+import type { RuleRef, SelectionMap } from './selectionEntry'
 
 const REF_A: RuleRef = { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' }
 const REF_B: RuleRef = { id: 'mscp.os_firewall_enable', path: 'mscp/rules/os_firewall_enable.json' }
@@ -94,5 +96,62 @@ describe('migratePersistedSelections', () => {
     const currentState = { selections: { [refKey(REF_A)]: createSelectionEntry(REF_A) } }
 
     expect(migratePersistedSelections(currentState, 2)).toBe(currentState)
+  })
+})
+
+describe('partitionSelectionsByLibrary', () => {
+  const removedRef: RuleRef = { id: 'mscp.removed_rule', path: 'mscp/rules/removed_rule.json' }
+  const renamedRef: RuleRef = { id: 'mscp.zz_renamed_rule', path: 'mscp/rules/zz_renamed_rule.json' }
+  const rowsById = new Map([[REF_A.id, { ref: REF_A }], [REF_B.id, { ref: REF_B }]])
+
+  it('keeps enabled selections whose id is in the library and lists the rest as unknown, sorted', () => {
+    const selections: SelectionMap = {
+      [renamedRef.id]: { ref: renamedRef, enabled: true, odvValue: null },
+      [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 'x' },
+      [removedRef.id]: { ref: removedRef, enabled: true, odvValue: 12 },
+    }
+
+    const result = partitionSelectionsByLibrary(selections, rowsById)
+
+    expect(result.known).toEqual([{ ref: REF_A, enabled: true, odvValue: 'x' }])
+    expect(result.unknownIds).toEqual([removedRef.id, renamedRef.id])
+  })
+
+  it('ignores disabled selections, known or not', () => {
+    const selections: SelectionMap = {
+      [REF_A.id]: { ref: REF_A, enabled: false, odvValue: 5 },
+      [removedRef.id]: { ref: removedRef, enabled: false, odvValue: 5 },
+    }
+
+    expect(partitionSelectionsByLibrary(selections, rowsById)).toEqual({ known: [], unknownIds: [] })
+  })
+
+  it("replaces a persisted ref with the library row's ref, so a stale path is never fetched", () => {
+    const stalePath: RuleRef = { id: REF_B.id, path: 'mscp/rules/old_location.json' }
+    const selections: SelectionMap = { [REF_B.id]: { ref: stalePath, enabled: true, odvValue: null } }
+
+    expect(partitionSelectionsByLibrary(selections, rowsById).known).toEqual([{ ref: REF_B, enabled: true, odvValue: null }])
+  })
+})
+
+describe('removeSelections', () => {
+  it('removes only the given ids and keeps every other entry, ODV values included', () => {
+    const removedRef: RuleRef = { id: 'mscp.removed_rule', path: 'mscp/rules/removed_rule.json' }
+    const selections: SelectionMap = {
+      [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 'kept' },
+      [REF_B.id]: { ref: REF_B, enabled: false, odvValue: 7 },
+      [removedRef.id]: { ref: removedRef, enabled: true, odvValue: null },
+    }
+
+    expect(removeSelections(selections, [removedRef.id])).toEqual({
+      [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 'kept' },
+      [REF_B.id]: { ref: REF_B, enabled: false, odvValue: 7 },
+    })
+  })
+
+  it('returns the same map when none of the ids are present', () => {
+    const selections: SelectionMap = { [REF_A.id]: { ref: REF_A, enabled: true, odvValue: null } }
+
+    expect(removeSelections(selections, ['mscp.not_there'])).toBe(selections)
   })
 })
