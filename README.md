@@ -65,6 +65,9 @@ in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-security/co
   non-compliant on macOS 26 until upstream fixes it.
 - A device whose macOS version cannot be read reports every rule
   non-compliant, by design.
+- On macOS 15, upstream `system_settings_softwareupdate_current` uses a
+  hard-coded 30-day window, so the organization value you enter only applies
+  on macOS 26 and later.
 
 ## Before production: test on a real Mac
 

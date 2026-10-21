@@ -337,6 +337,25 @@ This task leaves components referring to removed types, so `bun run build` fails
 
 ---
 
+## Open follow-ups
+
+Carried forward from the Plan 2 reviews (none blocks using the tool; the first can block a deploy):
+
+- Raise the timeout on the real-bash tests in `webui/src/logic/scriptGen/bash.test.ts`. One timed out at 5 s under full-suite load. The Pages workflow runs `bun run test` before deploying, so this can intermittently fail a deploy.
+- Browse row title shows the recommended ODV value while a saved value is invalid. The detail panel and review screen correctly show `[value]` and block generation.
+- `system_settings_softwareupdate_current`:
+  - Its macOS 15 check hard-codes `-30d`, so the admin value is ignored there (upstream data; noted in README).
+  - The `date -v` deferral pattern has no upper bound. Test a very large value on a real Mac.
+- The facet-fade e2e lost its quiet-period assertion (`data-leaving` stays `false` right after the click). Its MutationObserver could hang to the global timeout if the node detaches.
+- Stale saved selections:
+  - Disabled entries for rules no longer in the library keep their ODV values invisibly.
+  - "Clear selection" is hidden when only stale entries remain.
+  - Settings export still writes unknown ids (import reports them).
+- Search does not match CIS or STIG reference ids. The index carries no reference ids (Plan 1 note).
+- The rule-specific ODV value pattern layer (`ODV_RULE_VALUE_PATTERNS` in `webui/src/logic/odv.ts`) is not described in this plan's Global Constraints.
+- Real-Mac verification per the README "Before production" checklist, including bash 3.2 JSON escaping and the base64 login-window rule.
+- Upstream mSCP defect: `system_settings_critical_update_install_enforce` macOS 26 check has collapsed newlines (fails closed). Report it to NIST.
+
 ## Progress log
 
 - 2026-10-20: Task 1 (index entries carry the upstream section): fb182e6 feat: add upstream section to rule index entries
