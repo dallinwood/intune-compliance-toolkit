@@ -1,7 +1,7 @@
 # Design: macOS rules sourced from the NIST macOS Security Compliance Project
 
 Date: 2026-10-20
-Status: Approved; Plan 1 (import) implemented
+Status: Approved; Plans 1 and 2 implemented
 
 ## 1. Intent
 
@@ -408,3 +408,4 @@ own commit(s), per the repo's CLAUDE.md:
 
 - 2026-10-20: Plan 1 (import) completed in db33dc0 chore: remove CIS PDF pipeline, specs and benchmark skill through 80da465 fix: address final review of mSCP import (350 rules from release_27.0). Plan 2 notes from the final review are recorded in docs/plans/2026-10-20-mscp-import-plan.md.
 - 2026-10-20: Section 6 per-version fallback revised and confirmed by the maintainer after the Plan 1 final review showed "fall back to default for any other version" is wrong for real mSCP data.
+- 2026-10-21: Plan 2 (web UI) completed in fb182e6 feat: add upstream section to rule index entries through 2bbc9d4 fix: measure the rules-JSON cap on the written file and allow manual-only bundles, plus the attribution NOTICE, README update and Pages deploy workflow in this commit (docs: add attribution notice and Pages deploy). Plan: docs/plans/2026-10-20-mscp-webui-plan.md.

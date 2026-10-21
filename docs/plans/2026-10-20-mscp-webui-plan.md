@@ -339,4 +339,10 @@ This task leaves components referring to removed types, so `bun run build` fails
 
 ## Progress log
 
-(none yet)
+- 2026-10-20: Task 1 (index entries carry the upstream section): fb182e6 feat: add upstream section to rule index entries
+- 2026-10-20: Task 2 (v3 library types, loaders, selection and ODV logic, three fix rounds): 4ff075b feat: add v3 library types, loaders and selection logic; c6dcc47 fix: track shell quote state and harden ODV validation; f87e0e2 fix: rework ODV shell context scanner as a context stack; e04af3d fix: replace ODV shell scanner with variable allowlist and substitution modes
+- 2026-10-21: Task 3 (rule browser): f26f3f6 feat: browse mSCP rules in the web UI; a2333a9 fix: wrap check code and clarify ODV notes in the rule browser
+- 2026-10-21: Task 4 (discovery script and Intune rules generation): 2f81c19 feat: generate mSCP discovery scripts and Intune rules; 03ddf66 fix: fail closed on an unknown macOS version in discovery scripts
+- 2026-10-21: Task 5 (bundle generation from the review screen): 65f6081 feat: generate mSCP compliance bundles from the review screen; 2bbc9d4 fix: measure the rules-JSON cap on the written file and allow manual-only bundles
+- 2026-10-21: Task 6 (attribution NOTICE, README, Pages deploy workflow): this commit (docs: add attribution notice and Pages deploy)
+- Plan revisions during execution: 9978e2d (context-aware ODV validation), 38af5f6 (reviewed variable allowlist replacing the quote scanner), 56c1284 (zsh per check from a bash script), e0c8552 (base64 with trailing newline)
