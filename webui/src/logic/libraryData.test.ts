@@ -48,6 +48,23 @@ const EXPECTED_ODV_SUBSTITUTION_MODES: Record<string, OdvSubstitutionMode> = {
   system_settings_time_server_configure: 'none',
 }
 
+// Pinned on purpose: these text-mode rules have string or regex ODVs, whose
+// safety depends on exactly where $ODV sits in the shell (ruling 6 of Plan 2
+// Task 4). The loginwindow text rule is pinned because the generator assumes
+// osascript's trailing newline is piped into base64 (see checkPlan.ts).
+const PINNED_CHECK_SHELLS: Record<string, Record<string, string>> = {
+  pwpolicy_custom_regex_enforce: {
+    "default": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath 'boolean(//*[contains(text(),\"policyAttributePassword matches '\\''$ODV'\\''\")])' -",
+  },
+  system_settings_softwareupdate_current: {
+    "default": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi",
+    "15.0": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -30d \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi",
+  },
+  system_settings_loginwindow_loginwindowtext_enable: {
+    "default": "/usr/bin/osascript -l JavaScript << EOS | /usr/bin/base64\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.objectForKey('LoginwindowText').js\nEOS",
+  },
+}
+
 const manifest = readBaselinesJson<Manifest>('_manifest.json')
 
 describe('committed library data', () => {
@@ -70,6 +87,19 @@ describe('committed library data', () => {
           Object.entries(EXPECTED_ODV_SUBSTITUTION_MODES).map(([upstreamId, mode]) => [`mscp.${upstreamId}`, mode]),
         )
         expect(actualModes).toEqual(expectedModes)
+      })
+
+      it('pins the exact check shells whose ODV placement or output format the generator depends on', () => {
+        const rulesById = new Map(rulesWithOdv.map((rule) => [rule.source.upstream_rule_id, rule]))
+        const actualShells = Object.fromEntries(
+          Object.keys(PINNED_CHECK_SHELLS).map((upstreamId) => {
+            const check = rulesById.get(upstreamId)?.check
+            const shells: Record<string, string | null | undefined> = { default: check?.default?.shell }
+            for (const [version, versionCheck] of Object.entries(check?.by_version ?? {})) shells[version] = versionCheck.shell
+            return [upstreamId, shells]
+          }),
+        )
+        expect(actualShells).toEqual(PINNED_CHECK_SHELLS)
       })
 
       it('passes validateOdvValue for every recommended and by_benchmark value', () => {

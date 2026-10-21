@@ -155,6 +155,13 @@ describe('validateOdvValue datatype rules', () => {
     expect(validateOdvValue(odv(), '1e3', 'none')).toBe('Value must be a whole number.')
   })
 
+  it('rejects integers beyond the safe integer range, which would not survive canonicalisation', () => {
+    expect(validateOdvValue(odv(), '9007199254740993', 'none')).toBe('Value must be a whole number between -9007199254740991 and 9007199254740991.')
+    expect(validateOdvValue(odv(), 1e21, 'none')).toBe('Value must be a whole number.')
+    expect(validateOdvValue(odv(), 1e20, 'none')).toBe('Value must be a whole number between -9007199254740991 and 9007199254740991.')
+    expect(validateOdvValue(odv(), Number.MAX_SAFE_INTEGER, 'none')).toBeNull()
+  })
+
   it('accepts a negative integer and a numeric string for a number datatype', () => {
     expect(validateOdvValue(odv(), -5, 'text')).toBeNull()
     expect(validateOdvValue(odv(), '42', 'text')).toBeNull()

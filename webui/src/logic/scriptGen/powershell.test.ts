@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { generatePowerShellScript, type ScriptableRule } from './powershell'
-import type { AuditStep } from '../../types/rule-detail'
+import type { AuditStep } from './legacyWindowsTypes'
 
 // The real lookup -> compliance_check dependency case from
 // cis_intune_win11_1.1.json: the second step's check_command references
@@ -32,6 +32,9 @@ const COMPLIANCE_CHECK_STEP: AuditStep = {
     { variable: 'cis_intune_win11_1_1_allow_cortana_above_lock', data_type: 'integer', operator: 'eq', value: 0, value_source: 'benchmark' },
   ],
 }
+
+// Starting pwsh took over 5000 ms under full-suite load.
+const REAL_POWERSHELL_TIMEOUT_MS = 30000
 
 function runScript(script: string): string {
   const dir = mkdtempSync(join(tmpdir(), 'ps-scriptgen-'))
@@ -105,7 +108,7 @@ describe('generatePowerShellScript', () => {
     const parsed = JSON.parse(stdout.trim())
 
     expect(parsed).toEqual({ test_bool_var: true, test_str_var: 'he said "hi"' })
-  })
+  }, REAL_POWERSHELL_TIMEOUT_MS)
 
   it('computes a case-insensitive, literal (non-wildcard) contains check as a derived boolean', () => {
     const rules: ScriptableRule[] = [
@@ -135,7 +138,7 @@ describe('generatePowerShellScript', () => {
     // (IndexOf, not -like) - a captured value of just 'success' with no
     // 'A*B' substring must NOT match.
     expect(parsed).toEqual({ test_setting: 'success and A*B', test_setting__compliant: true })
-  })
+  }, REAL_POWERSHELL_TIMEOUT_MS)
 
   it('reports false, not a thrown error, when the captured value has no match', () => {
     const rules: ScriptableRule[] = [
@@ -160,5 +163,5 @@ describe('generatePowerShellScript', () => {
     const parsed = JSON.parse(stdout.trim())
 
     expect(parsed).toEqual({ test_setting: null, test_setting__compliant: false })
-  })
+  }, REAL_POWERSHELL_TIMEOUT_MS)
 })

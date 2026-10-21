@@ -33,21 +33,13 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  /* Generator chain still on the pre-v3 types - temporarily excluded until Plan 2 Tasks 4-5 rewrite these.
+  /* Bundle assembly still on the pre-v3 types - temporarily excluded until Plan 2 Task 5 rewrites these.
      Nothing included imports them (GenerateReviewScreen renders a placeholder meanwhile). */
   "exclude": [
     "src/logic/chunking.ts",
     "src/logic/chunking.test.ts",
-    "src/logic/rulesJsonGen.ts",
-    "src/logic/rulesJsonGen.test.ts",
     "src/logic/bundleFiles.ts",
     "src/logic/bundleFiles.test.ts",
-    "src/logic/scriptGen/bash.ts",
-    "src/logic/scriptGen/bash.test.ts",
-    "src/logic/scriptGen/powershell.ts",
-    "src/logic/scriptGen/powershell.test.ts",
-    "src/logic/operatorMap.ts",
-    "src/logic/operatorMap.test.ts",
     "src/logic/manualAttestationReport.ts",
     "src/logic/manualAttestationReport.test.ts",
     "src/components/generate/BundleGroupCard.tsx",

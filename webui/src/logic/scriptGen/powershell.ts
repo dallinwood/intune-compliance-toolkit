@@ -1,5 +1,4 @@
-import { deriveComplianceVariableName, hasInScriptFallback } from '../operatorMap'
-import type { AuditStep } from '../../types/rule-detail'
+import { deriveComplianceVariableName, hasInScriptFallback, type AuditStep } from './legacyWindowsTypes'
 
 export interface ScriptableRule {
   id: string

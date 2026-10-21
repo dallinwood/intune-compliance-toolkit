@@ -78,6 +78,9 @@ function validateAgainstDatatype(odv: Odv, text: string): string | null {
   if (odv.datatype === 'number') {
     if (!INTEGER_PATTERN.test(text)) return 'Value must be a whole number.'
     const numericValue = Number(text)
+    if (!Number.isSafeInteger(numericValue)) {
+      return `Value must be a whole number between ${Number.MIN_SAFE_INTEGER} and ${Number.MAX_SAFE_INTEGER}.`
+    }
     if (validation?.min !== undefined && numericValue < validation.min) return `Value must be at least ${validation.min}.`
     if (validation?.max !== undefined && numericValue > validation.max) return `Value must be at most ${validation.max}.`
     return null
