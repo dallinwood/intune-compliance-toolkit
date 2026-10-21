@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
-import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvQuickPicks, odvSubstitutionMode, ODV_VARIABLE_ALLOWLIST, substituteOdv, validateOdvValue } from './odv'
+import {
+  canonicalOdvValue,
+  displayWithOdv,
+  effectiveOdvValue,
+  odvQuickPicks,
+  odvSubstitutionMode,
+  ODV_VARIABLE_ALLOWLIST,
+  prepareOdvValue,
+  substituteOdv,
+  usableOdvValue,
+  validateOdvValue,
+} from './odv'
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
@@ -282,5 +293,54 @@ describe('odvQuickPicks', () => {
   it('returns only benchmark entries when there is no recommended value', () => {
     const picks = odvQuickPicks({ ...odv({ by_benchmark: { disa_stig: 3 } }), recommended: undefined as unknown as number })
     expect(picks).toEqual([{ label: 'DISA STIG', value: 3 }])
+  })
+})
+
+describe('prepareOdvValue', () => {
+  it('returns the canonical number for a valid number input', () => {
+    expect(prepareOdvValue(odv({ validation: { min: 1 } }), '007', 'text')).toEqual({ valid: true, value: 7 })
+  })
+
+  it('returns the validation reason for an invalid input', () => {
+    expect(prepareOdvValue(odv(), "12'", 'text')).toEqual({ valid: false, error: 'Value must be a whole number.' })
+  })
+
+  it('trims trailing newlines in variable mode, since a banner ending in one can never match cat output', () => {
+    const banner = odv({ datatype: 'string', recommended: 'x' })
+    expect(prepareOdvValue(banner, 'Line one\nLine two\n\n', 'variable')).toEqual({
+      valid: true,
+      value: 'Line one\nLine two',
+    })
+  })
+
+  it('keeps trailing newlines outside variable mode', () => {
+    const banner = odv({ datatype: 'string', recommended: 'x' })
+    expect(prepareOdvValue(banner, 'Banner\n', 'none')).toEqual({ valid: true, value: 'Banner\n' })
+  })
+
+  it('rejects a value that is only newlines in variable mode', () => {
+    const banner = odv({ datatype: 'string', recommended: 'x' })
+    expect(prepareOdvValue(banner, '\n\n', 'variable')).toEqual({ valid: false, error: 'Value must not be empty.' })
+  })
+})
+
+describe('usableOdvValue', () => {
+  const rule = odv({ recommended: 6, validation: { min: 1 } })
+
+  it('uses a valid stored value', () => {
+    expect(usableOdvValue(rule, 'text', 12)).toBe(12)
+  })
+
+  it('falls back to the recommended value when the stored value is invalid', () => {
+    expect(usableOdvValue(rule, 'text', "12'")).toBe(6)
+    expect(usableOdvValue(rule, 'text', 0)).toBe(6)
+  })
+
+  it('falls back to the recommended value when nothing is stored', () => {
+    expect(usableOdvValue(rule, 'text', null)).toBe(6)
+  })
+
+  it('is null for a rule without an ODV', () => {
+    expect(usableOdvValue(null, 'none', 12)).toBeNull()
   })
 })

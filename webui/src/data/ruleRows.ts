@@ -1,3 +1,4 @@
+import { compareVersionsDescending } from '../logic/benchmarkLabels'
 import type { ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { fetchManifest } from './manifest'
@@ -7,12 +8,6 @@ export interface Library {
   rows: RuleRow[]
   sources: ManifestSource[]
   coveredVersions: string[]
-}
-
-function compareVersionsDescending(left: string, right: string): number {
-  const [leftMajor, leftMinor = 0] = left.split('.').map(Number)
-  const [rightMajor, rightMinor = 0] = right.split('.').map(Number)
-  return rightMajor - leftMajor || rightMinor - leftMinor
 }
 
 function directoryOf(path: string): string {

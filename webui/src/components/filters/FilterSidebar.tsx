@@ -5,7 +5,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStableFacetShown'
-import { allFacetValues, facetOptions } from '../../logic/ruleFilters'
+import { benchmarkLabel, compareVersionsDescending, macosVersionLabel } from '../../logic/benchmarkLabels'
+import { sectionLabel } from '../../logic/ruleDisplay'
+import {
+  allFacetValues,
+  benchmarksListedUnder,
+  facetOptions,
+  versionsListingAnyOf,
+} from '../../logic/ruleFilters'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
 import type { RuleRow } from '../../types/rule-row'
 
@@ -19,31 +26,35 @@ function isAutomatableFilter(value: string): value is AutomatableFilter {
   return AUTOMATABLE_OPTIONS.some((option) => option.value === value)
 }
 
+// Module-level so StableFacetGroup's memoized canonical order isn't
+// recomputed on every render by a fresh inline function.
+const allOsVersionsOf = (row: RuleRow) => row.osVersions
+const allBenchmarksOf = (row: RuleRow) => row.benchmarks
+const sectionOf = (row: RuleRow) => row.section
+const tagsOf = (row: RuleRow) => row.tags
+const identityLabel = (value: string) => value
+
 export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   const filters = useFilterStore()
 
   // Facets are derived from whatever data is actually loaded - never a
-  // hardcoded list - so a new benchmark/profile shows up automatically.
-  // Each facet is also narrowed by every *other* currently-applied filter
-  // (picking product "windows_11" narrows the version list to versions
-  // that actually occur under it), so a facet never offers a choice that
-  // would filter the table down to zero rows.
-  const products = useMemo(
-    () => facetOptions(rows, filters, 'products', (row) => row.ref.product, filters.products),
+  // hardcoded list - so a new benchmark or tag shows up automatically.
+  // Each facet is also narrowed by every *other* currently-applied filter,
+  // so a facet never offers a choice that would filter the table down to
+  // zero rows. Versions and benchmarks are additionally scoped to each
+  // other, because a rule's benchmarks differ per macOS version.
+  const osVersions = useMemo(
+    () =>
+      facetOptions(rows, filters, 'osVersions', (row) => versionsListingAnyOf(row, filters.benchmarks), filters.osVersions),
     [rows, filters],
   )
-  const versions = useMemo(
-    () => facetOptions(rows, filters, 'versions', (row) => row.ref.version, filters.versions),
+  const benchmarks = useMemo(
+    () =>
+      facetOptions(rows, filters, 'benchmarks', (row) => benchmarksListedUnder(row, filters.osVersions), filters.benchmarks),
     [rows, filters],
   )
-  const platforms = useMemo(
-    () => facetOptions(rows, filters, 'platforms', (row) => row.platform, filters.platforms),
-    [rows, filters],
-  )
-  const profiles = useMemo(
-    () => facetOptions(rows, filters, 'profiles', (row) => row.profileApplicability, filters.profiles),
-    [rows, filters],
-  )
+  const sections = useMemo(() => facetOptions(rows, filters, 'sections', sectionOf, filters.sections), [rows, filters])
+  const tags = useMemo(() => facetOptions(rows, filters, 'tags', tagsOf, filters.tags), [rows, filters])
 
   return (
     <aside className="max-h-64 w-full overflow-y-auto border-b border-slate-200 p-4 text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
@@ -73,39 +84,44 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       </FacetGroup>
 
       <StableFacetGroup
-        title="Product"
+        title="macOS version"
         rows={rows}
-        valueOf={(row) => row.ref.product}
-        reachable={products}
-        selected={filters.products}
-        onToggle={filters.toggleProduct}
+        valueOf={allOsVersionsOf}
+        compareValues={compareVersionsDescending}
+        labelOf={macosVersionLabel}
+        reachable={osVersions}
+        selected={filters.osVersions}
+        onToggle={filters.toggleOsVersion}
       />
 
       <StableFacetGroup
-        title="Version"
+        title="Benchmark"
         rows={rows}
-        valueOf={(row) => row.ref.version}
-        reachable={versions}
-        selected={filters.versions}
-        onToggle={filters.toggleVersion}
+        valueOf={allBenchmarksOf}
+        labelOf={benchmarkLabel}
+        reachable={benchmarks}
+        selected={filters.benchmarks}
+        onToggle={filters.toggleBenchmark}
       />
 
       <StableFacetGroup
-        title="Platform"
+        title="Section"
         rows={rows}
-        valueOf={(row) => row.platform}
-        reachable={platforms}
-        selected={filters.platforms}
-        onToggle={filters.togglePlatform}
+        valueOf={sectionOf}
+        labelOf={sectionLabel}
+        reachable={sections}
+        selected={filters.sections}
+        onToggle={filters.toggleSection}
       />
 
       <StableFacetGroup
-        title="Profile applicability"
+        title="Tags"
         rows={rows}
-        valueOf={(row) => row.profileApplicability}
-        reachable={profiles}
-        selected={filters.profiles}
-        onToggle={filters.toggleProfile}
+        valueOf={tagsOf}
+        labelOf={identityLabel}
+        reachable={tags}
+        selected={filters.tags}
+        onToggle={filters.toggleTag}
       />
 
       <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
@@ -129,8 +145,8 @@ function FacetGroup({ title, children }: { title: string; children: ReactNode })
 // role="checkbox"/role="radio" element, not a native <input>, so the
 // implicit label-wraps-control association isn't guaranteed the way it is
 // for a real <input type="checkbox">. Facet values are free text
-// ("Level 1 (L1)") so they aren't usable as DOM ids directly - useId()
-// sidesteps that entirely.
+// ("cnssi-1253_high", "27.0") so they aren't usable as DOM ids directly -
+// useId() sidesteps that entirely.
 function FacetOption({ label, disabled, children }: { label: string; disabled?: boolean; children: ReactNode }) {
   const id = useId()
   const control = isValidElement<{ id?: string }>(children) ? cloneElement(children, { id }) : children
@@ -161,6 +177,8 @@ function StableFacetGroup({
   title,
   rows,
   valueOf,
+  compareValues,
+  labelOf,
   reachable,
   selected,
   onToggle,
@@ -168,11 +186,13 @@ function StableFacetGroup({
   title: string
   rows: RuleRow[]
   valueOf: (row: RuleRow) => string | string[]
+  compareValues?: (left: string, right: string) => number
+  labelOf: (value: string) => string
   reachable: string[]
   selected: ReadonlySet<string>
   onToggle: (value: string) => void
 }) {
-  const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf), [rows, valueOf])
+  const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf, compareValues), [rows, valueOf, compareValues])
   const reachableSet = useMemo(() => new Set(reachable), [reachable])
   const { shown, leaving } = useStableFacetShown(reachable)
 
@@ -202,7 +222,7 @@ function StableFacetGroup({
               style={{ transitionDuration: `${FACET_EXIT_TRANSITION_MS}ms` }}
             >
               <div className="min-h-0">
-                <FacetOption label={value} disabled={!isReachable}>
+                <FacetOption label={labelOf(value)} disabled={!isReachable}>
                   <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
                 </FacetOption>
               </div>

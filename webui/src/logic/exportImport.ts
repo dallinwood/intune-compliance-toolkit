@@ -1,3 +1,6 @@
+import type { Rule } from '../types/library'
+import type { RuleRow } from '../types/rule-row'
+import { odvSubstitutionMode, prepareOdvValue } from './odv'
 import { refKey, type OrgDefinedValue, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
 
 export const SETTINGS_SCHEMA_VERSION = 2
@@ -110,4 +113,78 @@ export function resolveImportedSelections(file: SettingsFileV2, knownIds: Readon
   }
 
   return { selections, unresolvedRefs }
+}
+
+export interface DroppedImportValue {
+  id: string
+  reason: string
+}
+
+export interface ImportSanitization {
+  selections: SelectionMap
+  unknownIds: string[]
+  duplicateIds: string[]
+  droppedValues: DroppedImportValue[]
+}
+
+// Ids whose rule details must be fetched before sanitizing, because the
+// entry carries an organization-defined value that has to be validated.
+export function importedIdsWithOdvValues(
+  entries: readonly SelectionEntry[],
+  rowsById: ReadonlyMap<string, RuleRow>,
+): string[] {
+  const ids = new Set<string>()
+  for (const entry of entries) {
+    if (entry.odvValue !== null && rowsById.has(entry.ref.id)) ids.add(entry.ref.id)
+  }
+  return Array.from(ids)
+}
+
+function sanitizeOdvValue(
+  id: string,
+  value: OrgDefinedValue | null,
+  rule: Rule | undefined,
+): { odvValue: OrgDefinedValue | null; dropped: DroppedImportValue | null } {
+  if (value === null) return { odvValue: null, dropped: null }
+  if (!rule) return { odvValue: null, dropped: { id, reason: 'The rule details could not be loaded.' } }
+  if (!rule.odv) return { odvValue: null, dropped: { id, reason: 'This rule has no organization-defined value.' } }
+
+  const preparation = prepareOdvValue(rule.odv, value, odvSubstitutionMode(rule))
+  if (!preparation.valid) return { odvValue: null, dropped: { id, reason: preparation.error } }
+  return { odvValue: preparation.value, dropped: null }
+}
+
+// A settings file is untrusted input: only the rule id is taken from it to
+// find the loaded library row, the ref (and so the fetch path) is rebuilt
+// from that row, and every organization-defined value is re-validated
+// against the rule exactly as if the admin had typed it.
+export function sanitizeImportedSelections(
+  entries: readonly SelectionEntry[],
+  rowsById: ReadonlyMap<string, RuleRow>,
+  rulesById: ReadonlyMap<string, Rule>,
+): ImportSanitization {
+  const lastEntryById = new Map<string, { row: RuleRow; entry: SelectionEntry }>()
+  const duplicateIds = new Set<string>()
+  const unknownIds = new Set<string>()
+
+  for (const entry of entries) {
+    const id = entry.ref.id
+    const row = rowsById.get(id)
+    if (!row) {
+      unknownIds.add(id)
+      continue
+    }
+    if (lastEntryById.has(id)) duplicateIds.add(id)
+    lastEntryById.set(id, { row, entry })
+  }
+
+  const selections: SelectionMap = {}
+  const droppedValues: DroppedImportValue[] = []
+  for (const [id, { row, entry }] of lastEntryById) {
+    const { odvValue, dropped } = sanitizeOdvValue(id, entry.odvValue, rulesById.get(id))
+    if (dropped) droppedValues.push(dropped)
+    selections[refKey(row.ref)] = { ref: { id: row.ref.id, path: row.ref.path }, enabled: entry.enabled, odvValue }
+  }
+
+  return { selections, unknownIds: Array.from(unknownIds), duplicateIds: Array.from(duplicateIds), droppedValues }
 }

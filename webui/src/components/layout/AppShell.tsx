@@ -5,13 +5,23 @@ import { RuleTable } from '../rules/RuleTable'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { matchesFilters } from '../../logic/ruleFilters'
 import { useFilterStore } from '../../state/filterStore'
+import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
+import { AttributionFooter } from './AttributionFooter'
 
 // Two views, no router needed: a Zustand store would be overkill for a
 // single boolean owned by (and only ever read by) this one component.
 type View = 'browse' | 'generate'
 
-export function AppShell({ rows }: { rows: RuleRow[] }) {
+export function AppShell({
+  rows,
+  sources,
+  coveredVersions,
+}: {
+  rows: RuleRow[]
+  sources: ManifestSource[]
+  coveredVersions: string[]
+}) {
   const [view, setView] = useState<View>('browse')
   const [filtersOpen, setFiltersOpen] = useState(false)
   const filters = useFilterStore()
@@ -36,7 +46,7 @@ export function AppShell({ rows }: { rows: RuleRow[] }) {
           <span className="text-sm text-slate-500">
             {filteredRows.length} of {rows.length} rules
           </span>
-          <SelectionToolbar rows={rows} onGenerate={() => setView('generate')} />
+          <SelectionToolbar rows={rows} sources={sources} onGenerate={() => setView('generate')} />
         </div>
       </header>
       {view === 'browse' ? (
@@ -49,8 +59,9 @@ export function AppShell({ rows }: { rows: RuleRow[] }) {
           </main>
         </div>
       ) : (
-        <GenerateReviewScreen onBack={() => setView('browse')} />
+        <GenerateReviewScreen coveredVersions={coveredVersions} onBack={() => setView('browse')} />
       )}
+      <AttributionFooter sources={sources} />
     </div>
   )
 }

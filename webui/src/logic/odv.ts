@@ -160,3 +160,30 @@ export function odvQuickPicks(odv: Odv): OdvQuickPick[] {
   }
   return picks
 }
+
+export type OdvPreparation = { valid: true; value: OrgDefinedValue } | { valid: false; error: string }
+
+const TRAILING_NEWLINES_PATTERN = /\n+$/
+
+// The single path from raw input (typed, quick-picked or imported) to a
+// storable value. In variable mode the check compares against `cat` output,
+// which loses trailing newlines, so a banner ending in one could never pass.
+export function prepareOdvValue(odv: Odv, value: OrgDefinedValue, mode: OdvSubstitutionMode): OdvPreparation {
+  const normalized = mode === 'variable' && typeof value === 'string' ? value.replace(TRAILING_NEWLINES_PATTERN, '') : value
+  const error = validateOdvValue(odv, normalized, mode)
+  if (error) return { valid: false, error }
+  return { valid: true, value: canonicalOdvValue(odv, normalized) }
+}
+
+// The value to display or substitute: a stored value that no longer
+// validates (e.g. left in localStorage by an older build) is ignored in
+// favour of the recommended value rather than trusted.
+export function usableOdvValue(
+  odv: Odv | null,
+  mode: OdvSubstitutionMode,
+  selected: OrgDefinedValue | null,
+): OrgDefinedValue | null {
+  if (!odv) return null
+  const usableSelection = selected !== null && validateOdvValue(odv, selected, mode) === null ? selected : null
+  return effectiveOdvValue(odv, usableSelection)
+}

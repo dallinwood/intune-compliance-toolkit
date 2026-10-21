@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { RuleRow } from '../types/rule-row'
-import { allFacetValues, facetOptions, matchesFilters, type FilterValues } from './ruleFilters'
+import { compareVersionsDescending } from './benchmarkLabels'
+import {
+  allFacetValues,
+  benchmarksListedUnder,
+  facetOptions,
+  matchesFilters,
+  versionsListingAnyOf,
+  type FilterValues,
+} from './ruleFilters'
 
 function row(overrides: Partial<RuleRow> = {}): RuleRow {
   return {
@@ -170,5 +178,57 @@ describe('allFacetValues', () => {
 
   it('flattens array-valued facets', () => {
     expect(allFacetValues(rows, (r) => r.benchmarks)).toEqual(['cis_lvl1', 'cis_lvl2', 'disa_stig'])
+  })
+
+  it('sorts with a supplied comparator, e.g. versions newest first by number', () => {
+    const versionRows = [row({ osVersions: ['9.0', '27.0'] }), row({ osVersions: ['15.0', '26.0'] })]
+    expect(allFacetValues(versionRows, (r) => r.osVersions, compareVersionsDescending)).toEqual([
+      '27.0',
+      '26.0',
+      '15.0',
+      '9.0',
+    ])
+  })
+})
+
+describe('version-scoped facets', () => {
+  it('lists every benchmark when no version is selected', () => {
+    expect(benchmarksListedUnder(passwordRow, new Set())).toEqual(['disa_stig', 'cis_lvl2'])
+  })
+
+  it('lists only benchmarks under the selected versions', () => {
+    expect(benchmarksListedUnder(passwordRow, new Set(['27.0']))).toEqual(['disa_stig'])
+  })
+
+  it('lists every version when no benchmark is selected', () => {
+    expect(versionsListingAnyOf(passwordRow, new Set())).toEqual(['27.0', '26.0'])
+  })
+
+  it('lists only versions that list a selected benchmark', () => {
+    expect(versionsListingAnyOf(passwordRow, new Set(['cis_lvl2']))).toEqual(['26.0'])
+  })
+
+  it('stops the benchmark facet offering a benchmark the selected version does not list', () => {
+    const filters = emptyFilters({ osVersions: new Set(['27.0']) })
+    const options = facetOptions(
+      rows,
+      filters,
+      'benchmarks',
+      (r) => benchmarksListedUnder(r, filters.osVersions),
+      filters.benchmarks,
+    )
+    expect(options).toEqual(['disa_stig'])
+  })
+
+  it('stops the version facet offering a version the selected benchmark is not listed under', () => {
+    const filters = emptyFilters({ benchmarks: new Set(['cis_lvl2']) })
+    const options = facetOptions(
+      rows,
+      filters,
+      'osVersions',
+      (r) => versionsListingAnyOf(r, filters.benchmarks),
+      filters.osVersions,
+    )
+    expect(options).toEqual(['26.0'])
   })
 })

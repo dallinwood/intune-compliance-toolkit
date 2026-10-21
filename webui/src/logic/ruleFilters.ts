@@ -80,12 +80,36 @@ export function facetOptions(
 // FilterSidebar's stabilization logic), so checking one box collapses at
 // most the rows that actually became unreachable instead of reshuffling
 // the whole list.
-export function allFacetValues(rows: RuleRow[], valueOf: (row: RuleRow) => string | string[]): string[] {
+export function allFacetValues(
+  rows: RuleRow[],
+  valueOf: (row: RuleRow) => string | string[],
+  compareValues: (left: string, right: string) => number = (left, right) => left.localeCompare(right),
+): string[] {
   const present = new Set<string>()
   for (const row of rows) {
     const value = valueOf(row)
     if (Array.isArray(value)) value.forEach((entry) => present.add(entry))
     else present.add(value)
   }
-  return Array.from(present).sort((a, b) => a.localeCompare(b))
+  return Array.from(present).sort(compareValues)
+}
+
+// Version-scoped facet values. A row's benchmarks differ per macOS version,
+// so the benchmark facet must only count benchmarks listed under the
+// selected versions (and the version facet only versions listing a selected
+// benchmark) - otherwise it offers combinations that match zero rows.
+export function benchmarksListedUnder(row: RuleRow, osVersions: ReadonlySet<string>): string[] {
+  const versions = osVersions.size > 0 ? row.osVersions.filter((version) => osVersions.has(version)) : row.osVersions
+  const benchmarks = new Set<string>()
+  for (const version of versions) {
+    for (const benchmark of row.applicability[version] ?? []) benchmarks.add(benchmark.name)
+  }
+  return Array.from(benchmarks)
+}
+
+export function versionsListingAnyOf(row: RuleRow, benchmarks: ReadonlySet<string>): string[] {
+  if (benchmarks.size === 0) return row.osVersions
+  return row.osVersions.filter((version) =>
+    (row.applicability[version] ?? []).some((benchmark) => benchmarks.has(benchmark.name)),
+  )
 }

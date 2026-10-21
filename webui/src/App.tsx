@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react'
 import { AppShell } from './components/layout/AppShell'
-import { loadAllRuleRows } from './data/ruleRows'
-import type { RuleRow } from './types/rule-row'
+import { loadLibrary, type Library } from './data/ruleRows'
 
-type LoadState = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; rows: RuleRow[] }
+type LoadState = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; library: Library }
 
 function App() {
   const [state, setState] = useState<LoadState>({ status: 'loading' })
 
   useEffect(() => {
     let cancelled = false
-    loadAllRuleRows()
-      .then((rows) => {
-        if (!cancelled) setState({ status: 'ready', rows })
+    loadLibrary()
+      .then((library) => {
+        if (!cancelled) setState({ status: 'ready', library })
       })
       .catch((error: unknown) => {
         if (!cancelled) setState({ status: 'error', message: error instanceof Error ? error.message : String(error) })
@@ -28,7 +27,8 @@ function App() {
   if (state.status === 'error') {
     return <div className="p-8 text-sm text-red-600">Failed to load rule library: {state.message}</div>
   }
-  return <AppShell rows={state.rows} />
+  const { rows, sources, coveredVersions } = state.library
+  return <AppShell rows={rows} sources={sources} coveredVersions={coveredVersions} />
 }
 
 export default App

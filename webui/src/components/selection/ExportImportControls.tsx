@@ -1,18 +1,63 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { Button } from '@/components/ui/button'
-import { buildSettingsFile, resolveImportedSelections, serializeSettingsFile, validateSettingsFile } from '../../logic/exportImport'
-import { refKey } from '../../logic/selectionEntry'
+import { fetchRule } from '../../data/ruleDetail'
+import {
+  buildSettingsFile,
+  importedIdsWithOdvValues,
+  sanitizeImportedSelections,
+  serializeSettingsFile,
+  validateSettingsFile,
+  type ImportSanitization,
+} from '../../logic/exportImport'
 import { useSelectionStore } from '../../state/selectionStore'
+import type { ManifestSource, Rule } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 
-export function ExportImportControls({ rows }: { rows: RuleRow[] }) {
+interface ImportMessage {
+  summary: string
+  details: string[]
+  isError: boolean
+}
+
+function describeImport(result: ImportSanitization): ImportMessage {
+  const importedCount = Object.keys(result.selections).length
+  const details: string[] = []
+  if (result.unknownIds.length > 0) {
+    details.push(`Skipped ${result.unknownIds.length} rule(s) not in this library: ${result.unknownIds.join(', ')}.`)
+  }
+  if (result.duplicateIds.length > 0) {
+    details.push(`Listed more than once, so the last entry was used: ${result.duplicateIds.join(', ')}.`)
+  }
+  for (const dropped of result.droppedValues) {
+    details.push(`Value for ${dropped.id} not imported: ${dropped.reason}`)
+  }
+  return { summary: `Imported ${importedCount} rule selection(s).`, details, isError: false }
+}
+
+async function fetchRulesById(ids: string[], rowsById: ReadonlyMap<string, RuleRow>): Promise<Map<string, Rule>> {
+  const rulesById = new Map<string, Rule>()
+  // allSettled: a rule that fails to load is simply absent from the map, and
+  // the sanitizer drops its value with a reason instead of failing the
+  // whole import.
+  await Promise.allSettled(
+    ids.map(async (id) => {
+      const row = rowsById.get(id)
+      // Always fetch through the library's own ref, never a path from the file.
+      if (row) rulesById.set(id, await fetchRule(row.ref))
+    }),
+  )
+  return rulesById
+}
+
+export function ExportImportControls({ rows, sources }: { rows: RuleRow[]; sources: ManifestSource[] }) {
   const selections = useSelectionStore((store) => store.selections)
   const setAllSelections = useSelectionStore((store) => store.setAllSelections)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [message, setMessage] = useState<string | null>(null)
+  const [message, setMessage] = useState<ImportMessage | null>(null)
 
   function handleExport() {
-    const file = buildSettingsFile(selections, new Date().toISOString())
+    const libraryReleases = Object.fromEntries(sources.map((source) => [source.name, source.release_tag]))
+    const file = buildSettingsFile(selections, new Date().toISOString(), libraryReleases)
     const blob = new Blob([serializeSettingsFile(file)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -33,13 +78,13 @@ export function ExportImportControls({ rows }: { rows: RuleRow[] }) {
     try {
       parsed = JSON.parse(await file.text())
     } catch {
-      setMessage('That file is not valid JSON.')
+      setMessage({ summary: 'That file is not valid JSON.', details: [], isError: true })
       return
     }
 
     const validation = validateSettingsFile(parsed)
     if (!validation.valid) {
-      setMessage(validation.error)
+      setMessage({ summary: validation.error, details: [], isError: true })
       return
     }
 
@@ -50,21 +95,16 @@ export function ExportImportControls({ rows }: { rows: RuleRow[] }) {
       if (!confirmed) return
     }
 
-    const knownRefKeys = new Set(rows.map((row) => refKey(row.ref)))
-    const { selections: imported, unresolvedRefs } = resolveImportedSelections(validation.file, knownRefKeys)
-    setAllSelections(imported)
-
-    setMessage(
-      unresolvedRefs.length > 0
-        ? `Imported. ${unresolvedRefs.length} rule(s) from the file no longer exist and were skipped: ${unresolvedRefs
-            .map((ref) => ref.id)
-            .join(', ')}.`
-        : 'Import complete.',
-    )
+    const entries = validation.file.selections
+    const rowsById = new Map(rows.map((row) => [row.ref.id, row]))
+    const rulesById = await fetchRulesById(importedIdsWithOdvValues(entries, rowsById), rowsById)
+    const result = sanitizeImportedSelections(entries, rowsById, rulesById)
+    setAllSelections(result.selections)
+    setMessage(describeImport(result))
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <Button type="button" variant="outline" size="xs" onClick={handleExport}>
         Export
       </Button>
@@ -76,9 +116,21 @@ export function ExportImportControls({ rows }: { rows: RuleRow[] }) {
           component forwards the ref/click the same way a real <input> does. */}
       <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleFileChosen} />
       {message && (
-        <span role="status" className="text-xs text-slate-500">
-          {message}
-        </span>
+        <div role="status" className={`max-w-md text-xs ${message.isError ? 'text-red-600' : 'text-slate-500'}`}>
+          <span>{message.summary}</span>{' '}
+          <button type="button" onClick={() => setMessage(null)} className="underline hover:text-slate-700">
+            Dismiss
+          </button>
+          {message.details.length > 0 && (
+            <ul className="mt-1 list-disc pl-4 text-amber-700">
+              {message.details.map((detail) => (
+                <li key={detail} className="break-words">
+                  {detail}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
     </div>
   )
