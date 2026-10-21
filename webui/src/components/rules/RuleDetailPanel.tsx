@@ -1,5 +1,5 @@
 import { useRule, useStoredOdvValue } from '@/hooks/useRule'
-import { odvSubstitutionMode, usableOdvValue } from '../../logic/odv'
+import { odvSubstitutionMode, usableOdvValue, validateOdvValue } from '../../logic/odv'
 import type { RuleRef } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
 import type { Rule } from '../../types/library'
@@ -29,7 +29,11 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
   const mode = odvSubstitutionMode(rule)
-  const odvValue = usableOdvValue(rule.odv, mode, storedValue, rule.id)
+  // An invalid saved value blocks generation, so the details show the
+  // placeholder rather than a recommended value that will not be used.
+  const storedValueIsInvalid =
+    rule.odv !== null && storedValue !== null && validateOdvValue(rule.odv, storedValue, mode, rule.id) !== null
+  const odvValue = storedValueIsInvalid ? null : usableOdvValue(rule.odv, mode, storedValue, rule.id)
   const { source } = rule
 
   return (

@@ -120,10 +120,13 @@ test('an invalid stored ODV value is reported as blocking generation until fixed
   )
   await expect(savedValueAlert).not.toContainText('still using')
   await expect(page.getByText('Using recommended value: 6')).toHaveCount(0)
+  await expect(page.getByText('$ODV stands for the organization-defined value, currently [value].').first()).toBeVisible()
+  await expect(page.getByText('currently 6.')).toHaveCount(0)
 
   await savedValueAlert.getByRole('button', { name: 'Clear saved value' }).click()
   await expect(page.getByRole('alert')).toHaveCount(0)
   await expect(page.getByText('Using recommended value: 6')).toBeVisible()
+  await expect(page.getByText('$ODV stands for the organization-defined value, currently 6.').first()).toBeVisible()
 })
 
 // An option that becomes unreachable stays visible, disabled, for a quiet
