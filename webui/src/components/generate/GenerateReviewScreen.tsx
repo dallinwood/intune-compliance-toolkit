@@ -125,7 +125,7 @@ function ReviewBody({ enabledCount, state, onBack }: { enabledCount: number; sta
       )}
 
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-slate-600">
-        <span>{chunks.length} bundle(s)</span>
+        <span>{blocked.length > 0 ? 'Bundles are packed once nothing is blocked' : `${chunks.length} bundle(s)`}</span>
         <span>{scriptedCount} scripted rule(s)</span>
         <span>{manual.length} rule(s) need manual attestation</span>
         <Button
@@ -133,7 +133,8 @@ function ReviewBody({ enabledCount, state, onBack }: { enabledCount: number; sta
           size="sm"
           className="sm:ml-auto"
           onClick={() => downloadZip(chunks, manual)}
-          disabled={blocked.length > 0 || chunks.length === 0}
+          // A manual-only selection still downloads, as a zip holding just manual-attestation.md.
+          disabled={blocked.length > 0 || (chunks.length === 0 && manual.length === 0)}
         >
           Download bundle (.zip)
         </Button>

@@ -1,4 +1,5 @@
 import type { Rule } from '../types/library'
+import { serializeRulesJson } from './bundleFiles'
 import { planRuleCheck, type RuleCheckPlan } from './checkPlan'
 import { GENERATION_LIMITS } from './limitsConfig'
 import { additionalInfoFor, manualReasonText } from './manualAttestationReport'
@@ -165,7 +166,7 @@ function utf8ByteLength(text: string): number {
 function fitsWithinCaps(rules: GeneratableRule[], limits: ResolvedLimits): boolean {
   if (rules.length === 0) return true
   if (rules.length > limits.maxRulesPerChunk) return false
-  if (utf8ByteLength(JSON.stringify(rules.map((rule) => rule.ruleEntry))) > limits.maxBytesPerChunk) return false
+  if (utf8ByteLength(serializeRulesJson(rules.map((rule) => rule.ruleEntry))) > limits.maxBytesPerChunk) return false
   if (utf8ByteLength(generateBashScript(rules.map((rule) => rule.plan))) > limits.maxScriptBytesPerChunk) return false
   return true
 }

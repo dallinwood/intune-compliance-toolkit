@@ -1,9 +1,9 @@
-import { bundleBaseName } from '../../logic/bundleFiles'
+import { bundleBaseName, serializeRulesJson } from '../../logic/bundleFiles'
 import type { Chunk } from '../../logic/chunking'
 import { sectionLabel, upstreamRuleId } from '../../logic/ruleDisplay'
 
 export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
-  const rulesJsonBytes = new TextEncoder().encode(JSON.stringify(chunk.ruleEntries)).length
+  const rulesJsonBytes = new TextEncoder().encode(serializeRulesJson(chunk.ruleEntries)).length
   const baseName = bundleBaseName(chunk)
 
   return (

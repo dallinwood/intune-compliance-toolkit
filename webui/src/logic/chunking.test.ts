@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
+import { serializeRulesJson } from './bundleFiles'
 import { classifyRule, packChunks, type ClassificationResult, type GeneratableRule } from './chunking'
 import { generateBashScript } from './scriptGen/bash'
 import { createSelectionEntry, type OrgDefinedValue, type SelectionEntry } from './selectionEntry'
@@ -36,6 +37,10 @@ function odvRule(odv: Odv, title = 'Require a Minimum Password Length of $ODV Ch
       check: { default: ruleCheck('echo $ODV', { type: 'integer', value: '$ODV' }), by_version: {} },
     },
   })
+}
+
+function utf8Bytes(text: string): number {
+  return new TextEncoder().encode(text).length
 }
 
 function generatable(options: InlineRuleOptions = {}): GeneratableRule {
@@ -137,6 +142,15 @@ describe('classifyRule', () => {
     })
   })
 
+  it('classifies an automated rule mSCP maps to no macOS version as manual', () => {
+    const rule = inlineRule({ overrides: { applicability: {} } })
+
+    expect(classify(rule)).toEqual({
+      kind: 'manual',
+      entry: { id: rule.id, title: rule.title, reason: 'mSCP does not map this rule to any macOS version.', additionalInfo: null },
+    })
+  })
+
   it('generates the real pwpolicy_minimum_length_enforce with no admin input', () => {
     const rule = expectGeneratable(classify(realRule('pwpolicy_minimum_length_enforce')))
 
@@ -182,12 +196,17 @@ describe('packChunks', () => {
     expect(chunks.map((chunk) => chunk.rules.length)).toEqual([90, 90])
   })
 
-  it('splits a section once the rules-JSON byte cap is exceeded, measured on the real serialized entries', () => {
-    const chunks = packChunks(numbered(6), { maxBytesPerChunk: 900 })
+  it('splits a section once the rules-JSON byte cap is exceeded, measured on the file as written to the bundle', () => {
+    const rules = numbered(6)
+    // Just under three entries' worth of the written (indented) file, which
+    // compact JSON of three or more entries would still fit under.
+    const cap = utf8Bytes(serializeRulesJson(rules.slice(0, 3).map((rule) => rule.ruleEntry))) - 1
 
-    expect(chunks.length).toBeGreaterThan(1)
+    const chunks = packChunks(rules, { maxBytesPerChunk: cap })
+
+    expect(chunks.map((chunk) => chunk.rules.length)).toEqual([2, 2, 2])
     for (const chunk of chunks) {
-      expect(new TextEncoder().encode(JSON.stringify(chunk.ruleEntries)).length).toBeLessThanOrEqual(900)
+      expect(utf8Bytes(serializeRulesJson(chunk.ruleEntries))).toBeLessThanOrEqual(cap)
     }
   })
 

@@ -1,9 +1,16 @@
 import type { Chunk, ManualAttestationEntry } from './chunking'
 import { buildManualAttestationMarkdown } from './manualAttestationReport'
+import type { IntuneRuleEntry } from './rulesJsonGen'
 import { generateBashScript } from './scriptGen/bash'
 import type { BundleFile } from './zipBundle'
 
 export const MANUAL_ATTESTATION_FILE = 'manual-attestation.md'
+
+// The exact bytes written to each -rules.json. Packing measures Intune's
+// rules-JSON size limit on this, since the limit applies to the uploaded file.
+export function serializeRulesJson(entries: IntuneRuleEntry[]): string {
+  return JSON.stringify({ Rules: entries }, null, 2) + '\n'
+}
 
 export function bundleBaseName(chunk: Chunk): string {
   const part = chunk.partNumber === null ? '' : `-part${chunk.partNumber}`
@@ -14,7 +21,7 @@ function chunkFiles(chunk: Chunk): BundleFile[] {
   const baseName = bundleBaseName(chunk)
   return [
     { path: `${baseName}-discovery.sh`, content: generateBashScript(chunk.rules.map((rule) => rule.plan)) },
-    { path: `${baseName}-rules.json`, content: JSON.stringify({ Rules: chunk.ruleEntries }, null, 2) + '\n' },
+    { path: `${baseName}-rules.json`, content: serializeRulesJson(chunk.ruleEntries) },
   ]
 }
 

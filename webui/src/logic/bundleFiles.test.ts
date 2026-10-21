@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildBundleFiles } from './bundleFiles'
+import { buildBundleFiles, serializeRulesJson } from './bundleFiles'
 import { classifyRule, packChunks, type Chunk, type GeneratableRule } from './chunking'
 import { createSelectionEntry } from './selectionEntry'
 import { inlineRule, type InlineRuleOptions } from './testRuleFixtures'
@@ -31,6 +31,7 @@ describe('buildBundleFiles', () => {
     expect(script.startsWith('#!/bin/bash\n')).toBe(true)
     expect(script).toContain('"auth_rule_1":%s')
 
+    expect(files[1].content).toBe(serializeRulesJson(packChunks(numbered(2, 'auth'))[0].ruleEntries))
     const rulesJson = JSON.parse(files[1].content)
     expect(rulesJson.Rules.map((entry: { SettingName: string }) => entry.SettingName)).toEqual(['auth_rule_1', 'auth_rule_2'])
   })

@@ -1,4 +1,6 @@
+import { readFile } from 'node:fs/promises'
 import { expect, test, type Page } from '@playwright/test'
+import { unzipSync } from 'fflate'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
@@ -206,4 +208,29 @@ test('review & generate blocks the download while a selected rule has an invalid
   await expect(blocked).toContainText('pwpolicy_minimum_length_enforce')
   await expect(blocked).toContainText('Organization value is invalid: Value must be a whole number.')
   await expect(page.getByRole('button', { name: 'Download bundle (.zip)' })).toBeDisabled()
+  // No bundle count while blocked: packing waits until nothing is blocked.
+  await expect(page.getByText('Bundles are packed once nothing is blocked')).toBeVisible()
+  await expect(page.getByText(/\d+ bundle\(s\)/)).toHaveCount(0)
+})
+
+test('review & generate downloads a manual-only selection as a zip holding manual-attestation.md', async ({ page }) => {
+  await page.addInitScript(() => {
+    const ref = { id: 'mscp.os_application_sandboxing', path: 'mscp/rules/os_application_sandboxing.json' }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: null } } }, version: 2 }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
+  })
+  await page.goto('/')
+  await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
+  await page.getByRole('button', { name: 'Generate' }).click()
+
+  const download = page.getByRole('button', { name: 'Download bundle (.zip)' })
+  await expect(download).toBeEnabled({ timeout: 10_000 })
+
+  const downloadEvent = page.waitForEvent('download')
+  await download.click()
+  const zipPath = await (await downloadEvent).path()
+  const files = unzipSync(new Uint8Array(await readFile(zipPath)))
+
+  expect(Object.keys(files)).toEqual(['manual-attestation.md'])
+  expect(new TextDecoder().decode(files['manual-attestation.md'])).toContain('**os_application_sandboxing**')
 })
