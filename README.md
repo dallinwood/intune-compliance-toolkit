@@ -31,6 +31,9 @@ Requires [Bun](https://bun.sh).
 See Microsoft Learn, [Create discovery scripts for custom compliance policy
 in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-security/compliance/create-custom-script).
 
+Workflow action versions in `.github/workflows/deploy-pages.yml` are pinned by
+commit SHA; bump them deliberately.
+
 ## Known limitations / test before production
 
 - The generated scripts have not yet been run on a real Mac (macOS's
