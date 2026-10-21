@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
-import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvQuickPicks, odvShellContext, substituteOdv, validateOdvValue } from './odv'
+import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvQuickPicks, odvSubstitutionMode, ODV_VARIABLE_ALLOWLIST, substituteOdv, validateOdvValue } from './odv'
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
@@ -13,10 +13,14 @@ function odv(overrides: Partial<Odv> = {}): Odv {
   }
 }
 
-describe('odvShellContext', () => {
-  function ruleWithChecks(defaultShell: string | null, byVersionShells: Record<string, string> = {}): Rule {
+describe('odvSubstitutionMode', () => {
+  const allowlistedId = 'mscp.os_policy_banner_ssh_configure'
+  const allowlistedShell = ODV_VARIABLE_ALLOWLIST[allowlistedId]
+
+  function ruleWithChecks(id: string, defaultShell: string | null, byVersionShells: Record<string, string> = {}): Rule {
     const checkOf = (shell: string) => ({ shell, result: null, additional_info: null })
     return {
+      id,
       check: {
         default: defaultShell === null ? null : checkOf(defaultShell),
         by_version: Object.fromEntries(Object.entries(byVersionShells).map(([version, shell]) => [version, checkOf(shell)])),
@@ -26,43 +30,106 @@ describe('odvShellContext', () => {
   }
 
   it('is none when no check shell mentions $ODV', () => {
-    expect(odvShellContext(ruleWithChecks('/usr/bin/defaults read com.apple.foo'))).toBe('none')
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.x', '/usr/bin/defaults read com.apple.foo'))).toBe('none')
   })
 
   it('is none when the rule has no check', () => {
-    expect(odvShellContext({ check: null } as unknown as Rule)).toBe('none')
-    expect(odvShellContext(ruleWithChecks(null))).toBe('none')
+    expect(odvSubstitutionMode({ id: 'mscp.x', check: null } as unknown as Rule)).toBe('none')
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.x', null))).toBe('none')
   })
 
-  it('is double_quoted when every occurrence is exactly "$ODV"', () => {
-    const shell = 'banner="$ODV"; test "$(cat /etc/banner)" = "$ODV"'
-    expect(odvShellContext(ruleWithChecks(shell))).toBe('double_quoted')
+  it('is variable for an allowlisted rule whose shell is exactly the reviewed text', () => {
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell))).toBe('variable')
   })
 
-  it('is other when an occurrence is unquoted', () => {
-    expect(odvShellContext(ruleWithChecks('date -v -$ODV +%s'))).toBe('other')
+  it('is text for an allowlisted rule whose shell was modified', () => {
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, `${allowlistedShell}; id`))).toBe('text')
   })
 
-  it('is other when only some occurrences are double quoted', () => {
-    expect(odvShellContext(ruleWithChecks('a="$ODV"; b=$ODV'))).toBe('other')
+  it('is text when any by_version shell with $ODV differs from the reviewed text', () => {
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell, { '26.0': 'echo $ODV' }))).toBe('text')
   })
 
-  it('is double_quoted when the placeholder is embedded in a larger double-quoted string', () => {
-    expect(odvShellContext(ruleWithChecks('echo "value=$ODV"'))).toBe('double_quoted')
+  it('is variable when the same reviewed text is repeated in a by_version shell', () => {
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell, { '26.0': allowlistedShell }))).toBe('variable')
   })
 
-  it('considers by_version shells too', () => {
-    expect(odvShellContext(ruleWithChecks('echo "$ODV"', { '26.0': 'echo $ODV' }))).toBe('other')
-    expect(odvShellContext(ruleWithChecks(null, { '26.0': 'echo "$ODV"' }))).toBe('double_quoted')
+  it('is text for a non-allowlisted rule even if it looks safe', () => {
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', 'bannerText="$ODV"'))).toBe('text')
+  })
+
+  it('is text for a non-allowlisted rule that reuses the allowlisted shell text', () => {
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', allowlistedShell))).toBe('text')
+  })
+})
+
+describe('validateOdvValue modes', () => {
+  const stringOdv = odv({ datatype: 'string', recommended: 'x' })
+  const sshBanner =
+    'You are accessing a U.S. Government (USG) Information System (IS).\n\n-The USG routinely intercepts communications; it is not private.\nSee User Agreement for details.'
+
+  describe('none', () => {
+    it('allows an apostrophe, quotes, backslashes and newlines', () => {
+      expect(validateOdvValue(stringOdv, "Don't \"quote\" me \\ $(x) ${y} `z`\nnext", 'none')).toBeNull()
+    })
+  })
+
+  describe('variable', () => {
+    it('allows a multi-line SSH banner with apostrophes and quotes', () => {
+      expect(validateOdvValue(stringOdv, sshBanner, 'variable')).toBeNull()
+      expect(validateOdvValue(stringOdv, "Don't \"quote\" $(x)", 'variable')).toBeNull()
+    })
+  })
+
+  describe('text', () => {
+    it('fails the multi-line SSH banner', () => {
+      expect(validateOdvValue(stringOdv, sshBanner, 'text')).not.toBeNull()
+    })
+
+    it('accepts a plain unquoted-safe string', () => {
+      expect(validateOdvValue(stringOdv, '30d', 'text')).toBeNull()
+      expect(validateOdvValue(stringOdv, 'time.apple.com', 'text')).toBeNull()
+    })
+
+    it('rejects a string value with shell metacharacters', () => {
+      expect(validateOdvValue(stringOdv, '30d; rm -rf /', 'text')).not.toBeNull()
+    })
+
+    it('rejects an apostrophe, which none allows', () => {
+      expect(validateOdvValue(stringOdv, "it's", 'text')).toBe('Value must not contain a single quote.')
+      expect(validateOdvValue(stringOdv, "it's", 'none')).toBeNull()
+    })
+
+    it.each([
+      ['say "hi"', 'a double quote'],
+      ['run `id`', 'a backtick'],
+      ['back\\slash', 'a backslash'],
+      ['line\nbreak', 'a newline'],
+      ['$(reboot)', '"$("'],
+      ['${HOME}', '"${"'],
+    ])('rejects %j because it contains %s', (value, description) => {
+      const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
+      expect(validateOdvValue(regexOdv, value, 'text')).toBe(`Value must not contain ${description}.`)
+    })
+
+    it('does not apply the unquoted-string pattern to a regex datatype', () => {
+      const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
+      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'text')).toBeNull()
+    })
+
+    it('applies the denied characters to enum values too', () => {
+      const enumOdv = odv({ datatype: 'enum', validation: { enumValues: ["it's"] }, recommended: "it's" })
+      expect(validateOdvValue(enumOdv, "it's", 'text')).toBe('Value must not contain a single quote.')
+    })
   })
 })
 
 describe('validateOdvValue datatype rules', () => {
   it('accepts an integer within min and max', () => {
     const numberOdv = odv({ validation: { min: 1, max: 10 } })
-    expect(validateOdvValue(numberOdv, 5, 'other')).toBeNull()
-    expect(validateOdvValue(numberOdv, 1, 'other')).toBeNull()
-    expect(validateOdvValue(numberOdv, 10, 'other')).toBeNull()
+    expect(validateOdvValue(numberOdv, 5, 'text')).toBeNull()
+    expect(validateOdvValue(numberOdv, 1, 'text')).toBeNull()
+    expect(validateOdvValue(numberOdv, 10, 'text')).toBeNull()
   })
 
   it('rejects numbers outside min and max with a reason', () => {
@@ -77,20 +144,20 @@ describe('validateOdvValue datatype rules', () => {
   })
 
   it('accepts a negative integer and a numeric string for a number datatype', () => {
-    expect(validateOdvValue(odv(), -5, 'other')).toBeNull()
-    expect(validateOdvValue(odv(), '42', 'other')).toBeNull()
+    expect(validateOdvValue(odv(), -5, 'text')).toBeNull()
+    expect(validateOdvValue(odv(), '42', 'text')).toBeNull()
   })
 
   it('requires an enum value to be one of enumValues', () => {
     const enumOdv = odv({ datatype: 'enum', validation: { enumValues: ['a', 'b'] }, recommended: 'a' })
-    expect(validateOdvValue(enumOdv, 'a', 'other')).toBeNull()
-    expect(validateOdvValue(enumOdv, 'c', 'other')).toBe('Value must be one of: a, b.')
+    expect(validateOdvValue(enumOdv, 'a', 'text')).toBeNull()
+    expect(validateOdvValue(enumOdv, 'c', 'text')).toBe('Value must be one of: a, b.')
   })
 
   it('applies validation.regex to string values', () => {
     const stringOdv = odv({ datatype: 'string', validation: { regex: '^[a-z]+$' }, recommended: 'abc' })
-    expect(validateOdvValue(stringOdv, 'abc', 'other')).toBeNull()
-    expect(validateOdvValue(stringOdv, 'ABC', 'other')).toBe('Value must match the pattern ^[a-z]+$.')
+    expect(validateOdvValue(stringOdv, 'abc', 'text')).toBeNull()
+    expect(validateOdvValue(stringOdv, 'ABC', 'text')).toBe('Value must match the pattern ^[a-z]+$.')
   })
 
   it('requires a regex datatype value to compile as a JavaScript RegExp', () => {
@@ -99,125 +166,10 @@ describe('validateOdvValue datatype rules', () => {
     expect(validateOdvValue(regexOdv, '(unclosed', 'none')).toBe('Value must be a valid regular expression.')
   })
 
-  it.each(['none', 'double_quoted', 'other'] as const)('always rejects a carriage return and NUL in %s', (context) => {
+  it.each(['none', 'variable', 'text'] as const)('always rejects a carriage return and NUL in %s', (context) => {
     const stringOdv = odv({ datatype: 'string', recommended: 'x' })
     expect(validateOdvValue(stringOdv, 'a\rb', context)).toBe('Value must not contain a carriage return.')
     expect(validateOdvValue(stringOdv, 'a\0b', context)).toBe('Value must not contain a NUL character.')
-  })
-})
-
-describe('validateOdvValue shell context rules', () => {
-  const stringOdv = odv({ datatype: 'string', recommended: 'x' })
-  const sshBanner =
-    'You are accessing a U.S. Government (USG) Information System (IS).\n\n-The USG routinely intercepts communications; it is not private.\nSee User Agreement for details.'
-
-  describe('none', () => {
-    it('allows an apostrophe, quotes, backslashes and newlines', () => {
-      expect(validateOdvValue(stringOdv, "Don't \"quote\" me \\ $(x) ${y} `z`\nnext", 'none')).toBeNull()
-    })
-  })
-
-  describe('double_quoted', () => {
-    it('allows an SSH banner with newlines and apostrophes', () => {
-      expect(validateOdvValue(stringOdv, sshBanner, 'double_quoted')).toBeNull()
-      expect(validateOdvValue(stringOdv, "Don't", 'double_quoted')).toBeNull()
-    })
-
-    it.each([
-      ['say "hi"', 'a double quote'],
-      ['cost $5', 'a dollar sign'],
-      ['run `id`', 'a backtick'],
-      ['back\\slash', 'a backslash'],
-      ['$(reboot)', 'a dollar sign'],
-    ])('rejects %j because it contains %s', (value, description) => {
-      expect(validateOdvValue(stringOdv, value, 'double_quoted')).toBe(`Value must not contain ${description}.`)
-    })
-  })
-
-  describe('other', () => {
-    it('accepts a plain unquoted-safe string', () => {
-      expect(validateOdvValue(stringOdv, '30d', 'other')).toBeNull()
-      expect(validateOdvValue(stringOdv, 'time.apple.com', 'other')).toBeNull()
-    })
-
-    it('rejects a string value with shell metacharacters', () => {
-      expect(validateOdvValue(stringOdv, '30d; rm -rf /', 'other')).not.toBeNull()
-    })
-
-    it('rejects an apostrophe, which none allows', () => {
-      expect(validateOdvValue(stringOdv, "it's", 'other')).toBe('Value must not contain a single quote.')
-      expect(validateOdvValue(stringOdv, "it's", 'none')).toBeNull()
-    })
-
-    it.each([
-      ['say "hi"', 'a double quote'],
-      ['run `id`', 'a backtick'],
-      ['back\\slash', 'a backslash'],
-      ['line\nbreak', 'a newline'],
-      ['$(reboot)', '"$("'],
-      ['${HOME}', '"${"'],
-    ])('rejects %j because it contains %s', (value, description) => {
-      const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
-      expect(validateOdvValue(regexOdv, value, 'other')).toBe(`Value must not contain ${description}.`)
-    })
-
-    it('does not apply the unquoted-string pattern to a regex datatype', () => {
-      const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
-      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'other')).toBeNull()
-    })
-
-    it('applies the denied characters to enum values too', () => {
-      const enumOdv = odv({ datatype: 'enum', validation: { enumValues: ["it's"] }, recommended: "it's" })
-      expect(validateOdvValue(enumOdv, "it's", 'other')).toBe('Value must not contain a single quote.')
-    })
-  })
-})
-
-describe('odvShellContext quote tracking', () => {
-  function ruleWithShell(shell: string | null): Rule {
-    return { check: { default: { shell, result: null, additional_info: null }, by_version: {} } } as unknown as Rule
-  }
-
-  it.each([
-    ['x=""$ODV""', 'other'],
-    ["x='\"$ODV\"'", 'other'],
-    ['awk \'{ if ($2 == "$ODV") print }\'', 'other'],
-    ['cat <<EOF\n"$ODV"\nEOF', 'other'],
-    ['bannerText="$ODV"', 'double_quoted'],
-    ['[[ "${SS_RULE}" == "$ODV" ]]', 'double_quoted'],
-    ['x="a \\" b $ODV"', 'double_quoted'],
-    ['x=\\"$ODV"', 'other'],
-    ['x="a" y=$ODV', 'other'],
-    ['x=\\$ODV', 'other'],
-    ['echo "\\$ODV"', 'other'],
-    ['echo "$ODV"; x=\\$ODV', 'other'],
-    ['echo "$(echo $ODV)"', 'other'],
-    ['echo "`echo $ODV`"', 'other'],
-    ["x=$'a\\' \"$ODV\"'", 'other'],
-    ['# "$ODV"', 'other'],
-    ['echo ok # "$ODV"', 'other'],
-    ['echo "$ODV', 'other'],
-    ['sshCheck=$(/usr/bin/ssh -G . | /usr/bin/grep -c "^serveralivecountmax $ODV")', 'double_quoted'],
-    ['"$(echo "$ODV")"', 'double_quoted'],
-    ['x=$( (a) ); y="$ODV"', 'double_quoted'],
-    ['x=$( (a) ) $ODV', 'other'],
-    ['echo a#b "$ODV"', 'double_quoted'],
-  ])('classifies %j as %s', (shell, expectedContext) => {
-    expect(odvShellContext(ruleWithShell(shell))).toBe(expectedContext)
-  })
-
-  it('treats a heredoc in any check shell as other even when the placeholder is double quoted', () => {
-    const rule = {
-      check: {
-        default: { shell: 'echo "$ODV"', result: null, additional_info: null },
-        by_version: { '26.0': { shell: 'cat <<EOF\nEOF', result: null, additional_info: null } },
-      },
-    } as unknown as Rule
-    expect(odvShellContext(rule)).toBe('other')
-  })
-
-  it('handles a null check shell', () => {
-    expect(odvShellContext(ruleWithShell(null))).toBe('none')
   })
 })
 
@@ -238,18 +190,18 @@ describe('validateOdvValue hardening', () => {
     )
   })
 
-  describe('regex datatype in other context', () => {
+  describe('regex datatype in text mode', () => {
     const regexOdv = odv({ datatype: 'regex', recommended: 'x' })
 
     it.each(['a b', 'a\tb', 'a;b', 'a|b', 'a&b', 'a<b', 'a>b', 'x$HOME', 'x$_y', 'x$ODV'])('rejects %j', (value) => {
-      expect(validateOdvValue(regexOdv, value, 'other')).not.toBeNull()
+      expect(validateOdvValue(regexOdv, value, 'text')).not.toBeNull()
     })
 
     it('accepts a lookahead regex ending in a bare dollar', () => {
-      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'other')).toBeNull()
+      expect(validateOdvValue(regexOdv, '^(?=.*[A-Z])(?=.*[a-z]).*$', 'text')).toBeNull()
     })
 
-    it('does not apply the extra restrictions in none or double_quoted context', () => {
+    it('does not apply the extra restrictions in none or variable mode', () => {
       expect(validateOdvValue(regexOdv, 'a b;c', 'none')).toBeNull()
     })
   })
