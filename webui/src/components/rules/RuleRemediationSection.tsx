@@ -1,7 +1,8 @@
 import { compareVersionsDescending, macosVersionLabel } from '../../logic/benchmarkLabels'
+import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { RemediationEntry, Rule } from '../../types/library'
-import { CodeBlock, SectionHeading } from './CodeBlock'
+import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 
 function hasContent(entry: RemediationEntry): boolean {
@@ -13,16 +14,21 @@ function FixEntry({ label, entry, odvValue }: { label: string; entry: Remediatio
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {entry.shell && <CodeBlock code={entry.shell} />}
+      {entry.shell && containsOdvPlaceholder(entry.shell) && <OdvNote odvValue={odvValue} />}
       {entry.additional_info && <DiscussionText text={entry.additional_info} odvValue={odvValue} />}
     </div>
   )
 }
 
-function JsonEntry({ label, value }: { label: string; value: unknown }) {
+// Payloads are shown exactly as mSCP ships them, $ODV included; the note
+// explains the placeholder instead of substituting into the JSON.
+function JsonEntry({ label, value, odvValue }: { label: string; value: unknown; odvValue: OrgDefinedValue | null }) {
+  const json = JSON.stringify(value, null, 2)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
-      <CodeBlock code={JSON.stringify(value, null, 2)} />
+      <CodeBlock code={json} />
+      {containsOdvPlaceholder(json) && <OdvNote odvValue={odvValue} />}
     </div>
   )
 }
@@ -60,12 +66,13 @@ export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValu
         <JsonEntry
           label={versionProfiles.length > 0 ? 'Configuration profile payloads (versions without their own)' : 'Configuration profile payloads'}
           value={remediation.mobileconfig_info}
+          odvValue={odvValue}
         />
       )}
       {versionProfiles.map(([version, payloads]) => (
-        <JsonEntry key={version} label={`Configuration profile payloads for ${macosVersionLabel(version)}`} value={payloads} />
+        <JsonEntry key={version} label={`Configuration profile payloads for ${macosVersionLabel(version)}`} value={payloads} odvValue={odvValue} />
       ))}
-      {remediation.ddm_info !== null && <JsonEntry label="Declarative Device Management" value={remediation.ddm_info} />}
+      {remediation.ddm_info !== null && <JsonEntry label="Declarative Device Management" value={remediation.ddm_info} odvValue={odvValue} />}
     </div>
   )
 }

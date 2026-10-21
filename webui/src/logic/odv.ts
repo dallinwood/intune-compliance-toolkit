@@ -134,6 +134,10 @@ export function substituteOdv(text: string, value: OrgDefinedValue): string {
   return text.replaceAll('$ODV', () => String(value))
 }
 
+export function containsOdvPlaceholder(text: string): boolean {
+  return text.includes(ODV_PLACEHOLDER)
+}
+
 export function displayWithOdv(text: string, value: OrgDefinedValue | null): string {
   return substituteOdv(text, value ?? '[value]')
 }

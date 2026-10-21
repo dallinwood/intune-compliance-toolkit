@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
 import {
   canonicalOdvValue,
+  containsOdvPlaceholder,
   displayWithOdv,
   effectiveOdvValue,
   odvQuickPicks,
@@ -270,6 +271,13 @@ describe('substituteOdv and displayWithOdv', () => {
 
   it('shows the value when there is one', () => {
     expect(displayWithOdv('At Least $ODV Characters', 15)).toBe('At Least 15 Characters')
+  })
+})
+
+describe('containsOdvPlaceholder', () => {
+  it('detects $ODV in a script or serialized payload', () => {
+    expect(containsOdvPlaceholder('{"minLength": "$ODV"}')).toBe(true)
+    expect(containsOdvPlaceholder('/usr/bin/true')).toBe(false)
   })
 })
 

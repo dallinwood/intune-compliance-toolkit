@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { odvQuickPicks, prepareOdvValue, type OdvSubstitutionMode } from '../../logic/odv'
+import { odvQuickPicks, prepareOdvValue, validateOdvValue, type OdvSubstitutionMode } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { Odv } from '../../types/library'
 
@@ -62,6 +62,9 @@ export function OrgDefinedValueInput({
   }
 
   const preparation = text === '' ? null : prepareOdvValue(odv, text, mode)
+  // Mirrors usableOdvValue: a stored value that fails validation (e.g. left
+  // by an older build) is not what the rest of the UI uses.
+  const storedValueIsUsable = storedValue !== null && validateOdvValue(odv, storedValue, mode) === null
   const error = preparation && !preparation.valid ? preparation.error : null
 
   function handleChange(rawValue: string) {
@@ -140,10 +143,10 @@ export function OrgDefinedValueInput({
       <div id={messageId} className="space-y-0.5 text-xs">
         {error && (
           <p role="alert" className="text-red-600">
-            {error} {storedValue !== null && <>Not saved; still using {shortened(storedValue, HINT_VALUE_LENGTH)}.</>}
+            {error} {storedValueIsUsable && storedValue !== null && <>Not saved; still using {shortened(storedValue, HINT_VALUE_LENGTH)}.</>}
           </p>
         )}
-        {storedValue === null && (
+        {!storedValueIsUsable && (
           <p className="break-words text-slate-500">
             Using recommended value: {shortened(odv.recommended, HINT_VALUE_LENGTH)}
           </p>

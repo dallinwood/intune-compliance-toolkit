@@ -173,7 +173,7 @@ function RuleTitle({ row }: { row: RuleRow }) {
       <span className="break-words">
         {displayWithOdv(row.title, value)}
         {row.hasOdv && (
-          <span title="Has an organization-defined value" aria-label="Has an organization-defined value">
+          <span role="img" title="Has an organization-defined value" aria-label="Has an organization-defined value">
             <Settings2 className="ml-1.5 inline size-4 align-text-bottom text-indigo-500" />
           </span>
         )}

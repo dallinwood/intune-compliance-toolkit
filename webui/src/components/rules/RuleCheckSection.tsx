@@ -1,9 +1,9 @@
 import { compareVersionsDescending, macosVersionLabel } from '../../logic/benchmarkLabels'
-import { displayWithOdv } from '../../logic/odv'
+import { containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import type { Architecture, Rule, RuleCheck } from '../../types/library'
-import { CodeBlock, SectionHeading } from './CodeBlock'
+import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 
 const ARCHITECTURE_LABELS: Record<NonNullable<Architecture>, string> = {
@@ -11,24 +11,12 @@ const ARCHITECTURE_LABELS: Record<NonNullable<Architecture>, string> = {
   i386: 'Intel (i386)',
 }
 
-const ODV_PLACEHOLDER = '$ODV'
-const MAX_NOTE_VALUE_LENGTH = 80
-
-// Banners run to hundreds of characters, which would swamp the check itself.
-function shortenedValue(text: string): string {
-  return text.length > MAX_NOTE_VALUE_LENGTH ? `${text.slice(0, MAX_NOTE_VALUE_LENGTH)}...` : text
-}
-
 function CheckEntry({ label, check, odvValue }: { label: string; check: RuleCheck; odvValue: OrgDefinedValue | null }) {
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {check.shell ? <CodeBlock code={check.shell} /> : <p className="text-xs text-slate-500">No check script.</p>}
-      {check.shell?.includes(ODV_PLACEHOLDER) && (
-        <p className="text-xs text-slate-500">
-          $ODV stands for the organization-defined value, currently {shortenedValue(displayWithOdv(ODV_PLACEHOLDER, odvValue))}.
-        </p>
-      )}
+      {check.shell && containsOdvPlaceholder(check.shell) && <OdvNote odvValue={odvValue} />}
       {check.result && (
         <p className="text-xs text-slate-600">
           Expected result ({check.result.type}):{' '}

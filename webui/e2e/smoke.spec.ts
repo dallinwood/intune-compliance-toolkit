@@ -20,8 +20,9 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   // "Expand" and "Collapse" on click.
   await row.getByRole('button').click()
   await expect(row.getByRole('button')).toHaveAttribute('aria-expanded', 'true')
-  await expect(page.getByText('com.apple.systempolicy.control').first()).toBeVisible()
-  await expect(page.getByText('EnableAssessment').first()).toBeVisible()
+  // objectIsForcedForKey appears only in the check shell, not in the
+  // profile payload, so this proves the check itself rendered.
+  await expect(page.getByText('objectIsForcedForKey')).toBeVisible()
 })
 
 // Asserts on the real filtering effect, not just presence - a facet
@@ -94,6 +95,25 @@ test('an ODV value with an apostrophe is rejected and not stored', async ({ page
   await odvInput.fill('')
   await expect(page.getByText('Using recommended value: 6')).toBeVisible()
   await expect(row).toContainText('Require a Minimum Password Length of 6 Characters')
+})
+
+// A value persisted by an older build can fail today's validation. The UI
+// must fall back to the recommended value everywhere and say so, rather
+// than claim the stale value is still in use.
+test('an invalid stored ODV value is reported and the recommended value is used', async ({ page }) => {
+  await page.addInitScript(() => {
+    const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
+  })
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
+  await expect(row).toContainText('Require a Minimum Password Length of 6 Characters')
+
+  await row.getByRole('button', { name: /Expand/ }).click()
+  await expect(page.getByRole('alert')).toContainText('Value must be a whole number.')
+  await expect(page.getByRole('alert')).not.toContainText('still using')
+  await expect(page.getByText('Using recommended value: 6')).toBeVisible()
 })
 
 // An option that becomes unreachable stays visible, disabled, for a quiet
