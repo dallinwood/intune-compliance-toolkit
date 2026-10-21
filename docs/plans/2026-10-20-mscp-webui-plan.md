@@ -38,7 +38,7 @@
   - the check for version `v` is `check.by_version[v]` if present, else `check.default`
 - **Architecture:** on a device whose `arch` differs from the rule's `architecture`, the rule reports a passing value.
 - **Intune SettingName:** the upstream rule id with every character outside `[A-Za-z0-9_]` replaced by `_`. Duplicate SettingNames within one policy remain a hard error.
-- **Discovery script:** must run under macOS's bash 3.2: no associative arrays, no `${var,,}`, no `mapfile`.
+- **Discovery script:** the outer script is bash with `#!/bin/bash` (Microsoft Learn: macOS discovery scripts "use Bash and must include a valid shebang line") and must run under macOS's bash 3.2: no associative arrays, no `${var,,}`, no `mapfile`. Each mSCP check runs as mSCP runs it, under `/bin/zsh --no-rcs -c '<single-quote-escaped check>'` inside a command substitution (mSCP's compliance script uses `#!/bin/zsh --no-rcs`, and some checks depend on zsh array semantics). Preamble variables and a variable-mode ODV reach the check as exported environment variables. Revised during Task 4.
 - **Licence attribution:** NIST macOS Security Compliance Project, `https://github.com/usnistgov/macos_security`, licence CC BY 4.0 `https://creativecommons.org/licenses/by/4.0/`, content modified by this project.
 - **Verification for rendering changes:** run Vitest, `bun run lint` and `bun run build`. Rendering changes also need `bun run test:e2e` (with `bun run dev` running) plus Playwright screenshots at about 375px and about 1280px wide, opened and inspected with the Read tool, per `.claude/CLAUDE.md`.
 - **Commits:**
