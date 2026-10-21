@@ -1,26 +1,74 @@
 import { describe, expect, it } from 'vitest'
-import { buildManualAttestationMarkdown } from './manualAttestationReport'
-import type { ManualAttestationEntry } from './chunking'
+import type { ManualReason } from '../types/library'
+import { additionalInfoFor, buildManualAttestationMarkdown, manualReasonText } from './manualAttestationReport'
+import { inlineRule, ruleCheck } from './testRuleFixtures'
+
+function manualRule(manualReason: ManualReason | null, additionalInfo: string | null = null) {
+  return inlineRule({
+    overrides: {
+      assessment: { status: 'manual', manual_reason: manualReason },
+      check: { default: ruleCheck(null, null, additionalInfo), by_version: {} },
+    },
+  })
+}
+
+describe('manualReasonText', () => {
+  it.each<[ManualReason, string]>([
+    ['inherent', 'Met by macOS by design (mSCP: inherent).'],
+    ['permanent', 'Cannot be configured on macOS; mSCP lists this as a permanent finding.'],
+    ['n_a', 'Not applicable to macOS (mSCP: n_a).'],
+    ['supplemental', 'Supplemental guidance with no check.'],
+    ['manual', 'mSCP marks this check as manual.'],
+    ['no_check', 'mSCP provides no automated check.'],
+  ])('explains manual_reason %s', (manualReason, text) => {
+    expect(manualReasonText(manualReason)).toBe(text)
+  })
+
+  it('falls back to the generic manual text when mSCP gives no reason', () => {
+    expect(manualReasonText(null)).toBe('mSCP marks this check as manual.')
+  })
+})
+
+describe('additionalInfoFor', () => {
+  it('is null when the check has no additional_info', () => {
+    expect(additionalInfoFor(manualRule('inherent'), null)).toBeNull()
+  })
+
+  it('is the check additional_info, trimmed', () => {
+    expect(additionalInfoFor(manualRule('manual', 'Ask the ISSO.\n\nThen record it.\n'), null)).toBe('Ask the ISSO.\n\nThen record it.')
+  })
+
+  it('shows the effective value instead of $ODV', () => {
+    expect(additionalInfoFor(manualRule('manual', 'Require $ODV characters.'), 15)).toBe('Require 15 characters.')
+  })
+})
 
 describe('buildManualAttestationMarkdown', () => {
   it('notes when nothing requires manual attestation', () => {
-    expect(buildManualAttestationMarkdown([])).toMatch(/no rules require manual attestation/i)
+    expect(buildManualAttestationMarkdown([])).toMatch(/No selected rules need manual attestation\./)
   })
 
-  it('lists each entry with its id, title, and reason', () => {
-    const entries: ManualAttestationEntry[] = [
+  it('lists each entry by upstream id and title, with the reason and any additional_info indented under it', () => {
+    const markdown = buildManualAttestationMarkdown([
       {
-        ref: { family: 'cis', product: 'macos_26_tahoe', version: 'v1.1.0', file: 'x.json', id: '2.1.1.1' },
-        id: '2.1.1.1',
-        title: 'Audit iCloud Passwords & Keychain',
-        reason: 'No scripted audit method is available for this rule.',
+        id: 'mscp.pwpolicy_temporary_or_emergency_accounts_disable',
+        title: 'Disable Temporary Accounts',
+        reason: 'mSCP marks this check as manual.',
+        additionalInfo: 'Ask the ISSO.\n\nThen record it.',
       },
-    ]
+    ])
 
-    const markdown = buildManualAttestationMarkdown(entries)
+    expect(markdown).toContain(
+      '- **pwpolicy_temporary_or_emergency_accounts_disable** - Disable Temporary Accounts\n\n' +
+        '  mSCP marks this check as manual.\n\n  Ask the ISSO.\n\n  Then record it.\n',
+    )
+    expect(markdown).not.toContain('mscp.pwpolicy_temporary')
+  })
 
-    expect(markdown).toContain('2.1.1.1')
-    expect(markdown).toContain('Audit iCloud Passwords & Keychain')
-    expect(markdown).toContain('No scripted audit method is available for this rule.')
+  it('credits mSCP under CC BY 4.0', () => {
+    const markdown = buildManualAttestationMarkdown([{ id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null }])
+
+    expect(markdown).toContain('https://github.com/usnistgov/macos_security')
+    expect(markdown).toContain('https://creativecommons.org/licenses/by/4.0/')
   })
 })

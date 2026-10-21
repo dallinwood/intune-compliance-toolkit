@@ -32,17 +32,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  /* Bundle assembly still on the pre-v3 types - temporarily excluded until Plan 2 Task 5 rewrites these.
-     Nothing included imports them (GenerateReviewScreen renders a placeholder meanwhile). */
-  "exclude": [
-    "src/logic/chunking.ts",
-    "src/logic/chunking.test.ts",
-    "src/logic/bundleFiles.ts",
-    "src/logic/bundleFiles.test.ts",
-    "src/logic/manualAttestationReport.ts",
-    "src/logic/manualAttestationReport.test.ts",
-    "src/components/generate/BundleGroupCard.tsx",
-    "src/components/generate/ManualAttestationReport.tsx"
-  ]
+  "include": ["src"]
 }

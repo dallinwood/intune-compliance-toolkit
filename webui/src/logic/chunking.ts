@@ -1,35 +1,35 @@
-import { effectiveAuditMethodIndex } from './auditMethods'
+import type { Rule } from '../types/library'
+import { planRuleCheck, type RuleCheckPlan } from './checkPlan'
 import { GENERATION_LIMITS } from './limitsConfig'
-import { naturalIdCompare, topLevelSection } from './naturalId'
-import { hasInScriptFallback, isSupportedOperator } from './operatorMap'
-import { scriptKindForPlatform } from './platformScriptKind'
-import { buildRuleEntriesForMethod, type IntuneRuleEntry } from './rulesJsonGen'
+import { additionalInfoFor, manualReasonText } from './manualAttestationReport'
+import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvSubstitutionMode, usableOdvValue, validateOdvValue } from './odv'
+import { compareSections } from './ruleDisplay'
+import { buildRuleEntry, type IntuneRuleEntry } from './rulesJsonGen'
 import { generateBashScript } from './scriptGen/bash'
-import { generatePowerShellScript } from './scriptGen/powershell'
-import type { RuleRef, SelectionEntry } from './selectionEntry'
-import type { AuditStep, RuleDetail } from '../types/rule-detail'
+import type { SelectionEntry } from './selectionEntry'
 
 export interface GeneratableRule {
-  ref: RuleRef
   id: string
   title: string
-  platform: string
-  steps: AuditStep[]
-  ruleEntries: IntuneRuleEntry[]
+  section: string
+  sourceName: string
+  releaseTag: string
+  plan: RuleCheckPlan
+  ruleEntry: IntuneRuleEntry
 }
 
 export interface ManualAttestationEntry {
-  ref: RuleRef
   id: string
   title: string
   reason: string
+  // The check's additional_info from mSCP, appended after the reason.
+  additionalInfo: string | null
 }
 
 export interface BlockedEntry {
-  ref: RuleRef
   id: string
   title: string
-  missingVariables: string[]
+  reason: string
 }
 
 export type ClassificationResult =
@@ -37,70 +37,71 @@ export type ClassificationResult =
   | { kind: 'manual'; entry: ManualAttestationEntry }
   | { kind: 'blocked'; entry: BlockedEntry }
 
+// Matches tools/mscp_normalize.py section_of(): upstream paths are
+// rules/<section>/<file>.yaml, so the section is the parent directory.
+export function sectionOf(rule: Rule): string {
+  const pathParts = rule.source.upstream_path.split('/')
+  const section = pathParts[pathParts.length - 2]
+  if (!section) throw new Error(`${rule.id}: upstream path "${rule.source.upstream_path}" has no section directory.`)
+  return section
+}
+
 // Decides, for one enabled selection with its full rule JSON already
-// fetched, whether it can go into a generated script (generatable), can
-// never be scripted at all (manual), or is scriptable but waiting on an
-// organization-defined value the admin hasn't entered yet (blocked - this
-// must gate the download button with a visible error, not be silently
-// folded into the manual-attestation list per the rest of the rule being
-// otherwise ready to go).
-export function classifyRule(ref: RuleRef, rule: RuleDetail, selection: SelectionEntry): ClassificationResult {
-  const effectiveIndex = effectiveAuditMethodIndex(rule.audit.methods, selection.selectedAuditMethodIndex)
-  const manual = (reason: string): ClassificationResult => ({ kind: 'manual', entry: { ref, id: rule.id, title: rule.title, reason } })
+// fetched, whether it goes into a generated script, needs manual
+// attestation, or is blocked on an organization value. Blocked rules gate
+// the download; they are never quietly moved to the manual list, and an
+// invalid stored value is never quietly replaced by the recommended one.
+export function classifyRule(rule: Rule, selection: SelectionEntry, coveredVersions: string[]): ClassificationResult {
+  const odvMode = odvSubstitutionMode(rule)
+  const manual = (reason: string): ClassificationResult => {
+    const displayOdv = usableOdvValue(rule.odv, odvMode, selection.odvValue)
+    return {
+      kind: 'manual',
+      entry: {
+        id: rule.id,
+        title: displayWithOdv(rule.title, displayOdv),
+        reason,
+        additionalInfo: additionalInfoFor(rule, displayOdv),
+      },
+    }
+  }
+  const blocked = (reason: string): ClassificationResult => ({
+    kind: 'blocked',
+    entry: { id: rule.id, title: displayWithOdv(rule.title, null), reason },
+  })
 
-  if (effectiveIndex === null) {
-    return manual('No scripted audit method is available for this rule.')
+  if (rule.assessment.status === 'manual') return manual(manualReasonText(rule.assessment.manual_reason))
+
+  let odvValue = null
+  if (rule.odv) {
+    const effective = effectiveOdvValue(rule.odv, selection.odvValue)
+    if (effective === null) return blocked('Needs an organization value')
+    const canonical = canonicalOdvValue(rule.odv, effective)
+    const invalidReason = validateOdvValue(rule.odv, canonical, odvMode)
+    if (invalidReason) return blocked(`Organization value is invalid: ${invalidReason}`)
+    odvValue = canonical
   }
 
-  const method = rule.audit.methods[effectiveIndex]
-  const checks = (method.steps ?? []).flatMap((step) => step.output_check)
-
-  if (checks.length === 0) {
-    return manual('The scripted method has no compliance checks attached.')
-  }
-
-  const unsupported = [
-    ...new Set(checks.filter((check) => !isSupportedOperator(check.operator) && !hasInScriptFallback(check.operator)).map((check) => check.operator)),
-  ]
-  if (unsupported.length > 0) {
-    return manual(
-      `Uses an operator Intune has no native equivalent for yet (${unsupported.join(', ')}) - needs manual attestation until in-script evaluation is supported.`,
-    )
-  }
-
-  const orgDefinedInScriptChecks = checks.filter((check) => hasInScriptFallback(check.operator) && check.value_source === 'organization_defined')
-  if (orgDefinedInScriptChecks.length > 0) {
-    return manual(
-      'Uses an operator (contains) that needs in-script evaluation, but with an organization-defined value - ' +
-        'not supported yet, since the comparison target has to be known when the script is generated.',
-    )
-  }
-
-  const missingVariables = checks
-    .filter((check) => check.value_source === 'organization_defined' && selection.organizationDefinedValues[check.variable] === undefined)
-    .map((check) => check.variable)
-  if (missingVariables.length > 0) {
-    return { kind: 'blocked', entry: { ref, id: rule.id, title: rule.title, missingVariables } }
-  }
+  const plan = planRuleCheck(rule, coveredVersions, odvValue)
+  if ('problem' in plan) return manual(plan.problem)
 
   return {
     kind: 'generatable',
     rule: {
-      ref,
       id: rule.id,
-      title: rule.title,
-      platform: rule.benchmark.platform,
-      steps: method.steps ?? [],
-      ruleEntries: buildRuleEntriesForMethod(method, rule, selection.organizationDefinedValues),
+      title: displayWithOdv(rule.title, plan.odvValue),
+      section: sectionOf(rule),
+      sourceName: rule.source.name,
+      releaseTag: rule.source.release_tag,
+      plan,
+      ruleEntry: buildRuleEntry(plan, rule),
     },
   }
 }
 
 export interface Chunk {
-  platform: string
-  family: string
-  product: string
-  version: string
+  sourceName: string
+  releaseTag: string
   section: string
   partNumber: number | null
   rules: GeneratableRule[]
@@ -119,65 +120,65 @@ interface ResolvedLimits {
   maxScriptBytesPerChunk: number
 }
 
-function groupBy<T>(items: T[], keyOf: (item: T) => string): Map<string, T[]> {
-  const grouped = new Map<string, T[]>()
-  for (const item of items) {
-    const key = keyOf(item)
-    const list = grouped.get(key)
-    if (list) list.push(item)
-    else grouped.set(key, [item])
-  }
-  return grouped
+interface ChunkGroup {
+  sourceName: string
+  releaseTag: string
+  section: string
+  rules: GeneratableRule[]
 }
 
-function findDuplicateSettingNames(entries: IntuneRuleEntry[]): string[] {
+function groupRules(rules: GeneratableRule[]): ChunkGroup[] {
+  const groupsByKey = new Map<string, ChunkGroup>()
+  for (const rule of rules) {
+    const key = JSON.stringify([rule.sourceName, rule.releaseTag, rule.section])
+    const group = groupsByKey.get(key)
+    if (group) group.rules.push(rule)
+    else groupsByKey.set(key, { sourceName: rule.sourceName, releaseTag: rule.releaseTag, section: rule.section, rules: [rule] })
+  }
+  return [...groupsByKey.values()].sort(
+    (left, right) =>
+      left.sourceName.localeCompare(right.sourceName) ||
+      left.releaseTag.localeCompare(right.releaseTag) ||
+      compareSections(left.section, right.section),
+  )
+}
+
+function assertUniqueSettingNames(rules: GeneratableRule[]): void {
   const seen = new Set<string>()
   const duplicates = new Set<string>()
-  for (const entry of entries) {
-    if (seen.has(entry.SettingName)) duplicates.add(entry.SettingName)
-    seen.add(entry.SettingName)
+  for (const rule of rules) {
+    const settingName = rule.ruleEntry.SettingName
+    if (seen.has(settingName)) duplicates.add(settingName)
+    seen.add(settingName)
   }
-  return [...duplicates]
+  if (duplicates.size > 0) {
+    throw new Error(
+      `Duplicate SettingName within one policy: ${[...duplicates].join(', ')} (Intune requires a unique SettingName per policy).`,
+    )
+  }
 }
 
 function utf8ByteLength(text: string): number {
   return new TextEncoder().encode(text).length
 }
 
-// A rule's benchmark identity (platform + family/product/version) - two
-// rules only ever share a chunk when all four match, so unrelated
-// benchmarks (e.g. two macOS versions, each with their own "section 1")
-// never get merged together even if their id ranges would otherwise
-// overlap.
-function benchmarkKey(rule: GeneratableRule): string {
-  return `${rule.platform} ${rule.ref.family} ${rule.ref.product} ${rule.ref.version}`
-}
-
-function scriptBytesForRules(rules: GeneratableRule[]): number {
-  if (rules.length === 0) return 0
-  const kind = scriptKindForPlatform(rules[0].platform)
-  const script = kind === 'bash' ? generateBashScript(rules) : generatePowerShellScript(rules)
-  return utf8ByteLength(script)
-}
-
 function fitsWithinCaps(rules: GeneratableRule[], limits: ResolvedLimits): boolean {
   if (rules.length === 0) return true
-  const entries = rules.flatMap((rule) => rule.ruleEntries)
-  if (entries.length > limits.maxRulesPerChunk) return false
-  if (utf8ByteLength(JSON.stringify(entries)) > limits.maxBytesPerChunk) return false
-  if (scriptBytesForRules(rules) > limits.maxScriptBytesPerChunk) return false
+  if (rules.length > limits.maxRulesPerChunk) return false
+  if (utf8ByteLength(JSON.stringify(rules.map((rule) => rule.ruleEntry))) > limits.maxBytesPerChunk) return false
+  if (utf8ByteLength(generateBashScript(rules.map((rule) => rule.plan))) > limits.maxScriptBytesPerChunk) return false
   return true
 }
 
 function splitEvenlyByCount<T>(items: T[], chunkCount: number): T[][] {
   const groups: T[][] = []
-  const base = Math.floor(items.length / chunkCount)
+  const baseSize = Math.floor(items.length / chunkCount)
   const remainder = items.length % chunkCount
-  let index = 0
-  for (let i = 0; i < chunkCount; i += 1) {
-    const size = base + (i < remainder ? 1 : 0)
-    groups.push(items.slice(index, index + size))
-    index += size
+  let startIndex = 0
+  for (let groupIndex = 0; groupIndex < chunkCount; groupIndex += 1) {
+    const size = baseSize + (groupIndex < remainder ? 1 : 0)
+    groups.push(items.slice(startIndex, startIndex + size))
+    startIndex += size
   }
   return groups.filter((group) => group.length > 0)
 }
@@ -198,20 +199,13 @@ function greedyGroupCount(rules: GeneratableRule[], limits: ResolvedLimits): num
   return count
 }
 
-// Packs one section's rules into as few, as evenly-sized chunks as
-// possible: first finds the minimum chunk count a greedy fill would need
-// (respecting the rule-count, rules-JSON-byte, and discovery-script-byte
-// caps), then redistributes the same rules evenly by count across that
-// many chunks - e.g. 180 rules against a 95-rule cap becomes two chunks of
-// 90 rather than one of 95 and one of 85. Only increases the chunk count
-// further if an even split can't keep every resulting chunk within the
-// byte-based caps (only possible when rule sizes vary a lot within one
-// section). The upfront per-rule check guarantees this terminates: once
-// every individual rule is known to fit alone, splitting far enough (at
-// most one rule per chunk) always succeeds.
-function packSection(rules: GeneratableRule[], limits: ResolvedLimits): GeneratableRule[][] {
-  if (rules.length === 0) return []
-
+// Packs one group's rules into as few, as evenly sized chunks as possible:
+// finds the minimum chunk count a greedy fill needs, then redistributes the
+// rules evenly by count across that many chunks (180 rules against a 95-rule
+// cap becomes 90 + 90, not 95 + 85). The count only grows further if an even
+// split breaks a byte cap. The per-rule check guarantees termination: once
+// every rule fits alone, one rule per chunk always succeeds.
+function packGroup(rules: GeneratableRule[], limits: ResolvedLimits): GeneratableRule[][] {
   for (const rule of rules) {
     if (!fitsWithinCaps([rule], limits)) {
       throw new Error(
@@ -224,18 +218,14 @@ function packSection(rules: GeneratableRule[], limits: ResolvedLimits): Generata
   let chunkCount = greedyGroupCount(rules, limits)
   while (true) {
     const groups = splitEvenlyByCount(rules, chunkCount)
-    if (groups.every((group) => fitsWithinCaps(group, limits))) {
-      return groups
-    }
+    if (groups.every((group) => fitsWithinCaps(group, limits))) return groups
     chunkCount += 1
   }
 }
 
-// Packs generatable rules into per-benchmark, per-top-level-section chunks
-// that respect Intune's per-policy limits, never splitting a single rule's
-// settings across chunks and never merging two different top-level
-// sections (or two different benchmarks) into one chunk even when there's
-// spare room.
+// One chunk becomes one Intune policy. Rules are grouped by source, release
+// and mSCP section, and a group is never merged with another even when
+// there is spare room, so each bundle file covers one recognizable section.
 export function packChunks(rules: GeneratableRule[], options: PackOptions = {}): Chunk[] {
   const limits: ResolvedLimits = {
     maxRulesPerChunk: options.maxRulesPerChunk ?? GENERATION_LIMITS.maxRulesPerChunk,
@@ -244,42 +234,22 @@ export function packChunks(rules: GeneratableRule[], options: PackOptions = {}):
   }
 
   const chunks: Chunk[] = []
-  const byBenchmark = groupBy(rules, benchmarkKey)
-
-  for (const key of [...byBenchmark.keys()].sort((a, b) => a.localeCompare(b))) {
-    const benchmarkRules = byBenchmark.get(key)!
-    const { platform, ref } = benchmarkRules[0]
-    const { family, product, version } = ref
-
-    const bySection = groupBy(benchmarkRules, (rule) => topLevelSection(rule.id))
-    const sortedSections = [...bySection.keys()].sort(naturalIdCompare)
-
-    for (const section of sortedSections) {
-      const sectionRules = [...bySection.get(section)!].sort((a, b) => naturalIdCompare(a.id, b.id))
-      const groups = packSection(sectionRules, limits)
-
-      groups.forEach((groupRules, index) => {
-        const ruleEntries = groupRules.flatMap((rule) => rule.ruleEntries)
-        const duplicates = findDuplicateSettingNames(ruleEntries)
-        if (duplicates.length > 0) {
-          throw new Error(
-            `Duplicate SettingName(s) within one policy: ${duplicates.join(', ')} (Intune requires unique SettingName per policy).`,
-          )
-        }
-
-        chunks.push({
-          platform,
-          family,
-          product,
-          version,
-          section,
-          partNumber: groups.length > 1 ? index + 1 : null,
-          rules: groupRules,
-          ruleEntries,
-        })
+  for (const group of groupRules(rules)) {
+    const sortedRules = [...group.rules].sort((left, right) => left.id.localeCompare(right.id))
+    // Checked across the whole group, before sizing, because the script
+    // generator would otherwise fail first with a less specific message.
+    assertUniqueSettingNames(sortedRules)
+    const parts = packGroup(sortedRules, limits)
+    parts.forEach((partRules, partIndex) => {
+      chunks.push({
+        sourceName: group.sourceName,
+        releaseTag: group.releaseTag,
+        section: group.section,
+        partNumber: parts.length > 1 ? partIndex + 1 : null,
+        rules: partRules,
+        ruleEntries: partRules.map((rule) => rule.ruleEntry),
       })
-    }
+    })
   }
-
   return chunks
 }

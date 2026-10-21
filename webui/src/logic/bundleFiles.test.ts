@@ -1,121 +1,73 @@
 import { describe, expect, it } from 'vitest'
 import { buildBundleFiles } from './bundleFiles'
-import type { GeneratableRule, ManualAttestationEntry } from './chunking'
-import type { Chunk } from './chunking'
+import { classifyRule, packChunks, type Chunk, type GeneratableRule } from './chunking'
+import { createSelectionEntry } from './selectionEntry'
+import { inlineRule, type InlineRuleOptions } from './testRuleFixtures'
 
-function ruleWithStep(id: string, platform: string, variable: string, refOverrides: Partial<GeneratableRule['ref']> = {}): GeneratableRule {
-  return {
-    ref: { family: 'cis', product: 'p', version: 'v1', file: `${id}.json`, id, ...refOverrides },
-    id,
-    title: `Rule ${id}`,
-    platform,
-    steps: [
-      {
-        step_role: 'compliance_check',
-        original_command: null,
-        check_command: `${variable}=1`,
-        check_command_verified: true,
-        output_description: '',
-        output_check: [{ variable, data_type: 'integer', operator: 'eq', value: 1, value_source: 'benchmark' }],
-      },
-    ],
-    ruleEntries: [
-      {
-        SettingName: variable,
-        Operator: 'IsEquals',
-        DataType: 'Int64',
-        Operand: 1,
-        RemediationStrings: [{ Language: 'en_US', Title: `Rule ${id}`, Description: 'd' }],
-      },
-    ],
-  }
+function generatable(options: InlineRuleOptions): GeneratableRule {
+  const rule = inlineRule(options)
+  const selection = { ...createSelectionEntry({ id: rule.id, path: 'unused' }), enabled: true }
+  const result = classifyRule(rule, selection, ['27.0', '26.0', '15.0'])
+  if (result.kind !== 'generatable') throw new Error(`Expected generatable, got ${result.kind}`)
+  return result.rule
+}
+
+function numbered(count: number, section: string, releaseTag = 'release_27.0'): GeneratableRule[] {
+  return Array.from({ length: count }, (_, index) => generatable({ upstreamId: `${section}_rule_${index + 1}`, section, releaseTag }))
 }
 
 describe('buildBundleFiles', () => {
-  it('names files as {platform}-{family}-{product}-{version}-{firstId}-{lastId}, showing the range of rule ids included', () => {
-    const macRule = ruleWithStep('2.1.1.1', 'macOS', 'mac_var', { product: 'macos_26_tahoe', version: 'v1.1.0' })
-    const winRule = ruleWithStep('1.1', 'Windows 11 (Intune)', 'win_var', { product: 'windows_11', version: 'v5.0.0' })
-    const chunks: Chunk[] = [
-      {
-        platform: 'macOS',
-        family: 'cis',
-        product: 'macos_26_tahoe',
-        version: 'v1.1.0',
-        section: '2',
-        partNumber: null,
-        rules: [macRule],
-        ruleEntries: [macRule.ruleEntries[0]],
-      },
-      {
-        platform: 'Windows 11 (Intune)',
-        family: 'cis',
-        product: 'windows_11',
-        version: 'v5.0.0',
-        section: '1',
-        partNumber: 1,
-        rules: [winRule],
-        ruleEntries: [winRule.ruleEntries[0]],
-      },
-    ]
-
-    const files = buildBundleFiles(chunks, [])
+  it('names an unsplit section macOS-<source>-<release>-<section> with a discovery script and rules JSON', () => {
+    const files = buildBundleFiles(packChunks(numbered(2, 'auth')), [])
     const paths = files.map((file) => file.path)
 
-    expect(paths).toContain('macOS-cis-macos_26_tahoe-v1.1.0-2.1.1.1-2.1.1.1-discovery.sh')
-    expect(paths).toContain('macOS-cis-macos_26_tahoe-v1.1.0-2.1.1.1-2.1.1.1-rules.json')
-    expect(paths).toContain('Windows-cis-windows_11-v5.0.0-1.1-1.1-discovery.ps1')
-    expect(paths).toContain('Windows-cis-windows_11-v5.0.0-1.1-1.1-rules.json')
-    expect(paths).toContain('manual-attestation.md')
+    expect(paths).toEqual([
+      'macOS-mscp-release_27.0-auth-discovery.sh',
+      'macOS-mscp-release_27.0-auth-rules.json',
+      'manual-attestation.md',
+    ])
 
-    const bashScript = files.find((file) => file.path === 'macOS-cis-macos_26_tahoe-v1.1.0-2.1.1.1-2.1.1.1-discovery.sh')!.content
-    expect(bashScript).toContain('mac_var=1')
+    const script = files[0].content
+    expect(script.startsWith('#!/bin/bash\n')).toBe(true)
+    expect(script).toContain('"auth_rule_1":%s')
 
-    const rulesJson = JSON.parse(files.find((file) => file.path === 'macOS-cis-macos_26_tahoe-v1.1.0-2.1.1.1-2.1.1.1-rules.json')!.content)
-    expect(rulesJson.Rules[0].SettingName).toBe('mac_var')
+    const rulesJson = JSON.parse(files[1].content)
+    expect(rulesJson.Rules.map((entry: { SettingName: string }) => entry.SettingName)).toEqual(['auth_rule_1', 'auth_rule_2'])
   })
 
-  it('uses the first and last rule id of the chunk (already naturally sorted) for a multi-rule chunk', () => {
+  it('adds -part<N> only when a section splits into several chunks', () => {
+    const paths = buildBundleFiles(packChunks(numbered(3, 'os'), { maxRulesPerChunk: 2 }), []).map((file) => file.path)
+
+    expect(paths).toEqual([
+      'macOS-mscp-release_27.0-os-part1-discovery.sh',
+      'macOS-mscp-release_27.0-os-part1-rules.json',
+      'macOS-mscp-release_27.0-os-part2-discovery.sh',
+      'macOS-mscp-release_27.0-os-part2-rules.json',
+      'manual-attestation.md',
+    ])
+  })
+
+  it('gives every chunk distinct file names across sections, parts and release tags', () => {
     const rules = [
-      ruleWithStep('1.1.1', 'macOS', 'var_a'),
-      ruleWithStep('1.2.3', 'macOS', 'var_b'),
-      ruleWithStep('1.5.6', 'macOS', 'var_c'),
+      ...numbered(5, 'os'),
+      ...numbered(5, 'os', 'release_26.0'),
+      ...numbered(3, 'auth'),
+      ...numbered(4, 'system_settings'),
     ]
-    const chunk: Chunk = {
-      platform: 'macOS',
-      family: 'cis',
-      product: 'macos_26_tahoe',
-      version: 'v1.1.0',
-      section: '1',
-      partNumber: null,
-      rules,
-      ruleEntries: rules.flatMap((rule) => rule.ruleEntries),
-    }
+    const paths = buildBundleFiles(packChunks(rules, { maxRulesPerChunk: 2 }), []).map((file) => file.path)
 
-    const paths = buildBundleFiles([chunk], []).map((file) => file.path)
-
-    expect(paths).toContain('macOS-cis-macos_26_tahoe-v1.1.0-1.1.1-1.5.6-discovery.sh')
+    expect(new Set(paths).size).toBe(paths.length)
+    expect(paths).toHaveLength(2 * (3 + 3 + 2 + 2) + 1)
   })
 
-  it('always includes a manual-attestation.md even when there are no manual entries', () => {
-    const files = buildBundleFiles([], [] as ManualAttestationEntry[])
-
-    expect(files.map((file) => file.path)).toEqual(['manual-attestation.md'])
+  it('always includes manual-attestation.md, even with no chunks', () => {
+    expect(buildBundleFiles([], []).map((file) => file.path)).toEqual(['manual-attestation.md'])
   })
 
-  it('throws a clear error rather than silently dropping a file if two chunks would produce the same filename', () => {
-    const ruleA = ruleWithStep('1.1', 'macOS', 'var_a')
-    const ruleB = ruleWithStep('1.1', 'macOS', 'var_b')
-    const chunk = (rule: GeneratableRule): Chunk => ({
-      platform: 'macOS',
-      family: 'cis',
-      product: 'macos_26_tahoe',
-      version: 'v1.1.0',
-      section: '1',
-      partNumber: null,
-      rules: [rule],
-      ruleEntries: rule.ruleEntries,
-    })
+  it('throws rather than overwrite a file when two chunks would produce the same name', () => {
+    const [chunk] = packChunks(numbered(1, 'os'))
+    const duplicate: Chunk = { ...chunk }
 
-    expect(() => buildBundleFiles([chunk(ruleA), chunk(ruleB)], [])).toThrow(/same name/i)
+    expect(() => buildBundleFiles([chunk, duplicate], [])).toThrow(/same name/)
   })
 })

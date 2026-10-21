@@ -161,3 +161,49 @@ test('an unreachable facet option greys out, fades, then disappears', async ({ p
 
   await expect(nlmapgovBase).not.toBeVisible({ timeout: 4_000 })
 })
+
+test('review & generate offers a download with defaults and lists an inherent rule for manual attestation', async ({ page }) => {
+  await page.goto('/')
+  for (const [search, title] of [
+    ['os_gatekeeper_enable', 'Enable Gatekeeper'],
+    ['pwpolicy_minimum_length_enforce', /Minimum Password Length/],
+    ['os_application_sandboxing', 'Ensure Separate Execution Domain for Processes'],
+  ] as const) {
+    const row = await searchForSingleRow(page, search, title)
+    await row.getByRole('checkbox').click()
+  }
+  await expect(page.getByText('3 selected')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Generate' }).click()
+  await expect(page.getByRole('heading', { name: 'Review & generate' })).toBeVisible()
+
+  const download = page.getByRole('button', { name: 'Download bundle (.zip)' })
+  await expect(download).toBeEnabled({ timeout: 10_000 })
+  await expect(page.getByText('Fix these before generating')).toHaveCount(0)
+
+  const manualList = page.getByRole('region', { name: /Needs manual attestation/ })
+  await expect(manualList).toContainText('os_application_sandboxing')
+  await expect(manualList).toContainText('Met by macOS by design (mSCP: inherent).')
+  await expect(page.getByText('Require a Minimum Password Length of 6 Characters')).toBeVisible()
+
+  const downloadEvent = page.waitForEvent('download')
+  await download.click()
+  expect((await downloadEvent).suggestedFilename()).toMatch(/^intune-toolkit-bundle-\d{4}-\d{2}-\d{2}\.zip$/)
+})
+
+test('review & generate blocks the download while a selected rule has an invalid organization value', async ({ page }) => {
+  await page.addInitScript(() => {
+    const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
+  })
+  await page.goto('/')
+  await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
+
+  await page.getByRole('button', { name: 'Generate' }).click()
+
+  const blocked = page.getByRole('alert').filter({ hasText: 'Fix these before generating' })
+  await expect(blocked).toContainText('pwpolicy_minimum_length_enforce')
+  await expect(blocked).toContainText('Organization value is invalid: Value must be a whole number.')
+  await expect(page.getByRole('button', { name: 'Download bundle (.zip)' })).toBeDisabled()
+})

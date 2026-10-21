@@ -1,386 +1,217 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { classifyRule, packChunks, type GeneratableRule } from './chunking'
-import { createSelectionEntry, type RuleRef, type SelectionEntry } from './selectionEntry'
-import type { RuleDetail } from '../types/rule-detail'
-import type { IntuneRuleEntry } from './rulesJsonGen'
+import type { Odv, Rule } from '../types/library'
+import { classifyRule, packChunks, type ClassificationResult, type GeneratableRule } from './chunking'
 import { generateBashScript } from './scriptGen/bash'
+import { createSelectionEntry, type OrgDefinedValue, type SelectionEntry } from './selectionEntry'
+import { inlineRule, numberOdv, ruleCheck, type InlineRuleOptions } from './testRuleFixtures'
 
-const REF: RuleRef = { family: 'cis', product: 'macos_26_tahoe', version: 'v1.1.0', file: 'cis_macos26_1.6.json', id: '1.6' }
+const COVERED_VERSIONS = ['27.0', '26.0', '15.0']
+const RULES_DIRECTORY = new URL('../../../baselines/mscp/rules/', import.meta.url)
 
-function minimalRule(overrides: Partial<RuleDetail> = {}): RuleDetail {
-  return {
-    id: '1.6',
-    title: 'Ensure Something',
-    assessment_status: 'Automated',
-    benchmark: { product: 'Test Benchmark', version: '1.0.0', platform: 'macOS' },
-    profile_applicability: ['Level 1'],
-    recommended_state: null,
-    description: 'desc',
-    rationale: 'rationale',
-    impact: 'impact',
-    audit: {
-      methods: [
-        {
-          method_name: 'Terminal Method',
-          type: 'scripted',
-          description: '...',
-          steps: [
-            {
-              step_role: 'compliance_check',
-              original_command: null,
-              check_command: 'test_var=1',
-              check_command_verified: true,
-              output_description: '...',
-              output_check: [{ variable: 'test_var', data_type: 'integer', operator: 'eq', value: 1, value_source: 'benchmark' }],
-            },
-          ],
-        },
-      ],
+function realRule(upstreamId: string): Rule {
+  return JSON.parse(readFileSync(new URL(`${upstreamId}.json`, RULES_DIRECTORY), 'utf8')) as Rule
+}
+
+function selectionFor(rule: Rule, odvValue: OrgDefinedValue | null = null): SelectionEntry {
+  return { ...createSelectionEntry({ id: rule.id, path: `mscp/rules/${rule.source.upstream_rule_id}.json` }), enabled: true, odvValue }
+}
+
+function classify(rule: Rule, odvValue: OrgDefinedValue | null = null): ClassificationResult {
+  return classifyRule(rule, selectionFor(rule, odvValue), COVERED_VERSIONS)
+}
+
+function expectGeneratable(result: ClassificationResult): GeneratableRule {
+  if (result.kind !== 'generatable') throw new Error(`Expected generatable, got ${result.kind}: ${JSON.stringify(result)}`)
+  return result.rule
+}
+
+function odvRule(odv: Odv, title = 'Require a Minimum Password Length of $ODV Characters'): Rule {
+  return inlineRule({
+    upstreamId: 'pwpolicy_example_length',
+    section: 'pwpolicy',
+    overrides: {
+      title,
+      odv,
+      check: { default: ruleCheck('echo $ODV', { type: 'integer', value: '$ODV' }), by_version: {} },
     },
-    remediation: { methods: [] },
-    default_value: null,
-    references: [],
-    additional_information: null,
-    ...overrides,
-  }
+  })
+}
+
+function generatable(options: InlineRuleOptions = {}): GeneratableRule {
+  return expectGeneratable(classify(inlineRule(options)))
+}
+
+function generatableWithShell(upstreamId: string, shell: string): GeneratableRule {
+  return generatable({ upstreamId, overrides: { check: { default: ruleCheck(shell, { type: 'string', value: 'PASS' }), by_version: {} } } })
+}
+
+function numbered(count: number, section = 'os'): GeneratableRule[] {
+  return Array.from({ length: count }, (_, index) =>
+    generatable({ upstreamId: `${section}_rule_${String(index + 1).padStart(3, '0')}`, section }),
+  )
 }
 
 describe('classifyRule', () => {
-  it('classifies a fully benchmark-defined scripted rule as generatable', () => {
-    const result = classifyRule(REF, minimalRule(), createSelectionEntry(REF))
+  it('classifies an automated rule with a check as generatable, with its section, source and Intune entry', () => {
+    const rule = generatable({ upstreamId: 'auth_example', section: 'auth', releaseTag: 'release_26.0' })
 
-    expect(result.kind).toBe('generatable')
-    if (result.kind === 'generatable') {
-      expect(result.rule.ruleEntries).toHaveLength(1)
-      expect(result.rule.ruleEntries[0].SettingName).toBe('test_var')
-      expect(result.rule.platform).toBe('macOS')
-    }
+    expect(rule).toMatchObject({
+      id: 'mscp.auth_example',
+      title: 'Rule auth_example',
+      section: 'auth',
+      sourceName: 'mscp',
+      releaseTag: 'release_26.0',
+    })
+    expect(rule.plan.settingName).toBe('auth_example')
+    expect(rule.ruleEntry).toMatchObject({ SettingName: 'auth_example', Operator: 'IsEquals', DataType: 'String', Operand: 'PASS' })
   })
 
-  it('classifies a rule with no scripted method as manual', () => {
-    const rule = minimalRule({
-      audit: { methods: [{ method_name: 'Graphical Method', type: 'manual', description: '...' }] },
+  it('classifies a rule mSCP assesses manually as manual with its reason text', () => {
+    const rule = inlineRule({ overrides: { assessment: { status: 'manual', manual_reason: 'inherent' }, check: null } })
+
+    expect(classify(rule)).toEqual({
+      kind: 'manual',
+      entry: { id: rule.id, title: rule.title, reason: 'Met by macOS by design (mSCP: inherent).', additionalInfo: null },
+    })
+  })
+
+  it("carries a manual rule's check additional_info alongside its reason", () => {
+    const result = classify(realRule('pwpolicy_temporary_or_emergency_accounts_disable'))
+
+    if (result.kind !== 'manual') throw new Error(`Expected manual, got ${result.kind}`)
+    expect(result.entry.reason).toBe('mSCP marks this check as manual.')
+    expect(result.entry.additionalInfo).toMatch(/^Verify if a password policy is enforced by a directory service/)
+  })
+
+  it('classifies a manual rule before looking at its ODV, so a manual rule is never blocked', () => {
+    const rule = inlineRule({
+      overrides: { assessment: { status: 'manual', manual_reason: 'manual' }, odv: numberOdv({ recommended: null as unknown as number }) },
     })
 
-    const result = classifyRule(REF, rule, createSelectionEntry(REF))
-
-    expect(result.kind).toBe('manual')
+    expect(classify(rule, "12'").kind).toBe('manual')
   })
 
-  it('classifies a benchmark-defined contains check as generatable via in-script evaluation', () => {
-    const rule = minimalRule()
-    rule.audit.methods[0].steps![0].output_check[0] = {
-      variable: 'test_var',
-      data_type: 'string',
-      operator: 'contains',
-      value: 'Success',
-      value_source: 'benchmark',
-    }
+  it('generates an ODV rule from the recommended value when the admin has entered nothing', () => {
+    const rule = expectGeneratable(classify(odvRule(numberOdv({ recommended: 6 }))))
 
-    const result = classifyRule(REF, rule, createSelectionEntry(REF))
-
-    expect(result.kind).toBe('generatable')
-    if (result.kind === 'generatable') {
-      expect(result.rule.ruleEntries).toHaveLength(1)
-      expect(result.rule.ruleEntries[0]).toMatchObject({ SettingName: 'test_var__compliant', Operator: 'IsEquals', DataType: 'Boolean', Operand: true })
-    }
+    expect(rule.plan.odvValue).toBe(6)
+    expect(rule.ruleEntry).toMatchObject({ DataType: 'Int64', Operand: 6 })
+    expect(rule.title).toBe('Require a Minimum Password Length of 6 Characters')
   })
 
-  it('classifies a rule using an operator with no native or in-script support (like) as manual', () => {
-    const rule = minimalRule()
-    rule.audit.methods[0].steps![0].output_check[0].operator = 'like'
+  it("generates an ODV rule from the admin's stored value over the recommended one", () => {
+    const rule = expectGeneratable(classify(odvRule(numberOdv({ recommended: 6 })), 15))
 
-    const result = classifyRule(REF, rule, createSelectionEntry(REF))
-
-    expect(result.kind).toBe('manual')
-    if (result.kind === 'manual') {
-      expect(result.entry.reason).toMatch(/operator/i)
-    }
+    expect(rule.ruleEntry.Operand).toBe(15)
   })
 
-  it('classifies a contains check with an organization-defined value as manual - not wired through the script generator yet', () => {
-    const rule = minimalRule()
-    rule.audit.methods[0].steps![0].output_check[0] = {
-      variable: 'test_var',
-      data_type: 'string',
-      operator: 'contains',
-      value: null,
-      value_source: 'organization_defined',
-    }
+  it('blocks an ODV rule with no stored value and no recommended value', () => {
+    const rule = odvRule(numberOdv({ recommended: null as unknown as number }))
 
-    const result = classifyRule(REF, rule, createSelectionEntry(REF))
-
-    expect(result.kind).toBe('manual')
+    expect(classify(rule)).toEqual({
+      kind: 'blocked',
+      entry: { id: rule.id, title: 'Require a Minimum Password Length of [value] Characters', reason: 'Needs an organization value' },
+    })
   })
 
-  it('classifies a rule missing a required organization-defined value as blocked, not manual', () => {
-    const rule = minimalRule()
-    rule.audit.methods[0].steps![0].output_check[0] = {
-      variable: 'test_var',
-      data_type: 'boolean',
-      operator: 'eq',
-      value: null,
-      value_source: 'organization_defined',
-    }
+  it('blocks an ODV rule whose stored value is invalid instead of falling back to the recommended value', () => {
+    const rule = odvRule(numberOdv({ recommended: 6 }))
 
-    const result = classifyRule(REF, rule, createSelectionEntry(REF))
-
-    expect(result.kind).toBe('blocked')
-    if (result.kind === 'blocked') {
-      expect(result.entry.missingVariables).toEqual(['test_var'])
-    }
-  })
-
-  it('classifies as generatable once the organization-defined value is provided', () => {
-    const rule = minimalRule()
-    rule.audit.methods[0].steps![0].output_check[0] = {
-      variable: 'test_var',
-      data_type: 'boolean',
-      operator: 'eq',
-      value: null,
-      value_source: 'organization_defined',
-    }
-    const selection: SelectionEntry = { ...createSelectionEntry(REF), organizationDefinedValues: { test_var: true } }
-
-    const result = classifyRule(REF, rule, selection)
-
-    expect(result.kind).toBe('generatable')
-  })
-
-  it('uses the audit method the selection explicitly picked among 2+ scripted methods', () => {
-    const rule = minimalRule({
-      audit: {
-        methods: [
-          {
-            method_name: 'Method A',
-            type: 'scripted',
-            description: '...',
-            steps: [
-              {
-                step_role: 'compliance_check',
-                original_command: null,
-                check_command: 'a=1',
-                check_command_verified: true,
-                output_description: '',
-                output_check: [{ variable: 'var_a', data_type: 'integer', operator: 'eq', value: 1, value_source: 'benchmark' }],
-              },
-            ],
-          },
-          {
-            method_name: 'Method B',
-            type: 'scripted',
-            description: '...',
-            steps: [
-              {
-                step_role: 'compliance_check',
-                original_command: null,
-                check_command: 'b=2',
-                check_command_verified: true,
-                output_description: '',
-                output_check: [{ variable: 'var_b', data_type: 'integer', operator: 'eq', value: 2, value_source: 'benchmark' }],
-              },
-            ],
-          },
-        ],
+    expect(classify(rule, "12'")).toEqual({
+      kind: 'blocked',
+      entry: {
+        id: rule.id,
+        title: 'Require a Minimum Password Length of [value] Characters',
+        reason: 'Organization value is invalid: Value must be a whole number.',
       },
     })
-    const selection: SelectionEntry = { ...createSelectionEntry(REF), selectedAuditMethodIndex: 1 }
+  })
 
-    const result = classifyRule(REF, rule, selection)
+  it('classifies an automated rule the planner cannot script as manual, with the planner problem as the reason', () => {
+    const rule = inlineRule({ overrides: { check: { default: ruleCheck(null, null), by_version: {} } } })
 
-    expect(result.kind).toBe('generatable')
-    if (result.kind === 'generatable') {
-      expect(result.rule.ruleEntries[0].SettingName).toBe('var_b')
-    }
+    expect(classify(rule)).toEqual({
+      kind: 'manual',
+      entry: { id: rule.id, title: rule.title, reason: 'mSCP has no check for macOS 15.0.', additionalInfo: null },
+    })
+  })
+
+  it('generates the real pwpolicy_minimum_length_enforce with no admin input', () => {
+    const rule = expectGeneratable(classify(realRule('pwpolicy_minimum_length_enforce')))
+
+    expect(rule.section).toBe('pwpolicy')
+    expect(rule.title).toBe('Require a Minimum Password Length of 6 Characters')
   })
 })
 
-function ruleEntry(settingName: string, sizeFiller = ''): IntuneRuleEntry {
-  return {
-    SettingName: settingName,
-    Operator: 'IsEquals',
-    DataType: 'String',
-    Operand: sizeFiller,
-    RemediationStrings: [{ Language: 'en_US', Title: 't', Description: 'd' }],
-  }
-}
-
-function generatableRule(id: string, platform: string, entries: IntuneRuleEntry[], refOverrides: Partial<RuleRef> = {}) {
-  return {
-    ref: { family: 'cis', product: 'p', version: 'v1', file: `${id}.json`, id, ...refOverrides },
-    id,
-    title: `Rule ${id}`,
-    platform,
-    steps: [],
-    ruleEntries: entries,
-  }
-}
-
-function generatableRuleWithScript(id: string, platform: string, variable: string, checkCommand: string): GeneratableRule {
-  return {
-    ref: { family: 'cis', product: 'p', version: 'v1', file: `${id}.json`, id },
-    id,
-    title: `Rule ${id}`,
-    platform,
-    steps: [
-      {
-        step_role: 'compliance_check',
-        original_command: null,
-        check_command: checkCommand,
-        check_command_verified: true,
-        output_description: '',
-        output_check: [{ variable, data_type: 'string', operator: 'eq', value: 'x', value_source: 'benchmark' }],
-      },
-    ],
-    ruleEntries: [ruleEntry(variable)],
-  }
-}
-
 describe('packChunks', () => {
-  it('never combines two different top-level sections into one chunk, even with spare room', () => {
-    const rules = [
-      generatableRule('1.1', 'macOS', [ruleEntry('var_1_1')]),
-      generatableRule('2.1', 'macOS', [ruleEntry('var_2_1')]),
-    ]
+  it('never combines two sections into one chunk, ordering sections as mSCP does', () => {
+    const chunks = packChunks([...numbered(1, 'auth'), ...numbered(1, 'os')])
 
-    const chunks = packChunks(rules)
-
-    expect(chunks).toHaveLength(2)
-    expect(chunks.map((chunk) => chunk.section).sort()).toEqual(['1', '2'])
+    expect(chunks.map((chunk) => chunk.section)).toEqual(['os', 'auth'])
+    expect(chunks.every((chunk) => chunk.partNumber === null)).toBe(true)
   })
 
-  it('groups by platform separately even within the same section', () => {
-    const rules = [
-      generatableRule('1.1', 'macOS', [ruleEntry('mac_var')]),
-      generatableRule('1.2', 'Windows 11 (Intune)', [ruleEntry('win_var')]),
-    ]
+  it('keeps different release tags of the same section in separate chunks', () => {
+    const chunks = packChunks([
+      generatable({ upstreamId: 'os_a', releaseTag: 'release_26.0' }),
+      generatable({ upstreamId: 'os_b', releaseTag: 'release_27.0' }),
+    ])
 
-    const chunks = packChunks(rules)
-
-    expect(chunks.map((chunk) => chunk.platform).sort()).toEqual(['Windows 11 (Intune)', 'macOS'])
+    expect(chunks.map((chunk) => chunk.releaseTag)).toEqual(['release_26.0', 'release_27.0'])
   })
 
-  it('sorts rules and sections using natural id order, not string order', () => {
-    const rules = [
-      generatableRule('106.1.1', 'macOS', [ruleEntry('v106')]),
-      generatableRule('2.12.2', 'macOS', [ruleEntry('v2_12_2')]),
-      generatableRule('1.6', 'macOS', [ruleEntry('v1_6')]),
-      generatableRule('2.1.1.1', 'macOS', [ruleEntry('v2_1_1_1')]),
-    ]
+  it('orders rules within a chunk by id and carries one Intune entry per rule', () => {
+    const chunks = packChunks([generatable({ upstreamId: 'os_b' }), generatable({ upstreamId: 'os_a' })])
 
-    const chunks = packChunks(rules)
-
-    expect(chunks.map((chunk) => chunk.section)).toEqual(['1', '2', '106'])
-    const section2 = chunks.find((chunk) => chunk.section === '2')!
-    expect(section2.rules.map((rule) => rule.id)).toEqual(['2.1.1.1', '2.12.2'])
+    expect(chunks[0].rules.map((rule) => rule.id)).toEqual(['mscp.os_a', 'mscp.os_b'])
+    expect(chunks[0].ruleEntries.map((entry) => entry.SettingName)).toEqual(['os_a', 'os_b'])
   })
 
-  it('only assigns a part number when a section splits into more than one chunk', () => {
-    const rules = [generatableRule('1.1', 'macOS', [ruleEntry('v1')])]
+  it('splits a section evenly once the rule-count cap is exceeded, numbering the parts', () => {
+    const chunks = packChunks(numbered(5), { maxRulesPerChunk: 2 })
 
-    const chunks = packChunks(rules)
-
-    expect(chunks[0].partNumber).toBeNull()
-  })
-
-  it('splits a section into parts once the rule-count cap is exceeded', () => {
-    const rules = Array.from({ length: 5 }, (_, index) => generatableRule(`1.${index + 1}`, 'macOS', [ruleEntry(`v${index}`)]))
-
-    const chunks = packChunks(rules, { maxRulesPerChunk: 2, maxBytesPerChunk: 1_000_000 })
-
-    expect(chunks).toHaveLength(3)
     expect(chunks.map((chunk) => chunk.partNumber)).toEqual([1, 2, 3])
-    expect(chunks.flatMap((chunk) => chunk.rules.map((rule) => rule.id))).toEqual(['1.1', '1.2', '1.3', '1.4', '1.5'])
+    expect(chunks.map((chunk) => chunk.rules.length)).toEqual([2, 2, 1])
   })
 
-  it('counts capacity in output_check entries, not rule files - a 3-setting rule fills a cap-of-3 chunk alone', () => {
-    const rules = [
-      generatableRule('1.1', 'macOS', [ruleEntry('a'), ruleEntry('b'), ruleEntry('c')]),
-      generatableRule('1.2', 'macOS', [ruleEntry('d')]),
-    ]
+  it('redistributes an oversized section evenly by count instead of greedy-filling (180 rules against the 95 cap)', () => {
+    const chunks = packChunks(numbered(180))
 
-    const chunks = packChunks(rules, { maxRulesPerChunk: 3, maxBytesPerChunk: 1_000_000 })
-
-    // 1.1 alone already uses all 3 slots (by output_check count, not by
-    // being "one rule"), so 1.2 must start a new chunk rather than join it.
-    expect(chunks).toHaveLength(2)
-    expect(chunks[0].rules.map((rule) => rule.id)).toEqual(['1.1'])
-    expect(chunks[1].rules.map((rule) => rule.id)).toEqual(['1.2'])
+    expect(chunks.map((chunk) => chunk.rules.length)).toEqual([90, 90])
   })
 
-  it('splits a section once the byte-size cap is exceeded, using real serialized size', () => {
-    const bigValue = 'x'.repeat(200)
-    const rules = Array.from({ length: 5 }, (_, index) => generatableRule(`1.${index + 1}`, 'macOS', [ruleEntry(`v${index}`, bigValue)]))
-
-    const chunks = packChunks(rules, { maxRulesPerChunk: 1000, maxBytesPerChunk: 500 })
+  it('splits a section once the rules-JSON byte cap is exceeded, measured on the real serialized entries', () => {
+    const chunks = packChunks(numbered(6), { maxBytesPerChunk: 900 })
 
     expect(chunks.length).toBeGreaterThan(1)
     for (const chunk of chunks) {
-      const byteLength = new TextEncoder().encode(JSON.stringify(chunk.ruleEntries)).length
-      expect(byteLength).toBeLessThanOrEqual(500)
+      expect(new TextEncoder().encode(JSON.stringify(chunk.ruleEntries)).length).toBeLessThanOrEqual(900)
     }
   })
 
-  it('throws a clear error when a single rule alone exceeds the per-chunk cap', () => {
-    const entries = Array.from({ length: 5 }, (_, index) => ruleEntry(`v${index}`))
-    const rules = [generatableRule('1.1', 'macOS', entries)]
+  it('splits a section once the discovery-script byte cap is exceeded', () => {
+    const bigShell = `echo ${'x'.repeat(3000)} >/dev/null; echo PASS`
+    const rules = Array.from({ length: 5 }, (_, index) => generatableWithShell(`os_big_${index}`, bigShell))
+    const oneRuleScriptBytes = new TextEncoder().encode(generateBashScript([rules[0].plan])).length
+    const cap = oneRuleScriptBytes * 2
 
-    expect(() => packChunks(rules, { maxRulesPerChunk: 2, maxBytesPerChunk: 1_000_000 })).toThrow(/1\.1/)
-  })
-
-  it('throws a clear error when two rules in the same chunk declare the same SettingName', () => {
-    const rules = [
-      generatableRule('1.1', 'macOS', [ruleEntry('duplicate_var')]),
-      generatableRule('1.2', 'macOS', [ruleEntry('duplicate_var')]),
-    ]
-
-    expect(() => packChunks(rules)).toThrow(/duplicate_var/)
-  })
-
-  it('groups different product/version pairs on the same platform and section into separate chunks, even with spare room', () => {
-    const rules = [
-      generatableRule('1.1', 'macOS', [ruleEntry('sonoma_var')], { product: 'macos_14_sonoma', version: 'v1.0.0' }),
-      generatableRule('1.1', 'macOS', [ruleEntry('tahoe_var')], { product: 'macos_26_tahoe', version: 'v1.1.0' }),
-    ]
-
-    const chunks = packChunks(rules)
-
-    expect(chunks).toHaveLength(2)
-    expect(chunks.map((chunk) => chunk.product).sort()).toEqual(['macos_14_sonoma', 'macos_26_tahoe'])
-    expect(chunks.map((chunk) => chunk.version).sort()).toEqual(['v1.0.0', 'v1.1.0'])
-  })
-
-  it('redistributes an oversized section evenly by count instead of greedy-filling the first chunk (mirrors the 180-rule / 95-cap example)', () => {
-    const rules = Array.from({ length: 180 }, (_, index) => generatableRule(`1.${index + 1}`, 'macOS', [ruleEntry(`v${index}`)]))
-
-    const chunks = packChunks(rules)
-
-    expect(chunks).toHaveLength(2)
-    expect(chunks[0].rules).toHaveLength(90)
-    expect(chunks[1].rules).toHaveLength(90)
-  })
-
-  it('splits a section once the discovery-script byte cap is exceeded, even though rule count and JSON size are within limits', () => {
-    const bigCommand = 'echo ' + 'x'.repeat(3000)
-    const rules = Array.from({ length: 5 }, (_, index) =>
-      generatableRuleWithScript(`1.${index + 1}`, 'macOS', `var_${index}`, `${bigCommand}\nvar_${index}=1`),
-    )
-
-    const chunks = packChunks(rules, { maxRulesPerChunk: 1000, maxBytesPerChunk: 1_000_000, maxScriptBytesPerChunk: 5000 })
+    const chunks = packChunks(rules, { maxScriptBytesPerChunk: cap })
 
     expect(chunks.length).toBeGreaterThan(1)
     for (const chunk of chunks) {
-      const scriptBytes = new TextEncoder().encode(generateBashScript(chunk.rules)).length
-      expect(scriptBytes).toBeLessThanOrEqual(5000)
+      expect(new TextEncoder().encode(generateBashScript(chunk.rules.map((rule) => rule.plan))).length).toBeLessThanOrEqual(cap)
     }
   })
 
-  it("throws a clear error when a single rule's own discovery script alone exceeds the script-byte cap", () => {
-    const bigCommand = 'echo ' + 'x'.repeat(3000)
-    const rules = [generatableRuleWithScript('1.1', 'macOS', 'var_0', `${bigCommand}\nvar_0=1`)]
+  it('throws, naming the rule, when one rule alone exceeds a per-chunk limit', () => {
+    expect(() => packChunks(numbered(1), { maxScriptBytesPerChunk: 100 })).toThrow(/mscp\.os_rule_001/)
+  })
 
-    expect(() =>
-      packChunks(rules, { maxRulesPerChunk: 1000, maxBytesPerChunk: 1_000_000, maxScriptBytesPerChunk: 100 }),
-    ).toThrow(/1\.1/)
+  it('throws when two rules in one chunk would share a SettingName', () => {
+    const rules = [generatable({ upstreamId: 'os_a-b' }), generatable({ upstreamId: 'os_a_b' })]
+
+    expect(() => packChunks(rules)).toThrow(/Duplicate SettingName.*os_a_b/)
   })
 })
