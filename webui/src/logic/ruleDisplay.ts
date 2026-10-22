@@ -1,5 +1,6 @@
 import type { Applicability, Assessment } from '../types/library'
-import { termDescription, termLabel, type VocabularyIndex } from './vocabulary'
+import { compareBenchmarkFacetValues, membershipFacetValue, parseBenchmarkFacetValue } from './ruleFilters'
+import { groupLabel, termDescription, termLabel, type VocabularyIndex } from './vocabulary'
 
 export interface AssessmentLabel {
   label: string
@@ -17,17 +18,49 @@ export function assessmentLabel(assessment: Assessment, index: VocabularyIndex):
   }
 }
 
-// `osVersions` is newest first (see buildRuleRows), so its first entry is
-// the version whose benchmark list is shown. Grouped benchmark codes listed
-// together would read twice, so repeated text is dropped.
-export function benchmarkSummary(applicability: Applicability, osVersions: readonly string[], index: VocabularyIndex): string {
-  const newestVersion = osVersions[0]
-  if (newestVersion === undefined) return ''
-  const parts = (applicability[newestVersion] ?? []).map((benchmark) => {
-    const label = termLabel(index, 'benchmarks', benchmark.name)
-    return benchmark.severity ? `${label} (${termLabel(index, 'severities', benchmark.severity)})` : label
-  })
-  return Array.from(new Set(parts)).join(', ')
+// Drops the leading words every version label shares (e.g. the product name),
+// so a list of versions reads "A 15, 26" rather than repeating the prefix.
+function versionListText(labels: string[]): string {
+  if (labels.length < 2) return labels.join('')
+  const wordLists = labels.map((label) => label.split(' '))
+  let sharedWordCount = 0
+  while (
+    sharedWordCount < Math.min(...wordLists.map((words) => words.length)) - 1 &&
+    wordLists.every((words) => words[sharedWordCount] === wordLists[0][sharedWordCount])
+  ) {
+    sharedWordCount += 1
+  }
+  return [labels[0], ...wordLists.slice(1).map((words) => words.slice(sharedWordCount).join(' '))].join(', ')
+}
+
+// The benchmarks a rule lists under `versionsInScope` (newest first), one
+// item per benchmark group and severity, ordered as the benchmark facet
+// orders them. An item missing from some of the versions in scope names the
+// versions it does apply to. Grouped benchmark codes collapse into one item.
+export function benchmarkSummary(applicability: Applicability, versionsInScope: readonly string[], index: VocabularyIndex): string {
+  const versionsByItem = new Map<string, string[]>()
+  for (const version of versionsInScope) {
+    for (const membership of applicability[version] ?? []) {
+      const itemKey = membershipFacetValue(membership, index)
+      const itemVersions = versionsByItem.get(itemKey)
+      if (itemVersions === undefined) versionsByItem.set(itemKey, [version])
+      else if (!itemVersions.includes(version)) itemVersions.push(version)
+    }
+  }
+
+  const compareItems = compareBenchmarkFacetValues(index)
+  return Array.from(versionsByItem.keys())
+    .sort(compareItems)
+    .map((itemKey) => {
+      const { groupKey, severity } = parseBenchmarkFacetValue(itemKey)
+      const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
+      const label = severity === null ? benchmarkLabel : `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
+      const itemVersions = versionsByItem.get(itemKey) ?? []
+      if (itemVersions.length === versionsInScope.length) return label
+      const versionLabels = Array.from(new Set(itemVersions.map((version) => termLabel(index, 'os_versions', version))))
+      return `${label} on ${versionListText(versionLabels)}`
+    })
+    .join(', ')
 }
 
 // v3 ids are "<source>.<upstream id>"; upstream ids never contain a dot.

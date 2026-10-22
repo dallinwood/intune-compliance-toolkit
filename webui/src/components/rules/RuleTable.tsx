@@ -6,9 +6,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useRule, useUsableOdvValue } from '@/hooks/useRule'
 import { displayWithOdv } from '../../logic/odv'
 import { assessmentLabel, benchmarkSummary, upstreamRuleId } from '../../logic/ruleDisplay'
-import { sectionGroupKey } from '../../logic/ruleFilters'
+import { sectionGroupKey, versionsUnder } from '../../logic/ruleFilters'
 import { isEnabled, refKey } from '../../logic/selectionEntry'
-import { compareGroupKeys, groupLabel, termLabel, type VocabularyIndex } from '../../logic/vocabulary'
+import { compareGroupKeys, groupLabel, type VocabularyIndex } from '../../logic/vocabulary'
+import { useFilterStore } from '../../state/filterStore'
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
@@ -207,11 +208,9 @@ function AssessmentBadge({ row }: { row: RuleRow }) {
 
 function BenchmarkText({ row }: { row: RuleRow }) {
   const index = useVocabularyIndex()
-  const newestVersion = row.osVersions[0]
-  if (newestVersion === undefined) return <span className="text-xs text-slate-400 italic">No macOS version listed</span>
-  const summary = benchmarkSummary(row.applicability, row.osVersions, index)
-  if (!summary) {
-    return <span className="text-xs text-slate-400 italic">No benchmark for {termLabel(index, 'os_versions', newestVersion)}</span>
-  }
-  return <span className="text-xs text-slate-500">{summary}</span>
+  const selectedVersions = useFilterStore((store) => store.osVersions)
+  if (row.osVersions.length === 0) return <span className="text-xs text-slate-400 italic">No macOS version listed</span>
+  const summary = benchmarkSummary(row.applicability, versionsUnder(row, selectedVersions, index), index)
+  if (!summary) return <span className="text-xs text-slate-400 italic">Not in a benchmark</span>
+  return <span className="text-xs break-words text-slate-500">{summary}</span>
 }

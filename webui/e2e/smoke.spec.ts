@@ -74,7 +74,7 @@ interface IndexBenchmark {
   severity: string | null
 }
 
-async function committedIndexRules(): Promise<{ applicability: Record<string, IndexBenchmark[]> }[]> {
+async function committedIndexRules(): Promise<{ id: string; applicability: Record<string, IndexBenchmark[]> }[]> {
   const indexJson = await readFile(new URL('../../baselines/mscp/_index.json', import.meta.url), 'utf8')
   return JSON.parse(indexJson).rules
 }
@@ -95,6 +95,29 @@ test('a benchmark severity option narrows the table to rules listing that severi
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
   await expect(ruleCount(page)).toHaveText(`${expectedCount} of 350 rules`)
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
+})
+
+test('the benchmark column follows the macOS version filter', async ({ page }) => {
+  const rules = await committedIndexRules()
+  const stigOnlyOnFifteen = rules.find((rule) => {
+    const { '15.0': fifteen = [], '26.0': twentySix = [], '27.0': twentySeven = [] } = rule.applicability
+    return fifteen.length === 1 && fifteen[0].name === 'disa_stig' && fifteen[0].severity === 'medium' && twentySix.length === 0 && twentySeven.length === 0
+  })
+  const inNoBenchmark = rules.find((rule) => Object.values(rule.applicability).every((benchmarks) => benchmarks.length === 0))
+  if (!stigOnlyOnFifteen || !inNoBenchmark) throw new Error('the committed index no longer has the rules this test needs')
+
+  const rowOf = (ruleId: string) =>
+    page.locator('table tbody tr').filter({ has: page.getByText(ruleId.replace('mscp.', ''), { exact: true }) })
+
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await page.getByRole('checkbox', { name: 'macOS 15', exact: true }).click()
+
+  const benchmarkCell = rowOf(stigOnlyOnFifteen.id).locator('td').last()
+  await expect(benchmarkCell).toHaveText('DISA STIG (medium)')
+  await expect(benchmarkCell).not.toContainText('macOS 27')
+
+  await expect(rowOf(inNoBenchmark.id).locator('td').last()).toHaveText('Not in a benchmark')
 })
 
 // The 350-row assertions reflect today's library: one platform and one source, so ticking either keeps every rule.

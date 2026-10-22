@@ -41,7 +41,7 @@ export function tagGroupKeys(row: RuleRow, index: VocabularyIndex): string[] {
   return uniqueGroupKeys(index, 'tags', row.tags)
 }
 
-function versionsUnder(row: RuleRow, osVersions: ReadonlySet<string>, index: VocabularyIndex): string[] {
+export function versionsUnder(row: RuleRow, osVersions: ReadonlySet<string>, index: VocabularyIndex): string[] {
   if (osVersions.size === 0) return row.osVersions
   return row.osVersions.filter((version) => osVersions.has(termGroupKey(index, 'os_versions', version)))
 }
@@ -66,7 +66,7 @@ export function parseBenchmarkFacetValue(value: string): { groupKey: string; sev
 // offered and the rows they match both go through it, which is what keeps
 // every offered option matching at least one row. An empty severity counts
 // as none, as it does in benchmarkSummary.
-function membershipFacetValue(membership: BenchmarkMembership, index: VocabularyIndex): string {
+export function membershipFacetValue(membership: BenchmarkMembership, index: VocabularyIndex): string {
   const severityGroupKey = membership.severity ? termGroupKey(index, 'severities', membership.severity) : null
   return benchmarkFacetValue(termGroupKey(index, 'benchmarks', membership.name), severityGroupKey)
 }
