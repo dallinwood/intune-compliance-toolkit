@@ -24,7 +24,7 @@
     ],
     "tags": [],
     "manual_reasons": [
-      { "label": "manual", "terms": ["manual"], "description": "mSCP marks this check as manual." },
+      { "label": "marked by mSCP", "terms": ["manual"], "description": "mSCP marks this check as manual." },
       { "label": "inherent", "terms": ["inherent"], "description": "Met by macOS by design (mSCP: inherent)." },
       {
         "label": "permanent",

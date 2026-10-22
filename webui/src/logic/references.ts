@@ -1,6 +1,7 @@
+// Keys are shown exactly as mSCP writes them (e.g. macos_15): friendly
+// names belong in baselines/_vocabulary.json, not in code.
 export interface ReferenceNode {
   key: string
-  label: string
   values: string[]
   children: ReferenceNode[]
 }
@@ -9,28 +10,23 @@ export interface ReferenceNode {
 // keyed by OS release (macos_15, ios_17, visionos_26). This tool only
 // covers macOS, so those levels keep their macOS keys only.
 const OS_KEY_PATTERN = /^(macos|ios|ipados|visionos|watchos|tvos)_\d+$/
-const MACOS_KEY_PATTERN = /^macos_(\d+)$/
+const MACOS_KEY_PATTERN = /^macos_\d+$/
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-function labelOf(key: string): string {
-  const macosMatch = MACOS_KEY_PATTERN.exec(key)
-  return macosMatch ? `macOS ${macosMatch[1]}` : key
-}
-
 function nodeOf(key: string, value: unknown): ReferenceNode | null {
   if (Array.isArray(value)) {
     const values = value.map(String)
-    return values.length > 0 ? { key, label: labelOf(key), values, children: [] } : null
+    return values.length > 0 ? { key, values, children: [] } : null
   }
   if (isObject(value)) {
     const children = macosReferences(value)
-    return children.length > 0 ? { key, label: labelOf(key), values: [], children } : null
+    return children.length > 0 ? { key, values: [], children } : null
   }
   if (value === null || value === undefined) return null
-  return { key, label: labelOf(key), values: [String(value)], children: [] }
+  return { key, values: [String(value)], children: [] }
 }
 
 export function macosReferences(references: Record<string, unknown>): ReferenceNode[] {

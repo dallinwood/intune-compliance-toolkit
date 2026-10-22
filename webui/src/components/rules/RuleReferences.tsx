@@ -6,7 +6,7 @@ function ReferenceList({ nodes }: { nodes: ReferenceNode[] }) {
     <ul className="space-y-0.5">
       {nodes.map((node) => (
         <li key={node.key} className="break-words">
-          <span className="font-medium text-slate-600">{node.label}</span>
+          <span className="font-medium text-slate-600">{node.key}</span>
           {node.values.length > 0 && <span className="text-slate-500">: {node.values.join(', ')}</span>}
           {node.children.length > 0 && (
             <div className="border-l border-slate-200 pl-3">

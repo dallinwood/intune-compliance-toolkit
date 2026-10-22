@@ -25,6 +25,10 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   // objectIsForcedForKey appears only in the check shell, not in the
   // profile payload, so this proves the check itself rendered.
   await expect(page.getByText('objectIsForcedForKey')).toBeVisible()
+  // Reference keys are shown raw; friendly names only come from the vocabulary file.
+  const detail = page.locator('[id^="rule-detail-"]')
+  await expect(detail.getByText('macos_15', { exact: true }).first()).toBeVisible()
+  await expect(detail.getByText('macOS 15', { exact: true })).toHaveCount(0)
 })
 
 // Asserts on the real filtering effect, not just presence - a facet

@@ -19,7 +19,7 @@ describe('assessmentLabel', () => {
     })
     expect(assessmentLabel({ status: 'manual', manual_reason: 'n_a' }, vocabularyIndex).label).toBe('Manual - n/a')
     expect(assessmentLabel({ status: 'manual', manual_reason: 'no_check' }, vocabularyIndex).label).toBe('Manual - no check')
-    expect(assessmentLabel({ status: 'manual', manual_reason: 'manual' }, vocabularyIndex).label).toBe('Manual - manual')
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'manual' }, vocabularyIndex).label).toBe('Manual - marked by mSCP')
   })
 
   it('shows the raw reason code, as label and tooltip, when the vocabulary does not list it', () => {
