@@ -2,7 +2,7 @@
 // for the code words the rule library uses. Field names stay snake_case as
 // in the JSON.
 
-export const VOCABULARY_NAMES = ['benchmarks', 'os_versions', 'sections', 'tags', 'manual_reasons'] as const
+export const VOCABULARY_NAMES = ['benchmarks', 'severities', 'os_versions', 'sections', 'tags', 'manual_reasons'] as const
 
 export type VocabularyName = (typeof VOCABULARY_NAMES)[number]
 

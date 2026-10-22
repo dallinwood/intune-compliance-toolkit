@@ -336,6 +336,18 @@ def test_duplicate_term_within_one_vocabulary_is_rejected():
     assert "cis_lvl1" in errors[0]
 
 
+def test_severities_vocabulary_is_allowed():
+    vocabulary = make_vocabulary(severities=[{"label": "CAT I", "terms": ["high", "cat_i"], "metadata": ["severity"]}])
+    assert schema_errors(vocabulary, "vocabulary") == []
+
+
+def test_committed_vocabulary_orders_severities_low_medium_high():
+    vocabulary = json.loads(COMMITTED_VOCABULARY.read_text(encoding="utf-8"))
+    severities = vocabulary["vocabularies"]["severities"]
+    assert [entry["terms"] for entry in severities] == [["low"], ["medium"], ["high"]]
+    assert [entry["label"] for entry in severities] == ["low", "medium", "high"]
+
+
 def test_unknown_vocabulary_key_is_rejected():
     assert schema_errors(make_vocabulary(frameworks=[{"label": "X", "terms": ["x"]}]), "vocabulary")
 

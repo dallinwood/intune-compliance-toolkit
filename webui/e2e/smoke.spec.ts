@@ -69,6 +69,34 @@ test('macOS version and benchmark facets narrow the table together', async ({ pa
   await expect(ruleCount(page)).not.toHaveText(`${benchmarkOnly} of 350 rules`)
 })
 
+interface IndexBenchmark {
+  name: string
+  severity: string | null
+}
+
+async function committedIndexRules(): Promise<{ applicability: Record<string, IndexBenchmark[]> }[]> {
+  const indexJson = await readFile(new URL('../../baselines/mscp/_index.json', import.meta.url), 'utf8')
+  return JSON.parse(indexJson).rules
+}
+
+test('a benchmark severity option narrows the table to rules listing that severity on the selected version', async ({ page }) => {
+  const expectedCount = (await committedIndexRules()).filter((rule) =>
+    (rule.applicability['27.0'] ?? []).some((benchmark) => benchmark.name === 'disa_stig' && benchmark.severity === 'high'),
+  ).length
+  expect(expectedCount).toBeGreaterThan(0)
+
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  for (const name of ['DISA STIG', 'DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)']) {
+    await expect(page.getByRole('checkbox', { name, exact: true })).toBeVisible()
+  }
+
+  await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
+  await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
+  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 350 rules`)
+  await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
+})
+
 // The row's onClick skips toggling expand when the click landed on an
 // interactive control. Base UI's Checkbox renders role="checkbox", not an
 // <input>, so a selector listing only `input` would both select AND expand.

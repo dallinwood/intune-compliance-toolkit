@@ -8,6 +8,11 @@
       { "label": "NLMAPGOV Base", "terms": ["nlmapgov_base"], "metadata": ["benchmark"] },
       { "label": "NLMAPGOV Plus", "terms": ["nlmapgov_plus"], "metadata": ["benchmark"] }
     ],
+    "severities": [
+      { "label": "low", "terms": ["low"], "metadata": ["severity"] },
+      { "label": "medium", "terms": ["medium"], "metadata": ["severity"] },
+      { "label": "high", "terms": ["high"], "metadata": ["severity"] }
+    ],
     "os_versions": [
       { "label": "macOS 27", "terms": ["27.0"], "metadata": ["platform"] },
       { "label": "macOS 26", "terms": ["26.0"], "metadata": ["platform"] },

@@ -12,6 +12,7 @@
       "additionalProperties": false,
       "properties": {
         "benchmarks": { "$ref": "#/$defs/vocabulary" },
+        "severities": { "$ref": "#/$defs/vocabulary" },
         "os_versions": { "$ref": "#/$defs/vocabulary" },
         "sections": { "$ref": "#/$defs/vocabulary" },
         "tags": { "$ref": "#/$defs/vocabulary" },

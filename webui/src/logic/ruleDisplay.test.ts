@@ -49,6 +49,15 @@ describe('benchmarkSummary', () => {
     expect(benchmarkSummary(applicability, ['27.0', '26.0'], vocabularyIndex)).toBe('CIS Level 1, DISA STIG (high)')
   })
 
+  it('shows the severity by its severities vocabulary label', () => {
+    const relabelled = vocabularyIndexOf({
+      benchmarks: [{ label: 'DISA STIG', terms: ['disa_stig'] }],
+      severities: [{ label: 'CAT I', terms: ['high'] }],
+    })
+    const applicability = { '27.0': [{ name: 'disa_stig', severity: 'high' }, { name: 'disa_stig', severity: 'unlisted' }] }
+    expect(benchmarkSummary(applicability, ['27.0'], relabelled)).toBe('DISA STIG (CAT I), DISA STIG (unlisted)')
+  })
+
   it('shows the raw code for a benchmark the vocabulary does not list', () => {
     const applicability = { '27.0': [{ name: 'brand_new_benchmark', severity: null }] }
     expect(benchmarkSummary(applicability, ['27.0'], vocabularyIndex)).toBe('brand_new_benchmark')

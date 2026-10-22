@@ -9,7 +9,9 @@ import { useScrollEdges } from '@/hooks/useScrollEdges'
 import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStableFacetShown'
 import {
   allFacetValues,
+  benchmarkFacetLabel,
   benchmarksListedUnder,
+  compareBenchmarkFacetValues,
   facetOptions,
   sectionGroupKey,
   tagGroupKeys,
@@ -33,9 +35,10 @@ function isAutomatableFilter(value: string): value is AutomatableFilter {
 
 const NO_SELECTION: ReadonlySet<string> = new Set()
 
-// Every facet value is a vocabulary group key, so grouped codes show as one
-// option. Built once per index so StableFacetGroup's memoized canonical order
-// isn't recomputed on every render by fresh inline functions.
+// Every facet value is a vocabulary group key (a benchmark's is paired with
+// a severity, see benchmarkFacetValue), so grouped codes show as one option.
+// Built once per index so StableFacetGroup's memoized canonical order isn't
+// recomputed on every render by fresh inline functions.
 function facetAccessors(index: VocabularyIndex) {
   const labelIn = (vocabulary: VocabularyName) => (groupKey: string) => groupLabel(index, vocabulary, groupKey)
   return {
@@ -44,10 +47,10 @@ function facetAccessors(index: VocabularyIndex) {
     sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
     tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
     osVersionLabel: labelIn('os_versions'),
-    benchmarkLabel: labelIn('benchmarks'),
+    benchmarkLabel: (value: string) => benchmarkFacetLabel(index, value),
     sectionLabel: labelIn('sections'),
     tagLabel: labelIn('tags'),
-    compareBenchmarks: compareGroupKeys(index, 'benchmarks'),
+    compareBenchmarks: compareBenchmarkFacetValues(index),
     compareSections: compareGroupKeys(index, 'sections'),
     compareTags: compareGroupKeys(index, 'tags'),
   }
@@ -115,69 +118,69 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
 
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div ref={scrollAreaRef} data-testid="sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-        <FacetGroup title="Automation">
-          <RadioGroup
-            value={filters.automatable}
-            onValueChange={(value) => {
-              if (isAutomatableFilter(value)) filters.setAutomatable(value)
-            }}
-            className="gap-1.5"
-          >
-            {AUTOMATABLE_OPTIONS.map((option) => (
-              <FacetOption key={option.value} label={option.label}>
-                <RadioGroupItem value={option.value} />
-              </FacetOption>
-            ))}
-          </RadioGroup>
-        </FacetGroup>
+          <FacetGroup title="Automation">
+            <RadioGroup
+              value={filters.automatable}
+              onValueChange={(value) => {
+                if (isAutomatableFilter(value)) filters.setAutomatable(value)
+              }}
+              className="gap-1.5"
+            >
+              {AUTOMATABLE_OPTIONS.map((option) => (
+                <FacetOption key={option.value} label={option.label}>
+                  <RadioGroupItem value={option.value} />
+                </FacetOption>
+              ))}
+            </RadioGroup>
+          </FacetGroup>
 
-        <StableFacetGroup
-          title="macOS version"
-          rows={rows}
-          valueOf={accessors.allOsVersionsOf}
-          compareValues={compareVersionsDescending}
-          labelOf={accessors.osVersionLabel}
-          reachable={osVersions}
-          selected={filters.osVersions}
-          onToggle={filters.toggleOsVersion}
-        />
+          <StableFacetGroup
+            title="macOS version"
+            rows={rows}
+            valueOf={accessors.allOsVersionsOf}
+            compareValues={compareVersionsDescending}
+            labelOf={accessors.osVersionLabel}
+            reachable={osVersions}
+            selected={filters.osVersions}
+            onToggle={filters.toggleOsVersion}
+          />
 
-        <StableFacetGroup
-          title="Benchmark"
-          rows={rows}
-          valueOf={accessors.allBenchmarksOf}
-          compareValues={accessors.compareBenchmarks}
-          labelOf={accessors.benchmarkLabel}
-          reachable={benchmarks}
-          selected={filters.benchmarks}
-          onToggle={filters.toggleBenchmark}
-        />
+          <StableFacetGroup
+            title="Benchmark"
+            rows={rows}
+            valueOf={accessors.allBenchmarksOf}
+            compareValues={accessors.compareBenchmarks}
+            labelOf={accessors.benchmarkLabel}
+            reachable={benchmarks}
+            selected={filters.benchmarks}
+            onToggle={filters.toggleBenchmark}
+          />
 
-        <StableFacetGroup
-          title="Section"
-          rows={rows}
-          valueOf={accessors.sectionOf}
-          compareValues={accessors.compareSections}
-          labelOf={accessors.sectionLabel}
-          reachable={sections}
-          selected={filters.sections}
-          onToggle={filters.toggleSection}
-        />
+          <StableFacetGroup
+            title="Section"
+            rows={rows}
+            valueOf={accessors.sectionOf}
+            compareValues={accessors.compareSections}
+            labelOf={accessors.sectionLabel}
+            reachable={sections}
+            selected={filters.sections}
+            onToggle={filters.toggleSection}
+          />
 
-        <StableFacetGroup
-          title="Tags"
-          rows={rows}
-          valueOf={accessors.tagsOf}
-          compareValues={accessors.compareTags}
-          labelOf={accessors.tagLabel}
-          reachable={tags}
-          selected={filters.tags}
-          onToggle={filters.toggleTag}
-        />
+          <StableFacetGroup
+            title="Tags"
+            rows={rows}
+            valueOf={accessors.tagsOf}
+            compareValues={accessors.compareTags}
+            labelOf={accessors.tagLabel}
+            reachable={tags}
+            selected={filters.tags}
+            onToggle={filters.toggleTag}
+          />
 
-        <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
-          Clear filters
-        </Button>
+          <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
+            Clear filters
+          </Button>
         </div>
         <ScrollIndicator direction="up" visible={canScrollUp} />
         <ScrollIndicator direction="down" visible={canScrollDown} />

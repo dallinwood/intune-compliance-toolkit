@@ -25,7 +25,7 @@ export function benchmarkSummary(applicability: Applicability, osVersions: reado
   if (newestVersion === undefined) return ''
   const parts = (applicability[newestVersion] ?? []).map((benchmark) => {
     const label = termLabel(index, 'benchmarks', benchmark.name)
-    return benchmark.severity ? `${label} (${benchmark.severity})` : label
+    return benchmark.severity ? `${label} (${termLabel(index, 'severities', benchmark.severity)})` : label
   })
   return Array.from(new Set(parts)).join(', ')
 }

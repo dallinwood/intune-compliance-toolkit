@@ -142,6 +142,11 @@ describe('parseVocabularyFile', () => {
     expect(parseVocabularyFile(file)).toEqual({ file })
   })
 
+  it('accepts a severities vocabulary', () => {
+    const file = vocabularyFileOf({ severities: [{ label: 'CAT I', terms: ['high'], metadata: ['severity'] }] })
+    expect(parseVocabularyFile(file)).toEqual({ file })
+  })
+
   it.each<[string, unknown]>([
     ['null', null],
     ['an array', []],
@@ -169,5 +174,15 @@ describe('committed baselines/_vocabulary.json', () => {
   it('parses and indexes without warnings', () => {
     if ('error' in parsed) throw new Error(parsed.error)
     expect(buildVocabularyIndex(parsed.file).warnings).toEqual([])
+  })
+
+  // Labels stay raw so the UI reads as before; the entries exist for order.
+  it('lists the severities low, medium and high in that order with raw labels', () => {
+    if ('error' in parsed) throw new Error(parsed.error)
+    expect(parsed.file.vocabularies.severities).toEqual([
+      { label: 'low', terms: ['low'], metadata: ['severity'] },
+      { label: 'medium', terms: ['medium'], metadata: ['severity'] },
+      { label: 'high', terms: ['high'], metadata: ['severity'] },
+    ])
   })
 })

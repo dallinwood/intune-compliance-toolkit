@@ -1,6 +1,9 @@
 import type { FilterState } from '../state/filterStore'
+import type { Applicability } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
-import { termGroupKey, type VocabularyIndex } from './vocabulary'
+import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from './vocabulary'
+
+type BenchmarkMembership = Applicability[string][number]
 
 export type FilterValues = Pick<FilterState, 'search' | 'osVersions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
 
@@ -11,11 +14,12 @@ export type FilterDimension = 'osVersions' | 'benchmarks' | 'sections' | 'tags'
 
 const MSCP_ID_PREFIX = 'mscp.'
 
-// Filter state holds vocabulary group keys, so grouped codes (e.g. a
-// benchmark mSCP renamed) filter as one. Every row code is mapped to its
+// Filter state holds vocabulary group keys (benchmarks: group keys paired
+// with a severity group key, see benchmarkFacetValue), so grouped codes (e.g.
+// a benchmark mSCP renamed) filter as one. Every row code is mapped to its
 // group key before it is compared.
 
-function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'benchmarks' | 'os_versions' | 'tags', codes: Iterable<string>): string[] {
+function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'os_versions' | 'tags', codes: Iterable<string>): string[] {
   const groupKeys = new Set<string>()
   for (const code of codes) groupKeys.add(termGroupKey(index, vocabulary, code))
   return Array.from(groupKeys)
@@ -34,8 +38,56 @@ function versionsUnder(row: RuleRow, osVersions: ReadonlySet<string>, index: Voc
   return row.osVersions.filter((version) => osVersions.has(termGroupKey(index, 'os_versions', version)))
 }
 
+// A benchmark facet value is one (benchmark group, severity group) pair, so a
+// benchmark whose entries carry severities offers one option per severity,
+// plus a plain option for entries without one. The unit separator never
+// occurs in the library's code words.
+const SEVERITY_SEPARATOR = '\u001f'
+
+export function benchmarkFacetValue(groupKey: string, severity: string | null): string {
+  return severity === null ? groupKey : `${groupKey}${SEVERITY_SEPARATOR}${severity}`
+}
+
+export function parseBenchmarkFacetValue(value: string): { groupKey: string; severity: string | null } {
+  const separatorPosition = value.indexOf(SEVERITY_SEPARATOR)
+  if (separatorPosition === -1) return { groupKey: value, severity: null }
+  return { groupKey: value.slice(0, separatorPosition), severity: value.slice(separatorPosition + SEVERITY_SEPARATOR.length) }
+}
+
+// The one place a row's benchmark entry becomes a facet value: the options
+// offered and the rows they match both go through it, which is what keeps
+// every offered option matching at least one row. An empty severity counts
+// as none, as it does in benchmarkSummary.
+function membershipFacetValue(membership: BenchmarkMembership, index: VocabularyIndex): string {
+  const severityGroupKey = membership.severity ? termGroupKey(index, 'severities', membership.severity) : null
+  return benchmarkFacetValue(termGroupKey(index, 'benchmarks', membership.name), severityGroupKey)
+}
+
+export function benchmarkFacetLabel(index: VocabularyIndex, value: string): string {
+  const { groupKey, severity } = parseBenchmarkFacetValue(value)
+  const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
+  return severity === null ? benchmarkLabel : `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
+}
+
+// Benchmarks in vocabulary order; within one benchmark the no-severity
+// option first, then severities in vocabulary order.
+export function compareBenchmarkFacetValues(index: VocabularyIndex): (left: string, right: string) => number {
+  const compareBenchmarks = compareGroupKeys(index, 'benchmarks')
+  const compareSeverities = compareGroupKeys(index, 'severities')
+  return (left, right) => {
+    const leftValue = parseBenchmarkFacetValue(left)
+    const rightValue = parseBenchmarkFacetValue(right)
+    const byBenchmark = compareBenchmarks(leftValue.groupKey, rightValue.groupKey)
+    if (byBenchmark !== 0) return byBenchmark
+    if (leftValue.severity === rightValue.severity) return 0
+    if (leftValue.severity === null) return -1
+    if (rightValue.severity === null) return 1
+    return compareSeverities(leftValue.severity, rightValue.severity)
+  }
+}
+
 function listsAnyBenchmark(row: RuleRow, version: string, benchmarks: ReadonlySet<string>, index: VocabularyIndex): boolean {
-  return (row.applicability[version] ?? []).some((benchmark) => benchmarks.has(termGroupKey(index, 'benchmarks', benchmark.name)))
+  return (row.applicability[version] ?? []).some((membership) => benchmarks.has(membershipFacetValue(membership, index)))
 }
 
 // A benchmark only counts for the macOS versions it is listed under, so when
@@ -121,15 +173,16 @@ export function allFacetValues(
   return Array.from(present).sort(compareValues)
 }
 
-// Version-scoped facet values, as group keys. A row's benchmarks differ per
-// macOS version, so the benchmark facet must only count benchmarks listed
-// under the selected versions (and the version facet only versions listing a
-// selected benchmark) - otherwise it offers combinations that match zero rows.
+// Version-scoped facet values: version group keys and benchmark facet
+// values. A row's benchmarks differ per macOS version, so the benchmark facet
+// must only count benchmarks listed under the selected versions (and the
+// version facet only versions listing a selected benchmark) - otherwise it
+// offers combinations that match zero rows.
 export function benchmarksListedUnder(row: RuleRow, osVersions: ReadonlySet<string>, index: VocabularyIndex): string[] {
-  const benchmarkNames = versionsUnder(row, osVersions, index).flatMap((version) =>
-    (row.applicability[version] ?? []).map((benchmark) => benchmark.name),
+  const facetValues = versionsUnder(row, osVersions, index).flatMap((version) =>
+    (row.applicability[version] ?? []).map((membership) => membershipFacetValue(membership, index)),
   )
-  return uniqueGroupKeys(index, 'benchmarks', benchmarkNames)
+  return Array.from(new Set(facetValues))
 }
 
 export function versionsListingAnyOf(row: RuleRow, benchmarks: ReadonlySet<string>, index: VocabularyIndex): string[] {
