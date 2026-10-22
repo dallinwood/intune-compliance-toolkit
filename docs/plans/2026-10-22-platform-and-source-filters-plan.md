@@ -11,7 +11,7 @@
 
 **Tech Stack:** As before: Python importer and validator; React + TypeScript + zustand + Vitest + Playwright under Bun.
 
-**Spec (maintainer's request, 2026-10-23):**
+**Spec (maintainer's request, 2026-10-22):**
 - A filter for platform, listing every platform found in the rules (only macOS today).
 - A filter near the bottom for rule sources, listing every source (only mscp today).
 
@@ -69,5 +69,5 @@
 
 ## Progress log
 
-- 2026-10-23: Task 1 done. The index entry now carries `platform` (required by the index schema), and the sidebar has a Platform facet after Automation and a Source facet last, both populated from the data and labelled through new optional `platforms` and `sources` vocabularies (seeded empty, so raw values show). Unit tests cover a second synthetic platform and source, narrowing, labels and grouped terms; the e2e suite covers placement and that ticking either leaves 350 rows. Bundle output is byte-identical for a fixed 20-rule selection. Commit: d3c76a7 feat: filter rules by platform and source.
-- 2026-10-23: Review fix. The sidebar scroll e2e test now finds the Tags facet by its heading instead of assuming Source has exactly one option, so it survives a second rule source. Commit: ddb4990 test: target the Tags facet explicitly in the sidebar scroll test.
+- 2026-10-22: Task 1 done. The index entry now carries `platform` (required by the index schema), and the sidebar has a Platform facet after Automation and a Source facet last, both populated from the data and labelled through new optional `platforms` and `sources` vocabularies (seeded empty, so raw values show). Unit tests cover a second synthetic platform and source, narrowing, labels and grouped terms; the e2e suite covers placement and that ticking either leaves 350 rows. Bundle output is byte-identical for a fixed 20-rule selection. Commit: d3c76a7 feat: filter rules by platform and source.
+- 2026-10-22: Review fix. The sidebar scroll e2e test now finds the Tags facet by its heading instead of assuming Source has exactly one option, so it survives a second rule source. Commit: ddb4990 test: target the Tags facet explicitly in the sidebar scroll test.
