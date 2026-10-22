@@ -6,6 +6,9 @@ import { describe, expect, it } from 'vitest'
 import type { RuleCheckPlan } from '../checkPlan'
 import { generateBashScript } from './bash'
 
+// Spawning real bash took over 5000 ms under full-suite load.
+const REAL_SHELL_TIMEOUT_MILLISECONDS = 30_000
+
 interface RunOptions {
   osMajor: string
   arch?: string
@@ -120,19 +123,19 @@ describe('generateBashScript executed through bash', () => {
   it('runs the listed branch on a listed major', () => {
     expect(runScript(script, { osMajor: '15' })).toEqual({ raw_rule: 'LISTED', boolean_rule: true })
     expect(runScript(script, { osMajor: '26' })).toEqual({ raw_rule: 'LISTED', boolean_rule: false })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('passes on a covered major the rule does not list', () => {
     expect(runScript(script, { osMajor: '27' })).toEqual({ raw_rule: 'PASS', boolean_rule: true })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('runs the newer branch on a major newer than every covered one, comparing single-quoted expected values', () => {
     expect(runScript(script, { osMajor: '28' })).toEqual({ raw_rule: 'NEWER', boolean_rule: true })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('passes on a major older than every covered one', () => {
     expect(runScript(script, { osMajor: '14' })).toEqual({ raw_rule: 'PASS', boolean_rule: true })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it.each(['', 'abc', '15.1'])('reports null for every rule when the OS major %j is not a whole number', (osMajor) => {
     const failClosedScript = generateBashScript([
@@ -142,18 +145,18 @@ describe('generateBashScript executed through bash', () => {
       rawStringPlan({ settingName: 'arm_rule', architecture: 'arm64' }),
     ])
     expect(runScript(failClosedScript, { osMajor })).toEqual({ raw_rule: null, boolean_rule: null, integer_rule: null, arm_rule: null })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('passes on a newer major when there is no newer branch', () => {
     const noNewerScript = generateBashScript([rawStringPlan({ newerBranch: null })])
     expect(runScript(noNewerScript, { osMajor: '30' })).toEqual({ raw_rule: 'PASS' })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('passes on an architecture mismatch and runs the check on a match', () => {
     const armScript = generateBashScript([rawStringPlan({ architecture: 'arm64' })])
     expect(runScript(armScript, { osMajor: '15', arch: 'i386' })).toEqual({ raw_rule: 'PASS' })
     expect(runScript(armScript, { osMajor: '15', arch: 'arm64' })).toEqual({ raw_rule: 'LISTED' })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('reports an integer raw value as a JSON number and the pass value when not applicable', () => {
     const integerScript = generateBashScript([
@@ -166,7 +169,7 @@ describe('generateBashScript executed through bash', () => {
     ])
     expect(runScript(integerScript, { osMajor: '15' })).toEqual({ raw_rule: 25 })
     expect(runScript(integerScript, { osMajor: '27' })).toEqual({ raw_rule: 25 })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('runs a check containing a heredoc', () => {
     const heredocScript = generateBashScript([
@@ -175,7 +178,7 @@ describe('generateBashScript executed through bash', () => {
       }),
     ])
     expect(runScript(heredocScript, { osMajor: '15' })).toEqual({ raw_rule: "function run() {\n  return('x')\n}" })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('passes single quotes, $, backticks, backslashes and newlines in check text through the quoting unchanged', () => {
     const awkwardText = "it's \"$HOME\" `date` $(date) \\ back\nsecond line"
@@ -185,7 +188,7 @@ describe('generateBashScript executed through bash', () => {
       }),
     ])
     expect(runScript(quotingScript, { osMajor: '15' })).toEqual({ raw_rule: awkwardText })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('exports a variable-mode ODV verbatim without executing it', () => {
     const odvValue = "Banner with 'quotes' and \"doubles\"\n$(echo EXECUTED) `echo EXECUTED` ${HOME}"
@@ -212,7 +215,7 @@ describe('generateBashScript executed through bash', () => {
       }),
     ])
     expect(runScript(echoScript, { osMajor: '15' })).toEqual({ raw_rule: odvValue })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('does not leak a variable-mode ODV into other checks', () => {
     const leakScript = generateBashScript([
@@ -220,14 +223,14 @@ describe('generateBashScript executed through bash', () => {
       rawStringPlan({ settingName: 'without_odv', branches: [{ majors: ['15'], shell: 'echo "[${ODV}]"', expected: { type: 'string', value: 'PASS' } }] }),
     ])
     expect(runScript(leakScript, { osMajor: '15' })).toEqual({ with_odv: 'secret', without_odv: '[]' })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('makes the preamble variables visible to the checks', () => {
     const preambleScript = generateBashScript([
       rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo "$plb|$arch"', expected: { type: 'string', value: 'PASS' } }] }),
     ])
     expect(runScript(preambleScript, { osMajor: '15', arch: 'i386' })).toEqual({ raw_rule: '/usr/libexec/PlistBuddy|i386' })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 })
 
 describe('JSON helpers executed through bash', () => {
@@ -266,7 +269,7 @@ describe('JSON helpers executed through bash', () => {
       spaced: null,
       empty: null,
     })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('escapes backslashes, quotes, newlines, carriage returns, tabs and other control characters', () => {
     const script = generateBashScript([
@@ -277,12 +280,12 @@ describe('JSON helpers executed through bash', () => {
       rawStringPlan({ settingName: 'empty', branches: [{ majors: ['15'], shell: 'true', expected: { type: 'string', value: 'PASS' } }] }),
     ])
     expect(runScript(script, { osMajor: '15' })).toEqual({ escaped: 'a\\b "q"\nline2\r\tx\u0001\u001fy', empty: null })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 
   it('reports multi-line check output as one valid JSON string', () => {
     const script = generateBashScript([
       rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo one\necho two\necho three', expected: { type: 'string', value: 'PASS' } }] }),
     ])
     expect(runScript(script, { osMajor: '15' })).toEqual({ raw_rule: 'one\ntwo\nthree' })
-  })
+  }, REAL_SHELL_TIMEOUT_MILLISECONDS)
 })
