@@ -7,6 +7,7 @@ import {
   allFacetValues,
   benchmarkFacetLabel,
   benchmarkFacetValue,
+  benchmarkGroupsWithSeverities,
   compareBenchmarkFacetValues,
   sectionGroupKey,
   tagGroupKeys,
@@ -452,13 +453,13 @@ describe('a benchmark with severities on some entries and none on others', () =>
   const matchingIds = (filters: FilterValues) =>
     mixedRows.filter((r) => matchesFilters(r, filters, vocabulary)).map((r) => r.ref.id.slice('mscp.'.length))
 
-  it('offers a no-severity option first, then one option per severity in vocabulary order, unlisted ones last', () => {
+  it('offers one option per severity in vocabulary order, unlisted ones next, then the no-severity option', () => {
     expect(benchmarkOptionsInOrder(mixedRows, vocabulary)).toEqual([
       'other_baseline',
-      acme(null),
       acme('low'),
       acme('high'),
       acme('critical'),
+      acme(null),
     ])
   })
 
@@ -491,11 +492,16 @@ describe('a benchmark with severities on some entries and none on others', () =>
     expectNoZeroRowCombination(mixedRows, vocabulary)
   })
 
-  it('labels each option with the benchmark label and, when present, the severity label', () => {
-    expect(benchmarkFacetLabel(vocabulary, acme(null))).toBe('Acme baseline')
-    expect(benchmarkFacetLabel(vocabulary, acme('high'))).toBe('Acme baseline (High)')
-    expect(benchmarkFacetLabel(vocabulary, acme('critical'))).toBe('Acme baseline (critical)')
-    expect(benchmarkFacetLabel(noVocabulary, acme('high'))).toBe('acme_baseline (high)')
+  it('labels each option with the benchmark label and the severity label, or "no severity" beside severities', () => {
+    const groupsWithSeverities = benchmarkGroupsWithSeverities(benchmarkOptionsInOrder(mixedRows, vocabulary))
+    expect(groupsWithSeverities).toEqual(new Set(['acme_baseline']))
+    const labelOf = (value: string) => benchmarkFacetLabel(vocabulary, value, groupsWithSeverities)
+    expect(labelOf(acme(null))).toBe('Acme baseline (no severity)')
+    expect(labelOf(acme('high'))).toBe('Acme baseline (High)')
+    expect(labelOf(acme('critical'))).toBe('Acme baseline (critical)')
+    expect(labelOf('other_baseline')).toBe('Other baseline')
+    expect(benchmarkFacetLabel(noVocabulary, acme('high'), groupsWithSeverities)).toBe('acme_baseline (high)')
+    expect(benchmarkFacetLabel(noVocabulary, acme(null), groupsWithSeverities)).toBe('acme_baseline (no severity)')
   })
 })
 
@@ -514,8 +520,14 @@ describe('a grouped benchmark with severities', () => {
   const cisLevelOne = (severity: string | null) => benchmarkFacetValue('cis_lvl1', severity)
 
   it('offers one option per benchmark group and severity group', () => {
-    expect(benchmarkOptionsInOrder(groupedRows, vocabulary)).toEqual([cisLevelOne(null), cisLevelOne('low'), cisLevelOne('high')])
-    expect(benchmarkFacetLabel(vocabulary, cisLevelOne('high'))).toBe('CIS Level 1 (High)')
+    const options = benchmarkOptionsInOrder(groupedRows, vocabulary)
+    expect(options).toEqual([cisLevelOne('low'), cisLevelOne('high'), cisLevelOne(null)])
+    const groupsWithSeverities = benchmarkGroupsWithSeverities(options)
+    expect(options.map((value) => benchmarkFacetLabel(vocabulary, value, groupsWithSeverities))).toEqual([
+      'CIS Level 1 (Low)',
+      'CIS Level 1 (High)',
+      'CIS Level 1 (no severity)',
+    ])
   })
 
   it('matches rows listing either code of the group with that severity', () => {
@@ -540,7 +552,7 @@ describe('benchmark option order', () => {
     severities: SEVERITY_VOCABULARY,
   })
 
-  it('orders benchmarks by the vocabulary, then no severity, listed severities and unlisted ones alphabetically', () => {
+  it('orders benchmarks by the vocabulary, then listed severities, unlisted ones alphabetically and no severity last', () => {
     const values = [
       benchmarkFacetValue('a_first', 'zeta'),
       benchmarkFacetValue('unlisted_benchmark', null),
@@ -553,12 +565,12 @@ describe('benchmark option order', () => {
     ]
     expect(values.sort(compareBenchmarkFacetValues(vocabulary)).map(parseBenchmarkFacetValue)).toEqual([
       { groupKey: 'b_second', severity: 'medium' },
-      { groupKey: 'a_first', severity: null },
       { groupKey: 'a_first', severity: 'low' },
       { groupKey: 'a_first', severity: 'medium' },
       { groupKey: 'a_first', severity: 'high' },
       { groupKey: 'a_first', severity: 'alpha' },
       { groupKey: 'a_first', severity: 'zeta' },
+      { groupKey: 'a_first', severity: null },
       { groupKey: 'unlisted_benchmark', severity: null },
     ])
   })
@@ -576,16 +588,18 @@ describe('committed library data', () => {
   const committedRows = committedRuleRows()
   const committedVocabulary = committedVocabularyIndex()
 
-  it('offers one DISA STIG option per severity present, ordered by the severities vocabulary', () => {
-    const stigOptions = benchmarkOptionsInOrder(committedRows, committedVocabulary).filter(
-      (value) => parseBenchmarkFacetValue(value).groupKey === 'disa_stig',
-    )
-    expect(stigOptions.map((value) => benchmarkFacetLabel(committedVocabulary, value))).toEqual([
-      'DISA STIG',
+  it('offers one DISA STIG option per severity present, ordered by the severities vocabulary, then no severity', () => {
+    const options = benchmarkOptionsInOrder(committedRows, committedVocabulary)
+    const groupsWithSeverities = benchmarkGroupsWithSeverities(options)
+    const labelOf = (value: string) => benchmarkFacetLabel(committedVocabulary, value, groupsWithSeverities)
+    const stigOptions = options.filter((value) => parseBenchmarkFacetValue(value).groupKey === 'disa_stig')
+    expect(stigOptions.map(labelOf)).toEqual([
       'DISA STIG (low)',
       'DISA STIG (medium)',
       'DISA STIG (high)',
+      'DISA STIG (no severity)',
     ])
+    expect(labelOf(benchmarkFacetValue('cis_lvl1', null))).toBe('CIS Level 1')
   })
 
   it('narrows the version facet by a severity option and the table to rows listing that severity', () => {

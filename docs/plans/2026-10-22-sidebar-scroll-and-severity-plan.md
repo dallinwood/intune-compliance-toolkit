@@ -32,7 +32,8 @@
 - **Benchmark facet options:**
   - Options are the distinct (benchmark group key, severity-or-null) pairs found in the data, scoped by the selected macOS versions exactly as the benchmark facet is today.
   - Label: `<benchmark group label>`, or `<benchmark group label> (<severity label>)` when a severity is present.
-  - Order: benchmarks in vocabulary order. Within one benchmark, the no-severity option comes first, then severities in `severities` vocabulary order.
+  - Order: benchmarks in vocabulary order. Within one benchmark, severities in `severities` vocabulary order come first, then the no-severity option.
+  - The no-severity option of a benchmark that has at least one severity option is labelled `<benchmark group label> (no severity)`; a benchmark with no severities anywhere keeps its plain label.
   - A selected option matches a row when, under the version scope, the row lists that benchmark group with that exact severity (or with no severity, for the no-severity option).
   - The zero-row-combination guarantee between the version and benchmark facets must still hold.
 - **Row text and other displays** that show a severity (e.g. the benchmark summary in `ruleDisplay.ts`) use the severity vocabulary label.

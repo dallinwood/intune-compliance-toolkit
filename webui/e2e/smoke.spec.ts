@@ -87,9 +87,9 @@ test('a benchmark severity option narrows the table to rules listing that severi
 
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
-  for (const name of ['DISA STIG', 'DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)']) {
-    await expect(page.getByRole('checkbox', { name, exact: true })).toBeVisible()
-  }
+  const stigLabels = page.getByTestId('sidebar-scroll-area').locator('label').filter({ hasText: /^DISA STIG/ })
+  await expect(stigLabels).toHaveText(['DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)', 'DISA STIG (no severity)'])
+  await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
@@ -366,7 +366,8 @@ test('a malformed vocabulary file falls back to raw codes with a warning', async
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
-  await expect(page.getByRole('checkbox', { name: 'disa_stig', exact: true })).toBeVisible()
+  await expect(page.getByRole('checkbox', { name: 'disa_stig (high)', exact: true })).toBeVisible()
+  await expect(page.getByRole('checkbox', { name: 'disa_stig (no severity)', exact: true })).toBeVisible()
 })
 
 test.describe('filter sidebar scrolling', () => {

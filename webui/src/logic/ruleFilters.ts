@@ -63,14 +63,28 @@ function membershipFacetValue(membership: BenchmarkMembership, index: Vocabulary
   return benchmarkFacetValue(termGroupKey(index, 'benchmarks', membership.name), severityGroupKey)
 }
 
-export function benchmarkFacetLabel(index: VocabularyIndex, value: string): string {
-  const { groupKey, severity } = parseBenchmarkFacetValue(value)
-  const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
-  return severity === null ? benchmarkLabel : `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
+// The benchmark groups that have at least one severity option among the
+// given facet values.
+export function benchmarkGroupsWithSeverities(values: Iterable<string>): Set<string> {
+  const groupKeys = new Set<string>()
+  for (const value of values) {
+    const { groupKey, severity } = parseBenchmarkFacetValue(value)
+    if (severity !== null) groupKeys.add(groupKey)
+  }
+  return groupKeys
 }
 
-// Benchmarks in vocabulary order; within one benchmark the no-severity
-// option first, then severities in vocabulary order.
+// Beside severity options, a plain benchmark label would read as "any
+// severity" though it matches only entries without one, so it says so.
+export function benchmarkFacetLabel(index: VocabularyIndex, value: string, groupsWithSeverities: ReadonlySet<string>): string {
+  const { groupKey, severity } = parseBenchmarkFacetValue(value)
+  const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
+  if (severity !== null) return `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
+  return groupsWithSeverities.has(groupKey) ? `${benchmarkLabel} (no severity)` : benchmarkLabel
+}
+
+// Benchmarks in vocabulary order; within one benchmark, severities in
+// vocabulary order, then the no-severity option.
 export function compareBenchmarkFacetValues(index: VocabularyIndex): (left: string, right: string) => number {
   const compareBenchmarks = compareGroupKeys(index, 'benchmarks')
   const compareSeverities = compareGroupKeys(index, 'severities')
@@ -80,8 +94,8 @@ export function compareBenchmarkFacetValues(index: VocabularyIndex): (left: stri
     const byBenchmark = compareBenchmarks(leftValue.groupKey, rightValue.groupKey)
     if (byBenchmark !== 0) return byBenchmark
     if (leftValue.severity === rightValue.severity) return 0
-    if (leftValue.severity === null) return -1
-    if (rightValue.severity === null) return 1
+    if (leftValue.severity === null) return 1
+    if (rightValue.severity === null) return -1
     return compareSeverities(leftValue.severity, rightValue.severity)
   }
 }

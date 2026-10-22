@@ -10,6 +10,7 @@ import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStable
 import {
   allFacetValues,
   benchmarkFacetLabel,
+  benchmarkGroupsWithSeverities,
   benchmarksListedUnder,
   compareBenchmarkFacetValues,
   facetOptions,
@@ -47,7 +48,6 @@ function facetAccessors(index: VocabularyIndex) {
     sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
     tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
     osVersionLabel: labelIn('os_versions'),
-    benchmarkLabel: (value: string) => benchmarkFacetLabel(index, value),
     sectionLabel: labelIn('sections'),
     tagLabel: labelIn('tags'),
     compareBenchmarks: compareBenchmarkFacetValues(index),
@@ -60,6 +60,12 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   const filters = useFilterStore()
   const index = useVocabularyIndex()
   const accessors = useMemo(() => facetAccessors(index), [index])
+  // Taken from every row, not just the reachable ones, so an option's label
+  // never changes as other filters narrow the list.
+  const benchmarkLabel = useMemo(() => {
+    const groupsWithSeverities = benchmarkGroupsWithSeverities(allFacetValues(rows, accessors.allBenchmarksOf))
+    return (value: string) => benchmarkFacetLabel(index, value, groupsWithSeverities)
+  }, [rows, accessors, index])
 
   // Facets are derived from whatever data is actually loaded - never a
   // hardcoded list - so a new benchmark or tag shows up automatically.
@@ -150,7 +156,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             rows={rows}
             valueOf={accessors.allBenchmarksOf}
             compareValues={accessors.compareBenchmarks}
-            labelOf={accessors.benchmarkLabel}
+            labelOf={benchmarkLabel}
             reachable={benchmarks}
             selected={filters.benchmarks}
             onToggle={filters.toggleBenchmark}
