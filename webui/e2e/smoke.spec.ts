@@ -340,3 +340,47 @@ test('a malformed vocabulary file falls back to raw codes with a warning', async
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
   await expect(page.getByRole('checkbox', { name: 'disa_stig', exact: true })).toBeVisible()
 })
+
+test.describe('filter sidebar scrolling', () => {
+  test.use({ viewport: { width: 1280, height: 700 } })
+
+  const topIndicator = (page: Page) => page.getByTestId('sidebar-scroll-up')
+  const bottomIndicator = (page: Page) => page.getByTestId('sidebar-scroll-down')
+  const scroller = (page: Page) => page.getByTestId('sidebar-scroll-area')
+
+  test('scrolls with pinned search and edge indicators that follow the scroll position', async ({ page }) => {
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+
+    const metrics = await scroller(page).evaluate((element) => ({
+      scrollHeight: element.scrollHeight,
+      clientHeight: element.clientHeight,
+    }))
+    expect(metrics.scrollHeight).toBeGreaterThan(metrics.clientHeight)
+
+    const search = page.getByPlaceholder('Search title or id…')
+    await expect(search).toBeInViewport()
+    await expect(topIndicator(page)).toHaveCSS('opacity', '0')
+    await expect(bottomIndicator(page)).toHaveCSS('opacity', '1')
+
+    await scroller(page).evaluate((element) => element.scrollTo({ top: element.scrollHeight }))
+    await expect(search).toBeInViewport()
+    await expect(topIndicator(page)).toHaveCSS('opacity', '1')
+    await expect(bottomIndicator(page)).toHaveCSS('opacity', '0')
+
+    await scroller(page).evaluate((element) => element.scrollTo({ top: element.scrollHeight / 4 }))
+    await expect(topIndicator(page)).toHaveCSS('opacity', '1')
+    await expect(bottomIndicator(page)).toHaveCSS('opacity', '1')
+  })
+
+  test('the last tag is reachable and clickable', async ({ page }) => {
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+
+    const lastTag = scroller(page).getByRole('checkbox').last()
+    await lastTag.scrollIntoViewIfNeeded()
+    await lastTag.click()
+    await expect(lastTag).toBeChecked()
+    await expect(ruleCount(page)).not.toHaveText('350 of 350 rules')
+  })
+})

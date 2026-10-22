@@ -80,7 +80,7 @@ export function AppShell({
         <StaleSelectionsNotice unknownIds={unknownIds} />
         {view === 'browse' ? (
           <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
-            <div id="filter-sidebar" className={`${filtersOpen ? 'block' : 'hidden'} md:block`}>
+            <div id="filter-sidebar" className={`shrink-0 ${filtersOpen ? 'block' : 'hidden'} md:flex`}>
               <FilterSidebar rows={rows} />
             </div>
             <main className="flex-1 overflow-y-auto">

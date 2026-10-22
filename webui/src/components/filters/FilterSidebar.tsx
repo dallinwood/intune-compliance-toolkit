@@ -1,9 +1,11 @@
-import { cloneElement, isValidElement, useId, useMemo, type ReactNode } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { cloneElement, isValidElement, useId, useMemo, useRef, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useScrollEdges } from '@/hooks/useScrollEdges'
 import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStableFacetShown'
 import {
   allFacetValues,
@@ -95,81 +97,108 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
     [rows, filters, accessors, index],
   )
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const { canScrollUp, canScrollDown } = useScrollEdges(scrollAreaRef)
+
   return (
-    <aside className="max-h-64 w-full overflow-y-auto border-b border-slate-200 p-4 text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
-      <Input
-        type="search"
-        aria-label="Search title or id"
-        placeholder="Search title or id…"
-        value={filters.search}
-        onChange={(event) => filters.setSearch(event.target.value)}
-        className="mb-4 h-8 rounded text-sm"
-      />
+    <aside className="flex max-h-64 w-full flex-col border-b border-slate-200 text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
+      <div className="p-4 pb-3">
+        <Input
+          type="search"
+          aria-label="Search title or id"
+          placeholder="Search title or id…"
+          value={filters.search}
+          onChange={(event) => filters.setSearch(event.target.value)}
+          className="h-8 rounded text-sm"
+        />
+      </div>
 
-      <FacetGroup title="Automation">
-        <RadioGroup
-          value={filters.automatable}
-          onValueChange={(value) => {
-            if (isAutomatableFilter(value)) filters.setAutomatable(value)
-          }}
-          className="gap-1.5"
-        >
-          {AUTOMATABLE_OPTIONS.map((option) => (
-            <FacetOption key={option.value} label={option.label}>
-              <RadioGroupItem value={option.value} />
-            </FacetOption>
-          ))}
-        </RadioGroup>
-      </FacetGroup>
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <div ref={scrollAreaRef} data-testid="sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+        <FacetGroup title="Automation">
+          <RadioGroup
+            value={filters.automatable}
+            onValueChange={(value) => {
+              if (isAutomatableFilter(value)) filters.setAutomatable(value)
+            }}
+            className="gap-1.5"
+          >
+            {AUTOMATABLE_OPTIONS.map((option) => (
+              <FacetOption key={option.value} label={option.label}>
+                <RadioGroupItem value={option.value} />
+              </FacetOption>
+            ))}
+          </RadioGroup>
+        </FacetGroup>
 
-      <StableFacetGroup
-        title="macOS version"
-        rows={rows}
-        valueOf={accessors.allOsVersionsOf}
-        compareValues={compareVersionsDescending}
-        labelOf={accessors.osVersionLabel}
-        reachable={osVersions}
-        selected={filters.osVersions}
-        onToggle={filters.toggleOsVersion}
-      />
+        <StableFacetGroup
+          title="macOS version"
+          rows={rows}
+          valueOf={accessors.allOsVersionsOf}
+          compareValues={compareVersionsDescending}
+          labelOf={accessors.osVersionLabel}
+          reachable={osVersions}
+          selected={filters.osVersions}
+          onToggle={filters.toggleOsVersion}
+        />
 
-      <StableFacetGroup
-        title="Benchmark"
-        rows={rows}
-        valueOf={accessors.allBenchmarksOf}
-        compareValues={accessors.compareBenchmarks}
-        labelOf={accessors.benchmarkLabel}
-        reachable={benchmarks}
-        selected={filters.benchmarks}
-        onToggle={filters.toggleBenchmark}
-      />
+        <StableFacetGroup
+          title="Benchmark"
+          rows={rows}
+          valueOf={accessors.allBenchmarksOf}
+          compareValues={accessors.compareBenchmarks}
+          labelOf={accessors.benchmarkLabel}
+          reachable={benchmarks}
+          selected={filters.benchmarks}
+          onToggle={filters.toggleBenchmark}
+        />
 
-      <StableFacetGroup
-        title="Section"
-        rows={rows}
-        valueOf={accessors.sectionOf}
-        compareValues={accessors.compareSections}
-        labelOf={accessors.sectionLabel}
-        reachable={sections}
-        selected={filters.sections}
-        onToggle={filters.toggleSection}
-      />
+        <StableFacetGroup
+          title="Section"
+          rows={rows}
+          valueOf={accessors.sectionOf}
+          compareValues={accessors.compareSections}
+          labelOf={accessors.sectionLabel}
+          reachable={sections}
+          selected={filters.sections}
+          onToggle={filters.toggleSection}
+        />
 
-      <StableFacetGroup
-        title="Tags"
-        rows={rows}
-        valueOf={accessors.tagsOf}
-        compareValues={accessors.compareTags}
-        labelOf={accessors.tagLabel}
-        reachable={tags}
-        selected={filters.tags}
-        onToggle={filters.toggleTag}
-      />
+        <StableFacetGroup
+          title="Tags"
+          rows={rows}
+          valueOf={accessors.tagsOf}
+          compareValues={accessors.compareTags}
+          labelOf={accessors.tagLabel}
+          reachable={tags}
+          selected={filters.tags}
+          onToggle={filters.toggleTag}
+        />
 
-      <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
-        Clear filters
-      </Button>
+        <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
+          Clear filters
+        </Button>
+        </div>
+        <ScrollIndicator direction="up" visible={canScrollUp} />
+        <ScrollIndicator direction="down" visible={canScrollDown} />
+      </div>
     </aside>
+  )
+}
+
+function ScrollIndicator({ direction, visible }: { direction: 'up' | 'down'; visible: boolean }) {
+  const Chevron = direction === 'up' ? ChevronUp : ChevronDown
+  const placement = direction === 'up' ? 'top-0 bg-gradient-to-b items-start' : 'bottom-0 bg-gradient-to-t items-end'
+  return (
+    <div
+      aria-hidden="true"
+      data-testid={`sidebar-scroll-${direction}`}
+      className={`pointer-events-none absolute inset-x-0 flex h-8 justify-center from-background to-transparent transition-opacity duration-200 ${placement} ${
+        visible ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
+      <Chevron className="size-4 text-slate-400" />
+    </div>
   )
 }
 
