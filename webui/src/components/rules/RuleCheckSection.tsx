@@ -4,14 +4,9 @@ import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import type { Architecture, Rule, RuleCheck } from '../../types/library'
+import type { Rule, RuleCheck } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
-
-const ARCHITECTURE_LABELS: Record<NonNullable<Architecture>, string> = {
-  arm64: 'Apple silicon (arm64)',
-  i386: 'Intel (i386)',
-}
 
 function CheckEntry({ label, check, odvValue }: { label: string; check: RuleCheck; odvValue: OrgDefinedValue | null }) {
   return (
@@ -45,7 +40,7 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
       {hasNoVersion && <p className="text-xs text-amber-700">No macOS version listed: mSCP does not apply this rule to any release.</p>}
       {rule.architecture && (
         <p className="text-xs text-slate-600">
-          Applies to {ARCHITECTURE_LABELS[rule.architecture]} Macs only; other Macs report a pass.
+          Applies to {rule.architecture} Macs only; other Macs report a pass.
         </p>
       )}
       {!rule.check ? (

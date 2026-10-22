@@ -30,7 +30,9 @@ function indexVocabulary(vocabularyName: VocabularyName, entries: VocabularyEntr
   const entryByGroupKey = new Map<string, IndexedEntry>()
   entries.forEach((entry, position) => {
     let indexedEntry: IndexedEntry | null = null
-    for (const term of entry.terms) {
+    // A term repeated inside one entry is harmless, so it is dropped quietly
+    // rather than reported as clashing with its own entry.
+    for (const term of new Set(entry.terms)) {
       const existingEntry = entryByTerm.get(term)
       if (existingEntry) {
         warnings.push(

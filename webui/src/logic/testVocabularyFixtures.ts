@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import type { VocabularyEntry, VocabularyFile, VocabularyName } from '../types/vocabulary'
 import { buildVocabularyIndex, parseVocabularyFile, type VocabularyIndex } from './vocabulary'
 
-export const BASELINES_DIRECTORY = new URL('../../../baselines/', import.meta.url)
+const BASELINES_DIRECTORY = new URL('../../../baselines/', import.meta.url)
 
 export function readCommittedVocabularyJson(): unknown {
   return JSON.parse(readFileSync(new URL('_vocabulary.json', BASELINES_DIRECTORY), 'utf8'))

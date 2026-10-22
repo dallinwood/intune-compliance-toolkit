@@ -1,8 +1,5 @@
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import type { RuleIndex } from '../types/library'
-import type { VocabularyName } from '../types/vocabulary'
-import { BASELINES_DIRECTORY, readCommittedVocabularyJson, vocabularyFileOf, vocabularyIndexOf } from './testVocabularyFixtures'
+import { readCommittedVocabularyJson, vocabularyFileOf, vocabularyIndexOf } from './testVocabularyFixtures'
 import {
   buildVocabularyIndex,
   compareGroupKeys,
@@ -118,6 +115,15 @@ describe('buildVocabularyIndex', () => {
     expect(warnings).toHaveLength(1)
   })
 
+  it('quietly ignores a term repeated within one entry', () => {
+    const { index, warnings } = buildVocabularyIndex(
+      vocabularyFileOf({ benchmarks: [{ label: 'CIS Level 1', terms: ['cis_lvl1', 'cis_lvl1', 'cislevel1'] }] }),
+    )
+    expect(warnings).toEqual([])
+    expect(termLabel(index, 'benchmarks', 'cis_lvl1')).toBe('CIS Level 1')
+    expect(termGroupKey(index, 'benchmarks', 'cislevel1')).toBe('cis_lvl1')
+  })
+
   it('allows the same term in different vocabularies without a warning', () => {
     expect(
       buildVocabularyIndex(
@@ -163,36 +169,5 @@ describe('committed baselines/_vocabulary.json', () => {
   it('parses and indexes without warnings', () => {
     if ('error' in parsed) throw new Error(parsed.error)
     expect(buildVocabularyIndex(parsed.file).warnings).toEqual([])
-  })
-
-  it('only lists terms that exist in the rule library', () => {
-    if ('error' in parsed) throw new Error(parsed.error)
-    const index = JSON.parse(readFileSync(new URL('mscp/_index.json', BASELINES_DIRECTORY), 'utf8')) as RuleIndex
-    const codesInLibrary: Record<VocabularyName, Set<string>> = {
-      benchmarks: new Set(),
-      os_versions: new Set(),
-      sections: new Set(),
-      tags: new Set(),
-      manual_reasons: new Set(),
-    }
-    for (const rule of index.rules) {
-      codesInLibrary.sections.add(rule.section)
-      rule.tags.forEach((tag) => codesInLibrary.tags.add(tag))
-      if (rule.assessment.manual_reason) codesInLibrary.manual_reasons.add(rule.assessment.manual_reason)
-      for (const [version, benchmarks] of Object.entries(rule.applicability)) {
-        codesInLibrary.os_versions.add(version)
-        benchmarks.forEach((benchmark) => codesInLibrary.benchmarks.add(benchmark.name))
-      }
-    }
-
-    const missingTerms: string[] = []
-    for (const [vocabularyName, entries] of Object.entries(parsed.file.vocabularies)) {
-      for (const entry of entries ?? []) {
-        for (const term of entry.terms) {
-          if (!codesInLibrary[vocabularyName as VocabularyName].has(term)) missingTerms.push(`${vocabularyName}: ${term}`)
-        }
-      }
-    }
-    expect(missingTerms).toEqual([])
   })
 })

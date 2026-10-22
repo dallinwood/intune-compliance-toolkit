@@ -31,6 +31,15 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   await expect(detail.getByText('macOS 15', { exact: true })).toHaveCount(0)
 })
 
+test('an architecture-gated rule names its architecture by the raw mSCP code', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'os_dictation_disable', /Dictation/)
+  await row.getByRole('button').click()
+  const detail = page.locator('[id^="rule-detail-"]')
+  await expect(detail).toContainText('Applies to i386 Macs only; other Macs report a pass.')
+  await expect(detail).not.toContainText('Intel (i386)')
+})
+
 // Asserts on the real filtering effect, not just presence - a facet
 // checkbox that renders but no longer fires its handler looks identical in
 // a screenshot.
