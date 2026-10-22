@@ -81,6 +81,7 @@ def index_entry_for(rule, file_path):
         "id": rule["id"],
         "title": rule["title"],
         "file": file_path,
+        "platform": rule["platform"],
         "section": "os",
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
@@ -224,6 +225,19 @@ def test_index_accepts_safe_file_path():
     assert schema_errors(index, "index") == []
 
 
+def test_index_rejects_entry_missing_platform():
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    del entry["platform"]
+    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+
+
+@pytest.mark.parametrize("bad_platform", ["", "macOS\n"])
+def test_index_rejects_bad_platform(bad_platform):
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    entry["platform"] = bad_platform
+    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+
+
 def test_index_rejects_entry_missing_section():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section"]
@@ -346,6 +360,12 @@ def test_committed_vocabulary_orders_severities_low_medium_high():
     severities = vocabulary["vocabularies"]["severities"]
     assert [entry["terms"] for entry in severities] == [["low"], ["medium"], ["high"]]
     assert [entry["label"] for entry in severities] == ["low", "medium", "high"]
+
+
+@pytest.mark.parametrize("vocabulary_name", ["platforms", "sources"])
+def test_platform_and_source_vocabularies_are_accepted(vocabulary_name):
+    vocabulary = make_vocabulary(**{vocabulary_name: [{"label": "Label", "terms": ["raw"]}]})
+    assert schema_errors(vocabulary, "vocabulary") == []
 
 
 def test_unknown_vocabulary_key_is_rejected():

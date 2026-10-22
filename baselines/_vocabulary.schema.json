@@ -11,6 +11,8 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "platforms": { "$ref": "#/$defs/vocabulary" },
+        "sources": { "$ref": "#/$defs/vocabulary" },
         "benchmarks": { "$ref": "#/$defs/vocabulary" },
         "severities": { "$ref": "#/$defs/vocabulary" },
         "os_versions": { "$ref": "#/$defs/vocabulary" },

@@ -76,6 +76,11 @@ describe('committed library data', () => {
       .filter((rule) => rule.odv !== null)
 
     describe(source.name, () => {
+      it('has a non-empty platform on every index entry', () => {
+        const entriesWithoutPlatform = index.rules.filter((entry) => !entry.platform).map((entry) => entry.id)
+        expect(entriesWithoutPlatform).toEqual([])
+      })
+
       it('has a non-empty section on every index entry', () => {
         const entriesWithoutSection = index.rules.filter((entry) => !entry.section).map((entry) => entry.id)
         expect(entriesWithoutSection).toEqual([])

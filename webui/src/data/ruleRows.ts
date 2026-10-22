@@ -26,6 +26,7 @@ export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow
     return {
       ref: { id: entry.id, path: directory ? `${directory}/${entry.file}` : entry.file },
       title: entry.title,
+      platform: entry.platform,
       section: entry.section,
       sourceName: source.name,
       releaseTag: source.release_tag,

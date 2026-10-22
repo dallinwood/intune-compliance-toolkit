@@ -97,6 +97,29 @@ test('a benchmark severity option narrows the table to rules listing that severi
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
 })
 
+test('the Platform facet follows Automation and the Source facet comes last, and both list every rule', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+
+  const facetTitles = page.getByTestId('sidebar-scroll-area').getByRole('heading')
+  await expect(facetTitles.nth(0)).toHaveText('Automation')
+  await expect(facetTitles.nth(1)).toHaveText('Platform')
+  await expect(facetTitles.nth(2)).toHaveText('macOS version')
+  await expect(facetTitles.last()).toHaveText('Source')
+
+  const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
+  await platformOption.click()
+  await expect(platformOption).toBeChecked()
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules')
+  await platformOption.click()
+
+  const sourceOption = page.getByRole('checkbox', { name: 'mscp', exact: true })
+  await sourceOption.scrollIntoViewIfNeeded()
+  await sourceOption.click()
+  await expect(sourceOption).toBeChecked()
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules')
+})
+
 // The row's onClick skips toggling expand when the click landed on an
 // interactive control. Base UI's Checkbox renders role="checkbox", not an
 // <input>, so a selector listing only `input` would both select AND expand.
@@ -406,10 +429,22 @@ test.describe('filter sidebar scrolling', () => {
     await page.goto('/')
     await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
 
-    const lastTag = scroller(page).getByRole('checkbox').last()
+    const checkboxes = await scroller(page).getByRole('checkbox').all()
+    const lastTag = checkboxes[checkboxes.length - 2]
     await lastTag.scrollIntoViewIfNeeded()
     await lastTag.click()
     await expect(lastTag).toBeChecked()
     await expect(ruleCount(page)).not.toHaveText('350 of 350 rules')
+  })
+
+  test('the last source option is reachable and clickable', async ({ page }) => {
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+
+    const lastSource = scroller(page).getByRole('checkbox').last()
+    await lastSource.scrollIntoViewIfNeeded()
+    await lastSource.click()
+    await expect(lastSource).toBeChecked()
+    await expect(ruleCount(page)).toHaveText('350 of 350 rules')
   })
 })

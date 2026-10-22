@@ -14,7 +14,9 @@ import {
   benchmarksListedUnder,
   compareBenchmarkFacetValues,
   facetOptions,
+  platformGroupKey,
   sectionGroupKey,
+  sourceGroupKey,
   tagGroupKeys,
   versionsListingAnyOf,
 } from '../../logic/ruleFilters'
@@ -45,12 +47,18 @@ function facetAccessors(index: VocabularyIndex) {
   return {
     allOsVersionsOf: (row: RuleRow) => versionsListingAnyOf(row, NO_SELECTION, index),
     allBenchmarksOf: (row: RuleRow) => benchmarksListedUnder(row, NO_SELECTION, index),
+    platformOf: (row: RuleRow) => platformGroupKey(row, index),
+    sourceOf: (row: RuleRow) => sourceGroupKey(row, index),
     sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
     tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
+    platformLabel: labelIn('platforms'),
+    sourceLabel: labelIn('sources'),
     osVersionLabel: labelIn('os_versions'),
     sectionLabel: labelIn('sections'),
     tagLabel: labelIn('tags'),
     compareBenchmarks: compareBenchmarkFacetValues(index),
+    comparePlatforms: compareGroupKeys(index, 'platforms'),
+    compareSources: compareGroupKeys(index, 'sources'),
     compareSections: compareGroupKeys(index, 'sections'),
     compareTags: compareGroupKeys(index, 'tags'),
   }
@@ -73,6 +81,14 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // so a facet never offers a choice that would filter the table down to
   // zero rows. Versions and benchmarks are additionally scoped to each
   // other, because a rule's benchmarks differ per macOS version.
+  const platforms = useMemo(
+    () => facetOptions(rows, filters, 'platforms', accessors.platformOf, filters.platforms, index),
+    [rows, filters, accessors, index],
+  )
+  const sources = useMemo(
+    () => facetOptions(rows, filters, 'sources', accessors.sourceOf, filters.sources, index),
+    [rows, filters, accessors, index],
+  )
   const osVersions = useMemo(
     () =>
       facetOptions(
@@ -141,6 +157,17 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
           </FacetGroup>
 
           <StableFacetGroup
+            title="Platform"
+            rows={rows}
+            valueOf={accessors.platformOf}
+            compareValues={accessors.comparePlatforms}
+            labelOf={accessors.platformLabel}
+            reachable={platforms}
+            selected={filters.platforms}
+            onToggle={filters.togglePlatform}
+          />
+
+          <StableFacetGroup
             title="macOS version"
             rows={rows}
             valueOf={accessors.allOsVersionsOf}
@@ -182,6 +209,17 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             reachable={tags}
             selected={filters.tags}
             onToggle={filters.toggleTag}
+          />
+
+          <StableFacetGroup
+            title="Source"
+            rows={rows}
+            valueOf={accessors.sourceOf}
+            compareValues={accessors.compareSources}
+            labelOf={accessors.sourceLabel}
+            reachable={sources}
+            selected={filters.sources}
+            onToggle={filters.toggleSource}
           />
 
           <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">

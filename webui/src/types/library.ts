@@ -97,6 +97,7 @@ export interface IndexEntry {
   id: string
   title: string
   file: string
+  platform: string
   section: string
   assessment: Assessment
   architecture: Architecture

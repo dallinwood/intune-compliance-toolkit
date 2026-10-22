@@ -69,4 +69,4 @@
 
 ## Progress log
 
-(none yet)
+- 2026-10-22: Task 1 done. The index entry now carries `platform` (required by the index schema), and the sidebar has a Platform facet after Automation and a Source facet last, both populated from the data and labelled through new optional `platforms` and `sources` vocabularies (seeded empty, so raw values show). Unit tests cover a second synthetic platform and source, narrowing, labels and grouped terms; the e2e suite covers placement and that ticking either leaves 350 rows. Bundle output is byte-identical for a fixed 20-rule selection. Commit: feat: filter rules by platform and source.

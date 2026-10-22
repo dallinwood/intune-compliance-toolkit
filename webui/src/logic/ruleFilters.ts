@@ -5,12 +5,12 @@ import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from
 
 type BenchmarkMembership = Applicability[string][number]
 
-export type FilterValues = Pick<FilterState, 'search' | 'osVersions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
+export type FilterValues = Pick<FilterState, 'search' | 'platforms' | 'sources' | 'osVersions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
 
 // The Set-valued facets matchesFilters can be asked to ignore - used to
 // compute "what values are still reachable in this facet, given every
 // other currently-applied filter" for faceted-search-style narrowing.
-export type FilterDimension = 'osVersions' | 'benchmarks' | 'sections' | 'tags'
+export type FilterDimension = 'platforms' | 'sources' | 'osVersions' | 'benchmarks' | 'sections' | 'tags'
 
 const MSCP_ID_PREFIX = 'mscp.'
 
@@ -23,6 +23,14 @@ function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'os_versions' | 'ta
   const groupKeys = new Set<string>()
   for (const code of codes) groupKeys.add(termGroupKey(index, vocabulary, code))
   return Array.from(groupKeys)
+}
+
+export function platformGroupKey(row: RuleRow, index: VocabularyIndex): string {
+  return termGroupKey(index, 'platforms', row.platform)
+}
+
+export function sourceGroupKey(row: RuleRow, index: VocabularyIndex): string {
+  return termGroupKey(index, 'sources', row.sourceName)
 }
 
 export function sectionGroupKey(row: RuleRow, index: VocabularyIndex): string {
@@ -118,6 +126,10 @@ export function matchesFilters(
   index: VocabularyIndex,
   excludeDimension?: FilterDimension,
 ): boolean {
+  if (excludeDimension !== 'platforms' && filters.platforms.size > 0 && !filters.platforms.has(platformGroupKey(row, index)))
+    return false
+  if (excludeDimension !== 'sources' && filters.sources.size > 0 && !filters.sources.has(sourceGroupKey(row, index)))
+    return false
   if (excludeDimension !== 'osVersions' && filters.osVersions.size > 0 && versionsUnder(row, filters.osVersions, index).length === 0)
     return false
   if (excludeDimension !== 'benchmarks' && filters.benchmarks.size > 0 && !matchesBenchmarks(row, filters, index, excludeDimension))

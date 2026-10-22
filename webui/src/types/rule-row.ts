@@ -7,6 +7,7 @@ import type { Applicability, Architecture, Assessment } from './library'
 export interface RuleRow {
   ref: RuleRef
   title: string
+  platform: string
   section: string
   sourceName: string
   releaseTag: string

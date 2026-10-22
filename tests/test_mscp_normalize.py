@@ -370,12 +370,17 @@ def test_index_entry_fields():
     rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     entry = index_entry(rule, "rules/os_gatekeeper_enable.json")
     assert set(entry) == {
-        "id", "title", "file", "section", "assessment", "architecture",
+        "id", "title", "file", "platform", "section", "assessment", "architecture",
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
     wrapped = {"schema_version": 3, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
+
+
+def test_index_entry_platform_from_rule():
+    rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
+    assert index_entry(rule, "rules/x.json")["platform"] == "macOS"
 
 
 def test_index_entry_section_from_upstream_path():

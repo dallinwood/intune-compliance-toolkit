@@ -325,6 +325,7 @@ def index_entry(rule: dict, file: str) -> dict:
         "id": rule["id"],
         "title": rule["title"],
         "file": file,
+        "platform": rule["platform"],
         "section": section_of(rule),
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],

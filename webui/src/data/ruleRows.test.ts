@@ -22,6 +22,7 @@ const INDEX: RuleIndex = {
       id: 'mscp.os_gatekeeper_enable',
       title: 'Enable Gatekeeper',
       file: 'rules/os_gatekeeper_enable.json',
+      platform: 'macOS',
       section: 'os',
       assessment: { status: 'automated', manual_reason: null },
       architecture: null,
@@ -37,6 +38,7 @@ const INDEX: RuleIndex = {
       id: 'mscp.pwpolicy_minimum_length_enforce',
       title: 'Require a Minimum Password Length of $ODV Characters',
       file: 'rules/pwpolicy_minimum_length_enforce.json',
+      platform: 'macOS',
       section: 'pwpolicy',
       assessment: { status: 'manual', manual_reason: 'manual' },
       architecture: 'arm64',
@@ -57,6 +59,10 @@ describe('buildRuleRows', () => {
   it('uses just the file when the index sits at the baselines root', () => {
     const [rootRow] = buildRuleRows({ ...SOURCE, index_path: '_index.json' }, INDEX)
     expect(rootRow.ref.path).toBe('rules/os_gatekeeper_enable.json')
+  })
+
+  it('carries the platform', () => {
+    expect(rows.map((row) => row.platform)).toEqual(['macOS', 'macOS'])
   })
 
   it('carries source name and release tag', () => {

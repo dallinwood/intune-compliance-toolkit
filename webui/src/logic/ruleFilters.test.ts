@@ -9,7 +9,9 @@ import {
   benchmarkFacetValue,
   benchmarkGroupsWithSeverities,
   compareBenchmarkFacetValues,
+  platformGroupKey,
   sectionGroupKey,
+  sourceGroupKey,
   tagGroupKeys,
   benchmarksListedUnder,
   facetOptions,
@@ -18,7 +20,7 @@ import {
   versionsListingAnyOf,
   type FilterValues,
 } from './ruleFilters'
-import type { VocabularyIndex } from './vocabulary'
+import { groupLabel, type VocabularyIndex } from './vocabulary'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 import { compareVersionsDescending } from './versions'
 
@@ -26,6 +28,7 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
   return {
     ref: { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' },
     title: 'Enable Gatekeeper',
+    platform: 'macOS',
     section: 'os',
     sourceName: 'mscp',
     releaseTag: 'release_27.0',
@@ -43,6 +46,8 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
 function emptyFilters(overrides: Partial<FilterValues> = {}): FilterValues {
   return {
     search: '',
+    platforms: new Set(),
+    sources: new Set(),
     osVersions: new Set(),
     benchmarks: new Set(),
     sections: new Set(),
@@ -293,6 +298,68 @@ describe('version-scoped facets', () => {
       noVocabulary,
     )
     expect(options).toEqual(['26.0'])
+  })
+})
+
+describe('platform and source facets', () => {
+  const iosRow = row({
+    ref: { id: 'mscp.ios_passcode', path: 'mscp/rules/ios_passcode.json' },
+    platform: 'iOS',
+  })
+  const otherSourceRow = row({
+    ref: { id: 'cis.os_gatekeeper', path: 'cis/rules/os_gatekeeper.json' },
+    sourceName: 'cis',
+    section: 'pwpolicy',
+  })
+  const mixedRows = [gatekeeperRow, iosRow, otherSourceRow]
+  const platformOf = (rowToRead: RuleRow) => platformGroupKey(rowToRead, noVocabulary)
+  const sourceOf = (rowToRead: RuleRow) => sourceGroupKey(rowToRead, noVocabulary)
+
+  it('offers one option per platform and per source present in the data', () => {
+    expect(facetOptions(mixedRows, emptyFilters(), 'platforms', platformOf, [], noVocabulary)).toEqual(['iOS', 'macOS'])
+    expect(facetOptions(mixedRows, emptyFilters(), 'sources', sourceOf, [], noVocabulary)).toEqual(['cis', 'mscp'])
+  })
+
+  it('matches a row on any selected platform or source', () => {
+    const iosOnly = emptyFilters({ platforms: new Set(['iOS']) })
+    expect(mixedRows.map((r) => matchesFilters(r, iosOnly, noVocabulary))).toEqual([false, true, false])
+    const eitherPlatform = emptyFilters({ platforms: new Set(['iOS', 'macOS']) })
+    expect(mixedRows.map((r) => matchesFilters(r, eitherPlatform, noVocabulary))).toEqual([true, true, true])
+    const cisOnly = emptyFilters({ sources: new Set(['cis']) })
+    expect(mixedRows.map((r) => matchesFilters(r, cisOnly, noVocabulary))).toEqual([false, false, true])
+  })
+
+  it('narrows the other facets by the selected platform or source, never offering a zero-row option', () => {
+    const iosOnly = emptyFilters({ platforms: new Set(['iOS']) })
+    expect(facetOptions(mixedRows, iosOnly, 'sources', sourceOf, iosOnly.sources, noVocabulary)).toEqual(['mscp'])
+    expect(facetOptions(mixedRows, iosOnly, 'sections', (r) => r.section, [], noVocabulary)).toEqual(['os'])
+
+    const cisOnly = emptyFilters({ sources: new Set(['cis']) })
+    expect(facetOptions(mixedRows, cisOnly, 'platforms', platformOf, cisOnly.platforms, noVocabulary)).toEqual(['macOS'])
+  })
+
+  it('does not narrow a facet by its own selection, and keeps a selected value visible', () => {
+    const iosOnly = emptyFilters({ platforms: new Set(['iOS']) })
+    expect(facetOptions(mixedRows, iosOnly, 'platforms', platformOf, iosOnly.platforms, noVocabulary)).toEqual(['iOS', 'macOS'])
+    const unreachable = emptyFilters({ platforms: new Set(['iOS']), sources: new Set(['cis']) })
+    expect(facetOptions(mixedRows, unreachable, 'platforms', platformOf, unreachable.platforms, noVocabulary)).toEqual(['iOS', 'macOS'])
+  })
+
+  it('labels options through the vocabulary, falling back to the raw value', () => {
+    const labelled = vocabularyIndexOf({
+      platforms: [{ label: 'Apple macOS', terms: ['macOS'] }],
+      sources: [{ label: 'NIST mSCP', terms: ['mscp'] }],
+    })
+    expect(groupLabel(labelled, 'platforms', platformGroupKey(gatekeeperRow, labelled))).toBe('Apple macOS')
+    expect(groupLabel(labelled, 'sources', sourceGroupKey(gatekeeperRow, labelled))).toBe('NIST mSCP')
+    expect(groupLabel(labelled, 'platforms', platformGroupKey(iosRow, labelled))).toBe('iOS')
+    expect(groupLabel(labelled, 'sources', sourceGroupKey(otherSourceRow, labelled))).toBe('cis')
+  })
+
+  it('matches grouped terms by their group key', () => {
+    const grouped = vocabularyIndexOf({ sources: [{ label: 'NIST mSCP', terms: ['mscp', 'macos_security'] }] })
+    const renamedSourceRow = row({ sourceName: 'macos_security' })
+    expect(matchesFilters(renamedSourceRow, emptyFilters({ sources: new Set(['mscp']) }), grouped)).toBe(true)
   })
 })
 

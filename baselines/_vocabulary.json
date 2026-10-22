@@ -1,6 +1,8 @@
 {
   "schema_version": 1,
   "vocabularies": {
+    "platforms": [],
+    "sources": [],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
       { "label": "CIS Level 2", "terms": ["cis_lvl2"], "metadata": ["benchmark"] },

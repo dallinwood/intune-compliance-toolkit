@@ -4,12 +4,16 @@ export type AutomatableFilter = 'all' | 'automatable' | 'manual'
 
 export interface FilterState {
   search: string
+  platforms: Set<string>
+  sources: Set<string>
   osVersions: Set<string>
   benchmarks: Set<string>
   sections: Set<string>
   tags: Set<string>
   automatable: AutomatableFilter
   setSearch: (value: string) => void
+  togglePlatform: (value: string) => void
+  toggleSource: (value: string) => void
   toggleOsVersion: (value: string) => void
   toggleBenchmark: (value: string) => void
   toggleSection: (value: string) => void
@@ -27,12 +31,16 @@ function toggled(set: Set<string>, value: string): Set<string> {
 
 export const useFilterStore = create<FilterState>((set) => ({
   search: '',
+  platforms: new Set(),
+  sources: new Set(),
   osVersions: new Set(),
   benchmarks: new Set(),
   sections: new Set(),
   tags: new Set(),
   automatable: 'all',
   setSearch: (value) => set({ search: value }),
+  togglePlatform: (value) => set((state) => ({ platforms: toggled(state.platforms, value) })),
+  toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value) })),
   toggleOsVersion: (value) => set((state) => ({ osVersions: toggled(state.osVersions, value) })),
   toggleBenchmark: (value) => set((state) => ({ benchmarks: toggled(state.benchmarks, value) })),
   toggleSection: (value) => set((state) => ({ sections: toggled(state.sections, value) })),
@@ -41,6 +49,8 @@ export const useFilterStore = create<FilterState>((set) => ({
   clear: () =>
     set({
       search: '',
+      platforms: new Set(),
+      sources: new Set(),
       osVersions: new Set(),
       benchmarks: new Set(),
       sections: new Set(),
