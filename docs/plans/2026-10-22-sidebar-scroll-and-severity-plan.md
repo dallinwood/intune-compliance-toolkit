@@ -99,4 +99,6 @@
 
 ## Progress log
 
+- 2026-10-22: Task 1 done. The filter sidebar scrolls on its own with the search box pinned above it. Fade indicators with chevrons appear at the top and bottom while content is hidden in that direction and vanish at each end; they update on scroll, resize and content changes. Commit: ae3f4eb fix: make the filter sidebar scrollable with pinned search.
 - 2026-10-22: Task 2 done. The benchmark facet now offers one option per (benchmark group, severity group) found in the data, labelled and ordered by a new `severities` vocabulary. The version/benchmark zero-row guarantee is tested exhaustively on real data, on a synthetic benchmark that mixes severities with no severity, and on a grouped benchmark. Bundle output is byte-identical for a fixed 20-rule selection. Commit: 05a747f feat: filter benchmarks by severity.
+- 2026-10-22: Task 2 follow-up (controller ruling). When a benchmark has severity options, its no-severity option is labelled `<benchmark> (no severity)` and listed after the severities, because a plain `DISA STIG` beside low/medium/high read as "any STIG" but matched only 2-4 rules. Commits: 1967017 fix: label benchmark options without a severity (plus 26721ab docs: record severity filter commit in plan progress log).
