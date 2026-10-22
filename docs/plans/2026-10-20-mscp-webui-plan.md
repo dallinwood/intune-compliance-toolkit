@@ -339,7 +339,7 @@ This task leaves components referring to removed types, so `bun run build` fails
 
 ## Open follow-ups
 
-Carried forward from the Plan 2 reviews (none blocks using the tool; the first can block a deploy):
+Carried forward from the Plan 2 reviews (none blocks using the tool):
 
 - Browse row title shows the recommended ODV value while a saved value is invalid. The detail panel and review screen correctly show `[value]` and block generation.
 - `system_settings_softwareupdate_current`:
@@ -366,5 +366,5 @@ Carried forward from the Plan 2 reviews (none blocks using the tool; the first c
 - 2026-10-21: Deploy workflow hardening: 5eacd5d ci: pin workflow actions by SHA and scope permissions per job; adf98fa ci: drop unused configure-pages step
 - 2026-10-21: Final-review fix wave (stale saved selections no longer break the review and can be removed, rule-specific ODV pattern for `system_settings_softwareupdate_current`, hardened rule fetch, explicit invalid saved-value message, README limitations and real-Mac checklist, test fixes): 7a9de27 fix: address final review of mSCP web UI; d751c30 fix: show a placeholder for an invalid saved ODV value in rule details
 - 2026-10-22: Benchmark column fix (the rule table's benchmark column now follows the macOS version filter: selected versions only, or every listed version with a versions suffix on partial items, and "Not in a benchmark" when nothing is in scope; rules listing benchmarks only on older versions are no longer hidden). Commits: eb00c59 fix: scope the benchmark column to the selected macOS versions; f5726eb fix: separate benchmark column items with a middle dot (items separated by " · " so a version suffix clearly belongs to one item).
-- 2026-10-22: Raised the real-bash test timeout to 30 s so the Pages deploy's test step no longer fails intermittently under load (first item under Open follow-ups). Commit: test: raise the real-bash test timeout to 30 seconds.
+- 2026-10-22: Raised the real-bash test timeout to 30 s so the Pages deploy's test step no longer fails intermittently under load (resolved and removed from Open follow-ups). Commit: 95c49ae test: raise the real-bash test timeout to 30 seconds.
 - Plan revisions during execution: 9978e2d (context-aware ODV validation), 38af5f6 (reviewed variable allowlist replacing the quote scanner), 56c1284 (zsh per check from a bash script), e0c8552 (base64 with trailing newline)
