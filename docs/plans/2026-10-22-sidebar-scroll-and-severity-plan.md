@@ -98,4 +98,4 @@
 
 ## Progress log
 
-(none yet)
+- 2026-10-22: Task 2 done. The benchmark facet now offers one option per (benchmark group, severity group) found in the data, labelled and ordered by a new `severities` vocabulary. The version/benchmark zero-row guarantee is tested exhaustively on real data, on a synthetic benchmark that mixes severities with no severity, and on a grouped benchmark. Bundle output is byte-identical for a fixed 20-rule selection. Commit: 05a747f feat: filter benchmarks by severity.
