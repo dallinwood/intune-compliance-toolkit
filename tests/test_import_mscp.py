@@ -143,6 +143,16 @@ def test_manifest_preserves_other_sources(workspace):
     assert manifest["sources"][1] == windows_source
 
 
+def test_import_leaves_hand_edited_vocabulary_untouched(workspace):
+    sources_dir, baselines_dir = workspace
+    vocabulary_path = baselines_dir / "_vocabulary.json"
+    vocabulary_bytes = b'{"schema_version": 1, "vocabularies": {"tags": []}}\n'
+    vocabulary_path.write_bytes(vocabulary_bytes)
+    assert run_import(sources_dir, baselines_dir, "--offline") == 0
+    assert run_import(sources_dir, baselines_dir, "--offline") == 0
+    assert vocabulary_path.read_bytes() == vocabulary_bytes
+
+
 def test_tag_and_offline_are_mutually_exclusive(workspace):
     sources_dir, baselines_dir = workspace
     with pytest.raises(SystemExit):

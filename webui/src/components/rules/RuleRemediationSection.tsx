@@ -1,6 +1,8 @@
-import { compareVersionsDescending, macosVersionLabel } from '../../logic/benchmarkLabels'
 import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { compareVersionsDescending } from '../../logic/versions'
+import { termLabel } from '../../logic/vocabulary'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RemediationEntry, Rule } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
@@ -34,6 +36,8 @@ function JsonEntry({ label, value, odvValue }: { label: string; value: unknown; 
 }
 
 export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValue: OrgDefinedValue | null }) {
+  const index = useVocabularyIndex()
+  const versionLabel = (version: string) => termLabel(index, 'os_versions', version)
   const remediation = rule.remediation
   const versionFixes = Object.entries(remediation.by_version)
     .filter(([, entry]) => hasContent(entry))
@@ -60,7 +64,7 @@ export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValu
         />
       )}
       {versionFixes.map(([version, entry]) => (
-        <FixEntry key={version} label={`Fix for ${macosVersionLabel(version)}`} entry={entry} odvValue={odvValue} />
+        <FixEntry key={version} label={`Fix for ${versionLabel(version)}`} entry={entry} odvValue={odvValue} />
       ))}
       {remediation.mobileconfig_info !== null && (
         <JsonEntry
@@ -70,7 +74,7 @@ export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValu
         />
       )}
       {versionProfiles.map(([version, payloads]) => (
-        <JsonEntry key={version} label={`Configuration profile payloads for ${macosVersionLabel(version)}`} value={payloads} odvValue={odvValue} />
+        <JsonEntry key={version} label={`Configuration profile payloads for ${versionLabel(version)}`} value={payloads} odvValue={odvValue} />
       ))}
       {remediation.ddm_info !== null && <JsonEntry label="Declarative Device Management" value={remediation.ddm_info} odvValue={odvValue} />}
     </div>

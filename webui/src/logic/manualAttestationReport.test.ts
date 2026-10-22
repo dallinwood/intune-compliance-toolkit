@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest'
 import type { ManualReason } from '../types/library'
 import { additionalInfoFor, buildManualAttestationMarkdown, manualReasonText } from './manualAttestationReport'
 import { inlineRule, ruleCheck } from './testRuleFixtures'
+import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
+
+const vocabularyIndex = committedVocabularyIndex()
 
 function manualRule(manualReason: ManualReason | null, additionalInfo: string | null = null) {
   return inlineRule({
@@ -20,12 +23,19 @@ describe('manualReasonText', () => {
     ['supplemental', 'Supplemental guidance with no check.'],
     ['manual', 'mSCP marks this check as manual.'],
     ['no_check', 'mSCP provides no automated check.'],
-  ])('explains manual_reason %s', (manualReason, text) => {
-    expect(manualReasonText(manualReason)).toBe(text)
+  ])('explains manual_reason %s with the vocabulary description', (manualReason, text) => {
+    expect(manualReasonText(manualReason, vocabularyIndex)).toBe(text)
   })
 
-  it('falls back to the generic manual text when mSCP gives no reason', () => {
-    expect(manualReasonText(null)).toBe('mSCP marks this check as manual.')
+  it('treats a missing reason like an explicit "manual"', () => {
+    expect(manualReasonText(null, vocabularyIndex)).toBe('mSCP marks this check as manual.')
+  })
+
+  it('names the raw reason code when the vocabulary has no description for it', () => {
+    const withoutDescription = vocabularyIndexOf({ manual_reasons: [{ label: 'inherent', terms: ['inherent'] }] })
+    expect(manualReasonText('inherent', withoutDescription)).toBe('mSCP manual reason: inherent.')
+    expect(manualReasonText('n_a', vocabularyIndexOf({}))).toBe('mSCP manual reason: n_a.')
+    expect(manualReasonText(null, vocabularyIndexOf({}))).toBe('mSCP manual reason: manual.')
   })
 })
 

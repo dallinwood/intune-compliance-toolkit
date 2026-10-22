@@ -1,4 +1,5 @@
-"""Validate the normalized rule library under baselines/ against the v3 schemas."""
+"""Validate the normalized rule library under baselines/ against the v3 schemas,
+plus the hand-edited display-name vocabulary when one is present."""
 
 import json
 import sys
@@ -8,6 +9,7 @@ from jsonschema import Draft202012Validator
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
+VOCABULARY_FILE_NAME = "_vocabulary.json"
 
 
 def load_schema(name: str) -> dict:
@@ -57,8 +59,34 @@ def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> No
             )
 
 
+def duplicate_term_errors(vocabulary_file: dict) -> list[str]:
+    errors: list[str] = []
+    for vocabulary_name, entries in vocabulary_file["vocabularies"].items():
+        label_by_term: dict[str, str] = {}
+        for entry in entries:
+            for term in entry["terms"]:
+                if term in label_by_term:
+                    errors.append(
+                        f"{vocabulary_name}: term {term!r} is listed under both "
+                        f"{label_by_term[term]!r} and {entry['label']!r}"
+                    )
+                else:
+                    label_by_term[term] = entry["label"]
+    return errors
+
+
+def _validate_vocabulary(baselines_dir: Path, errors: list[str]) -> None:
+    vocabulary_path = baselines_dir / VOCABULARY_FILE_NAME
+    if not vocabulary_path.exists():
+        return
+    vocabulary_file = _validate_document(vocabulary_path, "vocabulary", errors)
+    if vocabulary_file is not None:
+        errors.extend(f"{vocabulary_path}: {problem}" for problem in duplicate_term_errors(vocabulary_file))
+
+
 def validate_library(baselines_dir: Path) -> list[str]:
     errors: list[str] = []
+    _validate_vocabulary(baselines_dir, errors)
     manifest = _validate_document(baselines_dir / "_manifest.json", "manifest", errors)
     if manifest is None:
         return errors

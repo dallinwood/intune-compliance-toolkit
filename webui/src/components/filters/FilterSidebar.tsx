@@ -5,15 +5,18 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStableFacetShown'
-import { benchmarkLabel, compareVersionsDescending, macosVersionLabel } from '../../logic/benchmarkLabels'
-import { sectionLabel } from '../../logic/ruleDisplay'
 import {
   allFacetValues,
   benchmarksListedUnder,
   facetOptions,
+  sectionGroupKey,
+  tagGroupKeys,
   versionsListingAnyOf,
 } from '../../logic/ruleFilters'
+import { compareVersionsDescending } from '../../logic/versions'
+import { compareGroupKeys, groupLabel, type VocabularyIndex, type VocabularyName } from '../../logic/vocabulary'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 
 const AUTOMATABLE_OPTIONS = [
@@ -26,16 +29,32 @@ function isAutomatableFilter(value: string): value is AutomatableFilter {
   return AUTOMATABLE_OPTIONS.some((option) => option.value === value)
 }
 
-// Module-level so StableFacetGroup's memoized canonical order isn't
-// recomputed on every render by a fresh inline function.
-const allOsVersionsOf = (row: RuleRow) => row.osVersions
-const allBenchmarksOf = (row: RuleRow) => row.benchmarks
-const sectionOf = (row: RuleRow) => row.section
-const tagsOf = (row: RuleRow) => row.tags
-const identityLabel = (value: string) => value
+const NO_SELECTION: ReadonlySet<string> = new Set()
+
+// Every facet value is a vocabulary group key, so grouped codes show as one
+// option. Built once per index so StableFacetGroup's memoized canonical order
+// isn't recomputed on every render by fresh inline functions.
+function facetAccessors(index: VocabularyIndex) {
+  const labelIn = (vocabulary: VocabularyName) => (groupKey: string) => groupLabel(index, vocabulary, groupKey)
+  return {
+    allOsVersionsOf: (row: RuleRow) => versionsListingAnyOf(row, NO_SELECTION, index),
+    allBenchmarksOf: (row: RuleRow) => benchmarksListedUnder(row, NO_SELECTION, index),
+    sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
+    tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
+    osVersionLabel: labelIn('os_versions'),
+    benchmarkLabel: labelIn('benchmarks'),
+    sectionLabel: labelIn('sections'),
+    tagLabel: labelIn('tags'),
+    compareBenchmarks: compareGroupKeys(index, 'benchmarks'),
+    compareSections: compareGroupKeys(index, 'sections'),
+    compareTags: compareGroupKeys(index, 'tags'),
+  }
+}
 
 export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   const filters = useFilterStore()
+  const index = useVocabularyIndex()
+  const accessors = useMemo(() => facetAccessors(index), [index])
 
   // Facets are derived from whatever data is actually loaded - never a
   // hardcoded list - so a new benchmark or tag shows up automatically.
@@ -45,16 +64,36 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // other, because a rule's benchmarks differ per macOS version.
   const osVersions = useMemo(
     () =>
-      facetOptions(rows, filters, 'osVersions', (row) => versionsListingAnyOf(row, filters.benchmarks), filters.osVersions),
-    [rows, filters],
+      facetOptions(
+        rows,
+        filters,
+        'osVersions',
+        (row) => versionsListingAnyOf(row, filters.benchmarks, index),
+        filters.osVersions,
+        index,
+      ),
+    [rows, filters, index],
   )
   const benchmarks = useMemo(
     () =>
-      facetOptions(rows, filters, 'benchmarks', (row) => benchmarksListedUnder(row, filters.osVersions), filters.benchmarks),
-    [rows, filters],
+      facetOptions(
+        rows,
+        filters,
+        'benchmarks',
+        (row) => benchmarksListedUnder(row, filters.osVersions, index),
+        filters.benchmarks,
+        index,
+      ),
+    [rows, filters, index],
   )
-  const sections = useMemo(() => facetOptions(rows, filters, 'sections', sectionOf, filters.sections), [rows, filters])
-  const tags = useMemo(() => facetOptions(rows, filters, 'tags', tagsOf, filters.tags), [rows, filters])
+  const sections = useMemo(
+    () => facetOptions(rows, filters, 'sections', accessors.sectionOf, filters.sections, index),
+    [rows, filters, accessors, index],
+  )
+  const tags = useMemo(
+    () => facetOptions(rows, filters, 'tags', accessors.tagsOf, filters.tags, index),
+    [rows, filters, accessors, index],
+  )
 
   return (
     <aside className="max-h-64 w-full overflow-y-auto border-b border-slate-200 p-4 text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
@@ -86,9 +125,9 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       <StableFacetGroup
         title="macOS version"
         rows={rows}
-        valueOf={allOsVersionsOf}
+        valueOf={accessors.allOsVersionsOf}
         compareValues={compareVersionsDescending}
-        labelOf={macosVersionLabel}
+        labelOf={accessors.osVersionLabel}
         reachable={osVersions}
         selected={filters.osVersions}
         onToggle={filters.toggleOsVersion}
@@ -97,8 +136,9 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       <StableFacetGroup
         title="Benchmark"
         rows={rows}
-        valueOf={allBenchmarksOf}
-        labelOf={benchmarkLabel}
+        valueOf={accessors.allBenchmarksOf}
+        compareValues={accessors.compareBenchmarks}
+        labelOf={accessors.benchmarkLabel}
         reachable={benchmarks}
         selected={filters.benchmarks}
         onToggle={filters.toggleBenchmark}
@@ -107,8 +147,9 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       <StableFacetGroup
         title="Section"
         rows={rows}
-        valueOf={sectionOf}
-        labelOf={sectionLabel}
+        valueOf={accessors.sectionOf}
+        compareValues={accessors.compareSections}
+        labelOf={accessors.sectionLabel}
         reachable={sections}
         selected={filters.sections}
         onToggle={filters.toggleSection}
@@ -117,8 +158,9 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       <StableFacetGroup
         title="Tags"
         rows={rows}
-        valueOf={tagsOf}
-        labelOf={identityLabel}
+        valueOf={accessors.tagsOf}
+        compareValues={accessors.compareTags}
+        labelOf={accessors.tagLabel}
         reachable={tags}
         selected={filters.tags}
         onToggle={filters.toggleTag}

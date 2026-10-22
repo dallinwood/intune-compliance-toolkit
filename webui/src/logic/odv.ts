@@ -1,6 +1,6 @@
 import type { Odv, Rule } from '../types/library'
-import { benchmarkLabel } from './benchmarkLabels'
 import type { OrgDefinedValue } from './selectionEntry'
+import { termLabel, type VocabularyIndex } from './vocabulary'
 
 export type OdvSubstitutionMode = 'none' | 'variable' | 'text'
 
@@ -171,20 +171,22 @@ export interface OdvQuickPick {
   value: OrgDefinedValue
 }
 
-export function odvQuickPicks(odv: Odv): OdvQuickPick[] {
+// Grouped benchmark codes sharing a value would name the same benchmark
+// twice, so each value lists a label once.
+export function odvQuickPicks(odv: Odv, index: VocabularyIndex): OdvQuickPick[] {
   const picks: OdvQuickPick[] = []
   if (odv.recommended !== undefined && odv.recommended !== null) {
     picks.push({ label: 'Recommended', value: odv.recommended })
   }
 
-  const benchmarkLabelsByValue = new Map<OrgDefinedValue, string[]>()
+  const benchmarkLabelsByValue = new Map<OrgDefinedValue, Set<string>>()
   for (const [benchmarkName, value] of Object.entries(odv.by_benchmark)) {
-    const labels = benchmarkLabelsByValue.get(value) ?? []
-    labels.push(benchmarkLabel(benchmarkName))
+    const labels = benchmarkLabelsByValue.get(value) ?? new Set<string>()
+    labels.add(termLabel(index, 'benchmarks', benchmarkName))
     benchmarkLabelsByValue.set(value, labels)
   }
   for (const [value, labels] of benchmarkLabelsByValue) {
-    picks.push({ label: labels.join(', '), value })
+    picks.push({ label: Array.from(labels).join(', '), value })
   }
   return picks
 }

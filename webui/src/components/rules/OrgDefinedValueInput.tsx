@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { odvQuickPicks, prepareOdvValue, validateOdvValue, type OdvSubstitutionMode } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Odv } from '../../types/library'
 
 const SHORT_VALUE_LENGTH = 24
@@ -50,6 +51,7 @@ export function OrgDefinedValueInput({
 }) {
   const inputId = useId()
   const messageId = useId()
+  const vocabularyIndex = useVocabularyIndex()
 
   // Buffered locally so the field can hold text that is mid-edit or invalid
   // without it ever reaching the store. The buffer only resyncs when the
@@ -139,7 +141,7 @@ export function OrgDefinedValueInput({
   }
 
   const hint = constraintHint(odv)
-  const quickPicks = odvQuickPicks(odv)
+  const quickPicks = odvQuickPicks(odv, vocabularyIndex)
 
   return (
     <div className="space-y-1.5">
@@ -181,7 +183,8 @@ export function OrgDefinedValueInput({
             const isActive = pickPreparation.valid && storedValue === pickPreparation.value
             return (
               <Button
-                key={pick.label}
+                // Grouped benchmark codes with different values share a label.
+                key={`${pick.label}=${valueText}`}
                 type="button"
                 size="xs"
                 variant={isActive ? 'default' : 'outline'}

@@ -14,8 +14,10 @@ import {
   usableOdvValue,
   validateOdvValue,
 } from './odv'
+import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
 const GENERIC_RULE_ID = 'mscp.example_rule'
+const vocabularyIndex = committedVocabularyIndex()
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
@@ -335,6 +337,7 @@ describe('odvQuickPicks', () => {
         recommended: 6,
         by_benchmark: { cis_lvl1: 15, cis_lvl2: 15, disa_stig: 14, nlmapgov_plus: 6 },
       }),
+      vocabularyIndex,
     )
 
     expect(picks).toEqual([
@@ -346,8 +349,17 @@ describe('odvQuickPicks', () => {
   })
 
   it('returns only benchmark entries when there is no recommended value', () => {
-    const picks = odvQuickPicks({ ...odv({ by_benchmark: { disa_stig: 3 } }), recommended: undefined as unknown as number })
+    const picks = odvQuickPicks({ ...odv({ by_benchmark: { disa_stig: 3 } }), recommended: undefined as unknown as number }, vocabularyIndex)
     expect(picks).toEqual([{ label: 'DISA STIG', value: 3 }])
+  })
+
+  it('names a grouped benchmark once even when several of its codes share a value', () => {
+    const grouped = vocabularyIndexOf({ benchmarks: [{ label: 'CIS Level 1', terms: ['cis_lvl1', 'cislevel1'] }] })
+    const picks = odvQuickPicks(odv({ recommended: 6, by_benchmark: { cis_lvl1: 15, cislevel1: 15, other_benchmark: 15 } }), grouped)
+    expect(picks).toEqual([
+      { label: 'Recommended', value: 6 },
+      { label: 'CIS Level 1, other_benchmark', value: 15 },
+    ])
   })
 })
 

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "vocabularies": {
+    "benchmarks": [
+      { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
+      { "label": "CIS Level 2", "terms": ["cis_lvl2"], "metadata": ["benchmark"] },
+      { "label": "DISA STIG", "terms": ["disa_stig"], "metadata": ["benchmark"] },
+      { "label": "NLMAPGOV Base", "terms": ["nlmapgov_base"], "metadata": ["benchmark"] },
+      { "label": "NLMAPGOV Plus", "terms": ["nlmapgov_plus"], "metadata": ["benchmark"] }
+    ],
+    "os_versions": [
+      { "label": "macOS 27", "terms": ["27.0"], "metadata": ["platform"] },
+      { "label": "macOS 26", "terms": ["26.0"], "metadata": ["platform"] },
+      { "label": "macOS 15", "terms": ["15.0"], "metadata": ["platform"] }
+    ],
+    "sections": [
+      { "label": "Operating system", "terms": ["os"] },
+      { "label": "System Settings", "terms": ["system_settings"] },
+      { "label": "Password policy", "terms": ["pwpolicy"] },
+      { "label": "Authentication", "terms": ["auth"] },
+      { "label": "Auditing", "terms": ["audit"] },
+      { "label": "iCloud", "terms": ["icloud"] },
+      { "label": "Supplemental", "terms": ["supplemental"] }
+    ],
+    "tags": [],
+    "manual_reasons": [
+      { "label": "manual", "terms": ["manual"], "description": "mSCP marks this check as manual." },
+      { "label": "inherent", "terms": ["inherent"], "description": "Met by macOS by design (mSCP: inherent)." },
+      {
+        "label": "permanent",
+        "terms": ["permanent"],
+        "description": "Cannot be configured on macOS; mSCP lists this as a permanent finding."
+      },
+      { "label": "n/a", "terms": ["n_a"], "description": "Not applicable to macOS (mSCP: n_a)." },
+      { "label": "supplemental", "terms": ["supplemental"], "description": "Supplemental guidance with no check." },
+      { "label": "no check", "terms": ["no_check"], "description": "mSCP provides no automated check." }
+    ]
+  }
+}

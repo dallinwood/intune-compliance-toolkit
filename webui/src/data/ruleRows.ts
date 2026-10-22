@@ -1,4 +1,4 @@
-import { compareVersionsDescending } from '../logic/benchmarkLabels'
+import { compareVersionsDescending } from '../logic/versions'
 import type { ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { fetchManifest } from './manifest'

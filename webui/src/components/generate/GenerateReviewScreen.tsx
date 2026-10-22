@@ -13,6 +13,7 @@ import {
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import type { SelectionEntry } from '../../logic/selectionEntry'
 import { buildZip } from '../../logic/zipBundle'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import { BundleGroupCard } from './BundleGroupCard'
 import { ManualAttestationReport } from './ManualAttestationReport'
 
@@ -51,6 +52,7 @@ export function GenerateReviewScreen({
   onBack: () => void
 }) {
   const [state, setState] = useState<ReviewState>({ status: 'loading' })
+  const vocabularyIndex = useVocabularyIndex()
 
   useEffect(() => {
     let cancelled = false
@@ -63,14 +65,14 @@ export function GenerateReviewScreen({
         const manual: ManualAttestationEntry[] = []
         const blocked: BlockedEntry[] = []
         for (const { entry, rule } of loaded) {
-          const result = classifyRule(rule, entry, coveredVersions)
+          const result = classifyRule(rule, entry, coveredVersions, vocabularyIndex)
           if (result.kind === 'generatable') generatable.push(result.rule)
           else if (result.kind === 'manual') manual.push(result.entry)
           else blocked.push(result.entry)
         }
         // Packing waits until nothing is blocked: a chunk built before a
         // blocked rule is fixed would only be thrown away.
-        const chunks = blocked.length === 0 ? packChunks(generatable) : []
+        const chunks = blocked.length === 0 ? packChunks(generatable, vocabularyIndex) : []
         setState({
           status: 'ready',
           scriptedCount: generatable.length,
@@ -86,7 +88,7 @@ export function GenerateReviewScreen({
     return () => {
       cancelled = true
     }
-  }, [enabledEntries, coveredVersions])
+  }, [enabledEntries, coveredVersions, vocabularyIndex])
 
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">

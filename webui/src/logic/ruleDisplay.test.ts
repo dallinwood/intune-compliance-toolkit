@@ -1,47 +1,39 @@
 import { describe, expect, it } from 'vitest'
-import { assessmentLabel, benchmarkSummary, compareSections, sectionLabel, upstreamRuleId } from './ruleDisplay'
+import { assessmentLabel, benchmarkSummary, upstreamRuleId } from './ruleDisplay'
+import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
-describe('compareSections', () => {
-  it('puts the known sections in mSCP order, then any others alphabetically', () => {
-    const sections = ['zeta', 'supplemental', 'audit', 'alpha', 'os', 'icloud', 'auth', 'pwpolicy', 'system_settings']
-    expect([...sections].sort(compareSections)).toEqual([
-      'os',
-      'system_settings',
-      'pwpolicy',
-      'auth',
-      'audit',
-      'icloud',
-      'supplemental',
-      'alpha',
-      'zeta',
-    ])
-  })
-})
-
-describe('sectionLabel', () => {
-  it('names the known sections and passes others through', () => {
-    expect(sectionLabel('system_settings')).toBe('System Settings')
-    expect(sectionLabel('pwpolicy')).toBe('Password policy')
-    expect(sectionLabel('something_new')).toBe('something_new')
-  })
-})
+const vocabularyIndex = committedVocabularyIndex()
 
 describe('assessmentLabel', () => {
   it('labels an automated rule with no explanation', () => {
-    expect(assessmentLabel({ status: 'automated', manual_reason: null })).toEqual({ label: 'Automated', description: null })
+    expect(assessmentLabel({ status: 'automated', manual_reason: null }, vocabularyIndex)).toEqual({
+      label: 'Automated',
+      description: null,
+    })
   })
 
-  it('adds a short reason suffix and a tooltip explanation for a manual rule', () => {
-    const inherent = assessmentLabel({ status: 'manual', manual_reason: 'inherent' })
-    expect(inherent.label).toBe('Manual - inherent')
-    expect(inherent.description).toMatch(/inherent/i)
-    expect(assessmentLabel({ status: 'manual', manual_reason: 'n_a' }).label).toBe('Manual - n/a')
-    expect(assessmentLabel({ status: 'manual', manual_reason: 'no_check' }).label).toBe('Manual - no check')
+  it('adds the vocabulary label as a suffix and its description as the tooltip for a manual rule', () => {
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'inherent' }, vocabularyIndex)).toEqual({
+      label: 'Manual - inherent',
+      description: 'Met by macOS by design (mSCP: inherent).',
+    })
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'n_a' }, vocabularyIndex).label).toBe('Manual - n/a')
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'no_check' }, vocabularyIndex).label).toBe('Manual - no check')
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'manual' }, vocabularyIndex).label).toBe('Manual - manual')
   })
 
-  it('labels a plain manual rule without a redundant suffix', () => {
-    expect(assessmentLabel({ status: 'manual', manual_reason: 'manual' }).label).toBe('Manual')
-    expect(assessmentLabel({ status: 'manual', manual_reason: null }).label).toBe('Manual')
+  it('shows the raw reason code, as label and tooltip, when the vocabulary does not list it', () => {
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'permanent' }, vocabularyIndexOf({}))).toEqual({
+      label: 'Manual - permanent',
+      description: 'permanent',
+    })
+  })
+
+  it('labels a manual rule without a reason plainly', () => {
+    expect(assessmentLabel({ status: 'manual', manual_reason: null }, vocabularyIndex)).toEqual({
+      label: 'Manual',
+      description: 'Must be checked manually.',
+    })
   })
 })
 
@@ -54,11 +46,16 @@ describe('benchmarkSummary', () => {
         { name: 'disa_stig', severity: 'high' },
       ],
     }
-    expect(benchmarkSummary(applicability, ['27.0', '26.0'])).toBe('CIS Level 1, DISA STIG (high)')
+    expect(benchmarkSummary(applicability, ['27.0', '26.0'], vocabularyIndex)).toBe('CIS Level 1, DISA STIG (high)')
+  })
+
+  it('shows the raw code for a benchmark the vocabulary does not list', () => {
+    const applicability = { '27.0': [{ name: 'brand_new_benchmark', severity: null }] }
+    expect(benchmarkSummary(applicability, ['27.0'], vocabularyIndex)).toBe('brand_new_benchmark')
   })
 
   it('is empty when no version is listed', () => {
-    expect(benchmarkSummary({}, [])).toBe('')
+    expect(benchmarkSummary({}, [], vocabularyIndex)).toBe('')
   })
 })
 

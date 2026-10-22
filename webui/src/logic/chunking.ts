@@ -4,10 +4,10 @@ import { planRuleCheck, type RuleCheckPlan } from './checkPlan'
 import { GENERATION_LIMITS } from './limitsConfig'
 import { additionalInfoFor, manualReasonText } from './manualAttestationReport'
 import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvSubstitutionMode, usableOdvValue, validateOdvValue } from './odv'
-import { compareSections } from './ruleDisplay'
 import { buildRuleEntry, type IntuneRuleEntry } from './rulesJsonGen'
 import { generateBashScript } from './scriptGen/bash'
 import type { SelectionEntry } from './selectionEntry'
+import { compareGroupKeys, termGroupKey, type VocabularyIndex } from './vocabulary'
 
 export interface GeneratableRule {
   id: string
@@ -52,7 +52,12 @@ export function sectionOf(rule: Rule): string {
 // attestation, or is blocked on an organization value. Blocked rules gate
 // the download; they are never quietly moved to the manual list, and an
 // invalid stored value is never quietly replaced by the recommended one.
-export function classifyRule(rule: Rule, selection: SelectionEntry, coveredVersions: string[]): ClassificationResult {
+export function classifyRule(
+  rule: Rule,
+  selection: SelectionEntry,
+  coveredVersions: string[],
+  index: VocabularyIndex,
+): ClassificationResult {
   const odvMode = odvSubstitutionMode(rule)
   const manual = (reason: string): ClassificationResult => {
     const displayOdv = usableOdvValue(rule.odv, odvMode, selection.odvValue, rule.id)
@@ -71,7 +76,7 @@ export function classifyRule(rule: Rule, selection: SelectionEntry, coveredVersi
     entry: { id: rule.id, title: displayWithOdv(rule.title, null), reason },
   })
 
-  if (rule.assessment.status === 'manual') return manual(manualReasonText(rule.assessment.manual_reason))
+  if (rule.assessment.status === 'manual') return manual(manualReasonText(rule.assessment.manual_reason, index))
 
   let odvValue = null
   if (rule.odv) {
@@ -128,7 +133,12 @@ interface ChunkGroup {
   rules: GeneratableRule[]
 }
 
-function groupRules(rules: GeneratableRule[]): ChunkGroup[] {
+// Sections follow the vocabulary's order. Grouped section codes sort
+// together but still get their own chunks, because file names use the raw
+// code.
+function groupRules(rules: GeneratableRule[], index: VocabularyIndex): ChunkGroup[] {
+  const compareSectionGroups = compareGroupKeys(index, 'sections')
+  const sectionGroupKey = (section: string) => termGroupKey(index, 'sections', section)
   const groupsByKey = new Map<string, ChunkGroup>()
   for (const rule of rules) {
     const key = JSON.stringify([rule.sourceName, rule.releaseTag, rule.section])
@@ -140,7 +150,8 @@ function groupRules(rules: GeneratableRule[]): ChunkGroup[] {
     (left, right) =>
       left.sourceName.localeCompare(right.sourceName) ||
       left.releaseTag.localeCompare(right.releaseTag) ||
-      compareSections(left.section, right.section),
+      compareSectionGroups(sectionGroupKey(left.section), sectionGroupKey(right.section)) ||
+      left.section.localeCompare(right.section),
   )
 }
 
@@ -227,7 +238,7 @@ function packGroup(rules: GeneratableRule[], limits: ResolvedLimits): Generatabl
 // One chunk becomes one Intune policy. Rules are grouped by source, release
 // and mSCP section, and a group is never merged with another even when
 // there is spare room, so each bundle file covers one recognizable section.
-export function packChunks(rules: GeneratableRule[], options: PackOptions = {}): Chunk[] {
+export function packChunks(rules: GeneratableRule[], index: VocabularyIndex, options: PackOptions = {}): Chunk[] {
   const limits: ResolvedLimits = {
     maxRulesPerChunk: options.maxRulesPerChunk ?? GENERATION_LIMITS.maxRulesPerChunk,
     maxBytesPerChunk: options.maxBytesPerChunk ?? GENERATION_LIMITS.maxRulesJsonBytesPerChunk,
@@ -235,7 +246,7 @@ export function packChunks(rules: GeneratableRule[], options: PackOptions = {}):
   }
 
   const chunks: Chunk[] = []
-  for (const group of groupRules(rules)) {
+  for (const group of groupRules(rules, index)) {
     const sortedRules = [...group.rules].sort((left, right) => left.id.localeCompare(right.id))
     // Checked across the whole group, before sizing, because the script
     // generator would otherwise fail first with a less specific message.

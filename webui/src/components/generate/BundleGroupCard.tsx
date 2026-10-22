@@ -1,8 +1,11 @@
 import { bundleBaseName, serializeRulesJson } from '../../logic/bundleFiles'
 import type { Chunk } from '../../logic/chunking'
-import { sectionLabel, upstreamRuleId } from '../../logic/ruleDisplay'
+import { upstreamRuleId } from '../../logic/ruleDisplay'
+import { termLabel } from '../../logic/vocabulary'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 
 export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
+  const index = useVocabularyIndex()
   const rulesJsonBytes = new TextEncoder().encode(serializeRulesJson(chunk.ruleEntries)).length
   const baseName = bundleBaseName(chunk)
 
@@ -10,7 +13,7 @@ export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
     <section className="rounded border border-slate-200 bg-white p-3 text-sm" aria-label={`Bundle ${baseName}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h3 className="font-medium text-slate-800">
-          {sectionLabel(chunk.section)}
+          {termLabel(index, 'sections', chunk.section)}
           {chunk.partNumber !== null && `, part ${chunk.partNumber}`}
           <span className="font-normal text-slate-500">
             {' '}

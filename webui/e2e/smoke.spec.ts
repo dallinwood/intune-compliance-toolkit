@@ -294,3 +294,36 @@ test('a saved selection that is no longer in the library is reported and removab
   expect(stored.state.selections['mscp.pwpolicy_minimum_length_enforce'].odvValue).toBe(12)
   expect(stored.state.selections['mscp.os_gatekeeper_enable'].enabled).toBe(true)
 })
+
+// Display names come from baselines/_vocabulary.json at runtime; the app
+// must stay usable with raw codes when that file is missing or broken.
+test('display names come from the vocabulary file, with raw codes and a warning when it is missing', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /^Operating system/ })).toBeVisible()
+  await expect(page.getByRole('status', { name: 'Display name problems' })).toHaveCount(0)
+
+  await page.route('**/baselines/_vocabulary.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
+  await page.reload()
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('raw codes are shown')
+  await expect(page.getByRole('checkbox', { name: 'cis_lvl1', exact: true })).toBeVisible()
+  await expect(page.getByRole('checkbox', { name: 'macOS 27', exact: true })).toHaveCount(0)
+  await expect(page.getByRole('checkbox', { name: '27.0', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /^os \(\d+\)/ })).toBeVisible()
+
+  // Raw-code filters still filter.
+  await page.getByRole('checkbox', { name: 'cis_lvl1', exact: true }).click()
+  await expect(ruleCount(page)).not.toHaveText('350 of 350 rules')
+})
+
+test('a malformed vocabulary file falls back to raw codes with a warning', async ({ page }) => {
+  await page.route('**/baselines/_vocabulary.json', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"schema_version": 1, "vocabularies": []}' }),
+  )
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
+  await expect(page.getByRole('checkbox', { name: 'disa_stig', exact: true })).toBeVisible()
+})

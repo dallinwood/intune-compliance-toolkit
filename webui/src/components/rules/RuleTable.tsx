@@ -4,26 +4,31 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useRule, useUsableOdvValue } from '@/hooks/useRule'
-import { macosVersionLabel } from '../../logic/benchmarkLabels'
 import { displayWithOdv } from '../../logic/odv'
-import { assessmentLabel, benchmarkSummary, compareSections, sectionLabel, upstreamRuleId } from '../../logic/ruleDisplay'
+import { assessmentLabel, benchmarkSummary, upstreamRuleId } from '../../logic/ruleDisplay'
+import { sectionGroupKey } from '../../logic/ruleFilters'
 import { isEnabled, refKey } from '../../logic/selectionEntry'
+import { compareGroupKeys, groupLabel, termLabel, type VocabularyIndex } from '../../logic/vocabulary'
 import { useSelectionStore } from '../../state/selectionStore'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 import { RuleDetailPanel } from './RuleDetailPanel'
 
 interface SectionGroup {
+  // A vocabulary group key: grouped section codes share one table.
   section: string
   rows: RuleRow[]
 }
 
-function groupRows(rows: RuleRow[]): SectionGroup[] {
+function groupRows(rows: RuleRow[], index: VocabularyIndex): SectionGroup[] {
   const rowsBySection = new Map<string, RuleRow[]>()
   for (const row of rows) {
-    const sectionRows = rowsBySection.get(row.section)
+    const section = sectionGroupKey(row, index)
+    const sectionRows = rowsBySection.get(section)
     if (sectionRows) sectionRows.push(row)
-    else rowsBySection.set(row.section, [row])
+    else rowsBySection.set(section, [row])
   }
+  const compareSections = compareGroupKeys(index, 'sections')
   return Array.from(rowsBySection)
     .sort(([left], [right]) => compareSections(left, right))
     .map(([section, sectionRows]) => ({
@@ -33,13 +38,14 @@ function groupRows(rows: RuleRow[]): SectionGroup[] {
 }
 
 export function RuleTable({ rows }: { rows: RuleRow[] }) {
+  const index = useVocabularyIndex()
   if (rows.length === 0) {
     return <p className="p-6 text-sm text-slate-500">No rules match the current filters.</p>
   }
 
   return (
     <div className="divide-y divide-slate-100">
-      {groupRows(rows).map((sectionGroup) => (
+      {groupRows(rows, index).map((sectionGroup) => (
         <SectionTable key={sectionGroup.section} sectionGroup={sectionGroup} />
       ))}
     </div>
@@ -47,6 +53,7 @@ export function RuleTable({ rows }: { rows: RuleRow[] }) {
 }
 
 function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
+  const index = useVocabularyIndex()
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const selections = useSelectionStore((store) => store.selections)
   const setEnabled = useSelectionStore((store) => store.setEnabled)
@@ -63,7 +70,7 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
   return (
     <div>
       <h2 className="sticky top-0 z-10 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700">
-        {sectionLabel(sectionGroup.section)}{' '}
+        {groupLabel(index, 'sections', sectionGroup.section)}{' '}
         <span className="font-normal text-slate-400">({sectionGroup.rows.length})</span>
       </h2>
       {/* table-fixed is load-bearing, not cosmetic: each section renders its
@@ -184,7 +191,8 @@ function RuleTitle({ row }: { row: RuleRow }) {
 }
 
 function AssessmentBadge({ row }: { row: RuleRow }) {
-  const { label, description } = assessmentLabel(row.assessment)
+  const index = useVocabularyIndex()
+  const { label, description } = assessmentLabel(row.assessment, index)
   const isAutomated = row.assessment.status === 'automated'
   // Semantic green/amber isn't one of the preset's badge variants, so it's
   // applied as a className override on top of the base Badge.
@@ -198,9 +206,12 @@ function AssessmentBadge({ row }: { row: RuleRow }) {
 }
 
 function BenchmarkText({ row }: { row: RuleRow }) {
+  const index = useVocabularyIndex()
   const newestVersion = row.osVersions[0]
   if (newestVersion === undefined) return <span className="text-xs text-slate-400 italic">No macOS version listed</span>
-  const summary = benchmarkSummary(row.applicability, row.osVersions)
-  if (!summary) return <span className="text-xs text-slate-400 italic">No benchmark for {macosVersionLabel(newestVersion)}</span>
+  const summary = benchmarkSummary(row.applicability, row.osVersions, index)
+  if (!summary) {
+    return <span className="text-xs text-slate-400 italic">No benchmark for {termLabel(index, 'os_versions', newestVersion)}</span>
+  }
   return <span className="text-xs text-slate-500">{summary}</span>
 }

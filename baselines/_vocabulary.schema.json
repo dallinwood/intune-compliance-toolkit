@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Display-name vocabulary (v1)",
+  "description": "Hand-edited friendly names for the code words the rule library uses. Never written by the importer.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "vocabularies"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "vocabularies": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "benchmarks": { "$ref": "#/$defs/vocabulary" },
+        "os_versions": { "$ref": "#/$defs/vocabulary" },
+        "sections": { "$ref": "#/$defs/vocabulary" },
+        "tags": { "$ref": "#/$defs/vocabulary" },
+        "manual_reasons": { "$ref": "#/$defs/vocabulary" }
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyText": {
+      "type": "string",
+      "pattern": "^[^\\n]+(?![\\s\\S])"
+    },
+    "vocabulary": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/entry" }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "terms"],
+      "properties": {
+        "label": { "$ref": "#/$defs/nonEmptyText" },
+        "terms": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyText" }
+        },
+        "metadata": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyText" }
+        },
+        "description": { "$ref": "#/$defs/nonEmptyText" }
+      }
+    }
+  }
+}

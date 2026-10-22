@@ -3,11 +3,14 @@ import { buildBundleFiles, serializeRulesJson } from './bundleFiles'
 import { classifyRule, packChunks, type Chunk, type GeneratableRule } from './chunking'
 import { createSelectionEntry } from './selectionEntry'
 import { inlineRule, type InlineRuleOptions } from './testRuleFixtures'
+import { committedVocabularyIndex } from './testVocabularyFixtures'
+
+const vocabularyIndex = committedVocabularyIndex()
 
 function generatable(options: InlineRuleOptions): GeneratableRule {
   const rule = inlineRule(options)
   const selection = { ...createSelectionEntry({ id: rule.id, path: 'unused' }), enabled: true }
-  const result = classifyRule(rule, selection, ['27.0', '26.0', '15.0'])
+  const result = classifyRule(rule, selection, ['27.0', '26.0', '15.0'], vocabularyIndex)
   if (result.kind !== 'generatable') throw new Error(`Expected generatable, got ${result.kind}`)
   return result.rule
 }
@@ -18,7 +21,7 @@ function numbered(count: number, section: string, releaseTag = 'release_27.0'): 
 
 describe('buildBundleFiles', () => {
   it('names an unsplit section macOS-<source>-<release>-<section> with a discovery script and rules JSON', () => {
-    const files = buildBundleFiles(packChunks(numbered(2, 'auth')), [])
+    const files = buildBundleFiles(packChunks(numbered(2, 'auth'), vocabularyIndex), [])
     const paths = files.map((file) => file.path)
 
     expect(paths).toEqual([
@@ -31,13 +34,13 @@ describe('buildBundleFiles', () => {
     expect(script.startsWith('#!/bin/bash\n')).toBe(true)
     expect(script).toContain('"auth_rule_1":%s')
 
-    expect(files[1].content).toBe(serializeRulesJson(packChunks(numbered(2, 'auth'))[0].ruleEntries))
+    expect(files[1].content).toBe(serializeRulesJson(packChunks(numbered(2, 'auth'), vocabularyIndex)[0].ruleEntries))
     const rulesJson = JSON.parse(files[1].content)
     expect(rulesJson.Rules.map((entry: { SettingName: string }) => entry.SettingName)).toEqual(['auth_rule_1', 'auth_rule_2'])
   })
 
   it('adds -part<N> only when a section splits into several chunks', () => {
-    const paths = buildBundleFiles(packChunks(numbered(3, 'os'), { maxRulesPerChunk: 2 }), []).map((file) => file.path)
+    const paths = buildBundleFiles(packChunks(numbered(3, 'os'), vocabularyIndex, { maxRulesPerChunk: 2 }), []).map((file) => file.path)
 
     expect(paths).toEqual([
       'macOS-mscp-release_27.0-os-part1-discovery.sh',
@@ -55,7 +58,7 @@ describe('buildBundleFiles', () => {
       ...numbered(3, 'auth'),
       ...numbered(4, 'system_settings'),
     ]
-    const paths = buildBundleFiles(packChunks(rules, { maxRulesPerChunk: 2 }), []).map((file) => file.path)
+    const paths = buildBundleFiles(packChunks(rules, vocabularyIndex, { maxRulesPerChunk: 2 }), []).map((file) => file.path)
 
     expect(new Set(paths).size).toBe(paths.length)
     expect(paths).toHaveLength(2 * (3 + 3 + 2 + 2) + 1)
@@ -66,7 +69,7 @@ describe('buildBundleFiles', () => {
   })
 
   it('throws rather than overwrite a file when two chunks would produce the same name', () => {
-    const [chunk] = packChunks(numbered(1, 'os'))
+    const [chunk] = packChunks(numbered(1, 'os'), vocabularyIndex)
     const duplicate: Chunk = { ...chunk }
 
     expect(() => buildBundleFiles([chunk, duplicate], [])).toThrow(/same name/)

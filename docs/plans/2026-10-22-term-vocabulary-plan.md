@@ -106,4 +106,4 @@
 
 ## Progress log
 
-(none yet)
+- 2026-10-22: Task 1 (vocabulary file, schema, Python validation, UI lookup with group-key filtering, raw-code fallback with a warning; generation output byte-identical for a fixed 23-rule selection). The `manual` reason has no suffix today, so it is seeded with the label `manual` (badge `Manual - manual`). `checkPlan.ts` problem messages and `references.ts` reference-key labels still match the `macOS ${` grep; they are generated text and reference keys, not version labels, and are left unchanged. Landed in this commit: feat: load display names from a vocabulary file

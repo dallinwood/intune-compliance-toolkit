@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from tools.validate_library import schema_errors, validate_library
+from tools.validate_library import duplicate_term_errors, schema_errors, validate_library
 
 BACKSLASH = chr(92)
 
@@ -275,3 +275,134 @@ def test_rejects_id_with_trailing_newline():
 
 def test_hyphenated_rule_id_is_valid():
     assert schema_errors(make_rule(id="mscp.os_mfa_network_non-priv")) == []
+
+
+REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
+COMMITTED_VOCABULARY = REPOSITORY_ROOT / "baselines" / "_vocabulary.json"
+
+MINIMAL_VOCABULARY = {
+    "schema_version": 1,
+    "vocabularies": {
+        "benchmarks": [
+            {"label": "CIS Level 1", "terms": ["cis_lvl1", "cislevel1"], "metadata": ["benchmark"]},
+        ],
+        "sections": [
+            {"label": "Supplemental", "terms": ["supplemental"]},
+        ],
+        "manual_reasons": [
+            {"label": "supplemental", "terms": ["supplemental"], "description": "Supplemental guidance with no check."},
+        ],
+        "tags": [],
+    },
+}
+
+
+def make_vocabulary(**vocabularies):
+    vocabulary = copy.deepcopy(MINIMAL_VOCABULARY)
+    vocabulary["vocabularies"].update(vocabularies)
+    return vocabulary
+
+
+def write_clean_library_with_vocabulary(baselines_dir: Path, vocabulary) -> None:
+    write_library(baselines_dir)
+    write_json(baselines_dir / "mscp" / "rules" / "os_gatekeeper_enable.json", make_rule())
+    write_json(baselines_dir / "_vocabulary.json", vocabulary)
+
+
+def test_committed_vocabulary_is_valid():
+    vocabulary = json.loads(COMMITTED_VOCABULARY.read_text(encoding="utf-8"))
+    assert schema_errors(vocabulary, "vocabulary") == []
+    assert duplicate_term_errors(vocabulary) == []
+
+
+def test_minimal_vocabulary_is_valid():
+    assert schema_errors(MINIMAL_VOCABULARY, "vocabulary") == []
+
+
+def test_same_term_in_two_vocabularies_is_allowed():
+    assert duplicate_term_errors(MINIMAL_VOCABULARY) == []
+
+
+def test_duplicate_term_within_one_vocabulary_is_rejected():
+    vocabulary = make_vocabulary(
+        benchmarks=[
+            {"label": "CIS Level 1", "terms": ["cis_lvl1"]},
+            {"label": "CIS Level 1 (old)", "terms": ["cislevel1", "cis_lvl1"]},
+        ]
+    )
+    errors = duplicate_term_errors(vocabulary)
+    assert len(errors) == 1
+    assert "benchmarks" in errors[0]
+    assert "cis_lvl1" in errors[0]
+
+
+def test_unknown_vocabulary_key_is_rejected():
+    assert schema_errors(make_vocabulary(frameworks=[{"label": "X", "terms": ["x"]}]), "vocabulary")
+
+
+@pytest.mark.parametrize(
+    "bad_entry",
+    [
+        {"label": "No terms"},
+        {"label": "Empty terms", "terms": []},
+        {"label": "Empty term", "terms": [""]},
+        {"label": "Repeated term", "terms": ["a", "a"]},
+        {"label": "", "terms": ["a"]},
+        {"terms": ["a"]},
+        {"label": "Extra key", "terms": ["a"], "colour": "red"},
+        {"label": "Empty metadata tag", "terms": ["a"], "metadata": [""]},
+        {"label": "Repeated metadata", "terms": ["a"], "metadata": ["x", "x"]},
+        {"label": "Empty description", "terms": ["a"], "description": ""},
+        {"label": "Trailing newline\n", "terms": ["a"]},
+        {"label": "Term with newline", "terms": ["a\n"]},
+    ],
+)
+def test_malformed_entry_is_rejected(bad_entry):
+    assert schema_errors(make_vocabulary(sections=[bad_entry]), "vocabulary")
+
+
+@pytest.mark.parametrize(
+    "bad_top_level",
+    [
+        {"vocabularies": {}},
+        {"schema_version": 2, "vocabularies": {}},
+        {"schema_version": 1},
+        {"schema_version": 1, "vocabularies": {}, "extra": True},
+        {"schema_version": 1, "vocabularies": {"sections": {}}},
+    ],
+)
+def test_malformed_top_level_is_rejected(bad_top_level):
+    assert schema_errors(bad_top_level, "vocabulary")
+
+
+def test_validate_library_accepts_valid_vocabulary(tmp_path):
+    write_clean_library_with_vocabulary(tmp_path, MINIMAL_VOCABULARY)
+    assert validate_library(tmp_path) == []
+
+
+def test_validate_library_reports_duplicate_term(tmp_path):
+    vocabulary = make_vocabulary(sections=[{"label": "A", "terms": ["os"]}, {"label": "B", "terms": ["os"]}])
+    write_clean_library_with_vocabulary(tmp_path, vocabulary)
+    errors = validate_library(tmp_path)
+    assert len(errors) == 1
+    assert "_vocabulary.json" in errors[0]
+    assert "sections" in errors[0]
+
+
+def test_validate_library_reports_schema_problem_in_vocabulary(tmp_path):
+    write_clean_library_with_vocabulary(tmp_path, make_vocabulary(frameworks=[]))
+    errors = validate_library(tmp_path)
+    assert errors
+    assert all("_vocabulary.json" in error for error in errors)
+
+
+def test_validate_library_reports_malformed_vocabulary_json(tmp_path):
+    write_clean_library_with_vocabulary(tmp_path, MINIMAL_VOCABULARY)
+    (tmp_path / "_vocabulary.json").write_text("{not json", encoding="utf-8")
+    assert any("_vocabulary.json" in error for error in validate_library(tmp_path))
+
+
+def test_validate_library_checks_vocabulary_even_when_manifest_is_broken(tmp_path):
+    write_json(tmp_path / "_vocabulary.json", make_vocabulary(frameworks=[]))
+    (tmp_path / "_manifest.json").write_text("null", encoding="utf-8")
+    assert any("_vocabulary.json" in error for error in validate_library(tmp_path))

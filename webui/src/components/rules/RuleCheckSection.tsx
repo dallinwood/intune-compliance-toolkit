@@ -1,7 +1,9 @@
-import { compareVersionsDescending, macosVersionLabel } from '../../logic/benchmarkLabels'
 import { containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { compareVersionsDescending } from '../../logic/versions'
+import { termLabel } from '../../logic/vocabulary'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Architecture, Rule, RuleCheck } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
@@ -31,6 +33,7 @@ function CheckEntry({ label, check, odvValue }: { label: string; check: RuleChec
 }
 
 export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: OrgDefinedValue | null }) {
+  const index = useVocabularyIndex()
   const versionChecks = Object.entries(rule.check?.by_version ?? {}).sort(([left], [right]) =>
     compareVersionsDescending(left, right),
   )
@@ -47,7 +50,7 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
       )}
       {!rule.check ? (
         <p className="text-xs text-slate-500">
-          No automated check. {assessmentLabel(rule.assessment).description}
+          No automated check. {assessmentLabel(rule.assessment, index).description}
         </p>
       ) : (
         <>
@@ -61,7 +64,7 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
             <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
           )}
           {versionChecks.map(([version, check]) => (
-            <CheckEntry key={version} label={macosVersionLabel(version)} check={check} odvValue={odvValue} />
+            <CheckEntry key={version} label={termLabel(index, 'os_versions', version)} check={check} odvValue={odvValue} />
           ))}
         </>
       )}

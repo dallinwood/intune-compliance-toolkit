@@ -3,20 +3,13 @@ import type { ManualAttestationEntry } from './chunking'
 import { displayWithOdv } from './odv'
 import { upstreamRuleId } from './ruleDisplay'
 import type { OrgDefinedValue } from './selectionEntry'
-
-const MANUAL_REASON_TEXT: Record<ManualReason, string> = {
-  inherent: 'Met by macOS by design (mSCP: inherent).',
-  permanent: 'Cannot be configured on macOS; mSCP lists this as a permanent finding.',
-  n_a: 'Not applicable to macOS (mSCP: n_a).',
-  supplemental: 'Supplemental guidance with no check.',
-  manual: 'mSCP marks this check as manual.',
-  no_check: 'mSCP provides no automated check.',
-}
+import { termDescription, type VocabularyIndex } from './vocabulary'
 
 // The schema allows a manual rule without a reason even though no current
 // mSCP rule has one; it is then treated like an explicit "manual".
-export function manualReasonText(manualReason: ManualReason | null): string {
-  return MANUAL_REASON_TEXT[manualReason ?? 'manual']
+export function manualReasonText(manualReason: ManualReason | null, index: VocabularyIndex): string {
+  const reason = manualReason ?? 'manual'
+  return termDescription(index, 'manual_reasons', reason) ?? `mSCP manual reason: ${reason}.`
 }
 
 export function additionalInfoFor(rule: Rule, odvValue: OrgDefinedValue | null): string | null {
