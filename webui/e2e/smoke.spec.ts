@@ -97,6 +97,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
 })
 
+// The 350-row assertions reflect today's library: one platform and one source, so ticking either keeps every rule.
 test('the Platform facet follows Automation and the Source facet comes last, and both list every rule', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
@@ -429,8 +430,8 @@ test.describe('filter sidebar scrolling', () => {
     await page.goto('/')
     await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
 
-    const checkboxes = await scroller(page).getByRole('checkbox').all()
-    const lastTag = checkboxes[checkboxes.length - 2]
+    const tagsFacet = scroller(page).getByRole('heading', { name: 'Tags', exact: true }).locator('..')
+    const lastTag = tagsFacet.getByRole('checkbox').last()
     await lastTag.scrollIntoViewIfNeeded()
     await lastTag.click()
     await expect(lastTag).toBeChecked()
