@@ -60,7 +60,7 @@ export function benchmarkSummary(applicability: Applicability, versionsInScope: 
       const versionLabels = Array.from(new Set(itemVersions.map((version) => termLabel(index, 'os_versions', version))))
       return `${label} on ${versionListText(versionLabels)}`
     })
-    .join(', ')
+    .join(' · ')
 }
 
 // v3 ids are "<source>.<upstream id>"; upstream ids never contain a dot.
