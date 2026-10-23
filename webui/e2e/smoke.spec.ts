@@ -74,14 +74,14 @@ interface IndexBenchmark {
   severity: string | null
 }
 
-async function committedIndexRules(): Promise<{ id: string; applicability: Record<string, IndexBenchmark[]> }[]> {
+async function committedIndexRules(): Promise<{ id: string; applicability: { target: string | null; version: string | null; benchmarks: IndexBenchmark[] }[] }[]> {
   const indexJson = await readFile(new URL('../../baselines/mscp/_index.json', import.meta.url), 'utf8')
   return JSON.parse(indexJson).rules
 }
 
 test('a benchmark severity option narrows the table to rules listing that severity on the selected version', async ({ page }) => {
   const expectedCount = (await committedIndexRules()).filter((rule) =>
-    (rule.applicability['27.0'] ?? []).some((benchmark) => benchmark.name === 'disa_stig' && benchmark.severity === 'high'),
+    (rule.applicability.find((entry) => entry.target === 'macOS' && entry.version === '27.0')?.benchmarks ?? []).some((benchmark) => benchmark.name === 'disa_stig' && benchmark.severity === 'high'),
   ).length
   expect(expectedCount).toBeGreaterThan(0)
 
@@ -100,10 +100,11 @@ test('a benchmark severity option narrows the table to rules listing that severi
 test('the benchmark column follows the macOS version filter', async ({ page }) => {
   const rules = await committedIndexRules()
   const stigOnlyOnFifteen = rules.find((rule) => {
-    const { '15.0': fifteen = [], '26.0': twentySix = [], '27.0': twentySeven = [] } = rule.applicability
+    const benchmarksOn = (version: string) => rule.applicability.find((entry) => entry.version === version)?.benchmarks ?? []
+    const [fifteen, twentySix, twentySeven] = ['15.0', '26.0', '27.0'].map(benchmarksOn)
     return fifteen.length === 1 && fifteen[0].name === 'disa_stig' && fifteen[0].severity === 'medium' && twentySix.length === 0 && twentySeven.length === 0
   })
-  const inNoBenchmark = rules.find((rule) => Object.values(rule.applicability).every((benchmarks) => benchmarks.length === 0))
+  const inNoBenchmark = rules.find((rule) => rule.applicability.every((entry) => entry.benchmarks.length === 0))
   if (!stigOnlyOnFifteen || !inNoBenchmark) throw new Error('the committed index no longer has the rules this test needs')
 
   const rowOf = (ruleId: string) =>
@@ -398,7 +399,7 @@ test('display names come from the vocabulary file, with raw codes and a warning 
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('raw codes are shown')
   await expect(page.getByRole('checkbox', { name: 'cis_lvl1', exact: true })).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'macOS 27', exact: true })).toHaveCount(0)
-  await expect(page.getByRole('checkbox', { name: '27.0', exact: true })).toBeVisible()
+  await expect(page.getByRole('checkbox', { name: 'macOS 27.0', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: /^os \(\d+\)/ })).toBeVisible()
 
   // Raw-code filters still filter.
