@@ -2,7 +2,7 @@ import shutil
 from pathlib import Path
 
 from tools.import_mscp import generate_library
-from tools.mscp_source_lock import read_source_lock
+from tools.source_lock import read_source_lock
 from tools.validate_library import validate_library
 
 REPO_ROOT = Path(__file__).resolve().parent.parent

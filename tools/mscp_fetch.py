@@ -1,17 +1,16 @@
-import json
-import re
 import shutil
 import tarfile
 import tempfile
-import urllib.request
+import urllib.request  # tests patch urllib.request.urlopen through this module
 from pathlib import Path, PurePosixPath
 
+from tools import github_fetch
 from tools.directory_swap import replace_directory
-from tools.mscp_source_lock import SourceLock, write_source_lock
+from tools.github_fetch import build_request, default_opener, validate_commit_sha, validate_tag
+from tools.source_lock import SourceLock, write_source_lock
 
 MSCP_REPOSITORY = "usnistgov/macos_security"
 REPOSITORY_URL = f"https://github.com/{MSCP_REPOSITORY}"
-NETWORK_TIMEOUT_SECONDS = 60
 USER_AGENT = "intune-compliance-toolkit-mscp-import"
 DATA_PREFIX = ("src", "mscp", "data")
 ROOT_FILES = ("LICENSE.md", "CHANGELOG.md")
@@ -22,53 +21,17 @@ SUBSET_DATA_FILES = (
     ("templates", "shell_scripts", "compliance_script.sh.jinja"),
     ("templates", "shell_scripts", "check.jinja"),
 )
-COMMIT_SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
-
-
-def default_opener(request: urllib.request.Request):
-    return urllib.request.urlopen(request, timeout=NETWORK_TIMEOUT_SECONDS)
-
-
-def validate_tag(tag: str) -> None:
-    if not re.fullmatch(r"[A-Za-z0-9._-]+", tag) or tag in (".", ".."):
-        raise ValueError(f"Invalid tag name: {tag!r}")
-
-
-def build_request(url: str, accept: str | None = None) -> urllib.request.Request:
-    headers = {"User-Agent": USER_AGENT}
-    if accept is not None:
-        headers["Accept"] = accept
-    return urllib.request.Request(url, headers=headers)
-
-
-def get_json(url: str, opener) -> dict:
-    with opener(build_request(url, accept="application/vnd.github+json")) as response:
-        return json.loads(response.read())
 
 
 def resolve_tag_commit(tag: str, opener=default_opener) -> str:
-    validate_tag(tag)
-    reference = get_json(
-        f"https://api.github.com/repos/{MSCP_REPOSITORY}/git/ref/tags/{tag}", opener
-    )
-    target = reference.get("object", {})
-    if target.get("type") == "tag" and "url" in target:
-        target = get_json(target["url"], opener).get("object", {})
-    if target.get("type") != "commit" or "sha" not in target:
-        raise ValueError(f"Tag {tag!r} does not resolve to a commit")
-    return target["sha"]
-
-
-def validate_commit_sha(commit_sha: str) -> None:
-    if not COMMIT_SHA_PATTERN.fullmatch(commit_sha):
-        raise ValueError(f"Invalid commit sha: {commit_sha!r}")
+    return github_fetch.resolve_tag_commit(MSCP_REPOSITORY, tag, USER_AGENT, opener)
 
 
 def download_tarball(commit_sha: str, destination_dir: Path, opener=default_opener) -> Path:
     validate_commit_sha(commit_sha)
     url = f"{REPOSITORY_URL}/archive/{commit_sha}.tar.gz"
     tarball_path = destination_dir / f"{commit_sha}.tar.gz"
-    with opener(build_request(url)) as response:
+    with opener(build_request(url, USER_AGENT)) as response:
         tarball_path.write_bytes(response.read())
     return tarball_path
 

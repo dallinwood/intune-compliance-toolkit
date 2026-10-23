@@ -5,7 +5,8 @@ import re
 
 import yaml
 
-from tools.mscp_source_lock import SourceLock
+from tools.library_output import SCHEMA_VERSION, UnsupportedUpstreamData
+from tools.source_lock import SourceLock
 
 MANUAL_TAG_PRIORITY = ("manual", "inherent", "permanent", "n_a", "not_applicable", "supplemental")
 
@@ -35,10 +36,6 @@ FIX_KEYS = {"shell", "additional_info", "result"}
 RESULT_TYPES = ("integer", "string", "base64")
 ODV_DATATYPES = ("number", "string", "enum", "regex")
 ODV_NON_BENCHMARK_KEYS = {"hint", "recommended"}
-
-
-class UnsupportedUpstreamData(Exception):
-    """Raised for any upstream shape the normalizer does not understand."""
 
 
 class _FloatFreeSafeLoader(yaml.SafeLoader):
@@ -281,7 +278,7 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
 
     full_rule_id = f"mscp.{rule_id}"
     normalized = {
-        "schema_version": 4,
+        "schema_version": SCHEMA_VERSION,
         "id": full_rule_id,
         "title": upstream["title"],
         "discussion": upstream["discussion"],
@@ -335,17 +332,3 @@ def section_path_of(upstream_path: str, rule_id: str) -> list[str]:
             f"{rule_id}: upstream path {upstream_path!r} is not of the form rules/<section>/<file>.yaml"
         )
     return [parts[1]]
-
-
-def index_entry(rule: dict, file: str) -> dict:
-    return {
-        "id": rule["id"],
-        "title": rule["title"],
-        "file": file,
-        "section": rule["section_path"][0],
-        "assessment": rule["assessment"],
-        "architecture": rule["architecture"],
-        "applicability": rule["applicability"],
-        "tags": rule["tags"],
-        "has_odv": rule["odv"] is not None,
-    }

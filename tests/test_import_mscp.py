@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from tools import import_mscp
-from tools.mscp_source_lock import SourceLock, write_source_lock
+from tools.source_lock import SourceLock, write_source_lock
 from tools.validate_library import validate_library
 
 FIXTURE_UPSTREAM = Path(__file__).parent / "fixtures" / "mscp_upstream"

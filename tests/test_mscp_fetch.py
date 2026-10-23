@@ -13,7 +13,7 @@ from tools.mscp_fetch import (
     fetch,
     resolve_tag_commit,
 )
-from tools.mscp_source_lock import read_source_lock
+from tools.source_lock import read_source_lock
 
 TOP_FOLDER = "macos_security-release_27.0"
 COMMIT_SHA = "0123456789abcdef0123456789abcdef01234567"

@@ -3,14 +3,14 @@ import textwrap
 import pytest
 import yaml
 
+from tools.library_output import index_entry
 from tools.mscp_normalize import (
     UnsupportedUpstreamData,
-    index_entry,
     load_mscp_yaml,
     normalize_rule,
     section_path_of,
 )
-from tools.mscp_source_lock import SourceLock
+from tools.source_lock import SourceLock
 from tools.validate_library import schema_errors
 
 COMMIT_SHA = "b" * 40
