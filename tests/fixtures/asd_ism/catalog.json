@@ -1,0 +1,334 @@
+{
+  "catalog": {
+    "uuid": "11111111-2222-4333-8444-555555555555",
+    "metadata": {
+      "title": "Australian Government Information Security Manual (fixture)",
+      "version": "fixture"
+    },
+    "groups": [
+      {
+        "title": "Guidelines for system hardening",
+        "props": [
+          {
+            "name": "sort-id",
+            "value": "0010"
+          }
+        ],
+        "groups": [
+          {
+            "title": "Application hardening",
+            "props": [
+              {
+                "name": "sort-id",
+                "value": "0011"
+              }
+            ],
+            "groups": [
+              {
+                "title": "Microsoft Office macros and child processes",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "0012"
+                  }
+                ],
+                "parts": [
+                  {
+                    "name": "overview",
+                    "prose": "Microsoft Office can be abused. See [Guidelines for procurement and outsourcing](#f37a4848-0791-4870-b316-5536c2681c28) for related guidance."
+                  }
+                ],
+                "controls": [
+                  {
+                    "id": "ism-1667",
+                    "class": "ISM-control",
+                    "title": "Control: ism-1667",
+                    "props": [
+                      {
+                        "name": "sort-id",
+                        "value": "0013"
+                      },
+                      {
+                        "name": "revision",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "0"
+                      },
+                      {
+                        "name": "updated",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "Sep-21"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "NC"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "OS"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "P"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "S"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "TS"
+                      },
+                      {
+                        "name": "essential-eight-applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "ML2"
+                      },
+                      {
+                        "name": "essential-eight-applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "ML3"
+                      }
+                    ],
+                    "parts": [
+                      {
+                        "id": "ism-1667_smt",
+                        "name": "statement",
+                        "prose": "Microsoft Office is blocked from creating child processes."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Guidelines for procurement and outsourcing",
+        "props": [
+          {
+            "name": "sort-id",
+            "value": "0020"
+          }
+        ],
+        "groups": [
+          {
+            "title": "Outsourced cloud services",
+            "props": [
+              {
+                "name": "sort-id",
+                "value": "0021"
+              }
+            ],
+            "groups": [
+              {
+                "title": "Cyber security incident register",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "0022"
+                  }
+                ],
+                "parts": [
+                  {
+                    "name": "overview",
+                    "prose": "Registers help with incident handling; see the [ICT Supply Chain Resource Library](#014064b7-5b77-4a79-af6c-79a16f4d0cb2)."
+                  }
+                ],
+                "controls": [
+                  {
+                    "id": "ism-0859",
+                    "class": "ISM-control",
+                    "title": "Control: ism-0859",
+                    "props": [
+                      {
+                        "name": "sort-id",
+                        "value": "0023"
+                      },
+                      {
+                        "name": "revision",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "4"
+                      },
+                      {
+                        "name": "updated",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "Dec-23"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "NC"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "OS"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "P"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "S"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "TS"
+                      }
+                    ],
+                    "parts": [
+                      {
+                        "id": "ism-0859_smt",
+                        "name": "statement",
+                        "prose": "A cyber security incident register contains the following for each cyber security incident:\n\n- the date the cyber security incident occurred\n- the date the cyber security incident was discovered\n- a description of the cyber security incident\n- any actions taken in response to the cyber security incident\n- to whom the cyber security incident was reported."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Governance of cloud services",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "0024"
+                  }
+                ],
+                "parts": [
+                  {
+                    "name": "overview",
+                    "prose": "Cloud services need governance."
+                  }
+                ],
+                "controls": [
+                  {
+                    "id": "ism-principle-gov-01",
+                    "class": "ISM-principle",
+                    "title": "Principle: GOV-01",
+                    "props": [
+                      {
+                        "name": "sort-id",
+                        "value": "0001"
+                      },
+                      {
+                        "name": "label",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "GOV-01"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "NC"
+                      }
+                    ],
+                    "parts": [
+                      {
+                        "id": "ism-principle-gov-01_smt",
+                        "name": "statement",
+                        "prose": "Security governance is established."
+                      }
+                    ]
+                  },
+                  {
+                    "id": "ism-0001",
+                    "class": "ISM-control",
+                    "title": "Control: ism-0001",
+                    "props": [
+                      {
+                        "name": "sort-id",
+                        "value": "0025"
+                      },
+                      {
+                        "name": "revision",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "1"
+                      },
+                      {
+                        "name": "updated",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "Jun-10"
+                      },
+                      {
+                        "name": "applicability",
+                        "ns": "https://cyber.gov.au/ns/ism/oscal/3.0",
+                        "value": "NC"
+                      }
+                    ],
+                    "parts": [
+                      {
+                        "id": "ism-0001_smt",
+                        "name": "statement",
+                        "prose": "Cloud service providers are assessed before use."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Cyber security terminology",
+            "props": [
+              {
+                "name": "sort-id",
+                "value": "0026"
+              }
+            ],
+            "groups": [
+              {
+                "title": "Glossary",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "0027"
+                  }
+                ],
+                "parts": [
+                  {
+                    "name": "overview",
+                    "prose": "| Term | Meaning |\n|---|---|\n| ISM | Information Security Manual |"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "f37a4848-0791-4870-b316-5536c2681c28",
+          "title": "Guidelines for procurement and outsourcing",
+          "rlinks": [
+            {
+              "href": "https://www.cyber.gov.au/ism/procurement"
+            }
+          ]
+        },
+        {
+          "uuid": "014064b7-5b77-4a79-af6c-79a16f4d0cb2",
+          "title": "ICT Supply Chain Resource Library",
+          "rlinks": [
+            {
+              "href": "https://www.cisa.gov/ict-supply-chain-resource-library"
+            },
+            {
+              "href": "https://example.invalid/second"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
