@@ -1,5 +1,5 @@
-import { Settings2 } from 'lucide-react'
-import { Fragment, useId, useState } from 'react'
+import { Loader2, Settings2 } from 'lucide-react'
+import { Fragment, memo, useId, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -39,22 +39,37 @@ function groupRows(rows: RuleRow[], index: VocabularyIndex): SectionGroup[] {
     }))
 }
 
-export function RuleTable({ rows }: { rows: RuleRow[] }) {
+export function RuleTable({ rows, isStale }: { rows: RuleRow[]; isStale: boolean }) {
   const index = useVocabularyIndex()
-  if (rows.length === 0) {
-    return <p className="p-6 text-sm text-slate-500">No rules match the current filters.</p>
-  }
+  const sectionGroups = useMemo(() => groupRows(rows, index), [rows, index])
 
   return (
-    <div className="divide-y divide-slate-100">
-      {groupRows(rows, index).map((sectionGroup) => (
-        <SectionTable key={sectionGroup.section} sectionGroup={sectionGroup} />
-      ))}
+    <div className="relative">
+      <div className={isStale ? 'pointer-events-none opacity-50' : undefined}>
+        {rows.length === 0 ? (
+          <p className="p-6 text-sm text-slate-500">No rules match the current filters.</p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {sectionGroups.map((sectionGroup) => (
+              <SectionTable key={sectionGroup.section} sectionGroup={sectionGroup} />
+            ))}
+          </div>
+        )}
+      </div>
+      {isStale && (
+        <div role="status" aria-label="Updating rules" className="pointer-events-none absolute inset-0">
+          <div className="sticky top-1/3 flex justify-center">
+            <Loader2 className="size-8 animate-spin text-indigo-500" aria-hidden="true" />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
-function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
+// Memoized so flipping the stale overlay on (an urgent render) re-renders only
+// RuleTable's wrapper, not every row.
+const SectionTable = memo(function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
   const index = useVocabularyIndex()
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const selections = useSelectionStore((store) => store.selections)
@@ -166,7 +181,7 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
       </table>
     </div>
   )
-}
+})
 
 interface RowCheckboxProps {
   ruleId: string

@@ -37,6 +37,9 @@ function isAutomatableFilter(value: string): value is AutomatableFilter {
   return AUTOMATABLE_OPTIONS.some((option) => option.value === value)
 }
 
+const isNoTarget = (value: string) => value === NO_TARGET_KEY
+const isNoVersion = (value: string) => value === NO_VERSION_KEY
+
 const NO_SELECTION: ReadonlySet<string> = new Set()
 
 // Every facet value is a vocabulary group key (a benchmark's is paired with
@@ -166,6 +169,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             valueOf={accessors.targetsOf}
             compareValues={accessors.compareTargets}
             labelOf={accessors.targetLabel}
+            isSystemGenerated={isNoTarget}
             reachable={targets}
             selected={filters.targets}
             onToggle={filters.toggleTarget}
@@ -177,9 +181,21 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             valueOf={accessors.allVersionsOf}
             compareValues={compareScopeKeys}
             labelOf={accessors.versionLabel}
+            isSystemGenerated={isNoVersion}
             reachable={versions}
             selected={filters.versions}
             onToggle={filters.toggleVersion}
+          />
+
+          <StableFacetGroup
+            title="Source"
+            rows={rows}
+            valueOf={accessors.sourceOf}
+            compareValues={accessors.compareSources}
+            labelOf={accessors.sourceLabel}
+            reachable={sources}
+            selected={filters.sources}
+            onToggle={filters.toggleSource}
           />
 
           <StableFacetGroup
@@ -213,17 +229,6 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             reachable={tags}
             selected={filters.tags}
             onToggle={filters.toggleTag}
-          />
-
-          <StableFacetGroup
-            title="Source"
-            rows={rows}
-            valueOf={accessors.sourceOf}
-            compareValues={accessors.compareSources}
-            labelOf={accessors.sourceLabel}
-            reachable={sources}
-            selected={filters.sources}
-            onToggle={filters.toggleSource}
           />
 
           <Button type="button" variant="link" size="xs" onClick={filters.clear} className="mt-2 h-auto p-0">
@@ -276,7 +281,17 @@ function FacetGroup({ title, children }: { title: string; children: ReactNode })
 // for a real <input type="checkbox">. Facet values are free text
 // ("cnssi-1253_high", "27.0") so they aren't usable as DOM ids directly -
 // useId() sidesteps that entirely.
-function FacetOption({ label, disabled, children }: { label: string; disabled?: boolean; children: ReactNode }) {
+function FacetOption({
+  label,
+  disabled,
+  isSystemGenerated,
+  children,
+}: {
+  label: string
+  disabled?: boolean
+  isSystemGenerated?: boolean
+  children: ReactNode
+}) {
   const id = useId()
   const control = isValidElement<{ id?: string }>(children) ? cloneElement(children, { id }) : children
 
@@ -285,7 +300,13 @@ function FacetOption({ label, disabled, children }: { label: string; disabled?: 
       {control}
       <Label
         htmlFor={id}
-        className={disabled ? 'truncate text-sm font-normal text-slate-400 line-through' : 'truncate text-sm font-normal'}
+        className={
+          disabled
+            ? 'truncate text-sm font-normal text-slate-400 line-through'
+            : isSystemGenerated
+              ? 'truncate text-sm font-normal text-slate-500 italic'
+              : 'truncate text-sm font-normal'
+        }
       >
         {label}
       </Label>
@@ -308,6 +329,7 @@ function StableFacetGroup({
   valueOf,
   compareValues,
   labelOf,
+  isSystemGenerated,
   reachable,
   selected,
   onToggle,
@@ -317,6 +339,7 @@ function StableFacetGroup({
   valueOf: (row: RuleRow) => string | string[]
   compareValues?: (left: string, right: string) => number
   labelOf: (value: string) => string
+  isSystemGenerated?: (value: string) => boolean
   reachable: string[]
   selected: ReadonlySet<string>
   onToggle: (value: string) => void
@@ -357,7 +380,7 @@ function StableFacetGroup({
               style={{ transitionDuration: `${FACET_EXIT_TRANSITION_MS}ms` }}
             >
               <div className="min-h-0">
-                <FacetOption label={labelOf(value)} disabled={!isReachable}>
+                <FacetOption label={labelOf(value)} disabled={!isReachable} isSystemGenerated={isSystemGenerated?.(value)}>
                   <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
                 </FacetOption>
               </div>

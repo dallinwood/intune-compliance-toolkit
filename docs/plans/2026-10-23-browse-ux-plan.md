@@ -203,3 +203,4 @@ Not planned yet. After Phase B, brainstorm with the maintainer. Starting brief f
 ## Progress log
 
 - 2026-10-23: Plan written (no code yet).
+- 2026-10-23: Phase A task A1 done. The table and count render from deferred filters (`useDeferredFilters`), the stale overlay and `Updating rules` spinner show while it catches up, `SectionTable` is memoized, Source moved between Version and Benchmark, and the None options are `text-slate-500 italic`. Commit: `feat: keep filters responsive while the rule table updates`.

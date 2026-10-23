@@ -127,7 +127,7 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
 })
 
 // Only the mSCP rules name a target, so ticking macOS or mscp keeps 350 of the 1493 rules; ticking ASD ISM keeps the other 1143.
-test('the Target facet follows Automation and the Source facet comes last, and each filters to its own rules', async ({ page }) => {
+test('the Target facet follows Automation and the Source facet sits between Version and Benchmark, and each filters to its own rules', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
@@ -135,7 +135,9 @@ test('the Target facet follows Automation and the Source facet comes last, and e
   await expect(facetTitles.nth(0)).toHaveText('Automation')
   await expect(facetTitles.nth(1)).toHaveText('Target')
   await expect(facetTitles.nth(2)).toHaveText('Version')
-  await expect(facetTitles.last()).toHaveText('Source')
+  await expect(facetTitles.nth(3)).toHaveText('Source')
+  await expect(facetTitles.nth(4)).toHaveText('Benchmark')
+  await expect(facetTitles.last()).toHaveText('Tags')
 
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
   await platformOption.click()
@@ -672,10 +674,66 @@ test.describe('filter sidebar scrolling', () => {
     await page.goto('/')
     await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
-    const lastSource = scroller(page).getByRole('checkbox').last()
+    const lastSource = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox').last()
     await lastSource.scrollIntoViewIfNeeded()
     await lastSource.click()
     await expect(lastSource).toBeChecked()
     await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
   })
+})
+
+test('the None facet options read as system-generated', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+  for (const facetTitle of ['Target', 'Version']) {
+    const noneCheckbox = page.getByRole('group', { name: facetTitle, exact: true }).getByRole('checkbox', { name: 'None', exact: true })
+    const noneLabel = page.getByRole('group', { name: facetTitle, exact: true }).locator('label', { hasText: /^None$/ })
+    await expect(noneCheckbox).toBeVisible()
+    await expect(noneLabel).toHaveClass(/(^|\s)italic(\s|$)/)
+    await expect(noneLabel).toHaveClass(/text-slate-500/)
+  }
+  await expect(page.getByRole('group', { name: 'Source', exact: true }).locator('label.italic')).toHaveCount(0)
+})
+
+test('the table shows an Updating rules spinner while it catches up with a large filter change', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
+  await expect(updatingStatus).toBeHidden()
+
+  const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
+  await platformOption.click()
+  await expect(platformOption).toBeChecked()
+  await expect(updatingStatus).toBeVisible()
+  await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
+  await expect(updatingStatus).toBeHidden()
+})
+
+// Options of one facet are ORed, so they all stay reachable however many are
+// ticked; that keeps the ten clicks independent of how fast the table catches up.
+test('ten facet options toggled in quick succession all register and the table settles', async ({ page }) => {
+  const sectionGroup = page.getByRole('group', { name: 'Section', exact: true })
+  const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
+
+  async function tickTenSections() {
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+    const optionLabels = await sectionGroup.locator('label').allTextContents()
+    const tenLabels = optionLabels.slice(0, 10)
+    expect(tenLabels).toHaveLength(10)
+    for (const optionLabel of tenLabels) {
+      await sectionGroup.getByRole('checkbox', { name: optionLabel, exact: true }).click({ noWaitAfter: true })
+    }
+    for (const optionLabel of tenLabels) {
+      await expect(sectionGroup.getByRole('checkbox', { name: optionLabel, exact: true })).toBeChecked()
+    }
+    await expect(updatingStatus).toBeHidden({ timeout: 30_000 })
+    return (await ruleCount(page).textContent()) ?? ''
+  }
+
+  const countAfterRapidClicks = await tickTenSections()
+  expect(countAfterRapidClicks).not.toBe('1493 of 1493 rules')
+  const countAfterSecondRun = await tickTenSections()
+  expect(countAfterSecondRun).toBe(countAfterRapidClicks)
 })

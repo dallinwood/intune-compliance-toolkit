@@ -4,10 +4,10 @@ import { GenerateReviewScreen } from '../generate/GenerateReviewScreen'
 import { RuleTable } from '../rules/RuleTable'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
+import { useDeferredFilters } from '../../hooks/useDeferredFilters'
 import { matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
-import { useFilterStore } from '../../state/filterStore'
 import { useSelectionStore } from '../../state/selectionStore'
 import { VocabularyContext } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
@@ -34,10 +34,13 @@ export function AppShell({
 }) {
   const [view, setView] = useState<View>('browse')
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const filters = useFilterStore()
+  // The table and the count render from deferred filters so a click or
+  // keystroke updates its own control at once while the 1,493-row table
+  // catches up in the background.
+  const { filters: deferredFilters, isStale } = useDeferredFilters()
   const filteredRows = useMemo(
-    () => rows.filter((row) => matchesFilters(row, filters, vocabularyIndex)),
-    [rows, filters, vocabularyIndex],
+    () => rows.filter((row) => matchesFilters(row, deferredFilters, vocabularyIndex)),
+    [rows, deferredFilters, vocabularyIndex],
   )
   const selections = useSelectionStore((store) => store.selections)
   const rowsById = useMemo(() => new Map(rows.map((row) => [row.ref.id, row])), [rows])
@@ -84,7 +87,7 @@ export function AppShell({
               <FilterSidebar rows={rows} />
             </div>
             <main className="flex-1 overflow-y-auto">
-              <RuleTable rows={filteredRows} />
+              <RuleTable rows={filteredRows} isStale={isStale} />
             </main>
           </div>
         ) : (
