@@ -340,9 +340,11 @@ keys, fixed indentation, LF endings).
   `release_27.0`, both automated) gets a single entry
   `{ target: "macOS", version: null, benchmarks: [] }`, so it keeps its
   macOS target (maintainer's decision). In the Version filter it falls
-  under "None"; the generator treats a macOS entry with a null version as
-  "applies to every macOS version", which is what it does for these two
-  rules today; `section_path: [<folder>]` (the same folder
+  under "None". The generator keeps today's behaviour for these two rules:
+  it refuses to script them ("mSCP does not map this rule to any macOS
+  version", `webui/src/logic/checkPlan.ts`). (Corrected 2026-10-23: the
+  first draft wrongly said the generator already runs them on every
+  version.); `section_path: [<folder>]` (the same folder
   `section_of()` reads today, now stored in the rule); `discussion_format:
   "asciidoc"`; `source.upstream_revision` / `upstream_updated` `null`; no
   `platform`.
