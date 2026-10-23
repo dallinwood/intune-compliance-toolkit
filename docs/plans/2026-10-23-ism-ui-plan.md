@@ -203,3 +203,4 @@
 ## Progress log
 
 - 2026-10-23: Plan written after profiling the 1,493-row table (no code yet).
+- 2026-10-23: Task 2 done. Target and Version gained a "None" option, benchmarks on unversioned entries (ISM) now reach the facet, filter and table column, empty facet groups are hidden, and the vocabulary schema requires version terms to hold a space. Landed in 696eb1f feat: add None to the Target and Version filters and show ISM benchmarks.
