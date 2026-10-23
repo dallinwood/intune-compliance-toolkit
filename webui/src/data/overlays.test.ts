@@ -179,6 +179,16 @@ describe('overlaysFittingLibrary', () => {
     expect(result.warnings).toEqual([expect.stringContaining('asd_ism.ism-1622: discussion: cannot append')])
   })
 
+  it('keeps an overlay whose rule file could not be loaded, warning that the full rule went unchecked', async () => {
+    const { overlaysFittingLibrary } = await import('./overlays')
+    const target = { entry: ENTRY, rule: null, buildRow: () => {} }
+
+    const result = overlaysFittingLibrary(loadedFrom({ 'a-tags.json': { tags: ['a'] } }), new Map([[ISM_1622, target]]))
+
+    expect(result.overlays.map((overlay) => overlay.id)).toEqual(['a-tags'])
+    expect(result.warnings).toEqual(['a-tags.json: asd_ism.ism-1622: the rule could not be loaded to check this overlay against it.'])
+  })
+
   it('checks each overlay against the result of the ones before it', async () => {
     const { overlaysFittingLibrary } = await import('./overlays')
     const target = { entry: ENTRY, rule: ism1622Rule(), buildRow: () => {} }

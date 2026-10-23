@@ -151,6 +151,10 @@ function overlay(id: string, fields: Record<string, unknown>, release = CURRENT_
   return { id, targets: [{ rule, release }], fields }
 }
 
+function odvWithValidation(validation: Record<string, unknown>) {
+  return { datatype: 'enum', description: 'Value', validation, recommended: '1', by_benchmark: {} }
+}
+
 function ism1622Rule(overrides: Partial<Rule> = {}): Rule {
   const rule = inlineRule({ upstreamId: 'ism-1622', releaseTag: CURRENT_RELEASE, overrides: { check: null, ...overrides } })
   return { ...rule, id: ISM_1622, source: { ...rule.source, name: 'asd_ism' } }
@@ -230,7 +234,20 @@ describe('applyOverlays', () => {
     ['a tag that is not a string', { tags: [3] }, {}],
     ['an incomplete odv', { odv: { recommended: 5 } }, {}],
     ['an assessment with an unknown status', { assessment: { status: 'sometimes' } }, {}],
+    ['odv enumValues that are not a list', { odv: { $replace: odvWithValidation({ enumValues: { a: 1 } }) } }, {}],
+    ['odv enumValues that are not strings', { odv: { $replace: odvWithValidation({ enumValues: [1] }) } }, {}],
+    ['an odv min that is a string', { odv: { $replace: odvWithValidation({ min: '5' }) } }, {}],
+    ['an odv regex that is a number', { odv: { $replace: odvWithValidation({ regex: 5 }) } }, {}],
+    ['an unknown odv validation key', { odv: { $replace: odvWithValidation({ pattern: 'x' }) } }, {}],
   ]
+
+  it('accepts an odv validation with each known key', () => {
+    const odv = odvWithValidation({ min: 1, max: 9, regex: '^[0-9]+$', enumValues: ['1', '2'] })
+    const result = applyOverlays(ism1622Rule(), [overlay('odv', { odv: { $replace: odv } })], CURRENT_RELEASE)
+
+    expect(result.skipped).toEqual([])
+    expect(result.rule.odv).toEqual(odv)
+  })
 
   it.each(malformedResults)('skips an overlay whose result has %s', (_description, fields, overrides) => {
     const rule = ism1622Rule(overrides)

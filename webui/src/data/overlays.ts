@@ -110,7 +110,9 @@ function describeProblem(error: unknown): string {
 // against the index entries and the full rules they target. An overlay that
 // fails for any target is dropped for every target, with one warning naming
 // its file and the rule; the overlays before it stay applied. A target
-// missing from the library is ignored for that target alone.
+// missing from the library is ignored for that target alone. A target whose
+// rule file could not be loaded keeps its index-level result, with a warning
+// that the full rule went unchecked.
 export function overlaysFittingLibrary(loaded: LoadedOverlays, targets: ReadonlyMap<string, LibraryTarget>): LoadedOverlays {
   const overlays: Overlay[] = []
   const warnings = [...loaded.warnings]
@@ -120,6 +122,7 @@ export function overlaysFittingLibrary(loaded: LoadedOverlays, targets: Readonly
   for (const overlay of loaded.overlays) {
     const nextEntries = new Map<string, IndexEntry>()
     const nextRules = new Map<string, Rule>()
+    const uncheckedRuleIds: string[] = []
     let problem: string | null = null
     for (const ruleId of new Set(overlay.targets.map((target) => target.rule))) {
       const target = targets.get(ruleId)
@@ -130,15 +133,19 @@ export function overlaysFittingLibrary(loaded: LoadedOverlays, targets: Readonly
         nextEntries.set(ruleId, entry)
         const rule = currentRules.get(ruleId) ?? target.rule
         if (rule) nextRules.set(ruleId, applyOverlayToRule(rule, overlay.fields))
+        else uncheckedRuleIds.push(ruleId)
       } catch (error) {
         problem = `${ruleId}: ${describeProblem(error)}`
         break
       }
     }
+    const fileName = loaded.fileNameById.get(overlay.id) ?? overlay.id
     if (problem !== null) {
-      const fileName = loaded.fileNameById.get(overlay.id) ?? overlay.id
       warnings.push(`${fileName}: ${problem}. It was skipped.`)
       continue
+    }
+    for (const ruleId of uncheckedRuleIds) {
+      warnings.push(`${fileName}: ${ruleId}: the rule could not be loaded to check this overlay against it.`)
     }
     for (const [ruleId, entry] of nextEntries) currentEntries.set(ruleId, entry)
     for (const [ruleId, rule] of nextRules) currentRules.set(ruleId, rule)

@@ -100,11 +100,33 @@ const checkResult = objectWith({
 const checkEntry = objectWith({ shell: textOrNull, result: orNull(checkResult), additional_info: textOrNull })
 const check = orNull(objectWith({ default: orNull(checkEntry), by_version: mapOf(checkEntry) }))
 
+// Every key is optional, and the schema closes the object, so an unknown
+// key is rejected; logic/odv.ts reads each one with these types.
+const ODV_VALIDATION_KEYS: Record<string, Check> = {
+  min: (value, path) => expect(typeof value === 'number', path, 'a number'),
+  max: (value, path) => expect(typeof value === 'number', path, 'a number'),
+  regex: text,
+  enumValues: listOf(text),
+}
+const odvValidation: Check = (value, path) => {
+  if (value === null) return null
+  if (!isObject(value)) return `${path} must be an object or null`
+  for (const [key, item] of Object.entries(value)) {
+    if (!Object.hasOwn(ODV_VALIDATION_KEYS, key)) return `${path} has unknown key ${key}`
+    const keyCheck = ODV_VALIDATION_KEYS[key]
+    const problem = keyCheck(item, `${path}.${key}`)
+    if (problem) return problem
+  }
+  return null
+}
+
+// remediation payloads (mobileconfig_info, mobileconfig_by_version, ddm_info)
+// are only ever shown through JSON.stringify, so any JSON content is safe.
 const odv = orNull(
   objectWith({
     datatype: oneOf('number', 'string', 'enum', 'regex'),
     description: text,
-    validation: (value, path) => expect(value === null || isObject(value), path, 'an object or null'),
+    validation: odvValidation,
     recommended: (value, path) => expect(isNumberOrString(value), path, 'a number or a string'),
     by_benchmark: mapOf((value, path) => expect(isNumberOrString(value), path, 'a number or a string')),
   }),
