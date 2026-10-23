@@ -1,15 +1,19 @@
 import { benchmarksAt, parseVersionKey, scopeKeysOf, targetKeysOf } from '../logic/applicability'
 import { GENERATED_TARGET } from '../logic/checkPlan'
+import { applyOverlaysToIndexEntry, type Overlay } from '../logic/overlays'
 import { compareVersionsDescending } from '../logic/versions'
-import type { ManifestSource, RuleIndex } from '../types/library'
+import type { IndexEntry, ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { fetchManifest } from './manifest'
+import { fetchOverlays, overlaysFittingIndex } from './overlays'
+import { setRuleOverlays } from './ruleDetail'
 import { fetchRuleIndex } from './ruleIndex'
 
 export interface Library {
   rows: RuleRow[]
   sources: ManifestSource[]
   coveredVersions: string[]
+  overlayWarnings: string[]
 }
 
 function directoryOf(path: string): string {
@@ -17,9 +21,12 @@ function directoryOf(path: string): string {
   return lastSlash === -1 ? '' : path.slice(0, lastSlash)
 }
 
-export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow[] {
+// Overlays apply to the index entries first, so the table, filters, counts
+// and search all see the overlaid values.
+export function buildRuleRows(source: ManifestSource, index: RuleIndex, overlays: Overlay[] = []): RuleRow[] {
   const directory = directoryOf(source.index_path)
-  return index.rules.map((entry): RuleRow => {
+  return index.rules.map((importedEntry): RuleRow => {
+    const entry = applyOverlaysToIndexEntry(importedEntry, overlays)
     const scopeKeys = scopeKeysOf(entry.applicability)
     const benchmarks = new Set<string>()
     for (const key of scopeKeys) {
@@ -58,12 +65,20 @@ export function coveredVersionsOf(rows: RuleRow[], target: string): string[] {
 }
 
 export async function loadLibrary(): Promise<Library> {
-  const manifest = await fetchManifest()
+  const [manifest, loadedOverlays] = await Promise.all([fetchManifest(), fetchOverlays()])
+  const indexes = await Promise.all(manifest.sources.map((source) => fetchRuleIndex(source.index_path)))
 
-  const rowsBySource = await Promise.all(
-    manifest.sources.map(async (source) => buildRuleRows(source, await fetchRuleIndex(source.index_path))),
-  )
-  const rows = rowsBySource.flat()
+  const entriesById = new Map<string, IndexEntry>()
+  for (const index of indexes) for (const entry of index.rules) entriesById.set(entry.id, entry)
+  const { overlays, warnings } = overlaysFittingIndex(loadedOverlays, entriesById)
+  setRuleOverlays(overlays)
 
-  return { rows, sources: manifest.sources, coveredVersions: coveredVersionsOf(rows, GENERATED_TARGET) }
+  const rows = manifest.sources.flatMap((source, position) => buildRuleRows(source, indexes[position], overlays))
+
+  return {
+    rows,
+    sources: manifest.sources,
+    coveredVersions: coveredVersionsOf(rows, GENERATED_TARGET),
+    overlayWarnings: warnings,
+  }
 }

@@ -37,7 +37,15 @@ function JsonEntry({ label, value, odvValue }: { label: string; value: unknown; 
   )
 }
 
-export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValue: OrgDefinedValue | null }) {
+export function RuleRemediationSection({
+  rule,
+  odvValue,
+  custom = false,
+}: {
+  rule: Rule
+  odvValue: OrgDefinedValue | null
+  custom?: boolean
+}) {
   const index = useVocabularyIndex()
   const versionLabel = (version: string) => termLabel(index, 'versions', versionKey(GENERATED_TARGET, version))
   const remediation = rule.remediation
@@ -58,7 +66,7 @@ export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValu
 
   return (
     <div className="space-y-2">
-      <SectionHeading>Remediation</SectionHeading>
+      <SectionHeading custom={custom}>Remediation</SectionHeading>
       {!hasAnything && <p className="text-xs text-slate-500">No remediation provided.</p>}
       {hasContent(remediation.default) && (
         <FixEntry

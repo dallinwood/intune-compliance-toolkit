@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
-import { fetchRule } from '../data/ruleDetail'
+import { fetchOverlaidRule } from '../data/ruleDetail'
 import { odvSubstitutionMode, usableOdvValue } from '../logic/odv'
+import type { OverlaidRule } from '../logic/overlays'
 import type { OrgDefinedValue, RuleRef } from '../logic/selectionEntry'
 import { useSelectionStore } from '../state/selectionStore'
 import type { Rule } from '../types/library'
 
-export type RuleLoadState = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; rule: Rule }
+// `overlaid` carries which fields custom overlays set; `rule` is already
+// the overlaid rule.
+export type RuleLoadState =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; rule: Rule; overlaid: OverlaidRule }
 
 const LOADING: RuleLoadState = { status: 'loading' }
 
@@ -20,9 +26,9 @@ export function useRule(ruleRef: RuleRef | null): RuleLoadState {
   useEffect(() => {
     if (id === null || path === null) return
     let cancelled = false
-    fetchRule({ id, path })
-      .then((rule) => {
-        if (!cancelled) setLoaded({ id, state: { status: 'ready', rule } })
+    fetchOverlaidRule({ id, path })
+      .then((overlaid) => {
+        if (!cancelled) setLoaded({ id, state: { status: 'ready', rule: overlaid.rule, overlaid } })
       })
       .catch((error: unknown) => {
         if (!cancelled) {

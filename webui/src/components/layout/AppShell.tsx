@@ -14,7 +14,7 @@ import { VocabularyContext } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { AttributionFooter } from './AttributionFooter'
-import { VocabularyWarningsNotice } from './VocabularyWarningsNotice'
+import { WarningsNotice } from './WarningsNotice'
 
 // Two views, no router needed: a Zustand store would be overkill for a
 // single boolean owned by (and only ever read by) this one component.
@@ -26,12 +26,14 @@ export function AppShell({
   coveredVersions,
   vocabularyIndex,
   vocabularyWarnings,
+  overlayWarnings,
 }: {
   rows: RuleRow[]
   sources: ManifestSource[]
   coveredVersions: string[]
   vocabularyIndex: VocabularyIndex
   vocabularyWarnings: string[]
+  overlayWarnings: string[]
 }) {
   const [view, setView] = useState<View>('browse')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -86,7 +88,8 @@ export function AppShell({
             />
           </div>
         </header>
-        <VocabularyWarningsNotice warnings={vocabularyWarnings} />
+        <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
+        <WarningsNotice label="Custom content problems" summary="Some custom content could not be used:" warnings={overlayWarnings} />
         <StaleSelectionsNotice unknownIds={unknownIds} />
         {view === 'browse' ? (
           <div className="flex flex-1 flex-col overflow-hidden md:flex-row">

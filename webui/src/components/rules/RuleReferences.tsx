@@ -19,13 +19,13 @@ function ReferenceList({ nodes }: { nodes: ReferenceNode[] }) {
   )
 }
 
-export function RuleReferences({ references }: { references: Record<string, unknown> }) {
+export function RuleReferences({ references, custom = false }: { references: Record<string, unknown>; custom?: boolean }) {
   const nodes = macosReferences(references)
   if (nodes.length === 0) return null
 
   return (
     <div className="space-y-1">
-      <SectionHeading>References</SectionHeading>
+      <SectionHeading custom={custom}>References</SectionHeading>
       <div className="text-xs">
         <ReferenceList nodes={nodes} />
       </div>

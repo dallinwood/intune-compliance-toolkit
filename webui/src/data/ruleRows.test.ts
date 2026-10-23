@@ -158,3 +158,30 @@ describe('coveredVersionsOf', () => {
     expect(coveredVersionsOf(windowsRows, 'Windows')).toEqual(['99.0'])
   })
 })
+
+describe('buildRuleRows with overlays', () => {
+  it('builds rows from the overlaid index entries, with section following section_path', () => {
+    const overlays = [
+      {
+        id: 'custom',
+        targets: [{ rule: 'mscp.os_gatekeeper_enable', release: 'release_27.0' }],
+        fields: { title: 'Custom title', tags: ['custom-tag'], section_path: { $replace: ['custom-section'] } },
+      },
+    ]
+
+    const [gatekeeper, other] = buildRuleRows(SOURCE, INDEX, overlays)
+
+    expect(gatekeeper.title).toBe('Custom title')
+    expect(gatekeeper.tags).toEqual(['800-53r5_high', 'custom-tag'])
+    expect(gatekeeper.section).toBe('custom-section')
+    expect(gatekeeper.sectionPath).toEqual(['custom-section'])
+    expect(other).toEqual(buildRuleRows(SOURCE, INDEX)[1])
+  })
+
+  it('turns hasOdv on when an overlay sets an odv', () => {
+    const odv = { datatype: 'number', description: 'Value', validation: null, recommended: 5, by_benchmark: {} }
+    const overlays = [{ id: 'odv', targets: [{ rule: 'mscp.os_gatekeeper_enable', release: 'release_27.0' }], fields: { odv: { $replace: odv } } }]
+
+    expect(buildRuleRows(SOURCE, INDEX, overlays)[0].hasOdv).toBe(true)
+  })
+})

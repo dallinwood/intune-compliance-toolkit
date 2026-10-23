@@ -1,11 +1,14 @@
 import { useRule, useStoredOdvValue } from '@/hooks/useRule'
 import { termLabel } from '../../logic/vocabulary'
-import { odvSubstitutionMode, usableOdvValue, validateOdvValue } from '../../logic/odv'
+import { displayWithOdv, odvSubstitutionMode, usableOdvValue, validateOdvValue } from '../../logic/odv'
+import type { OverlaidRule } from '../../logic/overlays'
+import { macosReferences } from '../../logic/references'
 import type { RuleRef } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
 import { SectionHeading } from './CodeBlock'
+import { CustomTag } from './CustomTag'
 import { DiscussionText } from './DiscussionText'
 import { OrgDefinedValueInput } from './OrgDefinedValueInput'
 import { RuleBenchmarks } from './RuleBenchmarks'
@@ -35,10 +38,43 @@ export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
   if (ruleState.status === 'error') {
     return <p className={`${PANEL_CLASS} text-red-600`}>Failed to load: {ruleState.message}</p>
   }
-  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} />
+  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} />
 }
 
-function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
+// Overlaid top-level fields shown with a Custom tag on their own section;
+// any other overlaid field is listed on the "Custom:" line instead.
+function fieldsWithOwnSection(rule: Rule): Set<string> {
+  const fields = new Set(['title', 'check', 'applicability'])
+  if (rule.odv) fields.add('odv')
+  if (rule.remediation !== null) fields.add('remediation')
+  if (macosReferences(rule.references).length > 0) fields.add('references')
+  return fields
+}
+
+function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }) {
+  const vocabularyIndex = useVocabularyIndex()
+  const sourceLabel = termLabel(vocabularyIndex, 'sources', rule.source.name)
+  const staleOverlays = overlaid.applied.filter((application) => application.stale)
+  if (staleOverlays.length === 0 && overlaid.skipped.length === 0) return null
+
+  return (
+    <div className="space-y-1 text-xs text-amber-800">
+      {staleOverlays.map((application) => (
+        <p key={application.overlayId} data-testid="stale-overlay-note" className="break-words">
+          Custom content ({application.overlayId}) was written for {sourceLabel} {application.release}; this rule is from{' '}
+          {rule.source.release_tag}. Review it for accuracy.
+        </p>
+      ))}
+      {overlaid.skipped.map((skipped) => (
+        <p key={skipped.overlayId} className="break-words">
+          Custom content ({skipped.overlayId}) could not be applied to this rule and was skipped: {skipped.message}
+        </p>
+      ))}
+    </div>
+  )
+}
+
+function LoadedRuleDetail({ ruleRef, rule, overlaid }: { ruleRef: RuleRef; rule: Rule; overlaid: OverlaidRule }) {
   const storedValue = useStoredOdvValue(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
@@ -54,9 +90,21 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
   // A one-level path (every mSCP rule) only repeats the table's group header
   // as a raw folder code.
   const showBreadcrumb = rule.section_path.length > 1
+  const { provenance } = overlaid
+  const isCustom = (field: string) => provenance.has(field)
+  const ownSections = fieldsWithOwnSection(rule)
+  const customLineFields = [...provenance.keys()].filter((field) => !ownSections.has(field))
 
   return (
     <div className={`space-y-4 ${PANEL_CLASS}`}>
+      <OverlayNotes overlaid={overlaid} rule={rule} />
+
+      {isCustom('title') && (
+        <p data-testid="custom-title" className="font-medium break-words text-slate-800">
+          {displayWithOdv(rule.title, odvValue)} <CustomTag className="ml-1 align-text-bottom" />
+        </p>
+      )}
+
       {(showBreadcrumb || revision) && (
         <div className="space-y-0.5 text-xs text-slate-500">
           {showBreadcrumb && (
@@ -72,7 +120,7 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
 
       {rule.odv && (
         <div className="space-y-1">
-          <SectionHeading>Organization-defined value</SectionHeading>
+          <SectionHeading custom={isCustom('odv')}>Organization-defined value</SectionHeading>
           <OrgDefinedValueInput
             ruleId={rule.id}
             odv={rule.odv}
@@ -84,10 +132,16 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
         </div>
       )}
 
-      <RuleCheckSection rule={rule} odvValue={odvValue} />
-      <RuleRemediationSection rule={rule} odvValue={odvValue} />
-      <RuleBenchmarks applicability={rule.applicability} />
-      <RuleReferences references={rule.references} />
+      <RuleCheckSection rule={rule} odvValue={odvValue} custom={isCustom('check')} />
+      <RuleRemediationSection rule={rule} odvValue={odvValue} custom={isCustom('remediation')} />
+      <RuleBenchmarks applicability={rule.applicability} custom={isCustom('applicability')} />
+      <RuleReferences references={rule.references} custom={isCustom('references')} />
+
+      {customLineFields.length > 0 && (
+        <p data-testid="custom-fields" className="text-xs break-words text-violet-700">
+          Custom: {customLineFields.join(', ')}
+        </p>
+      )}
 
       <p className="text-xs text-slate-500">
         From{' '}

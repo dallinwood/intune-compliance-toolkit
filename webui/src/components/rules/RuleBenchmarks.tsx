@@ -4,14 +4,14 @@ import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Applicability } from '../../types/library'
 import { SectionHeading } from './CodeBlock'
 
-export function RuleBenchmarks({ applicability }: { applicability: Applicability }) {
+export function RuleBenchmarks({ applicability, custom = false }: { applicability: Applicability; custom?: boolean }) {
   const index = useVocabularyIndex()
   const scopeIdPrefix = useId()
   const scopes = benchmarksByScope(applicability, index)
 
   return (
     <section aria-label="Benchmarks" className="space-y-1">
-      <SectionHeading>Benchmarks</SectionHeading>
+      <SectionHeading custom={custom}>Benchmarks</SectionHeading>
       {scopes.length === 0 ? (
         <p className="text-xs text-slate-500 italic">Not in a benchmark</p>
       ) : (

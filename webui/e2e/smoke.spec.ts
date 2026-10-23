@@ -1149,3 +1149,115 @@ test.describe('benchmark cell and detail benchmarks', () => {
     expect(headingTexts.indexOf('Benchmarks')).toBe(headingTexts.indexOf('References') - 1)
   })
 })
+
+// Overlays are served through page.route so no real overlay is committed;
+// the dev server's own overlays/_manifest.json lists none.
+test.describe('custom overlays', () => {
+  test.use({ viewport: { width: 1280, height: 900 } })
+
+  const CUSTOM_TITLE = 'PowerShell runs in Constrained Language Mode on every managed device.'
+  const ISM_1622_TITLE = 'PowerShell is configured to use Constrained Language Mode.'
+  const CURRENT_RELEASE = 'v2026.09.4'
+
+  const titleOverlay = {
+    schema_version: 1,
+    id: 'powershell-title',
+    targets: [{ rule: 'asd_ism.ism-1622', release: CURRENT_RELEASE }],
+    fields: { title: CUSTOM_TITLE, tags: ['powershell-custom'] },
+  }
+  const staleOverlay = {
+    schema_version: 1,
+    id: 'powershell-old-guidance',
+    targets: [{ rule: 'asd_ism.ism-1622', release: 'v2025.03.1' }],
+    fields: { references: { microsoft: ['https://learn.microsoft.com/powershell/scripting/learn/ps101/01-getting-started'] } },
+  }
+  const invalidOverlays = {
+    'c-tags-not-a-list.json': { ...titleOverlay, id: 'tags-not-a-list', fields: { tags: 'powershell' } },
+    'd-two-key-wrapper.json': { ...titleOverlay, id: 'two-key-wrapper', fields: { references: { $replace: {}, $append: [] } } },
+    'e-protected-field.json': { ...titleOverlay, id: 'protected-field', fields: { source: { release_tag: 'v1' } } },
+  }
+
+  async function serveOverlays(page: Page, files: Record<string, unknown>) {
+    await page.route('**/overlays/*.json', (route) => {
+      const fileName = new URL(route.request().url()).pathname.split('/').pop() ?? ''
+      const body = fileName === '_manifest.json' ? { files: Object.keys(files).sort() } : files[fileName]
+      if (body === undefined) return route.fulfill({ status: 404, body: 'Not found' })
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
+    })
+  }
+
+  async function openIsm1622(page: Page) {
+    const row = await searchForSingleRow(page, 'ism-1622', CUSTOM_TITLE)
+    await row.getByRole('button').click()
+    const detail = page.locator('[id^="rule-detail-"]')
+    await expect(detail.getByTestId('custom-fields')).toBeVisible()
+    return detail
+  }
+
+  test('an overlay changes the title in the table, search and tag facet, and the details tag it Custom', async ({ page }) => {
+    await serveOverlays(page, { 'a-title.json': titleOverlay })
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+    const searchBox = page.getByPlaceholder('Search title or id…')
+    await searchBox.fill('every managed device')
+    await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+    await expect(page.locator('table tbody tr').filter({ hasText: CUSTOM_TITLE })).toHaveCount(1)
+    await expect(page.getByText(ISM_1622_TITLE)).toHaveCount(0)
+    await searchBox.fill('')
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
+
+    const tagOption = page.getByRole('checkbox', { name: 'powershell-custom', exact: true })
+    await tagOption.scrollIntoViewIfNeeded()
+    await tagOption.click()
+    await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+    await tagOption.click()
+
+    const detail = await openIsm1622(page)
+    await expect(detail.getByTestId('custom-title')).toContainText(CUSTOM_TITLE)
+    await expect(detail.getByTestId('custom-title').getByText('Custom', { exact: true })).toBeVisible()
+    await expect(detail.getByTestId('custom-fields')).toHaveText('Custom: tags')
+    await expect(detail.getByTestId('stale-overlay-note')).toHaveCount(0)
+    await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
+  })
+
+  test('an overlay written for an older release shows a review note naming it', async ({ page }) => {
+    await serveOverlays(page, { 'a-title.json': titleOverlay, 'b-old-guidance.json': staleOverlay })
+    await page.goto('/')
+
+    const detail = await openIsm1622(page)
+    await expect(detail.getByTestId('stale-overlay-note')).toHaveCount(1)
+    await expect(detail.getByTestId('stale-overlay-note')).toHaveText(
+      `Custom content (powershell-old-guidance) was written for ASD ISM v2025.03.1; this rule is from ${CURRENT_RELEASE}. Review it for accuracy.`,
+    )
+    const referencesHeading = detail.getByRole('heading', { name: 'References' })
+    await expect(referencesHeading.locator('..').getByText('Custom', { exact: true })).toBeVisible()
+    await expect(detail.getByText('ps101/01-getting-started', { exact: false })).toBeVisible()
+    await expect(detail.getByTestId('custom-fields')).toHaveText('Custom: tags')
+  })
+
+  test('an invalid overlay is skipped with a warning while the valid ones still apply', async ({ page }) => {
+    await serveOverlays(page, { 'a-title.json': titleOverlay, ...invalidOverlays })
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+    const notice = page.getByRole('status', { name: 'Custom content problems' })
+    for (const fileName of Object.keys(invalidOverlays)) await expect(notice).toContainText(fileName)
+    await expect(page.getByRole('status', { name: 'Display name problems' })).toHaveCount(0)
+
+    const detail = await openIsm1622(page)
+    await expect(detail.getByTestId('custom-title')).toContainText(CUSTOM_TITLE)
+    await expect(detail.getByTestId('custom-fields')).toHaveText('Custom: tags')
+    await expect(detail.getByRole('heading', { name: 'References' })).toHaveCount(0)
+  })
+
+  test('with no overlays the details show no custom content', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
+    await row.getByRole('button').click()
+    const detail = page.locator('[id^="rule-detail-"]')
+    await expect(detail.getByTestId('rule-breadcrumb')).toBeVisible()
+    await expect(detail.getByText(/Custom/)).toHaveCount(0)
+    await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
+  })
+})

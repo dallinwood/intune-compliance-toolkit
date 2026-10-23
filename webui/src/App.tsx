@@ -51,6 +51,7 @@ function App() {
       coveredVersions={coveredVersions}
       vocabularyIndex={state.vocabulary.index}
       vocabularyWarnings={state.vocabulary.warnings}
+      overlayWarnings={state.library.overlayWarnings}
     />
   )
 }

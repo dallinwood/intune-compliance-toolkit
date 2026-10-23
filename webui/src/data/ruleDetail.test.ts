@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fetchRule } from './ruleDetail'
+import { fetchOverlaidRule, fetchRule, setRuleOverlays } from './ruleDetail'
 
 function jsonResponse(body: unknown): Response {
   return new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } })
@@ -69,5 +69,28 @@ describe('fetchRule', () => {
     await expect(fetchRule(ref)).rejects.toThrow('Failed to load rule mscp.retried_rule: Network down')
     expect(await fetchRule(ref)).toEqual({ id: 'mscp.retried_rule' })
     expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('fetchRule with overlays', () => {
+  afterEach(() => {
+    setRuleOverlays([])
+  })
+
+  it('returns the overlaid rule to every caller and the provenance to the details', async () => {
+    const rule = { id: 'mscp.overlaid_rule', title: 'Upstream', tags: ['a'], source: { release_tag: 'release_27.0' } }
+    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(rule)))
+    setRuleOverlays([
+      { id: 'current', targets: [{ rule: rule.id, release: 'release_27.0' }], fields: { tags: ['b'] } },
+      { id: 'older', targets: [{ rule: rule.id, release: 'release_26.0' }], fields: { title: 'Custom' } },
+    ])
+    const ref = refFor('overlaid_rule')
+
+    expect(await fetchRule(ref)).toEqual({ ...rule, title: 'Custom', tags: ['a', 'b'] })
+    const overlaid = await fetchOverlaidRule(ref)
+    expect(Object.fromEntries(overlaid.provenance)).toEqual({
+      tags: { overlayId: 'current', release: 'release_27.0', stale: false },
+      title: { overlayId: 'older', release: 'release_26.0', stale: true },
+    })
   })
 })

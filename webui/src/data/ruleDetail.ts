@@ -1,7 +1,16 @@
+import { applyOverlays, type OverlaidRule, type Overlay } from '../logic/overlays'
 import type { RuleRef } from '../logic/selectionEntry'
 import type { Rule } from '../types/library'
 
-const cache = new Map<string, Promise<Rule>>()
+const cache = new Map<string, Promise<OverlaidRule>>()
+let ruleOverlays: Overlay[] = []
+
+// Set once the library has loaded, before any rule is fetched. Every caller
+// of fetchRule (details, generator, export) then gets the overlaid rule.
+export function setRuleOverlays(overlays: Overlay[]): void {
+  ruleOverlays = overlays
+  cache.clear()
+}
 
 function describeError(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
@@ -32,11 +41,18 @@ async function loadRule(ref: RuleRef): Promise<Rule> {
   }
 }
 
-export function fetchRule(ref: RuleRef): Promise<Rule> {
+async function loadOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
+  const rule = await loadRule(ref)
+  const isTargeted = ruleOverlays.some((overlay) => overlay.targets.some((target) => target.rule === ref.id))
+  if (!isTargeted) return { rule, provenance: new Map(), applied: [], skipped: [] }
+  return applyOverlays(rule, ruleOverlays, rule.source.release_tag)
+}
+
+export function fetchOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
   const cached = cache.get(ref.id)
   if (cached) return cached
 
-  const pending = loadRule(ref)
+  const pending = loadOverlaidRule(ref)
   cache.set(ref.id, pending)
   // A failure is not cached, so a later call (e.g. after a network blip)
   // fetches again instead of replaying the same rejection forever.
@@ -44,4 +60,8 @@ export function fetchRule(ref: RuleRef): Promise<Rule> {
     if (cache.get(ref.id) === pending) cache.delete(ref.id)
   })
   return pending
+}
+
+export function fetchRule(ref: RuleRef): Promise<Rule> {
+  return fetchOverlaidRule(ref).then((overlaid) => overlaid.rule)
 }

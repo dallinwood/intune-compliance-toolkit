@@ -29,7 +29,7 @@ function CheckEntry({ label, check, odvValue }: { label: string; check: RuleChec
   )
 }
 
-export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: OrgDefinedValue | null }) {
+export function RuleCheckSection({ rule, odvValue, custom = false }: { rule: Rule; odvValue: OrgDefinedValue | null; custom?: boolean }) {
   const index = useVocabularyIndex()
   const versionChecks = Object.entries(rule.check?.by_version ?? {}).sort(([left], [right]) =>
     compareVersionsDescending(left, right),
@@ -42,7 +42,7 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
 
   return (
     <div className="space-y-2">
-      <SectionHeading>Check</SectionHeading>
+      <SectionHeading custom={custom}>Check</SectionHeading>
       {hasNoMacosVersion && (
         <p className="text-xs text-amber-700">
           No macOS version listed: the source does not map this rule to any macOS release.

@@ -1,5 +1,6 @@
 import { displayWithOdv } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { CustomTag } from './CustomTag'
 
 const ODV_PLACEHOLDER = '$ODV'
 const MAX_NOTE_VALUE_LENGTH = 80
@@ -30,6 +31,13 @@ export function OdvNote({ odvValue }: { odvValue: OrgDefinedValue | null }) {
   )
 }
 
-export function SectionHeading({ children }: { children: string }) {
-  return <h5 className="text-xs font-semibold tracking-wide text-slate-500 uppercase">{children}</h5>
+export function SectionHeading({ children, custom = false }: { children: string; custom?: boolean }) {
+  const heading = <h5 className="text-xs font-semibold tracking-wide text-slate-500 uppercase">{children}</h5>
+  if (!custom) return heading
+  return (
+    <div className="flex items-center gap-2">
+      {heading}
+      <CustomTag />
+    </div>
+  )
 }

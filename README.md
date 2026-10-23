@@ -184,3 +184,9 @@ Check overlays with `python -m pytest -W error tests/test_overlays.py` (or
 protected field, a type mismatch, a target rule missing from `baselines/`,
 or a merged rule that breaks the rule schema fails; an unknown field name or
 two overlays setting the same value is reported as a warning.
+
+In the web UI an overlay that fails the same shape and type checks is
+skipped with a warning, and the other overlays still apply. An overlaid
+field carries a **Custom** tag in the rule details (fields with no section
+of their own are listed on a `Custom:` line), and an overlay written for an
+older release shows a note asking you to review it.
