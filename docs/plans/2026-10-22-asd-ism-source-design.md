@@ -473,9 +473,12 @@ the matching plan document:
    **table render cost**. The checkbox label fix (`62a6e7e`) cut
    production first load from 1.4s to 1.0s and filter and search repaints
    from about 1.9s to 0.6s, but the table is still not virtualized and
-   Playwright still runs one worker. Open: the maintainer to decide
-   between virtualizing or paginating the table, or accepting the measured
-   numbers and moving virtualization to section 13.
+   Playwright still runs one worker. Closed 2026-10-23 by the browse UX
+   plan (`docs/plans/2026-10-23-browse-ux-plan.md`): the maintainer chose
+   paging. The table is a collapsible section tree, paged at 25 to 200
+   rules or revealed 100 at a time with infinite scroll (`39d049f`,
+   `2f93756`), and e2e runs at default parallel workers again. Every
+   section 11 item is now closed.
 4. **Attribution**: NOTICE, README, footer.
 
 No AI is used to convert content, so there is no per-rule delegation to
@@ -549,6 +552,12 @@ implementation plan.
   - ISM's `updated` value (e.g. `Dec-22`) is shown verbatim and can be
     misread as a day; consider rendering it as month and year.
 
+- **Index splitting (decided 2026-10-23: not now).** The ISM index is
+  about 83 KB gzipped (1.2 MB raw, now including `section_path` for the
+  section tree) and parses in a few milliseconds; the browse cost was DOM,
+  not data. Revisit splitting into a summary index plus chunk files if the
+  indexes grow about tenfold.
+
 ## Progress log
 
 - 2026-10-22: Design drafted from the brainstorming session (no code yet).
@@ -556,3 +565,4 @@ implementation plan.
 - 2026-10-23: Phase 1 (schema v4 and mSCP restructure) done, per `docs/plans/2026-10-23-rule-schema-v4-plan.md`: `8b1dabe` feat: move the rule library and mSCP importer to schema v4; `6d8a9e5` refactor: read schema v4 applicability in the web UI; `1fc6660` test: read schema v4 applicability in the e2e smoke spec; `9bfe529` refactor: tidy target naming left over from the schema v4 move. mSCP values were unchanged, bundles byte-identical, and the UI visually identical. The review found a phase 3 prerequisite (benchmarks on null-version entries can't be reached in the UI) and a sequencing rule for the phase 2 manifest entry; both are recorded in section 11.
 - 2026-10-23: Phase 2 (ASD ISM import) done, per `docs/plans/2026-10-23-asd-ism-import-plan.md`: `945c0c7`, `934005d`, `536cb3e`, `6ff7712`, `704b436`. 1,143 ISM controls from `v2026.09.4` load in the web UI next to the 350 mSCP rules. The UI gaps found are added to section 11 (phase 3) and the deferred hardening to section 13. The guideline count in section 8 is corrected to 23.
 - 2026-10-23: Phase 3 (ISM UI) done, per `docs/plans/2026-10-23-ism-ui-plan.md`: `62a6e7e`, `8e6322d`, `696eb1f`, `5a63876`, `ad0850a`, `4038b9d`, `90d4a8f`. Target and Version filters have None options, ISM benchmarks show in the facet and table, ISM details render breadcrumb, revision and Markdown, and each rule credits its own source. Section 11 is closed except table render cost (see the status note there). The review deferrals are in section 13.
+- 2026-10-23: Browse UX plan (Phases A and B) done: responsive filters, URL state, collapsible section tree, paging and infinite scroll, single-line benchmark cell. Closes the last section 11 gate. Index entries now carry `section_path`.
