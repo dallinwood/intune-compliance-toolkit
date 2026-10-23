@@ -114,7 +114,7 @@ entry; see section 4). For each key in `fields`:
 |---|---|---|
 | list | list or absent | upstream entries, then overlay entries (append) |
 | string, number, boolean, `null` | anything | overlay value (replace) |
-| object (not a wrapper) | object or absent | merged key by key, recursively, by these same rules |
+| object (not a wrapper) | object, `null` or absent | merged key by key, recursively, by these same rules (`null` counts as absent) |
 | `{ "$replace": v }` | anything | `v` |
 | `{ "$append": [..] }` | list or absent | append (explicit) |
 | `{ "$merge": {..} }` | object or absent | key-by-key merge (explicit) |
@@ -229,3 +229,4 @@ There are two layers. Neither one blocks the raw data.
 
 - 2026-10-23: Design drafted from the brainstorming session (no code yet).
 - 2026-10-23: Builder-check answers folded in (protected fields, no derived assessment, index recompute, Custom line, per-overlay stale notes); approved by the maintainer.
+- 2026-10-23: Implemented per `docs/plans/2026-10-23-custom-overlays-plan.md`. One change to section 3.3 made during review: an object, `$merge` or `$append` onto an upstream `null` merges as onto an absent value.
