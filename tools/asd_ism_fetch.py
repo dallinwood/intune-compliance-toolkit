@@ -3,12 +3,12 @@ import tempfile
 from pathlib import Path
 
 from tools import github_fetch
+from tools.asd_ism_normalize import REPOSITORY_URL
 from tools.directory_swap import replace_directory
 from tools.github_fetch import build_request, default_opener, validate_commit_sha, validate_tag
 from tools.source_lock import SourceLock, write_source_lock
 
 REPOSITORY = "AustralianCyberSecurityCentre/ism-oscal"
-REPOSITORY_URL = f"https://github.com/{REPOSITORY}"
 USER_AGENT = "intune-compliance-toolkit-asd-ism-import"
 FILE_NAMES = ("ISM_catalog.json", "README.md")
 

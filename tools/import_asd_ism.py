@@ -30,12 +30,20 @@ DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 SOURCE_DISPLAY_NAME = "ASD Information Security Manual"
 
 
+def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
+    keys = [key for key, _ in pairs]
+    duplicates = sorted({key for key in keys if keys.count(key) > 1})
+    if duplicates:
+        raise ValueError(f"duplicate key {duplicates[0]!r}")
+    return dict(pairs)
+
+
 def read_catalog(upstream_dir: Path) -> dict:
     catalog_path = upstream_dir / CATALOG_FILE_NAME
     if not catalog_path.is_file():
         raise ValueError(f"{catalog_path}: upstream catalog not found")
     try:
-        return json.loads(catalog_path.read_text(encoding="utf-8"))
+        return json.loads(catalog_path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_keys)
     except ValueError as problem:
         raise ValueError(f"{catalog_path}: invalid JSON ({problem})") from problem
 

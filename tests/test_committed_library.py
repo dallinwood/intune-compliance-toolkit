@@ -86,10 +86,12 @@ def test_asd_ism_vendored_license_present():
     assert "Creative Commons Attribution 4.0" in readme_text
 
 
-def test_asd_ism_discussions_have_no_unresolved_links():
+def test_asd_ism_titles_and_discussions_have_no_unresolved_links():
     rules = committed_asd_ism_rules()
     assert rules
-    unresolved = [rule["id"] for rule in rules if "](#" in rule["discussion"]]
+    unresolved = [
+        rule["id"] for rule in rules if "](#" in rule["discussion"] or "](#" in rule["title"]
+    ]
     assert unresolved == []
 
 
@@ -98,3 +100,26 @@ def test_asd_ism_titles_are_single_paragraphs():
     assert rules
     multi_paragraph_titles = [rule["id"] for rule in rules if "\n\n" in rule["title"]]
     assert multi_paragraph_titles == []
+
+
+def test_asd_ism_multi_paragraph_statement_keeps_its_full_text_before_the_overview():
+    incident_register = json.loads(
+        (BASELINES_DIR / "asd_ism" / "rules" / "ism-1803.json").read_text(encoding="utf-8")
+    )
+    discussion = incident_register["discussion"]
+
+    assert discussion.startswith(
+        "A cyber security incident register contains the following for each cyber security incident:"
+    )
+    assert "- to whom the cyber security incident was reported." in discussion
+    statement_end = discussion.index("- to whom the cyber security incident was reported.")
+    statement_end += len("- to whom the cyber security incident was reported.")
+    assert discussion[statement_end:].startswith("\n\nDeveloping, implementing and maintaining")
+
+
+def test_asd_ism_multi_paragraph_statements_in_this_release_number_forty():
+    rules = committed_asd_ism_rules()
+    multi_paragraph_rules = [
+        rule["id"] for rule in rules if rule["discussion"].startswith(rule["title"] + "\n\n")
+    ]
+    assert len(multi_paragraph_rules) == 40

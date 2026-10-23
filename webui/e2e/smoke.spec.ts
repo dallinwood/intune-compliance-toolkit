@@ -5,7 +5,12 @@ import { unzipSync } from 'fflate'
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
 async function searchForSingleRow(page: Page, search: string, title: RegExp | string) {
-  await page.getByPlaceholder('Search title or id…').fill(search)
+  const searchBox = page.getByPlaceholder('Search title or id…')
+  // Clearing first keeps repeated calls in one test working: the count only
+  // returns to the full library once the previous search is gone.
+  await searchBox.fill('')
+  await expect(ruleCount(page)).toHaveText(/^1493 of 1493 rules$/, { timeout: 10_000 })
+  await searchBox.fill(search)
   const row = page.locator('table tbody tr').filter({ hasText: title })
   await expect(row).toHaveCount(1)
   return row
@@ -154,9 +159,8 @@ test('the Platform facet follows Automation and the Source facet comes last, and
 
 test('searching an ISM control id finds exactly that control', async ({ page }) => {
   await page.goto('/')
-  const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
+  await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
   await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
-  await expect(row).toHaveCount(1)
 })
 
 test('an ISM control flows to the manual attestation report', async ({ page }) => {

@@ -187,6 +187,31 @@ def test_resource_links_are_rewritten():
         assert "(#" not in rule["discussion"]
 
 
+def test_links_inside_a_single_paragraph_statement_are_rewritten_in_the_title():
+    document = load_fixture()
+    control_of(document, "ism-1667")["parts"][0]["prose"] = (
+        f"See [procurement](#{PROCUREMENT_RESOURCE_UUID}) for Microsoft Office."
+    )
+
+    rule = rules_by_id(document)["asd_ism.ism-1667"]
+
+    assert "(https://www.cyber.gov.au/ism/procurement)" in rule["title"]
+    assert "(#" not in rule["title"]
+
+
+def test_links_inside_a_multi_paragraph_statement_are_rewritten_in_title_and_discussion():
+    document = load_fixture()
+    control_of(document, "ism-1667")["parts"][0]["prose"] = (
+        f"Lead [one](#{PROCUREMENT_RESOURCE_UUID}):\n\n- item [two](#{PROCUREMENT_RESOURCE_UUID})"
+    )
+
+    rule = rules_by_id(document)["asd_ism.ism-1667"]
+
+    assert "(#" not in rule["title"]
+    assert "(#" not in rule["discussion"]
+    assert rule["discussion"].startswith(rule["title"] + "\n\n- item [two](https://")
+
+
 def test_rules_are_sorted_by_id_regardless_of_catalog_order():
     document = load_fixture()
     for guideline in document["catalog"]["groups"]:
@@ -284,6 +309,35 @@ def empty_resource_links(document):
     resource_of(document, PROCUREMENT_RESOURCE_UUID)["rlinks"] = []
 
 
+def non_dict_resource_link(document):
+    resource_of(document, PROCUREMENT_RESOURCE_UUID)["rlinks"] = ["https://www.cyber.gov.au/ism/procurement"]
+
+
+def empty_resource_href(document):
+    resource_of(document, PROCUREMENT_RESOURCE_UUID)["rlinks"] = [{"href": ""}]
+
+
+def add_guidance_part(document):
+    control = control_of(document, "ism-1667")
+    control["parts"].append({"id": "ism-1667_gdn", "name": "guidance", "prose": "Extra."})
+
+
+def add_nested_controls(document):
+    control_of(document, "ism-1667")["controls"] = []
+
+
+def add_nested_statement_parts(document):
+    control_of(document, "ism-1667")["parts"][0]["parts"] = []
+
+
+def add_params(document):
+    control_of(document, "ism-1667")["params"] = []
+
+
+def add_unknown_control_key(document):
+    control_of(document, "ism-1667")["links"] = []
+
+
 def remove_topic_overview(document):
     del topic_of(document, "ism-1667")["parts"]
 
@@ -364,6 +418,13 @@ FAIL_LOUDLY_CASES = {
     "link to unknown uuid": (link_to_unknown_uuid, "ism-1667.*00000000-0000-4000-8000-000000000000"),
     "resource without rlinks": (remove_resource_links, PROCUREMENT_RESOURCE_UUID),
     "resource with empty rlinks": (empty_resource_links, PROCUREMENT_RESOURCE_UUID),
+    "resource link that is not an object": (non_dict_resource_link, PROCUREMENT_RESOURCE_UUID),
+    "resource link with empty href": (empty_resource_href, PROCUREMENT_RESOURCE_UUID),
+    "extra guidance part": (add_guidance_part, "ism-1667.*guidance"),
+    "nested controls": (add_nested_controls, "ism-1667.*controls"),
+    "statement with nested parts": (add_nested_statement_parts, "ism-1667.*parts"),
+    "params": (add_params, "ism-1667.*params"),
+    "unknown control key": (add_unknown_control_key, "ism-1667.*links"),
     "topic without overview": (remove_topic_overview, "ism-1667.*overview"),
     "topic with two overviews": (duplicate_topic_overview, "ism-1667.*overview"),
     "control two groups deep": (move_control_two_groups_deep, "ism-1667.*three groups"),

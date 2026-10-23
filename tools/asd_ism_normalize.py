@@ -23,6 +23,10 @@ SAFE_CONTROL_ID_PATTERN = re.compile(r"^[a-z0-9_-]+(?![\s\S])")
 RESOURCE_LINK_PATTERN = re.compile(r"\]\(#([^)\s]+)\)")
 PARAGRAPH_SEPARATOR = "\n\n"
 
+KNOWN_CONTROL_KEYS = {"id", "class", "title", "props", "parts"}
+STATEMENT_PART_NAME = "statement"
+KNOWN_STATEMENT_PART_KEYS = {"id", "name", "prose"}
+
 CLASSIFICATION_PROPERTY = "applicability"
 ESSENTIAL_EIGHT_PROPERTY = "essential-eight-applicability"
 SINGLE_VALUE_PROPERTIES = ("revision", "updated")
@@ -77,8 +81,9 @@ def _resource_hrefs(catalog: dict) -> dict[str, str]:
         if not isinstance(uuid, str):
             raise UnsupportedUpstreamData("back-matter resource without a uuid")
         rlinks = resource.get("rlinks")
-        first_href = rlinks[0].get("href") if isinstance(rlinks, list) and rlinks else None
-        if not isinstance(first_href, str):
+        first_link = rlinks[0] if isinstance(rlinks, list) and rlinks else None
+        first_href = first_link.get("href") if isinstance(first_link, dict) else None
+        if not isinstance(first_href, str) or not first_href:
             raise UnsupportedUpstreamData(f"back-matter resource {uuid!r} has no rlinks href")
         hrefs[uuid] = first_href
     return hrefs
@@ -97,12 +102,26 @@ def _topic_overview(topic: dict, control_id: str) -> str:
     return overviews[0]["prose"]
 
 
+def _check_control_shape(control: dict, control_id: str) -> None:
+    unknown_keys = sorted(set(control) - KNOWN_CONTROL_KEYS)
+    if unknown_keys:
+        raise UnsupportedUpstreamData(f"{control_id}: unsupported control key {unknown_keys[0]!r}")
+    parts = control.get("parts", [])
+    if not isinstance(parts, list):
+        raise UnsupportedUpstreamData(f"{control_id}: parts must be a list")
+    for part in parts:
+        if not isinstance(part, dict) or part.get("name") != STATEMENT_PART_NAME:
+            part_name = part.get("name") if isinstance(part, dict) else part
+            raise UnsupportedUpstreamData(f"{control_id}: unsupported part {part_name!r}")
+        unknown_part_keys = sorted(set(part) - KNOWN_STATEMENT_PART_KEYS)
+        if unknown_part_keys:
+            raise UnsupportedUpstreamData(
+                f"{control_id}: unsupported statement part key {unknown_part_keys[0]!r}"
+            )
+
+
 def _statement(control: dict, control_id: str) -> str:
-    statements = [
-        part
-        for part in control.get("parts", [])
-        if isinstance(part, dict) and part.get("name") == "statement"
-    ]
+    statements = control.get("parts", [])
     if len(statements) != 1 or not isinstance(statements[0].get("prose"), str) or not statements[0]["prose"]:
         raise UnsupportedUpstreamData(f"{control_id}: needs exactly one statement part with prose")
     return statements[0]["prose"]
@@ -162,16 +181,18 @@ def _normalize_control(
     resource_hrefs: dict[str, str],
     lock: SourceLock,
 ) -> dict:
+    _check_control_shape(control, control_id)
     single_values, classifications, essential_eight_levels = _read_properties(control, control_id)
     benchmark_names = _benchmark_names(classifications, essential_eight_levels, control_id)
-    statement = _statement(control, control_id)
+    statement = rewrite_resource_links(_statement(control, control_id), resource_hrefs, control_id)
     title, has_more_paragraphs = split_statement(statement)
+    overview = rewrite_resource_links(overview, resource_hrefs, control_id)
     discussion = f"{statement}{PARAGRAPH_SEPARATOR}{overview}" if has_more_paragraphs else overview
     return {
         "schema_version": SCHEMA_VERSION,
         "id": f"{SOURCE_NAME}.{control_id}",
         "title": title,
-        "discussion": rewrite_resource_links(discussion, resource_hrefs, control_id),
+        "discussion": discussion,
         "discussion_format": "markdown",
         "section_path": section_path,
         "source": {

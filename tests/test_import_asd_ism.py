@@ -167,6 +167,9 @@ def test_change_summary_lists_added_and_removed_rules(workspace, capsys):
         "Added rules: asd_ism.ism-0002",
         "Removed rules: asd_ism.ism-0001",
     ]
+    rules_dir = baselines_dir / "asd_ism" / "rules"
+    assert not (rules_dir / "ism-0001.json").exists()
+    assert (rules_dir / "ism-0002.json").is_file()
 
 
 def test_tag_and_offline_are_mutually_exclusive(workspace):
@@ -198,6 +201,17 @@ def test_catalog_that_is_not_json_exits_one(workspace, capsys):
     (sources_dir / "upstream" / "ISM_catalog.json").write_text("not json", encoding="utf-8")
     assert run_import(sources_dir, baselines_dir, "--offline") == 1
     assert "ISM_catalog.json" in capsys.readouterr().err
+    assert snapshot(baselines_dir) == {}
+
+
+def test_catalog_with_a_duplicate_key_exits_one(workspace, capsys):
+    sources_dir, baselines_dir = workspace
+    replace_in_catalog(sources_dir, "{", '{"repeated": 1, "repeated": 2,')
+
+    assert run_import(sources_dir, baselines_dir, "--offline") == 1
+    error_output = capsys.readouterr().err
+    assert "ISM_catalog.json" in error_output
+    assert "duplicate key" in error_output
     assert snapshot(baselines_dir) == {}
 
 
