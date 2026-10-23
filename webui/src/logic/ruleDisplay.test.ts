@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { NO_VERSION_KEY } from './applicability'
 import { assessmentLabel, benchmarkSummary, upstreamRuleId } from './ruleDisplay'
 import { applicabilityOfVersions } from './testRuleFixtures'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
@@ -103,6 +104,34 @@ describe('benchmarkSummary', () => {
   it('falls back to the raw version for a version the vocabulary does not list', () => {
     const applicability = applicabilityOfVersions({ 'macOS 99.0': [cisLevel1], 'macOS 27.0': [stig(null)] })
     expect(benchmarkSummary(applicability, ['macOS 99.0', 'macOS 27.0'], vocabularyIndex)).toBe('CIS Level 1 on macOS 99.0 · DISA STIG on macOS 27')
+  })
+
+  it('lists the benchmarks of an unversioned ISM entry in vocabulary order', () => {
+    const ismApplicability = [
+      {
+        target: null,
+        version: null,
+        benchmarks: [
+          { name: 'e8_ml3', severity: null },
+          { name: 'ism_protected', severity: null },
+          { name: 'ism_non_classified', severity: null },
+          { name: 'e8_ml1', severity: null },
+        ],
+      },
+    ]
+    expect(benchmarkSummary(ismApplicability, [NO_VERSION_KEY], vocabularyIndex)).toBe(
+      'ISM Non-classified · ISM PROTECTED · Essential Eight ML1 · Essential Eight ML3',
+    )
+  })
+
+  it('labels the unversioned scope None when it is named beside versions', () => {
+    const applicability = [
+      { target: 'macOS', version: '27.0', benchmarks: [cisLevel1] },
+      { target: 'macOS', version: null, benchmarks: [stig('high')] },
+    ]
+    expect(benchmarkSummary(applicability, ['macOS 27.0', NO_VERSION_KEY], vocabularyIndex)).toBe(
+      'CIS Level 1 on macOS 27 · DISA STIG (high) on None',
+    )
   })
 
   it('is empty when nothing is listed under the versions in scope', () => {

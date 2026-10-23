@@ -13,6 +13,7 @@ import {
   benchmarkGroupsWithSeverities,
   benchmarksListedUnder,
   compareBenchmarkFacetValues,
+  compareTargetGroupKeys,
   facetOptions,
   sectionGroupKey,
   sourceGroupKey,
@@ -20,7 +21,7 @@ import {
   targetGroupKeys,
   versionsListingAnyOf,
 } from '../../logic/ruleFilters'
-import { compareVersionKeys } from '../../logic/applicability'
+import { NONE_LABEL, NO_TARGET_KEY, NO_VERSION_KEY, compareScopeKeys } from '../../logic/applicability'
 import { compareGroupKeys, groupLabel, type VocabularyIndex, type VocabularyName } from '../../logic/vocabulary'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
@@ -44,6 +45,9 @@ const NO_SELECTION: ReadonlySet<string> = new Set()
 // recomputed on every render by fresh inline functions.
 function facetAccessors(index: VocabularyIndex) {
   const labelIn = (vocabulary: VocabularyName) => (groupKey: string) => groupLabel(index, vocabulary, groupKey)
+  // "None" is applied in code, never read from the vocabulary.
+  const labelOrNone = (vocabulary: VocabularyName, noneKey: string) => (groupKey: string) =>
+    groupKey === noneKey ? NONE_LABEL : groupLabel(index, vocabulary, groupKey)
   return {
     allVersionsOf: (row: RuleRow) => versionsListingAnyOf(row, NO_SELECTION, index),
     allBenchmarksOf: (row: RuleRow) => benchmarksListedUnder(row, NO_SELECTION, index),
@@ -51,13 +55,13 @@ function facetAccessors(index: VocabularyIndex) {
     sourceOf: (row: RuleRow) => sourceGroupKey(row, index),
     sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
     tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
-    targetLabel: labelIn('targets'),
+    targetLabel: labelOrNone('targets', NO_TARGET_KEY),
     sourceLabel: labelIn('sources'),
-    versionLabel: labelIn('versions'),
+    versionLabel: labelOrNone('versions', NO_VERSION_KEY),
     sectionLabel: labelIn('sections'),
     tagLabel: labelIn('tags'),
     compareBenchmarks: compareBenchmarkFacetValues(index),
-    compareTargets: compareGroupKeys(index, 'targets'),
+    compareTargets: compareTargetGroupKeys(index),
     compareSources: compareGroupKeys(index, 'sources'),
     compareSections: compareGroupKeys(index, 'sections'),
     compareTags: compareGroupKeys(index, 'tags'),
@@ -157,7 +161,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
           </FacetGroup>
 
           <StableFacetGroup
-            title="Platform"
+            title="Target"
             rows={rows}
             valueOf={accessors.targetsOf}
             compareValues={accessors.compareTargets}
@@ -168,10 +172,10 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
           />
 
           <StableFacetGroup
-            title="macOS version"
+            title="Version"
             rows={rows}
             valueOf={accessors.allVersionsOf}
-            compareValues={compareVersionKeys}
+            compareValues={compareScopeKeys}
             labelOf={accessors.versionLabel}
             reachable={versions}
             selected={filters.versions}
@@ -313,6 +317,12 @@ function StableFacetGroup({
   const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf, compareValues), [rows, valueOf, compareValues])
   const reachableSet = useMemo(() => new Set(reachable), [reachable])
   const { shown, leaving } = useStableFacetShown(reachable)
+
+  const hasShownValue = canonicalOrder.some((value) => shown.has(value))
+  // Once every option has faded out (e.g. Tags with only ASD ISM rules left)
+  // a bare heading would be noise; a selected value keeps its group so it can
+  // be unchecked.
+  if (!hasShownValue && selected.size === 0) return null
 
   return (
     <FacetGroup title={title}>

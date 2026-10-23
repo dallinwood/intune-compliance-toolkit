@@ -15,7 +15,7 @@
         "sources": { "$ref": "#/$defs/vocabulary" },
         "benchmarks": { "$ref": "#/$defs/vocabulary" },
         "severities": { "$ref": "#/$defs/vocabulary" },
-        "versions": { "$ref": "#/$defs/vocabulary" },
+        "versions": { "$ref": "#/$defs/versionVocabulary" },
         "sections": { "$ref": "#/$defs/vocabulary" },
         "tags": { "$ref": "#/$defs/vocabulary" },
         "manual_reasons": { "$ref": "#/$defs/vocabulary" }
@@ -30,6 +30,26 @@
     "vocabulary": {
       "type": "array",
       "items": { "$ref": "#/$defs/entry" }
+    },
+    "versionVocabulary": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          { "$ref": "#/$defs/entry" },
+          {
+            "properties": {
+              "terms": {
+                "items": { "$ref": "#/$defs/versionTerm" }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "versionTerm": {
+      "description": "A target, a space, then a version. A term with no space could collide with the web UI's \"none\" stand-in for an entry without a version.",
+      "type": "string",
+      "pattern": "^\\S.* \\S+(?![\\s\\S])"
     },
     "entry": {
       "type": "object",

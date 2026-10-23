@@ -9,6 +9,7 @@ import {
   benchmarkFacetValue,
   benchmarkGroupsWithSeverities,
   compareBenchmarkFacetValues,
+  compareTargetGroupKeys,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
@@ -20,7 +21,7 @@ import {
   versionsListingAnyOf,
   type FilterValues,
 } from './ruleFilters'
-import { benchmarksAt, compareVersionKeys, versionKeysOf } from './applicability'
+import { NO_TARGET_KEY, NO_VERSION_KEY, benchmarksAt, compareScopeKeys, compareVersionKeys, scopeKeysOf } from './applicability'
 import { groupLabel, type VocabularyIndex } from './vocabulary'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 import { applicabilityOfVersions } from './testRuleFixtures'
@@ -29,14 +30,14 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
   return {
     ref: { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' },
     title: 'Enable Gatekeeper',
-    targets: ['macOS'],
+    targetKeys: ['macOS'],
     section: 'os',
     sourceName: 'mscp',
     releaseTag: 'release_27.0',
     assessment: { status: 'automated', manual_reason: null },
     architecture: null,
     applicability: applicabilityOfVersions({ 'macOS 26.0': [{ name: 'cis_lvl1', severity: null }] }),
-    versionKeys: ['macOS 26.0'],
+    scopeKeys: ['macOS 26.0'],
     benchmarks: ['cis_lvl1'],
     tags: ['800-53r5_high'],
     hasOdv: false,
@@ -115,7 +116,7 @@ const passwordRow = row({
     'macOS 27.0': [{ name: 'disa_stig', severity: 'medium' }],
     'macOS 26.0': [{ name: 'disa_stig', severity: 'medium' }, { name: 'cis_lvl2', severity: null }],
   }),
-  versionKeys: ['macOS 27.0', 'macOS 26.0'],
+  scopeKeys: ['macOS 27.0', 'macOS 26.0'],
   benchmarks: ['cis_lvl2', 'disa_stig'],
   tags: ['cisv8'],
   hasOdv: true,
@@ -167,7 +168,7 @@ describe('matchesFilters', () => {
         'macOS 27.0': [{ name: 'disa_stig', severity: null }],
         'macOS 26.0': [{ name: 'cis_lvl1', severity: null }],
       }),
-      versionKeys: ['macOS 27.0', 'macOS 26.0'],
+      scopeKeys: ['macOS 27.0', 'macOS 26.0'],
       benchmarks: ['cis_lvl1', 'disa_stig'],
     })
 
@@ -213,7 +214,7 @@ describe('facetOptions', () => {
 
   it('narrows to only the values reachable under the other applied filters', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
-    const options = facetOptions(rows, filters, 'versions', (r) => r.versionKeys, filters.versions, noVocabulary)
+    const options = facetOptions(rows, filters, 'versions', (r) => r.scopeKeys, filters.versions, noVocabulary)
     expect(options).toEqual(['macOS 26.0', 'macOS 27.0'])
 
     const narrower = emptyFilters({ versions: new Set(['macOS 27.0']) })
@@ -228,7 +229,7 @@ describe('facetOptions', () => {
 
   it('keeps an already-selected value visible even once it becomes unreachable', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']), versions: new Set(['macOS 9.9']) })
-    const options = facetOptions(rows, filters, 'versions', (r) => r.versionKeys, filters.versions, noVocabulary)
+    const options = facetOptions(rows, filters, 'versions', (r) => r.scopeKeys, filters.versions, noVocabulary)
     expect(options).toEqual(['macOS 26.0', 'macOS 27.0', 'macOS 9.9'])
   })
 
@@ -248,8 +249,8 @@ describe('allFacetValues', () => {
   })
 
   it('sorts with a supplied comparator, e.g. versions newest first by number', () => {
-    const versionRows = [row({ versionKeys: ['macOS 9.0', 'macOS 27.0'] }), row({ versionKeys: ['macOS 15.0', 'macOS 26.0'] })]
-    expect(allFacetValues(versionRows, (r) => r.versionKeys, compareVersionKeys)).toEqual([
+    const versionRows = [row({ scopeKeys: ['macOS 9.0', 'macOS 27.0'] }), row({ scopeKeys: ['macOS 15.0', 'macOS 26.0'] })]
+    expect(allFacetValues(versionRows, (r) => r.scopeKeys, compareVersionKeys)).toEqual([
       'macOS 27.0',
       'macOS 26.0',
       'macOS 15.0',
@@ -305,7 +306,7 @@ describe('version-scoped facets', () => {
 describe('target and source facets', () => {
   const iosRow = row({
     ref: { id: 'mscp.ios_passcode', path: 'mscp/rules/ios_passcode.json' },
-    targets: ['iOS'],
+    targetKeys: ['iOS'],
   })
   const otherSourceRow = row({
     ref: { id: 'cis.os_gatekeeper', path: 'cis/rules/os_gatekeeper.json' },
@@ -374,14 +375,14 @@ describe('grouped terms', () => {
   const currentCodeRow = row({
     ref: { id: 'mscp.current_code', path: 'mscp/rules/current_code.json' },
     applicability: applicabilityOfVersions({ 'macOS 26.0': [{ name: 'cis_lvl1', severity: null }] }),
-    versionKeys: ['macOS 26.0'],
+    scopeKeys: ['macOS 26.0'],
     benchmarks: ['cis_lvl1'],
   })
   const renamedCodeRow = row({
     ref: { id: 'mscp.renamed_code', path: 'mscp/rules/renamed_code.json' },
     section: 'operating_system',
     applicability: applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cislevel1', severity: null }] }),
-    versionKeys: ['macOS 27.0'],
+    scopeKeys: ['macOS 27.0'],
     benchmarks: ['cislevel1'],
     tags: ['nist_high'],
   })
@@ -392,7 +393,7 @@ describe('grouped terms', () => {
       'macOS 27.0': [{ name: 'disa_stig', severity: null }],
       'macOS 26.1': [{ name: 'cislevel1', severity: null }],
     }),
-    versionKeys: ['macOS 27.0', 'macOS 26.1'],
+    scopeKeys: ['macOS 27.0', 'macOS 26.1'],
     benchmarks: ['cislevel1', 'disa_stig'],
     tags: [],
   })
@@ -489,9 +490,9 @@ describe('benchmark facet values', () => {
 })
 
 function applicabilityRow(id: string, applicability: Applicability): RuleRow {
-  const versionKeys = versionKeysOf(applicability)
-  const benchmarks = Array.from(new Set(versionKeys.flatMap((key) => benchmarksAt(applicability, key).map((entry) => entry.name)))).sort()
-  return row({ ref: { id: `mscp.${id}`, path: `mscp/rules/${id}.json` }, applicability, versionKeys, benchmarks })
+  const scopeKeys = scopeKeysOf(applicability)
+  const benchmarks = Array.from(new Set(scopeKeys.flatMap((key) => benchmarksAt(applicability, key).map((entry) => entry.name)))).sort()
+  return row({ ref: { id: `mscp.${id}`, path: `mscp/rules/${id}.json` }, applicability, scopeKeys, benchmarks })
 }
 
 const SEVERITY_VOCABULARY = [
@@ -699,8 +700,8 @@ describe('two targets sharing a version string', () => {
       'macOS 27.0': [{ name: 'cis_lvl1', severity: null }],
       'Windows 27.0': [{ name: 'disa_stig', severity: null }],
     }),
-    targets: ['macOS', 'Windows'],
-    versionKeys: ['macOS 27.0', 'Windows 27.0'],
+    targetKeys: ['macOS', 'Windows'],
+    scopeKeys: ['macOS 27.0', 'Windows 27.0'],
     benchmarks: ['cis_lvl1', 'disa_stig'],
   })
   const stig = benchmarkFacetValue('disa_stig', null)
@@ -717,7 +718,102 @@ describe('two targets sharing a version string', () => {
     expect(benchmarksListedUnder(sharedVersionRow, new Set(['macOS 27.0']), noVocabulary)).toEqual([benchmarkFacetValue('cis_lvl1', null)])
   })
 
-  it('skips a null target when grouping targets', () => {
-    expect(targetGroupKeys(row({ targets: [null, 'macOS'] }), noVocabulary)).toEqual(['macOS'])
+  it('passes the no-target key through ungrouped when grouping targets', () => {
+    const labelled = vocabularyIndexOf({ targets: [{ label: 'Apple macOS', terms: ['macOS'] }] })
+    expect(targetGroupKeys(row({ targetKeys: [NO_TARGET_KEY, 'macOS'] }), labelled)).toEqual([NO_TARGET_KEY, 'macOS'])
+  })
+})
+
+describe('Target and Version "None"', () => {
+  const ismRow = row({
+    ref: { id: 'ism.ism-1667', path: 'ism/rules/ism-1667.json' },
+    sourceName: 'ism',
+    targetKeys: [NO_TARGET_KEY],
+    applicability: [
+      {
+        target: null,
+        version: null,
+        benchmarks: [
+          { name: 'ism_protected', severity: null },
+          { name: 'e8_ml3', severity: null },
+        ],
+      },
+    ],
+    scopeKeys: [NO_VERSION_KEY],
+    benchmarks: ['e8_ml3', 'ism_protected'],
+    tags: [],
+  })
+  const versionlessMacRow = row({
+    ref: { id: 'mscp.os_gatekeeper_rearm', path: 'mscp/rules/os_gatekeeper_rearm.json' },
+    applicability: [{ target: 'macOS', version: null, benchmarks: [] }],
+    scopeKeys: [NO_VERSION_KEY],
+    benchmarks: [],
+  })
+  const versionedMacRow = row({
+    ref: { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' },
+    applicability: applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cis_lvl1', severity: null }] }),
+    scopeKeys: ['macOS 27.0'],
+    benchmarks: ['cis_lvl1'],
+  })
+  const noneRows = [ismRow, versionlessMacRow, versionedMacRow]
+  const matchingIds = (filters: FilterValues) =>
+    noneRows.filter((candidate) => matchesFilters(candidate, filters, noVocabulary)).map((candidate) => candidate.ref.id)
+  const e8Ml3 = benchmarkFacetValue('e8_ml3', null)
+
+  it('Version "None" matches the ISM row and the version-less macOS row', () => {
+    expect(matchingIds(emptyFilters({ versions: new Set([NO_VERSION_KEY]) }))).toEqual([ismRow.ref.id, versionlessMacRow.ref.id])
+  })
+
+  it('a specific version does not match the rows without a version', () => {
+    expect(matchingIds(emptyFilters({ versions: new Set(['macOS 27.0']) }))).toEqual([versionedMacRow.ref.id])
+  })
+
+  it('Target "None" matches only the ISM row', () => {
+    expect(matchingIds(emptyFilters({ targets: new Set([NO_TARGET_KEY]) }))).toEqual([ismRow.ref.id])
+  })
+
+  it('Target macOS does not match the ISM row', () => {
+    expect(matchingIds(emptyFilters({ targets: new Set(['macOS']) }))).toEqual([versionlessMacRow.ref.id, versionedMacRow.ref.id])
+  })
+
+  it('Target macOS plus Version "None" matches only the version-less macOS row', () => {
+    const filters = emptyFilters({ targets: new Set(['macOS']), versions: new Set([NO_VERSION_KEY]) })
+    expect(matchingIds(filters)).toEqual([versionlessMacRow.ref.id])
+  })
+
+  it('a benchmark on the unversioned entry matches only the ISM row', () => {
+    expect(matchingIds(emptyFilters({ benchmarks: new Set([e8Ml3]) }))).toEqual([ismRow.ref.id])
+  })
+
+  it('a benchmark selection keeps "None" reachable in the Version facet and drops the macOS versions', () => {
+    const filters = emptyFilters({ benchmarks: new Set([e8Ml3]) })
+    expect(versionOptionsUnder(noneRows, filters, noVocabulary)).toEqual([NO_VERSION_KEY])
+  })
+
+  it('Version "None" narrows the Benchmark facet to the benchmarks of the unversioned entries', () => {
+    const filters = emptyFilters({ versions: new Set([NO_VERSION_KEY]) })
+    expect(benchmarkOptionsUnder(noneRows, filters, noVocabulary)).toEqual([benchmarkFacetValue('e8_ml3', null), benchmarkFacetValue('ism_protected', null)])
+  })
+
+  it('offers "None" in the Target and Version facets', () => {
+    const everyTarget = allFacetValues(
+      noneRows,
+      (candidate) => targetGroupKeys(candidate, noVocabulary),
+      compareTargetGroupKeys(noVocabulary),
+    )
+    expect(everyTarget).toEqual(['macOS', NO_TARGET_KEY])
+    expect(allFacetValues(noneRows, (candidate) => versionsListingAnyOf(candidate, new Set(), noVocabulary), compareScopeKeys)).toEqual([
+      'macOS 27.0',
+      NO_VERSION_KEY,
+    ])
+  })
+
+  it('never offers a zero-row version and benchmark combination across unversioned rows', () => {
+    expectNoZeroRowCombination(noneRows, noVocabulary)
+  })
+
+  it('does not group the "none" version through a vocabulary term', () => {
+    const labelled = vocabularyIndexOf({ versions: [{ label: 'Grouped', terms: ['other', NO_VERSION_KEY] }] })
+    expect(versionsListingAnyOf(ismRow, new Set(), labelled)).toEqual([NO_VERSION_KEY])
   })
 })

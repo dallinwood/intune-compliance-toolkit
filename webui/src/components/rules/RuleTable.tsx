@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useRule, useUsableOdvValue } from '@/hooks/useRule'
+import { NO_VERSION_KEY } from '../../logic/applicability'
 import { displayWithOdv } from '../../logic/odv'
 import { assessmentLabel, benchmarkSummary, upstreamRuleId } from '../../logic/ruleDisplay'
 import { sectionGroupKey, versionsUnder } from '../../logic/ruleFilters'
@@ -234,7 +235,8 @@ function AssessmentBadge({ row }: { row: RuleRow }) {
 function BenchmarkText({ row }: { row: RuleRow }) {
   const index = useVocabularyIndex()
   const selectedVersions = useFilterStore((store) => store.versions)
-  if (row.versionKeys.length === 0) return <span className="text-xs text-slate-400 italic">No macOS version listed</span>
+  const hasVersionedEntry = row.scopeKeys.some((key) => key !== NO_VERSION_KEY)
+  if (!hasVersionedEntry && row.benchmarks.length === 0) return <span className="text-xs text-slate-400 italic">No version listed</span>
   const summary = benchmarkSummary(row.applicability, versionsUnder(row, selectedVersions, index), index)
   if (!summary) return <span className="text-xs text-slate-400 italic">Not in a benchmark</span>
   return <span className="text-xs break-words text-slate-500">{summary}</span>

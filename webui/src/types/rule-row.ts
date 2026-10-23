@@ -7,14 +7,14 @@ import type { Applicability, Architecture, Assessment } from './library'
 export interface RuleRow {
   ref: RuleRef
   title: string
-  targets: (string | null)[]
+  targetKeys: string[]
   section: string
   sourceName: string
   releaseTag: string
   assessment: Assessment
   architecture: Architecture
   applicability: Applicability
-  versionKeys: string[]
+  scopeKeys: string[]
   benchmarks: string[]
   tags: string[]
   hasOdv: boolean

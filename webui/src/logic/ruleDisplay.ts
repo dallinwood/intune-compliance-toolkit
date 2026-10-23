@@ -1,5 +1,5 @@
 import type { Applicability, Assessment } from '../types/library'
-import { benchmarksAt } from './applicability'
+import { NONE_LABEL, NO_VERSION_KEY, benchmarksAt } from './applicability'
 import { compareBenchmarkFacetValues, membershipFacetValue, parseBenchmarkFacetValue } from './ruleFilters'
 import { groupLabel, termDescription, termLabel, type VocabularyIndex } from './vocabulary'
 
@@ -34,18 +34,18 @@ function versionListText(labels: string[]): string {
   return [labels[0], ...wordLists.slice(1).map((words) => words.slice(sharedWordCount).join(' '))].join(', ')
 }
 
-// The benchmarks a rule lists under `versionKeysInScope` (newest first), one
-// item per benchmark group and severity, ordered as the benchmark facet
-// orders them. An item missing from some of the versions in scope names the
-// versions it does apply to. Grouped benchmark codes collapse into one item.
-export function benchmarkSummary(applicability: Applicability, versionKeysInScope: readonly string[], index: VocabularyIndex): string {
+// The benchmarks a rule lists under `scopeKeysInScope` (newest first, "none"
+// last), one item per benchmark group and severity, ordered as the benchmark
+// facet orders them. An item missing from some of the versions in scope names
+// the versions it does apply to. Grouped benchmark codes collapse into one item.
+export function benchmarkSummary(applicability: Applicability, scopeKeysInScope: readonly string[], index: VocabularyIndex): string {
   const versionsByItem = new Map<string, string[]>()
-  for (const versionKey of versionKeysInScope) {
-    for (const membership of benchmarksAt(applicability, versionKey)) {
+  for (const scopeKey of scopeKeysInScope) {
+    for (const membership of benchmarksAt(applicability, scopeKey)) {
       const itemKey = membershipFacetValue(membership, index)
       const itemVersions = versionsByItem.get(itemKey)
-      if (itemVersions === undefined) versionsByItem.set(itemKey, [versionKey])
-      else if (!itemVersions.includes(versionKey)) itemVersions.push(versionKey)
+      if (itemVersions === undefined) versionsByItem.set(itemKey, [scopeKey])
+      else if (!itemVersions.includes(scopeKey)) itemVersions.push(scopeKey)
     }
   }
 
@@ -57,8 +57,8 @@ export function benchmarkSummary(applicability: Applicability, versionKeysInScop
       const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
       const label = severity === null ? benchmarkLabel : `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
       const itemVersions = versionsByItem.get(itemKey) ?? []
-      if (itemVersions.length === versionKeysInScope.length) return label
-      const versionLabels = Array.from(new Set(itemVersions.map((key) => termLabel(index, 'versions', key))))
+      if (itemVersions.length === scopeKeysInScope.length) return label
+      const versionLabels = Array.from(new Set(itemVersions.map((key) => (key === NO_VERSION_KEY ? NONE_LABEL : termLabel(index, 'versions', key)))))
       return `${label} on ${versionListText(versionLabels)}`
     })
     .join(' · ')

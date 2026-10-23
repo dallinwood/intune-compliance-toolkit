@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ManifestSource, RuleIndex } from '../types/library'
+import { NO_TARGET_KEY, NO_VERSION_KEY } from '../logic/applicability'
 import { applicabilityOfVersions } from '../logic/testRuleFixtures'
 import { buildRuleRows, coveredVersionsOf } from './ruleRows'
 
@@ -60,8 +61,8 @@ describe('buildRuleRows', () => {
     expect(rootRow.ref.path).toBe('rules/os_gatekeeper_enable.json')
   })
 
-  it('carries the targets in entry order', () => {
-    expect(rows.map((row) => row.targets)).toEqual([['macOS'], ['macOS']])
+  it('carries the target keys in entry order', () => {
+    expect(rows.map((row) => row.targetKeys)).toEqual([['macOS'], ['macOS']])
   })
 
   it('carries source name and release tag', () => {
@@ -69,8 +70,8 @@ describe('buildRuleRows', () => {
     expect(rows[0].releaseTag).toBe('release_27.0')
   })
 
-  it('sorts versionKeys numerically descending', () => {
-    expect(rows[0].versionKeys).toEqual(['macOS 26.0', 'macOS 15.0', 'macOS 9.0'])
+  it('sorts scopeKeys numerically descending', () => {
+    expect(rows[0].scopeKeys).toEqual(['macOS 26.0', 'macOS 15.0', 'macOS 9.0'])
   })
 
   it('builds benchmarks as the sorted union over all versions', () => {
@@ -85,6 +86,43 @@ describe('buildRuleRows', () => {
       architecture: 'arm64',
       hasOdv: true,
     })
+  })
+})
+
+describe('buildRuleRows for entries without a target or version', () => {
+  const unversionedIndex: RuleIndex = {
+    ...INDEX,
+    rules: [
+      {
+        ...INDEX.rules[0],
+        id: 'ism.ism-1667',
+        file: 'rules/ism-1667.json',
+        applicability: [
+          {
+            target: null,
+            version: null,
+            benchmarks: [
+              { name: 'e8_ml3', severity: null },
+              { name: 'ism_protected', severity: null },
+            ],
+          },
+        ],
+      },
+      { ...INDEX.rules[0], id: 'mscp.os_gatekeeper_rearm', applicability: [{ target: 'macOS', version: null, benchmarks: [] }] },
+    ],
+  }
+  const unversionedRows = buildRuleRows(SOURCE, unversionedIndex)
+
+  it('gives the ISM-shaped row the "none" target and scope keys and its benchmarks', () => {
+    expect(unversionedRows[0]).toMatchObject({ targetKeys: [NO_TARGET_KEY], scopeKeys: [NO_VERSION_KEY], benchmarks: ['e8_ml3', 'ism_protected'] })
+  })
+
+  it('gives the version-less macOS row the "none" scope key and no benchmarks', () => {
+    expect(unversionedRows[1]).toMatchObject({ targetKeys: ['macOS'], scopeKeys: [NO_VERSION_KEY], benchmarks: [] })
+  })
+
+  it('does not count the "none" scope as a covered macOS version', () => {
+    expect(coveredVersionsOf(unversionedRows, 'macOS')).toEqual([])
   })
 })
 

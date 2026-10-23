@@ -1,4 +1,4 @@
-import { benchmarksAt, parseVersionKey, targetsOf, versionKeysOf } from '../logic/applicability'
+import { benchmarksAt, parseVersionKey, scopeKeysOf, targetKeysOf } from '../logic/applicability'
 import { GENERATED_TARGET } from '../logic/checkPlan'
 import { compareVersionsDescending } from '../logic/versions'
 import type { ManifestSource, RuleIndex } from '../types/library'
@@ -20,22 +20,22 @@ function directoryOf(path: string): string {
 export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow[] {
   const directory = directoryOf(source.index_path)
   return index.rules.map((entry): RuleRow => {
-    const versionKeys = versionKeysOf(entry.applicability)
+    const scopeKeys = scopeKeysOf(entry.applicability)
     const benchmarks = new Set<string>()
-    for (const key of versionKeys) {
+    for (const key of scopeKeys) {
       for (const benchmark of benchmarksAt(entry.applicability, key)) benchmarks.add(benchmark.name)
     }
     return {
       ref: { id: entry.id, path: directory ? `${directory}/${entry.file}` : entry.file },
       title: entry.title,
-      targets: targetsOf(entry.applicability),
+      targetKeys: targetKeysOf(entry.applicability),
       section: entry.section,
       sourceName: source.name,
       releaseTag: source.release_tag,
       assessment: entry.assessment,
       architecture: entry.architecture,
       applicability: entry.applicability,
-      versionKeys,
+      scopeKeys,
       benchmarks: Array.from(benchmarks).sort(),
       tags: entry.tags,
       hasOdv: entry.has_odv,
@@ -46,7 +46,7 @@ export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow
 export function coveredVersionsOf(rows: RuleRow[], target: string): string[] {
   const versions = new Set<string>()
   for (const row of rows) {
-    for (const key of row.versionKeys) {
+    for (const key of row.scopeKeys) {
       const parsedKey = parseVersionKey(key)
       if (parsedKey.target === target) versions.add(parsedKey.version)
     }

@@ -466,6 +466,20 @@ def test_committed_vocabulary_orders_severities_low_medium_high():
     assert [entry["label"] for entry in severities] == ["low", "medium", "high"]
 
 
+@pytest.mark.parametrize("term", ["macOS 27.0", "Microsoft 365 2026.1"])
+def test_version_term_of_a_target_and_a_version_is_accepted(term):
+    assert schema_errors(make_vocabulary(versions=[{"label": "Label", "terms": [term]}]), "vocabulary") == []
+
+
+@pytest.mark.parametrize("term", ["none", "27.0", " 27.0", "macOS ", "macOS 27.0\n"])
+def test_version_term_without_a_target_and_a_version_is_rejected(term):
+    assert schema_errors(make_vocabulary(versions=[{"label": "Label", "terms": [term]}]), "vocabulary")
+
+
+def test_other_vocabularies_still_accept_a_term_without_a_space():
+    assert schema_errors(make_vocabulary(targets=[{"label": "Label", "terms": ["none"]}]), "vocabulary") == []
+
+
 @pytest.mark.parametrize("vocabulary_name", ["targets", "sources"])
 def test_target_and_source_vocabularies_are_accepted(vocabulary_name):
     vocabulary = make_vocabulary(**{vocabulary_name: [{"label": "Label", "terms": ["raw"]}]})

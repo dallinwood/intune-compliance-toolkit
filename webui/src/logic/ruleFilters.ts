@@ -1,7 +1,7 @@
 import type { FilterState } from '../state/filterStore'
 import type { BenchmarkMembership } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
-import { benchmarksAt } from './applicability'
+import { NO_TARGET_KEY, NO_VERSION_KEY, benchmarksAt } from './applicability'
 import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from './vocabulary'
 
 export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
@@ -18,16 +18,30 @@ const MSCP_ID_PREFIX = 'mscp.'
 // a benchmark mSCP renamed) filter as one. Every row code is mapped to its
 // group key before it is compared.
 
-function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'versions' | 'tags', codes: Iterable<string>): string[] {
+function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'tags', codes: Iterable<string>): string[] {
   const groupKeys = new Set<string>()
   for (const code of codes) groupKeys.add(termGroupKey(index, vocabulary, code))
   return Array.from(groupKeys)
 }
 
-// A rule with no target has none to filter by; phase 3 adds a "None" option.
+// The no-target and no-version keys stand for "None" and are never grouped
+// through the vocabulary.
 export function targetGroupKeys(row: RuleRow, index: VocabularyIndex): string[] {
-  const targets = row.targets.filter((target): target is string => target !== null)
-  return Array.from(new Set(targets.map((target) => termGroupKey(index, 'targets', target))))
+  const groupKeys = row.targetKeys.map((key) => (key === NO_TARGET_KEY ? key : termGroupKey(index, 'targets', key)))
+  return Array.from(new Set(groupKeys))
+}
+
+// Vocabulary order, then "None" last.
+export function compareTargetGroupKeys(index: VocabularyIndex): (left: string, right: string) => number {
+  const compareTargets = compareGroupKeys(index, 'targets')
+  return (left, right) => {
+    if (left === NO_TARGET_KEY || right === NO_TARGET_KEY) return Number(left === NO_TARGET_KEY) - Number(right === NO_TARGET_KEY)
+    return compareTargets(left, right)
+  }
+}
+
+function scopeGroupKey(index: VocabularyIndex, key: string): string {
+  return key === NO_VERSION_KEY ? key : termGroupKey(index, 'versions', key)
 }
 
 export function sourceGroupKey(row: RuleRow, index: VocabularyIndex): string {
@@ -43,8 +57,8 @@ export function tagGroupKeys(row: RuleRow, index: VocabularyIndex): string[] {
 }
 
 export function versionsUnder(row: RuleRow, versions: ReadonlySet<string>, index: VocabularyIndex): string[] {
-  if (versions.size === 0) return row.versionKeys
-  return row.versionKeys.filter((key) => versions.has(termGroupKey(index, 'versions', key)))
+  if (versions.size === 0) return row.scopeKeys
+  return row.scopeKeys.filter((key) => versions.has(scopeGroupKey(index, key)))
 }
 
 // A benchmark facet value is one (benchmark group, severity group) pair, so a
@@ -213,6 +227,6 @@ export function benchmarksListedUnder(row: RuleRow, versions: ReadonlySet<string
 }
 
 export function versionsListingAnyOf(row: RuleRow, benchmarks: ReadonlySet<string>, index: VocabularyIndex): string[] {
-  const keys = benchmarks.size === 0 ? row.versionKeys : row.versionKeys.filter((key) => listsAnyBenchmark(row, key, benchmarks, index))
-  return uniqueGroupKeys(index, 'versions', keys)
+  const keys = benchmarks.size === 0 ? row.scopeKeys : row.scopeKeys.filter((key) => listsAnyBenchmark(row, key, benchmarks, index))
+  return Array.from(new Set(keys.map((key) => scopeGroupKey(index, key))))
 }

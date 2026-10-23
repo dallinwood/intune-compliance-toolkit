@@ -48,7 +48,7 @@ test('an architecture-gated rule names its architecture by the raw mSCP code', a
 // Asserts on the real filtering effect, not just presence - a facet
 // checkbox that renders but no longer fires its handler looks identical in
 // a screenshot.
-test('macOS version and benchmark facets narrow the table together', async ({ page }) => {
+test('Version and benchmark facets narrow the table together', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
@@ -102,7 +102,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
 })
 
-test('the benchmark column follows the macOS version filter', async ({ page }) => {
+test('the benchmark column follows the Version filter', async ({ page }) => {
   const rules = await committedIndexRules()
   const stigOnlyOnFifteen = rules.find((rule) => {
     const benchmarksOn = (version: string) => rule.applicability.find((entry) => entry.target === 'macOS' && entry.version === version)?.benchmarks ?? []
@@ -126,15 +126,15 @@ test('the benchmark column follows the macOS version filter', async ({ page }) =
   await expect(rowOf(inNoBenchmark.id).locator('td').last()).toHaveText('Not in a benchmark')
 })
 
-// Only the mSCP rules name a platform, so ticking macOS or mscp keeps 350 of the 1493 rules; ticking ASD ISM keeps the other 1143.
-test('the Platform facet follows Automation and the Source facet comes last, and each filters to its own rules', async ({ page }) => {
+// Only the mSCP rules name a target, so ticking macOS or mscp keeps 350 of the 1493 rules; ticking ASD ISM keeps the other 1143.
+test('the Target facet follows Automation and the Source facet comes last, and each filters to its own rules', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
   const facetTitles = page.getByTestId('sidebar-scroll-area').getByRole('heading')
   await expect(facetTitles.nth(0)).toHaveText('Automation')
-  await expect(facetTitles.nth(1)).toHaveText('Platform')
-  await expect(facetTitles.nth(2)).toHaveText('macOS version')
+  await expect(facetTitles.nth(1)).toHaveText('Target')
+  await expect(facetTitles.nth(2)).toHaveText('Version')
   await expect(facetTitles.last()).toHaveText('Source')
 
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
@@ -155,6 +155,74 @@ test('the Platform facet follows Automation and the Source facet comes last, and
   await ismSourceOption.click()
   await expect(ismSourceOption).toBeChecked()
   await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
+})
+
+// The two mSCP rules no release lists have an entry whose version is null,
+// as every ISM control does, so Version "None" keeps them with the 1143 ISM
+// rules while Target "None" keeps only the ISM rules.
+test('Version "None" and Target "None" filter to the rules without a version or a target', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+  const facetOptionNamedNone = (facetTitle: string) =>
+    page
+      .getByTestId('sidebar-scroll-area')
+      .getByRole('heading', { name: facetTitle, exact: true })
+      .locator('..')
+      .getByRole('checkbox', { name: 'None', exact: true })
+
+  await facetOptionNamedNone('Version').click()
+  await expect(ruleCount(page)).toHaveText('1145 of 1493 rules')
+  await facetOptionNamedNone('Version').click()
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
+
+  await facetOptionNamedNone('Target').click()
+  await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
+  await facetOptionNamedNone('Target').click()
+
+  await page.getByRole('checkbox', { name: 'macOS', exact: true }).click()
+  await facetOptionNamedNone('Version').click()
+  await expect(ruleCount(page)).toHaveText('2 of 1493 rules')
+  await expect(page.getByText('os_gatekeeper_rearm', { exact: true })).toBeVisible()
+  await expect(page.getByText('os_firewall_log_enable', { exact: true })).toBeVisible()
+  await expect(page.locator('table tbody tr').first().locator('td').last()).toHaveText('No version listed')
+})
+
+test('an ISM benchmark filters to ISM rules and its benchmarks show in the table', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+  await page.getByRole('checkbox', { name: 'Essential Eight ML3', exact: true }).click()
+  await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
+  await expect(ruleCount(page)).not.toHaveText('0 of 1493 rules')
+
+  const ruleIds = await page.locator('table tbody tr td .font-mono').allTextContents()
+  expect(ruleIds.length).toBeGreaterThan(0)
+  expect(ruleIds.filter((ruleId) => !ruleId.startsWith('ism-'))).toEqual([])
+
+  const versionFacet = page.getByTestId('sidebar-scroll-area').getByRole('heading', { name: 'Version', exact: true }).locator('..')
+  await expect(versionFacet.getByRole('checkbox', { name: 'None', exact: true })).toBeEnabled()
+})
+
+test('an ISM row lists its benchmarks in the benchmark column', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
+  await expect(row.locator('td').last()).toContainText('ISM Non-classified')
+  await expect(row.locator('td').last()).toContainText('Essential Eight ML3')
+})
+
+test('a facet with no reachable options is not rendered', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  const tagsHeading = page.getByTestId('sidebar-scroll-area').getByRole('heading', { name: 'Tags', exact: true })
+  await expect(tagsHeading).toBeVisible()
+
+  const ismSourceOption = page.getByRole('checkbox', { name: 'ASD ISM', exact: true })
+  await ismSourceOption.scrollIntoViewIfNeeded()
+  await ismSourceOption.click()
+  await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
+  // No ISM rule carries a tag, so the group is dropped once its options have faded out.
+  await expect(tagsHeading).toHaveCount(0, { timeout: 10_000 })
 })
 
 test('searching an ISM control id finds exactly that control', async ({ page }) => {
