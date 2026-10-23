@@ -24,7 +24,7 @@ function CheckEntry({ label, check, odvValue }: { label: string; check: RuleChec
           </code>
         </p>
       )}
-      {check.additional_info && <DiscussionText text={check.additional_info} odvValue={odvValue} />}
+      {check.additional_info && <DiscussionText text={check.additional_info} format="asciidoc" odvValue={odvValue} />}
     </div>
   )
 }
@@ -34,12 +34,20 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
   const versionChecks = Object.entries(rule.check?.by_version ?? {}).sort(([left], [right]) =>
     compareVersionsDescending(left, right),
   )
-  const hasNoVersion = versionsForTarget(rule.applicability, GENERATED_TARGET).length === 0
+  // An ISM control has no macOS entry at all, so only an mSCP rule that no
+  // release lists is missing a version.
+  const hasNoMacosVersion =
+    rule.applicability.some((entry) => entry.target === GENERATED_TARGET) &&
+    versionsForTarget(rule.applicability, GENERATED_TARGET).length === 0
 
   return (
     <div className="space-y-2">
       <SectionHeading>Check</SectionHeading>
-      {hasNoVersion && <p className="text-xs text-amber-700">No macOS version listed: mSCP does not apply this rule to any release.</p>}
+      {hasNoMacosVersion && (
+        <p className="text-xs text-amber-700">
+          No macOS version listed: the source does not map this rule to any macOS release.
+        </p>
+      )}
       {rule.architecture && (
         <p className="text-xs text-slate-600">
           Applies to {rule.architecture} Macs only; other Macs report a pass.

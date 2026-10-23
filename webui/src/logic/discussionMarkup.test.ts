@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseDiscussion, parseInline } from './discussionMarkup'
+import { parseDiscussion, parseInline, parseMarkdownDiscussion } from './discussionMarkup'
 
 describe('parseDiscussion', () => {
   it('splits paragraphs on blank lines and keeps line breaks within one', () => {
@@ -77,5 +77,82 @@ describe('parseInline', () => {
     expect(parseInline('link:https://example.com/x[]')).toEqual([
       { kind: 'link', text: 'https://example.com/x', href: 'https://example.com/x' },
     ])
+  })
+
+  it('does not read markdown links in AsciiDoc text', () => {
+    expect(parseInline('[ACSC](https://www.cyber.gov.au/)')).toEqual([
+      { kind: 'text', text: '[ACSC](' },
+      { kind: 'link', text: 'https://www.cyber.gov.au/', href: 'https://www.cyber.gov.au/' },
+      { kind: 'text', text: ')' },
+    ])
+  })
+})
+
+const ISM_1803_DISCUSSION = [
+  'A cyber security incident register contains the following for each cyber security incident:',
+  '',
+  '- the date the cyber security incident occurred',
+  '- the date the cyber security incident was discovered',
+  '- a description of the cyber security incident',
+  '- any actions taken in response to the cyber security incident',
+  '- to whom the cyber security incident was reported.',
+  '',
+  'Developing, implementing and maintaining a register can assist remediation.',
+].join('\n')
+
+describe('parseMarkdownDiscussion', () => {
+  it('reads a lead-in, a bullet list and a closing paragraph as three blocks', () => {
+    expect(parseMarkdownDiscussion(ISM_1803_DISCUSSION)).toEqual([
+      { kind: 'paragraph', text: 'A cyber security incident register contains the following for each cyber security incident:' },
+      {
+        kind: 'list',
+        items: [
+          'the date the cyber security incident occurred',
+          'the date the cyber security incident was discovered',
+          'a description of the cyber security incident',
+          'any actions taken in response to the cyber security incident',
+          'to whom the cyber security incident was reported.',
+        ],
+      },
+      { kind: 'paragraph', text: 'Developing, implementing and maintaining a register can assist remediation.' },
+    ])
+  })
+
+  it('starts a list directly after a paragraph line and ends it at the next plain line', () => {
+    expect(parseMarkdownDiscussion('Intro\n- one\n- two\nOutro')).toEqual([
+      { kind: 'paragraph', text: 'Intro' },
+      { kind: 'list', items: ['one', 'two'] },
+      { kind: 'paragraph', text: 'Outro' },
+    ])
+  })
+
+  it('does not treat AsciiDoc syntax as markup', () => {
+    expect(parseMarkdownDiscussion('[source,bash]\n----\nls\n----')).toEqual([
+      { kind: 'paragraph', text: '[source,bash]\n----\nls\n----' },
+    ])
+  })
+})
+
+describe('parseInline for markdown', () => {
+  it('turns [text](https://...) into a link', () => {
+    expect(parseInline('see [ACSC](https://www.cyber.gov.au/) now', 'markdown')).toEqual([
+      { kind: 'text', text: 'see ' },
+      { kind: 'link', text: 'ACSC', href: 'https://www.cyber.gov.au/' },
+      { kind: 'text', text: ' now' },
+    ])
+  })
+
+  it('leaves a link with a non-http URL as text', () => {
+    expect(parseInline('[x](javascript:alert(1))', 'markdown')).toEqual([{ kind: 'text', text: '[x](javascript:alert(1))' }])
+  })
+
+  it('leaves underscores and backticks alone, since ISM text never uses them as markup', () => {
+    expect(parseInline('use _this_ and `that`', 'markdown')).toEqual([{ kind: 'text', text: 'use _this_ and `that`' }])
+  })
+})
+
+describe('parseDiscussion on a hyphen-led list', () => {
+  it('keeps the lines as AsciiDoc paragraph text', () => {
+    expect(parseDiscussion('Steps:\n- first\n- second')).toEqual([{ kind: 'paragraph', text: 'Steps:\n- first\n- second' }])
   })
 })

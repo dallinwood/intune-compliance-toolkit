@@ -1,11 +1,16 @@
 // A deliberately small reading of the AsciiDoc mSCP uses in rule
 // discussions: enough to show paragraphs, code and emphasis legibly, not a
 // full AsciiDoc renderer. Anything unrecognised is shown as plain text.
+// ASD ISM discussions are Markdown, but only `- ` lists and [text](url)
+// links appear in them, so that is all the Markdown reader understands.
+
+export type DiscussionFormat = 'asciidoc' | 'markdown'
 
 export type DiscussionBlock =
   | { kind: 'paragraph'; text: string }
   | { kind: 'code'; text: string }
   | { kind: 'heading'; text: string }
+  | { kind: 'list'; items: string[] }
 
 export type InlineSegment =
   | { kind: 'text'; text: string }
@@ -92,6 +97,44 @@ export function parseDiscussion(text: string): DiscussionBlock[] {
   return blocks
 }
 
+const MARKDOWN_BULLET_PREFIX = '- '
+
+export function parseMarkdownDiscussion(text: string): DiscussionBlock[] {
+  const blocks: DiscussionBlock[] = []
+  let paragraphLines: string[] = []
+  let listItems: string[] = []
+
+  function flushParagraph() {
+    if (paragraphLines.length > 0) blocks.push({ kind: 'paragraph', text: paragraphLines.join('\n') })
+    paragraphLines = []
+  }
+  function flushList() {
+    if (listItems.length > 0) blocks.push({ kind: 'list', items: listItems })
+    listItems = []
+  }
+
+  for (const line of text.split('\n')) {
+    const trimmed = line.trim()
+    if (trimmed === '') {
+      flushParagraph()
+      flushList()
+    } else if (trimmed.startsWith(MARKDOWN_BULLET_PREFIX)) {
+      flushParagraph()
+      listItems.push(trimmed.slice(MARKDOWN_BULLET_PREFIX.length).trim())
+    } else {
+      flushList()
+      paragraphLines.push(line.trimEnd())
+    }
+  }
+  flushParagraph()
+  flushList()
+  return blocks
+}
+
+export function parseDiscussionIn(format: DiscussionFormat, text: string): DiscussionBlock[] {
+  return format === 'markdown' ? parseMarkdownDiscussion(text) : parseDiscussion(text)
+}
+
 // Alternatives are tried left to right at each position, so a link macro
 // wins over the bare URL inside it, and a URL wins over underscores in it.
 // Only http(s) URLs are ever turned into links.
@@ -105,15 +148,23 @@ const INLINE_PATTERN = new RegExp(
   'g',
 )
 
-export function parseInline(text: string): InlineSegment[] {
+const MARKDOWN_INLINE_PATTERN = new RegExp(
+  String.raw`\[(?<markdownText>[^\[\]]+)\]\((?<markdownHref>https?:\/\/[^\s()]+)\)`,
+  'g',
+)
+
+export function parseInline(text: string, format: DiscussionFormat = 'asciidoc'): InlineSegment[] {
   const segments: InlineSegment[] = []
   let consumedUpTo = 0
+  const pattern = format === 'markdown' ? MARKDOWN_INLINE_PATTERN : INLINE_PATTERN
 
-  for (const match of text.matchAll(INLINE_PATTERN)) {
+  for (const match of text.matchAll(pattern)) {
     if (match.index > consumedUpTo) segments.push({ kind: 'text', text: text.slice(consumedUpTo, match.index) })
     const groups = match.groups ?? {}
 
-    if (groups.macroHref !== undefined) {
+    if (groups.markdownHref !== undefined) {
+      segments.push({ kind: 'link', text: groups.markdownText, href: groups.markdownHref })
+    } else if (groups.macroHref !== undefined) {
       segments.push({ kind: 'link', text: groups.macroText || groups.macroHref, href: groups.macroHref })
     } else if (groups.bareHref !== undefined) {
       segments.push({ kind: 'link', text: groups.bareHref, href: groups.bareHref })

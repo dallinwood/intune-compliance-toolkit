@@ -19,7 +19,7 @@ function FixEntry({ label, entry, odvValue }: { label: string; entry: Remediatio
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {entry.shell && <CodeBlock code={entry.shell} />}
       {entry.shell && containsOdvPlaceholder(entry.shell) && <OdvNote odvValue={odvValue} />}
-      {entry.additional_info && <DiscussionText text={entry.additional_info} odvValue={odvValue} />}
+      {entry.additional_info && <DiscussionText text={entry.additional_info} format="asciidoc" odvValue={odvValue} />}
     </div>
   )
 }

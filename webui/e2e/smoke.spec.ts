@@ -211,6 +211,40 @@ test('an ISM row lists its benchmarks in the benchmark column', async ({ page })
   await expect(row.locator('td').last()).toContainText('Essential Eight ML3')
 })
 
+const ISM_1803_BREADCRUMB =
+  'Guidelines for cyber security incidents › Managing cyber security incidents › Cyber security incident register'
+
+test('an ISM rule detail shows its breadcrumb, revision and Markdown list', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1803', /./)
+  await row.getByRole('button').click()
+  const detail = page.locator('[id^="rule-detail-"]')
+
+  await expect(detail.getByText(ISM_1803_BREADCRUMB)).toBeVisible()
+  await expect(detail.getByText('Revision 0, updated Dec-22')).toBeVisible()
+  await expect(detail.getByRole('listitem').filter({ hasText: 'to whom the cyber security incident was reported.' })).toBeVisible()
+  await expect(detail.getByText('No macOS version listed')).toHaveCount(0)
+})
+
+test('an ISM rule detail turns a Markdown link into an external link', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-0009', /./)
+  await row.getByRole('button').click()
+  const link = page.locator('[id^="rule-detail-"]').getByRole('link', { name: 'Information security manual' }).first()
+  await expect(link).toHaveAttribute('href', /^https:\/\/www\.cyber\.gov\.au\//)
+  await expect(link).toHaveAttribute('target', '_blank')
+})
+
+test('a version-less mSCP rule keeps its macOS warning with the new wording and shows no revision', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'os_firewall_log_enable', /./)
+  await row.getByRole('button').click()
+  const detail = page.locator('[id^="rule-detail-"]')
+
+  await expect(detail.getByText('No macOS version listed: the source does not map this rule to any macOS release.')).toBeVisible()
+  await expect(detail.getByText(/^Revision /)).toHaveCount(0)
+})
+
 test('a facet with no reachable options is not rendered', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
