@@ -23,8 +23,39 @@ was modified by this project. It remains licensed under CC BY 4.0 and is
 provided as-is, with the disclaimer of warranties and limitation of liability
 in section 5 of that licence.
 
+sources/asd_ism/upstream/ is an unmodified copy of the Information Security
+Manual (ISM) published by the Australian Signals Directorate (ASD), in OSCAL
+format:
+
+  Project:  https://github.com/AustralianCyberSecurityCentre/ism-oscal
+            (a mirror; the authoritative copy is
+            https://www.cyber.gov.au/ism/oscal)
+  Release:  v2026.09.4 (September 2026 ISM)
+  Licence:  Creative Commons Attribution 4.0 International (CC BY 4.0)
+            https://creativecommons.org/licenses/by/4.0/
+
+ASD's copyright notice and disclaimer for the material are in
+sources/asd_ism/upstream/README.md. The copyright notice reads: (c)
+Commonwealth of Australia 2024. With the exception of the Coat of Arms, the
+Australian Signals Directorate logo and where otherwise stated, all material
+presented in this publication is provided under a Creative Commons Attribution
+4.0 International licence. The Coat of Arms and the ASD logo are not licensed
+under CC BY 4.0.
+
+baselines/asd_ism/ is adapted from that material: the ISM content was
+converted to a normalized rule format, links were rewritten, and each
+statement was split into a title and a discussion. This content was modified
+by this project. It remains licensed under CC BY 4.0 and is provided as-is,
+with the disclaimer of warranties and limitation of liability in section 5 of
+that licence, and with ASD's disclaimer that the material is of a general
+nature, is not legal advice, and that the Commonwealth accepts no
+responsibility or liability for any damage, loss or expense incurred as a
+result of reliance on it.
+
 No endorsement
 --------------
 
 NIST and the other mSCP contributors do not endorse or sponsor this project,
 and no endorsement is implied.
+
+ASD does not endorse or sponsor this project, and no endorsement is implied.
