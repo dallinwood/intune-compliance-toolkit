@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "unknown-wrapper", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "tags": { "$prepend": ["a"] } } }

@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "unexpected-top-level-key", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "field": { "tags": ["a"] } }

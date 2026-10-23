@@ -124,3 +124,63 @@ Requires Python 3.10 or newer.
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
+
+## Writing overlays
+
+An overlay adds knowledge upstream doesn't have (a check, a better
+description, extra references) to imported rules without editing
+`baselines/`, so it survives every re-import. The web UI applies overlays
+as it shows rules, and tags every overlaid field **Custom** in the rule
+details.
+
+Put each overlay in its own `overlays/<name>.json`:
+
+```json
+{
+  "schema_version": 1,
+  "id": "powershell-constrained-language-mode",
+  "description": "Adds guidance for PowerShell Constrained Language Mode.",
+  "targets": [
+    { "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }
+  ],
+  "fields": {
+    "discussion": { "$replace": "Constrained Language Mode limits PowerShell to a safe subset of the language." },
+    "references": { "microsoft": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_language_modes"] },
+    "tags": ["powershell"]
+  }
+}
+```
+
+- `id` is unique and matches `^[a-z0-9][a-z0-9-]*$`.
+- `targets` lists full rule ids (`<source>.<upstream id>`). `release` is
+  the source's `release_tag` you wrote the overlay against; when the
+  library moves to another release, the details show a note asking you to
+  review the overlay.
+- `fields` uses the rule field names from `baselines/_rule.schema.json`
+  and applies the same way to every target. Different content per rule
+  means separate files. `id`, `source`, `file` and `schema_version` cannot
+  be overlaid.
+
+Merge rules, applied field by field:
+
+- A list appends to the upstream list (duplicates are kept).
+- A string, number, boolean or `null` replaces the upstream value.
+- An object merges key by key, by these same rules.
+- A wrapper overrides the default: `{ "$replace": value }`,
+  `{ "$append": [...] }` or `{ "$merge": {...} }`. A wrapper has exactly
+  one key.
+- A type mismatch is an error, for example appending to a string. Upstream
+  `null` is not an object, so setting a check on a rule whose `check` is
+  `null` needs `{ "check": { "$replace": { "default": ..., "by_version": {} } } }`.
+- Several overlays on one rule apply in file name order; the later file
+  wins for single values. Adding a `check` does not change `assessment`.
+
+Publishing is automatic: `bun run dev` and `bun run build` copy
+`overlays/` into the site with a generated `_manifest.json`. Don't write or
+commit a manifest yourself.
+
+Check overlays with `python -m pytest -W error tests/test_overlays.py` (or
+`python tools/overlays.py` for a plain list of problems). A bad shape, a
+protected field, a type mismatch, a target rule missing from `baselines/`,
+or a merged rule that breaks the rule schema fails; an unknown field name or
+two overlays setting the same value is reported as a warning.

@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "missing-target-rule", "targets": [{ "rule": "asd_ism.ism-0000", "release": "v2026.09.4" }], "fields": { "tags": ["a"] } }

@@ -1,0 +1,1 @@
+{ "schema_version": 2, "id": "wrong-schema-version", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": {} }

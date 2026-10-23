@@ -128,3 +128,4 @@
 ## Progress log
 
 - 2026-10-23: Plan written (no code yet).
+- 2026-10-23: Task 1 done: `tools/overlays.py` merge, structure and CI checks with shared cases in `tests/fixtures/overlays/cases.json`, `tests/test_overlays.py`, the copy script publishing `overlays/` with a generated `_manifest.json`, and the README "Writing overlays" section. Upstream `null` is not an object, so an object or `$merge` onto `null` is a type mismatch and needs `$replace` (pinned by a shared case). Commit: `feat: validate custom overlays and publish them with a generated manifest`.

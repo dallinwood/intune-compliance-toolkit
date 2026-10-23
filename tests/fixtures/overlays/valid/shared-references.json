@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "shared-references",
+  "targets": [
+    { "rule": "asd_ism.ism-1622", "release": "v2026.09.4" },
+    { "rule": "mscp.os_gatekeeper_enable", "release": "release_26.0" }
+  ],
+  "fields": {
+    "references": { "internal": ["Hardening guide section 4"] },
+    "tags": { "$append": ["reviewed"] }
+  }
+}

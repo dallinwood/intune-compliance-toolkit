@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "protected-field", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "source": { "release_tag": "v2027.01.1" } } }

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "powershell-constrained-language-mode",
+  "description": "Adds guidance and a check for PowerShell Constrained Language Mode.",
+  "targets": [
+    { "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }
+  ],
+  "fields": {
+    "discussion": { "$replace": "Constrained Language Mode limits PowerShell to a safe subset of the language." },
+    "references": { "microsoft": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_language_modes"] },
+    "tags": ["powershell"],
+    "check": {
+      "$replace": {
+        "default": { "shell": "$ExecutionContext.SessionState.LanguageMode", "result": { "type": "string", "value": "ConstrainedLanguage" }, "additional_info": null },
+        "by_version": {}
+      }
+    }
+  }
+}

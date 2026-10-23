@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "target-without-release", "targets": [{ "rule": "asd_ism.ism-1622" }], "fields": { "tags": ["a"] } }
