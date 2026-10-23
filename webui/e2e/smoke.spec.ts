@@ -143,7 +143,7 @@ test('the Target facet follows Automation and the Source facet comes last, and e
   await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
   await platformOption.click()
 
-  const sourceOption = page.getByRole('checkbox', { name: 'mscp', exact: true })
+  const sourceOption = page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })
   await sourceOption.scrollIntoViewIfNeeded()
   await sourceOption.click()
   await expect(sourceOption).toBeChecked()
@@ -259,6 +259,30 @@ test('a one-level section path shows no breadcrumb while a multi-level one does'
   await expect(detail.getByTestId('rule-breadcrumb')).toContainText('Guidelines for cyber security incidents ›')
 })
 
+test('each rule credits its own source in the detail panel', async ({ page }) => {
+  await page.goto('/')
+  const detail = page.locator('[id^="rule-detail-"]')
+  const credit = detail.locator('p').filter({ hasText: /^From / })
+
+  const ismRow = await searchForSingleRow(page, 'ism-1667', /./)
+  await ismRow.getByRole('button').click()
+  await expect(credit).toContainText('From ASD ISM v2026.09.4 (ism-1667)')
+  await ismRow.getByRole('button').click()
+
+  const mscpRow = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
+  await mscpRow.getByRole('button').click()
+  await expect(credit).toContainText('From NIST mSCP release_27.0 (os_gatekeeper_enable)')
+})
+
+test('the attribution footer names no platform', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  const footer = page.getByRole('contentinfo')
+  await expect(footer).toContainText('Rules from the ASD Information Security Manual')
+  await expect(footer).toContainText('Rules from the NIST macOS Security Compliance Project')
+  await expect(footer).not.toContainText('macOS rules')
+})
+
 test('a facet with no reachable options is not rendered', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
@@ -300,6 +324,32 @@ test('an ISM control flows to the manual attestation report', async ({ page }) =
   const report = new TextDecoder().decode(files['manual-attestation.md'])
   expect(report).toContain('ism-1667')
   expect(report).toContain('Microsoft Office is blocked from creating child processes.')
+})
+
+test('a mixed mSCP and ISM manual selection credits both sources in the attestation report', async ({ page }) => {
+  await page.goto('/')
+  for (const [search, title] of [
+    ['os_application_sandboxing', 'Ensure Separate Execution Domain for Processes'],
+    ['ism-1667', 'Microsoft Office is blocked from creating child processes.'],
+  ] as const) {
+    const row = await searchForSingleRow(page, search, title)
+    await row.getByRole('checkbox').click()
+  }
+  await expect(page.getByText('2 selected')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Generate' }).click()
+  const download = page.getByRole('button', { name: 'Download bundle (.zip)' })
+  await expect(download).toBeEnabled({ timeout: 10_000 })
+
+  const downloadEvent = page.waitForEvent('download')
+  await download.click()
+  const zipPath = await (await downloadEvent).path()
+  const files = unzipSync(new Uint8Array(await readFile(zipPath)))
+
+  expect(Object.keys(files)).toEqual(['manual-attestation.md'])
+  const report = new TextDecoder().decode(files['manual-attestation.md'])
+  expect(report).toContain('Rule content from the ASD Information Security Manual')
+  expect(report).toContain('Rule content from the NIST macOS Security Compliance Project')
 })
 
 // The row's onClick skips toggling expand when the click landed on an

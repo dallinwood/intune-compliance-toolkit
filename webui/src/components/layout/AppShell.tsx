@@ -91,6 +91,7 @@ export function AppShell({
           <GenerateReviewScreen
             enabledEntries={knownSelections}
             coveredVersions={coveredVersions}
+            sources={sources}
             onBack={() => setView('browse')}
           />
         )}

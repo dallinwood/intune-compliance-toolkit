@@ -9,7 +9,7 @@ export function AttributionFooter({ sources }: { sources: ManifestSource[] }) {
     <footer className="border-t border-slate-200 px-4 py-2 text-xs text-slate-500">
       {sources.map((source) => (
         <p key={source.name}>
-          macOS rules from the{' '}
+          Rules from the{' '}
           <a className={LINK_CLASS} href={source.repository_url} target="_blank" rel="noreferrer">
             {source.display_name}
           </a>{' '}

@@ -2,6 +2,7 @@ import type { FilterState } from '../state/filterStore'
 import type { BenchmarkMembership } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { NO_TARGET_KEY, NO_VERSION_KEY, benchmarksAt } from './applicability'
+import { upstreamRuleId } from './ruleDisplay'
 import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from './vocabulary'
 
 export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
@@ -10,8 +11,6 @@ export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 
 // compute "what values are still reachable in this facet, given every
 // other currently-applied filter" for faceted-search-style narrowing.
 export type FilterDimension = 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags'
-
-const MSCP_ID_PREFIX = 'mscp.'
 
 // Filter state holds vocabulary group keys (benchmarks: group keys paired
 // with a severity group key, see benchmarkFacetValue), so grouped codes (e.g.
@@ -158,8 +157,7 @@ export function matchesFilters(
 
   const needle = filters.search.trim().toLowerCase()
   if (needle) {
-    const upstreamId = row.ref.id.startsWith(MSCP_ID_PREFIX) ? row.ref.id.slice(MSCP_ID_PREFIX.length) : row.ref.id
-    if (!row.title.toLowerCase().includes(needle) && !upstreamId.toLowerCase().includes(needle)) return false
+    if (!row.title.toLowerCase().includes(needle) && !upstreamRuleId(row.ref.id).toLowerCase().includes(needle)) return false
   }
 
   return true

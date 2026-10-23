@@ -200,6 +200,24 @@ describe('matchesFilters', () => {
     expect(matchesFilters(passwordRow, emptyFilters({ search: 'mscp.' }), noVocabulary)).toBe(false)
   })
 
+  describe('an ISM row', () => {
+    const ismRow = row({
+      ref: { id: 'asd_ism.ism-1667', path: 'asd_ism/rules/ism-1667.json' },
+      title: 'Microsoft Office is blocked from creating child processes.',
+      sourceName: 'asd_ism',
+    })
+
+    it('does not match its source prefix', () => {
+      expect(matchesFilters(ismRow, emptyFilters({ search: 'asd' }), noVocabulary)).toBe(false)
+      expect(matchesFilters(ismRow, emptyFilters({ search: 'asd_ism.' }), noVocabulary)).toBe(false)
+    })
+
+    it('matches its control number', () => {
+      expect(matchesFilters(ismRow, emptyFilters({ search: '1667' }), noVocabulary)).toBe(true)
+      expect(matchesFilters(ismRow, emptyFilters({ search: 'ism-1667' }), noVocabulary)).toBe(true)
+    })
+  })
+
   it('ignores the excluded dimension', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
     expect(matchesFilters(gatekeeperRow, filters, noVocabulary, 'sections')).toBe(true)

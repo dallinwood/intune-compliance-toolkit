@@ -1,6 +1,7 @@
 import { GENERATED_TARGET } from './checkPlan'
 import type { Chunk, ManualAttestationEntry } from './chunking'
 import { buildManualAttestationMarkdown } from './manualAttestationReport'
+import type { ManifestSource } from '../types/library'
 import type { IntuneRuleEntry } from './rulesJsonGen'
 import { generateBashScript } from './scriptGen/bash'
 import type { BundleFile } from './zipBundle'
@@ -28,8 +29,11 @@ function chunkFiles(chunk: Chunk): BundleFile[] {
 
 // Every file the downloadable zip needs: a discovery script and rules JSON
 // per chunk, plus one manual-attestation report for the rules no script checks.
-export function buildBundleFiles(chunks: Chunk[], manualEntries: ManualAttestationEntry[]): BundleFile[] {
-  const files = [...chunks.flatMap(chunkFiles), { path: MANUAL_ATTESTATION_FILE, content: buildManualAttestationMarkdown(manualEntries) }]
+export function buildBundleFiles(chunks: Chunk[], manualEntries: ManualAttestationEntry[], sources: ManifestSource[]): BundleFile[] {
+  const files = [
+    ...chunks.flatMap(chunkFiles),
+    { path: MANUAL_ATTESTATION_FILE, content: buildManualAttestationMarkdown(manualEntries, sources) },
+  ]
 
   // Unreachable while packChunks groups by source, release and section;
   // kept so a broken invariant fails loudly instead of overwriting a file.

@@ -1,7 +1,9 @@
 import { useRule, useStoredOdvValue } from '@/hooks/useRule'
+import { termLabel } from '../../logic/vocabulary'
 import { odvSubstitutionMode, usableOdvValue, validateOdvValue } from '../../logic/odv'
 import type { RuleRef } from '../../logic/selectionEntry'
 import { useSelectionStore } from '../../state/selectionStore'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
 import { SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
@@ -39,6 +41,7 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
   const storedValue = useStoredOdvValue(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
+  const vocabularyIndex = useVocabularyIndex()
   const mode = odvSubstitutionMode(rule)
   // An invalid saved value blocks generation, so the details show the
   // placeholder rather than a recommended value that will not be used.
@@ -87,7 +90,7 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
       <p className="text-xs text-slate-500">
         From{' '}
         <a className="text-blue-600 underline" href={source.upstream_url} target="_blank" rel="noreferrer">
-          NIST mSCP {source.release_tag}
+          {termLabel(vocabularyIndex, 'sources', source.name)} {source.release_tag}
         </a>{' '}
         ({source.upstream_rule_id}), licensed{' '}
         <a className="text-blue-600 underline" href={source.license.url} target="_blank" rel="noreferrer">

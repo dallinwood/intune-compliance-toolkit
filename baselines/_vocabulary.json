@@ -3,7 +3,8 @@
   "vocabularies": {
     "targets": [],
     "sources": [
-      { "label": "ASD ISM", "terms": ["asd_ism"] }
+      { "label": "ASD ISM", "terms": ["asd_ism"] },
+      { "label": "NIST mSCP", "terms": ["mscp"] }
     ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },

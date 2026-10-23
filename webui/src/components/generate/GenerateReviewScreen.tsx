@@ -14,6 +14,7 @@ import { upstreamRuleId } from '../../logic/ruleDisplay'
 import type { SelectionEntry } from '../../logic/selectionEntry'
 import { buildZip } from '../../logic/zipBundle'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
+import type { ManifestSource } from '../../types/library'
 import { BundleGroupCard } from './BundleGroupCard'
 import { ManualAttestationReport } from './ManualAttestationReport'
 
@@ -26,8 +27,8 @@ function byId(left: { id: string }, right: { id: string }): number {
   return left.id.localeCompare(right.id)
 }
 
-function downloadZip(chunks: Chunk[], manual: ManualAttestationEntry[]): void {
-  const zipBytes = buildZip(buildBundleFiles(chunks, manual))
+function downloadZip(chunks: Chunk[], manual: ManualAttestationEntry[], sources: ManifestSource[]): void {
+  const zipBytes = buildZip(buildBundleFiles(chunks, manual, sources))
   const url = URL.createObjectURL(new Blob([zipBytes as BlobPart], { type: 'application/zip' }))
   const link = document.createElement('a')
   link.href = url
@@ -45,10 +46,12 @@ function downloadZip(chunks: Chunk[], manual: ManualAttestationEntry[]): void {
 export function GenerateReviewScreen({
   enabledEntries,
   coveredVersions,
+  sources,
   onBack,
 }: {
   enabledEntries: SelectionEntry[]
   coveredVersions: string[]
+  sources: ManifestSource[]
   onBack: () => void
 }) {
   const [state, setState] = useState<ReviewState>({ status: 'loading' })
@@ -98,12 +101,22 @@ export function GenerateReviewScreen({
           Back to browse
         </button>
       </div>
-      <ReviewBody enabledCount={enabledEntries.length} state={state} onBack={onBack} />
+      <ReviewBody enabledCount={enabledEntries.length} state={state} sources={sources} onBack={onBack} />
     </div>
   )
 }
 
-function ReviewBody({ enabledCount, state, onBack }: { enabledCount: number; state: ReviewState; onBack: () => void }) {
+function ReviewBody({
+  enabledCount,
+  state,
+  sources,
+  onBack,
+}: {
+  enabledCount: number
+  state: ReviewState
+  sources: ManifestSource[]
+  onBack: () => void
+}) {
   if (enabledCount === 0) {
     return (
       <p className="text-slate-500">
@@ -144,7 +157,7 @@ function ReviewBody({ enabledCount, state, onBack }: { enabledCount: number; sta
           type="button"
           size="sm"
           className="sm:ml-auto"
-          onClick={() => downloadZip(chunks, manual)}
+          onClick={() => downloadZip(chunks, manual, sources)}
           // A manual-only selection still downloads, as a zip holding just manual-attestation.md.
           disabled={blocked.length > 0 || (chunks.length === 0 && manual.length === 0)}
         >

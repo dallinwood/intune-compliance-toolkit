@@ -1,4 +1,4 @@
-import type { ManualReason, Rule } from '../types/library'
+import type { ManifestSource, ManualReason, Rule } from '../types/library'
 import type { ManualAttestationEntry } from './chunking'
 import { displayWithOdv } from './odv'
 import { upstreamRuleId } from './ruleDisplay'
@@ -17,9 +17,21 @@ export function additionalInfoFor(rule: Rule, odvValue: OrgDefinedValue | null):
   return additionalInfo ? displayWithOdv(additionalInfo, odvValue) : null
 }
 
-const ATTRIBUTION =
-  'Rule content from the NIST macOS Security Compliance Project (https://github.com/usnistgov/macos_security), ' +
-  'licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Content modified by this project.'
+function attributionLine(source: ManifestSource): string {
+  return (
+    `Rule content from the ${source.display_name} (${source.repository_url}), ` +
+    `licensed ${source.license.name} (${source.license.url}). Content modified by this project.`
+  )
+}
+
+// One line per source that has an entry in the report, ordered by source name
+// so the report does not depend on selection order.
+function attributionLines(entries: ManualAttestationEntry[], sources: ManifestSource[]): string[] {
+  return sources
+    .filter((source) => entries.some((entry) => entry.id.startsWith(`${source.name}.`)))
+    .sort((left, right) => left.name.localeCompare(right.name))
+    .map(attributionLine)
+}
 
 function indentContinuation(text: string): string {
   return text
@@ -28,7 +40,7 @@ function indentContinuation(text: string): string {
     .join('\n')
 }
 
-export function buildManualAttestationMarkdown(entries: ManualAttestationEntry[]): string {
+export function buildManualAttestationMarkdown(entries: ManualAttestationEntry[], sources: ManifestSource[]): string {
   const lines = ['# Manual attestation', '']
   if (entries.length === 0) {
     lines.push('No selected rules need manual attestation.', '')
@@ -39,6 +51,6 @@ export function buildManualAttestationMarkdown(entries: ManualAttestationEntry[]
       if (entry.additionalInfo) lines.push(indentContinuation(entry.additionalInfo), '')
     }
   }
-  lines.push('---', '', ATTRIBUTION)
+  if (entries.length > 0) lines.push('---', '', ...attributionLines(entries, sources))
   return lines.join('\n') + '\n'
 }
