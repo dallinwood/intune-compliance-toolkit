@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useDeferredFilters } from '@/hooks/useDeferredFilters'
 import { useScrollEdges } from '@/hooks/useScrollEdges'
 import { FACET_EXIT_TRANSITION_MS, useStableFacetShown } from '@/hooks/useStableFacetShown'
 import {
@@ -88,45 +89,48 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // so a facet never offers a choice that would filter the table down to
   // zero rows. Versions and benchmarks are additionally scoped to each
   // other, because a rule's benchmarks differ per version.
+  // Options are derived from the deferred filters so a click's urgent render
+  // is only the control itself; checked state below still reads the live store.
+  const { filters: deferredFilters } = useDeferredFilters()
   const targets = useMemo(
-    () => facetOptions(rows, filters, 'targets', accessors.targetsOf, filters.targets, index),
-    [rows, filters, accessors, index],
+    () => facetOptions(rows, deferredFilters, 'targets', accessors.targetsOf, deferredFilters.targets, index),
+    [rows, deferredFilters, accessors, index],
   )
   const sources = useMemo(
-    () => facetOptions(rows, filters, 'sources', accessors.sourceOf, filters.sources, index),
-    [rows, filters, accessors, index],
+    () => facetOptions(rows, deferredFilters, 'sources', accessors.sourceOf, deferredFilters.sources, index),
+    [rows, deferredFilters, accessors, index],
   )
   const versions = useMemo(
     () =>
       facetOptions(
         rows,
-        filters,
+        deferredFilters,
         'versions',
-        (row) => versionsListingAnyOf(row, filters.benchmarks, index),
-        filters.versions,
+        (row) => versionsListingAnyOf(row, deferredFilters.benchmarks, index),
+        deferredFilters.versions,
         index,
       ),
-    [rows, filters, index],
+    [rows, deferredFilters, index],
   )
   const benchmarks = useMemo(
     () =>
       facetOptions(
         rows,
-        filters,
+        deferredFilters,
         'benchmarks',
-        (row) => benchmarksListedUnder(row, filters.versions, index),
-        filters.benchmarks,
+        (row) => benchmarksListedUnder(row, deferredFilters.versions, index),
+        deferredFilters.benchmarks,
         index,
       ),
-    [rows, filters, index],
+    [rows, deferredFilters, index],
   )
   const sections = useMemo(
-    () => facetOptions(rows, filters, 'sections', accessors.sectionOf, filters.sections, index),
-    [rows, filters, accessors, index],
+    () => facetOptions(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index),
+    [rows, deferredFilters, accessors, index],
   )
   const tags = useMemo(
-    () => facetOptions(rows, filters, 'tags', accessors.tagsOf, filters.tags, index),
-    [rows, filters, accessors, index],
+    () => facetOptions(rows, deferredFilters, 'tags', accessors.tagsOf, deferredFilters.tags, index),
+    [rows, deferredFilters, accessors, index],
   )
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)

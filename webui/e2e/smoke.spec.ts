@@ -702,40 +702,61 @@ test('the table shows an Updating rules spinner while it catches up with a large
   const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
   await expect(updatingStatus).toBeHidden()
 
+  // An observer records the spinner the moment it mounts, so the assertion
+  // does not depend on how often Playwright happens to poll while the page is
+  // busy rendering. Throttling keeps the catch-up render slow whatever the build.
+  const devtools = await page.context().newCDPSession(page)
+  await devtools.send('Emulation.setCPUThrottlingRate', { rate: 4 })
+  await page.evaluate(() => {
+    const windowWithFlag = window as unknown as { spinnerSeen: boolean }
+    windowWithFlag.spinnerSeen = false
+    new MutationObserver(() => {
+      if (document.querySelector('[role="status"][aria-label="Updating rules"]')) windowWithFlag.spinnerSeen = true
+    }).observe(document.body, { childList: true, subtree: true })
+  })
+
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
   await platformOption.click()
-  await expect(platformOption).toBeChecked()
-  await expect(updatingStatus).toBeVisible()
-  await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
-  await expect(updatingStatus).toBeHidden()
+  await expect(ruleCount(page)).toHaveText('350 of 1493 rules', { timeout: 30_000 })
+  await expect(updatingStatus).toBeHidden({ timeout: 30_000 })
+  expect(await page.evaluate(() => (window as unknown as { spinnerSeen: boolean }).spinnerSeen)).toBe(true)
 })
 
-// Options of one facet are ORed, so they all stay reachable however many are
-// ticked; that keeps the ten clicks independent of how fast the table catches up.
-test('ten facet options toggled in quick succession all register and the table settles', async ({ page }) => {
-  const sectionGroup = page.getByRole('group', { name: 'Section', exact: true })
+// The clicks are dispatched together, without waiting for one to finish, so
+// they land while the table is still rendering the previous state. The
+// expected count comes from the committed index, not from a second UI run.
+test('eight facet options from four facets toggled in quick succession all register and the table settles', async ({ page }) => {
+  const rules = await committedIndexRules()
+  const selectedVersions = ['26.0', '27.0']
+  const selectedBenchmarks = [
+    { name: 'cis_lvl2', severity: null },
+    { name: 'disa_stig', severity: 'low' },
+    { name: 'disa_stig', severity: 'medium' },
+    { name: 'disa_stig', severity: 'high' },
+  ]
+  const expectedCount = rules.filter((rule) =>
+    rule.applicability.some(
+      (entry) =>
+        entry.target === 'macOS' &&
+        entry.version !== null &&
+        selectedVersions.includes(entry.version) &&
+        entry.benchmarks.some((benchmark) => selectedBenchmarks.some((wanted) => wanted.name === benchmark.name && wanted.severity === benchmark.severity)),
+    ),
+  ).length
+  expect(expectedCount).toBeGreaterThan(0)
+  expect(expectedCount).toBeLessThan(350)
+
+  await openLibrary(page)
+  const optionNames = ['macOS', 'NIST mSCP', 'macOS 26', 'macOS 27', 'CIS Level 2', 'DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)']
+  const options = optionNames.map((name) => page.getByRole('checkbox', { name, exact: true }))
+  // dispatchEvent fires on the element itself; coordinate clicks issued
+  // concurrently would race the sidebar scrolling and reflowing under them.
+  await Promise.all(options.map((option) => option.dispatchEvent('click')))
+
   const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
-
-  async function tickTenSections() {
-    await page.goto('/')
-    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
-    const optionLabels = await sectionGroup.locator('label').allTextContents()
-    const tenLabels = optionLabels.slice(0, 10)
-    expect(tenLabels).toHaveLength(10)
-    for (const optionLabel of tenLabels) {
-      await sectionGroup.getByRole('checkbox', { name: optionLabel, exact: true }).click({ noWaitAfter: true })
-    }
-    for (const optionLabel of tenLabels) {
-      await expect(sectionGroup.getByRole('checkbox', { name: optionLabel, exact: true })).toBeChecked()
-    }
-    await expect(updatingStatus).toBeHidden({ timeout: 30_000 })
-    return (await ruleCount(page).textContent()) ?? ''
-  }
-
-  const countAfterRapidClicks = await tickTenSections()
-  expect(countAfterRapidClicks).not.toBe('1493 of 1493 rules')
-  const countAfterSecondRun = await tickTenSections()
-  expect(countAfterSecondRun).toBe(countAfterRapidClicks)
+  await expect(updatingStatus).toBeHidden({ timeout: 30_000 })
+  for (const option of options) await expect(option).toBeChecked()
+  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 1493 rules`)
 })
 
 const searchBox = (page: Page) => page.getByPlaceholder('Search title or id…')
@@ -756,7 +777,8 @@ test('filters, search, page and size survive a reload through the URL', async ({
   await versionOption.click()
   await expect(versionOption).toBeChecked()
   await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
-  const filteredCount = await ruleCount(page).textContent()
+  const filteredCount = String(await ruleCount(page).textContent())
+  expect(filteredCount).toMatch(/^\d+ of 1493 rules$/)
 
   const parameters = new URL(page.url()).searchParams
   expect(parameters.get('q')).toBe('configure')
@@ -768,7 +790,7 @@ test('filters, search, page and size survive a reload through the URL', async ({
 
   const withPaging = `${page.url()}&page=3&size=100`
   await page.goto(withPaging)
-  await expect(ruleCount(page)).toHaveText(filteredCount ?? '', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText(filteredCount, { timeout: 10_000 })
   await expect(searchBox(page)).toHaveValue('configure')
   await expect(page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })).toBeChecked()
   await expect(page.getByRole('checkbox', { name: 'ASD ISM', exact: true })).toBeChecked()
@@ -777,7 +799,7 @@ test('filters, search, page and size survive a reload through the URL', async ({
   expect(page.url()).toBe(withPaging)
 
   await page.reload()
-  await expect(ruleCount(page)).toHaveText(filteredCount ?? '', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText(filteredCount, { timeout: 10_000 })
   await expect(versionOption).toBeChecked()
 
   await page.getByRole('radio', { name: 'Manual only' }).click()
