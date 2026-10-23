@@ -112,7 +112,7 @@ describe('benchmarkSummary', () => {
 })
 
 describe('upstreamRuleId', () => {
-  it('strips the source prefix from a v3 id', () => {
+  it('strips the source prefix from a Rule id', () => {
     expect(upstreamRuleId('mscp.os_mfa_network_non-priv')).toBe('os_mfa_network_non-priv')
   })
 

@@ -100,7 +100,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
 test('the benchmark column follows the macOS version filter', async ({ page }) => {
   const rules = await committedIndexRules()
   const stigOnlyOnFifteen = rules.find((rule) => {
-    const benchmarksOn = (version: string) => rule.applicability.find((entry) => entry.version === version)?.benchmarks ?? []
+    const benchmarksOn = (version: string) => rule.applicability.find((entry) => entry.target === 'macOS' && entry.version === version)?.benchmarks ?? []
     const [fifteen, twentySix, twentySeven] = ['15.0', '26.0', '27.0'].map(benchmarksOn)
     return fifteen.length === 1 && fifteen[0].name === 'disa_stig' && fifteen[0].severity === 'medium' && twentySix.length === 0 && twentySeven.length === 0
   })

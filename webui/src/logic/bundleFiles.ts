@@ -1,3 +1,4 @@
+import { GENERATED_TARGET } from './checkPlan'
 import type { Chunk, ManualAttestationEntry } from './chunking'
 import { buildManualAttestationMarkdown } from './manualAttestationReport'
 import type { IntuneRuleEntry } from './rulesJsonGen'
@@ -14,7 +15,7 @@ export function serializeRulesJson(entries: IntuneRuleEntry[]): string {
 
 export function bundleBaseName(chunk: Chunk): string {
   const part = chunk.partNumber === null ? '' : `-part${chunk.partNumber}`
-  return `macOS-${chunk.sourceName}-${chunk.releaseTag}-${chunk.section}${part}`
+  return `${GENERATED_TARGET}-${chunk.sourceName}-${chunk.releaseTag}-${chunk.section}${part}`
 }
 
 function chunkFiles(chunk: Chunk): BundleFile[] {

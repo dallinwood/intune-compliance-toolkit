@@ -64,7 +64,7 @@ export function benchmarkSummary(applicability: Applicability, versionKeysInScop
     .join(' · ')
 }
 
-// v3 ids are "<source>.<upstream id>"; upstream ids never contain a dot.
+// Rule ids are "<source>.<upstream id>"; upstream ids never contain a dot.
 export function upstreamRuleId(id: string): string {
   return id.slice(id.indexOf('.') + 1)
 }
