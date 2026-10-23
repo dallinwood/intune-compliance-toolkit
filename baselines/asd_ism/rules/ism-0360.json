@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Due to the use of wear levelling in non-volatile flash memory media, and the potential for bad memory blocks, it is possible that not all memory blocks will be overwritten during sanitisation processes. For this reason, SECRET and TOP SECRET non-volatile flash memory media retains its classification following sanitisation.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0360",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for media",
+    "Media sanitisation",
+    "Treatment of non-volatile flash memory media following sanitisation"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-0360",
+    "upstream_updated": "Dec-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Following sanitisation, SECRET and TOP SECRET non-volatile flash memory media retains its classification."
+}

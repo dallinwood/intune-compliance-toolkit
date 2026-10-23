@@ -1,17 +1,29 @@
+import json
 import shutil
 from pathlib import Path
 
-from tools.import_mscp import generate_library
+import pytest
+
+from tools import import_asd_ism, import_mscp
 from tools.source_lock import read_source_lock
 from tools.validate_library import validate_library
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINES_DIR = REPO_ROOT / "baselines"
 MSCP_SOURCES_DIR = REPO_ROOT / "sources" / "mscp"
+ASD_ISM_SOURCES_DIR = REPO_ROOT / "sources" / "asd_ism"
+
+SOURCES = (
+    pytest.param("mscp", MSCP_SOURCES_DIR, import_mscp.generate_library, id="mscp"),
+    pytest.param("asd_ism", ASD_ISM_SOURCES_DIR, import_asd_ism.generate_library, id="asd_ism"),
+)
 
 
 def generated_files(baselines_dir: Path) -> dict[str, bytes]:
-    paths = list((baselines_dir / "mscp").rglob("*")) + [baselines_dir / "_manifest.json"]
+    paths = [baselines_dir / "_manifest.json"]
+    for source_dir in baselines_dir.iterdir():
+        if source_dir.is_dir():
+            paths.extend(source_dir.rglob("*"))
     return {
         path.relative_to(baselines_dir).as_posix(): path.read_bytes()
         for path in sorted(paths)
@@ -19,17 +31,25 @@ def generated_files(baselines_dir: Path) -> dict[str, bytes]:
     }
 
 
+def committed_asd_ism_rules() -> list[dict]:
+    rule_paths = sorted((BASELINES_DIR / "asd_ism" / "rules").glob("*.json"))
+    return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
+
+
 def test_committed_library_is_valid():
     assert validate_library(BASELINES_DIR) == []
 
 
-def test_committed_library_matches_regeneration(tmp_path):
+@pytest.mark.parametrize(("source_name", "sources_dir", "generate_library"), SOURCES)
+def test_committed_library_matches_regeneration(
+    tmp_path, source_name, sources_dir, generate_library
+):
     regenerated_dir = tmp_path / "baselines"
     shutil.copytree(BASELINES_DIR, regenerated_dir)
 
     generate_library(
-        MSCP_SOURCES_DIR / "upstream",
-        read_source_lock(MSCP_SOURCES_DIR / "source.json"),
+        sources_dir / "upstream",
+        read_source_lock(sources_dir / "source.json"),
         regenerated_dir,
     )
 
@@ -38,6 +58,13 @@ def test_committed_library_matches_regeneration(tmp_path):
     assert regenerated.keys() == committed.keys()
     differing = [name for name in committed if committed[name] != regenerated[name]]
     assert differing == []
+
+
+def test_every_manifest_source_is_regenerated_by_this_suite():
+    manifest = json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))
+    assert sorted(source["name"] for source in manifest["sources"]) == sorted(
+        parameter.values[0] for parameter in SOURCES
+    )
 
 
 def test_committed_library_has_lf_line_endings_only():
@@ -52,3 +79,22 @@ def test_committed_library_has_lf_line_endings_only():
 def test_vendored_license_present():
     license_text = (MSCP_SOURCES_DIR / "upstream" / "LICENSE.md").read_text(encoding="utf-8")
     assert "CC BY 4.0" in license_text
+
+
+def test_asd_ism_vendored_license_present():
+    readme_text = (ASD_ISM_SOURCES_DIR / "upstream" / "README.md").read_text(encoding="utf-8")
+    assert "Creative Commons Attribution 4.0" in readme_text
+
+
+def test_asd_ism_discussions_have_no_unresolved_links():
+    rules = committed_asd_ism_rules()
+    assert rules
+    unresolved = [rule["id"] for rule in rules if "](#" in rule["discussion"]]
+    assert unresolved == []
+
+
+def test_asd_ism_titles_are_single_paragraphs():
+    rules = committed_asd_ism_rules()
+    assert rules
+    multi_paragraph_titles = [rule["id"] for rule in rules if "\n\n" in rule["title"]]
+    assert multi_paragraph_titles == []

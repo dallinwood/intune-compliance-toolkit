@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Excessive agency vulnerabilities allow for damaging actions to be performed in response to unexpected, ambiguous or manipulated output from AI applications, regardless of the cause of the malfunction. Furthermore, agentic AI applications that can autonomously invoke tools, browse external content, execute code or call other systems introduce risks beyond those of conversational AI applications. In particular, untrusted content retrieved by an agentic AI application, whether via web browsing, email, document processing or retrieval-augmented generation, may contain instructions that the underlying AI model treats as legitimate, allowing malicious actors to indirectly control the agentic AI application’s actions. Validation, sanitisation and delimitation can reduce this security risk but cannot be relied upon to make retrieved content trustworthy or eliminate indirect prompt injection. As such, agentic AI applications should treat retrieved content as untrusted throughout processing and prevent it from modifying or overriding system instructions, security policies, access controls, tool permissions or human approval requirements.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2156",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for software development",
+    "Artificial intelligence application development",
+    "Excessive agency"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2156",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Agentic AI applications are restricted to the minimum set of tools, functions and permissions required for their intended purpose."
+}

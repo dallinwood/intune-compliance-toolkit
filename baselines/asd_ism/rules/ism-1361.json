@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When physically destroying media, using approved equipment can provide a level of assurance that the data it stores is destroyed.\n\nApproved equipment includes destruction equipment listed on the Security Construction and Equipment Committee’s [Security Equipment Evaluated Products List](https://www.scec.gov.au/catalogue), and in the Australian Security Intelligence Organisation’s (ASIO) Security Equipment Guide-009, Optical Media Shredders and Security Equipment Guide-018, Destructors. ASIO’s Security Equipment Guides are available from the Protective Security Policy GovTEAMS community or ASIO by email.\n\nIf using degaussers to destroy media, the United States’ National Security Agency maintains the [NSA/CSS Evaluated Products List for Magnetic Degaussers](https://www.nsa.gov/Resources/Media-Destruction-Guidance/NSA-Evaluated-Products-Lists-EPLs/) and information on common types of magnetic media and their associated magnetic field strengths and orientations.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1361",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for media",
+    "Media destruction",
+    "Media destruction equipment"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "3",
+    "upstream_rule_id": "ism-1361",
+    "upstream_updated": "Jun-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Security Construction and Equipment Committee-approved equipment or ASIO-approved equipment is used when destroying media."
+}

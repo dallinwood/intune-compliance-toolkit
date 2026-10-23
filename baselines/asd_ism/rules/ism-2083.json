@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "A cryptographic bill of materials acts as an extension of a software bill of materials by communicating information about relevant cryptographic dependencies and implementations that are relied upon by software. At a high level, a cryptographic bill of materials will map the use of cryptography to the security function it performs and where it performs it. In practice, a cryptographic bill of materials will capture details on cryptographic libraries, algorithms, protocols, parameters and configurations. This can be used to ensure software components are providing support for standardised implementations of cryptographic algorithms that are approved by the Australian Signals Directorate (ASD).\n\nWhile the format for a cryptographic bill of materials is not yet subject to formal standardisation, there are emerging tools to assist with their generation and management. This is particularly important for software developers in managing their migration to post-quantum cryptographic standards as part of software development activities.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2083",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for software development",
+    "Software development fundamentals",
+    "Cryptographic bill of materials"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2083",
+    "upstream_updated": "Dec-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "A cryptographic bill of materials is produced and made available to consumers of software."
+}

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "A device access control application, or disabling external communication interfaces, can be used to prevent removable media and mobile devices from being connected to workstations and servers via external communication interfaces. This can assist in preventing the introduction of malicious code or the exfiltration of data by malicious actors.\n\nIn addition, malicious actors can connect to locked workstations and servers via external communication interfaces that allow direct memory access (DMA). In doing so, malicious actors can gain access to encryption keys in memory or write malicious code to memory. The best defence against this security risk is to disable access to external communication interfaces that allow DMA, such as FireWire, ExpressCard and Thunderbolt.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0345",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system hardening",
+    "Operating system hardening",
+    "Device access control"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-0345",
+    "upstream_updated": "Dec-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "External communication interfaces that allow DMA are disabled."
+}

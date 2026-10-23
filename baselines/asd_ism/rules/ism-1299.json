@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Personnel are advised to take the following precautions when using mobile devices:\n\n- never leave mobile devices or removable media unattended, including by placing them in checked-in luggage or leaving them in hotel safes\n- never store credentials with mobile devices that they grant access to, such as in laptop computer bags\n- never lend mobile devices or removable media to untrusted people, even if briefly\n- never allow untrusted people to connect their mobile devices or removable media to your mobile devices, including for charging\n- never connect mobile devices to designated charging stations or wall outlet charging ports\n- never use gifted or unauthorised peripherals, chargers or removable media with mobile devices\n- never use removable media for data transfers or backups that have not been checked for malicious code beforehand\n- avoid reuse of removable media once used with other parties’ systems or mobile devices\n- avoid connecting mobile devices to open or untrusted Wi-Fi networks\n- consider disabling any communications capabilities of mobile devices when not in use, such as Wi-Fi, Bluetooth, Near Field Communication and ultra-wideband\n- consider periodically rebooting mobile devices\n- consider using a VPN connection to encrypt all cellular and wireless communications\n- consider using encrypted email or messaging apps for all communications.\n\nAs mobile devices often have voice and data communication capabilities, personnel should be made aware of the sensitivity or classification of voice and data that mobile devices have been approved to process, store and communicate. In addition, personnel should be made aware of common security practices for mobile device usage.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1299",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for enterprise mobility",
+    "Mobile device usage",
+    "Personnel awareness"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-1299",
+    "upstream_updated": "Sep-23",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Personnel are advised to take the following precautions when using mobile devices:"
+}

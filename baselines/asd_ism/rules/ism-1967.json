@@ -1,0 +1,50 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Broadly, the risk management framework defined by the [Information security manual](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism) has six steps: define the system, select security controls, implement security controls, assess security controls, authorise the system and monitor the system. System owners are responsible for the implementation of this six-step risk management framework for each of their systems.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1967",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security roles",
+    "System owners",
+    "Protecting systems and their resources"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "2",
+    "upstream_rule_id": "ism-1967",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "System owners, in consultation with each system’s authorising officer, ensure security controls for each TOP SECRET system and its operating environment, including each sensitive compartmented information system and its operating environment, undergo a security control assessment by ASD assessors (or their delegates) to determine if they have been implemented correctly and are operating as intended."
+}

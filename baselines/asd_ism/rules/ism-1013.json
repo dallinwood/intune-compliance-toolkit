@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Instead of deploying a small number of wireless access points that broadcast on high power, a greater number of wireless access points that use less broadcast power can be deployed to achieve the desired footprint for wireless networks. This has the benefit of providing service continuity should wireless access points become unserviceable. In such cases, the output power of nearby wireless access points can be increased to cover the footprint gap until the unserviceable wireless access points can be replaced.\n\nIn addition to minimising the output power of wireless access points to reduce the footprint of wireless networks, the use of radio frequency (RF) shielding can be used for an organisation’s facilities. While expensive, this will limit wireless communications to areas under the control of an organisation. RF shielding on an organisation’s facilities also has the added benefit of preventing the jamming of wireless networks from outside of the facilities in which wireless networks are operating.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1013",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for networking",
+    "Wireless networks",
+    "Wireless network footprint"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-1013",
+    "upstream_updated": "Dec-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "The effective range of wireless communications outside an organisation’s area of control is limited by implementing RF shielding on facilities in which SECRET or TOP SECRET wireless networks are used."
+}

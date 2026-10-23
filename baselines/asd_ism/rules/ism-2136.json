@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Before access to a system and its resources is granted to a user, it is essential that they are authenticated. For human users, this can be achieved via multi-factor authentication, such as a username, password and security key, or less preferably via single-factor authentication, such as a username and password.\n\nIn addition, access decisions should not rely solely on the successful presentation of authentication artefacts. Risk-based access decisions can draw upon contextual signals such as device compliance, authentication strength, privilege level and user behaviour to determine whether access should be granted, re-authentication should be required or access should be denied. In doing so, an organisation should be aware that sign-in location is a weak signal on its own, as malicious actors increasingly route their activities through residential internet protocol addresses and covert networks of compromised devices to defeat location-based and reputation-based measures.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2136",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system access",
+    "Identity and access management",
+    "Authenticating to systems"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2136",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Risk-based access decisions, informed by contextual signals, are enforced for access to systems and their resources."
+}

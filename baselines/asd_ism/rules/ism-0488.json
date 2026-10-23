@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "If using logins without a password for automated purposes, several security risks may arise, specifically:\n\n- if access from unknown Internet Protocol (IP) addresses is not restricted, malicious actors could automatically authenticate to systems without needing to know any passwords\n- if port forwarding is not disabled, or it is not configured securely, access may be gained to forwarded ports, creating a communication channel between malicious actors and a host\n- if agent credential forwarding is enabled, malicious actors could connect to the stored authentication credentials and use them to connect to other trusted hosts, or even intranet hosts if port forwarding has been allowed as well\n- if X11 forwarding is not disabled, malicious actors could gain control of displays as well as keyboard and mouse control functions\n- if console access is allowed, every user who logs in to the console could run applications that are normally restricted to authenticated users.\n\nTo assist in mitigating these security risks, it is essential that the ‘forced command’ option is used to specify what command is executed and parameter checking is enabled.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0488",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cryptography",
+    "Secure Shell",
+    "Automated remote access"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "5",
+    "upstream_rule_id": "ism-0488",
+    "upstream_updated": "Dec-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "If using remote access without the use of a password for SSH connections, the ‘forced command’ option is used to specify what command is executed and parameter checking is enabled."
+}

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Credentials for user accounts are changed if:\n\n- they are compromised or suspected of being compromised\n- they are discovered stored on systems in the clear\n- they are discovered being transferred across networks in the clear\n- membership of a shared user account changes.\n\nGenerally, credentials should not need to be changed; however, some events may necessitate a requirement for credentials to be changed. For user accounts, this can include credentials being compromised (such as appearing in an online data breach database) or being suspected of being compromised (such as when malicious actors gain access to a network), being discovered stored on systems in the clear, being transferred across networks in the clear, or when membership of shared user accounts change.\n\nSimilarly, static credentials used by applications and workloads should be changed when they are compromised or suspected of being compromised, discovered stored on systems in the clear, or discovered being transferred across networks in the clear.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1590",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system access",
+    "Credential management",
+    "Changing credentials"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "5",
+    "upstream_rule_id": "ism-1590",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Credentials for user accounts are changed if:"
+}

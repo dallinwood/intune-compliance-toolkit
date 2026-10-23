@@ -2,6 +2,22 @@
   "schema_version": 4,
   "sources": [
     {
+      "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+      "display_name": "ASD Information Security Manual",
+      "index_path": "asd_ism/_index.json",
+      "license": {
+        "modified": true,
+        "name": "CC BY 4.0",
+        "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "name": "asd_ism",
+      "release_tag": "v2026.09.4",
+      "repository_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal",
+      "retrieved_date": "2026-10-23",
+      "rule_count": 1143
+    },
+    {
       "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
       "display_name": "NIST macOS Security Compliance Project",
       "index_path": "mscp/_index.json",

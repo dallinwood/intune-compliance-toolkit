@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "To assist in reducing the attack surface of networks, IT equipment residing on networks (such as servers) or constituting the makeup of network infrastructure (such as network devices) should not directly expose their networked management interfaces to the internet. In situations where this is not possible, such as for some cloud services and web applications, alternative measures will need to be implemented to protect weak or vulnerable networked management interfaces from being exploited by malicious actors to remotely compromise networks. Ideally, IT equipment on networks, or constituting the makeup of network infrastructure, should be managed via a dedicated management network that is segregated from the wider network and the internet.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2160",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for networking",
+    "Network design and configuration",
+    "Networked management interfaces"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2160",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Networked management interfaces for IT equipment are only accessible from a dedicated management network that is segregated from the wider network and the internet."
+}

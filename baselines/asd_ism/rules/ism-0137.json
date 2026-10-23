@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When an intrusion is detected on a system, an organisation may, in limited circumstances, choose to allow the intrusion to continue for a short period to better understand the extent of the compromise or to assist with planning intrusion remediation activities. However, an organisation allowing an intrusion to continue in order to collect data or evidence should first establish with their legal advisors whether such activities would breach the [Telecommunications (Interception and Access) Act 1979](https://www.legislation.gov.au/C2004A02124/latest/text).\n\nTo increase the likelihood of eradicating malicious actors from a system, an organisation can take preventative measures to ensure malicious actors have limited awareness of planned intrusion remediation activities. Specifically, using trusted systems separate from a compromised system to plan and coordinate intrusion remediation activities prevents alerting malicious actors if they have already compromised communication or collaboration services. In addition, coordinating and sequencing intrusion remediation activities can reduce opportunities for re-compromise of the system while balancing operational risk and business continuity requirements.\n\nFinally, following intrusion remediation activities, an organisation should determine whether malicious actors have been eradicated from the system and have not re-established access. Enhanced monitoring should be conducted until there is sufficient evidence-based confidence that this has been achieved.\n\nIn determining whether sufficient evidence-based confidence has been achieved, an organisation should consider the scope and quality of its digital forensic investigations, including whether:\n\n- the initial access vector and full extent of the compromise have been identified\n- persistence mechanisms, malicious infrastructure and unauthorised access paths have been identified and remediated\n- the affected system has been rebuilt, restored from known-good backups or otherwise verified as trustworthy\n- compromised accounts, credentials, certificates, keys and trust relationships have been remediated\n- threat hunting has identified no continuing or renewed indicators of malicious activity.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0137",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security incidents",
+    "Responding to cyber security incidents",
+    "Handling and containing intrusions"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-0137",
+    "upstream_updated": "Dec-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Legal advice is sought before allowing intrusion activity to continue on a system for the purpose of collecting further data or evidence."
+}

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Systems have a continuous monitoring plan that includes:\n\n- conducting security assessment activities to identify vulnerabilities\n- analysing identified vulnerabilities to determine their potential impact\n- implementing mitigations based on risk, effectiveness and cost.\n\nA continuous monitoring plan can assist an organisation in proactively identifying, prioritising and responding to vulnerabilities in systems. Furthermore, undertaking security assessment activities as part of continuous monitoring is important as cyber threats and the effectiveness of security controls change over time.\n\nThree types of security assessment activities that support continuously monitoring the security of systems are vulnerability scans, vulnerability assessments and penetration tests. A vulnerability scan involves using tools to conduct automated checks for known vulnerabilities whereas a vulnerability assessment typically consists of a review of a system’s architecture or an in-depth hands-on assessment. In each case, the goal is to identify as many vulnerabilities as possible. A penetration test however is designed to exercise real-world scenarios to achieve a specific goal, such as compromising critical systems or data.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1163",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security documentation",
+    "System-specific cyber security documentation",
+    "Continuous monitoring plan"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "11",
+    "upstream_rule_id": "ism-1163",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Systems have a continuous monitoring plan that includes:"
+}

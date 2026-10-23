@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "A Common Criteria evaluation is traditionally conducted at a specified EAL, while evaluations against a PP exist outside of this scale. Although products evaluated against a PP will fulfil the Common Criteria EAL requirements, the EAL number will not be published. In addition, PP modules contain additional requirements that are complementary to or extend upon collaborative PPs. For example, a stateful traffic filtering PP module may apply to a firewall evaluated against a network device collaborative PP. As such, when procuring an evaluated product that has completed a PP-based evaluation, it is important to ensure that all applicable PP modules, as well as a software bill of materials assessment if applicable, were included as part of the product’s evaluation.\n\nFurthermore, in choosing evaluated products, an organisation should determine their suitability by reviewing their evaluation documentation. This includes the security target and certification report. Products that are undergoing a Common Criteria evaluation will not have this information publicly available; however, documentation can be obtained from ASD if a product is being evaluated through the AISEP. For a product that is in evaluation through a foreign scheme, the product’s vendor can be contacted directly for further information.\n\nThe Common Criteria’s [Certified Products List](https://commoncriteriaportal.org/products/index.cfm) contains a list of products that have been evaluated, certified and mutually recognised.\n\nWhere a suitable evaluated product is not available for a particular product class or use case, an organisation should consider the associated security risks and determine its security requirements when considering alternative products. Where additional product assurance is required, an organisation may also consider seeking an evaluation of a suitable product.\n\nFinally, the [Information security manual](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism) identifies a number of product classes and use cases for which evaluated products are required in certain circumstances. Further information on applicable requirements can be found in the relevant sections. For cryptographic equipment, applications and libraries, an organisation should consider the assurance preferences described in the ‘Cryptographic implementation assurance’ section of the [Guidelines for cryptography](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism/cyber-security-guidelines/guidelines-for-cryptography) when selecting a suitable product.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0280",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for evaluated products",
+    "Evaluated product procurement",
+    "Evaluated product selection"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "9",
+    "upstream_rule_id": "ism-0280",
+    "upstream_updated": "Jun-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "If procuring an evaluated product, a product that has completed a PP-based evaluation, including against all applicable PP modules (as well as a software bill of materials assessment if applicable), is selected in preference to one that has completed an EAL-based evaluation."
+}

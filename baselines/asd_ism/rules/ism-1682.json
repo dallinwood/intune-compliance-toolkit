@@ -1,0 +1,74 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        },
+        {
+          "name": "e8_ml2",
+          "severity": null
+        },
+        {
+          "name": "e8_ml3",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Multi-factor authentication uses two or more different authentication factors. This may include:\n\n- something people know, such as a password\n- something people have, such as a security key, smart card, smartphone or one-time password token\n- something people are, such as a fingerprint pattern or their facial geometry.\n\nHuman users of online services, privileged human users of systems and human users with access to data repositories are more likely to be targeted by malicious actors due to their access. For this reason, it is especially important that multi-factor authentication is used for these user accounts. In addition, multi-factor authentication is vital when human users perform administrative activities as it can limit the consequences of a compromise by preventing or slowing malicious actors’ ability to gain unrestricted access to assets. In this regard, multi-factor authentication can be implemented as part of jump server authentication where assets being administered do not support multi-factor authentication themselves.\n\nWhen implementing multi-factor authentication, several different authentication factors can be implemented. Unfortunately, some authentication factors, such as biometrics or codes sent via Short Message Service, Voice over Internet Protocol or email, are more susceptible to compromise than others. For this reason, authentication factors that involve something people have should be used with something people know. Alternatively, something people have that is unlocked by something people know or are (often known as passwordless multi-factor authentication) can be used. Furthermore, for increased security, the use of phishing-resistant multi-factor authentication is recommended to protect against real-time phishing attacks.\n\nPasskey authentication may provide either single-factor or multi-factor authentication, depending on how it is implemented and used. It typically uses a computer or smartphone, or a separate security key, to store or access a private key. Where use of the private key requires an activation factor, such as a password or biometric, passkey authentication satisfies multi-factor authentication requirements.\n\nFinally, centrally logging and analysing multi-factor authentication events can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cyber security incidents.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1682",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system access",
+    "Identity and access management",
+    "Multi-factor authentication"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-1682",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Multi-factor authentication used for authenticating human users of systems is phishing-resistant."
+}

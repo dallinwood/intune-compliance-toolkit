@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "A secure record is maintained for the life of systems and their resources that covers the following for each human user:\n\n- their unique identifier\n- their signed agreement to abide by system usage policies\n- who authorised their access\n- when their access was granted\n- the level of access they were granted\n- when their access, and their level of access, was last reviewed\n- when their level of access was changed, and to what extent (if applicable)\n- when their access was withdrawn (if applicable).\n\nRetaining records of account requests for systems and their resources will assist in maintaining personnel accountability. Such records should include each human user’s unique identifier, their agreement to abide by system usage policies, who provided the authorisation for their access, when their authorisation was granted and when their access was last reviewed.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0407",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system access",
+    "Identity and access management",
+    "Recording authorisation for personnel to access systems"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "7",
+    "upstream_rule_id": "ism-0407",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "A secure record is maintained for the life of systems and their resources that covers the following for each human user:"
+}

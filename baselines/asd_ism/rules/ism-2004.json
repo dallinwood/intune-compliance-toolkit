@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "To assist with embedding cyber security throughout an organisation, it is important that the board of directors or executive committee maintains a sufficient level of cyber security literacy to fulfil both their fiduciary duties and any legislative or regulatory obligations. In addition, the board of directors or executive committee should maintain awareness of key cyber security recruitment activities, retention rates for cyber security personnel, and cyber security skills and experience gaps for their organisation. Finally, the board of directors or executive committee should support the development of cyber security skills and experience for all personnel within their organisation.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2004",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security roles",
+    "Board of directors and executive committee",
+    "Building cyber security expertise"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-2004",
+    "upstream_updated": "Dec-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "The board of directors or executive committee supports the development of cyber security skills and experience for all personnel via internal and external cyber security awareness raising and training opportunities."
+}

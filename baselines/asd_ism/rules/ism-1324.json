@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When issuing X.509 certificates to devices to access networks, an organisation should be aware that they could be stolen by malicious code. Once compromised, X.509 certificates could be used on other devices to gain unauthorised access to networks. An organisation should also be aware that in only issuing X.509 certificates to devices, any actions taken by human users will only be attributable to specific devices.\n\nWhen issuing X.509 certificates to human users to access networks, they can either be stored on devices or stored on smart cards. While issuing X.509 certificates that are stored on smart cards provides increased security, it comes at a higher cost. However, human users are more likely to notice missing smart cards and alert their security team, who are then able to revoke their credentials, which can minimise the time malicious actors have access to networks. In addition, to reduce the likelihood of stolen smart cards from being used to gain unauthorised access to networks, multi-factor authentication can be implemented by requiring the use of passwords to access X.509 certificates stored on smart cards. This is particularly important when smart cards grant human users any form of administrative access.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1324",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for networking",
+    "Network design and configuration",
+    "Generating and issuing X.509 certificates for authentication"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "5",
+    "upstream_rule_id": "ism-1324",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "X.509 certificates are generated using an evaluated certificate authority or hardware security module."
+}

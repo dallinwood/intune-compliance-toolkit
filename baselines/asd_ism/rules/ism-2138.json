@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Malicious actors can abuse legitimate Open Authorization (OAuth) flows to obtain enduring access to data without stealing credentials. In an illicit consent grant attack, a human user is tricked into granting a malicious third-party application consent to access data, after which the application holds OAuth tokens that operate independently of the human user’s credentials and survive credential resets. Separately, the device code authentication flow can be abused so that a human user, believing they are signing themselves in, authorises a malicious actor’s session.\n\nImportantly, malicious actors do not need to establish new consent grants if they can compromise an existing third-party application that has already been granted access, such as via a cyber supply chain attack against the application’s vendor. As such, in addition to controlling how new consent is granted, an organisation should regularly review existing consent grants, revoke those that are unused or hold excessive permissions, and centrally log consent and token issuance activity to support the detection of anomalous use.\n\nFinally, while the device code authentication flow should be disabled by default, an organisation may have a legitimate business requirement for its use, such as for input-constrained devices. In such cases, its use should be restricted to the specific user accounts and managed devices that require it.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2138",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system access",
+    "Identity and access management",
+    "Third-party application access and device code authentication"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2138",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "OAuth application consents, including their granted permissions, are reviewed at least every six months, with unused applications and excessive permissions revoked."
+}

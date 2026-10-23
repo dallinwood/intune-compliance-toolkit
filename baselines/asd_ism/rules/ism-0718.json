@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The CISO is responsible for reporting cyber security matters to their organisation’s board of directors or executive committee, as well as their organisation’s audit, risk and compliance committee (or equivalent). In doing so, it is important that reporting is done directly by the CISO rather than via other senior executives within their organisation. This ensures reporting remains accurate and free of any conflicts of interest.\n\nReporting should cover:\n\n- the organisation’s security risk profile\n- the status of key systems and any outstanding security risks\n- any planned cyber security uplift activities\n- any recent cyber security incidents\n- expected returns on cyber security investments.\n\nReporting on cyber security matters should be structured by business functions, regions or legal entities and support a consolidated view of an organisation’s security risks.\n\nIt is important that the CISO can translate security risks into operational risks for their organisation, including financial and legal risks, to enable more holistic conversations about their organisation’s risks.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0718",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security roles",
+    "Chief information security officer",
+    "Reporting on cyber security"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-0718",
+    "upstream_updated": "Dec-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "The CISO regularly reports directly to their organisation’s board of directors or executive committee on cyber security matters."
+}

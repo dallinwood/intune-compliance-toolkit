@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Once a user has authenticated, malicious actors may target the resulting authentication artefacts rather than the user’s credentials. Adversary-in-the-middle phishing and information-stealing malware can capture these authentication artefacts and replay them to bypass authentication measures, including multi-factor authentication. As such, it is important that authentication artefacts are protected to limit their usefulness to malicious actors if stolen. This includes cryptographically binding authentication artefacts to the devices on which they were issued to help prevent successful replay from other devices.\n\nIn addition, revoking active sessions and refresh tokens when trust in a user account or device changes reduces the window in which stolen authentication artefacts remain useful to malicious actors. This includes when credentials are reset or re-enrolled, when credentials are compromised or suspected of being compromised, when a device no longer meets compliance requirements, or when high-risk sign-in activity is detected. Notably, revoking active sessions and refresh tokens following credential resets and re-enrolments is an important companion to verifying human user identities when such requests are made, as malicious actors that have socially engineered a credential reset may seek to establish durable access via stolen authentication artefacts before the activity is discovered.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2148",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system access",
+    "Credential management",
+    "Protecting authentication artefacts"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2148",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Active sessions, refresh tokens and other authentication artefacts are revoked when credentials are reset or re-enrolled, when credentials are compromised or suspected of being compromised, when a device no longer meets compliance requirements, or when high-risk sign-in activity is detected."
+}

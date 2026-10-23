@@ -1,0 +1,50 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "For most purposes, a hashing algorithm with an output size of 224 bits provides 112 bits of effective security strength, with larger output sizes providing more bits of effective security strength.\n\nOnly SHA-2 hashing algorithms are approved for general-purpose use. Approval of SHA-3 and extendable-output functions (i.e. SHA3-256, SHA3-512, SHAKE128 and SHAKE256) is restricted to use within internal steps of ML-DSA and ML-KEM.\n\nFor interoperability and maintainability reasons, SHA-224 and SHA-256 will not be approved beyond 2030.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1767",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cryptography",
+    "Cryptographic algorithms",
+    "Using Secure Hashing Algorithms"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-1767",
+    "upstream_updated": "Dec-24",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "When using SHA-2 for hashing, an output size of at least 256 bits is used, preferably SHA-384 or SHA-512."
+}

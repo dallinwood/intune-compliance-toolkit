@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Physical computing resources can be shared among multiple operating environments via software-based isolation mechanisms. In doing so, an operating environment only has access to the virtual resources provided via the software-based isolation mechanism. In some cases, multiple layers of virtualisation, known as nested virtualisation, can exist. This is particularly prevalent with cloud services.\n\nExamples of software-based isolation include:\n\n- an operating system installed in a virtual machine where the isolation mechanism is a hypervisor, such as an Infrastructure as a Service offering\n- an application that uses the shared kernel of the underlying operating system of the physical computing resource where the isolation mechanism is an application container or application sandbox, such as a Platform as a Service offering\n- a containerised service hosted in a cloud environment, such as a Platform as a Service offering.\n\nThe logical separation of data within a single application, such as a Software as a Service offering, is not considered the same as multiple operating environments.\n\nMalicious actors who have compromised a single operating environment, or who legitimately control a single operating environment, might exploit a misconfiguration or vulnerability in an underlying software-based isolation mechanism. This can lead to the compromise of other operating environments that share the same software-based isolation mechanism or the compromise of the underlying operating system of the physical computing resource. As such, it is important that additional security controls be implemented when using a software-based isolation mechanism that consumes shared physical computing resources.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1607",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for system hardening",
+    "Virtualisation hardening",
+    "Functional separation between operating environments"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "2",
+    "upstream_rule_id": "ism-1607",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "When using a software-based isolation mechanism that consumes shared physical resources, integrity monitoring and centralised event logging is performed for the isolation mechanism and underlying operating system."
+}

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The system security plan provides an overview of the system, covering the system’s purpose, the system boundary and how the system is managed, as well as an annex that describes the security controls that have been identified and implemented for the system.\n\nThere can be many stakeholders involved in developing and maintaining a system security plan. This can include representatives from the following groups:\n\n- cyber security teams\n- project teams who deliver the capability (including contractors)\n- support teams who operate and support the capability\n- data owners for data processed, stored or communicated by the system\n- users for whom the capability is being developed.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0041",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security documentation",
+    "System-specific cyber security documentation",
+    "System security plan"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "7",
+    "upstream_rule_id": "ism-0041",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Systems have a system security plan that includes an overview of the system (covering the system’s purpose, the system boundary and how the system is managed) as well as an annex that covers applicable security controls from this document and any additional security controls that have been identified and implemented."
+}

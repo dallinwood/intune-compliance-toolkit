@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Allowing privately owned mobile devices and desktop computers to access an organisation’s systems or data can increase liability risk. As such, an organisation should seek legal advice to ascertain whether this scenario affects compliance with relevant legislation, such as the [Privacy Act 1988](https://www.legislation.gov.au/C2004A03712/latest/text) and the [Archives Act 1983](https://www.legislation.gov.au/C2004A02796/latest/text). Furthermore, if an organisation chooses to allow personnel to use privately owned mobile devices or desktop computers to access their organisation’s classified systems or data, they should ensure that it does not present an unacceptable security risk. This can be achieved in part through the enforced separation of classified data and personal data, preventing the storage of classified data on privately owned mobile devices and desktop computers, and disallowing the use of unapproved artificial intelligence agents.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1400",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for enterprise mobility",
+    "Enterprise mobility",
+    "Privately owned mobile devices and desktop computers"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "11",
+    "upstream_rule_id": "ism-1400",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Personnel using privately owned mobile devices or desktop computers to access OFFICIAL: Sensitive or PROTECTED systems or data have enforced separation of classified data and personal data."
+}

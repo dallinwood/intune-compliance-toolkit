@@ -1,0 +1,74 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        },
+        {
+          "name": "e8_ml2",
+          "severity": null
+        },
+        {
+          "name": "e8_ml3",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The Australian Signals Directorate (ASD) uses the cyber security incident reports it receives as the basis for assisting organisations. In addition, cyber security incident reports are used to identify trends and maintain an accurate threat environment picture. Finally, ASD utilises this understanding to assist in the development of new and updated cyber security advice, capabilities and techniques to better prevent and respond to evolving cyber threats. Under ASD’s limited use obligation, any information voluntarily provided to ASD about cyber security incidents, or potential cyber security incidents, cannot be used for regulatory purposes.\n\nAn organisation is recommended to coordinate their reporting of cyber security incidents to ASD. In doing so, the organisation should be cognisant of any legislative obligations regarding the reporting of cyber security incidents to ASD.\n\nThe types of cyber security incidents that should be reported to ASD include:\n\n- suspicious privileged user account lockouts\n- suspicious remote access authentication events\n- service accounts suspiciously communicating with internet-based infrastructure\n- compromise of sensitive or classified data\n- unauthorised access or attempts to access a system\n- emails with suspicious attachments or links\n- denial-of-service attacks\n- ransomware attacks\n- suspected tampering of electronic devices.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0140",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security incidents",
+    "Managing cyber security incidents",
+    "Reporting cyber security incidents to ASD"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "8",
+    "upstream_rule_id": "ism-0140",
+    "upstream_updated": "Sep-23",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Cyber security incidents are reported to ASD as soon as possible after they occur or are discovered."
+}

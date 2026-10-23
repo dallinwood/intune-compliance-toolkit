@@ -1,5 +1,7 @@
 sources/mscp/upstream/** -text
+sources/asd_ism/upstream/** -text
 baselines/** text eol=lf
 sources/mscp/*.json text eol=lf
+sources/asd_ism/*.json text eol=lf
 tests/fixtures/mscp_upstream/** -text
 tests/fixtures/asd_ism/** -text

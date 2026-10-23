@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "If an appropriately cleared technician is not used to undertake maintenance or repairs to IT equipment, the technician is escorted by someone who:\n\n- has the authority to direct the technician\n- is appropriately cleared and briefed\n- is sufficiently familiar with the IT equipment to understand the work being undertaken\n- takes all responsible measures to ensure the integrity of the IT equipment\n- takes due care to ensure that data is not disclosed.\n\nUndertaking maintenance or repairs to IT equipment could impact its integrity. As such, using an appropriately cleared technician to undertake such work is considered the most secure approach. This ensures that if data is disclosed, the technician understands the requirements for its protection. Conversely, an organisation choosing to use a technician who is not appropriately cleared to undertake such work should ensure that cleared and knowledgeable personnel escort the technician while the work is undertaken.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0306",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for information technology equipment",
+    "IT equipment maintenance or repairs",
+    "On-site maintenance or repairs"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "8",
+    "upstream_rule_id": "ism-0306",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "If an appropriately cleared technician is not used to undertake maintenance or repairs to IT equipment, the technician is escorted by someone who:"
+}

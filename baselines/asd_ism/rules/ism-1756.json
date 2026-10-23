@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Implementing a vulnerability disclosure program, based on responsible disclosure, can assist an organisation to improve the security of their products and services as it provides a way for internal and external parties to responsibly notify the organisation of vulnerabilities in a coordinated manner. Furthermore, following the resolution of reported vulnerabilities, it can assist an organisation in notifying their consumers of vulnerabilities that have been discovered in their products and services, and any patches, updates or vendor mitigations that should be applied.\n\nA vulnerability disclosure program should include processes and procedures for receiving, identifying, documenting, validating and prioritising vulnerabilities disclosed by internal and external parties. In support of this, a vulnerability disclosure policy should be made publicly available that covers:\n\n- the purpose of the vulnerability disclosure program\n- types of security research that are and are not allowed\n- how to report any vulnerabilities and their severities\n- actions, and associated timeframes, upon notification of vulnerabilities\n- expectations regarding the public disclosure of vulnerabilities\n- any recognition or reward for finders of vulnerabilities.\n\nFinally, ASD encourages security researchers and other members of the public to report vulnerabilities directly to an organisation. However, ASD recognises that this is not always practical, initial attempts at communication may be unsuccessful or the person making the report may not wish to do so directly. In such cases, vulnerabilities can be reported to ASD as an independent coordinator. Under ASD’s limited use obligation, any information voluntarily provided to ASD about vulnerabilities cannot be used for regulatory purposes.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1756",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for software development",
+    "Software development fundamentals",
+    "Vulnerability disclosure program"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-1756",
+    "upstream_updated": "Dec-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Vulnerability disclosure processes, and supporting vulnerability disclosure procedures, are developed, implemented and maintained."
+}

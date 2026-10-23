@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Software security testing can assist software developers to identify vulnerabilities in their software. In doing so, software security testing should be designed to be repeatable and scalable while ensuring vulnerabilities in software are identified and remediated as early as possible. Such software security testing should include peer reviews, code reviews, unit testing, integration testing, SAST, DAST and SCA to achieve comprehensive test coverage.\n\nAs part of software security testing, software developers may wish to replicate testing within typical consumer environments. Additionally, software developers may choose to use independent testing to assist with removing any potential for bias that might occur when they test their own software. Overall, software needs to be comprehensively tested for vulnerabilities during development, prior to all releases and periodically to help identify any previously unidentified vulnerabilities.\n\nFinally, AI models are becoming increasingly capable of supporting software security testing through the identification of potential vulnerabilities, known weaknesses and insecure coding practices. The use of such AI models can be highly beneficial for software security testing provided they supplement, and not replace, traditional software security testing practices and all of their findings are validated by appropriately skilled personnel.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0402",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for software development",
+    "Software development fundamentals",
+    "Software security testing"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "10",
+    "upstream_rule_id": "ism-0402",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Software is comprehensively tested for vulnerabilities using SAST, DAST and SCA prior to its initial release, any subsequent release, and periodically to help identify any previously unidentified vulnerabilities."
+}

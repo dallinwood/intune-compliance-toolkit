@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "To perform their contracted duties, service providers may need to access their customers’ systems. However, without appropriate measures in place, such access could leave systems vulnerable, especially when access originates outside Australia or involves privileged administrative activities. As such, service provider access should be subject to all measures otherwise applicable to unprivileged users, privileged users, remote access and administrative activities. Depending on the nature of the access, this may include the use of individually attributable accounts, least privilege access, multi-factor authentication, separate privileged operating environments and secure administrative infrastructure. Service provider-specific restrictions, such as remote management tools, source network addresses and time windows approved by the customer, should be applied as additional safeguards rather than as substitutes for these measures.\n\nAn organisation should also ensure that its systems are not accessed or administered by service providers unless such requirements, and the measures used to control them, are documented in contractual arrangements. Service provider access should also be independently logged and analysed by the organisation in a timely manner to detect any anomalous, unexpected or unauthorised activity. Records of approved remote management tools, source network addresses and time windows should be maintained and made available to personnel responsible for monitoring service provider access.\n\nIf unauthorised access occurs, such as customer support representatives or platform engineers accessing encryption keys without authorisation, the service provider should immediately report the cyber security incident to its customer and make available all logs pertaining to the unauthorised access.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1576",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for procurement and outsourcing",
+    "Managed services and cloud services",
+    "Access to systems by service providers"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "5",
+    "upstream_rule_id": "ism-1576",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "If an organisation’s systems are accessed or administered by a service provider in an unauthorised manner, it is treated as a cyber security incident and the organisation is immediately notified."
+}

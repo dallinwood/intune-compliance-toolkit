@@ -1,0 +1,62 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The application of the defence-in-depth principle to the protection of systems is enhanced through successive layers of physical security. The first layer of physical security for facilities that contain systems is generally the use of a security zone.\n\nDeployable platforms should also meet physical security requirements. In some cases, physical security certification authorities may have specific requirements for deployable platforms that supersede the security controls in these guidelines. This may include perimeter controls, building standards and staffing levels. As such, an organisation implementing deployable platforms should contact their physical security certification authority to seek additional guidance.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0810",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for physical security",
+    "Facilities and systems",
+    "Physical access to systems"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "7",
+    "upstream_rule_id": "ism-0810",
+    "upstream_updated": "Dec-24",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Classified systems are secured in facilities that meet the requirements for a security zone suitable for their classification."
+}

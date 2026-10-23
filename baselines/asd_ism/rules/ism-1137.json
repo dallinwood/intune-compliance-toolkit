@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Obtaining advice from ASD on emanation security risks is vital to protecting SECRET and TOP SECRET systems, inside and outside of Australian borders. This can assist in preventing SECRET and TOP SECRET systems from emanating compromising signals, which if intercepted and analysed, could lead to serious consequences. The implementation of such advice is in addition to, and not a replacement for, industry and government standards relating to electromagnetic interference/electromagnetic compatibility.\n\nIn conducting emanation security risk assessments, it is important that they are sought by system owners as early as possible in a system’s life cycle as development timeframes and costs will be much greater if changes need to be made to systems once they have been designed and implemented.\n\nOn completion of emanation security risk assessments, system owners will receive emanation security mitigation advice that contains recommended actions to be taken to reduce emanation security risks. In doing so, any recommendations not implemented by system owners will need to be accepted by a system’s authorising officer.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1137",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for communications infrastructure",
+    "Emanation security",
+    "Emanation security risk assessments"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-1137",
+    "upstream_updated": "Mar-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "System owners deploying SECRET or TOP SECRET systems within fixed facilities contact ASD for an emanation security risk assessment."
+}

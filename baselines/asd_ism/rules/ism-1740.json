@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Business email compromise, a form of financial fraud, is when malicious actors attempt to defraud an organisation of money or assets with the assistance of a compromised email account. Malicious actors will typically attempt to achieve this via invoice fraud, employee impersonation or company impersonation.\n\nWith invoice fraud, malicious actors will compromise a vendor’s email account and through it have access to legitimate invoices. Malicious actors will then amend invoices and send them to customers with the compromised email account. Customers will then pay the invoices, thinking that they are paying the vendor, but instead be sending money to malicious actors’ bank accounts.\n\nWith employee impersonation, malicious actors will compromise an organisation’s email account and impersonate an employee via email. This is then used to commit financial fraud in several ways. One common method is to impersonate a person in a position of authority, such as a chief executive officer or chief financial officer, and have a false invoice raised. Another method is to request a change to an employee’s banking details. The funds from the false invoice or the employee’s salary are then sent to malicious actors’ bank accounts.\n\nWith company impersonation, malicious actors register a domain with a name similar to another organisation. Malicious actors then impersonate that organisation in an email to a vendor and requests a quote for a quantity of expensive assets, such as laptop computers, and subsequently negotiate for the assets to be delivered to them prior to payment. The assets are then delivered to a location specified by malicious actors, with the invoice being sent to the legitimate organisation who never ordered or received the assets.\n\nTo mitigate business email compromise, personnel should be educated to look for the following warning signs:\n\n- an unexpected request for a change of banking details\n- an urgent payment request, or threats of serious consequences if payment is not made\n- unexpected payment requests from a person in a position of authority, particularly if payment requests are unusual from this person\n- an email received from a suspicious email address, such as an email address not matching an organisation’s name.\n\nIn dealing with such situations, personnel should have clear guidance to verify bank account details; think critically before actioning unusual payment requests; and have a process to report threatening demands for immediate action, pressure for secrecy, or requests to circumvent normal business processes and procedures.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1740",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for personnel security",
+    "Cyber security awareness training",
+    "Managing requests to change banking details or transfer funds"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-1740",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Personnel dealing with banking details and payment requests are advised of what business email compromise is and how to manage and report it."
+}

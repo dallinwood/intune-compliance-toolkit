@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Securely implementing cryptographic algorithms and protocols is a difficult task that requires expertise and diligence. In doing so, suppliers, and their cyber supply chains, need to carry out their duties competently and honestly as small flaws in cryptographic equipment, applications or libraries can be catastrophic and difficult to detect. Therefore, to provide a degree of cryptographic implementation assurance, cryptographic equipment, applications and libraries should be assessed by one of the following processes, listed in order of preference:\n\n- a Common Criteria evaluation against an ASD-endorsed Protection Profile\n- a Federal Information Processing Standard (FIPS) 140-3 cryptographic evaluation via the United States and Canada’s Cryptographic Module Validation Program\n- a cryptographic evaluation via the United States and Canada’s Cryptographic Algorithm Validation Program\n- a Common Criteria evaluation against an Evaluation Assurance Level\n- an independent security review by a reputable process or body.\n\nWhere a suitable Common Criteria evaluated product does not exist, an alternate product capable of securely implementing ASD-Approved Cryptographic Algorithms (AACAs) and ASD-Approved Cryptographic Protocols (AACPs) may be used. However, cyber supply chain security risks still need to be considered to ensure the product does not present a high risk. For example, an organisation should still follow robust and secure procurement processes by selecting a product from a supplier with:\n\n- a history of undertaking Common Criteria evaluations for their other products\n- a demonstrated commitment to the security of their products and services, including by adopting Secure by Design principles and practices, responsively resolving known vulnerabilities, and providing clear end of life advice for consumers\n- a demonstrated commitment to transparency for their products\n- a strong track record of maintaining the security of their own systems\n- sufficient information on how to securely configure their products.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0457",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cryptography",
+    "Cryptographic fundamentals",
+    "Cryptographic implementation assurance"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "11",
+    "upstream_rule_id": "ism-0457",
+    "upstream_updated": "Sep-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Cryptographic equipment, applications or libraries that have completed a Common Criteria evaluation against an ASD-endorsed Protection Profile are used when encrypting media that contains OFFICIAL: Sensitive or PROTECTED data."
+}

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Systems have a change and configuration management plan that includes:\n\n- the establishment and maintenance of authorised baseline configurations for systems\n- what constitutes routine and urgent changes to the configuration of systems\n- how changes to the configuration of systems will be requested, tracked and documented\n- who needs to be consulted prior to routine and urgent changes to the configuration of systems\n- who needs to approve routine and urgent changes to the configuration of systems\n- who needs to be notified of routine and urgent changes to the configuration of systems\n- what additional change management and configuration management processes and procedures need to be followed before, during and after routine and urgent changes to the configuration of systems.\n\nHaving a change and configuration management plan ensures that changes to the configuration of systems can be made in an accountable manner, with appropriate consultation, consideration and approvals, to maintain the security of such systems. Furthermore, change management and configuration management processes and procedures provide an opportunity for the security impact of changes to configuration of systems to be considered and, if necessary, additional risk management activities to be undertaken.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0912",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for cyber security documentation",
+    "System-specific cyber security documentation",
+    "Change and configuration management plan"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-0912",
+    "upstream_updated": "Jun-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Systems have a change and configuration management plan that includes:"
+}

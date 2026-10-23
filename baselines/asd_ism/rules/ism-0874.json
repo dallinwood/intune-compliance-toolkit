@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When mobile devices and desktop computers access the internet, doing so via an organisation’s internet gateway rather than directly can enable the provision of additional security functionality, such as web content filtering and protective Domain Name System services. However, in some cases, an organisation may instead accept the security risks associated with allowing direct connections to specific online services, such as web conferencing services and collaboration tools, for performance reasons.\n\nWhen connecting mobile devices and desktop computers to an organisation’s internet gateway via a virtual private network (VPN) connection, a split tunnel VPN can enable indirect access into the organisation’s network from other networks, such as the internet. As such, if split tunnelling is not disabled, there is an increased security risk that the VPN connection could be used as an intrusion vector by malicious actors.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0874",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for enterprise mobility",
+    "Enterprise mobility",
+    "Mobile devices and desktop computers accessing the internet"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "7",
+    "upstream_rule_id": "ism-0874",
+    "upstream_updated": "Mar-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Mobile devices and desktop computers access the internet via an organisation’s internet gateway rather than via a direct connection to the internet."
+}

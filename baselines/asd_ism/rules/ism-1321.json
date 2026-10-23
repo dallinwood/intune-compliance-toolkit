@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "802.1X authentication requires the use of an Extensible Authentication Protocol (EAP), of which multiple EAP methods are available.\n\nExtensible Authentication Protocol-Transport Layer Security (EAP-TLS) is considered one of the most secure EAP methods for 802.1X authentication and is widely supported. It uses a public key infrastructure to secure communications between devices and a Remote Authentication Dial-In User Service (RADIUS) server by using X.509 certificates. While EAP-TLS provides strong mutual authentication, it requires an organisation to have established a public key infrastructure. This involves deploying their own certificate authority and issuing X.509 certificates, or sourcing them from a commercial certificate authority, for every device that accesses their network. While this introduces additional costs and management overheads, the security advantages are significant.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1321",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for networking",
+    "Network design and configuration",
+    "802.1X authentication and key exchange"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "3",
+    "upstream_rule_id": "ism-1321",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "802.1X with EAP-TLS is used for mutual authentication and key exchange; with all other EAP methods disabled on supplicants and authentication servers."
+}

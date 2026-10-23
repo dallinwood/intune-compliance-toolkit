@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Threat hunting activities can assist in identifying malicious actors who have established persistent access to systems but have not triggered event log monitoring capabilities. Threat hunting complements event log monitoring activities by actively searching for indicators of compromise and adversary tradecraft using current strategic and sector-specific cyber threat intelligence. Threat hunting activities may be scoped to specific cyber threats, such as searching systems for indicators of compromise or adversary tradecraft identified in current ASD alerts and advisories. In doing so, threat hunting activities should be conducted by personnel with sufficient skills and tools, with any findings documented, actioned and used to improve automated event log monitoring capabilities.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-2153",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for security assurance",
+    "Security monitoring",
+    "Threat hunting"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-2153",
+    "upstream_updated": "Sep-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Threat hunting activities, informed by current strategic and sector-specific cyber threat intelligence, are conducted at least every three months."
+}

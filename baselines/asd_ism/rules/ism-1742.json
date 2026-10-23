@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When sanitising IT equipment, any media within the IT equipment should be removed or sanitised. Once any media has been removed or sanitised, IT equipment can be considered sanitised. However, if media cannot be removed or sanitised, the IT equipment should be destroyed as per media destruction requirements.\n\nMedia typically found in IT equipment includes:\n\n- electrostatic memory devices, such as laser printer cartridges used in multifunction devices (MFDs)\n- non-volatile magnetic memory, such as hard disks\n- non-volatile semiconductor memory, such as flash cards and solid-state drives\n- volatile memory, such as random-access memory sticks.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1742",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for information technology equipment",
+    "IT equipment sanitisation and destruction",
+    "Sanitising IT equipment"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-1742",
+    "upstream_updated": "Jun-24",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "IT equipment that cannot be sanitised is destroyed."
+}

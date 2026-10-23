@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Personnel should be advised that any personal information they post on online services, such as social media, could be used by malicious actors to develop a detailed understanding of their lifestyle and interests. In turn, this information could be used to build trust to elicit sensitive or classified information from them, or influence them to undertake specific actions, such as opening malicious email attachments or visiting malicious websites. In addition, personnel posting information on their movements and activities could allow malicious actors to time attempted financial fraud to align with when their target, if in a position of authority, would be uncontactable, such as attending meetings or travelling.\n\nFurthermore, to ensure that personal opinions are not misinterpreted as the official position of an organisation they work for, personnel should maintain separate personal user accounts from any work user accounts they use for online services, especially for social media.\n\nFinally, encouraging personnel to use any available privacy settings for online services can reduce security risks by restricting who can view their personal information, as well as their interactions with online services.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0821",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for personnel security",
+    "Cyber security awareness training",
+    "Posting personal information on online services"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-0821",
+    "upstream_updated": "Jun-26",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Personnel are advised of security risks associated with posting personal information on online services."
+}

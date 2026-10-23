@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Denial-of-service attacks are designed to disrupt or degrade online services, such as website, email and Domain Name System services. To achieve this goal, malicious actors may use multiple methods to deny access to legitimate users of online services. This includes using multiple computers to direct a large volume of unwanted network traffic at online services to consume all available network bandwidth, using multiple computers to direct tailored network traffic at online services to consume all processing resources, or hijacking online services to redirect legitimate users away from those services to other services that malicious actors control.\n\nAs an organisation often cannot avoid being targeted by denial-of-service attacks, they should discuss with their cloud service providers any denial-of-service attack detection and monitoring services that may be available for their use. For example, reporting dashboards that provide out-of-band and real-time alerts based on organisation-defined notification thresholds. Furthermore, an organisation should discuss with their cloud service providers what mitigation strategies they can implement to prepare for, and reduce the impact of, being targeted by a denial-of-service attack. Finally, with the express consent of their cloud service providers, an organisation may seek to test the effectiveness of any denial-of-service attack mitigation strategies that have been implemented.\n\nOverall, preparing for denial-of-service attacks before they occur, such as by identifying critical online services and implementing preventative denial-of-service attack mitigation strategies, is by far the best approach as it is very difficult to respond to denial-of-service attacks once they begin and efforts at that stage are unlikely to be effective.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1436",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 4,
+  "section_path": [
+    "Guidelines for networking",
+    "Service continuity for online services",
+    "Denial-of-service attack mitigation strategies"
+  ],
+  "source": {
+    "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2026.09.4",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "3",
+    "upstream_rule_id": "ism-1436",
+    "upstream_updated": "Jun-23",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9f77120a7f8671c73da02431cdc299fac264edab/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Critical online services are segregated from other online services that are more likely to be targeted as part of denial-of-service attacks."
+}
