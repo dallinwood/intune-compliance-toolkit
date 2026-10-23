@@ -15,7 +15,8 @@ import {
   benchmarksListedUnder,
   compareBenchmarkFacetValues,
   compareTargetGroupKeys,
-  facetOptions,
+  automationOptionCounts,
+  facetOptionCounts,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
@@ -92,17 +93,17 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // Options are derived from the deferred filters so a click's urgent render
   // is only the control itself; checked state below still reads the live store.
   const { filters: deferredFilters } = useDeferredFilters()
-  const targets = useMemo(
-    () => facetOptions(rows, deferredFilters, 'targets', accessors.targetsOf, deferredFilters.targets, index),
+  const targetCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'targets', accessors.targetsOf, deferredFilters.targets, index),
     [rows, deferredFilters, accessors, index],
   )
-  const sources = useMemo(
-    () => facetOptions(rows, deferredFilters, 'sources', accessors.sourceOf, deferredFilters.sources, index),
+  const sourceCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'sources', accessors.sourceOf, deferredFilters.sources, index),
     [rows, deferredFilters, accessors, index],
   )
-  const versions = useMemo(
+  const versionCounts = useMemo(
     () =>
-      facetOptions(
+      facetOptionCounts(
         rows,
         deferredFilters,
         'versions',
@@ -112,9 +113,9 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       ),
     [rows, deferredFilters, index],
   )
-  const benchmarks = useMemo(
+  const benchmarkCounts = useMemo(
     () =>
-      facetOptions(
+      facetOptionCounts(
         rows,
         deferredFilters,
         'benchmarks',
@@ -124,14 +125,16 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
       ),
     [rows, deferredFilters, index],
   )
-  const sections = useMemo(
-    () => facetOptions(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index),
+  const sectionCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index),
     [rows, deferredFilters, accessors, index],
   )
-  const tags = useMemo(
-    () => facetOptions(rows, deferredFilters, 'tags', accessors.tagsOf, deferredFilters.tags, index),
+  const tagCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'tags', accessors.tagsOf, deferredFilters.tags, index),
     [rows, deferredFilters, accessors, index],
   )
+
+  const automationCounts = useMemo(() => automationOptionCounts(rows, deferredFilters, index), [rows, deferredFilters, index])
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const { canScrollUp, canScrollDown } = useScrollEdges(scrollAreaRef)
@@ -160,7 +163,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
               className="gap-1.5"
             >
               {AUTOMATABLE_OPTIONS.map((option) => (
-                <FacetOption key={option.value} label={option.label}>
+                <FacetOption key={option.value} label={option.label} count={automationCounts[option.value]}>
                   <RadioGroupItem value={option.value} />
                 </FacetOption>
               ))}
@@ -174,7 +177,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             compareValues={accessors.compareTargets}
             labelOf={accessors.targetLabel}
             isSystemGenerated={isNoTarget}
-            reachable={targets}
+            counts={targetCounts}
             selected={filters.targets}
             onToggle={filters.toggleTarget}
           />
@@ -186,7 +189,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             compareValues={compareScopeKeys}
             labelOf={accessors.versionLabel}
             isSystemGenerated={isNoVersion}
-            reachable={versions}
+            counts={versionCounts}
             selected={filters.versions}
             onToggle={filters.toggleVersion}
           />
@@ -197,7 +200,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             valueOf={accessors.sourceOf}
             compareValues={accessors.compareSources}
             labelOf={accessors.sourceLabel}
-            reachable={sources}
+            counts={sourceCounts}
             selected={filters.sources}
             onToggle={filters.toggleSource}
           />
@@ -208,7 +211,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             valueOf={accessors.allBenchmarksOf}
             compareValues={accessors.compareBenchmarks}
             labelOf={benchmarkLabel}
-            reachable={benchmarks}
+            counts={benchmarkCounts}
             selected={filters.benchmarks}
             onToggle={filters.toggleBenchmark}
           />
@@ -219,7 +222,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             valueOf={accessors.sectionOf}
             compareValues={accessors.compareSections}
             labelOf={accessors.sectionLabel}
-            reachable={sections}
+            counts={sectionCounts}
             selected={filters.sections}
             onToggle={filters.toggleSection}
           />
@@ -230,7 +233,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             valueOf={accessors.tagsOf}
             compareValues={accessors.compareTags}
             labelOf={accessors.tagLabel}
-            reachable={tags}
+            counts={tagCounts}
             selected={filters.tags}
             onToggle={filters.toggleTag}
           />
@@ -287,11 +290,13 @@ function FacetGroup({ title, children }: { title: string; children: ReactNode })
 // useId() sidesteps that entirely.
 function FacetOption({
   label,
+  count,
   disabled,
   isSystemGenerated,
   children,
 }: {
   label: string
+  count: number
   disabled?: boolean
   isSystemGenerated?: boolean
   children: ReactNode
@@ -308,12 +313,15 @@ function FacetOption({
           disabled
             ? 'truncate text-sm font-normal text-slate-400 line-through'
             : isSystemGenerated
-              ? 'truncate text-sm font-normal text-slate-500 italic'
+              ? 'truncate text-sm font-normal text-slate-500'
               : 'truncate text-sm font-normal'
         }
       >
         {label}
       </Label>
+      <span aria-hidden="true" className="-ml-1 shrink-0 text-sm font-normal text-slate-400">
+        ({count})
+      </span>
     </div>
   )
 }
@@ -334,7 +342,7 @@ function StableFacetGroup({
   compareValues,
   labelOf,
   isSystemGenerated,
-  reachable,
+  counts,
   selected,
   onToggle,
 }: {
@@ -344,12 +352,12 @@ function StableFacetGroup({
   compareValues?: (left: string, right: string) => number
   labelOf: (value: string) => string
   isSystemGenerated?: (value: string) => boolean
-  reachable: string[]
+  counts: ReadonlyMap<string, number>
   selected: ReadonlySet<string>
   onToggle: (value: string) => void
 }) {
   const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf, compareValues), [rows, valueOf, compareValues])
-  const reachableSet = useMemo(() => new Set(reachable), [reachable])
+  const reachable = useMemo(() => Array.from(counts.keys()), [counts])
   const { shown, leaving } = useStableFacetShown(reachable)
 
   const hasShownValue = canonicalOrder.some((value) => shown.has(value))
@@ -363,7 +371,7 @@ function StableFacetGroup({
       {canonicalOrder
         .filter((value) => shown.has(value))
         .map((value) => {
-          const isReachable = reachableSet.has(value)
+          const isReachable = counts.has(value)
           const isLeaving = leaving.has(value)
           return (
             // The grid-rows 1fr->0fr trick animates height even though the
@@ -378,13 +386,13 @@ function StableFacetGroup({
             <div
               key={value}
               data-leaving={isLeaving}
-              className={`grid overflow-hidden transition-[grid-template-rows,opacity] ease-in-out ${
+              className={`grid grid-cols-1 overflow-hidden transition-[grid-template-rows,opacity] ease-in-out ${
                 isLeaving ? 'grid-rows-[0fr] opacity-0' : 'grid-rows-[1fr] opacity-100'
               }`}
               style={{ transitionDuration: `${FACET_EXIT_TRANSITION_MS}ms` }}
             >
               <div className="min-h-0">
-                <FacetOption label={labelOf(value)} disabled={!isReachable} isSystemGenerated={isSystemGenerated?.(value)}>
+                <FacetOption label={labelOf(value)} count={counts.get(value) ?? 0} disabled={!isReachable} isSystemGenerated={isSystemGenerated?.(value)}>
                   <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
                 </FacetOption>
               </div>

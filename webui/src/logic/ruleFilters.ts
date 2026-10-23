@@ -1,4 +1,4 @@
-import type { FilterState } from '../state/filterStore'
+import type { AutomatableFilter, FilterState } from '../state/filterStore'
 import type { BenchmarkMembership } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { NO_TARGET_KEY, NO_VERSION_KEY, benchmarksAt } from './applicability'
@@ -172,6 +172,25 @@ export function matchesFilters(
 // even if it no longer matches - otherwise a selection that becomes
 // unreachable (e.g. two mutually-exclusive picks across facets) would
 // vanish from the list with no way left to un-check it.
+export function facetOptionCounts(
+  rows: RuleRow[],
+  filters: FilterValues,
+  dimension: FilterDimension,
+  valueOf: (row: RuleRow) => string | string[],
+  selected: Iterable<string>,
+  index: VocabularyIndex,
+): Map<string, number> {
+  const counts = new Map<string, number>()
+  for (const row of rows) {
+    if (!matchesFilters(row, filters, index, dimension)) continue
+    const value = valueOf(row)
+    const distinctValues = new Set(Array.isArray(value) ? value : [value])
+    for (const distinctValue of distinctValues) counts.set(distinctValue, (counts.get(distinctValue) ?? 0) + 1)
+  }
+  for (const value of selected) if (!counts.has(value)) counts.set(value, 0)
+  return counts
+}
+
 export function facetOptions(
   rows: RuleRow[],
   filters: FilterValues,
@@ -180,15 +199,22 @@ export function facetOptions(
   selected: Iterable<string>,
   index: VocabularyIndex,
 ): string[] {
-  const present = new Set<string>()
+  const counts = facetOptionCounts(rows, filters, dimension, valueOf, selected, index)
+  return Array.from(counts.keys()).sort((a, b) => a.localeCompare(b))
+}
+
+// For the Automation radio: each option's count is the rows matching every
+// other filter with that automation value ("all" is every such row).
+export function automationOptionCounts(rows: RuleRow[], filters: FilterValues, index: VocabularyIndex): Record<AutomatableFilter, number> {
+  const counts: Record<AutomatableFilter, number> = { all: 0, automatable: 0, manual: 0 }
+  const ignoringAutomation: FilterValues = { ...filters, automatable: 'all' }
   for (const row of rows) {
-    if (!matchesFilters(row, filters, index, dimension)) continue
-    const value = valueOf(row)
-    if (Array.isArray(value)) value.forEach((entry) => present.add(entry))
-    else present.add(value)
+    if (!matchesFilters(row, ignoringAutomation, index)) continue
+    counts.all += 1
+    if (row.assessment.status === 'automated') counts.automatable += 1
+    if (row.assessment.status === 'manual') counts.manual += 1
   }
-  for (const value of selected) present.add(value)
-  return Array.from(present).sort((a, b) => a.localeCompare(b))
+  return counts
 }
 
 // Every distinct value for one facet dimension, across every row,

@@ -697,10 +697,25 @@ test('the None facet options read as system-generated', async ({ page }) => {
     const noneCheckbox = page.getByRole('group', { name: facetTitle, exact: true }).getByRole('checkbox', { name: 'None', exact: true })
     const noneLabel = page.getByRole('group', { name: facetTitle, exact: true }).locator('label', { hasText: /^None$/ })
     await expect(noneCheckbox).toBeVisible()
-    await expect(noneLabel).toHaveClass(/(^|\s)italic(\s|$)/)
     await expect(noneLabel).toHaveClass(/text-slate-500/)
+    await expect(noneLabel).not.toHaveClass(/(^|\s)italic(\s|$)/)
   }
   await expect(page.getByRole('group', { name: 'Source', exact: true }).locator('label.italic')).toHaveCount(0)
+})
+
+test('facet options show how many rules they would leave in view', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  const sourceGroup = page.getByRole('group', { name: 'Source', exact: true })
+  const optionRow = (group: Locator, name: string) => group.getByRole('checkbox', { name, exact: true }).locator('xpath=..')
+  await expect(optionRow(sourceGroup, 'ASD ISM')).toContainText('(1143)')
+  await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(350)')
+
+  await page.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
+  await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
+  const targetGroup = page.getByRole('group', { name: 'Target', exact: true })
+  await expect(optionRow(targetGroup, 'None')).toContainText('(1143)')
+  await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(350)')
 })
 
 test('the table shows an Updating rules spinner while it catches up with a large filter change', async ({ page }) => {

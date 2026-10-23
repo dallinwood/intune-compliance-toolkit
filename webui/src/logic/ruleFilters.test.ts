@@ -15,6 +15,8 @@ import {
   tagGroupKeys,
   targetGroupKeys,
   benchmarksListedUnder,
+  automationOptionCounts,
+  facetOptionCounts,
   facetOptions,
   matchesFilters,
   parseBenchmarkFacetValue,
@@ -834,5 +836,106 @@ describe('Target and Version "None"', () => {
   it('does not group the "none" version through a vocabulary term', () => {
     const labelled = vocabularyIndexOf({ versions: [{ label: 'Grouped', terms: ['other', NO_VERSION_KEY] }] })
     expect(versionsListingAnyOf(ismRow, new Set(), labelled)).toEqual([NO_VERSION_KEY])
+  })
+})
+
+describe('facetOptionCounts', () => {
+  const macRow = (id: string, overrides: Partial<RuleRow> = {}) =>
+    row({ ref: { id: `mscp.${id}`, path: `mscp/rules/${id}.json` }, title: id, ...overrides })
+  const ismRow = (id: string, overrides: Partial<RuleRow> = {}) =>
+    macRow(id, { sourceName: 'ism', targetKeys: [NO_TARGET_KEY], tags: [], ...overrides })
+  const countsFor = (
+    rows: RuleRow[],
+    filters: FilterValues,
+    dimension: 'targets' | 'sources' | 'tags' | 'versions' | 'benchmarks',
+    valueOf: (candidate: RuleRow) => string | string[],
+    selected: Iterable<string> = [],
+  ) => facetOptionCounts(rows, filters, dimension, valueOf, selected, noVocabulary)
+  const sourceOf = (candidate: RuleRow) => sourceGroupKey(candidate, noVocabulary)
+
+  it('counts every row once per option with no filters applied', () => {
+    const rows = [macRow('a'), macRow('b'), ismRow('c')]
+    expect(countsFor(rows, emptyFilters(), 'sources', sourceOf)).toEqual(new Map([['mscp', 2], ['ism', 1]]))
+  })
+
+  it('narrows a facet by the other facets but not by its own selection', () => {
+    const rows = [macRow('a'), macRow('b'), ismRow('c')]
+    const filters = emptyFilters({ sources: new Set(['mscp']) })
+    expect(countsFor(rows, filters, 'sources', sourceOf)).toEqual(new Map([['mscp', 2], ['ism', 1]]))
+    expect(countsFor(rows, filters, 'targets', (candidate) => targetGroupKeys(candidate, noVocabulary))).toEqual(new Map([['macOS', 2]]))
+    const ismSelected = emptyFilters({ sources: new Set(['ism']) })
+    expect(countsFor(rows, ismSelected, 'targets', (candidate) => targetGroupKeys(candidate, noVocabulary))).toEqual(
+      new Map([[NO_TARGET_KEY, 1]]),
+    )
+  })
+
+  it('counts search text as an applied filter', () => {
+    const rows = [macRow('alpha'), macRow('beta'), ismRow('alpha_two')]
+    const counts = countsFor(rows, emptyFilters({ search: 'alpha' }), 'sources', sourceOf)
+    expect(counts).toEqual(new Map([['mscp', 1], ['ism', 1]]))
+  })
+
+  it('counts a row once for an option it yields twice', () => {
+    const rows = [macRow('a'), macRow('b', { tags: ['x', 'y'] })]
+    const doubled = (candidate: RuleRow) => [...candidate.targetKeys, ...candidate.targetKeys]
+    expect(countsFor(rows, emptyFilters(), 'targets', doubled).get('macOS')).toBe(2)
+    const tagCounts = countsFor(rows, emptyFilters(), 'tags', (candidate) => tagGroupKeys(candidate, noVocabulary))
+    expect(tagCounts).toEqual(new Map([['800-53r5_high', 1], ['x', 1], ['y', 1]]))
+  })
+
+  it('shows a selected option that no row reaches as zero', () => {
+    const rows = [macRow('a')]
+    const filters = emptyFilters({ sources: new Set(['ism']) })
+    const counts = countsFor(rows, filters, 'tags', (candidate) => tagGroupKeys(candidate, noVocabulary), ['gone'])
+    expect(counts.get('gone')).toBe(0)
+    expect(counts.has('800-53r5_high')).toBe(false)
+  })
+
+  it('scopes benchmark counts to the selected versions and version counts to the selected benchmarks', () => {
+    const rows = [
+      macRow('a', {
+        applicability: applicabilityOfVersions({
+          'macOS 26.0': [{ name: 'cis_lvl1', severity: null }],
+          'macOS 27.0': [{ name: 'cis_lvl2', severity: null }],
+        }),
+        scopeKeys: ['macOS 26.0', 'macOS 27.0'],
+      }),
+      macRow('b', {
+        applicability: applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cis_lvl1', severity: null }] }),
+        scopeKeys: ['macOS 27.0'],
+      }),
+    ]
+    const onTwentySix = emptyFilters({ versions: new Set(['macOS 26.0']) })
+    expect(
+      countsFor(rows, onTwentySix, 'benchmarks', (candidate) => benchmarksListedUnder(candidate, onTwentySix.versions, noVocabulary)),
+    ).toEqual(new Map([['cis_lvl1', 1]]))
+
+    const lvl1 = emptyFilters({ benchmarks: new Set(['cis_lvl1']) })
+    expect(
+      countsFor(rows, lvl1, 'versions', (candidate) => versionsListingAnyOf(candidate, lvl1.benchmarks, noVocabulary)),
+    ).toEqual(new Map([['macOS 26.0', 1], ['macOS 27.0', 1]]))
+
+    const both = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set(['cis_lvl1']) })
+    const benchmarkCounts = countsFor(rows, both, 'benchmarks', (candidate) => benchmarksListedUnder(candidate, both.versions, noVocabulary))
+    expect(benchmarkCounts).toEqual(new Map([['cis_lvl1', 1], ['cis_lvl2', 1]]))
+  })
+
+  it('offers the same options as facetOptions', () => {
+    const rows = [macRow('a'), ismRow('c')]
+    const filters = emptyFilters({ tags: new Set(['800-53r5_high']) })
+    const counts = countsFor(rows, filters, 'sources', sourceOf, filters.sources)
+    expect(Array.from(counts.keys()).sort()).toEqual(facetOptions(rows, filters, 'sources', sourceOf, filters.sources, noVocabulary))
+  })
+})
+
+describe('automationOptionCounts', () => {
+  it('counts rows by automation value after every other filter', () => {
+    const automated = row({ title: 'auto one' })
+    const manual = row({ title: 'manual one', assessment: { status: 'manual', manual_reason: 'manual' } })
+    const otherSource = row({ title: 'auto two', sourceName: 'ism' })
+    const rows = [automated, manual, otherSource]
+    expect(automationOptionCounts(rows, emptyFilters(), noVocabulary)).toEqual({ all: 3, automatable: 2, manual: 1 })
+    const manualSelected = emptyFilters({ automatable: 'manual', sources: new Set(['mscp']) })
+    expect(automationOptionCounts(rows, manualSelected, noVocabulary)).toEqual({ all: 2, automatable: 1, manual: 1 })
   })
 })
