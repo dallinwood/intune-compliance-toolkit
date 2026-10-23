@@ -715,6 +715,12 @@ test('facet options show how many rules they would leave in view', async ({ page
   await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
   const targetGroup = page.getByRole('group', { name: 'Target', exact: true })
   await expect(optionRow(targetGroup, 'None')).toContainText('(1143)')
+  await expect(optionRow(sourceGroup, 'ASD ISM')).toContainText('(1143)')
+  await expect(sourceGroup.getByRole('checkbox', { name: 'NIST mSCP', exact: true })).toHaveCount(0)
+  await expect(sourceGroup.getByRole('checkbox', { name: 'ASD ISM', exact: true })).toBeChecked()
+
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
   await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(350)')
 })
 

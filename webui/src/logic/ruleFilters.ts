@@ -163,29 +163,30 @@ export function matchesFilters(
   return true
 }
 
-// Facet-narrowing for the filter sidebar: which values remain reachable in
-// one facet once every *other* currently-applied filter is taken into
-// account (e.g. picking a benchmark narrows the version list down
-// to versions that list that benchmark). The facet being
-// computed is excluded from its own narrowing, or picking a value could
-// never un-narrow itself. Any already-selected value is always included
-// even if it no longer matches - otherwise a selection that becomes
-// unreachable (e.g. two mutually-exclusive picks across facets) would
-// vanish from the list with no way left to un-check it.
+// The rows in the current view: every applied filter and the search, each
+// facet's own selection included.
+export function rowsInView(rows: RuleRow[], filters: FilterValues, index: VocabularyIndex): RuleRow[] {
+  return rows.filter((row) => matchesFilters(row, filters, index))
+}
+
+// Facet-narrowing for the filter sidebar. Each option's count is the number of
+// rows in the current view that have that value, and an option is offered
+// only while that count is above zero - so a facet never offers a choice that
+// would leave no rule in view. Any already-selected value is always included,
+// at zero if need be: otherwise a selection that no view row has (e.g. two
+// mutually-exclusive picks across facets) would vanish from the list with no
+// way left to un-check it. The keys of the result are the offered options.
 export function facetOptionCounts(
-  rows: RuleRow[],
-  filters: FilterValues,
-  dimension: FilterDimension,
+  viewRows: RuleRow[],
   valueOf: (row: RuleRow) => string | string[],
   selected: Iterable<string>,
-  index: VocabularyIndex,
 ): Map<string, number> {
   const counts = new Map<string, number>()
-  for (const row of rows) {
-    if (!matchesFilters(row, filters, index, dimension)) continue
+  for (const row of viewRows) {
     const value = valueOf(row)
-    const distinctValues = new Set(Array.isArray(value) ? value : [value])
-    for (const distinctValue of distinctValues) counts.set(distinctValue, (counts.get(distinctValue) ?? 0) + 1)
+    for (const distinctValue of new Set(Array.isArray(value) ? value : [value])) {
+      counts.set(distinctValue, (counts.get(distinctValue) ?? 0) + 1)
+    }
   }
   for (const value of selected) if (!counts.has(value)) counts.set(value, 0)
   return counts
@@ -194,12 +195,11 @@ export function facetOptionCounts(
 export function facetOptions(
   rows: RuleRow[],
   filters: FilterValues,
-  dimension: FilterDimension,
   valueOf: (row: RuleRow) => string | string[],
   selected: Iterable<string>,
   index: VocabularyIndex,
 ): string[] {
-  const counts = facetOptionCounts(rows, filters, dimension, valueOf, selected, index)
+  const counts = facetOptionCounts(rowsInView(rows, filters, index), valueOf, selected)
   return Array.from(counts.keys()).sort((a, b) => a.localeCompare(b))
 }
 
