@@ -9,6 +9,11 @@ import { defineConfig } from '@playwright/test'
 // PLAYWRIGHT_BASE_URL if the dev server isn't on the default port.
 export default defineConfig({
   testDir: './e2e',
+  // Rendering the 1493-row table is CPU bound in the browser: one page
+  // shows "N of 1493 rules" in about 2s alone, but 6 parallel workers slow
+  // each other to 12s+, past the specs' 10s waits. The serial run takes
+  // about as long overall, so parallelism bought nothing.
+  workers: 1,
   fullyParallel: true,
   reporter: 'list',
   use: {

@@ -2,13 +2,23 @@
   "schema_version": 1,
   "vocabularies": {
     "targets": [],
-    "sources": [],
+    "sources": [
+      { "label": "ASD ISM", "terms": ["asd_ism"] }
+    ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
       { "label": "CIS Level 2", "terms": ["cis_lvl2"], "metadata": ["benchmark"] },
       { "label": "DISA STIG", "terms": ["disa_stig"], "metadata": ["benchmark"] },
       { "label": "NLMAPGOV Base", "terms": ["nlmapgov_base"], "metadata": ["benchmark"] },
-      { "label": "NLMAPGOV Plus", "terms": ["nlmapgov_plus"], "metadata": ["benchmark"] }
+      { "label": "NLMAPGOV Plus", "terms": ["nlmapgov_plus"], "metadata": ["benchmark"] },
+      { "label": "ISM Non-classified", "terms": ["ism_non_classified"], "metadata": ["benchmark"] },
+      { "label": "ISM OFFICIAL: Sensitive", "terms": ["ism_official_sensitive"], "metadata": ["benchmark"] },
+      { "label": "ISM PROTECTED", "terms": ["ism_protected"], "metadata": ["benchmark"] },
+      { "label": "ISM SECRET", "terms": ["ism_secret"], "metadata": ["benchmark"] },
+      { "label": "ISM TOP SECRET", "terms": ["ism_top_secret"], "metadata": ["benchmark"] },
+      { "label": "Essential Eight ML1", "terms": ["e8_ml1"], "metadata": ["benchmark"] },
+      { "label": "Essential Eight ML2", "terms": ["e8_ml2"], "metadata": ["benchmark"] },
+      { "label": "Essential Eight ML3", "terms": ["e8_ml3"], "metadata": ["benchmark"] }
     ],
     "severities": [
       { "label": "low", "terms": ["low"], "metadata": ["severity"] },
@@ -40,7 +50,7 @@
       },
       { "label": "n/a", "terms": ["n_a"], "description": "Not applicable to macOS (mSCP: n_a)." },
       { "label": "supplemental", "terms": ["supplemental"], "description": "Supplemental guidance with no check." },
-      { "label": "no check", "terms": ["no_check"], "description": "mSCP provides no automated check." }
+      { "label": "no check", "terms": ["no_check"], "description": "The source provides no automated check." }
     ]
   }
 }

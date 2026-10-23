@@ -22,7 +22,7 @@ describe('manualReasonText', () => {
     ['n_a', 'Not applicable to macOS (mSCP: n_a).'],
     ['supplemental', 'Supplemental guidance with no check.'],
     ['manual', 'mSCP marks this check as manual.'],
-    ['no_check', 'mSCP provides no automated check.'],
+    ['no_check', 'The source provides no automated check.'],
   ])('explains manual_reason %s with the vocabulary description', (manualReason, text) => {
     expect(manualReasonText(manualReason, vocabularyIndex)).toBe(text)
   })

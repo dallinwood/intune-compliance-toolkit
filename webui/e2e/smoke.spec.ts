@@ -15,7 +15,7 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   await page.goto('/')
 
   await expect(page.getByRole('heading', { name: 'Intune Compliance Toolkit' })).toBeVisible()
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
   const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
   // Scoped to the row rather than the button's name, which flips between
@@ -45,20 +45,20 @@ test('an architecture-gated rule names its architecture by the raw mSCP code', a
 // a screenshot.
 test('macOS version and benchmark facets narrow the table together', async ({ page }) => {
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
   const countOf = async () => Number((await ruleCount(page).textContent())?.split(' ')[0])
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText('350 of 350 rules')
+  await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
   const versionOnly = await countOf()
 
   await page.getByRole('checkbox', { name: 'CIS Level 1', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText(`${versionOnly} of 350 rules`)
+  await expect(ruleCount(page)).not.toHaveText(`${versionOnly} of 1493 rules`)
   const both = await countOf()
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText(`${both} of 350 rules`)
+  await expect(ruleCount(page)).not.toHaveText(`${both} of 1493 rules`)
   const benchmarkOnly = await countOf()
 
   expect(both).toBeGreaterThan(0)
@@ -66,7 +66,7 @@ test('macOS version and benchmark facets narrow the table together', async ({ pa
   expect(both).toBeLessThan(benchmarkOnly)
 
   await page.getByRole('radio', { name: 'Manual only' }).click()
-  await expect(ruleCount(page)).not.toHaveText(`${benchmarkOnly} of 350 rules`)
+  await expect(ruleCount(page)).not.toHaveText(`${benchmarkOnly} of 1493 rules`)
 })
 
 interface IndexBenchmark {
@@ -86,14 +86,14 @@ test('a benchmark severity option narrows the table to rules listing that severi
   expect(expectedCount).toBeGreaterThan(0)
 
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   const stigLabels = page.getByTestId('sidebar-scroll-area').locator('label').filter({ hasText: /^DISA STIG/ })
   await expect(stigLabels).toHaveText(['DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)', 'DISA STIG (no severity)'])
   await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
-  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 350 rules`)
+  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 1493 rules`)
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
 })
 
@@ -111,7 +111,7 @@ test('the benchmark column follows the macOS version filter', async ({ page }) =
     page.locator('table tbody tr').filter({ has: page.getByText(ruleId.replace('mscp.', ''), { exact: true }) })
 
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   await page.getByRole('checkbox', { name: 'macOS 15', exact: true }).click()
 
   const benchmarkCell = rowOf(stigOnlyOnFifteen.id).locator('td').last()
@@ -121,10 +121,10 @@ test('the benchmark column follows the macOS version filter', async ({ page }) =
   await expect(rowOf(inNoBenchmark.id).locator('td').last()).toHaveText('Not in a benchmark')
 })
 
-// The 350-row assertions reflect today's library: one platform and one source, so ticking either keeps every rule.
-test('the Platform facet follows Automation and the Source facet comes last, and both list every rule', async ({ page }) => {
+// Only the mSCP rules name a platform, so ticking macOS or mscp keeps 350 of the 1493 rules; ticking ASD ISM keeps the other 1143.
+test('the Platform facet follows Automation and the Source facet comes last, and each filters to its own rules', async ({ page }) => {
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
   const facetTitles = page.getByTestId('sidebar-scroll-area').getByRole('heading')
   await expect(facetTitles.nth(0)).toHaveText('Automation')
@@ -135,14 +135,51 @@ test('the Platform facet follows Automation and the Source facet comes last, and
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
   await platformOption.click()
   await expect(platformOption).toBeChecked()
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules')
+  await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
   await platformOption.click()
 
   const sourceOption = page.getByRole('checkbox', { name: 'mscp', exact: true })
   await sourceOption.scrollIntoViewIfNeeded()
   await sourceOption.click()
   await expect(sourceOption).toBeChecked()
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules')
+  await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
+  await sourceOption.click()
+
+  const ismSourceOption = page.getByRole('checkbox', { name: 'ASD ISM', exact: true })
+  await ismSourceOption.scrollIntoViewIfNeeded()
+  await ismSourceOption.click()
+  await expect(ismSourceOption).toBeChecked()
+  await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
+})
+
+test('searching an ISM control id finds exactly that control', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
+  await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+  await expect(row).toHaveCount(1)
+})
+
+test('an ISM control flows to the manual attestation report', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
+  await row.getByRole('checkbox').click()
+  await expect(page.getByText('1 selected')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Generate' }).click()
+  await expect(page.getByRole('heading', { name: 'Review & generate' })).toBeVisible()
+
+  const download = page.getByRole('button', { name: 'Download bundle (.zip)' })
+  await expect(download).toBeEnabled({ timeout: 10_000 })
+
+  const downloadEvent = page.waitForEvent('download')
+  await download.click()
+  const zipPath = await (await downloadEvent).path()
+  const files = unzipSync(new Uint8Array(await readFile(zipPath)))
+
+  expect(Object.keys(files)).toEqual(['manual-attestation.md'])
+  const report = new TextDecoder().decode(files['manual-attestation.md'])
+  expect(report).toContain('ism-1667')
+  expect(report).toContain('Microsoft Office is blocked from creating child processes.')
 })
 
 // The row's onClick skips toggling expand when the click landed on an
@@ -388,14 +425,14 @@ test('a saved selection that is no longer in the library is reported and removab
 // must stay usable with raw codes when that file is missing or broken.
 test('display names come from the vocabulary file, with raw codes and a warning when it is missing', async ({ page }) => {
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: /^Operating system/ })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Display name problems' })).toHaveCount(0)
 
   await page.route('**/baselines/_vocabulary.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
   await page.reload()
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('raw codes are shown')
   await expect(page.getByRole('checkbox', { name: 'cis_lvl1', exact: true })).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'macOS 27', exact: true })).toHaveCount(0)
@@ -404,7 +441,7 @@ test('display names come from the vocabulary file, with raw codes and a warning 
 
   // Raw-code filters still filter.
   await page.getByRole('checkbox', { name: 'cis_lvl1', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText('350 of 350 rules')
+  await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
 })
 
 test('a malformed vocabulary file falls back to raw codes with a warning', async ({ page }) => {
@@ -412,7 +449,7 @@ test('a malformed vocabulary file falls back to raw codes with a warning', async
     route.fulfill({ status: 200, contentType: 'application/json', body: '{"schema_version": 1, "vocabularies": []}' }),
   )
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
   await expect(page.getByRole('checkbox', { name: 'disa_stig (high)', exact: true })).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'disa_stig (no severity)', exact: true })).toBeVisible()
@@ -427,7 +464,7 @@ test.describe('filter sidebar scrolling', () => {
 
   test('scrolls with pinned search and edge indicators that follow the scroll position', async ({ page }) => {
     await page.goto('/')
-    await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
     const metrics = await scroller(page).evaluate((element) => ({
       scrollHeight: element.scrollHeight,
@@ -452,24 +489,24 @@ test.describe('filter sidebar scrolling', () => {
 
   test('the last tag is reachable and clickable', async ({ page }) => {
     await page.goto('/')
-    await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
     const tagsFacet = scroller(page).getByRole('heading', { name: 'Tags', exact: true }).locator('..')
     const lastTag = tagsFacet.getByRole('checkbox').last()
     await lastTag.scrollIntoViewIfNeeded()
     await lastTag.click()
     await expect(lastTag).toBeChecked()
-    await expect(ruleCount(page)).not.toHaveText('350 of 350 rules')
+    await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
   })
 
   test('the last source option is reachable and clickable', async ({ page }) => {
     await page.goto('/')
-    await expect(ruleCount(page)).toHaveText('350 of 350 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
     const lastSource = scroller(page).getByRole('checkbox').last()
     await lastSource.scrollIntoViewIfNeeded()
     await lastSource.click()
     await expect(lastSource).toBeChecked()
-    await expect(ruleCount(page)).toHaveText('350 of 350 rules')
+    await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
   })
 })

@@ -88,7 +88,8 @@ describe('committed library data', () => {
         expect(entriesWithoutSection).toEqual([])
       })
 
-      it('pins the substitution mode of every rule that has an ODV', () => {
+      // The pins below describe mSCP's check shells; other sources have no ODVs.
+      it.runIf(source.name === 'mscp')('pins the substitution mode of every rule that has an ODV', () => {
         const actualModes = Object.fromEntries(rulesWithOdv.map((rule) => [rule.id, odvSubstitutionMode(rule)]))
         const expectedModes = Object.fromEntries(
           Object.entries(EXPECTED_ODV_SUBSTITUTION_MODES).map(([upstreamId, mode]) => [`mscp.${upstreamId}`, mode]),
@@ -96,7 +97,7 @@ describe('committed library data', () => {
         expect(actualModes).toEqual(expectedModes)
       })
 
-      it('pins the exact check shells whose ODV placement or output format the generator depends on', () => {
+      it.runIf(source.name === 'mscp')('pins the exact check shells whose ODV placement or output format the generator depends on', () => {
         const rulesById = new Map(rulesWithOdv.map((rule) => [rule.source.upstream_rule_id, rule]))
         const actualShells = Object.fromEntries(
           Object.keys(PINNED_CHECK_SHELLS).map((upstreamId) => {
