@@ -1,3 +1,5 @@
+import { versionKey, versionsForTarget } from '../../logic/applicability'
+import { GENERATED_TARGET } from '../../logic/checkPlan'
 import { containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
@@ -32,7 +34,7 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
   const versionChecks = Object.entries(rule.check?.by_version ?? {}).sort(([left], [right]) =>
     compareVersionsDescending(left, right),
   )
-  const hasNoVersion = Object.keys(rule.applicability).length === 0
+  const hasNoVersion = versionsForTarget(rule.applicability, GENERATED_TARGET).length === 0
 
   return (
     <div className="space-y-2">
@@ -59,7 +61,7 @@ export function RuleCheckSection({ rule, odvValue }: { rule: Rule; odvValue: Org
             <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
           )}
           {versionChecks.map(([version, check]) => (
-            <CheckEntry key={version} label={termLabel(index, 'os_versions', version)} check={check} odvValue={odvValue} />
+            <CheckEntry key={version} label={termLabel(index, 'versions', versionKey(GENERATED_TARGET, version))} check={check} odvValue={odvValue} />
           ))}
         </>
       )}

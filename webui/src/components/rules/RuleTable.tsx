@@ -208,8 +208,8 @@ function AssessmentBadge({ row }: { row: RuleRow }) {
 
 function BenchmarkText({ row }: { row: RuleRow }) {
   const index = useVocabularyIndex()
-  const selectedVersions = useFilterStore((store) => store.osVersions)
-  if (row.osVersions.length === 0) return <span className="text-xs text-slate-400 italic">No macOS version listed</span>
+  const selectedVersions = useFilterStore((store) => store.versions)
+  if (row.versionKeys.length === 0) return <span className="text-xs text-slate-400 italic">No macOS version listed</span>
   const summary = benchmarkSummary(row.applicability, versionsUnder(row, selectedVersions, index), index)
   if (!summary) return <span className="text-xs text-slate-400 italic">Not in a benchmark</span>
   return <span className="text-xs break-words text-slate-500">{summary}</span>

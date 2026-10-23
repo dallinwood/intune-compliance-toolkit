@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "vocabularies": {
-    "platforms": [],
+    "targets": [],
     "sources": [],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
@@ -15,10 +15,10 @@
       { "label": "medium", "terms": ["medium"], "metadata": ["severity"] },
       { "label": "high", "terms": ["high"], "metadata": ["severity"] }
     ],
-    "os_versions": [
-      { "label": "macOS 27", "terms": ["27.0"], "metadata": ["platform"] },
-      { "label": "macOS 26", "terms": ["26.0"], "metadata": ["platform"] },
-      { "label": "macOS 15", "terms": ["15.0"], "metadata": ["platform"] }
+    "versions": [
+      { "label": "macOS 27", "terms": ["macOS 27.0"], "metadata": ["platform"] },
+      { "label": "macOS 26", "terms": ["macOS 26.0"], "metadata": ["platform"] },
+      { "label": "macOS 15", "terms": ["macOS 15.0"], "metadata": ["platform"] }
     ],
     "sections": [
       { "label": "Operating system", "terms": ["os"] },

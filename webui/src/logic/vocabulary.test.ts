@@ -46,7 +46,7 @@ describe('termLabel and termGroupKey', () => {
     expect(termLabel(groupedIndex, 'manual_reasons', 'supplemental')).toBe('supplemental')
     expect(termDescription(groupedIndex, 'manual_reasons', 'supplemental')).toBe('Supplemental guidance with no check.')
     expect(termDescription(groupedIndex, 'sections', 'supplemental')).toBeNull()
-    expect(termLabel(groupedIndex, 'os_versions', 'supplemental')).toBe('supplemental')
+    expect(termLabel(groupedIndex, 'versions', 'supplemental')).toBe('supplemental')
   })
 
   it('returns null for an entry without a description', () => {

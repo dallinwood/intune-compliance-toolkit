@@ -11,7 +11,18 @@ export interface Assessment {
   manual_reason: ManualReason | null
 }
 
-export type Applicability = Record<string, { name: string; severity: string | null }[]>
+export interface BenchmarkMembership {
+  name: string
+  severity: string | null
+}
+
+export interface ApplicabilityEntry {
+  target: string | null
+  version: string | null
+  benchmarks: BenchmarkMembership[]
+}
+
+export type Applicability = ApplicabilityEntry[]
 
 export interface License {
   name: string
@@ -67,21 +78,24 @@ export interface Remediation {
 }
 
 export interface RuleSource {
-  name: 'mscp'
+  name: string
   release_tag: string
   commit_sha: string
   upstream_rule_id: string
   upstream_path: string
   upstream_url: string
+  upstream_revision: string | null
+  upstream_updated: string | null
   license: License
 }
 
 export interface Rule {
-  schema_version: 3
+  schema_version: 4
   id: string
-  platform: 'macOS'
   title: string
   discussion: string
+  discussion_format: 'asciidoc' | 'markdown'
+  section_path: string[]
   source: RuleSource
   assessment: Assessment
   architecture: Architecture
@@ -90,14 +104,13 @@ export interface Rule {
   references: Record<string, unknown>
   check: RuleChecks | null
   odv: Odv | null
-  remediation: Remediation
+  remediation: Remediation | null
 }
 
 export interface IndexEntry {
   id: string
   title: string
   file: string
-  platform: string
   section: string
   assessment: Assessment
   architecture: Architecture
@@ -107,7 +120,7 @@ export interface IndexEntry {
 }
 
 export interface RuleIndex {
-  schema_version: 3
+  schema_version: 4
   source: string
   rules: IndexEntry[]
 }
@@ -125,6 +138,6 @@ export interface ManifestSource {
 }
 
 export interface Manifest {
-  schema_version: 3
+  schema_version: 4
   sources: ManifestSource[]
 }

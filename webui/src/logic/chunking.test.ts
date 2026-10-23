@@ -158,7 +158,7 @@ describe('classifyRule', () => {
   })
 
   it('classifies an automated rule mSCP maps to no macOS version as manual', () => {
-    const rule = inlineRule({ overrides: { applicability: {} } })
+    const rule = inlineRule({ overrides: { applicability: [] } })
 
     expect(classify(rule)).toEqual({
       kind: 'manual',

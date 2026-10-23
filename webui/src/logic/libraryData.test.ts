@@ -76,9 +76,11 @@ describe('committed library data', () => {
       .filter((rule) => rule.odv !== null)
 
     describe(source.name, () => {
-      it('has a non-empty platform on every index entry', () => {
-        const entriesWithoutPlatform = index.rules.filter((entry) => !entry.platform).map((entry) => entry.id)
-        expect(entriesWithoutPlatform).toEqual([])
+      it('has a non-empty section_path on every rule', () => {
+        const rulesWithoutSectionPath = index.rules
+          .filter((entry) => readBaselinesJson<Rule>(`${indexDirectory}${entry.file}`).section_path.length === 0)
+          .map((entry) => entry.id)
+        expect(rulesWithoutSectionPath).toEqual([])
       })
 
       it('has a non-empty section on every index entry', () => {

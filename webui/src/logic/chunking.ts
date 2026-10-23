@@ -38,13 +38,8 @@ export type ClassificationResult =
   | { kind: 'manual'; entry: ManualAttestationEntry }
   | { kind: 'blocked'; entry: BlockedEntry }
 
-// Matches tools/mscp_normalize.py section_of(): upstream paths are
-// rules/<section>/<file>.yaml, so the section is the parent directory.
 export function sectionOf(rule: Rule): string {
-  const pathParts = rule.source.upstream_path.split('/')
-  const section = pathParts[pathParts.length - 2]
-  if (!section) throw new Error(`${rule.id}: upstream path "${rule.source.upstream_path}" has no section directory.`)
-  return section
+  return rule.section_path[0]
 }
 
 // Decides, for one enabled selection with its full rule JSON already

@@ -1,4 +1,5 @@
 import type { Architecture, CheckResult, Rule, RuleCheck } from '../types/library'
+import { versionsForTarget } from './applicability'
 import type { IntuneDataType } from './operatorMap'
 import {
   canonicalOdvValue,
@@ -44,6 +45,10 @@ export interface RuleCheckPlan {
   // running the check, whose shell then still contains $ODV on purpose.
   exportedOdv: string | null
 }
+
+// The one target the generator writes scripts for; applicability entries for
+// any other target are ignored here.
+export const GENERATED_TARGET = 'macOS'
 
 export type RuleCheckPlanResult = RuleCheckPlan | { problem: string }
 
@@ -165,7 +170,7 @@ export function planRuleCheck(
 ): RuleCheckPlanResult {
   if (rule.assessment.status !== 'automated') return { problem: 'This rule is assessed manually.' }
 
-  const listedVersions = Object.keys(rule.applicability).sort(byMajorAscending)
+  const listedVersions = versionsForTarget(rule.applicability, GENERATED_TARGET).sort(byMajorAscending)
   if (listedVersions.length === 0) return { problem: 'mSCP does not map this rule to any macOS version.' }
 
   const odv = resolveOdv(rule, odvValue)

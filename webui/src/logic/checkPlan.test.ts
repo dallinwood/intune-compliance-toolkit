@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { CheckResult, Odv, Rule, RuleCheck } from '../types/library'
 import { planRuleCheck, settingNameFor, type RuleCheckPlan } from './checkPlan'
+import { applicabilityOfVersions } from './testRuleFixtures'
 
 const RULES_DIRECTORY = new URL('../../../baselines/mscp/rules/', import.meta.url)
 const COVERED_VERSIONS = ['27.0', '26.0', '15.0']
@@ -17,11 +18,12 @@ function check(shell: string | null, result: CheckResult | null): RuleCheck {
 function inlineRule(overrides: Partial<Rule> = {}): Rule {
   const upstreamId = (overrides.id ?? 'mscp.example_rule').replace(/^mscp\./, '')
   return {
-    schema_version: 3,
+    schema_version: 4,
     id: `mscp.${upstreamId}`,
-    platform: 'macOS',
     title: 'Example rule',
     discussion: 'First paragraph.\n\nSecond paragraph.',
+    discussion_format: 'asciidoc',
+    section_path: ['os'],
     source: {
       name: 'mscp',
       release_tag: 'release_27.0',
@@ -29,11 +31,13 @@ function inlineRule(overrides: Partial<Rule> = {}): Rule {
       upstream_rule_id: upstreamId,
       upstream_path: `src/mscp/data/rules/os/${upstreamId}.yaml`,
       upstream_url: `https://example.test/${upstreamId}.yaml`,
+      upstream_revision: null,
+      upstream_updated: null,
       license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'NIST', modified: true },
     },
     assessment: { status: 'automated', manual_reason: null },
     architecture: null,
-    applicability: { '15.0': [], '26.0': [], '27.0': [] },
+    applicability: applicabilityOfVersions({ 'macOS 15.0': [], 'macOS 26.0': [], 'macOS 27.0': [] }),
     tags: [],
     references: {},
     check: { default: check('echo PASS', { type: 'string', value: 'PASS' }), by_version: {} },
@@ -170,6 +174,19 @@ describe('planRuleCheck with real committed rules', () => {
 })
 
 describe('planRuleCheck with inline rules', () => {
+  it('blocks a macOS rule with no listed version', () => {
+    const rule = inlineRule({ applicability: [{ target: 'macOS', version: null, benchmarks: [] }] })
+
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('mSCP does not map this rule to any macOS version.')
+  })
+
+  it('ignores entries for other targets', () => {
+    const macOnly = inlineRule({ applicability: applicabilityOfVersions({ 'macOS 15.0': [] }) })
+    const withWindows = inlineRule({ applicability: applicabilityOfVersions({ 'macOS 15.0': [], 'Windows 27.0': [] }) })
+
+    expect(expectPlan(planRuleCheck(withWindows, COVERED_VERSIONS, null))).toEqual(expectPlan(planRuleCheck(macOnly, COVERED_VERSIONS, null)))
+  })
+
   it('base64-encodes the UTF-8 of a substituted $ODV result', () => {
     const rule = inlineRule({
       check: { default: check('printf x | base64', { type: 'base64', value: '$ODV' }), by_version: {} },
@@ -253,7 +270,7 @@ describe('planRuleCheck with inline rules', () => {
 
   it('takes newerThan from the covered versions, not the rule, and the newer branch from the rule\'s highest version', () => {
     const rule = inlineRule({
-      applicability: { '15.0': [] },
+      applicability: applicabilityOfVersions({ 'macOS 15.0': [] }),
       check: { default: check('echo PASS', { type: 'string', value: 'PASS' }), by_version: {} },
     })
     const plan = expectPlan(planRuleCheck(rule, ['9.0', '26.0', '15.0'], null))

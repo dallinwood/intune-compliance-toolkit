@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ManifestSource, RuleIndex } from '../types/library'
+import { applicabilityOfVersions } from '../logic/testRuleFixtures'
 import { buildRuleRows, coveredVersionsOf } from './ruleRows'
 
 const SOURCE: ManifestSource = {
@@ -15,22 +16,21 @@ const SOURCE: ManifestSource = {
 }
 
 const INDEX: RuleIndex = {
-  schema_version: 3,
+  schema_version: 4,
   source: 'mscp',
   rules: [
     {
       id: 'mscp.os_gatekeeper_enable',
       title: 'Enable Gatekeeper',
       file: 'rules/os_gatekeeper_enable.json',
-      platform: 'macOS',
       section: 'os',
       assessment: { status: 'automated', manual_reason: null },
       architecture: null,
-      applicability: {
-        '9.0': [{ name: 'zeta', severity: null }],
-        '26.0': [{ name: 'cis_lvl1', severity: null }, { name: 'disa_stig', severity: 'medium' }],
-        '15.0': [{ name: 'cis_lvl1', severity: null }],
-      },
+      applicability: applicabilityOfVersions({
+        'macOS 9.0': [{ name: 'zeta', severity: null }],
+        'macOS 26.0': [{ name: 'cis_lvl1', severity: null }, { name: 'disa_stig', severity: 'medium' }],
+        'macOS 15.0': [{ name: 'cis_lvl1', severity: null }],
+      }),
       tags: ['800-53r5_high'],
       has_odv: false,
     },
@@ -38,11 +38,10 @@ const INDEX: RuleIndex = {
       id: 'mscp.pwpolicy_minimum_length_enforce',
       title: 'Require a Minimum Password Length of $ODV Characters',
       file: 'rules/pwpolicy_minimum_length_enforce.json',
-      platform: 'macOS',
       section: 'pwpolicy',
       assessment: { status: 'manual', manual_reason: 'manual' },
       architecture: 'arm64',
-      applicability: { '27.0': [{ name: 'cis_lvl2', severity: null }] },
+      applicability: applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cis_lvl2', severity: null }] }),
       tags: [],
       has_odv: true,
     },
@@ -61,8 +60,8 @@ describe('buildRuleRows', () => {
     expect(rootRow.ref.path).toBe('rules/os_gatekeeper_enable.json')
   })
 
-  it('carries the platform', () => {
-    expect(rows.map((row) => row.platform)).toEqual(['macOS', 'macOS'])
+  it('carries the targets in entry order', () => {
+    expect(rows.map((row) => row.targets)).toEqual([['macOS'], ['macOS']])
   })
 
   it('carries source name and release tag', () => {
@@ -70,8 +69,8 @@ describe('buildRuleRows', () => {
     expect(rows[0].releaseTag).toBe('release_27.0')
   })
 
-  it('sorts osVersions numerically descending', () => {
-    expect(rows[0].osVersions).toEqual(['26.0', '15.0', '9.0'])
+  it('sorts versionKeys numerically descending', () => {
+    expect(rows[0].versionKeys).toEqual(['macOS 26.0', 'macOS 15.0', 'macOS 9.0'])
   })
 
   it('builds benchmarks as the sorted union over all versions', () => {
@@ -90,7 +89,17 @@ describe('buildRuleRows', () => {
 })
 
 describe('coveredVersionsOf', () => {
-  it('is the union of all rows osVersions sorted descending', () => {
-    expect(coveredVersionsOf(buildRuleRows(SOURCE, INDEX))).toEqual(['27.0', '26.0', '15.0', '9.0'])
+  it('is the union of the bare versions of one target, sorted descending', () => {
+    expect(coveredVersionsOf(buildRuleRows(SOURCE, INDEX), 'macOS')).toEqual(['27.0', '26.0', '15.0', '9.0'])
+  })
+
+  it('ignores versions of other targets', () => {
+    const windowsIndex: RuleIndex = {
+      ...INDEX,
+      rules: [{ ...INDEX.rules[1], applicability: applicabilityOfVersions({ 'macOS 27.0': [], 'Windows 99.0': [] }) }],
+    }
+    const windowsRows = buildRuleRows(SOURCE, windowsIndex)
+    expect(coveredVersionsOf(windowsRows, 'macOS')).toEqual(['27.0'])
+    expect(coveredVersionsOf(windowsRows, 'Windows')).toEqual(['99.0'])
   })
 })

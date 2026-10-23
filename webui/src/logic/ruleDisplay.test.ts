@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { assessmentLabel, benchmarkSummary, upstreamRuleId } from './ruleDisplay'
+import { applicabilityOfVersions } from './testRuleFixtures'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
 const vocabularyIndex = committedVocabularyIndex()
@@ -42,47 +43,47 @@ describe('benchmarkSummary', () => {
   const cisLevel1 = { name: 'cis_lvl1', severity: null }
 
   it('combines every listed version and names the versions of an item that is not on all of them', () => {
-    const applicability = {
-      '15.0': [cisLevel1, stig('medium')],
-      '26.0': [cisLevel1, stig('medium')],
-      '27.0': [stig('medium')],
-    }
-    expect(benchmarkSummary(applicability, ['27.0', '26.0', '15.0'], vocabularyIndex)).toBe(
+    const applicability = applicabilityOfVersions({
+      'macOS 15.0': [cisLevel1, stig('medium')],
+      'macOS 26.0': [cisLevel1, stig('medium')],
+      'macOS 27.0': [stig('medium')],
+    })
+    expect(benchmarkSummary(applicability, ['macOS 27.0', 'macOS 26.0', 'macOS 15.0'], vocabularyIndex)).toBe(
       'CIS Level 1 on macOS 26, 15 · DISA STIG (medium)',
     )
   })
 
   it('shows only the benchmarks listed under the one version in scope, without a suffix', () => {
-    const applicability = { '15.0': [cisLevel1, stig('medium')], '27.0': [stig('medium')] }
-    expect(benchmarkSummary(applicability, ['15.0'], vocabularyIndex)).toBe('CIS Level 1 · DISA STIG (medium)')
-    expect(benchmarkSummary(applicability, ['27.0'], vocabularyIndex)).toBe('DISA STIG (medium)')
+    const applicability = applicabilityOfVersions({ 'macOS 15.0': [cisLevel1, stig('medium')], 'macOS 27.0': [stig('medium')] })
+    expect(benchmarkSummary(applicability, ['macOS 15.0'], vocabularyIndex)).toBe('CIS Level 1 · DISA STIG (medium)')
+    expect(benchmarkSummary(applicability, ['macOS 27.0'], vocabularyIndex)).toBe('DISA STIG (medium)')
   })
 
   it('appends versions to partial items when several versions are in scope', () => {
-    const applicability = {
-      '15.0': [cisLevel1, stig('high')],
-      '26.0': [{ name: 'nlmapgov_base', severity: null }],
-      '27.0': [stig('high')],
-    }
-    expect(benchmarkSummary(applicability, ['27.0', '15.0'], vocabularyIndex)).toBe('CIS Level 1 on macOS 15 · DISA STIG (high)')
+    const applicability = applicabilityOfVersions({
+      'macOS 15.0': [cisLevel1, stig('high')],
+      'macOS 26.0': [{ name: 'nlmapgov_base', severity: null }],
+      'macOS 27.0': [stig('high')],
+    })
+    expect(benchmarkSummary(applicability, ['macOS 27.0', 'macOS 15.0'], vocabularyIndex)).toBe('CIS Level 1 on macOS 15 · DISA STIG (high)')
   })
 
   it('keeps items that differ only by severity apart and names their versions', () => {
-    const applicability = { '15.0': [stig('medium')], '27.0': [stig('high')] }
-    expect(benchmarkSummary(applicability, ['27.0', '15.0'], vocabularyIndex)).toBe(
+    const applicability = applicabilityOfVersions({ 'macOS 15.0': [stig('medium')], 'macOS 27.0': [stig('high')] })
+    expect(benchmarkSummary(applicability, ['macOS 27.0', 'macOS 15.0'], vocabularyIndex)).toBe(
       'DISA STIG (medium) on macOS 15 · DISA STIG (high) on macOS 27',
     )
   })
 
   it('orders items by the benchmark then severity vocabulary order, no severity last', () => {
-    const applicability = { '27.0': [stig(null), stig('high'), cisLevel1, stig('low')] }
-    expect(benchmarkSummary(applicability, ['27.0'], vocabularyIndex)).toBe('CIS Level 1 · DISA STIG (low) · DISA STIG (high) · DISA STIG')
+    const applicability = applicabilityOfVersions({ 'macOS 27.0': [stig(null), stig('high'), cisLevel1, stig('low')] })
+    expect(benchmarkSummary(applicability, ['macOS 27.0'], vocabularyIndex)).toBe('CIS Level 1 · DISA STIG (low) · DISA STIG (high) · DISA STIG')
   })
 
   it('merges grouped benchmark codes into one item', () => {
     const grouped = vocabularyIndexOf({ benchmarks: [{ label: 'Renamed', terms: ['old_code', 'new_code'] }] })
-    const applicability = { '15.0': [{ name: 'old_code', severity: null }], '27.0': [{ name: 'new_code', severity: null }] }
-    expect(benchmarkSummary(applicability, ['27.0', '15.0'], grouped)).toBe('Renamed')
+    const applicability = applicabilityOfVersions({ 'macOS 15.0': [{ name: 'old_code', severity: null }], 'macOS 27.0': [{ name: 'new_code', severity: null }] })
+    expect(benchmarkSummary(applicability, ['macOS 27.0', 'macOS 15.0'], grouped)).toBe('Renamed')
   })
 
   it('shows the severity by its severities vocabulary label', () => {
@@ -90,23 +91,23 @@ describe('benchmarkSummary', () => {
       benchmarks: [{ label: 'DISA STIG', terms: ['disa_stig'] }],
       severities: [{ label: 'CAT I', terms: ['high'] }],
     })
-    const applicability = { '27.0': [stig('high'), stig('unlisted')] }
-    expect(benchmarkSummary(applicability, ['27.0'], relabelled)).toBe('DISA STIG (CAT I) · DISA STIG (unlisted)')
+    const applicability = applicabilityOfVersions({ 'macOS 27.0': [stig('high'), stig('unlisted')] })
+    expect(benchmarkSummary(applicability, ['macOS 27.0'], relabelled)).toBe('DISA STIG (CAT I) · DISA STIG (unlisted)')
   })
 
   it('shows the raw code for a benchmark the vocabulary does not list', () => {
-    const applicability = { '27.0': [{ name: 'brand_new_benchmark', severity: null }] }
-    expect(benchmarkSummary(applicability, ['27.0'], vocabularyIndex)).toBe('brand_new_benchmark')
+    const applicability = applicabilityOfVersions({ 'macOS 27.0': [{ name: 'brand_new_benchmark', severity: null }] })
+    expect(benchmarkSummary(applicability, ['macOS 27.0'], vocabularyIndex)).toBe('brand_new_benchmark')
   })
 
   it('falls back to the raw version for a version the vocabulary does not list', () => {
-    const applicability = { '99.0': [cisLevel1], '27.0': [stig(null)] }
-    expect(benchmarkSummary(applicability, ['99.0', '27.0'], vocabularyIndex)).toBe('CIS Level 1 on 99.0 · DISA STIG on macOS 27')
+    const applicability = applicabilityOfVersions({ 'macOS 99.0': [cisLevel1], 'macOS 27.0': [stig(null)] })
+    expect(benchmarkSummary(applicability, ['macOS 99.0', 'macOS 27.0'], vocabularyIndex)).toBe('CIS Level 1 on macOS 99.0 · DISA STIG on macOS 27')
   })
 
   it('is empty when nothing is listed under the versions in scope', () => {
-    expect(benchmarkSummary({}, [], vocabularyIndex)).toBe('')
-    expect(benchmarkSummary({ '27.0': [stig(null)] }, ['15.0'], vocabularyIndex)).toBe('')
+    expect(benchmarkSummary([], [], vocabularyIndex)).toBe('')
+    expect(benchmarkSummary(applicabilityOfVersions({ 'macOS 27.0': [stig(null)] }), ['macOS 15.0'], vocabularyIndex)).toBe('')
   })
 })
 

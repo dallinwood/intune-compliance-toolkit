@@ -11,11 +11,11 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "platforms": { "$ref": "#/$defs/vocabulary" },
+        "targets": { "$ref": "#/$defs/vocabulary" },
         "sources": { "$ref": "#/$defs/vocabulary" },
         "benchmarks": { "$ref": "#/$defs/vocabulary" },
         "severities": { "$ref": "#/$defs/vocabulary" },
-        "os_versions": { "$ref": "#/$defs/vocabulary" },
+        "versions": { "$ref": "#/$defs/vocabulary" },
         "sections": { "$ref": "#/$defs/vocabulary" },
         "tags": { "$ref": "#/$defs/vocabulary" },
         "manual_reasons": { "$ref": "#/$defs/vocabulary" }

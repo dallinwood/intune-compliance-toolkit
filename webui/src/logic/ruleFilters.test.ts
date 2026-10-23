@@ -9,10 +9,10 @@ import {
   benchmarkFacetValue,
   benchmarkGroupsWithSeverities,
   compareBenchmarkFacetValues,
-  platformGroupKey,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
+  targetGroupKeys,
   benchmarksListedUnder,
   facetOptions,
   matchesFilters,
@@ -20,22 +20,23 @@ import {
   versionsListingAnyOf,
   type FilterValues,
 } from './ruleFilters'
+import { benchmarksAt, compareVersionKeys, versionKeysOf } from './applicability'
 import { groupLabel, type VocabularyIndex } from './vocabulary'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
-import { compareVersionsDescending } from './versions'
+import { applicabilityOfVersions } from './testRuleFixtures'
 
 function row(overrides: Partial<RuleRow> = {}): RuleRow {
   return {
     ref: { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' },
     title: 'Enable Gatekeeper',
-    platform: 'macOS',
+    targets: ['macOS'],
     section: 'os',
     sourceName: 'mscp',
     releaseTag: 'release_27.0',
     assessment: { status: 'automated', manual_reason: null },
     architecture: null,
-    applicability: { '26.0': [{ name: 'cis_lvl1', severity: null }] },
-    osVersions: ['26.0'],
+    applicability: applicabilityOfVersions({ 'macOS 26.0': [{ name: 'cis_lvl1', severity: null }] }),
+    versionKeys: ['macOS 26.0'],
     benchmarks: ['cis_lvl1'],
     tags: ['800-53r5_high'],
     hasOdv: false,
@@ -46,9 +47,9 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
 function emptyFilters(overrides: Partial<FilterValues> = {}): FilterValues {
   return {
     search: '',
-    platforms: new Set(),
+    targets: new Set(),
     sources: new Set(),
-    osVersions: new Set(),
+    versions: new Set(),
     benchmarks: new Set(),
     sections: new Set(),
     tags: new Set(),
@@ -61,9 +62,9 @@ function versionOptionsUnder(rowsToFilter: RuleRow[], filters: FilterValues, ind
   return facetOptions(
     rowsToFilter,
     filters,
-    'osVersions',
+    'versions',
     (r) => versionsListingAnyOf(r, filters.benchmarks, index),
-    filters.osVersions,
+    filters.versions,
     index,
   )
 }
@@ -73,7 +74,7 @@ function benchmarkOptionsUnder(rowsToFilter: RuleRow[], filters: FilterValues, i
     rowsToFilter,
     filters,
     'benchmarks',
-    (r) => benchmarksListedUnder(r, filters.osVersions, index),
+    (r) => benchmarksListedUnder(r, filters.versions, index),
     filters.benchmarks,
     index,
   )
@@ -87,10 +88,10 @@ function expectNoZeroRowCombination(rowsToFilter: RuleRow[], index: VocabularyIn
     `version ${version ?? '(any)'} + benchmark ${benchmark === null ? '(any)' : JSON.stringify(parseBenchmarkFacetValue(benchmark))}`
 
   for (const version of versionOptionsUnder(rowsToFilter, emptyFilters(), index)) {
-    const versionPicked = emptyFilters({ osVersions: new Set([version]) })
+    const versionPicked = emptyFilters({ versions: new Set([version]) })
     expect(matchesAny(versionPicked), describeCombination(version, null)).toBe(true)
     for (const benchmark of benchmarkOptionsUnder(rowsToFilter, versionPicked, index)) {
-      const both = emptyFilters({ osVersions: new Set([version]), benchmarks: new Set([benchmark]) })
+      const both = emptyFilters({ versions: new Set([version]), benchmarks: new Set([benchmark]) })
       expect(matchesAny(both), describeCombination(version, benchmark)).toBe(true)
     }
   }
@@ -98,7 +99,7 @@ function expectNoZeroRowCombination(rowsToFilter: RuleRow[], index: VocabularyIn
     const benchmarkPicked = emptyFilters({ benchmarks: new Set([benchmark]) })
     expect(matchesAny(benchmarkPicked), describeCombination(null, benchmark)).toBe(true)
     for (const version of versionOptionsUnder(rowsToFilter, benchmarkPicked, index)) {
-      const both = emptyFilters({ osVersions: new Set([version]), benchmarks: new Set([benchmark]) })
+      const both = emptyFilters({ versions: new Set([version]), benchmarks: new Set([benchmark]) })
       expect(matchesAny(both), describeCombination(version, benchmark)).toBe(true)
     }
   }
@@ -110,11 +111,11 @@ const passwordRow = row({
   title: 'Require a Minimum Password Length of $ODV Characters',
   section: 'pwpolicy',
   assessment: { status: 'manual', manual_reason: 'manual' },
-  applicability: {
-    '27.0': [{ name: 'disa_stig', severity: 'medium' }],
-    '26.0': [{ name: 'disa_stig', severity: 'medium' }, { name: 'cis_lvl2', severity: null }],
-  },
-  osVersions: ['27.0', '26.0'],
+  applicability: applicabilityOfVersions({
+    'macOS 27.0': [{ name: 'disa_stig', severity: 'medium' }],
+    'macOS 26.0': [{ name: 'disa_stig', severity: 'medium' }, { name: 'cis_lvl2', severity: null }],
+  }),
+  versionKeys: ['macOS 27.0', 'macOS 26.0'],
   benchmarks: ['cis_lvl2', 'disa_stig'],
   tags: ['cisv8'],
   hasOdv: true,
@@ -130,7 +131,7 @@ describe('matchesFilters', () => {
   })
 
   it('filters by OS version when the row lists at least one selected version', () => {
-    const filters = emptyFilters({ osVersions: new Set(['27.0']) })
+    const filters = emptyFilters({ versions: new Set(['macOS 27.0']) })
     expect(matchesFilters(gatekeeperRow, filters, noVocabulary)).toBe(false)
     expect(matchesFilters(passwordRow, filters, noVocabulary)).toBe(true)
   })
@@ -162,25 +163,25 @@ describe('matchesFilters', () => {
 
   it('scopes a benchmark to the selected versions', () => {
     const cisLevelOneOnTwentySixOnly = row({
-      applicability: {
-        '27.0': [{ name: 'disa_stig', severity: null }],
-        '26.0': [{ name: 'cis_lvl1', severity: null }],
-      },
-      osVersions: ['27.0', '26.0'],
+      applicability: applicabilityOfVersions({
+        'macOS 27.0': [{ name: 'disa_stig', severity: null }],
+        'macOS 26.0': [{ name: 'cis_lvl1', severity: null }],
+      }),
+      versionKeys: ['macOS 27.0', 'macOS 26.0'],
       benchmarks: ['cis_lvl1', 'disa_stig'],
     })
 
-    const onTwentySeven = emptyFilters({ osVersions: new Set(['27.0']), benchmarks: new Set(['cis_lvl1']) })
-    const onTwentySix = emptyFilters({ osVersions: new Set(['26.0']), benchmarks: new Set(['cis_lvl1']) })
+    const onTwentySeven = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set(['cis_lvl1']) })
+    const onTwentySix = emptyFilters({ versions: new Set(['macOS 26.0']), benchmarks: new Set(['cis_lvl1']) })
 
     expect(matchesFilters(cisLevelOneOnTwentySixOnly, onTwentySeven, noVocabulary)).toBe(false)
     expect(matchesFilters(cisLevelOneOnTwentySixOnly, onTwentySix, noVocabulary)).toBe(true)
   })
 
-  it('does not scope the benchmark match by versions when osVersions is the excluded dimension', () => {
-    const filters = emptyFilters({ osVersions: new Set(['27.0']), benchmarks: new Set(['cis_lvl2']) })
+  it('does not scope the benchmark match by versions when versions is the excluded dimension', () => {
+    const filters = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set(['cis_lvl2']) })
     expect(matchesFilters(passwordRow, filters, noVocabulary)).toBe(false)
-    expect(matchesFilters(passwordRow, filters, noVocabulary, 'osVersions')).toBe(true)
+    expect(matchesFilters(passwordRow, filters, noVocabulary, 'versions')).toBe(true)
   })
 
   it('searches the title case-insensitively', () => {
@@ -212,10 +213,10 @@ describe('facetOptions', () => {
 
   it('narrows to only the values reachable under the other applied filters', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
-    const options = facetOptions(rows, filters, 'osVersions', (r) => r.osVersions, filters.osVersions, noVocabulary)
-    expect(options).toEqual(['26.0', '27.0'])
+    const options = facetOptions(rows, filters, 'versions', (r) => r.versionKeys, filters.versions, noVocabulary)
+    expect(options).toEqual(['macOS 26.0', 'macOS 27.0'])
 
-    const narrower = emptyFilters({ osVersions: new Set(['27.0']) })
+    const narrower = emptyFilters({ versions: new Set(['macOS 27.0']) })
     expect(facetOptions(rows, narrower, 'sections', (r) => r.section, narrower.sections, noVocabulary)).toEqual(['pwpolicy'])
   })
 
@@ -226,9 +227,9 @@ describe('facetOptions', () => {
   })
 
   it('keeps an already-selected value visible even once it becomes unreachable', () => {
-    const filters = emptyFilters({ sections: new Set(['pwpolicy']), osVersions: new Set(['9.9']) })
-    const options = facetOptions(rows, filters, 'osVersions', (r) => r.osVersions, filters.osVersions, noVocabulary)
-    expect(options).toEqual(['26.0', '27.0', '9.9'])
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']), versions: new Set(['macOS 9.9']) })
+    const options = facetOptions(rows, filters, 'versions', (r) => r.versionKeys, filters.versions, noVocabulary)
+    expect(options).toEqual(['macOS 26.0', 'macOS 27.0', 'macOS 9.9'])
   })
 
   it('flattens array-valued facets like benchmarks', () => {
@@ -247,12 +248,12 @@ describe('allFacetValues', () => {
   })
 
   it('sorts with a supplied comparator, e.g. versions newest first by number', () => {
-    const versionRows = [row({ osVersions: ['9.0', '27.0'] }), row({ osVersions: ['15.0', '26.0'] })]
-    expect(allFacetValues(versionRows, (r) => r.osVersions, compareVersionsDescending)).toEqual([
-      '27.0',
-      '26.0',
-      '15.0',
-      '9.0',
+    const versionRows = [row({ versionKeys: ['macOS 9.0', 'macOS 27.0'] }), row({ versionKeys: ['macOS 15.0', 'macOS 26.0'] })]
+    expect(allFacetValues(versionRows, (r) => r.versionKeys, compareVersionKeys)).toEqual([
+      'macOS 27.0',
+      'macOS 26.0',
+      'macOS 15.0',
+      'macOS 9.0',
     ])
   })
 })
@@ -263,24 +264,24 @@ describe('version-scoped facets', () => {
   })
 
   it('lists only benchmarks under the selected versions', () => {
-    expect(benchmarksListedUnder(passwordRow, new Set(['27.0']), noVocabulary)).toEqual([stigMedium])
+    expect(benchmarksListedUnder(passwordRow, new Set(['macOS 27.0']), noVocabulary)).toEqual([stigMedium])
   })
 
   it('lists every version when no benchmark is selected', () => {
-    expect(versionsListingAnyOf(passwordRow, new Set(), noVocabulary)).toEqual(['27.0', '26.0'])
+    expect(versionsListingAnyOf(passwordRow, new Set(), noVocabulary)).toEqual(['macOS 27.0', 'macOS 26.0'])
   })
 
   it('lists only versions that list a selected benchmark', () => {
-    expect(versionsListingAnyOf(passwordRow, new Set(['cis_lvl2']), noVocabulary)).toEqual(['26.0'])
+    expect(versionsListingAnyOf(passwordRow, new Set(['cis_lvl2']), noVocabulary)).toEqual(['macOS 26.0'])
   })
 
   it('stops the benchmark facet offering a benchmark the selected version does not list', () => {
-    const filters = emptyFilters({ osVersions: new Set(['27.0']) })
+    const filters = emptyFilters({ versions: new Set(['macOS 27.0']) })
     const options = facetOptions(
       rows,
       filters,
       'benchmarks',
-      (r) => benchmarksListedUnder(r, filters.osVersions, noVocabulary),
+      (r) => benchmarksListedUnder(r, filters.versions, noVocabulary),
       filters.benchmarks,
       noVocabulary,
     )
@@ -292,19 +293,19 @@ describe('version-scoped facets', () => {
     const options = facetOptions(
       rows,
       filters,
-      'osVersions',
+      'versions',
       (r) => versionsListingAnyOf(r, filters.benchmarks, noVocabulary),
-      filters.osVersions,
+      filters.versions,
       noVocabulary,
     )
-    expect(options).toEqual(['26.0'])
+    expect(options).toEqual(['macOS 26.0'])
   })
 })
 
-describe('platform and source facets', () => {
+describe('target and source facets', () => {
   const iosRow = row({
     ref: { id: 'mscp.ios_passcode', path: 'mscp/rules/ios_passcode.json' },
-    platform: 'iOS',
+    targets: ['iOS'],
   })
   const otherSourceRow = row({
     ref: { id: 'cis.os_gatekeeper', path: 'cis/rules/os_gatekeeper.json' },
@@ -312,47 +313,47 @@ describe('platform and source facets', () => {
     section: 'pwpolicy',
   })
   const mixedRows = [gatekeeperRow, iosRow, otherSourceRow]
-  const platformOf = (rowToRead: RuleRow) => platformGroupKey(rowToRead, noVocabulary)
+  const targetsOf = (rowToRead: RuleRow) => targetGroupKeys(rowToRead, noVocabulary)
   const sourceOf = (rowToRead: RuleRow) => sourceGroupKey(rowToRead, noVocabulary)
 
-  it('offers one option per platform and per source present in the data', () => {
-    expect(facetOptions(mixedRows, emptyFilters(), 'platforms', platformOf, [], noVocabulary)).toEqual(['iOS', 'macOS'])
+  it('offers one option per target and per source present in the data', () => {
+    expect(facetOptions(mixedRows, emptyFilters(), 'targets', targetsOf, [], noVocabulary)).toEqual(['iOS', 'macOS'])
     expect(facetOptions(mixedRows, emptyFilters(), 'sources', sourceOf, [], noVocabulary)).toEqual(['cis', 'mscp'])
   })
 
-  it('matches a row on any selected platform or source', () => {
-    const iosOnly = emptyFilters({ platforms: new Set(['iOS']) })
+  it('matches a row on any selected target or source', () => {
+    const iosOnly = emptyFilters({ targets: new Set(['iOS']) })
     expect(mixedRows.map((r) => matchesFilters(r, iosOnly, noVocabulary))).toEqual([false, true, false])
-    const eitherPlatform = emptyFilters({ platforms: new Set(['iOS', 'macOS']) })
-    expect(mixedRows.map((r) => matchesFilters(r, eitherPlatform, noVocabulary))).toEqual([true, true, true])
+    const eitherTarget = emptyFilters({ targets: new Set(['iOS', 'macOS']) })
+    expect(mixedRows.map((r) => matchesFilters(r, eitherTarget, noVocabulary))).toEqual([true, true, true])
     const cisOnly = emptyFilters({ sources: new Set(['cis']) })
     expect(mixedRows.map((r) => matchesFilters(r, cisOnly, noVocabulary))).toEqual([false, false, true])
   })
 
-  it('narrows the other facets by the selected platform or source, never offering a zero-row option', () => {
-    const iosOnly = emptyFilters({ platforms: new Set(['iOS']) })
+  it('narrows the other facets by the selected target or source, never offering a zero-row option', () => {
+    const iosOnly = emptyFilters({ targets: new Set(['iOS']) })
     expect(facetOptions(mixedRows, iosOnly, 'sources', sourceOf, iosOnly.sources, noVocabulary)).toEqual(['mscp'])
     expect(facetOptions(mixedRows, iosOnly, 'sections', (r) => r.section, [], noVocabulary)).toEqual(['os'])
 
     const cisOnly = emptyFilters({ sources: new Set(['cis']) })
-    expect(facetOptions(mixedRows, cisOnly, 'platforms', platformOf, cisOnly.platforms, noVocabulary)).toEqual(['macOS'])
+    expect(facetOptions(mixedRows, cisOnly, 'targets', targetsOf, cisOnly.targets, noVocabulary)).toEqual(['macOS'])
   })
 
   it('does not narrow a facet by its own selection, and keeps a selected value visible', () => {
-    const iosOnly = emptyFilters({ platforms: new Set(['iOS']) })
-    expect(facetOptions(mixedRows, iosOnly, 'platforms', platformOf, iosOnly.platforms, noVocabulary)).toEqual(['iOS', 'macOS'])
-    const unreachable = emptyFilters({ platforms: new Set(['iOS']), sources: new Set(['cis']) })
-    expect(facetOptions(mixedRows, unreachable, 'platforms', platformOf, unreachable.platforms, noVocabulary)).toEqual(['iOS', 'macOS'])
+    const iosOnly = emptyFilters({ targets: new Set(['iOS']) })
+    expect(facetOptions(mixedRows, iosOnly, 'targets', targetsOf, iosOnly.targets, noVocabulary)).toEqual(['iOS', 'macOS'])
+    const unreachable = emptyFilters({ targets: new Set(['iOS']), sources: new Set(['cis']) })
+    expect(facetOptions(mixedRows, unreachable, 'targets', targetsOf, unreachable.targets, noVocabulary)).toEqual(['iOS', 'macOS'])
   })
 
   it('labels options through the vocabulary, falling back to the raw value', () => {
     const labelled = vocabularyIndexOf({
-      platforms: [{ label: 'Apple macOS', terms: ['macOS'] }],
+      targets: [{ label: 'Apple macOS', terms: ['macOS'] }],
       sources: [{ label: 'NIST mSCP', terms: ['mscp'] }],
     })
-    expect(groupLabel(labelled, 'platforms', platformGroupKey(gatekeeperRow, labelled))).toBe('Apple macOS')
+    expect(groupLabel(labelled, 'targets', targetGroupKeys(gatekeeperRow, labelled)[0])).toBe('Apple macOS')
     expect(groupLabel(labelled, 'sources', sourceGroupKey(gatekeeperRow, labelled))).toBe('NIST mSCP')
-    expect(groupLabel(labelled, 'platforms', platformGroupKey(iosRow, labelled))).toBe('iOS')
+    expect(groupLabel(labelled, 'targets', targetGroupKeys(iosRow, labelled)[0])).toBe('iOS')
     expect(groupLabel(labelled, 'sources', sourceGroupKey(otherSourceRow, labelled))).toBe('cis')
   })
 
@@ -366,29 +367,32 @@ describe('platform and source facets', () => {
 describe('grouped terms', () => {
   const groupedVocabulary = vocabularyIndexOf({
     benchmarks: [{ label: 'CIS Level 1', terms: ['cis_lvl1', 'cislevel1'] }],
-    os_versions: [{ label: 'macOS 26', terms: ['26.0', '26.1'] }],
+    versions: [{ label: 'macOS 26', terms: ['macOS 26.0', 'macOS 26.1'] }],
     sections: [{ label: 'Operating system', terms: ['os', 'operating_system'] }],
     tags: [{ label: 'NIST high', terms: ['800-53r5_high', 'nist_high'] }],
   })
   const currentCodeRow = row({
     ref: { id: 'mscp.current_code', path: 'mscp/rules/current_code.json' },
-    applicability: { '26.0': [{ name: 'cis_lvl1', severity: null }] },
-    osVersions: ['26.0'],
+    applicability: applicabilityOfVersions({ 'macOS 26.0': [{ name: 'cis_lvl1', severity: null }] }),
+    versionKeys: ['macOS 26.0'],
     benchmarks: ['cis_lvl1'],
   })
   const renamedCodeRow = row({
     ref: { id: 'mscp.renamed_code', path: 'mscp/rules/renamed_code.json' },
     section: 'operating_system',
-    applicability: { '27.0': [{ name: 'cislevel1', severity: null }] },
-    osVersions: ['27.0'],
+    applicability: applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cislevel1', severity: null }] }),
+    versionKeys: ['macOS 27.0'],
     benchmarks: ['cislevel1'],
     tags: ['nist_high'],
   })
   const stigOnTwentySevenRow = row({
     ref: { id: 'mscp.stig_only', path: 'mscp/rules/stig_only.json' },
     section: 'pwpolicy',
-    applicability: { '27.0': [{ name: 'disa_stig', severity: null }], '26.1': [{ name: 'cislevel1', severity: null }] },
-    osVersions: ['27.0', '26.1'],
+    applicability: applicabilityOfVersions({
+      'macOS 27.0': [{ name: 'disa_stig', severity: null }],
+      'macOS 26.1': [{ name: 'cislevel1', severity: null }],
+    }),
+    versionKeys: ['macOS 27.0', 'macOS 26.1'],
     benchmarks: ['cislevel1', 'disa_stig'],
     tags: [],
   })
@@ -412,7 +416,7 @@ describe('grouped terms', () => {
   })
 
   it('matches grouped versions, sections and tags by their group key', () => {
-    expect(matchesFilters(stigOnTwentySevenRow, emptyFilters({ osVersions: new Set(['26.0']) }), groupedVocabulary)).toBe(true)
+    expect(matchesFilters(stigOnTwentySevenRow, emptyFilters({ versions: new Set(['macOS 26.0']) }), groupedVocabulary)).toBe(true)
     expect(matchesFilters(renamedCodeRow, emptyFilters({ sections: new Set(['os']) }), groupedVocabulary)).toBe(true)
     expect(matchesFilters(renamedCodeRow, emptyFilters({ tags: new Set(['800-53r5_high']) }), groupedVocabulary)).toBe(true)
     expect(sectionGroupKey(renamedCodeRow, groupedVocabulary)).toBe('os')
@@ -420,12 +424,12 @@ describe('grouped terms', () => {
   })
 
   it('scopes a grouped benchmark to the selected versions, never offering a zero-row combination', () => {
-    const onTwentySeven = emptyFilters({ osVersions: new Set(['27.0']) })
+    const onTwentySeven = emptyFilters({ versions: new Set(['macOS 27.0']) })
     const benchmarkOptions = facetOptions(
       groupedRows,
       onTwentySeven,
       'benchmarks',
-      (r) => benchmarksListedUnder(r, onTwentySeven.osVersions, groupedVocabulary),
+      (r) => benchmarksListedUnder(r, onTwentySeven.versions, groupedVocabulary),
       onTwentySeven.benchmarks,
       groupedVocabulary,
     )
@@ -433,26 +437,26 @@ describe('grouped terms', () => {
 
     // stigOnTwentySevenRow lists the CIS group only under 26.1, so picking
     // macOS 27 + CIS must not match it.
-    const bothOnTwentySeven = emptyFilters({ osVersions: new Set(['27.0']), benchmarks: new Set(['cis_lvl1']) })
+    const bothOnTwentySeven = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set(['cis_lvl1']) })
     expect(groupedRows.map((r) => matchesFilters(r, bothOnTwentySeven, groupedVocabulary))).toEqual([false, true, false])
 
     const stigSelected = emptyFilters({ benchmarks: new Set(['disa_stig']) })
     const versionOptions = facetOptions(
       groupedRows,
       stigSelected,
-      'osVersions',
+      'versions',
       (r) => versionsListingAnyOf(r, stigSelected.benchmarks, groupedVocabulary),
-      stigSelected.osVersions,
+      stigSelected.versions,
       groupedVocabulary,
     )
-    expect(versionOptions).toEqual(['27.0'])
+    expect(versionOptions).toEqual(['macOS 27.0'])
 
     expectNoZeroRowCombination(groupedRows, groupedVocabulary)
   })
 
   it('maps grouped version codes to one version option', () => {
-    expect(versionsListingAnyOf(stigOnTwentySevenRow, new Set(), groupedVocabulary)).toEqual(['27.0', '26.0'])
-    expect(versionsListingAnyOf(stigOnTwentySevenRow, new Set(['cis_lvl1']), groupedVocabulary)).toEqual(['26.0'])
+    expect(versionsListingAnyOf(stigOnTwentySevenRow, new Set(), groupedVocabulary)).toEqual(['macOS 27.0', 'macOS 26.0'])
+    expect(versionsListingAnyOf(stigOnTwentySevenRow, new Set(['cis_lvl1']), groupedVocabulary)).toEqual(['macOS 26.0'])
   })
 })
 
@@ -475,16 +479,19 @@ describe('benchmark facet values', () => {
   // benchmarkSummary already shows an empty severity as none, so the filter
   // must agree or an offered option could fail to match its own rows.
   it('treats an empty severity as no severity', () => {
-    const emptySeverityRow = row({ applicability: { '26.0': [{ name: 'disa_stig', severity: '' }] }, benchmarks: ['disa_stig'] })
+    const emptySeverityRow = row({
+      applicability: applicabilityOfVersions({ 'macOS 26.0': [{ name: 'disa_stig', severity: '' }] }),
+      benchmarks: ['disa_stig'],
+    })
     expect(benchmarksListedUnder(emptySeverityRow, new Set(), noVocabulary)).toEqual(['disa_stig'])
     expect(matchesFilters(emptySeverityRow, emptyFilters({ benchmarks: new Set(['disa_stig']) }), noVocabulary)).toBe(true)
   })
 })
 
 function applicabilityRow(id: string, applicability: Applicability): RuleRow {
-  const osVersions = Object.keys(applicability).sort(compareVersionsDescending)
-  const benchmarks = Array.from(new Set(osVersions.flatMap((version) => applicability[version].map((entry) => entry.name)))).sort()
-  return row({ ref: { id: `mscp.${id}`, path: `mscp/rules/${id}.json` }, applicability, osVersions, benchmarks })
+  const versionKeys = versionKeysOf(applicability)
+  const benchmarks = Array.from(new Set(versionKeys.flatMap((key) => benchmarksAt(applicability, key).map((entry) => entry.name)))).sort()
+  return row({ ref: { id: `mscp.${id}`, path: `mscp/rules/${id}.json` }, applicability, versionKeys, benchmarks })
 }
 
 const SEVERITY_VOCABULARY = [
@@ -505,16 +512,16 @@ describe('a benchmark with severities on some entries and none on others', () =>
     ],
     severities: SEVERITY_VOCABULARY,
   })
-  const highOnTwoNoneOnOne = applicabilityRow('high_on_two', {
-    '2.0': [{ name: 'acme_baseline', severity: 'high' }],
-    '1.0': [{ name: 'acme_baseline', severity: null }],
-  })
-  const noneOnTwo = applicabilityRow('none_on_two', { '2.0': [{ name: 'acme_baseline', severity: null }] })
-  const criticalOnOneLowOnTwo = applicabilityRow('critical_on_one', {
-    '1.0': [{ name: 'acme_baseline', severity: 'critical' }],
-    '2.0': [{ name: 'acme_baseline', severity: 'low' }],
-  })
-  const otherOnTwo = applicabilityRow('other_on_two', { '2.0': [{ name: 'other_baseline', severity: null }] })
+  const highOnTwoNoneOnOne = applicabilityRow('high_on_two', applicabilityOfVersions({
+    'macOS 2.0': [{ name: 'acme_baseline', severity: 'high' }],
+    'macOS 1.0': [{ name: 'acme_baseline', severity: null }],
+  }))
+  const noneOnTwo = applicabilityRow('none_on_two', applicabilityOfVersions({ 'macOS 2.0': [{ name: 'acme_baseline', severity: null }] }))
+  const criticalOnOneLowOnTwo = applicabilityRow('critical_on_one', applicabilityOfVersions({
+    'macOS 1.0': [{ name: 'acme_baseline', severity: 'critical' }],
+    'macOS 2.0': [{ name: 'acme_baseline', severity: 'low' }],
+  }))
+  const otherOnTwo = applicabilityRow('other_on_two', applicabilityOfVersions({ 'macOS 2.0': [{ name: 'other_baseline', severity: null }] }))
   const mixedRows = [highOnTwoNoneOnOne, noneOnTwo, criticalOnOneLowOnTwo, otherOnTwo]
   const acme = (severity: string | null) => benchmarkFacetValue('acme_baseline', severity)
   const matchingIds = (filters: FilterValues) =>
@@ -543,16 +550,16 @@ describe('a benchmark with severities on some entries and none on others', () =>
   })
 
   it('scopes the severity to the selected versions', () => {
-    expect(matchingIds(emptyFilters({ osVersions: new Set(['2.0']), benchmarks: new Set([acme(null)]) }))).toEqual(['none_on_two'])
-    expect(matchingIds(emptyFilters({ osVersions: new Set(['1.0']), benchmarks: new Set([acme('high')]) }))).toEqual([])
-    const onVersionOne = benchmarkOptionsUnder(mixedRows, emptyFilters({ osVersions: new Set(['1.0']) }), vocabulary)
+    expect(matchingIds(emptyFilters({ versions: new Set(['macOS 2.0']), benchmarks: new Set([acme(null)]) }))).toEqual(['none_on_two'])
+    expect(matchingIds(emptyFilters({ versions: new Set(['macOS 1.0']), benchmarks: new Set([acme('high')]) }))).toEqual([])
+    const onVersionOne = benchmarkOptionsUnder(mixedRows, emptyFilters({ versions: new Set(['macOS 1.0']) }), vocabulary)
     expect(new Set(onVersionOne)).toEqual(new Set([acme(null), acme('critical')]))
   })
 
   it('narrows the version facet to versions listing the selected severity', () => {
-    expect(versionOptionsUnder(mixedRows, emptyFilters({ benchmarks: new Set([acme('high')]) }), vocabulary)).toEqual(['2.0'])
-    expect(versionOptionsUnder(mixedRows, emptyFilters({ benchmarks: new Set([acme('critical')]) }), vocabulary)).toEqual(['1.0'])
-    expect(versionOptionsUnder(mixedRows, emptyFilters({ benchmarks: new Set([acme(null)]) }), vocabulary)).toEqual(['1.0', '2.0'])
+    expect(versionOptionsUnder(mixedRows, emptyFilters({ benchmarks: new Set([acme('high')]) }), vocabulary)).toEqual(['macOS 2.0'])
+    expect(versionOptionsUnder(mixedRows, emptyFilters({ benchmarks: new Set([acme('critical')]) }), vocabulary)).toEqual(['macOS 1.0'])
+    expect(versionOptionsUnder(mixedRows, emptyFilters({ benchmarks: new Set([acme(null)]) }), vocabulary)).toEqual(['macOS 1.0', 'macOS 2.0'])
   })
 
   it('never offers a zero-row version and benchmark combination', () => {
@@ -577,12 +584,12 @@ describe('a grouped benchmark with severities', () => {
     benchmarks: [{ label: 'CIS Level 1', terms: ['cis_lvl1', 'cislevel1'] }],
     severities: [...SEVERITY_VOCABULARY.slice(0, 2), { label: 'High', terms: ['high', 'cat_i'] }],
   })
-  const highUnderCurrentCode = applicabilityRow('current_high', { '26.0': [{ name: 'cis_lvl1', severity: 'high' }] })
-  const highUnderRenamedCode = applicabilityRow('renamed_high', { '27.0': [{ name: 'cislevel1', severity: 'cat_i' }] })
-  const lowAndNone = applicabilityRow('low_and_none', {
-    '27.0': [{ name: 'cislevel1', severity: 'low' }],
-    '26.0': [{ name: 'cis_lvl1', severity: null }],
-  })
+  const highUnderCurrentCode = applicabilityRow('current_high', applicabilityOfVersions({ 'macOS 26.0': [{ name: 'cis_lvl1', severity: 'high' }] }))
+  const highUnderRenamedCode = applicabilityRow('renamed_high', applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cislevel1', severity: 'cat_i' }] }))
+  const lowAndNone = applicabilityRow('low_and_none', applicabilityOfVersions({
+    'macOS 27.0': [{ name: 'cislevel1', severity: 'low' }],
+    'macOS 26.0': [{ name: 'cis_lvl1', severity: null }],
+  }))
   const groupedRows = [highUnderCurrentCode, highUnderRenamedCode, lowAndNone]
   const cisLevelOne = (severity: string | null) => benchmarkFacetValue('cis_lvl1', severity)
 
@@ -600,9 +607,9 @@ describe('a grouped benchmark with severities', () => {
   it('matches rows listing either code of the group with that severity', () => {
     const filters = emptyFilters({ benchmarks: new Set([cisLevelOne('high')]) })
     expect(groupedRows.map((r) => matchesFilters(r, filters, vocabulary))).toEqual([true, true, false])
-    expect(versionOptionsUnder(groupedRows, filters, vocabulary)).toEqual(['26.0', '27.0'])
+    expect(versionOptionsUnder(groupedRows, filters, vocabulary)).toEqual(['macOS 26.0', 'macOS 27.0'])
     const lowFilters = emptyFilters({ benchmarks: new Set([cisLevelOne('low')]) })
-    expect(versionOptionsUnder(groupedRows, lowFilters, vocabulary)).toEqual(['27.0'])
+    expect(versionOptionsUnder(groupedRows, lowFilters, vocabulary)).toEqual(['macOS 27.0'])
   })
 
   it('never offers a zero-row version and benchmark combination', () => {
@@ -671,17 +678,46 @@ describe('committed library data', () => {
 
   it('narrows the version facet by a severity option and the table to rows listing that severity', () => {
     const stigHigh = benchmarkFacetValue('disa_stig', 'high')
-    const highOnTwentySeven = emptyFilters({ osVersions: new Set(['27.0']), benchmarks: new Set([stigHigh]) })
+    const highOnTwentySeven = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set([stigHigh]) })
     const highRows = committedRows.filter((r) => matchesFilters(r, highOnTwentySeven, committedVocabulary))
     expect(highRows.length).toBeGreaterThan(0)
     for (const highRow of highRows) {
-      expect(highRow.applicability['27.0']).toContainEqual({ name: 'disa_stig', severity: 'high' })
+      expect(benchmarksAt(highRow.applicability, 'macOS 27.0')).toContainEqual({ name: 'disa_stig', severity: 'high' })
     }
     const stigHighSelected = emptyFilters({ benchmarks: new Set([stigHigh]) })
-    expect(versionOptionsUnder(committedRows, stigHighSelected, committedVocabulary)).toEqual(['15.0', '26.0', '27.0'])
+    expect(versionOptionsUnder(committedRows, stigHighSelected, committedVocabulary)).toEqual(['macOS 15.0', 'macOS 26.0', 'macOS 27.0'])
   })
 
   it('never offers a zero-row version and benchmark combination', () => {
     expectNoZeroRowCombination(committedRows, committedVocabulary)
+  })
+})
+
+describe('two targets sharing a version string', () => {
+  const sharedVersionRow = row({
+    applicability: applicabilityOfVersions({
+      'macOS 27.0': [{ name: 'cis_lvl1', severity: null }],
+      'Windows 27.0': [{ name: 'disa_stig', severity: null }],
+    }),
+    targets: ['macOS', 'Windows'],
+    versionKeys: ['macOS 27.0', 'Windows 27.0'],
+    benchmarks: ['cis_lvl1', 'disa_stig'],
+  })
+  const stig = benchmarkFacetValue('disa_stig', null)
+
+  it('offers one version option per target', () => {
+    expect(versionsListingAnyOf(sharedVersionRow, new Set(), noVocabulary)).toEqual(['macOS 27.0', 'Windows 27.0'])
+  })
+
+  it('scopes each benchmark to its own target version', () => {
+    const stigOnMac = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set([stig]) })
+    const stigOnWindows = emptyFilters({ versions: new Set(['Windows 27.0']), benchmarks: new Set([stig]) })
+    expect(matchesFilters(sharedVersionRow, stigOnMac, noVocabulary)).toBe(false)
+    expect(matchesFilters(sharedVersionRow, stigOnWindows, noVocabulary)).toBe(true)
+    expect(benchmarksListedUnder(sharedVersionRow, new Set(['macOS 27.0']), noVocabulary)).toEqual([benchmarkFacetValue('cis_lvl1', null)])
+  })
+
+  it('skips a null target when grouping targets', () => {
+    expect(targetGroupKeys(row({ targets: [null, 'macOS'] }), noVocabulary)).toEqual(['macOS'])
   })
 })

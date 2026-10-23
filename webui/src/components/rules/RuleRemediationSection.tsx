@@ -1,3 +1,5 @@
+import { versionKey } from '../../logic/applicability'
+import { GENERATED_TARGET } from '../../logic/checkPlan'
 import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { compareVersionsDescending } from '../../logic/versions'
@@ -37,8 +39,10 @@ function JsonEntry({ label, value, odvValue }: { label: string; value: unknown; 
 
 export function RuleRemediationSection({ rule, odvValue }: { rule: Rule; odvValue: OrgDefinedValue | null }) {
   const index = useVocabularyIndex()
-  const versionLabel = (version: string) => termLabel(index, 'os_versions', version)
+  const versionLabel = (version: string) => termLabel(index, 'versions', versionKey(GENERATED_TARGET, version))
   const remediation = rule.remediation
+  if (remediation === null) return null
+
   const versionFixes = Object.entries(remediation.by_version)
     .filter(([, entry]) => hasContent(entry))
     .sort(([left], [right]) => compareVersionsDescending(left, right))

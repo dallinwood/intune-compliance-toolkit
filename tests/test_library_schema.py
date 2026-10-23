@@ -466,8 +466,8 @@ def test_committed_vocabulary_orders_severities_low_medium_high():
     assert [entry["label"] for entry in severities] == ["low", "medium", "high"]
 
 
-@pytest.mark.parametrize("vocabulary_name", ["platforms", "sources"])
-def test_platform_and_source_vocabularies_are_accepted(vocabulary_name):
+@pytest.mark.parametrize("vocabulary_name", ["targets", "sources"])
+def test_target_and_source_vocabularies_are_accepted(vocabulary_name):
     vocabulary = make_vocabulary(**{vocabulary_name: [{"label": "Label", "terms": ["raw"]}]})
     assert schema_errors(vocabulary, "vocabulary") == []
 

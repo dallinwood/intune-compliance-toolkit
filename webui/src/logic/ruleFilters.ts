@@ -1,16 +1,15 @@
 import type { FilterState } from '../state/filterStore'
-import type { Applicability } from '../types/library'
+import type { BenchmarkMembership } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
+import { benchmarksAt } from './applicability'
 import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from './vocabulary'
 
-type BenchmarkMembership = Applicability[string][number]
-
-export type FilterValues = Pick<FilterState, 'search' | 'platforms' | 'sources' | 'osVersions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
+export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
 
 // The Set-valued facets matchesFilters can be asked to ignore - used to
 // compute "what values are still reachable in this facet, given every
 // other currently-applied filter" for faceted-search-style narrowing.
-export type FilterDimension = 'platforms' | 'sources' | 'osVersions' | 'benchmarks' | 'sections' | 'tags'
+export type FilterDimension = 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags'
 
 const MSCP_ID_PREFIX = 'mscp.'
 
@@ -19,14 +18,16 @@ const MSCP_ID_PREFIX = 'mscp.'
 // a benchmark mSCP renamed) filter as one. Every row code is mapped to its
 // group key before it is compared.
 
-function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'os_versions' | 'tags', codes: Iterable<string>): string[] {
+function uniqueGroupKeys(index: VocabularyIndex, vocabulary: 'versions' | 'tags', codes: Iterable<string>): string[] {
   const groupKeys = new Set<string>()
   for (const code of codes) groupKeys.add(termGroupKey(index, vocabulary, code))
   return Array.from(groupKeys)
 }
 
-export function platformGroupKey(row: RuleRow, index: VocabularyIndex): string {
-  return termGroupKey(index, 'platforms', row.platform)
+// A rule with no target has none to filter by; phase 3 adds a "None" option.
+export function targetGroupKeys(row: RuleRow, index: VocabularyIndex): string[] {
+  const targets = row.targets.filter((target): target is string => target !== null)
+  return Array.from(new Set(targets.map((target) => termGroupKey(index, 'targets', target))))
 }
 
 export function sourceGroupKey(row: RuleRow, index: VocabularyIndex): string {
@@ -41,9 +42,9 @@ export function tagGroupKeys(row: RuleRow, index: VocabularyIndex): string[] {
   return uniqueGroupKeys(index, 'tags', row.tags)
 }
 
-export function versionsUnder(row: RuleRow, osVersions: ReadonlySet<string>, index: VocabularyIndex): string[] {
-  if (osVersions.size === 0) return row.osVersions
-  return row.osVersions.filter((version) => osVersions.has(termGroupKey(index, 'os_versions', version)))
+export function versionsUnder(row: RuleRow, versions: ReadonlySet<string>, index: VocabularyIndex): string[] {
+  if (versions.size === 0) return row.versionKeys
+  return row.versionKeys.filter((key) => versions.has(termGroupKey(index, 'versions', key)))
 }
 
 // A benchmark facet value is one (benchmark group, severity group) pair, so a
@@ -108,16 +109,16 @@ export function compareBenchmarkFacetValues(index: VocabularyIndex): (left: stri
   }
 }
 
-function listsAnyBenchmark(row: RuleRow, version: string, benchmarks: ReadonlySet<string>, index: VocabularyIndex): boolean {
-  return (row.applicability[version] ?? []).some((membership) => benchmarks.has(membershipFacetValue(membership, index)))
+function listsAnyBenchmark(row: RuleRow, key: string, benchmarks: ReadonlySet<string>, index: VocabularyIndex): boolean {
+  return benchmarksAt(row.applicability, key).some((membership) => benchmarks.has(membershipFacetValue(membership, index)))
 }
 
-// A benchmark only counts for the macOS versions it is listed under, so when
+// A benchmark only counts for the versions it is listed under, so when
 // versions are selected, a benchmark listed only under other versions must
 // not match.
 function matchesBenchmarks(row: RuleRow, filters: FilterValues, index: VocabularyIndex, excludeDimension?: FilterDimension): boolean {
-  const selectedVersions = excludeDimension === 'osVersions' ? new Set<string>() : filters.osVersions
-  return versionsUnder(row, selectedVersions, index).some((version) => listsAnyBenchmark(row, version, filters.benchmarks, index))
+  const selectedVersions = excludeDimension === 'versions' ? new Set<string>() : filters.versions
+  return versionsUnder(row, selectedVersions, index).some((key) => listsAnyBenchmark(row, key, filters.benchmarks, index))
 }
 
 export function matchesFilters(
@@ -126,11 +127,11 @@ export function matchesFilters(
   index: VocabularyIndex,
   excludeDimension?: FilterDimension,
 ): boolean {
-  if (excludeDimension !== 'platforms' && filters.platforms.size > 0 && !filters.platforms.has(platformGroupKey(row, index)))
+  if (excludeDimension !== 'targets' && filters.targets.size > 0 && !targetGroupKeys(row, index).some((target) => filters.targets.has(target)))
     return false
   if (excludeDimension !== 'sources' && filters.sources.size > 0 && !filters.sources.has(sourceGroupKey(row, index)))
     return false
-  if (excludeDimension !== 'osVersions' && filters.osVersions.size > 0 && versionsUnder(row, filters.osVersions, index).length === 0)
+  if (excludeDimension !== 'versions' && filters.versions.size > 0 && versionsUnder(row, filters.versions, index).length === 0)
     return false
   if (excludeDimension !== 'benchmarks' && filters.benchmarks.size > 0 && !matchesBenchmarks(row, filters, index, excludeDimension))
     return false
@@ -200,18 +201,18 @@ export function allFacetValues(
 }
 
 // Version-scoped facet values: version group keys and benchmark facet
-// values. A row's benchmarks differ per macOS version, so the benchmark facet
+// values. A row's benchmarks differ per version, so the benchmark facet
 // must only count benchmarks listed under the selected versions (and the
 // version facet only versions listing a selected benchmark) - otherwise it
 // offers combinations that match zero rows.
-export function benchmarksListedUnder(row: RuleRow, osVersions: ReadonlySet<string>, index: VocabularyIndex): string[] {
-  const facetValues = versionsUnder(row, osVersions, index).flatMap((version) =>
-    (row.applicability[version] ?? []).map((membership) => membershipFacetValue(membership, index)),
+export function benchmarksListedUnder(row: RuleRow, versions: ReadonlySet<string>, index: VocabularyIndex): string[] {
+  const facetValues = versionsUnder(row, versions, index).flatMap((key) =>
+    benchmarksAt(row.applicability, key).map((membership) => membershipFacetValue(membership, index)),
   )
   return Array.from(new Set(facetValues))
 }
 
 export function versionsListingAnyOf(row: RuleRow, benchmarks: ReadonlySet<string>, index: VocabularyIndex): string[] {
-  const versions = benchmarks.size === 0 ? row.osVersions : row.osVersions.filter((version) => listsAnyBenchmark(row, version, benchmarks, index))
-  return uniqueGroupKeys(index, 'os_versions', versions)
+  const keys = benchmarks.size === 0 ? row.versionKeys : row.versionKeys.filter((key) => listsAnyBenchmark(row, key, benchmarks, index))
+  return uniqueGroupKeys(index, 'versions', keys)
 }

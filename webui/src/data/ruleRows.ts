@@ -1,3 +1,5 @@
+import { benchmarksAt, parseVersionKey, targetsOf, versionKeysOf } from '../logic/applicability'
+import { GENERATED_TARGET } from '../logic/checkPlan'
 import { compareVersionsDescending } from '../logic/versions'
 import type { ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
@@ -18,22 +20,22 @@ function directoryOf(path: string): string {
 export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow[] {
   const directory = directoryOf(source.index_path)
   return index.rules.map((entry): RuleRow => {
-    const osVersions = Object.keys(entry.applicability).sort(compareVersionsDescending)
+    const versionKeys = versionKeysOf(entry.applicability)
     const benchmarks = new Set<string>()
-    for (const version of osVersions) {
-      for (const benchmark of entry.applicability[version]) benchmarks.add(benchmark.name)
+    for (const key of versionKeys) {
+      for (const benchmark of benchmarksAt(entry.applicability, key)) benchmarks.add(benchmark.name)
     }
     return {
       ref: { id: entry.id, path: directory ? `${directory}/${entry.file}` : entry.file },
       title: entry.title,
-      platform: entry.platform,
+      targets: targetsOf(entry.applicability),
       section: entry.section,
       sourceName: source.name,
       releaseTag: source.release_tag,
       assessment: entry.assessment,
       architecture: entry.architecture,
       applicability: entry.applicability,
-      osVersions,
+      versionKeys,
       benchmarks: Array.from(benchmarks).sort(),
       tags: entry.tags,
       hasOdv: entry.has_odv,
@@ -41,9 +43,14 @@ export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow
   })
 }
 
-export function coveredVersionsOf(rows: RuleRow[]): string[] {
+export function coveredVersionsOf(rows: RuleRow[], target: string): string[] {
   const versions = new Set<string>()
-  for (const row of rows) row.osVersions.forEach((version) => versions.add(version))
+  for (const row of rows) {
+    for (const key of row.versionKeys) {
+      const parsedKey = parseVersionKey(key)
+      if (parsedKey.target === target) versions.add(parsedKey.version)
+    }
+  }
   return Array.from(versions).sort(compareVersionsDescending)
 }
 
@@ -55,5 +62,5 @@ export async function loadLibrary(): Promise<Library> {
   )
   const rows = rowsBySource.flat()
 
-  return { rows, sources: manifest.sources, coveredVersions: coveredVersionsOf(rows) }
+  return { rows, sources: manifest.sources, coveredVersions: coveredVersionsOf(rows, GENERATED_TARGET) }
 }

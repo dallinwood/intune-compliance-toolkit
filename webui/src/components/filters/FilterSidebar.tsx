@@ -14,13 +14,13 @@ import {
   benchmarksListedUnder,
   compareBenchmarkFacetValues,
   facetOptions,
-  platformGroupKey,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
+  targetGroupKeys,
   versionsListingAnyOf,
 } from '../../logic/ruleFilters'
-import { compareVersionsDescending } from '../../logic/versions'
+import { compareVersionKeys } from '../../logic/applicability'
 import { compareGroupKeys, groupLabel, type VocabularyIndex, type VocabularyName } from '../../logic/vocabulary'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
@@ -45,19 +45,19 @@ const NO_SELECTION: ReadonlySet<string> = new Set()
 function facetAccessors(index: VocabularyIndex) {
   const labelIn = (vocabulary: VocabularyName) => (groupKey: string) => groupLabel(index, vocabulary, groupKey)
   return {
-    allOsVersionsOf: (row: RuleRow) => versionsListingAnyOf(row, NO_SELECTION, index),
+    allVersionsOf: (row: RuleRow) => versionsListingAnyOf(row, NO_SELECTION, index),
     allBenchmarksOf: (row: RuleRow) => benchmarksListedUnder(row, NO_SELECTION, index),
-    platformOf: (row: RuleRow) => platformGroupKey(row, index),
+    targetsOf: (row: RuleRow) => targetGroupKeys(row, index),
     sourceOf: (row: RuleRow) => sourceGroupKey(row, index),
     sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
     tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
-    platformLabel: labelIn('platforms'),
+    targetLabel: labelIn('targets'),
     sourceLabel: labelIn('sources'),
-    osVersionLabel: labelIn('os_versions'),
+    versionLabel: labelIn('versions'),
     sectionLabel: labelIn('sections'),
     tagLabel: labelIn('tags'),
     compareBenchmarks: compareBenchmarkFacetValues(index),
-    comparePlatforms: compareGroupKeys(index, 'platforms'),
+    compareTargets: compareGroupKeys(index, 'targets'),
     compareSources: compareGroupKeys(index, 'sources'),
     compareSections: compareGroupKeys(index, 'sections'),
     compareTags: compareGroupKeys(index, 'tags'),
@@ -80,23 +80,23 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // Each facet is also narrowed by every *other* currently-applied filter,
   // so a facet never offers a choice that would filter the table down to
   // zero rows. Versions and benchmarks are additionally scoped to each
-  // other, because a rule's benchmarks differ per macOS version.
-  const platforms = useMemo(
-    () => facetOptions(rows, filters, 'platforms', accessors.platformOf, filters.platforms, index),
+  // other, because a rule's benchmarks differ per version.
+  const targets = useMemo(
+    () => facetOptions(rows, filters, 'targets', accessors.targetsOf, filters.targets, index),
     [rows, filters, accessors, index],
   )
   const sources = useMemo(
     () => facetOptions(rows, filters, 'sources', accessors.sourceOf, filters.sources, index),
     [rows, filters, accessors, index],
   )
-  const osVersions = useMemo(
+  const versions = useMemo(
     () =>
       facetOptions(
         rows,
         filters,
-        'osVersions',
+        'versions',
         (row) => versionsListingAnyOf(row, filters.benchmarks, index),
-        filters.osVersions,
+        filters.versions,
         index,
       ),
     [rows, filters, index],
@@ -107,7 +107,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
         rows,
         filters,
         'benchmarks',
-        (row) => benchmarksListedUnder(row, filters.osVersions, index),
+        (row) => benchmarksListedUnder(row, filters.versions, index),
         filters.benchmarks,
         index,
       ),
@@ -159,23 +159,23 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
           <StableFacetGroup
             title="Platform"
             rows={rows}
-            valueOf={accessors.platformOf}
-            compareValues={accessors.comparePlatforms}
-            labelOf={accessors.platformLabel}
-            reachable={platforms}
-            selected={filters.platforms}
-            onToggle={filters.togglePlatform}
+            valueOf={accessors.targetsOf}
+            compareValues={accessors.compareTargets}
+            labelOf={accessors.targetLabel}
+            reachable={targets}
+            selected={filters.targets}
+            onToggle={filters.toggleTarget}
           />
 
           <StableFacetGroup
             title="macOS version"
             rows={rows}
-            valueOf={accessors.allOsVersionsOf}
-            compareValues={compareVersionsDescending}
-            labelOf={accessors.osVersionLabel}
-            reachable={osVersions}
-            selected={filters.osVersions}
-            onToggle={filters.toggleOsVersion}
+            valueOf={accessors.allVersionsOf}
+            compareValues={compareVersionKeys}
+            labelOf={accessors.versionLabel}
+            reachable={versions}
+            selected={filters.versions}
+            onToggle={filters.toggleVersion}
           />
 
           <StableFacetGroup
