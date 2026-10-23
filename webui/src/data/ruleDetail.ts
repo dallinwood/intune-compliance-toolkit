@@ -2,14 +2,15 @@ import { applyOverlays, type OverlaidRule, type Overlay } from '../logic/overlay
 import type { RuleRef } from '../logic/selectionEntry'
 import type { Rule } from '../types/library'
 
-const cache = new Map<string, Promise<OverlaidRule>>()
+const importedCache = new Map<string, Promise<Rule>>()
+const overlaidCache = new Map<string, Promise<OverlaidRule>>()
 let ruleOverlays: Overlay[] = []
 
 // Set once the library has loaded, before any rule is fetched. Every caller
 // of fetchRule (details, generator, export) then gets the overlaid rule.
 export function setRuleOverlays(overlays: Overlay[]): void {
   ruleOverlays = overlays
-  cache.clear()
+  overlaidCache.clear()
 }
 
 function describeError(error: unknown): string {
@@ -41,25 +42,39 @@ async function loadRule(ref: RuleRef): Promise<Rule> {
   }
 }
 
-async function loadOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
-  const rule = await loadRule(ref)
-  const isTargeted = ruleOverlays.some((overlay) => overlay.targets.some((target) => target.rule === ref.id))
-  if (!isTargeted) return { rule, provenance: new Map(), applied: [], skipped: [] }
-  return applyOverlays(rule, ruleOverlays, rule.source.release_tag)
-}
+// A failure is not cached, so a later call (e.g. after a network blip)
+// fetches again instead of replaying the same rejection forever.
+function cached<T>(cache: Map<string, Promise<T>>, ref: RuleRef, load: (ref: RuleRef) => Promise<T>): Promise<T> {
+  const existing = cache.get(ref.id)
+  if (existing) return existing
 
-export function fetchOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
-  const cached = cache.get(ref.id)
-  if (cached) return cached
-
-  const pending = loadOverlaidRule(ref)
+  const pending = load(ref)
   cache.set(ref.id, pending)
-  // A failure is not cached, so a later call (e.g. after a network blip)
-  // fetches again instead of replaying the same rejection forever.
   pending.catch(() => {
     if (cache.get(ref.id) === pending) cache.delete(ref.id)
   })
   return pending
+}
+
+// The rule exactly as imported: the load-time overlay checks and the details'
+// fallback when overlaid content cannot be shown.
+export function fetchImportedRule(ref: RuleRef): Promise<Rule> {
+  return cached(importedCache, ref, loadRule)
+}
+
+async function loadOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
+  const rule = await fetchImportedRule(ref)
+  const isTargeted = ruleOverlays.some((overlay) => overlay.targets.some((target) => target.rule === ref.id))
+  if (!isTargeted) return { rule, provenance: new Map(), applied: [], skipped: [] }
+  const overlaid = applyOverlays(rule, ruleOverlays, rule.source.release_tag)
+  // The load-time dry run drops misfits, so this only fires if the rule file
+  // changed or could not be checked then.
+  for (const skipped of overlaid.skipped) console.warn(`Custom content ${skipped.overlayId} was skipped: ${skipped.message}`)
+  return overlaid
+}
+
+export function fetchOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
+  return cached(overlaidCache, ref, loadOverlaidRule)
 }
 
 export function fetchRule(ref: RuleRef): Promise<Rule> {

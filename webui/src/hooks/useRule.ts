@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchOverlaidRule } from '../data/ruleDetail'
+import { fetchImportedRule, fetchOverlaidRule } from '../data/ruleDetail'
 import { odvSubstitutionMode, usableOdvValue } from '../logic/odv'
 import type { OverlaidRule } from '../logic/overlays'
 import type { OrgDefinedValue, RuleRef } from '../logic/selectionEntry'
@@ -15,10 +15,26 @@ export type RuleLoadState =
 
 const LOADING: RuleLoadState = { status: 'loading' }
 
+const NO_OVERLAYS = (rule: Rule): OverlaidRule => ({ rule, provenance: new Map(), applied: [], skipped: [] })
+
+async function loadImportedAsOverlaid(ref: RuleRef): Promise<OverlaidRule> {
+  return NO_OVERLAYS(await fetchImportedRule(ref))
+}
+
 // Pass null to skip fetching (the hook still has to be called
 // unconditionally). The loaded state is tagged with its id so a stale
 // result is never shown for a different rule.
 export function useRule(ruleRef: RuleRef | null): RuleLoadState {
+  return useRuleFrom(ruleRef, fetchOverlaidRule)
+}
+
+// The rule as imported, without overlays: the details' fallback when the
+// overlaid rule cannot be shown.
+export function useImportedRule(ruleRef: RuleRef | null): RuleLoadState {
+  return useRuleFrom(ruleRef, loadImportedAsOverlaid)
+}
+
+function useRuleFrom(ruleRef: RuleRef | null, load: (ref: RuleRef) => Promise<OverlaidRule>): RuleLoadState {
   const [loaded, setLoaded] = useState<{ id: string; state: RuleLoadState } | null>(null)
   const id = ruleRef?.id ?? null
   const path = ruleRef?.path ?? null
@@ -26,7 +42,7 @@ export function useRule(ruleRef: RuleRef | null): RuleLoadState {
   useEffect(() => {
     if (id === null || path === null) return
     let cancelled = false
-    fetchOverlaidRule({ id, path })
+    load({ id, path })
       .then((overlaid) => {
         if (!cancelled) setLoaded({ id, state: { status: 'ready', rule: overlaid.rule, overlaid } })
       })
@@ -38,7 +54,7 @@ export function useRule(ruleRef: RuleRef | null): RuleLoadState {
     return () => {
       cancelled = true
     }
-  }, [id, path])
+  }, [id, path, load])
 
   return loaded !== null && loaded.id === id ? loaded.state : LOADING
 }

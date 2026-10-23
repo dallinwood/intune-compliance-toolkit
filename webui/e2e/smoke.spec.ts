@@ -918,9 +918,10 @@ test.describe('section tree and paging', () => {
   })
 
   test('expand and collapse one level walk the mSCP and ISM sections level by level', async ({ page }) => {
-    await openLibrary(page, '/?size=200')
-    await page.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
-    await page.getByRole('checkbox', { name: 'Guidelines for email', exact: true }).click()
+    // Both sections come from the URL: once one Section option is checked
+    // the others count 0 and are disabled (4b931b1), so clicking a second
+    // one only worked when the click beat the deferred re-render.
+    await openLibrary(page, '/?size=200&section=audit&section=Guidelines+for+email')
     await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
     const ismRuleIds = ruleTable(page).locator('.font-mono', { hasText: /^ism-/ })
 
@@ -1175,6 +1176,8 @@ test.describe('custom overlays', () => {
     'c-tags-not-a-list.json': { ...titleOverlay, id: 'tags-not-a-list', fields: { tags: 'powershell' } },
     'd-two-key-wrapper.json': { ...titleOverlay, id: 'two-key-wrapper', fields: { references: { $replace: {}, $append: [] } } },
     'e-protected-field.json': { ...titleOverlay, id: 'protected-field', fields: { source: { release_tag: 'v1' } } },
+    // Passes the file checks but would break the table once merged.
+    'f-applicability-shape.json': { ...titleOverlay, id: 'applicability-shape', fields: { applicability: [{ target: null, version: null }] } },
   }
 
   async function serveOverlays(page: Page, files: Record<string, unknown>) {
@@ -1209,6 +1212,7 @@ test.describe('custom overlays', () => {
 
     const tagOption = page.getByRole('checkbox', { name: 'powershell-custom', exact: true })
     await tagOption.scrollIntoViewIfNeeded()
+    await expect(tagOption.locator('xpath=..')).toContainText('(1)')
     await tagOption.click()
     await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
     await tagOption.click()

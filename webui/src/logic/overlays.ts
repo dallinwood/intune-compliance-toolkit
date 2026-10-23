@@ -1,4 +1,5 @@
 import type { IndexEntry, Rule } from '../types/library'
+import { indexEntryShapeProblem, ruleShapeProblem } from './overlayShape'
 
 // Maintainer-written overlays add to or replace fields on imported rules as
 // they are displayed; baselines/ itself is never changed. tools/overlays.py
@@ -37,6 +38,8 @@ export interface OverlaidRule {
   skipped: SkippedOverlay[]
 }
 
+export type OnOverlaySkipped = (skipped: SkippedOverlay) => void
+
 export class InvalidOverlayError extends Error {
   constructor(message: string) {
     super(message)
@@ -54,13 +57,15 @@ const REPLACE = '$replace'
 const APPEND = '$append'
 const MERGE = '$merge'
 const WRAPPER_KEYS: ReadonlySet<string> = new Set([REPLACE, APPEND, MERGE])
+// Assigning these keys on a plain object would reach its prototype.
+const RESERVED_KEYS: ReadonlySet<string> = new Set(['__proto__', 'constructor', 'prototype'])
 
 type FieldKind = 'string' | 'list' | 'object' | 'object-or-null' | 'string-or-null'
 
 // The v4 rule fields an overlay may set, with the value kind the rule schema
-// allows. Full schema validation is CI's job; this catches the mistakes that
-// would otherwise break rendering.
-const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {
+// allows. The shape of the merged result is checked in overlayShape.ts; full
+// schema validation is CI's job.
+export const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {
   title: 'string',
   discussion: 'string',
   discussion_format: 'string',
@@ -76,9 +81,19 @@ const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {
 }
 export const OVERLAYABLE_RULE_FIELDS: ReadonlySet<string> = new Set(Object.keys(FIELD_KINDS))
 
-// Index entries are copies of these rule fields; every other overlay field
-// only exists on the full rule and is ignored at index level.
-const INDEX_OVERLAY_FIELDS: ReadonlySet<string> = new Set(['title', 'section_path', 'assessment', 'architecture', 'applicability', 'tags', 'odv'])
+// Index entries are copies of these rule fields (odv stands in for has_odv);
+// every other overlay field only exists on the full rule and is ignored at
+// index level.
+export const INDEX_OVERLAY_FIELDS: ReadonlySet<string> = new Set([
+  'title',
+  'section_path',
+  'assessment',
+  'architecture',
+  'applicability',
+  'tags',
+  'odv',
+])
+const ODV_REQUIRED_KEYS = ['by_benchmark', 'datatype', 'description', 'recommended', 'validation']
 
 type JsonObject = Record<string, unknown>
 
@@ -96,6 +111,22 @@ function kindOf(value: Upstream): string {
   return typeof value === 'object' ? 'object' : typeof value
 }
 
+function reservedKeyError(value: unknown, path: string): string | null {
+  if (Array.isArray(value)) {
+    for (const [position, item] of value.entries()) {
+      const problem = reservedKeyError(item, `${path}[${position}]`)
+      if (problem) return problem
+    }
+  } else if (isObject(value)) {
+    for (const [key, child] of Object.entries(value)) {
+      if (RESERVED_KEYS.has(key)) return `${path}: key ${key} is not allowed`
+      const problem = reservedKeyError(child, `${path}.${key}`)
+      if (problem) return problem
+    }
+  }
+  return null
+}
+
 function wrapperOf(value: JsonObject, path: string): [string, unknown] | null {
   const keys = Object.keys(value)
   const dollarKeys = keys.filter((key) => key.startsWith('$'))
@@ -110,21 +141,22 @@ function wrapperOf(value: JsonObject, path: string): [string, unknown] | null {
   return [wrapperKey, value[wrapperKey]]
 }
 
+// Upstream null merges and appends as if the field were absent, so a partial
+// object can fill in a field upstream left empty (such as check: null).
 function append(upstream: Upstream, entries: unknown[], path: string): unknown[] {
-  if (upstream === ABSENT) return structuredClone(entries)
+  if (upstream === ABSENT || upstream === null) return structuredClone(entries)
   if (!Array.isArray(upstream)) throw new InvalidOverlayError(`${path}: cannot append a list to a ${kindOf(upstream)} value`)
   return [...structuredClone(upstream), ...structuredClone(entries)]
 }
 
 function mergeObject(upstream: Upstream, overlayObject: JsonObject, path: string): JsonObject {
   let merged: JsonObject
-  if (upstream === ABSENT) {
+  if (upstream === ABSENT || upstream === null) {
     merged = {}
   } else if (isObject(upstream)) {
     merged = structuredClone(upstream)
   } else {
-    const hint = upstream === null ? ' (use $replace to set an object where upstream has null)' : ''
-    throw new InvalidOverlayError(`${path}: cannot merge an object into a ${kindOf(upstream)} value${hint}`)
+    throw new InvalidOverlayError(`${path}: cannot merge an object into a ${kindOf(upstream)} value`)
   }
   for (const [key, value] of Object.entries(overlayObject)) {
     if (key.startsWith('$')) throw new InvalidOverlayError(`${path}: key ${key} starts with $, which is reserved for wrappers`)
@@ -154,11 +186,13 @@ function protectedFieldError(fields: JsonObject): string | null {
 }
 
 // Pure: returns a new object and never changes its inputs. With knownFields,
-// top-level fields outside it are skipped; protected fields are rejected
-// either way.
+// top-level fields outside it are skipped; protected and reserved keys are
+// rejected either way.
 export function applyOverlayFields<T>(target: T, fields: Record<string, unknown>, knownFields?: ReadonlySet<string>): T {
   const protectedError = protectedFieldError(fields)
   if (protectedError) throw new InvalidOverlayError(protectedError)
+  const reservedError = reservedKeyError(fields, 'fields')
+  if (reservedError) throw new InvalidOverlayError(reservedError)
   const source = target as JsonObject
   const merged = structuredClone(source)
   for (const [fieldName, value] of Object.entries(fields)) {
@@ -169,30 +203,54 @@ export function applyOverlayFields<T>(target: T, fields: Record<string, unknown>
 }
 
 // An index entry has no odv, only has_odv, so it is stood in for by an
-// empty object or null; that keeps type mismatches the same as on the full
-// rule. section and has_odv are derived, so they are recomputed.
+// empty object or null. An odv the rule did not have must arrive complete,
+// or has_odv would promise a value the rule cannot supply. section and
+// has_odv are derived, so they are recomputed.
 export function applyOverlayToIndexEntry(entry: IndexEntry, fields: Record<string, unknown>): IndexEntry {
   const seeded = { ...entry, odv: entry.has_odv ? {} : null }
   const { odv, ...merged } = applyOverlayFields(seeded, fields, INDEX_OVERLAY_FIELDS)
+  if (!entry.has_odv && odv !== null) {
+    const missing = ODV_REQUIRED_KEYS.filter((key) => !isObject(odv) || !Object.hasOwn(odv, key))
+    if (missing.length > 0) {
+      throw new InvalidOverlayError(`odv: a rule without an odv needs a complete one, missing ${missing.join(', ')}`)
+    }
+  }
   const sectionPath: unknown = merged.section_path
   const section = Array.isArray(sectionPath) && sectionPath.length > 0 ? sectionPath[0] : merged.section
   return { ...merged, section, has_odv: odv !== null }
 }
 
-function targetFor(overlay: Overlay, ruleId: string): OverlayTarget | undefined {
+// The UI's single-overlay steps: merge, then check the result's shape so
+// nothing malformed reaches rendering or generation.
+export function applyOverlayToCheckedIndexEntry(entry: IndexEntry, fields: Record<string, unknown>): IndexEntry {
+  const merged = applyOverlayToIndexEntry(entry, fields)
+  const problem = indexEntryShapeProblem(merged)
+  if (problem) throw new InvalidOverlayError(problem)
+  return merged
+}
+
+export function applyOverlayToRule(rule: Rule, fields: Record<string, unknown>): Rule {
+  const merged = applyOverlayFields(rule, fields, OVERLAYABLE_RULE_FIELDS)
+  const problem = ruleShapeProblem(merged)
+  if (problem) throw new InvalidOverlayError(problem)
+  return merged
+}
+
+export function targetFor(overlay: Overlay, ruleId: string): OverlayTarget | undefined {
   return overlay.targets.find((target) => target.rule === ruleId)
 }
 
-// An overlay that does not fit (load-time checks against the index entries
-// should already have dropped it) is skipped rather than breaking the table.
-export function applyOverlaysToIndexEntry(entry: IndexEntry, overlays: Overlay[]): IndexEntry {
+// Load-time checks should already have dropped an overlay that does not fit;
+// one that still fails is skipped and reported rather than breaking the table.
+export function applyOverlaysToIndexEntry(entry: IndexEntry, overlays: Overlay[], onSkipped?: OnOverlaySkipped): IndexEntry {
   let merged = entry
   for (const overlay of overlays) {
     if (!targetFor(overlay, entry.id)) continue
     try {
-      merged = applyOverlayToIndexEntry(merged, overlay.fields)
+      merged = applyOverlayToCheckedIndexEntry(merged, overlay.fields)
     } catch (error) {
       if (!(error instanceof InvalidOverlayError)) throw error
+      onSkipped?.({ overlayId: overlay.id, message: `${entry.id}: ${error.message}` })
     }
   }
   return merged
@@ -209,10 +267,10 @@ export function applyOverlays(rule: Rule, overlays: Overlay[], release: string):
     const target = targetFor(overlay, rule.id)
     if (!target) continue
     try {
-      merged = applyOverlayFields(merged, overlay.fields, OVERLAYABLE_RULE_FIELDS)
+      merged = applyOverlayToRule(merged, overlay.fields)
     } catch (error) {
       if (!(error instanceof InvalidOverlayError)) throw error
-      skipped.push({ overlayId: overlay.id, message: error.message })
+      skipped.push({ overlayId: overlay.id, message: `${rule.id}: ${error.message}` })
       continue
     }
     const application = { overlayId: overlay.id, release: target.release, stale: target.release !== release }
@@ -303,6 +361,8 @@ function overlayProblem(value: unknown): string | null {
 
   const protectedError = protectedFieldError(value.fields)
   if (protectedError) return protectedError
+  const reservedError = reservedKeyError(value.fields, 'fields')
+  if (reservedError) return reservedError
   for (const [fieldName, fieldValue] of Object.entries(value.fields)) {
     const shapeError = wrapperShapeError(fieldValue, fieldName)
     if (shapeError) return shapeError

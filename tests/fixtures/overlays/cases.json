@@ -236,10 +236,16 @@
       "error": true
     },
     {
-      "name": "$append onto null is a type mismatch",
-      "rule": { "id": "x.rule", "check": null },
-      "fields": { "check": { "$append": ["more"] } },
-      "error": true
+      "name": "$append onto null appends as onto an absent field",
+      "rule": { "id": "x.rule", "tags": null },
+      "fields": { "tags": { "$append": ["more"] } },
+      "expected": { "id": "x.rule", "tags": ["more"] }
+    },
+    {
+      "name": "a list onto null appends as onto an absent field",
+      "rule": { "id": "x.rule", "tags": null },
+      "fields": { "tags": ["more"] },
+      "expected": { "id": "x.rule", "tags": ["more"] }
     },
     {
       "name": "a list onto an object is a type mismatch",
@@ -266,16 +272,39 @@
       "error": true
     },
     {
-      "name": "an object onto null is a type mismatch (use $replace)",
+      "name": "an object onto null merges as onto an absent field",
       "rule": { "id": "asd_ism.ism-1622", "check": null },
       "fields": { "check": { "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } },
-      "error": true
+      "expected": {
+        "id": "asd_ism.ism-1622",
+        "check": { "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }
+      }
     },
     {
-      "name": "$merge onto null is a type mismatch",
+      "name": "$merge onto null merges as onto an absent field",
       "rule": { "id": "x.rule", "odv": null },
       "fields": { "odv": { "$merge": { "recommended": 5 } } },
-      "error": true
+      "expected": { "id": "x.rule", "odv": { "recommended": 5 } }
+    },
+    {
+      "name": "an object merges into a nested null",
+      "rule": {
+        "id": "x.rule",
+        "check": { "default": null, "by_version": {} },
+        "remediation": { "default": { "shell": null, "additional_info": null }, "mobileconfig_info": null }
+      },
+      "fields": {
+        "check": { "default": { "shell": "echo check", "result": null, "additional_info": null } },
+        "remediation": { "mobileconfig_info": { "com.apple.example": { "Key": true } } }
+      },
+      "expected": {
+        "id": "x.rule",
+        "check": { "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} },
+        "remediation": {
+          "default": { "shell": null, "additional_info": null },
+          "mobileconfig_info": { "com.apple.example": { "Key": true } }
+        }
+      }
     },
     {
       "name": "$merge onto a list is a type mismatch",
@@ -311,6 +340,30 @@
       "name": "the protected field schema_version cannot be overlaid",
       "rule": { "id": "x.rule", "schema_version": 4 },
       "fields": { "schema_version": 5 },
+      "error": true
+    },
+    {
+      "name": "a __proto__ field is invalid",
+      "rule": { "id": "x.rule" },
+      "fields": { "__proto__": { "polluted": true } },
+      "error": true
+    },
+    {
+      "name": "a nested __proto__ key is invalid",
+      "rule": { "id": "x.rule", "references": {} },
+      "fields": { "references": { "nist": { "__proto__": { "polluted": true } } } },
+      "error": true
+    },
+    {
+      "name": "a constructor key inside a $replace value is invalid",
+      "rule": { "id": "x.rule", "references": {} },
+      "fields": { "references": { "$replace": { "constructor": { "prototype": {} } } } },
+      "error": true
+    },
+    {
+      "name": "a prototype key inside an appended entry is invalid",
+      "rule": { "id": "x.rule", "applicability": [] },
+      "fields": { "applicability": [{ "prototype": 1 }] },
       "error": true
     },
     {
@@ -471,7 +524,7 @@
       }
     },
     {
-      "name": "a partial odv merge onto a rule without one is a type mismatch",
+      "name": "a partial odv onto a rule without one is invalid, since has_odv would promise a value",
       "entry": {
         "id": "x.rule",
         "title": "Rule",
@@ -486,6 +539,34 @@
       },
       "fields": { "odv": { "recommended": 7 } },
       "error": true
+    },
+    {
+      "name": "a complete odv object onto a rule without one turns has_odv on",
+      "entry": {
+        "id": "x.rule",
+        "title": "Rule",
+        "file": "rules/rule.json",
+        "section": "os",
+        "section_path": ["os"],
+        "assessment": { "status": "automated", "manual_reason": null },
+        "architecture": null,
+        "applicability": [],
+        "tags": [],
+        "has_odv": false
+      },
+      "fields": { "odv": { "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {} } },
+      "expected": {
+        "id": "x.rule",
+        "title": "Rule",
+        "file": "rules/rule.json",
+        "section": "os",
+        "section_path": ["os"],
+        "assessment": { "status": "automated", "manual_reason": null },
+        "architecture": null,
+        "applicability": [],
+        "tags": [],
+        "has_odv": true
+      }
     },
     {
       "name": "an overlay cannot set the derived index fields directly",

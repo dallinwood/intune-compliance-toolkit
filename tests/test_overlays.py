@@ -188,8 +188,6 @@ def test_overlay_warnings_are_reported_without_failing_under_warnings_as_errors(
     with pytest.warns(OverlayWarning):
         for message in overlay_warnings:
             warnings.warn(message, OverlayWarning)
-    # Emitted again outside pytest.warns so the run's warnings summary shows it.
-    warnings.warn(overlay_warnings[0], OverlayWarning)
 
 
 def test_merged_index_entry_is_checked_against_the_index_schema(tmp_path):

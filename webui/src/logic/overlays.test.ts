@@ -2,6 +2,9 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { IndexEntry, Rule } from '../types/library'
 import {
+  FIELD_KINDS,
+  INDEX_OVERLAY_FIELDS,
+  PROTECTED_FIELDS,
   applyOverlayFields,
   applyOverlays,
   applyOverlaysToIndexEntry,
@@ -128,6 +131,7 @@ describe('parseOverlay', () => {
     ['a title that is a list', overlayFile({ fields: { title: ['x'] } })],
     ['references that are a list', overlayFile({ fields: { references: ['x'] } })],
     ['a check that is a string', overlayFile({ fields: { check: 'echo' } })],
+    ['a __proto__ key', JSON.parse('{"schema_version":1,"id":"proto","targets":[{"rule":"asd_ism.ism-1622","release":"v1"}],"fields":{"references":{"__proto__":{"x":1}}}}')],
   ]
 
   it.each(invalidFiles)('rejects %s, naming the file', (_description, value) => {
@@ -200,14 +204,40 @@ describe('applyOverlays', () => {
   it('skips an overlay that does not fit this rule and still applies the others', () => {
     const result = applyOverlays(
       ism1622Rule(),
-      [overlay('object-onto-null', { check: { default: null, by_version: {} } }), overlay('fine', { tags: ['a'] })],
+      [overlay('append-to-title', { title: { $append: ['x'] } }), overlay('fine', { tags: ['a'] })],
       CURRENT_RELEASE,
     )
 
-    expect(result.rule.check).toBeNull()
+    expect(result.rule.title).toBe('Rule ism-1622')
     expect(result.rule.tags).toEqual(['a'])
-    expect(result.skipped).toEqual([{ overlayId: 'object-onto-null', message: expect.stringContaining('check') }])
+    expect(result.skipped).toEqual([{ overlayId: 'append-to-title', message: expect.stringContaining('title') }])
     expect(result.applied.map((applied) => applied.overlayId)).toEqual(['fine'])
+  })
+
+  it('fills a null check from a complete partial object', () => {
+    const entry = { shell: 'echo ok', result: null, additional_info: null }
+    const result = applyOverlays(ism1622Rule(), [overlay('check', { check: { default: entry, by_version: {} } })], CURRENT_RELEASE)
+
+    expect(result.skipped).toEqual([])
+    expect(result.rule.check).toEqual({ default: entry, by_version: {} })
+  })
+
+  const malformedResults: [string, Record<string, unknown>, Partial<Rule>][] = [
+    ['an applicability entry without benchmarks', { applicability: [{ target: null, version: null }] }, {}],
+    ['a remediation without its required keys', { remediation: { $replace: {} } }, {}],
+    ['a check without by_version', { check: { $replace: { default: { shell: 'echo', result: null, additional_info: null } } } }, {}],
+    ['a by_version check that is null', { check: { by_version: { '14.0': null } } }, { check: { default: null, by_version: {} } }],
+    ['a tag that is not a string', { tags: [3] }, {}],
+    ['an incomplete odv', { odv: { recommended: 5 } }, {}],
+    ['an assessment with an unknown status', { assessment: { status: 'sometimes' } }, {}],
+  ]
+
+  it.each(malformedResults)('skips an overlay whose result has %s', (_description, fields, overrides) => {
+    const rule = ism1622Rule(overrides)
+    const result = applyOverlays(rule, [overlay('malformed', fields)], CURRENT_RELEASE)
+
+    expect(result.rule).toEqual(rule)
+    expect(result.skipped.map((skipped) => skipped.overlayId)).toEqual(['malformed'])
   })
 
   it('adding a check leaves the assessment alone', () => {
@@ -249,8 +279,33 @@ describe('applyOverlaysToIndexEntry', () => {
     expect(applyOverlaysToIndexEntry(entry, [overlay('elsewhere', { title: 'x' }, CURRENT_RELEASE, 'mscp.other_rule')])).toBe(entry)
   })
 
-  it('skips an overlay that does not fit the entry', () => {
-    const result = applyOverlaysToIndexEntry(entry, [overlay('bad', { tags: { $merge: {} } }), overlay('good', { tags: ['a'] })])
+  it('skips and reports an overlay that does not fit the entry', () => {
+    const skipped: string[] = []
+    const result = applyOverlaysToIndexEntry(
+      entry,
+      [overlay('bad', { tags: { $merge: {} } }), overlay('bad-shape', { applicability: [{ target: null }] }), overlay('good', { tags: ['a'] })],
+      (skippedOverlay) => skipped.push(skippedOverlay.overlayId),
+    )
+
     expect(result.tags).toEqual(['a'])
+    expect(skipped).toEqual(['bad', 'bad-shape'])
+  })
+})
+
+describe('overlayable fields follow the v4 schemas', () => {
+  const schemaProperties = (name: string, pick: (schema: any) => Record<string, unknown>) =>
+    Object.keys(pick(JSON.parse(readFileSync(new URL(`../../../baselines/_${name}.schema.json`, import.meta.url), 'utf8')))).sort()
+
+  it('FIELD_KINDS lists every rule field except the protected ones', () => {
+    const ruleFields = schemaProperties('rule', (schema) => schema.properties).filter((field) => !PROTECTED_FIELDS.has(field))
+    expect(Object.keys(FIELD_KINDS).sort()).toEqual(ruleFields)
+  })
+
+  it('INDEX_OVERLAY_FIELDS lists every index field an overlay can set, plus odv standing in for has_odv', () => {
+    const derivedOrProtected = new Set(['id', 'file', 'section', 'has_odv'])
+    const indexFields = schemaProperties('index', (schema) => schema.properties.rules.items.properties).filter(
+      (field) => !derivedOrProtected.has(field),
+    )
+    expect([...INDEX_OVERLAY_FIELDS].sort()).toEqual([...indexFields, 'odv'].sort())
   })
 })

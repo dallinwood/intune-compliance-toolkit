@@ -146,7 +146,15 @@ Put each overlay in its own `overlays/<name>.json`:
   "fields": {
     "discussion": { "$replace": "Constrained Language Mode limits PowerShell to a safe subset of the language." },
     "references": { "microsoft": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_language_modes"] },
-    "tags": ["powershell"]
+    "tags": ["powershell"],
+    "check": {
+      "default": {
+        "shell": "$ExecutionContext.SessionState.LanguageMode",
+        "result": { "type": "string", "value": "ConstrainedLanguage" },
+        "additional_info": null
+      },
+      "by_version": {}
+    }
   }
 }
 ```
@@ -169,11 +177,19 @@ Merge rules, applied field by field:
 - A wrapper overrides the default: `{ "$replace": value }`,
   `{ "$append": [...] }` or `{ "$merge": {...} }`. A wrapper has exactly
   one key.
-- A type mismatch is an error, for example appending to a string. Upstream
-  `null` is not an object, so setting a check on a rule whose `check` is
-  `null` needs `{ "check": { "$replace": { "default": ..., "by_version": {} } } }`.
+- An upstream `null` counts as absent, at any depth: an object merges
+  onto it as onto `{}` and a list appends to it as to `[]`. That is how the
+  example above fills in ISM-1622's `check: null`. Give the whole shape
+  (`default` with `shell`, `result` and `additional_info`, plus
+  `by_version`), since a half-filled check is rejected.
+- A type mismatch is an error, for example appending to a string. Keys
+  named `__proto__`, `constructor` or `prototype` are not allowed.
 - Several overlays on one rule apply in file name order; the later file
-  wins for single values. Adding a `check` does not change `assessment`.
+  wins for single values.
+- Adding a `check` does not change `assessment`: an ISM control stays
+  "Manual - no check" in the table and the attestation report until the
+  overlay also sets `assessment` (for example
+  `{ "status": "automated", "manual_reason": null }`).
 
 Publishing is automatic: `bun run dev` and `bun run build` copy
 `overlays/` into the site with a generated `_manifest.json`. Don't write or
@@ -185,8 +201,9 @@ protected field, a type mismatch, a target rule missing from `baselines/`,
 or a merged rule that breaks the rule schema fails; an unknown field name or
 two overlays setting the same value is reported as a warning.
 
-In the web UI an overlay that fails the same shape and type checks is
-skipped with a warning, and the other overlays still apply. An overlaid
+In the web UI an overlay that fails the shape and type checks, or would
+leave any rule it targets malformed, is skipped for every target with a
+warning naming the file and the rule; the other overlays still apply. An overlaid
 field carries a **Custom** tag in the rule details (fields with no section
 of their own are listed on a `Custom:` line), and an overlay written for an
 older release shows a note asking you to review it.

@@ -36,9 +36,13 @@ REPLACE_WRAPPER = "$replace"
 APPEND_WRAPPER = "$append"
 MERGE_WRAPPER = "$merge"
 WRAPPER_KEYS = frozenset({REPLACE_WRAPPER, APPEND_WRAPPER, MERGE_WRAPPER})
+# A JavaScript object with these keys would reach its prototype, so the web
+# UI's copy of the merge rejects them; this copy matches it.
+RESERVED_KEYS = frozenset({"__proto__", "constructor", "prototype"})
 
 # Index entries are copies of these rule fields; every other overlay field
 # only exists on the full rule and is ignored at index level.
+ODV_REQUIRED_KEYS = frozenset({"datatype", "description", "validation", "recommended", "by_benchmark"})
 INDEX_OVERLAY_FIELDS = frozenset({"title", "section_path", "assessment", "architecture", "applicability", "tags"})
 
 
@@ -86,8 +90,26 @@ def _wrapper_of(value: dict, path: str) -> tuple[str, object] | None:
     return wrapper_key, value[wrapper_key]
 
 
+def _reserved_key_error(value: object, path: str) -> str | None:
+    if isinstance(value, list):
+        for position, item in enumerate(value):
+            problem = _reserved_key_error(item, f"{path}[{position}]")
+            if problem:
+                return problem
+    elif isinstance(value, dict):
+        for key, child in value.items():
+            if key in RESERVED_KEYS:
+                return f"{path}: key {key!r} is not allowed"
+            problem = _reserved_key_error(child, f"{path}.{key}")
+            if problem:
+                return problem
+    return None
+
+
+# Upstream null merges and appends as if the field were absent, so a partial
+# object can fill in a field upstream left empty (such as check: null).
 def _append(upstream: object, entries: list, path: str) -> list:
-    if upstream is ABSENT:
+    if upstream is ABSENT or upstream is None:
         return copy.deepcopy(entries)
     if not isinstance(upstream, list):
         raise InvalidOverlay(f"{path}: cannot append a list to a {_kind_of(upstream)} value")
@@ -95,13 +117,12 @@ def _append(upstream: object, entries: list, path: str) -> list:
 
 
 def _merge_object(upstream: object, overlay_object: dict, path: str) -> dict:
-    if upstream is ABSENT:
+    if upstream is ABSENT or upstream is None:
         merged: dict = {}
     elif isinstance(upstream, dict):
         merged = copy.deepcopy(upstream)
     else:
-        hint = " (use $replace to set an object where upstream has null)" if upstream is None else ""
-        raise InvalidOverlay(f"{path}: cannot merge an object into a {_kind_of(upstream)} value{hint}")
+        raise InvalidOverlay(f"{path}: cannot merge an object into a {_kind_of(upstream)} value")
     for key, value in overlay_object.items():
         if key.startswith("$"):
             raise InvalidOverlay(f"{path}: key {key!r} starts with $, which is reserved for wrappers")
@@ -138,6 +159,10 @@ def apply_overlay_fields(rule: dict, fields: dict, known_fields: set[str] | None
     protected = sorted(PROTECTED_FIELDS & fields.keys())
     if protected:
         raise InvalidOverlay(f"protected field(s) cannot be overlaid: {', '.join(protected)}")
+    for field_name, value in fields.items():
+        problem = _reserved_key_error({field_name: value}, "fields")
+        if problem:
+            raise InvalidOverlay(problem)
     merged = copy.deepcopy(rule)
     for field_name, value in fields.items():
         if known_fields is not None and field_name not in known_fields:
@@ -150,13 +175,18 @@ def apply_overlay_to_index_entry(entry: dict, fields: dict) -> dict:
     """Apply an overlay to an index entry, then recompute the derived fields.
 
     An index entry has no odv, only has_odv, so it is stood in for by an
-    empty object or null; that keeps type mismatches the same as on the
-    full rule.
+    empty object or null. An odv the rule did not have must arrive complete,
+    or has_odv would promise a value the rule cannot supply.
     """
     seeded = copy.deepcopy(entry)
     seeded["odv"] = {} if entry["has_odv"] else None
     merged = apply_overlay_fields(seeded, fields, INDEX_OVERLAY_FIELDS | {"odv"})
-    merged["has_odv"] = merged.pop("odv") is not None
+    odv = merged.pop("odv")
+    if not entry["has_odv"] and odv is not None:
+        missing = sorted(ODV_REQUIRED_KEYS - odv.keys()) if isinstance(odv, dict) else sorted(ODV_REQUIRED_KEYS)
+        if missing:
+            raise InvalidOverlay(f"odv: a rule without an odv needs a complete one, missing {', '.join(missing)}")
+    merged["has_odv"] = odv is not None
     section_path = merged.get("section_path")
     if isinstance(section_path, list) and section_path:
         merged["section"] = section_path[0]
@@ -241,6 +271,9 @@ def structure_errors(overlay: object) -> list[str]:
             protected = sorted(PROTECTED_FIELDS & fields.keys())
             if protected:
                 errors.append(f"protected field(s) cannot be overlaid: {', '.join(protected)}")
+            reserved = _reserved_key_error(fields, "fields")
+            if reserved:
+                errors.append(reserved)
     return errors
 
 

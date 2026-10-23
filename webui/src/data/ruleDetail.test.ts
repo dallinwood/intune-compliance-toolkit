@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { inlineRule } from '../logic/testRuleFixtures'
 import { fetchOverlaidRule, fetchRule, setRuleOverlays } from './ruleDetail'
 
 function jsonResponse(body: unknown): Response {
@@ -78,7 +79,7 @@ describe('fetchRule with overlays', () => {
   })
 
   it('returns the overlaid rule to every caller and the provenance to the details', async () => {
-    const rule = { id: 'mscp.overlaid_rule', title: 'Upstream', tags: ['a'], source: { release_tag: 'release_27.0' } }
+    const rule = inlineRule({ upstreamId: 'overlaid_rule', releaseTag: 'release_27.0', overrides: { title: 'Upstream', tags: ['a'] } })
     vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(rule)))
     setRuleOverlays([
       { id: 'current', targets: [{ rule: rule.id, release: 'release_27.0' }], fields: { tags: ['b'] } },

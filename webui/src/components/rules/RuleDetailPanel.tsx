@@ -1,4 +1,5 @@
-import { useRule, useStoredOdvValue } from '@/hooks/useRule'
+import { Component, type ReactNode } from 'react'
+import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
 import { termLabel } from '../../logic/vocabulary'
 import { displayWithOdv, odvSubstitutionMode, usableOdvValue, validateOdvValue } from '../../logic/odv'
 import type { OverlaidRule } from '../../logic/overlays'
@@ -29,16 +30,57 @@ function revisionLine(source: RuleSource): string | null {
   return parts.length > 0 ? parts.join(', ') : null
 }
 
-export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
-  const ruleState = useRule(ruleRef)
+// No error boundary sits higher up, so a render failure here would blank the
+// whole app; this one keeps it to the panel.
+class DetailErrorBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
 
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children
+  }
+}
+
+export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
+  const failedEntirely = <p className={`${PANEL_CLASS} text-red-600`}>These details could not be displayed.</p>
+  return (
+    <DetailErrorBoundary
+      fallback={
+        <DetailErrorBoundary fallback={failedEntirely}>
+          <ImportedRuleDetail ruleRef={ruleRef} />
+        </DetailErrorBoundary>
+      }
+    >
+      <OverlaidRuleDetail ruleRef={ruleRef} />
+    </DetailErrorBoundary>
+  )
+}
+
+function OverlaidRuleDetail({ ruleRef }: { ruleRef: RuleRef }) {
+  return <RuleDetailFor ruleRef={ruleRef} ruleState={useRule(ruleRef)} />
+}
+
+function ImportedRuleDetail({ ruleRef }: { ruleRef: RuleRef }) {
+  return (
+    <RuleDetailFor
+      ruleRef={ruleRef}
+      ruleState={useImportedRule(ruleRef)}
+      notice="Custom content for this rule could not be displayed, so it is shown as imported."
+    />
+  )
+}
+
+function RuleDetailFor({ ruleRef, ruleState, notice }: { ruleRef: RuleRef; ruleState: RuleLoadState; notice?: string }) {
   if (ruleState.status === 'loading') {
     return <p className={`${PANEL_CLASS} text-slate-500`}>Loading details…</p>
   }
   if (ruleState.status === 'error') {
     return <p className={`${PANEL_CLASS} text-red-600`}>Failed to load: {ruleState.message}</p>
   }
-  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} />
+  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} notice={notice} />
 }
 
 // Overlaid top-level fields shown with a Custom tag on their own section;
@@ -55,7 +97,7 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
   const vocabularyIndex = useVocabularyIndex()
   const sourceLabel = termLabel(vocabularyIndex, 'sources', rule.source.name)
   const staleOverlays = overlaid.applied.filter((application) => application.stale)
-  if (staleOverlays.length === 0 && overlaid.skipped.length === 0) return null
+  if (staleOverlays.length === 0) return null
 
   return (
     <div className="space-y-1 text-xs text-amber-800">
@@ -65,16 +107,11 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
           {rule.source.release_tag}. Review it for accuracy.
         </p>
       ))}
-      {overlaid.skipped.map((skipped) => (
-        <p key={skipped.overlayId} className="break-words">
-          Custom content ({skipped.overlayId}) could not be applied to this rule and was skipped: {skipped.message}
-        </p>
-      ))}
     </div>
   )
 }
 
-function LoadedRuleDetail({ ruleRef, rule, overlaid }: { ruleRef: RuleRef; rule: Rule; overlaid: OverlaidRule }) {
+function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRef; rule: Rule; overlaid: OverlaidRule; notice?: string }) {
   const storedValue = useStoredOdvValue(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
@@ -97,6 +134,7 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid }: { ruleRef: RuleRef; rule:
 
   return (
     <div className={`space-y-4 ${PANEL_CLASS}`}>
+      {notice && <p className="text-xs break-words text-amber-800">{notice}</p>}
       <OverlayNotes overlaid={overlaid} rule={rule} />
 
       {isCustom('title') && (
