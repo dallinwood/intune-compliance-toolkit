@@ -181,7 +181,7 @@ function RowCheckbox({ ruleId, checked, onCheckedChange }: RowCheckboxProps) {
   const labelId = useId()
   return (
     <>
-      <span id={labelId} className="sr-only">
+      <span id={labelId} hidden>
         {`Select ${ruleId}`}
       </span>
       <Checkbox

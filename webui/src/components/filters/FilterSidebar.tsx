@@ -253,11 +253,18 @@ function ScrollIndicator({ direction, visible }: { direction: 'up' | 'down'; vis
   )
 }
 
+// The group's accessible name is what tells two checkboxes both labelled
+// "None" apart (Target and Version each have one).
 function FacetGroup({ title, children }: { title: string; children: ReactNode }) {
+  const headingId = useId()
   return (
     <div className="mb-4">
-      <h2 className="mb-1 text-xs font-semibold tracking-wide text-slate-400 uppercase">{title}</h2>
-      <div>{children}</div>
+      <h2 id={headingId} className="mb-1 text-xs font-semibold tracking-wide text-slate-400 uppercase">
+        {title}
+      </h2>
+      <div role="group" aria-labelledby={headingId}>
+        {children}
+      </div>
     </div>
   )
 }

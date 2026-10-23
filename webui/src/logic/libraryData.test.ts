@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Manifest, Rule, RuleIndex } from '../types/library'
 import { odvSubstitutionMode, validateOdvValue, type OdvSubstitutionMode } from './odv'
+import { committedVocabularyIndex } from './testVocabularyFixtures'
 
 const BASELINES_DIRECTORY = new URL('../../../baselines/', import.meta.url)
 
@@ -66,20 +67,22 @@ const PINNED_CHECK_SHELLS: Record<string, Record<string, string>> = {
 }
 
 const manifest = readBaselinesJson<Manifest>('_manifest.json')
+const vocabularyIndex = committedVocabularyIndex()
 
 describe('committed library data', () => {
   for (const source of manifest.sources) {
     const index = readBaselinesJson<RuleIndex>(source.index_path)
     const indexDirectory = source.index_path.slice(0, source.index_path.lastIndexOf('/') + 1)
-    const rulesWithOdv = index.rules
-      .map((entry) => readBaselinesJson<Rule>(`${indexDirectory}${entry.file}`))
-      .filter((rule) => rule.odv !== null)
+    const rules = index.rules.map((entry) => readBaselinesJson<Rule>(`${indexDirectory}${entry.file}`))
+    const rulesWithOdv = rules.filter((rule) => rule.odv !== null)
 
     describe(source.name, () => {
+      it('has a label in the sources vocabulary, so its per-rule credit never shows a raw code', () => {
+        expect(vocabularyIndex.sources.entryByTerm.has(source.name)).toBe(true)
+      })
+
       it('has a non-empty section_path on every rule', () => {
-        const rulesWithoutSectionPath = index.rules
-          .filter((entry) => readBaselinesJson<Rule>(`${indexDirectory}${entry.file}`).section_path.length === 0)
-          .map((entry) => entry.id)
+        const rulesWithoutSectionPath = rules.filter((rule) => rule.section_path.length === 0).map((rule) => rule.id)
         expect(rulesWithoutSectionPath).toEqual([])
       })
 

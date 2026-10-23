@@ -51,6 +51,7 @@ export function buildManualAttestationMarkdown(entries: ManualAttestationEntry[]
       if (entry.additionalInfo) lines.push(indentContinuation(entry.additionalInfo), '')
     }
   }
-  if (entries.length > 0) lines.push('---', '', ...attributionLines(entries, sources))
+  const attributions = attributionLines(entries, sources)
+  if (attributions.length > 0) lines.push('---', '', ...attributions)
   return lines.join('\n') + '\n'
 }

@@ -133,6 +133,13 @@ ${ISM_ATTRIBUTION}
     expect(markdown).not.toContain('NIST macOS Security Compliance Project')
   })
 
+  it('has no bare separator when no entry matches a source', () => {
+    const markdown = buildManualAttestationMarkdown([{ id: 'unknown.rule_x', title: 'X', reason: 'Y', additionalInfo: null }], SOURCES)
+
+    expect(markdown).not.toContain('---')
+    expect(markdown).not.toContain('Rule content from')
+  })
+
   it('has no attribution block when there are no entries', () => {
     const markdown = buildManualAttestationMarkdown([], SOURCES)
 

@@ -69,20 +69,32 @@ describe('buildBundleFiles', () => {
   })
 
   it('credits the sources it is given in manual-attestation.md', () => {
-    const source = {
-      name: 'mscp',
-      display_name: 'NIST macOS Security Compliance Project',
-      release_tag: 'release_27.0',
+    const sourceNamed = (name: string, displayName: string, repositoryUrl: string) => ({
+      name,
+      display_name: displayName,
+      release_tag: 'release_1',
       commit_sha: 'abc',
       retrieved_date: '2026-10-20',
-      repository_url: 'https://github.com/usnistgov/macos_security',
-      license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'NIST', modified: true as const },
-      index_path: 'mscp/_index.json',
+      repository_url: repositoryUrl,
+      license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'Someone', modified: true as const },
+      index_path: `${name}/_index.json`,
       rule_count: 1,
-    }
-    const [report] = buildBundleFiles([], [{ id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null }], [source])
+    })
+    const sources = [
+      sourceNamed('mscp', 'NIST macOS Security Compliance Project', 'https://github.com/usnistgov/macos_security'),
+      sourceNamed('asd_ism', 'ASD Information Security Manual', 'https://github.com/AustralianCyberSecurityCentre/ism-oscal'),
+    ]
+    const [report] = buildBundleFiles(
+      [],
+      [
+        { id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null },
+        { id: 'asd_ism.ism-1667', title: 'Z', reason: 'Y', additionalInfo: null },
+      ],
+      sources,
+    )
 
     expect(report.content).toContain('Rule content from the NIST macOS Security Compliance Project')
+    expect(report.content).toContain('Rule content from the ASD Information Security Manual')
   })
 
   it('throws rather than overwrite a file when two chunks would produce the same name', () => {

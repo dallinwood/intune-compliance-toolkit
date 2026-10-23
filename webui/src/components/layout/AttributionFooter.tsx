@@ -2,8 +2,8 @@ import type { ManifestSource } from '../../types/library'
 
 const LINK_CLASS = 'underline hover:text-slate-700'
 
-// Required by the CC BY 4.0 licence of the mSCP content: credit, a link to
-// the licence, and a note that the content was modified.
+// Each source's CC BY 4.0 licence requires credit, a link to the licence, and
+// a note that the content was modified.
 export function AttributionFooter({ sources }: { sources: ManifestSource[] }) {
   return (
     <footer className="border-t border-slate-200 px-4 py-2 text-xs text-slate-500">

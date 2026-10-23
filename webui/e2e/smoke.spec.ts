@@ -164,12 +164,11 @@ test('Version "None" and Target "None" filter to the rules without a version or 
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
+  await expect(page.getByRole('group', { name: 'Target', exact: true })).toBeVisible()
+  await expect(page.getByRole('group', { name: 'Version', exact: true })).toBeVisible()
+
   const facetOptionNamedNone = (facetTitle: string) =>
-    page
-      .getByTestId('sidebar-scroll-area')
-      .getByRole('heading', { name: facetTitle, exact: true })
-      .locator('..')
-      .getByRole('checkbox', { name: 'None', exact: true })
+    page.getByRole('group', { name: facetTitle, exact: true }).getByRole('checkbox', { name: 'None', exact: true })
 
   await facetOptionNamedNone('Version').click()
   await expect(ruleCount(page)).toHaveText('1145 of 1493 rules')
@@ -200,8 +199,7 @@ test('an ISM benchmark filters to ISM rules and its benchmarks show in the table
   expect(ruleIds.length).toBeGreaterThan(0)
   expect(ruleIds.filter((ruleId) => !ruleId.startsWith('ism-'))).toEqual([])
 
-  const versionFacet = page.getByTestId('sidebar-scroll-area').getByRole('heading', { name: 'Version', exact: true }).locator('..')
-  await expect(versionFacet.getByRole('checkbox', { name: 'None', exact: true })).toBeEnabled()
+  await expect(page.getByRole('group', { name: 'Version', exact: true }).getByRole('checkbox', { name: 'None', exact: true })).toBeEnabled()
 })
 
 test('an ISM row lists its benchmarks in the benchmark column', async ({ page }) => {
@@ -301,6 +299,7 @@ test('searching an ISM control id finds exactly that control', async ({ page }) 
   await page.goto('/')
   await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
   await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+  await expect(page.getByRole('checkbox', { name: 'Select ism-1667' })).toBeVisible()
 })
 
 test('an ISM control flows to the manual attestation report', async ({ page }) => {

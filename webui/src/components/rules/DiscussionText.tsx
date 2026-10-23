@@ -14,12 +14,16 @@ function InlineText({ text, format }: { text: string; format: DiscussionFormat }
             {segment.text}
           </code>
         )
-      case 'link':
+      case 'link': {
+        // Only a bare URL has no break opportunities of its own; prose
+        // should wrap at word boundaries.
+        const wrapClass = segment.text === segment.href ? 'break-all' : 'break-words'
         return (
-          <a key={segmentIndex} className="break-all text-blue-600 underline" href={segment.href} target="_blank" rel="noreferrer">
+          <a key={segmentIndex} className={`${wrapClass} text-blue-600 underline`} href={segment.href} target="_blank" rel="noreferrer">
             {segment.text}
           </a>
         )
+      }
       default:
         return <span key={segmentIndex}>{segment.text}</span>
     }

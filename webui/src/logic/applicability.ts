@@ -10,8 +10,9 @@ export function versionKey(target: string, version: string): string {
 }
 
 // Stand-ins for "no target" and "no version" in filter state and scope keys.
-// Version keys always contain a space and targets are display words, so
-// neither can collide with a real value. Their label is applied in code, not
+// Version keys always contain a space, so NO_VERSION_KEY cannot collide with
+// one. NO_TARGET_KEY relies on a data assumption instead of a guarantee: no
+// source uses a target named "none". Their label is applied in code, not
 // from the vocabulary.
 export const NO_TARGET_KEY = 'none'
 export const NO_VERSION_KEY = 'none'
