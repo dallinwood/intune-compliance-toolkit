@@ -370,7 +370,9 @@ keys, fixed indentation, LF endings).
   target/version do not match a specific target/version selection.
 - **Rule table**: rows show targets/versions; an ISM row shows "None" (or
   similar) where an mSCP row shows its macOS versions. Table grouping by
-  `section` now includes the 25 ISM guideline names.
+  `section` now includes the 23 ISM guideline names that hold controls
+  (corrected 2026-10-23: 26 top-level groups minus the framework,
+  principles and terminology groups).
 - **Rule detail panel**: `section_path` as a breadcrumb; upstream revision
   and updated date when non-null; `discussion` rendered by
   `discussion_format` (a Markdown path alongside the existing AsciiDoc-ish
@@ -446,6 +448,27 @@ the matching plan document:
    summary. Give unversioned entries a handle the benchmark paths use, and
    generalize both "No macOS version listed" sites (`RuleTable.tsx`,
    `RuleCheckSection.tsx`, which also prints mSCP-specific text).
+   Further gaps seen once ISM data loaded (phase 2 review, 2026-10-23);
+   all must be closed before `asd_ism` reaches `main`:
+   - **Table render cost.** The 1,493-row table is not virtualized; first
+     render takes 1.3 to 4.3s in dev, and Playwright had to drop to
+     `workers: 1` (`webui/playwright.config.ts`) because parallel specs
+     timed out. Virtualize or paginate the table, then restore parallel
+     workers.
+   - **Per-rule credit line** (`RuleDetailPanel.tsx`) hard-codes "NIST
+     mSCP", so every ISM rule reads "From NIST mSCP v2026.09.4". This is
+     a CC BY attribution error on ASD text; take the credit from the
+     rule's `source` / manifest entry.
+   - **Footer** (`AttributionFooter.tsx`) says "macOS rules from the ASD
+     Information Security Manual"; the "macOS rules" wording must come
+     from the source, not be fixed.
+   - **Tags facet** shows only struck-through mSCP tags when filtered to
+     ASD ISM (ISM rules have no tags); hide or explain an empty facet.
+   - **Search** strips only the `mscp.` id prefix (`ruleFilters.ts`), so
+     searching "asd" or "ism" matches every ISM row by its id; strip any
+     `<source>.` prefix.
+   - **Source labels**: the Source facet shows "ASD ISM" beside the raw
+     code "mscp"; add an mSCP label to the vocabulary.
 4. **Attribution**: NOTICE, README, footer.
 
 No AI is used to convert content, so there is no per-rule delegation to
@@ -480,9 +503,26 @@ implementation plan.
     build the report, so a full ISM selection means about 1,143 requests.
 - **Target-scoped `check` and `remediation`** when a second source with
   checks arrives (section 5.3).
+- **Shared importer CLI.** `tools/import_asd_ism.py` and
+  `tools/import_mscp.py` carry about 100 near-identical lines
+  (`import_offline`, `import_tag`, argument parsing, change summary,
+  `main`, manifest entry). Extract a shared helper when a third source is
+  added.
+- **ISM normalizer hardening for future releases** (none of these occur in
+  `v2026.09.4`): Markdown links in the titled form `[x](#uuid "title")` or
+  a bare `(#uuid)` are neither rewritten nor rejected; `split_statement`
+  splits on `\n\n` only, so CRLF prose would put a whole list in the
+  title. Reject `\r` in prose and widen the link pattern if a release
+  needs it.
+- **Small test and cleanup items**: `tools/mscp_fetch.py` keeps an
+  otherwise-unused `import urllib.request` only because a test patches it
+  there; `tools/github_fetch.py` has no direct unit tests (both fetchers
+  exercise it); `libraryData.test.ts` could assert that non-mSCP sources
+  have no ODVs.
 
 ## Progress log
 
 - 2026-10-22: Design drafted from the brainstorming session (no code yet).
 - 2026-10-23: Design approved by the maintainer; implementation plan next.
 - 2026-10-23: Phase 1 (schema v4 and mSCP restructure) done, per `docs/plans/2026-10-23-rule-schema-v4-plan.md`: `8b1dabe` feat: move the rule library and mSCP importer to schema v4; `6d8a9e5` refactor: read schema v4 applicability in the web UI; `1fc6660` test: read schema v4 applicability in the e2e smoke spec; `9bfe529` refactor: tidy target naming left over from the schema v4 move. mSCP values were unchanged, bundles byte-identical, and the UI visually identical. The review found a phase 3 prerequisite (benchmarks on null-version entries can't be reached in the UI) and a sequencing rule for the phase 2 manifest entry; both are recorded in section 11.
+- 2026-10-23: Phase 2 (ASD ISM import) done, per `docs/plans/2026-10-23-asd-ism-import-plan.md`: `945c0c7`, `934005d`, `536cb3e`, `6ff7712`, `704b436`. 1,143 ISM controls from `v2026.09.4` load in the web UI next to the 350 mSCP rules. The UI gaps found are added to section 11 (phase 3) and the deferred hardening to section 13. The guideline count in section 8 is corrected to 23.

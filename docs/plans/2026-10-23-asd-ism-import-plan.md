@@ -284,3 +284,8 @@
 ## Progress log
 
 - 2026-10-23: Plan written (no code yet).
+- 2026-10-23: Task 1 done. The source lock, GitHub fetch helpers and library publishing moved into shared modules, with mSCP output byte-identical (`945c0c7` refactor: share source lock, GitHub fetch and library output between importers).
+- 2026-10-23: Task 2 done. `tools/asd_ism_normalize.py` turns the OSCAL catalog into v4 rules; on the real catalog it gave 1,143 rules with 0 schema errors (`934005d` feat: normalize the ASD ISM OSCAL catalog into v4 rules).
+- 2026-10-23: Task 3 done. Fetcher and CLI added, and `v2026.09.4` imported (commit `9f77120`), with the vendored catalog matching sha256 `237ea093...f12d` and the manifest listing 1,143 ISM and 350 mSCP rules (`536cb3e` feat: import ASD ISM v2026.09.4 as a rule source).
+- 2026-10-23: Task 4 done. Vocabulary labels added, tests scoped per source, and e2e moved to 1,493 rules with new ISM search and attestation specs. Playwright now runs one worker, because the unvirtualized 1,493-row table takes 1.3 to 4.3s to render (`6ff7712` feat: show ASD ISM controls in the web UI).
+- 2026-10-23: Final-review fixes: the normalizer now rejects unknown control keys, extra parts, nested controls and params; statement links are rewritten; duplicate JSON keys are rejected; and the import tests are tighter (`704b436` fix: fail loudly on unknown ISM control shapes and tighten import tests). The phase 3 gaps found while reviewing are recorded in the design doc, section 11.
