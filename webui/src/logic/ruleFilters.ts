@@ -228,3 +228,26 @@ export function versionsListingAnyOf(row: RuleRow, benchmarks: ReadonlySet<strin
   const keys = benchmarks.size === 0 ? row.scopeKeys : row.scopeKeys.filter((key) => listsAnyBenchmark(row, key, benchmarks, index))
   return Array.from(new Set(keys.map((key) => scopeGroupKey(index, key))))
 }
+
+// Every facet value some row offers, per dimension, ignoring all filters. A
+// value restored from a shared URL that is not in here matches no option.
+export function knownFacetValues(rows: RuleRow[], index: VocabularyIndex): Record<FilterDimension, Set<string>> {
+  const noSelection: ReadonlySet<string> = new Set()
+  const known: Record<FilterDimension, Set<string>> = {
+    targets: new Set(),
+    sources: new Set(),
+    versions: new Set(),
+    benchmarks: new Set(),
+    sections: new Set(),
+    tags: new Set(),
+  }
+  for (const row of rows) {
+    targetGroupKeys(row, index).forEach((value) => known.targets.add(value))
+    known.sources.add(sourceGroupKey(row, index))
+    versionsListingAnyOf(row, noSelection, index).forEach((value) => known.versions.add(value))
+    benchmarksListedUnder(row, noSelection, index).forEach((value) => known.benchmarks.add(value))
+    known.sections.add(sectionGroupKey(row, index))
+    tagGroupKeys(row, index).forEach((value) => known.tags.add(value))
+  }
+  return known
+}

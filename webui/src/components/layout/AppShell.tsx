@@ -1,13 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FilterSidebar } from '../filters/FilterSidebar'
 import { GenerateReviewScreen } from '../generate/GenerateReviewScreen'
 import { RuleTable } from '../rules/RuleTable'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
-import { matchesFilters } from '../../logic/ruleFilters'
+import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
+import { useFilterStore } from '../../state/filterStore'
 import { useSelectionStore } from '../../state/selectionStore'
 import { VocabularyContext } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
@@ -38,6 +39,12 @@ export function AppShell({
   // keystroke updates its own control at once while the 1,493-row table
   // catches up in the background.
   const { filters: deferredFilters, isStale } = useDeferredFilters()
+  const retainKnownValues = useFilterStore((state) => state.retainKnownValues)
+  // Filter values restored from a shared URL that this library has no option
+  // for are dropped, which also removes them from the URL.
+  useEffect(() => {
+    retainKnownValues(knownFacetValues(rows, vocabularyIndex))
+  }, [rows, vocabularyIndex, retainKnownValues])
   const filteredRows = useMemo(
     () => rows.filter((row) => matchesFilters(row, deferredFilters, vocabularyIndex)),
     [rows, deferredFilters, vocabularyIndex],

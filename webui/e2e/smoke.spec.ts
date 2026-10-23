@@ -737,3 +737,114 @@ test('ten facet options toggled in quick succession all register and the table s
   const countAfterSecondRun = await tickTenSections()
   expect(countAfterSecondRun).toBe(countAfterRapidClicks)
 })
+
+const searchBox = (page: Page) => page.getByPlaceholder('Search title or id…')
+
+async function openLibrary(page: Page, path = '/') {
+  await page.goto(path)
+  await expect(ruleCount(page)).toHaveText(/^\d+ of 1493 rules$/, { timeout: 10_000 })
+}
+
+test('filters, search, page and size survive a reload through the URL', async ({ page }) => {
+  await openLibrary(page)
+  const versionOption = page.getByRole('checkbox', { name: 'macOS 15', exact: true })
+
+  await searchBox(page).fill('configure')
+  await page.getByRole('checkbox', { name: 'NIST mSCP', exact: true }).click()
+  await page.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
+  await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
+  await versionOption.click()
+  await expect(versionOption).toBeChecked()
+  await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
+  const filteredCount = await ruleCount(page).textContent()
+
+  const parameters = new URL(page.url()).searchParams
+  expect(parameters.get('q')).toBe('configure')
+  expect(parameters.getAll('source')).toHaveLength(2)
+  expect(parameters.getAll('benchmark')).toHaveLength(1)
+  expect(parameters.getAll('benchmark')[0]).toContain('')
+  expect(page.url()).toContain('%1F')
+  expect(parameters.getAll('version')).toHaveLength(1)
+
+  const withPaging = `${page.url()}&page=3&size=100`
+  await page.goto(withPaging)
+  await expect(ruleCount(page)).toHaveText(filteredCount ?? '', { timeout: 10_000 })
+  await expect(searchBox(page)).toHaveValue('configure')
+  await expect(page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })).toBeChecked()
+  await expect(page.getByRole('checkbox', { name: 'ASD ISM', exact: true })).toBeChecked()
+  await expect(page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true })).toBeChecked()
+  await expect(versionOption).toBeChecked()
+  expect(page.url()).toBe(withPaging)
+
+  await page.reload()
+  await expect(ruleCount(page)).toHaveText(filteredCount ?? '', { timeout: 10_000 })
+  await expect(versionOption).toBeChecked()
+
+  await page.getByRole('radio', { name: 'Manual only' }).click()
+  await expect(page.getByRole('radio', { name: 'Manual only' })).toBeChecked()
+  expect(new URL(page.url()).searchParams.get('automation')).toBe('manual')
+  expect(new URL(page.url()).searchParams.get('size')).toBe('100')
+  expect(new URL(page.url()).searchParams.has('page')).toBe(false)
+})
+
+test('clearing the filters leaves a URL with no query string', async ({ page }) => {
+  await openLibrary(page)
+  await searchBox(page).fill('gatekeeper')
+  await page.getByRole('checkbox', { name: 'macOS', exact: true }).click()
+  expect(page.url()).toContain('?')
+
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  expect(page.url()).not.toContain('?')
+})
+
+test('filter changes do not add history entries', async ({ page }) => {
+  await openLibrary(page)
+  const historyLengthBefore = await page.evaluate(() => window.history.length)
+  await page.getByRole('checkbox', { name: 'macOS', exact: true }).click()
+  await searchBox(page).fill('gatekeeper')
+  expect(page.url()).toContain('?')
+  expect(await page.evaluate(() => window.history.length)).toBe(historyLengthBefore)
+})
+
+test('a search is restored after a reload', async ({ page }) => {
+  await openLibrary(page)
+  await searchBox(page).fill('os_gatekeeper_enable')
+  await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+  await page.reload()
+  await expect(searchBox(page)).toHaveValue('os_gatekeeper_enable')
+  await expect(ruleCount(page)).toHaveText('1 of 1493 rules', { timeout: 10_000 })
+})
+
+test('a shared URL with unknown values loads and drops them on the next write', async ({ page }) => {
+  await openLibrary(page, '/?benchmark=not_a_benchmark%1Fhigh&tag=no-such-tag&source=nope&target=macOS&unknown=1&automation=bogus&page=abc&size=junk')
+  await expect(page.getByRole('radio', { name: 'All rules' })).toBeChecked()
+  await expect(page.getByRole('checkbox', { name: 'macOS', exact: true })).toBeChecked()
+  await expect(ruleCount(page)).toHaveText('350 of 1493 rules')
+
+  const parameters = new URL(page.url()).searchParams
+  expect(parameters.getAll('benchmark')).toEqual([])
+  expect(parameters.getAll('tag')).toEqual([])
+  expect(parameters.getAll('source')).toEqual([])
+  expect(parameters.getAll('target')).toEqual(['macOS'])
+})
+
+test('Version None and its page and size are restored from the URL', async ({ page }) => {
+  await openLibrary(page)
+  const versionNone = page.getByRole('group', { name: 'Version', exact: true }).getByRole('checkbox', { name: 'None', exact: true })
+  await versionNone.click()
+  await expect(ruleCount(page)).toHaveText('1145 of 1493 rules')
+  expect(new URL(page.url()).searchParams.getAll('version')).toHaveLength(1)
+
+  await page.goto(`${page.url()}&page=3&size=100`)
+  await expect(ruleCount(page)).toHaveText('1145 of 1493 rules', { timeout: 10_000 })
+  await expect(versionNone).toBeChecked()
+  const parameters = new URL(page.url()).searchParams
+  expect(parameters.get('page')).toBe('3')
+  expect(parameters.get('size')).toBe('100')
+
+  await versionNone.click()
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
+  expect(new URL(page.url()).searchParams.has('page')).toBe(false)
+  expect(new URL(page.url()).searchParams.get('size')).toBe('100')
+})

@@ -203,4 +203,5 @@ Not planned yet. After Phase B, brainstorm with the maintainer. Starting brief f
 ## Progress log
 
 - 2026-10-23: Plan written (no code yet).
-- 2026-10-23: Phase A task A1 done. The table and count render from deferred filters (`useDeferredFilters`), the stale overlay and `Updating rules` spinner show while it catches up, `SectionTable` is memoized, Source moved between Version and Benchmark, and the None options are `text-slate-500 italic`. Commit: `feat: keep filters responsive while the rule table updates`.
+- 2026-10-23: Phase A task A1 done. The table and count render from deferred filters (`useDeferredFilters`), the stale overlay and `Updating rules` spinner show while it catches up, `SectionTable` is memoized, Source moved between Version and Benchmark, and the None options are `text-slate-500 italic`. Commit: 62641fe `feat: keep filters responsive while the rule table updates`.
+- 2026-10-23: Phase A task A2 done. `urlState.ts` parses and serializes search, automation, the six facets, `page` and `size` (page and size are carried in the filter store for Task B1 to wire); the store starts from the URL, writes back with `history.replaceState`, resets `page` on any filter change, and drops values with no matching option once the library loads. Commit: `feat: keep filters and search in the URL`.
