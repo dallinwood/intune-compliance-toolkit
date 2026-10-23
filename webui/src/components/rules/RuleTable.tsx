@@ -1,5 +1,5 @@
 import { Settings2 } from 'lucide-react'
-import { Fragment, useState } from 'react'
+import { Fragment, useId, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -118,10 +118,10 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
                   }}
                 >
                   <td className="w-12 py-2 pl-4 md:pl-6">
-                    <Checkbox
-                      aria-label={`Select ${upstreamRuleId(row.ref.id)}`}
+                    <RowCheckbox
+                      ruleId={upstreamRuleId(row.ref.id)}
                       checked={isEnabled(selections, row.ref)}
-                      onCheckedChange={(checked) => setEnabled(row.ref, checked === true)}
+                      onCheckedChange={(checked) => setEnabled(row.ref, checked)}
                     />
                   </td>
                   <td className="w-8 py-1.5 text-center text-slate-400">
@@ -164,6 +164,31 @@ function SectionTable({ sectionGroup }: { sectionGroup: SectionGroup }) {
         </tbody>
       </table>
     </div>
+  )
+}
+
+interface RowCheckboxProps {
+  ruleId: string
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+}
+
+// An explicit aria-labelledby makes Base UI skip its per-render lookup of the
+// checkbox's associated <label> (an O(DOM size) read of the hidden input's
+// .labels). Across 1,493 rows that lookup dominated every table repaint.
+function RowCheckbox({ ruleId, checked, onCheckedChange }: RowCheckboxProps) {
+  const labelId = useId()
+  return (
+    <>
+      <span id={labelId} className="sr-only">
+        {`Select ${ruleId}`}
+      </span>
+      <Checkbox
+        aria-labelledby={labelId}
+        checked={checked}
+        onCheckedChange={(nextChecked) => onCheckedChange(nextChecked === true)}
+      />
+    </>
   )
 }
 

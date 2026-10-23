@@ -9,11 +9,12 @@ import { defineConfig } from '@playwright/test'
 // PLAYWRIGHT_BASE_URL if the dev server isn't on the default port.
 export default defineConfig({
   testDir: './e2e',
-  // Rendering the 1493-row table is CPU bound in the browser: one page
-  // shows "N of 1493 rules" in about 2s alone, but 6 parallel workers slow
-  // each other to 12s+, past the specs' 10s waits. The serial run takes
-  // about as long overall, so parallelism bought nothing.
-  workers: 1,
+  // Against the dev server the first paint of the 1493-row table is CPU
+  // bound (about 2s alone), so parallel workers slow each other past the
+  // specs' 10s waits. Measured over repeated full runs: 6 workers (the
+  // default here) and 4 workers failed 2-3 specs every run, 3 workers
+  // failed 1 run in 3, and 2 workers passed every run.
+  workers: 2,
   fullyParallel: true,
   reporter: 'list',
   use: {
