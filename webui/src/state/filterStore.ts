@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { FilterDimension } from '../logic/ruleFilters'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, parseUrlState, serializeUrlState, type PageSize, type UrlState } from './urlState'
+import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, parsePageSize, parseUrlState, serializeUrlState, type PageSize, type UrlState } from './urlState'
 
 export type AutomatableFilter = 'all' | 'automatable' | 'manual'
 
@@ -47,8 +47,32 @@ function retained(set: Set<string>, known: ReadonlySet<string>): Set<string> {
   return kept.size === set.size ? set : kept
 }
 
+const PAGE_SIZE_STORAGE_KEY = 'intune-toolkit:page-size'
+
+// Storage can be missing or throw (private windows, blocked site data); the
+// remembered size is a convenience, so any failure just means no memory.
+function readStoredPageSize(): PageSize | null {
+  try {
+    return parsePageSize(window.localStorage.getItem(PAGE_SIZE_STORAGE_KEY))
+  } catch {
+    return null
+  }
+}
+
+function storePageSize(size: PageSize) {
+  try {
+    window.localStorage.setItem(PAGE_SIZE_STORAGE_KEY, String(size))
+  } catch {
+    // Not remembered for the next visit; the URL still carries it.
+  }
+}
+
+// A size in the URL wins; without one, the size this browser last chose.
 function initialStateFromUrl(): UrlState {
-  return parseUrlState(typeof window === 'undefined' ? '' : window.location.search)
+  if (typeof window === 'undefined') return parseUrlState('')
+  const fromUrl = parseUrlState(window.location.search)
+  if (new URLSearchParams(window.location.search).has('size')) return fromUrl
+  return { ...fromUrl, size: readStoredPageSize() ?? fromUrl.size }
 }
 
 // Any filter or search change goes back to the first page.
@@ -76,7 +100,10 @@ export const useFilterStore = create<FilterState>((set) => {
     toggleTag: (value) => set((state) => ({ tags: toggled(state.tags, value), ...FIRST_PAGE })),
     setAutomatable: (value) => set({ automatable: value, ...FIRST_PAGE }),
     setPage: (value) => set({ page: value }),
-    setSize: (value) => set({ size: value, ...FIRST_PAGE }),
+    setSize: (value) => {
+      storePageSize(value)
+      set({ size: value, ...FIRST_PAGE })
+    },
     retainKnownValues: (known) =>
       set((state) => {
         const next = {

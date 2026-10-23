@@ -25,6 +25,7 @@ const INDEX: RuleIndex = {
       title: 'Enable Gatekeeper',
       file: 'rules/os_gatekeeper_enable.json',
       section: 'os',
+      section_path: ['os'],
       assessment: { status: 'automated', manual_reason: null },
       architecture: null,
       applicability: applicabilityOfVersions({
@@ -40,6 +41,7 @@ const INDEX: RuleIndex = {
       title: 'Require a Minimum Password Length of $ODV Characters',
       file: 'rules/pwpolicy_minimum_length_enforce.json',
       section: 'pwpolicy',
+      section_path: ['pwpolicy'],
       assessment: { status: 'manual', manual_reason: 'manual' },
       architecture: 'arm64',
       applicability: applicabilityOfVersions({ 'macOS 27.0': [{ name: 'cis_lvl2', severity: null }] }),
@@ -54,6 +56,15 @@ describe('buildRuleRows', () => {
 
   it('joins the index directory with the entry file to build the ref path', () => {
     expect(rows[0].ref).toEqual({ id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' })
+  })
+
+  it('carries the full section path from the index entry', () => {
+    const [nestedRow] = buildRuleRows(SOURCE, {
+      ...INDEX,
+      rules: [{ ...INDEX.rules[0], section: 'Guideline', section_path: ['Guideline', 'Section', 'Topic'] }],
+    })
+    expect(nestedRow.sectionPath).toEqual(['Guideline', 'Section', 'Topic'])
+    expect(nestedRow.section).toBe('Guideline')
   })
 
   it('uses just the file when the index sits at the baselines root', () => {

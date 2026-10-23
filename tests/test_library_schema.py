@@ -89,6 +89,7 @@ def index_entry_for(rule, file_path):
         "title": rule["title"],
         "file": file_path,
         "section": "os",
+        "section_path": ["os"],
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],

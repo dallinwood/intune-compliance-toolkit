@@ -19,6 +19,8 @@ export interface UrlDefaults {
 }
 
 export const DEFAULT_PAGE_SIZE = 50
+// 'all' is infinite scroll.
+export const PAGE_SIZES: readonly PageSize[] = [25, 50, 100, 200, 'all']
 export const DEFAULT_AUTOMATION = 'all'
 
 const LIST_PARAMETER_NAMES = {
@@ -36,9 +38,12 @@ function parsePositiveInteger(text: string | null): number | null {
   return parsed >= 1 ? parsed : null
 }
 
+export function parsePageSize(text: string | null): PageSize | null {
+  return PAGE_SIZES.find((size) => String(size) === text) ?? null
+}
+
 export function parseUrlState(search: string): UrlState {
   const parameters = new URLSearchParams(search)
-  const sizeText = parameters.get('size')
   const listValues = (name: string) => parameters.getAll(name).filter((value) => value !== '')
 
   return {
@@ -51,7 +56,7 @@ export function parseUrlState(search: string): UrlState {
     sections: listValues(LIST_PARAMETER_NAMES.sections),
     tags: listValues(LIST_PARAMETER_NAMES.tags),
     page: parsePositiveInteger(parameters.get('page')) ?? 1,
-    size: sizeText === 'all' ? 'all' : (parsePositiveInteger(sizeText) ?? DEFAULT_PAGE_SIZE),
+    size: parsePageSize(parameters.get('size')) ?? DEFAULT_PAGE_SIZE,
   }
 }
 

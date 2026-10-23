@@ -13,7 +13,7 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "id", "title", "file", "section", "assessment", "architecture",
+          "id", "title", "file", "section", "section_path", "assessment", "architecture",
           "applicability", "tags", "has_odv"
         ],
         "properties": {
@@ -24,6 +24,11 @@
             "pattern": "^(?!/)(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+(?![\\s\\S])"
           },
           "section": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" },
+          "section_path": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" }
+          },
           "assessment": {
             "type": "object",
             "additionalProperties": false,

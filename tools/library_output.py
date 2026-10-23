@@ -23,6 +23,7 @@ def index_entry(rule: dict, file: str) -> dict:
         "title": rule["title"],
         "file": file,
         "section": rule["section_path"][0],
+        "section_path": rule["section_path"],
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],

@@ -30,6 +30,7 @@ export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow
       title: entry.title,
       targetKeys: targetKeysOf(entry.applicability),
       section: entry.section,
+      sectionPath: entry.section_path,
       sourceName: source.name,
       releaseTag: source.release_tag,
       assessment: entry.assessment,

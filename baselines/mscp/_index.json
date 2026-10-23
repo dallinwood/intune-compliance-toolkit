@@ -82,6 +82,9 @@
       "has_odv": false,
       "id": "mscp.audit_acls_files_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -177,6 +180,9 @@
       "has_odv": false,
       "id": "mscp.audit_acls_folders_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -217,6 +223,9 @@
       "has_odv": false,
       "id": "mscp.audit_alert_processing_fail",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "permanent"
       ],
@@ -304,6 +313,9 @@
       "has_odv": false,
       "id": "mscp.audit_auditd_enabled",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -360,6 +372,9 @@
       "has_odv": true,
       "id": "mscp.audit_configure_capacity_notify",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -450,6 +465,9 @@
       "has_odv": false,
       "id": "mscp.audit_control_acls_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -542,6 +560,9 @@
       "has_odv": false,
       "id": "mscp.audit_control_group_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -634,6 +655,9 @@
       "has_odv": false,
       "id": "mscp.audit_control_mode_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -726,6 +750,9 @@
       "has_odv": false,
       "id": "mscp.audit_control_owner_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -763,6 +790,9 @@
       "has_odv": false,
       "id": "mscp.audit_enforce_dual_auth",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "cnssi-1253_high",
         "permanent"
@@ -801,6 +831,9 @@
       "has_odv": false,
       "id": "mscp.audit_failure_halt",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -895,6 +928,9 @@
       "has_odv": false,
       "id": "mscp.audit_files_group_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -990,6 +1026,9 @@
       "has_odv": false,
       "id": "mscp.audit_files_mode_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1085,6 +1124,9 @@
       "has_odv": false,
       "id": "mscp.audit_files_owner_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1152,6 +1194,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_aa_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1237,6 +1282,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_ad_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1306,6 +1354,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_ex_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1363,6 +1414,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_fd_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1419,6 +1473,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_fm_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -1471,6 +1528,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_fm_failed_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1540,6 +1600,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_fr_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1609,6 +1672,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_fw_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1678,6 +1744,9 @@
       "has_odv": false,
       "id": "mscp.audit_flags_lo_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1775,6 +1844,9 @@
       "has_odv": false,
       "id": "mscp.audit_folder_group_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1870,6 +1942,9 @@
       "has_odv": false,
       "id": "mscp.audit_folder_owner_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -1965,6 +2040,9 @@
       "has_odv": false,
       "id": "mscp.audit_folders_mode_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2023,6 +2101,9 @@
       "has_odv": false,
       "id": "mscp.audit_off_load_records",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "cisv8",
         "cnssi-1253_high",
@@ -2059,6 +2140,9 @@
       "has_odv": false,
       "id": "mscp.audit_record_reduction_report_generation",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2097,6 +2181,9 @@
       "has_odv": false,
       "id": "mscp.audit_records_processing",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -2189,6 +2276,9 @@
       "has_odv": true,
       "id": "mscp.audit_retention_configure",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2245,6 +2335,9 @@
       "has_odv": false,
       "id": "mscp.audit_settings_failure_notify",
       "section": "audit",
+      "section_path": [
+        "audit"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2299,6 +2392,9 @@
       "has_odv": false,
       "id": "mscp.auth_pam_login_smartcard_enforce",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2355,6 +2451,9 @@
       "has_odv": false,
       "id": "mscp.auth_pam_su_smartcard_enforce",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2411,6 +2510,9 @@
       "has_odv": false,
       "id": "mscp.auth_pam_sudo_smartcard_enforce",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2467,6 +2569,9 @@
       "has_odv": false,
       "id": "mscp.auth_smartcard_allow",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2509,6 +2614,9 @@
       "has_odv": false,
       "id": "mscp.auth_smartcard_certificate_trust_enforce_high",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-53r5_high",
         "cmmc_lvl2",
@@ -2561,6 +2669,9 @@
       "has_odv": false,
       "id": "mscp.auth_smartcard_certificate_trust_enforce_moderate",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-53r5_moderate",
         "cmmc_lvl2",
@@ -2613,6 +2724,9 @@
       "has_odv": false,
       "id": "mscp.auth_smartcard_enforce",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2670,6 +2784,9 @@
       "has_odv": false,
       "id": "mscp.auth_ssh_password_authentication_disable",
       "section": "auth",
+      "section_path": [
+        "auth"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2727,6 +2844,9 @@
       "has_odv": false,
       "id": "mscp.icloud_addressbook_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2769,6 +2889,9 @@
       "has_odv": false,
       "id": "mscp.icloud_appleid_system_settings_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2826,6 +2949,9 @@
       "has_odv": false,
       "id": "mscp.icloud_bookmarks_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2883,6 +3009,9 @@
       "has_odv": false,
       "id": "mscp.icloud_calendar_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -2948,6 +3077,9 @@
       "has_odv": false,
       "id": "mscp.icloud_drive_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3006,6 +3138,9 @@
       "has_odv": false,
       "id": "mscp.icloud_freeform_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3063,6 +3198,9 @@
       "has_odv": false,
       "id": "mscp.icloud_game_center_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3128,6 +3266,9 @@
       "has_odv": false,
       "id": "mscp.icloud_keychain_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3186,6 +3327,9 @@
       "has_odv": false,
       "id": "mscp.icloud_mail_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3243,6 +3387,9 @@
       "has_odv": false,
       "id": "mscp.icloud_notes_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3300,6 +3447,9 @@
       "has_odv": false,
       "id": "mscp.icloud_photos_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3358,6 +3508,9 @@
       "has_odv": false,
       "id": "mscp.icloud_private_relay_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3415,6 +3568,9 @@
       "has_odv": false,
       "id": "mscp.icloud_reminders_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3492,6 +3648,9 @@
       "has_odv": false,
       "id": "mscp.icloud_sync_disable",
       "section": "icloud",
+      "section_path": [
+        "icloud"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3534,6 +3693,9 @@
       "has_odv": false,
       "id": "mscp.os_access_control_mobile_devices",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3591,6 +3753,9 @@
       "has_odv": false,
       "id": "mscp.os_account_modification_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3673,6 +3838,9 @@
       "has_odv": false,
       "id": "mscp.os_airdrop_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3716,6 +3884,9 @@
       "has_odv": false,
       "id": "mscp.os_allow_info_passed",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -3746,6 +3917,9 @@
       "has_odv": false,
       "id": "mscp.os_allow_prerelease_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -3826,6 +4000,9 @@
       "has_odv": false,
       "id": "mscp.os_anti_virus_installed",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -3853,6 +4030,9 @@
       "has_odv": false,
       "id": "mscp.os_apple_intelligence_pcc_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3910,6 +4090,9 @@
       "has_odv": false,
       "id": "mscp.os_appleid_prompt_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -3951,6 +4134,9 @@
       "has_odv": false,
       "id": "mscp.os_application_sandboxing",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -4004,6 +4190,9 @@
       "has_odv": false,
       "id": "mscp.os_asl_log_files_owner_group_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -4055,6 +4244,9 @@
       "has_odv": false,
       "id": "mscp.os_asl_log_files_permissions_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -4091,6 +4283,9 @@
       "has_odv": false,
       "id": "mscp.os_auth_peripherals",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -4180,6 +4375,9 @@
       "has_odv": false,
       "id": "mscp.os_authenticated_root_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -4212,6 +4410,9 @@
       "has_odv": false,
       "id": "mscp.os_background_security_improvement_install_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -4241,6 +4442,9 @@
       "has_odv": false,
       "id": "mscp.os_blank_bluray_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -4272,6 +4476,9 @@
       "has_odv": false,
       "id": "mscp.os_blank_cd_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -4303,6 +4510,9 @@
       "has_odv": false,
       "id": "mscp.os_blank_dvd_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -4329,6 +4539,9 @@
       "has_odv": false,
       "id": "mscp.os_bluetooth_modification_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -4364,6 +4577,9 @@
       "has_odv": false,
       "id": "mscp.os_bluray_read_only_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -4427,6 +4643,9 @@
       "has_odv": false,
       "id": "mscp.os_bonjour_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -4468,6 +4687,9 @@
       "has_odv": false,
       "id": "mscp.os_burn_support_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -4494,6 +4716,9 @@
       "has_odv": false,
       "id": "mscp.os_calendar_app_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -4525,6 +4750,9 @@
       "has_odv": false,
       "id": "mscp.os_calendar_app_disable_familycontrols",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -4556,6 +4784,9 @@
       "has_odv": false,
       "id": "mscp.os_call_recording_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -4610,6 +4841,9 @@
       "has_odv": false,
       "id": "mscp.os_camera_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cmmc_lvl2",
         "cmmc_lvl3"
@@ -4638,6 +4872,9 @@
       "has_odv": false,
       "id": "mscp.os_cd_read_only_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -4689,6 +4926,9 @@
       "has_odv": false,
       "id": "mscp.os_certificate_authority_trust",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -4728,6 +4968,9 @@
       "has_odv": false,
       "id": "mscp.os_change_security_attributes",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -4810,6 +5053,9 @@
       "has_odv": false,
       "id": "mscp.os_config_data_install_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -4852,6 +5098,9 @@
       "has_odv": false,
       "id": "mscp.os_continuous_monitoring",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -4889,6 +5138,9 @@
       "has_odv": false,
       "id": "mscp.os_crypto_audit",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -4913,6 +5165,9 @@
       "has_odv": false,
       "id": "mscp.os_definition_lookup_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -4964,6 +5219,9 @@
       "has_odv": false,
       "id": "mscp.os_dictation_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5008,6 +5266,9 @@
       "has_odv": false,
       "id": "mscp.os_directory_services_configured",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -5035,6 +5296,9 @@
       "has_odv": false,
       "id": "mscp.os_disk_image_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -5066,6 +5330,9 @@
       "has_odv": false,
       "id": "mscp.os_dvdram_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -5102,6 +5369,9 @@
       "has_odv": false,
       "id": "mscp.os_enforce_access_restrictions",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -5152,6 +5422,9 @@
       "has_odv": false,
       "id": "mscp.os_erase_contents_and_settings_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5194,6 +5467,9 @@
       "has_odv": false,
       "id": "mscp.os_error_message",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -5239,6 +5515,9 @@
       "has_odv": false,
       "id": "mscp.os_external_apfs_hfs_volumes_encrypted",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -5281,6 +5560,9 @@
       "has_odv": true,
       "id": "mscp.os_external_storage_access_defined",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5315,6 +5597,9 @@
       "has_odv": false,
       "id": "mscp.os_facetime_app_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -5356,6 +5641,9 @@
       "has_odv": false,
       "id": "mscp.os_facetime_app_disable_familycontrols",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -5392,6 +5680,9 @@
       "has_odv": false,
       "id": "mscp.os_fail_secure_state",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -5426,6 +5717,9 @@
       "has_odv": false,
       "id": "mscp.os_filevault_authorized_users",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -5475,6 +5769,9 @@
       "has_odv": false,
       "id": "mscp.os_filevault_autologin_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5516,6 +5813,9 @@
       "has_odv": false,
       "id": "mscp.os_firewall_default_deny_require",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5545,6 +5845,9 @@
       "has_odv": false,
       "id": "mscp.os_firewall_log_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5586,6 +5889,9 @@
       "has_odv": false,
       "id": "mscp.os_firmware_password_require",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5682,6 +5988,9 @@
       "has_odv": false,
       "id": "mscp.os_gatekeeper_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5714,6 +6023,9 @@
       "has_odv": false,
       "id": "mscp.os_gatekeeper_rearm",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5770,6 +6082,9 @@
       "has_odv": false,
       "id": "mscp.os_genmoji_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5812,6 +6127,9 @@
       "has_odv": false,
       "id": "mscp.os_grant_privs",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -5874,6 +6192,9 @@
       "has_odv": false,
       "id": "mscp.os_guest_folder_removed",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Remove Guest Folder if Present"
     },
@@ -5919,6 +6240,9 @@
       "has_odv": false,
       "id": "mscp.os_handoff_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -5957,6 +6281,9 @@
       "has_odv": false,
       "id": "mscp.os_hibernate_mode_destroyfvkeyonstandby_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Enable DestroyFVKeyOnStandby on Hibernate"
     },
@@ -5982,6 +6309,9 @@
       "has_odv": false,
       "id": "mscp.os_hibernate_mode_intel_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Enable Hibernate Mode (Intel)"
     },
@@ -6012,6 +6342,9 @@
       "has_odv": false,
       "id": "mscp.os_home_folders_default",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -6096,6 +6429,9 @@
       "has_odv": false,
       "id": "mscp.os_home_folders_secure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6184,6 +6520,9 @@
       "has_odv": false,
       "id": "mscp.os_httpd_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6241,6 +6580,9 @@
       "has_odv": false,
       "id": "mscp.os_icloud_storage_prompt_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6282,6 +6624,9 @@
       "has_odv": false,
       "id": "mscp.os_identify_non-org_users",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -6335,6 +6680,9 @@
       "has_odv": false,
       "id": "mscp.os_image_playground_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6377,6 +6725,9 @@
       "has_odv": false,
       "id": "mscp.os_implement_cryptography",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6418,6 +6769,9 @@
       "has_odv": false,
       "id": "mscp.os_implement_memory_protection",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -6454,6 +6808,9 @@
       "has_odv": false,
       "id": "mscp.os_information_validation",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -6501,6 +6858,9 @@
       "has_odv": false,
       "id": "mscp.os_install_configuration_profile_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6589,6 +6949,9 @@
       "has_odv": true,
       "id": "mscp.os_install_log_retention_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -6639,6 +7002,9 @@
       "has_odv": false,
       "id": "mscp.os_internal_apfs_volumes_encrypted",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -6686,6 +7052,9 @@
       "has_odv": false,
       "id": "mscp.os_iphone_mirroring_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6724,6 +7093,9 @@
       "has_odv": false,
       "id": "mscp.os_ir_support_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6765,6 +7137,9 @@
       "has_odv": false,
       "id": "mscp.os_isolate_security_functions",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -6799,6 +7174,9 @@
       "has_odv": false,
       "id": "mscp.os_library_validation_enabled",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -6831,6 +7209,9 @@
       "has_odv": false,
       "id": "mscp.os_limit_auditable_events",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -6863,6 +7244,9 @@
       "has_odv": false,
       "id": "mscp.os_limit_dos_attacks",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_moderate",
@@ -6897,6 +7281,9 @@
       "has_odv": false,
       "id": "mscp.os_limit_gui_sessions",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -6932,6 +7319,9 @@
       "has_odv": false,
       "id": "mscp.os_logical_access",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -6979,6 +7369,9 @@
       "has_odv": false,
       "id": "mscp.os_loginwindow_adminhostinfo_disabled",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7011,6 +7404,9 @@
       "has_odv": false,
       "id": "mscp.os_loginwindow_adminhostinfo_undefined",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7048,6 +7444,9 @@
       "has_odv": false,
       "id": "mscp.os_logoff_capability_and_message",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -7078,6 +7477,9 @@
       "has_odv": false,
       "id": "mscp.os_mail_app_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -7114,6 +7516,9 @@
       "has_odv": false,
       "id": "mscp.os_mail_smart_reply_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7183,6 +7588,9 @@
       "has_odv": false,
       "id": "mscp.os_mail_summary_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7225,6 +7633,9 @@
       "has_odv": false,
       "id": "mscp.os_malicious_code_prevention",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7268,6 +7679,9 @@
       "has_odv": false,
       "id": "mscp.os_managed_access_control_points",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7307,6 +7721,9 @@
       "has_odv": false,
       "id": "mscp.os_map_pki_identity",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -7378,6 +7795,9 @@
       "has_odv": false,
       "id": "mscp.os_mdm_require",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7409,6 +7829,9 @@
       "has_odv": false,
       "id": "mscp.os_messages_app_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -7440,6 +7863,9 @@
       "has_odv": false,
       "id": "mscp.os_messages_app_disable_familycontrols",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -7476,6 +7902,9 @@
       "has_odv": false,
       "id": "mscp.os_mfa_network_access",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8",
         "inherent"
@@ -7509,6 +7938,9 @@
       "has_odv": false,
       "id": "mscp.os_mfa_network_non-priv",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -7568,6 +8000,9 @@
       "has_odv": false,
       "id": "mscp.os_mobile_file_integrity_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -7590,6 +8025,9 @@
       "has_odv": false,
       "id": "mscp.os_natural_language_editing_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -7630,6 +8068,9 @@
       "has_odv": true,
       "id": "mscp.os_network_storage_restriction",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Network Storage Must Be Restricted"
     },
@@ -7675,6 +8116,9 @@
       "has_odv": false,
       "id": "mscp.os_newsyslog_files_owner_group_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -7726,6 +8170,9 @@
       "has_odv": false,
       "id": "mscp.os_newsyslog_files_permissions_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -7809,6 +8256,9 @@
       "has_odv": false,
       "id": "mscp.os_nfsd_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7851,6 +8301,9 @@
       "has_odv": false,
       "id": "mscp.os_non_repudiation",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -7886,6 +8339,9 @@
       "has_odv": false,
       "id": "mscp.os_nonlocal_maintenance",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -7954,6 +8410,9 @@
       "has_odv": false,
       "id": "mscp.os_notes_transcription_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8023,6 +8482,9 @@
       "has_odv": false,
       "id": "mscp.os_notes_transcription_summary_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8066,6 +8528,9 @@
       "has_odv": false,
       "id": "mscp.os_notify_account_created",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "permanent"
       ],
@@ -8098,6 +8563,9 @@
       "has_odv": false,
       "id": "mscp.os_notify_account_disabled",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "permanent"
       ],
@@ -8130,6 +8598,9 @@
       "has_odv": false,
       "id": "mscp.os_notify_account_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "permanent"
       ],
@@ -8162,6 +8633,9 @@
       "has_odv": false,
       "id": "mscp.os_notify_account_modified",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "permanent"
       ],
@@ -8194,6 +8668,9 @@
       "has_odv": false,
       "id": "mscp.os_notify_account_removal",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "permanent"
       ],
@@ -8226,6 +8703,9 @@
       "has_odv": false,
       "id": "mscp.os_notify_unauthorized_baseline_change",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "permanent"
@@ -8259,6 +8739,9 @@
       "has_odv": false,
       "id": "mscp.os_obscure_password",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8348,6 +8831,9 @@
       "has_odv": false,
       "id": "mscp.os_on_device_dictation_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8392,6 +8878,9 @@
       "has_odv": false,
       "id": "mscp.os_parental_controls_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -8427,6 +8916,9 @@
       "has_odv": false,
       "id": "mscp.os_password_autofill_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8515,6 +9007,9 @@
       "has_odv": false,
       "id": "mscp.os_password_hint_remove",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -8575,6 +9070,9 @@
       "has_odv": false,
       "id": "mscp.os_password_proximity_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8627,6 +9125,9 @@
       "has_odv": false,
       "id": "mscp.os_password_sharing_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8669,6 +9170,9 @@
       "has_odv": false,
       "id": "mscp.os_peripherals_identify",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -8701,6 +9205,9 @@
       "has_odv": false,
       "id": "mscp.os_photos_enhanced_search_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8742,6 +9249,9 @@
       "has_odv": false,
       "id": "mscp.os_pii_deidentification",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_privacy",
         "n_a"
@@ -8775,6 +9285,9 @@
       "has_odv": false,
       "id": "mscp.os_pii_quality_control",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_privacy",
         "n_a"
@@ -8835,6 +9348,9 @@
       "has_odv": true,
       "id": "mscp.os_policy_banner_loginwindow_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8889,6 +9405,9 @@
       "has_odv": true,
       "id": "mscp.os_policy_banner_ssh_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8943,6 +9462,9 @@
       "has_odv": false,
       "id": "mscp.os_policy_banner_ssh_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -8995,6 +9517,9 @@
       "has_odv": false,
       "id": "mscp.os_power_nap_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -9029,6 +9554,9 @@
       "has_odv": false,
       "id": "mscp.os_power_nap_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Enable Power Nap"
     },
@@ -9059,6 +9587,9 @@
       "has_odv": false,
       "id": "mscp.os_predictable_behavior",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -9094,6 +9625,9 @@
       "has_odv": false,
       "id": "mscp.os_prevent_priv_execution",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -9130,6 +9664,9 @@
       "has_odv": false,
       "id": "mscp.os_prevent_priv_functions",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9169,6 +9706,9 @@
       "has_odv": false,
       "id": "mscp.os_prevent_unauthorized_disclosure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9208,6 +9748,9 @@
       "has_odv": false,
       "id": "mscp.os_privacy_principle_minimization",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_privacy",
         "n_a"
@@ -9256,6 +9799,9 @@
       "has_odv": false,
       "id": "mscp.os_privacy_setup_prompt_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -9294,6 +9840,9 @@
       "has_odv": false,
       "id": "mscp.os_prohibit_remote_activation_collab_devices",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9334,6 +9883,9 @@
       "has_odv": false,
       "id": "mscp.os_protect_dos_attacks",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -9383,6 +9935,9 @@
       "has_odv": false,
       "id": "mscp.os_provide_automated_account_management",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -9419,6 +9974,9 @@
       "has_odv": false,
       "id": "mscp.os_provide_disconnect_remote_access",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -9444,6 +10002,9 @@
       "has_odv": false,
       "id": "mscp.os_rapid_security_response_allow",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9479,6 +10040,9 @@
       "has_odv": false,
       "id": "mscp.os_rapid_security_response_removal_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9519,6 +10083,9 @@
       "has_odv": false,
       "id": "mscp.os_reauth_devices_change_authenticators",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9558,6 +10125,9 @@
       "has_odv": false,
       "id": "mscp.os_reauth_privilege",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -9594,6 +10164,9 @@
       "has_odv": false,
       "id": "mscp.os_reauth_users_change_authenticators",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9648,6 +10221,9 @@
       "has_odv": false,
       "id": "mscp.os_recovery_lock_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9689,6 +10265,9 @@
       "has_odv": false,
       "id": "mscp.os_remote_access_methods",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -9716,6 +10295,9 @@
       "has_odv": false,
       "id": "mscp.os_removable_media_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -9752,6 +10334,9 @@
       "has_odv": false,
       "id": "mscp.os_remove_software_components_after_updates",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -9787,6 +10372,9 @@
       "has_odv": false,
       "id": "mscp.os_required_crypto_module",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -9872,6 +10460,9 @@
       "has_odv": false,
       "id": "mscp.os_root_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -9948,6 +10539,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_advertising_privacy_protection_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -9975,6 +10569,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_clear_history_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Ensure Clearing of Browsing History in Safari Is Disabled"
     },
@@ -10048,6 +10645,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_open_safe_downloads_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -10115,6 +10715,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_prevent_cross-site_tracking_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -10142,6 +10745,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_private_browsing_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "none"
       ],
@@ -10174,6 +10780,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_reader_summary_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10251,6 +10860,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_show_full_website_address_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -10318,6 +10930,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_show_status_bar_enabled",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -10385,6 +11000,9 @@
       "has_odv": false,
       "id": "mscp.os_safari_warn_fraudulent_website_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -10417,6 +11035,9 @@
       "has_odv": false,
       "id": "mscp.os_screensaver_loginwindow_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10445,6 +11066,9 @@
       "has_odv": false,
       "id": "mscp.os_screenshots_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -10509,6 +11133,9 @@
       "has_odv": false,
       "id": "mscp.os_secure_boot_verify",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -10563,6 +11190,9 @@
       "has_odv": false,
       "id": "mscp.os_secure_enclave",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cmmc_lvl2",
         "cnssi-1253_high",
@@ -10600,6 +11230,9 @@
       "has_odv": false,
       "id": "mscp.os_secure_name_resolution",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -10640,6 +11273,9 @@
       "has_odv": false,
       "id": "mscp.os_separate_functionality",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10690,6 +11326,9 @@
       "has_odv": false,
       "id": "mscp.os_setup_assistant_filevault_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10729,6 +11368,9 @@
       "has_odv": false,
       "id": "mscp.os_show_filename_extensions_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -10816,6 +11458,9 @@
       "has_odv": false,
       "id": "mscp.os_sip_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10873,6 +11518,9 @@
       "has_odv": false,
       "id": "mscp.os_siri_prompt_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10920,6 +11568,9 @@
       "has_odv": false,
       "id": "mscp.os_skip_apple_intelligence_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -10977,6 +11628,9 @@
       "has_odv": false,
       "id": "mscp.os_skip_screen_time_prompt_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -11029,6 +11683,9 @@
       "has_odv": false,
       "id": "mscp.os_skip_unlock_with_watch_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11085,6 +11742,9 @@
       "has_odv": false,
       "id": "mscp.os_sleep_and_display_sleep_apple_silicon_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "arm64",
         "cisv8"
@@ -11145,6 +11805,9 @@
       "has_odv": true,
       "id": "mscp.os_software_update_deferral",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [],
       "title": "Ensure Software Update Deferment Is Less Than or Equal to $ODV Days"
     },
@@ -11190,6 +11853,9 @@
       "has_odv": false,
       "id": "mscp.os_ssh_fips_compliant",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11245,6 +11911,9 @@
       "has_odv": true,
       "id": "mscp.os_ssh_server_alive_count_max_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11298,6 +11967,9 @@
       "has_odv": true,
       "id": "mscp.os_ssh_server_alive_interval_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11351,6 +12023,9 @@
       "has_odv": true,
       "id": "mscp.os_sshd_channel_timeout_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11404,6 +12079,9 @@
       "has_odv": true,
       "id": "mscp.os_sshd_client_alive_count_max_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11457,6 +12135,9 @@
       "has_odv": true,
       "id": "mscp.os_sshd_client_alive_interval_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11510,6 +12191,9 @@
       "has_odv": false,
       "id": "mscp.os_sshd_fips_compliant",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11565,6 +12249,9 @@
       "has_odv": true,
       "id": "mscp.os_sshd_login_grace_time_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "cmmc_lvl2",
@@ -11601,6 +12288,9 @@
       "has_odv": false,
       "id": "mscp.os_sshd_per_source_penalties_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -11654,6 +12344,9 @@
       "has_odv": false,
       "id": "mscp.os_sshd_permit_root_login_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "cnssi-1253_high",
@@ -11704,6 +12397,9 @@
       "has_odv": true,
       "id": "mscp.os_sshd_unused_connection_timeout_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11742,6 +12438,9 @@
       "has_odv": false,
       "id": "mscp.os_store_encrypted_passwords",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11839,6 +12538,9 @@
       "has_odv": false,
       "id": "mscp.os_sudo_log_enforce",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -11925,6 +12627,9 @@
       "has_odv": true,
       "id": "mscp.os_sudo_timeout_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -12007,6 +12712,9 @@
       "has_odv": false,
       "id": "mscp.os_sudoers_timestamp_type_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12051,6 +12759,9 @@
       "has_odv": false,
       "id": "mscp.os_supported_operating_system",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -12083,6 +12794,9 @@
       "has_odv": false,
       "id": "mscp.os_system_read_only",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -12147,6 +12861,9 @@
       "has_odv": false,
       "id": "mscp.os_system_wide_applications_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -12214,6 +12931,9 @@
       "has_odv": false,
       "id": "mscp.os_terminal_secure_keyboard_enable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -12246,6 +12966,9 @@
       "has_odv": false,
       "id": "mscp.os_terminate_session",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "inherent"
       ],
@@ -12301,6 +13024,9 @@
       "has_odv": false,
       "id": "mscp.os_tftpd_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12398,6 +13124,9 @@
       "has_odv": false,
       "id": "mscp.os_time_server_enabled",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12453,6 +13182,9 @@
       "has_odv": false,
       "id": "mscp.os_touchid_prompt_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12494,6 +13226,9 @@
       "has_odv": false,
       "id": "mscp.os_unique_identification",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12582,6 +13317,9 @@
       "has_odv": true,
       "id": "mscp.os_unlock_active_user_session_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12638,6 +13376,9 @@
       "has_odv": false,
       "id": "mscp.os_user_app_installation_prohibit",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cmmc_lvl2",
         "cnssi-1253_high",
@@ -12689,6 +13430,9 @@
       "has_odv": false,
       "id": "mscp.os_uucp_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12731,6 +13475,9 @@
       "has_odv": false,
       "id": "mscp.os_verify_remote_disconnection",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cnssi-1253_high",
         "cnssi-1253_low",
@@ -12757,6 +13504,9 @@
       "has_odv": false,
       "id": "mscp.os_visual_intelligence_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_low",
@@ -12812,6 +13562,9 @@
       "has_odv": false,
       "id": "mscp.os_world_writable_library_folder_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -12871,6 +13624,9 @@
       "has_odv": false,
       "id": "mscp.os_world_writable_system_folder_configure",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -12942,6 +13698,9 @@
       "has_odv": false,
       "id": "mscp.os_writing_tools_disable",
       "section": "os",
+      "section_path": [
+        "os"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -12985,6 +13744,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_50_percent",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "permanent"
@@ -13033,6 +13795,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_account_inactivity_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13110,6 +13875,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_account_lockout_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13191,6 +13959,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_account_lockout_timeout_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13258,6 +14029,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_alpha_numeric_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13327,6 +14101,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_custom_regex_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13368,6 +14145,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_emergency_accounts_disable",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -13404,6 +14184,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_force_password_change",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13473,6 +14256,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_history_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13515,6 +14301,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_lower_case_character_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -13590,6 +14379,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_max_lifetime_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13686,6 +14478,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_minimum_length_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13743,6 +14538,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_minimum_lifetime_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13784,6 +14582,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_prevent_dictionary_words",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "permanent"
       ],
@@ -13816,6 +14617,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_simple_sequence_disable",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13885,6 +14689,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_special_character_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -13926,6 +14733,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_temporary_accounts_disable",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -13977,6 +14787,9 @@
       "has_odv": false,
       "id": "mscp.pwpolicy_temporary_or_emergency_accounts_disable",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-53r5_high",
         "800-53r5_moderate",
@@ -14013,6 +14826,9 @@
       "has_odv": true,
       "id": "mscp.pwpolicy_upper_case_character_enforce",
       "section": "pwpolicy",
+      "section_path": [
+        "pwpolicy"
+      ],
       "tags": [
         "800-171",
         "cnssi-1253_high",
@@ -14048,6 +14864,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_cis_manual_15",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "cisv8",
         "supplemental"
@@ -14080,6 +14899,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_cis_manual_26",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "cisv8",
         "supplemental"
@@ -14112,6 +14934,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_cis_manual_27",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "cisv8",
         "supplemental"
@@ -14145,6 +14970,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_controls",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14186,6 +15014,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_filevault",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14227,6 +15058,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_firewall_pf",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14268,6 +15102,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_password_policy",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14309,6 +15146,9 @@
       "has_odv": false,
       "id": "mscp.supplemental_smartcard",
       "section": "supplemental",
+      "section_path": [
+        "supplemental"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14389,6 +15229,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_airplay_receiver_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14445,6 +15288,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_apple_watch_unlock_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14539,6 +15385,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_automatic_login_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14595,6 +15444,9 @@
       "has_odv": true,
       "id": "mscp.system_settings_automatic_logout_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14633,6 +15485,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_background_security_improvement_removal_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14688,6 +15543,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_biometric_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14743,6 +15601,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_bluetooth_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14793,6 +15654,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_bluetooth_menu_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -14840,6 +15704,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_bluetooth_settings_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14920,6 +15787,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_bluetooth_sharing_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -14989,6 +15859,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_content_caching_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15073,6 +15946,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_critical_update_install_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15162,6 +16038,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_diagnostics_reports_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15235,6 +16114,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_external_intelligence_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15313,6 +16195,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_external_intelligence_sign_in_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15411,6 +16296,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_filevault_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15482,6 +16370,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_find_my_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15571,6 +16462,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_firewall_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15648,6 +16542,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_firewall_stealth_mode_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15721,6 +16618,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_gatekeeper_identified_developers_allowed",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15778,6 +16678,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_gatekeeper_override_disallow",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15844,6 +16747,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_guest_access_smb_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15940,6 +16846,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_guest_account_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -15997,6 +16906,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_hot_corners_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16058,6 +16970,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_hot_corners_secure",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "cisv8",
@@ -16142,6 +17057,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_improve_assistive_voice_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16231,6 +17149,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_improve_search_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16320,6 +17241,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_improve_siri_dictation_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16405,6 +17329,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_install_macos_updates_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -16437,6 +17364,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_internet_accounts_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16526,6 +17456,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_internet_sharing_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16583,6 +17516,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_location_services_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16638,6 +17574,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_location_services_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -16685,6 +17624,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_location_services_menu_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [],
       "title": "Ensure Location Services Is In the Menu Bar"
     },
@@ -16758,6 +17700,9 @@
       "has_odv": true,
       "id": "mscp.system_settings_loginwindow_loginwindowtext_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -16829,6 +17774,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_loginwindow_prompt_username_password_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16905,6 +17853,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_media_sharing_disabled",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -16994,6 +17945,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_password_hints_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17081,6 +18035,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_personalized_advertising_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17170,6 +18127,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_printer_sharing_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17258,6 +18218,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_rae_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17347,6 +18310,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_remote_management_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17435,6 +18401,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_screen_sharing_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17524,6 +18493,9 @@
       "has_odv": true,
       "id": "mscp.system_settings_screensaver_ask_for_password_delay_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17602,6 +18574,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_screensaver_password_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17687,6 +18662,9 @@
       "has_odv": true,
       "id": "mscp.system_settings_screensaver_timeout_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17717,6 +18695,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_siri_ai_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17799,6 +18780,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_siri_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17837,6 +18821,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_siri_listen_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -17884,6 +18871,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_siri_settings_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -17972,6 +18962,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_smbd_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18049,6 +19042,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_software_update_app_update_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -18124,6 +19120,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_software_update_download_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -18173,6 +19172,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_software_update_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "cisv8"
@@ -18261,6 +19263,9 @@
       "has_odv": true,
       "id": "mscp.system_settings_softwareupdate_current",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18334,6 +19339,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_ssh_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18376,6 +19384,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_ssh_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18464,6 +19475,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_system_wide_preferences_configure",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18520,6 +19534,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_time_machine_auto_backup_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -18587,6 +19604,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_time_machine_encrypted_configure",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -18674,6 +19694,9 @@
       "has_odv": true,
       "id": "mscp.system_settings_time_server_configure",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18769,6 +19792,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_time_server_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18824,6 +19850,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_token_removal_enforce",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18862,6 +19891,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_touch_id_settings_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18918,6 +19950,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_usb_restricted_mode",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -18986,6 +20021,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_wake_network_access_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],
@@ -19033,6 +20071,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_wallet_applepay_settings_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -19074,6 +20115,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_wifi_disable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -19116,6 +20160,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_wifi_disable_when_connected_to_ethernet",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "800-171",
         "800-53r5_high",
@@ -19160,6 +20207,9 @@
       "has_odv": false,
       "id": "mscp.system_settings_wifi_menu_enable",
       "section": "system_settings",
+      "section_path": [
+        "system_settings"
+      ],
       "tags": [
         "cisv8"
       ],

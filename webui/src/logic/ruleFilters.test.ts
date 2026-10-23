@@ -32,6 +32,7 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
     title: 'Enable Gatekeeper',
     targetKeys: ['macOS'],
     section: 'os',
+    sectionPath: ['os'],
     sourceName: 'mscp',
     releaseTag: 'release_27.0',
     assessment: { status: 'automated', manual_reason: null },

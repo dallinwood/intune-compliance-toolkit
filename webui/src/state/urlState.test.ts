@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { benchmarkFacetValue } from '../logic/ruleFilters'
-import { DEFAULT_PAGE_SIZE, parseUrlState, serializeUrlState, type UrlDefaults, type UrlState } from './urlState'
+import { DEFAULT_PAGE_SIZE, PAGE_SIZES, parsePageSize, parseUrlState, serializeUrlState, type UrlDefaults, type UrlState } from './urlState'
 
 const defaults: UrlDefaults = { automation: 'all', size: DEFAULT_PAGE_SIZE }
 
@@ -64,10 +64,22 @@ describe('urlState', () => {
     expect(parseUrlState('?page=7').page).toBe(7)
   })
 
-  it('falls back to the default size for a size that is neither a positive number nor all', () => {
-    for (const badSize of ['abc', '0', '-5', '']) {
+  it('falls back to the default size for a size that is not one of the offered sizes', () => {
+    for (const badSize of ['abc', '0', '-5', '', '7', '1000']) {
       expect(parseUrlState(`?size=${badSize}`).size).toBe(DEFAULT_PAGE_SIZE)
     }
+  })
+
+  it('accepts each offered page size', () => {
+    for (const size of PAGE_SIZES) expect(parseUrlState(`?size=${size}`).size).toBe(size)
+    expect(PAGE_SIZES).toEqual([25, 50, 100, 200, 'all'])
+  })
+
+  it('parses a page size on its own, returning null for anything not offered', () => {
+    expect(parsePageSize('200')).toBe(200)
+    expect(parsePageSize('all')).toBe('all')
+    expect(parsePageSize('30')).toBeNull()
+    expect(parsePageSize(null)).toBeNull()
   })
 
   it('drops empty values', () => {

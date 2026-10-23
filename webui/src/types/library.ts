@@ -112,6 +112,7 @@ export interface IndexEntry {
   title: string
   file: string
   section: string
+  section_path: string[]
   assessment: Assessment
   architecture: Architecture
   applicability: Applicability

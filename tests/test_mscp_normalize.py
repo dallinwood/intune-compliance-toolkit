@@ -372,7 +372,7 @@ def test_index_entry_fields():
     rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     entry = index_entry(rule, "rules/os_gatekeeper_enable.json")
     assert set(entry) == {
-        "id", "title", "file", "section", "assessment", "architecture",
+        "id", "title", "file", "section", "section_path", "assessment", "architecture",
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
@@ -385,6 +385,14 @@ def test_index_entry_section_comes_from_section_path():
     entry = index_entry(rule, "rules/x.json")
     assert entry["section"] == rule["section_path"][0] == "system_settings"
     assert "platform" not in entry
+
+
+def test_index_entry_carries_the_full_section_path():
+    rule = normalize(GATEKEEPER_YAML, "rules/system_settings/x.yaml")
+    rule["section_path"] = ["Guideline", "Section", "Topic"]
+    entry = index_entry(rule, "rules/x.json")
+    assert entry["section_path"] == ["Guideline", "Section", "Topic"]
+    assert entry["section"] == "Guideline"
 
 
 def test_section_path_is_the_upstream_folder():

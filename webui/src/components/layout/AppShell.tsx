@@ -94,7 +94,7 @@ export function AppShell({
               <FilterSidebar rows={rows} />
             </div>
             <main className="flex-1 overflow-y-auto">
-              <RuleTable rows={filteredRows} isStale={isStale} />
+              <RuleTable rows={filteredRows} isStale={isStale} search={deferredFilters.search} />
             </main>
           </div>
         ) : (

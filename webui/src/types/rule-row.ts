@@ -9,6 +9,8 @@ export interface RuleRow {
   title: string
   targetKeys: string[]
   section: string
+  // Outermost first; the rule sits at the end of it.
+  sectionPath: string[]
   sourceName: string
   releaseTag: string
   assessment: Assessment

@@ -99,6 +99,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
   await expect(ruleCount(page)).toHaveText(`${expectedCount} of 1493 rules`)
+  await page.getByRole('button', { name: 'Expand all' }).click()
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
 })
 
@@ -119,10 +120,12 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   await page.getByRole('checkbox', { name: 'macOS 15', exact: true }).click()
 
+  await searchBox(page).fill(stigOnlyOnFifteen.id.replace('mscp.', ''))
   const benchmarkCell = rowOf(stigOnlyOnFifteen.id).locator('td').last()
   await expect(benchmarkCell).toHaveText('DISA STIG (medium)')
   await expect(benchmarkCell).not.toContainText('macOS 27')
 
+  await searchBox(page).fill(inNoBenchmark.id.replace('mscp.', ''))
   await expect(rowOf(inNoBenchmark.id).locator('td').last()).toHaveText('Not in a benchmark')
 })
 
@@ -184,6 +187,7 @@ test('Version "None" and Target "None" filter to the rules without a version or 
   await page.getByRole('checkbox', { name: 'macOS', exact: true }).click()
   await facetOptionNamedNone('Version').click()
   await expect(ruleCount(page)).toHaveText('2 of 1493 rules')
+  await page.getByRole('button', { name: 'Expand all' }).click()
   await expect(page.getByText('os_gatekeeper_rearm', { exact: true })).toBeVisible()
   await expect(page.getByText('os_firewall_log_enable', { exact: true })).toBeVisible()
   await expect(page.locator('table tbody tr').first().locator('td').last()).toHaveText('No version listed')
@@ -197,6 +201,8 @@ test('an ISM benchmark filters to ISM rules and its benchmarks show in the table
   await expect(ruleCount(page)).not.toHaveText('1493 of 1493 rules')
   await expect(ruleCount(page)).not.toHaveText('0 of 1493 rules')
 
+  await page.getByRole('button', { name: 'Expand all' }).click()
+  await expect(page.locator('table tbody tr td .font-mono').first()).toBeVisible()
   const ruleIds = await page.locator('table tbody tr td .font-mono').allTextContents()
   expect(ruleIds.length).toBeGreaterThan(0)
   expect(ruleIds.filter((ruleId) => !ruleId.startsWith('ism-'))).toEqual([])
@@ -869,4 +875,162 @@ test('Version None and its page and size are restored from the URL', async ({ pa
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
   expect(new URL(page.url()).searchParams.has('page')).toBe(false)
   expect(new URL(page.url()).searchParams.get('size')).toBe('100')
+})
+
+const ruleTable = (page: Page) => page.getByTestId('rule-table')
+const ruleRows = (page: Page) => ruleTable(page).locator('table tbody tr')
+const sectionHeadings = (page: Page, level: number) => ruleTable(page).getByRole('heading', { level })
+const pageSizeSelect = (page: Page) => page.getByLabel('Rules per page')
+const pageStatus = (page: Page) => page.getByText(/^Page \d+ of \d+$/)
+
+test.describe('section tree and paging', () => {
+  test('the initial view shows only the root section headers, all collapsed', async ({ page }) => {
+    await openLibrary(page)
+    // 7 mSCP sections and 23 ISM guidelines.
+    await expect(sectionHeadings(page, 2)).toHaveCount(30)
+    await expect(sectionHeadings(page, 3)).toHaveCount(0)
+    await expect(ruleRows(page)).toHaveCount(0)
+    await expect(ruleTable(page).getByRole('button', { expanded: true })).toHaveCount(0)
+    await expect(sectionHeadings(page, 2).first()).toHaveText(/^Operating system \(200\)$/)
+    await expect(pageStatus(page)).toHaveText('Page 1 of 1')
+  })
+
+  test('expand and collapse one level walk the mSCP and ISM sections level by level', async ({ page }) => {
+    await openLibrary(page, '/?size=200')
+    await page.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
+    await page.getByRole('checkbox', { name: 'Guidelines for email', exact: true }).click()
+    await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
+    const ismRuleIds = ruleTable(page).locator('.font-mono', { hasText: /^ism-/ })
+
+    await page.getByRole('button', { name: 'Expand one level' }).click()
+    await expect(ruleTable(page).getByText('audit_acls_files_configure', { exact: true })).toBeVisible()
+    await expect(sectionHeadings(page, 3)).toHaveText([/^Email gateways and servers \(\d+\)$/, /^Email usage \(\d+\)$/])
+    await expect(ismRuleIds).toHaveCount(0)
+
+    await page.getByRole('button', { name: 'Expand one level' }).click()
+    await expect(sectionHeadings(page, 4).first()).toBeVisible()
+    await expect(ismRuleIds).toHaveCount(0)
+
+    await page.getByRole('button', { name: 'Expand one level' }).click()
+    await expect(ismRuleIds).toHaveCount(26)
+    await expect(ruleRows(page)).toHaveCount(57)
+
+    await page.getByRole('button', { name: 'Collapse one level' }).click()
+    await expect(ismRuleIds).toHaveCount(0)
+    await expect(sectionHeadings(page, 4).first()).toBeVisible()
+    await expect(ruleRows(page)).toHaveCount(31)
+
+    await page.getByRole('button', { name: 'Collapse all' }).click()
+    await expect(ruleRows(page)).toHaveCount(0)
+    await expect(sectionHeadings(page, 3)).toHaveCount(0)
+  })
+
+  test('a section header toggles its own section', async ({ page }) => {
+    await openLibrary(page)
+    const auditing = ruleTable(page).getByRole('button', { name: /^Auditing \(31\)$/ })
+    await auditing.click()
+    await expect(auditing).toHaveAttribute('aria-expanded', 'true')
+    await expect(ruleRows(page)).toHaveCount(31)
+    await auditing.click()
+    await expect(ruleRows(page)).toHaveCount(0)
+  })
+
+  test('the paging bar pages through the rules with previous, next, a page jump and the size select', async ({ page }) => {
+    await openLibrary(page)
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 1 of 30')
+    await expect(ruleRows(page)).toHaveCount(50)
+    await expect(page.getByRole('button', { name: 'Previous page' })).toBeDisabled()
+
+    await page.getByRole('button', { name: 'Next page' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 2 of 30')
+    await expect(ruleRows(page)).toHaveCount(50)
+    // Page 2 starts inside Operating system, so its header repeats at the top.
+    await expect(ruleTable(page).getByRole('heading').first()).toHaveText(/^Operating system/)
+
+    await page.getByRole('button', { name: 'Previous page' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 1 of 30')
+
+    const pageNumber = page.getByRole('spinbutton', { name: 'Page number' })
+    await pageNumber.fill('30')
+    await pageNumber.press('Enter')
+    await expect(pageStatus(page)).toHaveText('Page 30 of 30')
+    await expect(ruleRows(page)).toHaveCount(1493 - 29 * 50)
+    await expect(page.getByRole('button', { name: 'Next page' })).toBeDisabled()
+
+    await pageNumber.fill('999')
+    await pageNumber.blur()
+    await expect(pageStatus(page)).toHaveText('Page 30 of 30')
+    await expect(pageNumber).toHaveValue('30')
+
+    await pageNumber.fill('0')
+    await pageNumber.press('Enter')
+    await expect(pageStatus(page)).toHaveText('Page 1 of 30')
+
+    await pageSizeSelect(page).selectOption('200')
+    await expect(pageStatus(page)).toHaveText('Page 1 of 8')
+    await expect(ruleRows(page)).toHaveCount(200)
+  })
+
+  test('infinite scroll appends rule rows as the end of the table scrolls into view', async ({ page }) => {
+    await openLibrary(page)
+    await pageSizeSelect(page).selectOption({ label: 'Infinite scroll' })
+    expect(new URL(page.url()).searchParams.get('size')).toBe('all')
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(ruleRows(page)).toHaveCount(100)
+    await expect(pageStatus(page)).toHaveCount(0)
+
+    await page.getByTestId('infinite-scroll-sentinel').scrollIntoViewIfNeeded()
+    await expect(ruleRows(page)).toHaveCount(200)
+  })
+
+  test('a search opens every section holding a match, and clearing it restores the stored collapse state', async ({ page }) => {
+    await openLibrary(page, '/?size=200')
+    await page.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
+    await page.getByRole('checkbox', { name: 'Guidelines for email', exact: true }).click()
+    await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
+    await page.getByRole('button', { name: 'Expand one level' }).click()
+    await expect(ruleRows(page)).toHaveCount(31)
+    await expect(sectionHeadings(page, 3)).toHaveCount(2)
+
+    await searchBox(page).fill('ism-0267')
+    await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+    await expect(ruleTable(page).getByText('ism-0267', { exact: true })).toBeVisible()
+    await expect(sectionHeadings(page, 4)).toHaveText([/^Webmail services/])
+
+    await searchBox(page).fill('')
+    await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
+    await expect(ruleTable(page).getByText('ism-0267', { exact: true })).toHaveCount(0)
+    await expect(ruleRows(page)).toHaveCount(31)
+    await expect(sectionHeadings(page, 3)).toHaveCount(2)
+    await expect(sectionHeadings(page, 4)).toHaveCount(0)
+
+    // Facet filters do not open sections.
+    await page.getByRole('button', { name: 'Collapse all' }).click()
+    await page.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
+    await expect(ruleCount(page)).toHaveText('26 of 1493 rules')
+    await expect(ruleRows(page)).toHaveCount(0)
+  })
+
+  test('the page and size persist in the URL, and the size is remembered for a visit without one', async ({ page }) => {
+    await openLibrary(page)
+    await pageSizeSelect(page).selectOption('100')
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await page.getByRole('button', { name: 'Next page' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 2 of 15')
+    let parameters = new URL(page.url()).searchParams
+    expect(parameters.get('page')).toBe('2')
+    expect(parameters.get('size')).toBe('100')
+
+    await page.reload()
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+    await expect(pageSizeSelect(page)).toHaveValue('100')
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 2 of 15')
+    parameters = new URL(page.url()).searchParams
+    expect(parameters.get('page')).toBe('2')
+
+    await openLibrary(page, '/')
+    await expect(pageSizeSelect(page)).toHaveValue('100')
+  })
 })
