@@ -1,24 +1,36 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "27.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -36,9 +48,9 @@
     }
   },
   "discussion": "This works only with supervised devices and allows to disable Apple Game Center. The rationale is Game Center is using Apple Account and will share data on iCloud based services, therefore, Game Center _MUST_ be disabled.\n\nThis setting also prohibits functionality of adding friends to Game Center.\n\nThis requirement helps ensure that organizational contact data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.icloud_game_center_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "cis": {
       "controls_v8": [
@@ -128,7 +140,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "icloud"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -140,7 +155,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/icloud/icloud_game_center_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "icloud_game_center_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/icloud/icloud_game_center_disable.yaml"
   },
   "tags": [

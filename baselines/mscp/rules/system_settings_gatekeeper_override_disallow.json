@@ -1,27 +1,39 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      },
-      {
-        "name": "nlmapgov_base",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      },
-      {
-        "name": "nlmapgov_base",
-        "severity": null
-      }
-    ],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        },
+        {
+          "name": "nlmapgov_base",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        },
+        {
+          "name": "nlmapgov_base",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -39,9 +51,9 @@
     }
   },
   "discussion": "Gatekeeper _MUST_ be configured with a configuration profile to prevent normal users from overriding its settings.\n\nIf users are allowed to disable Gatekeeper or set it to a less restrictive setting, malware could be introduced into the system.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.system_settings_gatekeeper_override_disallow",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bzk": {
       "bio": [
@@ -97,7 +109,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "system_settings"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -109,7 +124,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/system_settings/system_settings_gatekeeper_override_disallow.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "system_settings_gatekeeper_override_disallow",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_gatekeeper_override_disallow.yaml"
   },
   "tags": [

@@ -1,48 +1,60 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "27.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -60,6 +72,7 @@
     }
   },
   "discussion": "The system _MUST_ be configured to enforce a maximum password lifetime limit of $ODV days.\n\nThis rule ensures that users are forced to change their passwords frequently enough to prevent malicious users from gaining and maintaining access to the system.\n\nNOTE: To comply with Executive Order 14028, “Improving the Nation's Cybersecurity”, OMB M-22-09, “Moving the U.S. Government Toward Zero Trust Cybersecurity Principles”, and NIST SP-800-63b, “Digital Identity Guidelines: Authentication and Lifecycle Management” federal, military, and intelligence communities must adopt the following configuration settings. Password policies must not require the use of complexity policies such as upper characters, lower characters, or special characters. Password policies must also not require the use of regular rotation. Password policies should define a minimum length. Multifactor authentication should be used where ever possible.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_max_lifetime_enforce",
   "odv": {
     "by_benchmark": {
@@ -74,7 +87,6 @@
       "min": 1
     }
   },
-  "platform": "macOS",
   "references": {
     "cis": {
       "benchmark": {
@@ -175,7 +187,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "pwpolicy"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -187,7 +202,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/pwpolicy/pwpolicy_max_lifetime_enforce.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "pwpolicy_max_lifetime_enforce",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/pwpolicy/pwpolicy_max_lifetime_enforce.yaml"
   },
   "tags": [

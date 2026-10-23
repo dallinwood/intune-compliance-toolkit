@@ -1,9 +1,21 @@
 {
-  "applicability": {
-    "15.0": [],
-    "26.0": [],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": "supplemental",
@@ -11,9 +23,9 @@
   },
   "check": null,
   "discussion": "The supplemental guidance found in this section is applicable for the following rules:\n\n*\tos_firewall_default_deny_require\n\nmacOS contains an application layer firewall (ALF) and a packet filter (PF) firewall.\n\n  * The ALF can block incoming traffic on a per-application basis and prevent applications from gaining control of network ports, but it cannot be configured to block outgoing traffic.\n  ** More information on the ALF can be found here: https://support.apple.com/en-ca/HT201642\n\n  *  The PF firewall can manipulate virtually any packet data and is highly configurable.\n  ** More information on the BF firewall can be found here: https://www.openbsd.org/faq/pf/index.html\n\nBelow is a script that configures ALF and the PF firewall to meet the requirements defined in NIST SP 800-53 (Rev. 5). The script will make sure the application layer firewall is enabled, set logging to \"detailed\", set built-in signed applications to automatically receive incoming connections, and set downloaded signed applications to automatically receive incoming connections. It will then create a custom rule set and copy `com.apple.pfctl.plist` from `/System/Library/LaunchDaemons/` into the `/Library/LaunchDaemons` folder and name it `800-53.pfctl.plist`. This is done to not conflict with the system's pf ruleset.\n\nThe custom pf rules are created at `/etc/pf.anchors/800_53_pf_anchors`.\n\nThe ruleset will block connections on the following ports:\n\n[%header,width=\"100%\",cols=\"3,7\"]\n|===\n^.^|Port\n^.^|Service\n\n|548\n|Apple File Protocol (AFP)\n\n|1900\n|Bonjour\n\n|79\n|Finger\n\n|20, 21\n|File Transfer Protocol (FTP)\n\n|80\n|HTTP\n\n|icmp\n|ping\n\n|143\n|Internet Message Access Protocol (IMAP)\n\n|993\n|Internet Message Access Protocol over SSL (IMAPS)\n\n|3689\n|Music Sharing\n\n|5353\n|mDNSResponder\n\n|2049\n|Network File System (NFS)\n\n|49152\n|Optical Media Sharing\n\n|110\n|Post Office Protocol (POP3)\n\n|995\n|Post Office Protocol Secure (POP3S)\n\n|631\n|Printer Sharing\n\n|3031\n|Remote Apple Events\n\n|5900\n|Screen Sharing\n\n|137, 138, 138, 445\n|Samba (SMB)\n\n|25\n|Simple Mail Transfer Protocol (SMTP)\n\n|22\n|Secure Shell (SSH)\n\n|23\n|Telnet\n\n|69\n|Trivial File Transfer Protocol (TFTP)\n\n|540\n|Unix-to-Unix Copy (UUCP)\n\n|===\n\nFor more on configuring the PF firewall check out the man pages on `pf.conf` and `pfctl`.\n\n[source,bash]\n----\ninclude::../../includes/enablePF-mscp.sh[]\n----\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.supplemental_firewall_pf",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "nist": {}
   },
@@ -27,7 +39,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "supplemental"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -39,7 +54,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/supplemental/supplemental_firewall_pf.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "supplemental_firewall_pf",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/supplemental/supplemental_firewall_pf.yaml"
   },
   "tags": [

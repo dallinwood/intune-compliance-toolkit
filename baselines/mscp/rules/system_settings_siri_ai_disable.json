@@ -1,7 +1,11 @@
 {
-  "applicability": {
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -19,9 +23,9 @@
     }
   },
   "discussion": "Support for Siri and Siri AI is non-essential and _MUST_ be disabled to prevent organizational data from being synchronized to Apple servers.\n\nApple's Siri service does not provide an organization with enough control over the storage and access of data, and, therefore, automated synchronization _MUST_ be controlled by an organization approved service. Apple Intelligence features such as Siri AI that use off device AI _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.\n\n[NOTE]\n=====\nApple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.ironwood.support with the key allowSiri3489 will also block the use of SiriAI.\n=====\n\n[NOTE]\n=====\nDisabling the use of SiriAI may also disable the use of other Apple Intelligence features that use SiriAI.\n=====\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.system_settings_siri_ai_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "cis": {
       "controls_v8": [
@@ -102,7 +106,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "system_settings"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -114,7 +121,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/system_settings/system_settings_siri_ai_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "system_settings_siri_ai_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_siri_ai_disable.yaml"
   },
   "tags": [

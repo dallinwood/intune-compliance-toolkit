@@ -1,40 +1,52 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "high"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      },
-      {
-        "name": "nlmapgov_base",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "high"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      },
-      {
-        "name": "nlmapgov_base",
-        "severity": null
-      }
-    ],
-    "27.0": [
-      {
-        "name": "disa_stig",
-        "severity": "high"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "high"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        },
+        {
+          "name": "nlmapgov_base",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "high"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        },
+        {
+          "name": "nlmapgov_base",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "high"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -52,9 +64,9 @@
     }
   },
   "discussion": "The information system implements cryptographic mechanisms to authenticate software prior to installation.\n\nGatekeeper settings must be configured correctly to only allow the system to run applications downloaded from the Mac App Store or applications signed with a valid Apple Developer ID code. Administrator users will still have the option to override these settings on a per-app basis. Gatekeeper is a security feature that ensures that applications must be digitally signed by an Apple-issued certificate in order to run. Digital signatures allow the macOS to verify that the application has not been modified by a malicious third party.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.system_settings_gatekeeper_identified_developers_allowed",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bzk": {
       "bio": [
@@ -137,7 +149,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "system_settings"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -149,7 +164,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/system_settings/system_settings_gatekeeper_identified_developers_allowed.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "system_settings_gatekeeper_identified_developers_allowed",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_gatekeeper_identified_developers_allowed.yaml"
   },
   "tags": [

@@ -1,56 +1,68 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      }
-    ],
-    "27.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -68,9 +80,9 @@
     }
   },
   "discussion": "Printer Sharing _MUST_ be disabled.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.system_settings_printer_sharing_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bzk": {
       "bio": [
@@ -165,7 +177,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "system_settings"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -177,7 +192,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/system_settings/system_settings_printer_sharing_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "system_settings_printer_sharing_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_printer_sharing_disable.yaml"
   },
   "tags": [

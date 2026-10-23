@@ -86,7 +86,7 @@ def test_manifest_entry_matches_lock(workspace):
     sources_dir, baselines_dir = workspace
     run_import(sources_dir, baselines_dir, "--offline")
     manifest = json.loads((baselines_dir / "_manifest.json").read_text(encoding="utf-8"))
-    assert manifest["schema_version"] == 3
+    assert manifest["schema_version"] == 4
     (entry,) = manifest["sources"]
     assert entry["name"] == "mscp"
     assert entry["display_name"] == "NIST macOS Security Compliance Project"
@@ -135,7 +135,7 @@ def test_manifest_preserves_other_sources(workspace):
         "rule_count": 0,
     }
     (baselines_dir / "_manifest.json").write_text(
-        json.dumps({"schema_version": 3, "sources": [windows_source]}), encoding="utf-8"
+        json.dumps({"schema_version": 4, "sources": [windows_source]}), encoding="utf-8"
     )
     assert run_import(sources_dir, baselines_dir, "--offline") == 0
     manifest = json.loads((baselines_dir / "_manifest.json").read_text(encoding="utf-8"))
@@ -295,7 +295,7 @@ def test_tag_failure_in_fetch_leaves_everything_untouched(workspace, monkeypatch
 
 @pytest.mark.parametrize(
     "manifest_text",
-    ["not json", "{}", "[]", '{"schema_version": 3, "sources": [{"display_name": "x"}]}'],
+    ["not json", "{}", "[]", '{"schema_version": 4, "sources": [{"display_name": "x"}]}'],
 )
 def test_malformed_existing_manifest_exits_one(workspace, capsys, manifest_text):
     sources_dir, baselines_dir = workspace

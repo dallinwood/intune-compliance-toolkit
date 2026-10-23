@@ -1,9 +1,21 @@
 {
-  "applicability": {
-    "15.0": [],
-    "26.0": [],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": "permanent",
@@ -11,9 +23,9 @@
   },
   "check": null,
   "discussion": "The macOS should be configured to automatically notify system administrators and Information System Security Officers (ISSOs) when accounts are modified.\n\nOnce an attacker establishes initial access to a system, the attacker often attempts to create a persistent method of reestablishing and maintaining access by modifying an existing account. Configuring the information system to send a notification when accounts are modified is one method for mitigating this risk. A comprehensive account management process should not only notify when new accounts are modified, but also maintain an audit record of these actions. Such a process greatly reduces the risk that accounts will be surreptitiously created and provides logging that can be used for forensic purposes.\n\nTo enable notifications and audit logging of modified account, many operating systems can be integrated with enterprise-level auditing mechanisms that meet or exceed this requirement.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_notify_account_modified",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "disa": {
       "srg": [
@@ -54,7 +66,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -66,7 +81,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_notify_account_modified.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_notify_account_modified",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_notify_account_modified.yaml"
   },
   "tags": [

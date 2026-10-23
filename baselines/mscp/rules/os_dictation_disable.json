@@ -1,19 +1,31 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": "i386",
   "assessment": {
     "manual_reason": null,
@@ -40,9 +52,9 @@
     }
   },
   "discussion": "Dictation _MUST_ be disabled on Intel based Macs as the feature On Device Dictation is only available on Apple Silicon devices. When enabled on Apple Silicon Macs, on device dictation _MUST_ be enabled as well to prevent data from being sent off device.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_dictation_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bsi": {
       "indigo": {
@@ -155,7 +167,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -167,7 +182,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_dictation_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_dictation_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_dictation_disable.yaml"
   },
   "tags": [

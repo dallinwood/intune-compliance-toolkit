@@ -1,4 +1,4 @@
-"""Convert upstream mSCP rule YAML into the project's v3 rule JSON shape."""
+"""Convert upstream mSCP rule YAML into the project's v4 rule JSON shape."""
 
 import json
 import re
@@ -16,6 +16,7 @@ LICENSE = {
     "modified": True,
 }
 
+MACOS_TARGET = "macOS"
 VERSION_KEY_PATTERN = re.compile(r"^\d+\.\d+$")
 ODV_PLACEHOLDER = "$ODV"
 VENDOR_DESCRIPTION_MARKER = "Vendor Description"
@@ -134,17 +135,23 @@ def _enforcement_info(container: dict, where: str, rule_id: str) -> dict:
     return info
 
 
-def _normalize_applicability(version_entry: dict, where: str, rule_id: str) -> list:
+def _normalize_benchmarks(version_entry: dict, where: str, rule_id: str) -> list:
     benchmarks = version_entry.get("benchmarks", [])
     if not isinstance(benchmarks, list):
         raise UnsupportedUpstreamData(f"{rule_id}: {where} benchmarks must be a list")
-    applicability = []
+    normalized_benchmarks = []
     for benchmark in benchmarks:
         _require_known_keys(benchmark, {"name", "severity"}, f"{where} benchmark", rule_id)
         if not isinstance(benchmark.get("name"), str):
             raise UnsupportedUpstreamData(f"{rule_id}: {where} benchmark needs a string name")
-        applicability.append({"name": benchmark["name"], "severity": benchmark.get("severity")})
-    return applicability
+        normalized_benchmarks.append({"name": benchmark["name"], "severity": benchmark.get("severity")})
+    return normalized_benchmarks
+
+
+def _applicability_sort_key(entry: dict) -> tuple:
+    version = entry["version"]
+    version_parts = tuple(int(part) for part in version.split(".")) if version is not None else ()
+    return (entry["target"] is not None, entry["target"] or "", version is not None, version_parts)
 
 
 def _manual_reason(tags: list, upstream_rule_id: str, has_check: bool):
@@ -211,7 +218,7 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
     version_keys = [key for key in macos if VERSION_KEY_PATTERN.match(str(key))]
     _require_known_keys(macos, MACOS_FIXED_KEYS | set(version_keys), "platforms.macOS", rule_id)
 
-    applicability = {}
+    benchmarks_by_version = {}
     check_by_version = {}
     fix_by_version = {}
     mobileconfig_by_version = {}
@@ -219,7 +226,7 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         version_entry = macos[version]
         where = f"platforms.macOS.{version}"
         _require_known_keys(version_entry, VERSION_ENTRY_KEYS, where, rule_id)
-        applicability[version] = _normalize_applicability(version_entry, where, rule_id)
+        benchmarks_by_version[version] = _normalize_benchmarks(version_entry, where, rule_id)
         info = _enforcement_info(version_entry, where, rule_id)
         if "check" in info:
             check_by_version[version] = _normalize_check(
@@ -262,21 +269,32 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         if any(entry is not None and entry["result"] is None for entry in every_check):
             raise UnsupportedUpstreamData(f"{rule_id}: automated rule has a check with an empty result")
     macos_benchmark_names = {
-        benchmark["name"] for benchmarks in applicability.values() for benchmark in benchmarks
+        benchmark["name"] for benchmarks in benchmarks_by_version.values() for benchmark in benchmarks
     }
+    applicability = sorted(
+        (
+            {"target": MACOS_TARGET, "version": version, "benchmarks": benchmarks}
+            for version, benchmarks in benchmarks_by_version.items()
+        ),
+        key=_applicability_sort_key,
+    ) or [{"target": MACOS_TARGET, "version": None, "benchmarks": []}]
 
+    full_rule_id = f"mscp.{rule_id}"
     normalized = {
-        "schema_version": 3,
-        "id": f"mscp.{rule_id}",
-        "platform": "macOS",
+        "schema_version": 4,
+        "id": full_rule_id,
         "title": upstream["title"],
         "discussion": upstream["discussion"],
+        "discussion_format": "asciidoc",
+        "section_path": section_path_of(upstream_path, full_rule_id),
         "source": {
             "name": "mscp",
             "release_tag": lock.tag,
             "commit_sha": lock.commit_sha,
             "upstream_rule_id": rule_id,
             "upstream_path": upstream_path,
+            "upstream_revision": None,
+            "upstream_updated": None,
             "upstream_url": (
                 f"{lock.repository_url.rstrip('/')}/blob/{lock.commit_sha}/"
                 f"{UPSTREAM_DATA_DIRECTORY}{upstream_path}"
@@ -310,14 +328,13 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
     return normalized
 
 
-def section_of(rule: dict) -> str:
-    upstream_path = rule["source"]["upstream_path"]
+def section_path_of(upstream_path: str, rule_id: str) -> list[str]:
     parts = upstream_path.split("/")
     if len(parts) != 3 or parts[0] != "rules" or not parts[1] or not parts[2].endswith(".yaml"):
         raise UnsupportedUpstreamData(
-            f"{rule['id']}: upstream path {upstream_path!r} is not of the form rules/<section>/<file>.yaml"
+            f"{rule_id}: upstream path {upstream_path!r} is not of the form rules/<section>/<file>.yaml"
         )
-    return parts[1]
+    return [parts[1]]
 
 
 def index_entry(rule: dict, file: str) -> dict:
@@ -325,8 +342,7 @@ def index_entry(rule: dict, file: str) -> dict:
         "id": rule["id"],
         "title": rule["title"],
         "file": file,
-        "platform": rule["platform"],
-        "section": section_of(rule),
+        "section": rule["section_path"][0],
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],

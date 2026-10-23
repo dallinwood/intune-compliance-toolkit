@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from tools.validate_library import duplicate_term_errors, schema_errors, validate_library
+from tools.validate_library import applicability_errors, duplicate_term_errors, schema_errors, validate_library
 
 BACKSLASH = chr(92)
 
@@ -17,17 +17,20 @@ LICENSE = {
 }
 
 MINIMAL_RULE = {
-    "schema_version": 3,
+    "schema_version": 4,
     "id": "mscp.os_gatekeeper_enable",
-    "platform": "macOS",
     "title": "Enable Gatekeeper",
     "discussion": "Gatekeeper _MUST_ be enabled.",
+    "discussion_format": "asciidoc",
+    "section_path": ["os"],
     "source": {
         "name": "mscp",
         "release_tag": "release_27.0",
         "commit_sha": COMMIT_SHA,
         "upstream_rule_id": "os_gatekeeper_enable",
         "upstream_path": "rules/os/os_gatekeeper_enable.yaml",
+        "upstream_revision": None,
+        "upstream_updated": None,
         "upstream_url": (
             "https://github.com/usnistgov/macos_security/blob/"
             + COMMIT_SHA
@@ -37,12 +40,16 @@ MINIMAL_RULE = {
     },
     "assessment": {"status": "automated", "manual_reason": None},
     "architecture": None,
-    "applicability": {
-        "26.0": [
-            {"name": "cis_lvl1", "severity": None},
-            {"name": "disa_stig", "severity": "high"},
-        ]
-    },
+    "applicability": [
+        {
+            "target": "macOS",
+            "version": "26.0",
+            "benchmarks": [
+                {"name": "cis_lvl1", "severity": None},
+                {"name": "disa_stig", "severity": "high"},
+            ],
+        }
+    ],
     "tags": ["800-53r5_low", "cisv8"],
     "references": {"nist": {"800-53r5": ["CM-14"]}},
     "check": {
@@ -81,7 +88,6 @@ def index_entry_for(rule, file_path):
         "id": rule["id"],
         "title": rule["title"],
         "file": file_path,
-        "platform": rule["platform"],
         "section": "os",
         "assessment": rule["assessment"],
         "architecture": rule["architecture"],
@@ -101,7 +107,7 @@ def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeepe
     write_json(
         baselines_dir / "_manifest.json",
         {
-            "schema_version": 3,
+            "schema_version": 4,
             "sources": [
                 {
                     "name": "mscp",
@@ -120,7 +126,7 @@ def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeepe
     write_json(
         baselines_dir / "mscp" / "_index.json",
         {
-            "schema_version": 3,
+            "schema_version": 4,
             "source": "mscp",
             "rules": [index_entry_for(rule, index_file)],
         },
@@ -157,6 +163,104 @@ def test_odv_placeholder_allowed_as_integer_value():
     assert schema_errors(rule) == []
     rule["check"]["default"]["result"] = {"type": "integer", "value": "7"}
     assert schema_errors(rule)
+
+
+def test_accepts_unversioned_untargeted_rule():
+    rule = make_rule(
+        id="asd_ism.ism-1667",
+        applicability=[{"target": None, "version": None, "benchmarks": []}],
+        remediation=None,
+    )
+    assert schema_errors(rule) == []
+
+
+def test_rejects_version_without_target():
+    rule = make_rule(applicability=[{"target": None, "version": "15.0", "benchmarks": []}])
+    assert schema_errors(rule)
+
+
+def test_rejects_platform_key():
+    assert schema_errors(make_rule(platform="macOS"))
+
+
+@pytest.mark.parametrize("bad_version", ["15 .0", "15.0\n", "", " 15.0"])
+def test_rejects_version_with_whitespace_or_empty(bad_version):
+    rule = make_rule(applicability=[{"target": "macOS", "version": bad_version, "benchmarks": []}])
+    assert schema_errors(rule)
+
+
+def test_rejects_applicability_entry_missing_a_key():
+    rule = make_rule(applicability=[{"target": "macOS", "version": "15.0"}])
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("bad_format", ["html", None])
+def test_rejects_unknown_discussion_format(bad_format):
+    assert schema_errors(make_rule(discussion_format=bad_format))
+
+
+def test_accepts_markdown_discussion_format():
+    assert schema_errors(make_rule(discussion_format="markdown")) == []
+
+
+@pytest.mark.parametrize("bad_section_path", [[], [""], ["os\nx"], "os"])
+def test_rejects_bad_section_path(bad_section_path):
+    assert schema_errors(make_rule(section_path=bad_section_path))
+
+
+def test_rejects_source_without_upstream_revision():
+    rule = make_rule()
+    del rule["source"]["upstream_revision"]
+    assert schema_errors(rule)
+
+
+def test_accepts_revision_and_update_strings():
+    rule = make_rule()
+    rule["source"]["upstream_revision"] = "Revision 5"
+    rule["source"]["upstream_updated"] = "2026-09-01"
+    assert schema_errors(rule) == []
+
+
+def test_duplicate_target_version_is_reported():
+    rule = make_rule(
+        applicability=[
+            {"target": "macOS", "version": "15.0", "benchmarks": []},
+            {"target": "macOS", "version": "15.0", "benchmarks": []},
+        ]
+    )
+    errors = applicability_errors(rule)
+    assert len(errors) == 1
+    assert "mscp.os_gatekeeper_enable" in errors[0]
+
+
+def test_same_version_under_different_targets_is_not_a_duplicate():
+    rule = make_rule(
+        applicability=[
+            {"target": "macOS", "version": "27.0", "benchmarks": []},
+            {"target": "Windows", "version": "27.0", "benchmarks": []},
+        ]
+    )
+    assert applicability_errors(rule) == []
+
+
+def test_validate_library_reports_duplicate_applicability(tmp_path):
+    duplicated = make_rule(
+        applicability=[
+            {"target": "macOS", "version": "15.0", "benchmarks": []},
+            {"target": "macOS", "version": "15.0", "benchmarks": []},
+        ]
+    )
+    write_library(tmp_path, duplicated)
+    write_json(tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json", duplicated)
+    errors = validate_library(tmp_path)
+    assert len(errors) == 1
+    assert "mscp.os_gatekeeper_enable" in errors[0]
+
+
+def test_non_mscp_source_rule_is_valid():
+    rule = make_rule(id="asd_ism.ism-1667")
+    rule["source"]["name"] = "asd_ism"
+    assert schema_errors(rule) == []
 
 
 def test_rejects_unknown_top_level_key():
@@ -209,7 +313,7 @@ def test_validate_library_rejects_null_rule_file(tmp_path):
 )
 def test_index_rejects_unsafe_file_path(unsafe_path):
     index = {
-        "schema_version": 3,
+        "schema_version": 4,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, unsafe_path)],
     }
@@ -218,43 +322,43 @@ def test_index_rejects_unsafe_file_path(unsafe_path):
 
 def test_index_accepts_safe_file_path():
     index = {
-        "schema_version": 3,
+        "schema_version": 4,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, "rules/os..x.json")],
     }
     assert schema_errors(index, "index") == []
 
 
-def test_index_rejects_entry_missing_platform():
+def test_index_rejects_platform_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
-    del entry["platform"]
-    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
-
-
-@pytest.mark.parametrize("bad_platform", ["", "macOS\n"])
-def test_index_rejects_bad_platform(bad_platform):
-    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
-    entry["platform"] = bad_platform
-    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+    entry["platform"] = "macOS"
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section"]
-    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
 
 
-@pytest.mark.parametrize("bad_section", ["", "OS", "os/x", "os\n"])
+@pytest.mark.parametrize("bad_section", ["", "os\n"])
 def test_index_rejects_bad_section(bad_section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = bad_section
-    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+
+
+@pytest.mark.parametrize("section", ["os", "Access Control", "3.1 Policy"])
+def test_index_accepts_any_single_line_section(section):
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    entry["section"] = section
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index") == []
 
 
 def test_index_rejects_entry_missing_required_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["has_odv"]
-    assert schema_errors({"schema_version": 3, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
 
 
 def read_manifest(baselines_dir: Path) -> dict:

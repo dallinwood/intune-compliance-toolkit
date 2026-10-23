@@ -1,32 +1,39 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Normalized mSCP macOS rule (v3)",
+  "title": "Normalized rule (v4)",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "schema_version", "id", "platform", "title", "discussion", "source",
-    "assessment", "architecture", "applicability", "tags", "references",
+    "schema_version", "id", "title", "discussion", "discussion_format", "section_path",
+    "source", "assessment", "architecture", "applicability", "tags", "references",
     "check", "odv", "remediation"
   ],
   "properties": {
-    "schema_version": { "const": 3 },
-    "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_-]+(?![\\s\\S])" },
-    "platform": { "const": "macOS" },
+    "schema_version": { "const": 4 },
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?![\\s\\S])" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
+    "discussion_format": { "enum": ["asciidoc", "markdown"] },
+    "section_path": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" }
+    },
     "source": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "name", "release_tag", "commit_sha", "upstream_rule_id",
-        "upstream_path", "upstream_url", "license"
+        "upstream_path", "upstream_revision", "upstream_updated", "upstream_url", "license"
       ],
       "properties": {
-        "name": { "const": "mscp" },
+        "name": { "type": "string", "pattern": "^[a-z0-9_]+(?![\\s\\S])" },
         "release_tag": { "type": "string" },
         "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}(?![\\s\\S])" },
         "upstream_rule_id": { "type": "string" },
         "upstream_path": { "type": "string" },
+        "upstream_revision": { "type": ["string", "null"] },
+        "upstream_updated": { "type": ["string", "null"] },
         "upstream_url": { "type": "string" },
         "license": { "$ref": "#/$defs/license" }
       }
@@ -47,19 +54,29 @@
     },
     "architecture": { "enum": ["arm64", "i386", null] },
     "applicability": {
-      "type": "object",
-      "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
-      "additionalProperties": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["name", "severity"],
-          "properties": {
-            "name": { "type": "string" },
-            "severity": { "type": ["string", "null"] }
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "version", "benchmarks"],
+        "properties": {
+          "target": { "type": ["string", "null"] },
+          "version": { "type": ["string", "null"], "pattern": "^\\S+(?![\\s\\S])" },
+          "benchmarks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "severity"],
+              "properties": {
+                "name": { "type": "string" },
+                "severity": { "type": ["string", "null"] }
+              }
+            }
           }
-        }
+        },
+        "if": { "properties": { "version": { "type": "string" } }, "required": ["version"] },
+        "then": { "properties": { "target": { "type": "string" } } }
       }
     },
     "tags": { "type": "array", "items": { "type": "string" } },
@@ -114,7 +131,7 @@
       ]
     },
     "remediation": {
-      "type": "object",
+      "type": ["object", "null"],
       "additionalProperties": false,
       "required": [
         "default", "by_version", "mobileconfig_info",

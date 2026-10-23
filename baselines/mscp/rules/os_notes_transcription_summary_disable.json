@@ -1,36 +1,48 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      }
-    ],
-    "27.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -48,9 +60,9 @@
     }
   },
   "discussion": "Apple Intelligence features such as Notes Transcription Summary that use off device AI _MUST_ be disabled.",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_notes_transcription_summary_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bsi": {
       "indigo": {
@@ -158,7 +170,10 @@
       }
     ]
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -170,7 +185,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_notes_transcription_summary_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_notes_transcription_summary_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_notes_transcription_summary_disable.yaml"
   },
   "tags": [

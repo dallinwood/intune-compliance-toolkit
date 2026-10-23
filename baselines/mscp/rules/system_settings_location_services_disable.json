@@ -1,24 +1,36 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "27.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -36,9 +48,9 @@
     }
   },
   "discussion": "Location Services _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.  Disabling Location Services helps prevent the unauthorized connection of devices, unauthorized transfer of information, and unauthorized tunneling.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.system_settings_location_services_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "disa": {
       "cci": [
@@ -112,7 +124,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "system_settings"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -124,7 +139,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/system_settings/system_settings_location_services_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "system_settings_location_services_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/system_settings/system_settings_location_services_disable.yaml"
   },
   "tags": [

@@ -1,9 +1,21 @@
 {
-  "applicability": {
-    "15.0": [],
-    "26.0": [],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": "inherent",
@@ -11,9 +23,9 @@
   },
   "check": null,
   "discussion": "The inherent configuration of the macOS _IS_ in compliance by implementing mechanisms for authentication to a cryptographic module that meet the requirements of all applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance for such authentication\n\nmacOS contains many open source projects that may use their own cryptographic libraries typically for the purposes of maintaining platform independence. These services are not covered by the Apple FIPS Validation of the CoreCrypto and CoreCrypto Kernel modules.\n\nApple is committed to the FIPS validation process and historically has always submitted and validated the cryptographic modules in their operating systems.\n\nlink:https://csrc.nist.gov/Projects/cryptographic-module-validation-program/validated-modules[]\n\nlink:https://support.apple.com/guide/certifications/about-apple-security-certifications-apc30d0ed034/web[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_required_crypto_module",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "disa": {
       "srg": [
@@ -51,7 +63,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -63,7 +78,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_required_crypto_module.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_required_crypto_module",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_required_crypto_module.yaml"
   },
   "tags": [

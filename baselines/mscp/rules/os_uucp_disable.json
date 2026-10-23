@@ -1,24 +1,36 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "27.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -45,9 +57,9 @@
     }
   },
   "discussion": "The system _MUST_ not have the Unix-to-Unix Copy Protocol (UUCP) service active.\n\nUUCP, a set of programs that enable the sending of files between different UNIX systems as well as sending commands to be executed on another system, is not essential and _MUST_ be disabled in order to prevent the unauthorized connection of devices, transfer of information, and tunneling.\n\nNOTE: UUCP service is disabled at startup by default macOS.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_uucp_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "cis": {
       "controls_v8": [
@@ -126,7 +138,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -138,7 +153,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_uucp_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_uucp_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_uucp_disable.yaml"
   },
   "tags": [

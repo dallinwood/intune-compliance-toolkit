@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Rule index for one library source (v3)",
+  "title": "Rule index for one library source (v4)",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "source", "rules"],
   "properties": {
-    "schema_version": { "const": 3 },
+    "schema_version": { "const": 4 },
     "source": { "type": "string" },
     "rules": {
       "type": "array",
@@ -13,18 +13,17 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "id", "title", "file", "platform", "section", "assessment", "architecture",
+          "id", "title", "file", "section", "assessment", "architecture",
           "applicability", "tags", "has_odv"
         ],
         "properties": {
-          "id": { "type": "string", "pattern": "^mscp\\.[a-z0-9_-]+(?![\\s\\S])" },
+          "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?![\\s\\S])" },
           "title": { "type": "string" },
           "file": {
             "type": "string",
             "pattern": "^(?!/)(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+(?![\\s\\S])"
           },
-          "platform": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" },
-          "section": { "type": "string", "pattern": "^[a-z0-9_]+(?![\\s\\S])" },
+          "section": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" },
           "assessment": {
             "type": "object",
             "additionalProperties": false,
@@ -41,19 +40,29 @@
           },
           "architecture": { "enum": ["arm64", "i386", null] },
           "applicability": {
-            "type": "object",
-            "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
-            "additionalProperties": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["name", "severity"],
-                "properties": {
-                  "name": { "type": "string" },
-                  "severity": { "type": ["string", "null"] }
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["target", "version", "benchmarks"],
+              "properties": {
+                "target": { "type": ["string", "null"] },
+                "version": { "type": ["string", "null"], "pattern": "^\\S+(?![\\s\\S])" },
+                "benchmarks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["name", "severity"],
+                    "properties": {
+                      "name": { "type": "string" },
+                      "severity": { "type": ["string", "null"] }
+                    }
+                  }
                 }
-              }
+              },
+              "if": { "properties": { "version": { "type": "string" } }, "required": ["version"] },
+              "then": { "properties": { "target": { "type": "string" } } }
             }
           },
           "tags": { "type": "array", "items": { "type": "string" } },

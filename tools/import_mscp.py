@@ -33,7 +33,7 @@ DEFAULT_SOURCES_DIR = REPOSITORY_ROOT / "sources" / "mscp"
 DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 SOURCE_NAME = "mscp"
 SOURCE_DISPLAY_NAME = "NIST macOS Security Compliance Project"
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 SAFE_UPSTREAM_ID = re.compile(r"^[A-Za-z0-9_.-]+$")
 MANIFEST_FILE_NAME = "_manifest.json"
 

@@ -1,24 +1,36 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "low"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "low"
-      }
-    ],
-    "27.0": [
-      {
-        "name": "disa_stig",
-        "severity": "low"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "low"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "low"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "low"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -36,6 +48,7 @@
     }
   },
   "discussion": "The audit service _MUST_ be configured to notify the system administrator when the amount of free disk space remaining reaches an organization defined value.\n\nThis rule ensures that the system administrator is notified in advance that action is required to free up more disk space for audit logs.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.audit_configure_capacity_notify",
   "odv": {
     "by_benchmark": {
@@ -49,7 +62,6 @@
       "min": 1
     }
   },
-  "platform": "macOS",
   "references": {
     "disa": {
       "cci": [
@@ -105,7 +117,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "audit"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -117,7 +132,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/audit/audit_configure_capacity_notify.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "audit_configure_capacity_notify",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_configure_capacity_notify.yaml"
   },
   "tags": [

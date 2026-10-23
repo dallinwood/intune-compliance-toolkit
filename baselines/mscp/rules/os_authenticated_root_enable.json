@@ -1,56 +1,68 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      }
-    ],
-    "27.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -77,9 +89,9 @@
     }
   },
   "discussion": "Authenticated Root _MUST_ be enabled.\n\nWhen Authenticated Root is enabled the macOS is booted from a signed volume that is cryptographically protected to prevent tampering with the system volume.\n\nNOTE: Authenticated Root is enabled by default on macOS systems.\n\nWARNING: If more than one partition with macOS is detected, the csrutil command will hang awaiting input.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_authenticated_root_enable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bzk": {
       "bio": [
@@ -181,7 +193,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -193,7 +208,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_authenticated_root_enable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_authenticated_root_enable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_authenticated_root_enable.yaml"
   },
   "tags": [

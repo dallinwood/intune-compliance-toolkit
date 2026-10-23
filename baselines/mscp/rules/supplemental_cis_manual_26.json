@@ -1,16 +1,20 @@
 {
-  "applicability": {
-    "26.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": "supplemental",
@@ -18,9 +22,9 @@
   },
   "check": null,
   "discussion": "List of CIS recommendations that are manual check in the CIS macOS Benchmark.\n\n[cols=\"15%h, 85%a\"]\n|===\n|Section\n|System Settings\n\n|Recommendations\n| 1.7 Ensure the System is Managed by a Mobile Device Management (MDM) Software\n|===\n\n[cols=\"15%h, 85%a\"]\n|===\n|Section\n|System Settings\n\n|Recommendations\n|2.1.1.1 Audit iCloud Keychain +\n2.1.1.2 Audit iCloud Drive +\n2.1.1.4 Audit Security Keys Used With Apple Accounts +\n2.1.1.5 Audit Freeform Sync to iCloud +\n2.1.1.6 Audit Find My Mac +\n2.1.2 Audit App Store Password Settings +\n2.3.3.11 Ensure Computer Name Does Not Contain PII or Protected Organizational Information +\n2.4.1 Audit Menu Bar and Control Center Icons +\n2.5.2.2 Ensure Listen for Siri is Disabled +\n2.6.1.3 Audit Location Services Access +\n2.6.2.1 Audit Full Disk Access for Applications +\n2.6.3.5 Ensure Share iCloud Analytics Is Disabled +\n2.6.7 Audit Lockdown Mode +\n2.7.2 Audit iPhone Mirroring +\n2.8.1 Audit Universal Control Settings +\n2.10.1.1 Ensure the OS Is Not Active When Resuming from Standby (Intel) +\n2.12.2 Audit Touch ID +\n2.14.1 Audit Game Center Settings +\n2.15.1 Audit Notification & Focus Settings +\n2.16.1 Audit Wallet & Apple Pay Settings +\n2.17.1 Audit Internet Accounts for Authorized Use +\n|===\n\n[cols=\"15%h, 85%a\"]\n|===\n|Section\n|Logging and Auditing\n\n|Recommendations\n|3.6 Audit Software Inventory\n|===\n\n[cols=\"15%h, 85%a\"]\n|===\n|Section\n|System Access, Authentication and Authorization\n\n|Recommendations\n|5.2.3 Ensure Complex Password Must Contain Alphabetic Characters Is Configured +\n5.2.4 Ensure Complex Password Must Contain Numeric Character Is Configured +\n5.2.5 Ensure Complex Password Must Contain Special Character Is Configured +\n5.2.6 Ensure Complex Password Must Contain Uppercase and Lowercase Characters Is Configured +\n5.3.1 Ensure All User Storage APFS Volumes are Encrypted +\n5.3.2 Ensure All User Storage CoreStorage Volumes are Encrypted +\n|===\n\n[cols=\"15%h, 85%a\"]\n|===\n|Section\n|Applications\n\n|Recommendations\n|6.1.1 Ensure Show All Filename Extensions Setting is Enabled +\n6.2.1 Ensure Protect Mail Activity in Mail Is Enabled +\n6.3.2 Audit History and Remove History Items +\n6.3.5 Audit Hide IP Address in Safari Setting +\n6.3.8 Audit Autofill +\n6.3.9 Audit Pop-up Windows +\n6.5.1 Audit Passwords +\n|===\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.supplemental_cis_manual_26",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "nist": {}
   },
@@ -34,7 +38,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "supplemental"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -46,7 +53,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/supplemental/supplemental_cis_manual_26.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "supplemental_cis_manual_26",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/supplemental/supplemental_cis_manual_26.yaml"
   },
   "tags": [

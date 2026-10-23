@@ -8,6 +8,7 @@ from tools.mscp_normalize import (
     index_entry,
     load_mscp_yaml,
     normalize_rule,
+    section_path_of,
 )
 from tools.mscp_source_lock import SourceLock
 from tools.validate_library import schema_errors
@@ -80,8 +81,9 @@ def test_gatekeeper_like_rule_normalizes():
     result = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     assert result["id"] == "mscp.os_gatekeeper_enable"
     assert result["assessment"] == {"status": "automated", "manual_reason": None}
-    assert {"name": "disa_stig", "severity": "high"} in result["applicability"]["27.0"]
-    assert {"name": "cis_lvl1", "severity": None} in result["applicability"]["27.0"]
+    benchmarks_for_27 = next(entry for entry in result["applicability"] if entry["version"] == "27.0")["benchmarks"]
+    assert {"name": "disa_stig", "severity": "high"} in benchmarks_for_27
+    assert {"name": "cis_lvl1", "severity": None} in benchmarks_for_27
     assert result["tags"] == ["800-53r5_low", "cisv8"]
     assert result["remediation"]["default"] == {
         "shell": "/usr/sbin/spctl --global-enable",
@@ -370,30 +372,89 @@ def test_index_entry_fields():
     rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     entry = index_entry(rule, "rules/os_gatekeeper_enable.json")
     assert set(entry) == {
-        "id", "title", "file", "platform", "section", "assessment", "architecture",
+        "id", "title", "file", "section", "assessment", "architecture",
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
-    wrapped = {"schema_version": 3, "source": "mscp", "rules": [entry]}
+    wrapped = {"schema_version": 4, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
 
 
-def test_index_entry_platform_from_rule():
-    rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
-    assert index_entry(rule, "rules/x.json")["platform"] == "macOS"
-
-
-def test_index_entry_section_from_upstream_path():
+def test_index_entry_section_comes_from_section_path():
     rule = normalize(GATEKEEPER_YAML, "rules/system_settings/x.yaml")
-    assert index_entry(rule, "rules/x.json")["section"] == "system_settings"
+    entry = index_entry(rule, "rules/x.json")
+    assert entry["section"] == rule["section_path"][0] == "system_settings"
+    assert "platform" not in entry
+
+
+def test_section_path_is_the_upstream_folder():
+    assert section_path_of("rules/audit/x.yaml", "mscp.x") == ["audit"]
+    with pytest.raises(UnsupportedUpstreamData, match="mscp.x"):
+        section_path_of("rules/x.yaml", "mscp.x")
 
 
 @pytest.mark.parametrize("bad_path", ["os/x.yaml", "rules/x.yaml", "rules/os/sub/x.yaml", "other/os/x.yaml"])
-def test_index_entry_rejects_unexpected_upstream_path(bad_path):
-    rule = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
-    rule["source"]["upstream_path"] = bad_path
+def test_normalize_rejects_unexpected_upstream_path(bad_path):
     with pytest.raises(UnsupportedUpstreamData, match="mscp.os_gatekeeper_enable"):
-        index_entry(rule, "rules/x.json")
+        normalize(GATEKEEPER_YAML, bad_path)
+
+
+def test_applicability_is_a_target_scoped_list():
+    result = normalize(
+        rule_with(
+            """
+            '26.0':
+              benchmarks:
+                - name: disa_stig
+                  severity: high
+                - name: cis_lvl1
+            '15.0':
+              benchmarks:
+                - name: cis_lvl2
+            """,
+        )
+    )
+    assert result["applicability"] == [
+        {"target": "macOS", "version": "15.0", "benchmarks": [{"name": "cis_lvl2", "severity": None}]},
+        {
+            "target": "macOS",
+            "version": "26.0",
+            "benchmarks": [{"name": "disa_stig", "severity": "high"}, {"name": "cis_lvl1", "severity": None}],
+        },
+    ]
+    assert schema_errors(result) == []
+
+
+def test_applicability_sorts_versions_numerically():
+    result = normalize(
+        rule_with(
+            """
+            '9.0':
+              benchmarks: []
+            '27.0':
+              benchmarks: []
+            '15.0':
+              benchmarks: []
+            """
+        )
+    )
+    assert [entry["version"] for entry in result["applicability"]] == ["9.0", "15.0", "27.0"]
+
+
+def test_rule_without_versions_keeps_macos_target():
+    result = normalize(rule_with("introduced: '10.7'\n"))
+    assert result["applicability"] == [{"target": "macOS", "version": None, "benchmarks": []}]
+    assert schema_errors(result) == []
+
+
+def test_v4_source_and_format_fields():
+    result = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
+    assert result["discussion_format"] == "asciidoc"
+    assert result["source"]["upstream_revision"] is None
+    assert result["source"]["upstream_updated"] is None
+    assert result["schema_version"] == 4
+    assert result["section_path"] == ["os"]
+    assert "platform" not in result
 
 
 def test_empty_result_on_manual_rule_normalizes_to_null():

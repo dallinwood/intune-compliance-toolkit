@@ -1,16 +1,20 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "cis_lvl1",
-        "severity": null
-      },
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl1",
+          "severity": null
+        },
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -28,9 +32,9 @@
     }
   },
   "discussion": "Show all filename extensions _MUST_ be enabled in the Finder.\n\n[NOTE]\n====\nThe check and fix are for the currently logged in user. To get the currently logged in user, run the following.\n[source,bash]\n-  CURRENT_USER=$( /usr/bin/defaults read /Library/Preferences/com.apple.loginwindow lastUserName )\n-  ====\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_show_filename_extensions_enable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "cis": {
       "benchmark": {
@@ -66,7 +70,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -78,7 +85,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_show_filename_extensions_enable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_show_filename_extensions_enable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_show_filename_extensions_enable.yaml"
   },
   "tags": [

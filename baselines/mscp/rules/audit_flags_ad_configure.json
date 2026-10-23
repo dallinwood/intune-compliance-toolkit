@@ -1,52 +1,64 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      },
-      {
-        "name": "nlmapgov_base",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      },
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      },
-      {
-        "name": "nlmapgov_base",
-        "severity": null
-      }
-    ],
-    "27.0": [
-      {
-        "name": "cis_lvl2",
-        "severity": null
-      },
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        },
+        {
+          "name": "nlmapgov_base",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        },
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        },
+        {
+          "name": "nlmapgov_base",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        },
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -64,9 +76,9 @@
     }
   },
   "discussion": "The auditing system _MUST_ be configured to flag administrative action (ad) events.\n\nAdministrative action events include changes made to the system (e.g. modifying authentication policies). If audit records do not include ad events, it is difficult to identify incidents and to correlate incidents to subsequent events.\n\nAudit records can be generated from various components within the information system (e.g., via a module or policy filter).\n\nThe information system audits the execution of privileged functions.\n\nNOTE: We recommend changing the line \"43127:AUE_MAC_SYSCALL:mac_syscall(2):ad\" to \"43127:AUE_MAC_SYSCALL:mac_syscall(2):zz\" in the file /etc/security/audit_event. This will prevent sandbox violations from being audited by the ad flag.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.audit_flags_ad_configure",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bzk": {
       "bio": [
@@ -194,7 +206,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "audit"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -206,7 +221,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/audit/audit_flags_ad_configure.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "audit_flags_ad_configure",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/audit/audit_flags_ad_configure.yaml"
   },
   "tags": [

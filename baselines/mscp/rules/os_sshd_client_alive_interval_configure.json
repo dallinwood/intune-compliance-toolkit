@@ -1,24 +1,36 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "26.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ],
-    "27.0": [
-      {
-        "name": "disa_stig",
-        "severity": "medium"
-      }
-    ]
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": null,
@@ -36,6 +48,7 @@
     }
   },
   "discussion": "If SSHD is enabled then it _MUST_ be configured with the Client Alive Interval set to $ODV.\n\nSets a timeout interval in seconds after which if no data has been received from the client, sshd(8) will send a message through the encrypted channel to request a response from the client.\n\nThis setting works in conjunction with ClientAliveCountMax to determine the termination of the connection after the threshold has been reached.\n\nNOTE: This setting is not intended to manage idle user sessions where there is no input from the client. Its purpose is to monitor for interruptions in network connectivity and force the session to terminate after the connection appears to be broken.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration. Previous versions of macOS would revert /etc/ssh/sshd_config to its original state following any update or major upgrade to the operating system.\n",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_sshd_client_alive_interval_configure",
   "odv": {
     "by_benchmark": {
@@ -48,7 +61,6 @@
       "min": 1
     }
   },
-  "platform": "macOS",
   "references": {
     "disa": {
       "cci": [
@@ -117,7 +129,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -129,7 +144,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_sshd_client_alive_interval_configure.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_sshd_client_alive_interval_configure",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_sshd_client_alive_interval_configure.yaml"
   },
   "tags": [

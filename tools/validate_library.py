@@ -1,4 +1,4 @@
-"""Validate the normalized rule library under baselines/ against the v3 schemas,
+"""Validate the normalized rule library under baselines/ against the v4 schemas,
 plus the hand-edited display-name vocabulary when one is present."""
 
 import json
@@ -38,6 +38,19 @@ def _validate_document(path: Path, schema_name: str, errors: list[str]) -> dict 
     return None if schema_problems else document
 
 
+def applicability_errors(rule: dict) -> list[str]:
+    errors: list[str] = []
+    seen_pairs: set[tuple] = set()
+    for entry in rule["applicability"]:
+        pair = (entry["target"], entry["version"])
+        if pair in seen_pairs:
+            errors.append(
+                f"{rule['id']}: applicability lists target {pair[0]!r} version {pair[1]!r} more than once"
+            )
+        seen_pairs.add(pair)
+    return errors
+
+
 def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> None:
     index_path = baselines_dir / source["index_path"]
     index = _validate_document(index_path, "index", errors)
@@ -53,10 +66,13 @@ def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> No
     for entry in index["rules"]:
         rule_path = index_path.parent / entry["file"]
         rule = _validate_document(rule_path, "rule", errors)
-        if rule is not None and rule["id"] != entry["id"]:
+        if rule is None:
+            continue
+        if rule["id"] != entry["id"]:
             errors.append(
                 f"{rule_path}: rule id {rule['id']} does not match index id {entry['id']}"
             )
+        errors.extend(f"{rule_path}: {problem}" for problem in applicability_errors(rule))
 
 
 def duplicate_term_errors(vocabulary_file: dict) -> list[str]:

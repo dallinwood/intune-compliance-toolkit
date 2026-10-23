@@ -1,19 +1,31 @@
 {
-  "applicability": {
-    "15.0": [
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      }
-    ],
-    "26.0": [
-      {
-        "name": "nlmapgov_plus",
-        "severity": null
-      }
-    ],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "nlmapgov_plus",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": "permanent",
@@ -21,9 +33,9 @@
   },
   "check": null,
   "discussion": "The organization should employ automated mechanisms to support the management of information system accounts.\n\nThe use of automated mechanisms prevents against human error and provide a faster and more efficient means of relaying time-sensitive information and account management.\n\nTo employ automated mechanisms for account management functions, many operating systems can be integrated with an enterprise-level directory service that meets or exceeds this requirement.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
+  "discussion_format": "asciidoc",
   "id": "mscp.os_provide_automated_account_management",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "bzk": {
       "bio": [
@@ -66,7 +78,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "os"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -78,7 +93,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/os/os_provide_automated_account_management.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "os_provide_automated_account_management",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_provide_automated_account_management.yaml"
   },
   "tags": [

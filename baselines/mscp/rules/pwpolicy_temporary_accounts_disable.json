@@ -1,9 +1,21 @@
 {
-  "applicability": {
-    "15.0": [],
-    "26.0": [],
-    "27.0": []
-  },
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
   "architecture": null,
   "assessment": {
     "manual_reason": "inherent",
@@ -11,9 +23,9 @@
   },
   "check": null,
   "discussion": "The macOS is able to be configured to set an automated termination for 72 hours or less for all temporary accounts upon account creation.\n\nIf temporary user accounts remain active when no longer needed or for an excessive period, these accounts may be targeted by attackers to gain unauthorized access. To mitigate this risk, automated termination of all temporary accounts _MUST_ be set to 72 hours (or less) when the temporary account is created.\n\nIf no policy is enforced by a directory service, a password policy can be set with the \"pwpolicy\" utility. The variable names may vary depending on how the policy was set.\n\nIf there are no temporary accounts defined on the system, this is Not Applicable.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
+  "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_temporary_accounts_disable",
   "odv": null,
-  "platform": "macOS",
   "references": {
     "disa": {
       "srg": [
@@ -51,7 +63,10 @@
     "mobileconfig_by_version": {},
     "mobileconfig_info": null
   },
-  "schema_version": 3,
+  "schema_version": 4,
+  "section_path": [
+    "pwpolicy"
+  ],
   "source": {
     "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
     "license": {
@@ -63,7 +78,9 @@
     "name": "mscp",
     "release_tag": "release_27.0",
     "upstream_path": "rules/pwpolicy/pwpolicy_temporary_accounts_disable.yaml",
+    "upstream_revision": null,
     "upstream_rule_id": "pwpolicy_temporary_accounts_disable",
+    "upstream_updated": null,
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/pwpolicy/pwpolicy_temporary_accounts_disable.yaml"
   },
   "tags": [
