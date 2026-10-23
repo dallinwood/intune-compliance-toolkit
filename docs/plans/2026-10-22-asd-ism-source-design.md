@@ -302,8 +302,8 @@ For every catalog entry with `class: ISM-control`:
 | v4 field | From |
 |---|---|
 | `id` | `asd_ism.` + control `id` |
-| `title` | the `statement` part's prose, verbatim (the OSCAL `title` is a placeholder) |
-| `discussion` | the overview prose of the control's **topic** group (depth 3), with `(#uuid)` links rewritten to the back-matter resource's first `rlinks[].href` |
+| `title` | the first paragraph of the `statement` part's prose (the OSCAL `title` is a placeholder). Revised 2026-10-23: 40 statements are a lead-in sentence plus a Markdown list, so the title is the text before the first blank line |
+| `discussion` | the overview prose of the control's **topic** group (depth 3), with `(#uuid)` links rewritten to the back-matter resource's first `rlinks[].href`. When the statement has more than one paragraph, the full statement comes first, then a blank line, then the overview, so no statement text is lost |
 | `discussion_format` | `"markdown"` |
 | `section_path` | titles of the three ancestor groups, outermost first |
 | `source.upstream_revision`, `.upstream_updated` | `revision`, `updated` props, verbatim strings |
@@ -429,8 +429,9 @@ the matching plan document:
    yet). Byte-identical bundle check.
 2. **ASD ISM importer and data**: vendored upstream, lock file, importer,
    `baselines/asd_ism/`, manifest entry, Python tests. The `asd_ism`
-   manifest entry must not be pushed before phase 3 lands (push phases 2
-   and 3 together, or hold the manifest entry back): without phase 3,
+   manifest entry must not reach `main` before phase 3 lands (GitHub
+   Pages deploys from `main`; pushing the feature branch is fine):
+   without phase 3,
    ISM rows can't be filtered by benchmark, show mSCP-specific "no macOS
    version" text, render Markdown through the AsciiDoc path, and are
    credited only to NIST in the attestation report.
