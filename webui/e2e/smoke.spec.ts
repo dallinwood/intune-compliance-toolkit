@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { unzipSync } from 'fflate'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
@@ -33,7 +33,8 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   // Reference keys are shown raw; friendly names only come from the vocabulary file.
   const detail = page.locator('[id^="rule-detail-"]')
   await expect(detail.getByText('macos_15', { exact: true }).first()).toBeVisible()
-  await expect(detail.getByText('macOS 15', { exact: true })).toHaveCount(0)
+  // The Benchmarks section labels versions through the vocabulary, so only the reference keys are checked.
+  await expect(detail.locator('li > span', { hasText: /^macOS 15$/ })).toHaveCount(0)
 })
 
 test('an architecture-gated rule names its architecture by the raw mSCP code', async ({ page }) => {
@@ -1032,5 +1033,66 @@ test.describe('section tree and paging', () => {
 
     await openLibrary(page, '/')
     await expect(pageSizeSelect(page)).toHaveValue('100')
+  })
+})
+
+test.describe('benchmark cell and detail benchmarks', () => {
+  test.use({ viewport: { width: 1280, height: 800 } })
+
+  const benchmarkCell = (row: Locator) => row.locator('td').last().getByTestId('benchmark-text')
+  const detailHeadings = (page: Page) => page.locator('[id^="rule-detail-"]').locator('h5')
+  const benchmarkList = (page: Page, scopeLabel: string) =>
+    page.locator('[id^="rule-detail-"]').getByRole('region', { name: 'Benchmarks' }).getByRole('list', { name: scopeLabel })
+
+  test('an ISM row with seven benchmarks and an mSCP row with one render at the same height', async ({ page }) => {
+    await page.goto('/')
+    const ismRow = await searchForSingleRow(page, 'ism-1667', /./)
+    const ismHeight = (await ismRow.boundingBox())?.height ?? 0
+    const mscpRow = await searchForSingleRow(page, 'audit_failure_halt', /./)
+    await expect(benchmarkCell(mscpRow)).toHaveText('DISA STIG (medium) on macOS 15')
+    const mscpHeight = (await mscpRow.boundingBox())?.height ?? 0
+    expect(ismHeight).toBeGreaterThan(0)
+    expect(Math.abs(ismHeight - mscpHeight)).toBeLessThan(0.5)
+  })
+
+  test('hovering or focusing an overflowing benchmark cell shows its full text in a tooltip', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'ism-1667', /./)
+    const cell = benchmarkCell(row)
+    await expect(cell).toHaveAttribute('data-overflowing', 'true')
+    const fullText = String(await cell.textContent())
+    expect(fullText).toContain('Essential Eight ML3')
+
+    await cell.hover()
+    const tooltip = page.getByRole('tooltip')
+    await expect(tooltip).toBeVisible()
+    await expect(tooltip).toHaveText(fullText)
+
+    await page.mouse.move(0, 0)
+    await expect(tooltip).toHaveCount(0)
+    await cell.focus()
+    await expect(tooltip).toHaveText(fullText)
+  })
+
+  test('the ism-1667 details list its benchmarks under None in a Benchmarks section', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'ism-1667', /./)
+    await row.getByRole('button').click()
+    const items = benchmarkList(page, 'None').getByRole('listitem')
+    await expect(items.filter({ hasText: /^ISM PROTECTED$/ })).toHaveCount(1)
+    await expect(items.filter({ hasText: /^Essential Eight ML3$/ })).toHaveCount(1)
+    await expect(items).toHaveCount(7)
+    // ism-1667 has no references, so Benchmarks is the last section.
+    await expect(detailHeadings(page).last()).toHaveText('Benchmarks')
+  })
+
+  test('an mSCP rule details list DISA STIG (medium) under macOS 15, directly above References', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'audit_failure_halt', /./)
+    await row.getByRole('button').click()
+    await expect(benchmarkList(page, 'macOS 15').getByRole('listitem')).toHaveText(['DISA STIG (medium)'])
+    await expect(detailHeadings(page).filter({ hasText: 'References' })).toHaveCount(1)
+    const headingTexts = await detailHeadings(page).allTextContents()
+    expect(headingTexts.indexOf('Benchmarks')).toBe(headingTexts.indexOf('References') - 1)
   })
 })

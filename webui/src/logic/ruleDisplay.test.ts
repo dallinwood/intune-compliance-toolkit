@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { NO_VERSION_KEY } from './applicability'
-import { assessmentLabel, benchmarkSummary, upstreamRuleId } from './ruleDisplay'
+import { assessmentLabel, benchmarkSummary, benchmarksByScope, upstreamRuleId } from './ruleDisplay'
 import { applicabilityOfVersions } from './testRuleFixtures'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
@@ -137,6 +137,39 @@ describe('benchmarkSummary', () => {
   it('is empty when nothing is listed under the versions in scope', () => {
     expect(benchmarkSummary([], [], vocabularyIndex)).toBe('')
     expect(benchmarkSummary(applicabilityOfVersions({ 'macOS 27.0': [stig(null)] }), ['macOS 15.0'], vocabularyIndex)).toBe('')
+  })
+})
+
+describe('benchmarksByScope', () => {
+  it('groups every membership under its version label, newest first, with the severity in brackets', () => {
+    const applicability = applicabilityOfVersions({
+      'macOS 15.0': [{ name: 'disa_stig', severity: 'medium' }],
+      'macOS 26.0': [],
+      'macOS 27.0': [{ name: 'cis_lvl1', severity: null }, { name: 'cis_lvl2', severity: null }],
+    })
+    expect(benchmarksByScope(applicability, vocabularyIndex)).toEqual([
+      { scopeKey: 'macOS 27.0', scopeLabel: 'macOS 27', benchmarks: ['CIS Level 1', 'CIS Level 2'] },
+      { scopeKey: 'macOS 15.0', scopeLabel: 'macOS 15', benchmarks: ['DISA STIG (medium)'] },
+    ])
+  })
+
+  it('puts unversioned memberships under None, after the versions', () => {
+    const applicability = [
+      { target: 'macOS', version: '27.0', benchmarks: [{ name: 'cis_lvl1', severity: null }] },
+      { target: null, version: null, benchmarks: [{ name: 'e8_ml3', severity: null }, { name: 'ism_protected', severity: null }] },
+    ]
+    const scopes = benchmarksByScope(applicability, vocabularyIndex)
+    expect(scopes.map((scope) => scope.scopeLabel)).toEqual(['macOS 27', 'None'])
+    expect(scopes[1].scopeKey).toBe(NO_VERSION_KEY)
+    expect(scopes[1].benchmarks).toEqual(expect.arrayContaining(['Essential Eight ML3', 'ISM PROTECTED']))
+  })
+
+  it('falls back to raw codes without a vocabulary and is empty for a rule in no benchmark', () => {
+    const applicability = applicabilityOfVersions({ 'macOS 15.0': [{ name: 'disa_stig', severity: 'high' }] })
+    expect(benchmarksByScope(applicability, vocabularyIndexOf({}))).toEqual([
+      { scopeKey: 'macOS 15.0', scopeLabel: 'macOS 15.0', benchmarks: ['disa_stig (high)'] },
+    ])
+    expect(benchmarksByScope(applicabilityOfVersions({ 'macOS 15.0': [] }), vocabularyIndex)).toEqual([])
   })
 })
 

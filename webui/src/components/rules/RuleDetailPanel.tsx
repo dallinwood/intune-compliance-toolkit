@@ -8,6 +8,7 @@ import type { Rule, RuleSource } from '../../types/library'
 import { SectionHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 import { OrgDefinedValueInput } from './OrgDefinedValueInput'
+import { RuleBenchmarks } from './RuleBenchmarks'
 import { RuleCheckSection } from './RuleCheckSection'
 import { RuleReferences } from './RuleReferences'
 import { RuleRemediationSection } from './RuleRemediationSection'
@@ -85,6 +86,7 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
 
       <RuleCheckSection rule={rule} odvValue={odvValue} />
       <RuleRemediationSection rule={rule} odvValue={odvValue} />
+      <RuleBenchmarks applicability={rule.applicability} />
       <RuleReferences references={rule.references} />
 
       <p className="text-xs text-slate-500">

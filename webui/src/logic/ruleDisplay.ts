@@ -1,5 +1,5 @@
 import type { Applicability, Assessment } from '../types/library'
-import { NONE_LABEL, NO_VERSION_KEY, benchmarksAt } from './applicability'
+import { NONE_LABEL, NO_VERSION_KEY, benchmarksAt, scopeKeysOf } from './applicability'
 import { compareBenchmarkFacetValues, membershipFacetValue, parseBenchmarkFacetValue } from './ruleFilters'
 import { groupLabel, termDescription, termLabel, type VocabularyIndex } from './vocabulary'
 
@@ -53,15 +53,42 @@ export function benchmarkSummary(applicability: Applicability, scopeKeysInScope:
   return Array.from(versionsByItem.keys())
     .sort(compareItems)
     .map((itemKey) => {
-      const { groupKey, severity } = parseBenchmarkFacetValue(itemKey)
-      const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
-      const label = severity === null ? benchmarkLabel : `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
+      const label = membershipLabel(itemKey, index)
       const itemVersions = versionsByItem.get(itemKey) ?? []
       if (itemVersions.length === scopeKeysInScope.length) return label
       const versionLabels = Array.from(new Set(itemVersions.map((key) => (key === NO_VERSION_KEY ? NONE_LABEL : termLabel(index, 'versions', key)))))
       return `${label} on ${versionListText(versionLabels)}`
     })
     .join(' · ')
+}
+
+function membershipLabel(itemKey: string, index: VocabularyIndex): string {
+  const { groupKey, severity } = parseBenchmarkFacetValue(itemKey)
+  const benchmarkLabel = groupLabel(index, 'benchmarks', groupKey)
+  return severity === null ? benchmarkLabel : `${benchmarkLabel} (${groupLabel(index, 'severities', severity)})`
+}
+
+export interface ScopeBenchmarks {
+  scopeKey: string
+  scopeLabel: string
+  benchmarks: string[]
+}
+
+// Every benchmark membership of a rule, grouped by version (newest first,
+// unversioned last as None). Versions with no benchmark are left out.
+export function benchmarksByScope(applicability: Applicability, index: VocabularyIndex): ScopeBenchmarks[] {
+  const compareItems = compareBenchmarkFacetValues(index)
+  return scopeKeysOf(applicability).flatMap((scopeKey) => {
+    const itemKeys = Array.from(new Set(benchmarksAt(applicability, scopeKey).map((membership) => membershipFacetValue(membership, index))))
+    if (itemKeys.length === 0) return []
+    return [
+      {
+        scopeKey,
+        scopeLabel: scopeKey === NO_VERSION_KEY ? NONE_LABEL : termLabel(index, 'versions', scopeKey),
+        benchmarks: itemKeys.sort(compareItems).map((itemKey) => membershipLabel(itemKey, index)),
+      },
+    ]
+  })
 }
 
 // Rule ids are "<source>.<upstream id>"; upstream ids never contain a dot.
