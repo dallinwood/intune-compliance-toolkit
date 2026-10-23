@@ -27,7 +27,7 @@ export function PagingBar({ currentPage, pageCount, size, onPageChange, onSizeCh
           <Button type="button" variant="outline" size="icon-sm" aria-label="Previous page" disabled={currentPage <= 1} onClick={() => onPageChange(currentPage - 1)}>
             <ChevronLeft aria-hidden="true" />
           </Button>
-          <span className="tabular-nums">
+          <span aria-live="polite" className="tabular-nums">
             Page {currentPage} of {pageCount}
           </span>
           <Button type="button" variant="outline" size="icon-sm" aria-label="Next page" disabled={currentPage >= pageCount} onClick={() => onPageChange(currentPage + 1)}>

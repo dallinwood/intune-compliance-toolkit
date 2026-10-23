@@ -30,7 +30,9 @@ export function buildRuleRows(source: ManifestSource, index: RuleIndex): RuleRow
       title: entry.title,
       targetKeys: targetKeysOf(entry.applicability),
       section: entry.section,
-      sectionPath: entry.section_path,
+      // A browser holding an index cached from before section_path existed
+      // still gets a one-level path.
+      sectionPath: entry.section_path ?? [entry.section],
       sourceName: source.name,
       releaseTag: source.release_tag,
       assessment: entry.assessment,

@@ -69,7 +69,8 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   for (const [stateKey, parameterName] of Object.entries(LIST_PARAMETER_NAMES)) {
     for (const value of state[stateKey as keyof typeof LIST_PARAMETER_NAMES]) parameters.append(parameterName, value)
   }
-  if (state.page > 1) parameters.set('page', String(state.page))
+  // Infinite scroll has no pages.
+  if (state.page > 1 && state.size !== 'all') parameters.set('page', String(state.page))
   if (state.size !== defaults.size) parameters.set('size', String(state.size))
 
   const queryString = parameters.toString()

@@ -973,6 +973,38 @@ test.describe('section tree and paging', () => {
     await expect(ruleRows(page)).toHaveCount(200)
   })
 
+  test('a collapse that leaves fewer pages moves the stored page back, so reopening a section starts at its top', async ({ page }) => {
+    await openLibrary(page, '/?page=7&size=25')
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 7 of 60')
+
+    await page.getByRole('button', { name: 'Collapse all' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 1 of 1')
+    await expect.poll(() => new URL(page.url()).searchParams.has('page')).toBe(false)
+
+    await ruleTable(page).getByRole('button', { name: /^Auditing \(31\)$/ }).click()
+    await expect(pageStatus(page)).toHaveText('Page 1 of 2')
+    await expect(ruleRows(page)).toHaveCount(25)
+    expect(new URL(page.url()).searchParams.has('page')).toBe(false)
+  })
+
+  test('infinite scroll restarts from the first batch after a collapse and expand, and its sentinel goes once every row is shown', async ({ page }) => {
+    await openLibrary(page, '/?size=all')
+    await page.getByRole('checkbox', { name: 'Operating system', exact: true }).click()
+    await expect(ruleCount(page)).toHaveText('200 of 1493 rules')
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(ruleRows(page)).toHaveCount(100)
+    await page.getByTestId('infinite-scroll-sentinel').scrollIntoViewIfNeeded()
+    await expect(ruleRows(page)).toHaveCount(200)
+    await expect(page.getByTestId('infinite-scroll-sentinel')).toHaveCount(0)
+
+    await page.getByRole('button', { name: 'Collapse all' }).click()
+    await expect(ruleRows(page)).toHaveCount(0)
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(ruleRows(page)).toHaveCount(100)
+    await expect(page.getByTestId('infinite-scroll-sentinel')).toHaveCount(1)
+  })
+
   test('infinite scroll appends rule rows as the end of the table scrolls into view', async ({ page }) => {
     await openLibrary(page)
     await pageSizeSelect(page).selectOption({ label: 'Infinite scroll' })

@@ -23,7 +23,7 @@ describe('urlState', () => {
   })
 
   it('round trips infinite scroll as size=all', () => {
-    const infinite: UrlState = { ...everyKeySet, size: 'all' }
+    const infinite: UrlState = { ...everyKeySet, page: 1, size: 'all' }
     const queryString = serializeUrlState(infinite, defaults)
     expect(queryString).toContain('size=all')
     expect(parseUrlState(queryString)).toEqual(infinite)
@@ -68,6 +68,10 @@ describe('urlState', () => {
     for (const badSize of ['abc', '0', '-5', '', '7', '1000']) {
       expect(parseUrlState(`?size=${badSize}`).size).toBe(DEFAULT_PAGE_SIZE)
     }
+  })
+
+  it('leaves the page out under infinite scroll, which has no pages', () => {
+    expect(serializeUrlState({ ...parseUrlState(''), page: 4, size: 'all' }, defaults)).toBe('?size=all')
   })
 
   it('accepts each offered page size', () => {

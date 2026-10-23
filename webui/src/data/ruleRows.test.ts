@@ -67,6 +67,12 @@ describe('buildRuleRows', () => {
     expect(nestedRow.section).toBe('Guideline')
   })
 
+  it('falls back to a one-level path for an index cached from before section_path existed', () => {
+    const { section_path: _omitted, ...entryWithoutPath } = INDEX.rules[0]
+    const [oldRow] = buildRuleRows(SOURCE, { ...INDEX, rules: [entryWithoutPath as typeof INDEX.rules[0]] })
+    expect(oldRow.sectionPath).toEqual(['os'])
+  })
+
   it('uses just the file when the index sits at the baselines root', () => {
     const [rootRow] = buildRuleRows({ ...SOURCE, index_path: '_index.json' }, INDEX)
     expect(rootRow.ref.path).toBe('rules/os_gatekeeper_enable.json')

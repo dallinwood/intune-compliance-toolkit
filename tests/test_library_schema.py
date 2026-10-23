@@ -342,6 +342,19 @@ def test_index_rejects_entry_missing_section():
     assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
 
 
+def test_index_rejects_entry_missing_section_path():
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    del entry["section_path"]
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+
+
+@pytest.mark.parametrize("bad_section_path", [[], [""], ["os\nx"], "os"])
+def test_index_rejects_bad_section_path(bad_section_path):
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    entry["section_path"] = bad_section_path
+    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+
+
 @pytest.mark.parametrize("bad_section", ["", "os\n"])
 def test_index_rejects_bad_section(bad_section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")

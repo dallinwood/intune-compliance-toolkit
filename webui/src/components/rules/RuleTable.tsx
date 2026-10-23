@@ -1,5 +1,5 @@
 import { ChevronRight, Loader2, Settings2 } from 'lucide-react'
-import { Fragment, memo, useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, memo, useCallback, useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -41,7 +41,7 @@ interface SearchExpansion {
 }
 
 interface RevealedRules {
-  tree: SectionNode[]
+  items: VisibleItem[]
   ruleLimit: number
 }
 
@@ -69,38 +69,53 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
       ? searchExpansion.expanded
       : expandedForSearch
     : storedExpanded
-  const setExpanded = useCallback(
-    (next: ReadonlySet<string>) => {
-      if (isSearching) setSearchExpansion({ tree, expanded: next })
-      else setStoredExpanded(next)
-    },
-    [isSearching, tree, setStoredExpanded],
-  )
-  const toggleSection = useCallback(
-    (sectionId: string) => {
-      const next = new Set(expanded)
-      if (next.has(sectionId)) next.delete(sectionId)
-      else next.add(sectionId)
-      setExpanded(next)
-    },
-    [expanded, setExpanded],
-  )
 
   const size = useFilterStore((store) => store.size)
   const storedPage = useFilterStore((store) => store.page)
   const setPage = useFilterStore((store) => store.setPage)
   const setSize = useFilterStore((store) => store.setSize)
 
-  const items = useMemo(() => visibleItems(tree, expanded), [tree, expanded])
+  // A collapse that leaves fewer pages than the stored page moves the stored
+  // page (and the URL) back into range, so reopening a section starts at its
+  // top. Expanding never moves it: a shared page=3 still lands on page 3 once
+  // its sections are open.
+  const setExpanded = useCallback(
+    (next: ReadonlySet<string>, isCollapse: boolean) => {
+      if (isSearching) setSearchExpansion({ tree, expanded: next })
+      else setStoredExpanded(next)
+      if (!isCollapse || size === 'all') return
+      const nextPageCount = paginate(visibleItems(tree, next), size).length
+      if (storedPage > nextPageCount) setPage(clampPage(storedPage, nextPageCount))
+    },
+    [isSearching, tree, setStoredExpanded, size, storedPage, setPage],
+  )
+  const toggleSection = useCallback(
+    (sectionId: string) => {
+      const next = new Set(expanded)
+      const isCollapse = next.has(sectionId)
+      if (isCollapse) next.delete(sectionId)
+      else next.add(sectionId)
+      setExpanded(next, isCollapse)
+    },
+    [expanded, setExpanded],
+  )
+
+  // Section actions render from a deferred copy, like filter changes:
+  // expanding every section is a large render, and the zustand store updates
+  // synchronously, so startTransition alone would not defer it.
+  const deferredExpanded = useDeferredValue(expanded)
+  const isCatchingUp = isStale || deferredExpanded !== expanded
+  const items = useMemo(() => visibleItems(tree, deferredExpanded), [tree, deferredExpanded])
   const pages = useMemo(() => (size === 'all' ? null : paginate(items, size)), [items, size])
-  // Clamped for display only: the stored page (and the URL) keep what was
-  // asked for, so a shared page=3 still lands there once its sections open.
+  // Also clamped for display: a stored page past the end shows the last page.
   const currentPage = pages ? clampPage(storedPage, pages.length) : 1
 
-  const [revealedRules, setRevealedRules] = useState<RevealedRules>({ tree, ruleLimit: INFINITE_SCROLL_STEP })
-  const ruleLimit = revealedRules.tree === tree ? revealedRules.ruleLimit : INFINITE_SCROLL_STEP
+  // Any change to what is visible (filters or sections) starts infinite
+  // scroll again from the first batch.
+  const [revealedRules, setRevealedRules] = useState<RevealedRules>({ items, ruleLimit: INFINITE_SCROLL_STEP })
+  const ruleLimit = revealedRules.items === items ? revealedRules.ruleLimit : INFINITE_SCROLL_STEP
   const revealed = useMemo(() => (size === 'all' ? revealRules(items, ruleLimit) : null), [items, size, ruleLimit])
-  const revealMore = useCallback(() => setRevealedRules({ tree, ruleLimit: ruleLimit + INFINITE_SCROLL_STEP }), [tree, ruleLimit])
+  const revealMore = useCallback(() => setRevealedRules({ items, ruleLimit: ruleLimit + INFINITE_SCROLL_STEP }), [items, ruleLimit])
 
   const shownItems = pages ? pages[currentPage - 1].items : (revealed?.items ?? [])
 
@@ -123,13 +138,13 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
   return (
     <div ref={tableTopRef} data-testid="rule-table">
       <SectionToolbar
-        onExpandOneLevel={() => setExpanded(expandOneLevel(tree, expanded))}
-        onCollapseOneLevel={() => setExpanded(collapseOneLevel(tree, expanded))}
-        onExpandAll={() => setExpanded(allNodeIds(tree))}
-        onCollapseAll={() => setExpanded(new Set())}
+        onExpandOneLevel={() => setExpanded(expandOneLevel(tree, expanded), false)}
+        onCollapseOneLevel={() => setExpanded(collapseOneLevel(tree, expanded), true)}
+        onExpandAll={() => setExpanded(allNodeIds(tree), false)}
+        onCollapseAll={() => setExpanded(new Set(), true)}
       />
       <div className="relative">
-        <div className={isStale ? 'pointer-events-none opacity-50' : undefined}>
+        <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
             <p className="p-6 text-sm text-slate-500">No rules match the current filters.</p>
           ) : (
@@ -137,7 +152,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
               <TooltipProvider>
                 <RuleItems
                   items={shownItems}
-                  expanded={expanded}
+                  expanded={deferredExpanded}
                   expandedRules={expandedRules}
                   onToggleSection={toggleSection}
                   onToggleRule={toggleRule}
@@ -154,7 +169,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
             </>
           )}
         </div>
-        {isStale && (
+        {isCatchingUp && (
           <div role="status" aria-label="Updating rules" className="pointer-events-none absolute inset-0">
             <div className="sticky top-1/3 flex justify-center">
               <Loader2 className="size-8 animate-spin text-indigo-500" aria-hidden="true" />
@@ -173,16 +188,20 @@ function InfiniteScrollSentinel({ onReveal }: { onReveal: () => void }) {
   useEffect(() => {
     const sentinel = sentinelRef.current
     if (!sentinel) return
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) onReveal()
-    })
+    // The margin starts loading the next batch before the end comes into view.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) onReveal()
+      },
+      { rootMargin: '600px' },
+    )
     observer.observe(sentinel)
     return () => observer.disconnect()
   }, [onReveal])
   return <div ref={sentinelRef} data-testid="infinite-scroll-sentinel" className="h-px" />
 }
 
-type RenderBlock = { kind: 'section'; node: SectionNode } | { kind: 'rules'; key: string; rows: RuleRow[] }
+type RenderBlock = { kind: 'section'; node: SectionNode } | { kind: 'rules'; key: string; depth: number; rows: RuleRow[] }
 
 // Consecutive rule items share one <table>; each header sits between tables.
 function blocksOf(items: VisibleItem[]): RenderBlock[] {
@@ -194,7 +213,7 @@ function blocksOf(items: VisibleItem[]): RenderBlock[] {
     }
     const lastBlock = blocks.at(-1)
     if (lastBlock?.kind === 'rules') lastBlock.rows.push(item.row)
-    else blocks.push({ kind: 'rules', key: refKey(item.row.ref), rows: [item.row] })
+    else blocks.push({ kind: 'rules', key: refKey(item.row.ref), depth: item.depth, rows: [item.row] })
   }
   return blocks
 }
@@ -217,7 +236,7 @@ const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onTo
         block.kind === 'section' ? (
           <SectionHeader key={block.node.id} node={block.node} isOpen={expanded.has(block.node.id)} onToggle={onToggleSection} />
         ) : (
-          <RuleRowsTable key={block.key} rows={block.rows} expandedRules={expandedRules} onToggleRule={onToggleRule} />
+          <RuleRowsTable key={block.key} depth={block.depth} rows={block.rows} expandedRules={expandedRules} onToggleRule={onToggleRule} />
         ),
       )}
     </div>
@@ -253,13 +272,19 @@ function SectionHeader({ node, isOpen, onToggle }: { node: SectionNode; isOpen: 
   )
 }
 
+// Matches the headers' pl-4 per level, on md and up only so phones keep the
+// title column wide.
+const RULE_TITLE_INDENTS: Record<number, string> = { 1: '', 2: 'md:pl-6', 3: 'md:pl-10' }
+
 interface RuleRowsTableProps {
+  depth: number
   rows: RuleRow[]
   expandedRules: ReadonlySet<string>
   onToggleRule: (ruleKey: string) => void
 }
 
-function RuleRowsTable({ rows, expandedRules, onToggleRule }: RuleRowsTableProps) {
+function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTableProps) {
+  const titleIndent = RULE_TITLE_INDENTS[Math.min(depth, 3)]
   const selections = useSelectionStore((store) => store.selections)
   const setEnabled = useSelectionStore((store) => store.setEnabled)
 
@@ -327,7 +352,7 @@ function RuleRowsTable({ rows, expandedRules, onToggleRule }: RuleRowsTableProps
                     {isExpanded ? '▾' : '▸'}
                   </Button>
                 </td>
-                <td className="px-2 py-1.5">
+                <td className={`px-2 py-1.5 ${titleIndent}`}>
                   <RuleTitle row={row} />
                   <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 md:hidden">
                     <AssessmentBadge row={row} />
