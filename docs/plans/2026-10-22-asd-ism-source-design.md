@@ -348,7 +348,7 @@ keys, fixed indentation, LF endings).
   `section_of()` reads today, now stored in the rule); `discussion_format:
   "asciidoc"`; `source.upstream_revision` / `upstream_updated` `null`; no
   `platform`.
-- Re-run `python tools/import_mscp.py --tag release_27.0 --offline` to
+- Re-run `python tools/import_mscp.py --offline` to
   regenerate `baselines/mscp/`. The diff must be structural only.
 - Prove "values unchanged" with a test: for every mSCP rule, converting the
   v3 file to v4 by the rules above gives exactly the regenerated v4 file
@@ -428,11 +428,23 @@ the matching plan document:
    filters/generator adapted so the UI looks and behaves as before (no ISM
    yet). Byte-identical bundle check.
 2. **ASD ISM importer and data**: vendored upstream, lock file, importer,
-   `baselines/asd_ism/`, manifest entry, Python tests.
+   `baselines/asd_ism/`, manifest entry, Python tests. The `asd_ism`
+   manifest entry must not be pushed before phase 3 lands (push phases 2
+   and 3 together, or hold the manifest entry back): without phase 3,
+   ISM rows can't be filtered by benchmark, show mSCP-specific "no macOS
+   version" text, render Markdown through the AsciiDoc path, and are
+   credited only to NIST in the attestation report.
 3. **UI for the new fields**: Target/Version facets with None, breadcrumb,
    revision/updated display, Markdown discussion, null remediation,
    vocabulary entries, attestation report attribution per source,
-   Playwright screenshots.
+   Playwright screenshots. Prerequisite found in the phase 1 review:
+   every benchmark path in the UI (`logic/applicability.ts`,
+   `data/ruleRows.ts`, `logic/ruleFilters.ts`, `benchmarkSummary`) goes
+   through version keys, so benchmarks on an entry with a null version
+   (every ISM rule) are unreachable in the facet, the filter and the table
+   summary. Give unversioned entries a handle the benchmark paths use, and
+   generalize both "No macOS version listed" sites (`RuleTable.tsx`,
+   `RuleCheckSection.tsx`, which also prints mSCP-specific text).
 4. **Attribution**: NOTICE, README, footer.
 
 No AI is used to convert content, so there is no per-rule delegation to
@@ -472,3 +484,4 @@ implementation plan.
 
 - 2026-10-22: Design drafted from the brainstorming session (no code yet).
 - 2026-10-23: Design approved by the maintainer; implementation plan next.
+- 2026-10-23: Phase 1 (schema v4 and mSCP restructure) done, per `docs/plans/2026-10-23-rule-schema-v4-plan.md`: `8b1dabe` feat: move the rule library and mSCP importer to schema v4; `6d8a9e5` refactor: read schema v4 applicability in the web UI; `1fc6660` test: read schema v4 applicability in the e2e smoke spec; `9bfe529` refactor: tidy target naming left over from the schema v4 move. mSCP values were unchanged, bundles byte-identical, and the UI visually identical. The review found a phase 3 prerequisite (benchmarks on null-version entries can't be reached in the UI) and a sequencing rule for the phase 2 manifest entry; both are recorded in section 11.

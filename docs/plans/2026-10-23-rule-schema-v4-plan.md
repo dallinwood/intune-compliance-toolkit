@@ -136,7 +136,7 @@
 
 - [ ] **Step 6: Regenerate the library and check it is stable**
 
-  Run: `python tools/import_mscp.py --tag release_27.0 --offline`, then run it again.
+  Run: `python tools/import_mscp.py --offline`, then run it again. (`--tag` and `--offline` are mutually exclusive.)
   Expected: the first run rewrites `baselines/mscp/**` and `baselines/_manifest.json`, and the second run changes nothing (`git status` is the same after both).
 
 - [ ] **Step 7: Prove that no values changed (one-off, not committed)**
@@ -267,3 +267,6 @@
 ## Progress log
 
 - 2026-10-23: Plan written (no code yet).
+- 2026-10-23: Task 1 done. Schemas, mSCP importer and validator moved to v4 and `baselines/mscp/` regenerated (`8b1dabe` feat: move the rule library and mSCP importer to schema v4). A v3-to-v4 conversion check found 0 differences across 352 files, and a second `--offline` import changed nothing.
+- 2026-10-23: Task 2 done. The web UI reads v4 through `logic/applicability.ts` and `"<target> <version>"` version keys (`6d8a9e5` refactor: read schema v4 applicability in the web UI). The plan said `smoke.spec.ts` would stay unmodified, but three test-side spots parsed v3 JSON or expected the old raw fallback label; they were updated (`1fc6660` test: read schema v4 applicability in the e2e smoke spec). The bundle snapshot was identical before and after for every mSCP rule, and all 8 before/after screenshot pairs (375px and 1280px) were identical.
+- 2026-10-23: Final-review cleanups: bundle names use `GENERATED_TARGET`, the e2e lookup checks the target, and stale v3 wording was removed (`9bfe529` refactor: tidy target naming left over from the schema v4 move). Fixed the Step 6 command, since `--tag` and `--offline` are mutually exclusive.
