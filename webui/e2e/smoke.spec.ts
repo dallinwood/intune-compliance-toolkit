@@ -245,6 +245,20 @@ test('a version-less mSCP rule keeps its macOS warning with the new wording and 
   await expect(detail.getByText(/^Revision /)).toHaveCount(0)
 })
 
+test('a one-level section path shows no breadcrumb while a multi-level one does', async ({ page }) => {
+  await page.goto('/')
+  const mscpRow = await searchForSingleRow(page, 'audit_acls_folders_configure', /./)
+  await mscpRow.getByRole('button').click()
+  const detail = page.locator('[id^="rule-detail-"]')
+  await expect(detail.getByText('The audit log folder')).toBeVisible()
+  await expect(detail.getByTestId('rule-breadcrumb')).toHaveCount(0)
+  await mscpRow.getByRole('button').click()
+
+  const ismRow = await searchForSingleRow(page, 'ism-1803', /./)
+  await ismRow.getByRole('button').click()
+  await expect(detail.getByTestId('rule-breadcrumb')).toContainText('Guidelines for cyber security incidents ›')
+})
+
 test('a facet with no reachable options is not rendered', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })

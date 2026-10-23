@@ -47,13 +47,22 @@ function LoadedRuleDetail({ ruleRef, rule }: { ruleRef: RuleRef; rule: Rule }) {
   const odvValue = storedValueIsInvalid ? null : usableOdvValue(rule.odv, mode, storedValue, rule.id)
   const { source } = rule
   const revision = revisionLine(source)
+  // A one-level path (every mSCP rule) only repeats the table's group header
+  // as a raw folder code.
+  const showBreadcrumb = rule.section_path.length > 1
 
   return (
     <div className={`space-y-4 ${PANEL_CLASS}`}>
-      <div className="space-y-0.5 text-xs text-slate-500">
-        <p className="break-words">{rule.section_path.join(BREADCRUMB_SEPARATOR)}</p>
-        {revision && <p>{revision}</p>}
-      </div>
+      {(showBreadcrumb || revision) && (
+        <div className="space-y-0.5 text-xs text-slate-500">
+          {showBreadcrumb && (
+            <p data-testid="rule-breadcrumb" className="break-words">
+              {rule.section_path.join(BREADCRUMB_SEPARATOR)}
+            </p>
+          )}
+          {revision && <p>{revision}</p>}
+        </div>
+      )}
 
       <DiscussionText text={rule.discussion} format={rule.discussion_format} odvValue={odvValue} />
 
