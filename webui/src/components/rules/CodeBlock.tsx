@@ -3,6 +3,7 @@ import './codeBlock.css'
 import type { HighlightLanguage } from '../../logic/codeLanguage'
 import { highlightedHtml } from '../../logic/highlighting'
 import { codeTextWithOdv, containsOdvPlaceholder, displayWithOdv, type CodeOdvValues } from '../../logic/odv'
+import { expandsOdvOnlyAsQuotedVariable, shellWithExportedOdv } from '../../logic/odvExportDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { CopyButton } from './CopyButton'
 import { CustomTag } from './CustomTag'
@@ -47,6 +48,10 @@ function OdvSubstitutionNote({ value }: { value: OrgDefinedValue }) {
   return <p className="text-xs text-slate-500">Shown with the organization-defined value: {shortenedValue(String(value))}</p>
 }
 
+function OdvExportNote() {
+  return <p className="text-xs text-slate-500">Shown with the organization-defined value set as ODV, as the generated script does.</p>
+}
+
 // A block of shipped code that may contain $ODV. codeOdv holds the values safe to
 // show in its place, or null to keep the literal placeholder and explain it.
 export function OdvCodeBlock({
@@ -64,6 +69,14 @@ export function OdvCodeBlock({
 }) {
   const codeOdvValue = isJson ? codeOdv.json : codeOdv.script
   if (!containsOdvPlaceholder(code)) return <CodeBlock code={code} language={language} />
+  if (!isJson && codeOdv.exported !== null && language === 'bash' && expandsOdvOnlyAsQuotedVariable(code)) {
+    return (
+      <>
+        <CodeBlock code={shellWithExportedOdv(code, codeOdv.exported)} language={language} />
+        <OdvExportNote />
+      </>
+    )
+  }
   if (codeOdvValue === null) {
     return (
       <>

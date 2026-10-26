@@ -431,10 +431,10 @@ describe('codeOdvValues', () => {
   const numberOdv = odv({ recommended: 6, validation: { min: 1 } })
   const stringOdv = odv({ datatype: 'string', recommended: 'ab' })
   const injection = 'a"; rm -rf ~ #'
-  const none = { script: null, json: null }
+  const none = { script: null, json: null, exported: null }
 
   it('returns a valid value for scripts and JSON so code blocks show it in place of $ODV', () => {
-    expect(codeOdvValues(numberOdv, 'text', 12, GENERIC_RULE_ID)).toEqual({ script: 12, json: 12 })
+    expect(codeOdvValues(numberOdv, 'text', 12, GENERIC_RULE_ID)).toEqual({ script: 12, json: 12, exported: null })
     expect(substituteOdv('minlen=$ODV and again $ODV', 12)).toBe('minlen=12 and again 12')
   })
 
@@ -460,9 +460,16 @@ describe('codeOdvValues', () => {
     expect(codeOdvValues(numberOdv, 'text', '007', GENERIC_RULE_ID).script).toBe(7)
   })
 
-  it('never substitutes in variable mode, where the script exports ODV instead of text-replacing', () => {
+  it('never text-replaces in variable mode, offering the generator-validated value as the exported one', () => {
     const bannerOdv = odv({ datatype: 'string', recommended: 'Authorized use only' })
-    expect(codeOdvValues(bannerOdv, 'variable', 'Authorized use only', 'mscp.os_policy_banner_ssh_configure')).toEqual(none)
+    const bannerRuleId = 'mscp.os_policy_banner_ssh_configure'
+    expect(codeOdvValues(bannerOdv, 'variable', "it's \"$HOME\" `x` \\ ok", bannerRuleId)).toEqual({
+      script: null,
+      json: null,
+      exported: "it's \"$HOME\" `x` \\ ok",
+    })
+    expect(codeOdvValues(bannerOdv, 'variable', 'bad'+String.fromCharCode(13)+'value', bannerRuleId)).toEqual(none)
+    expect(codeOdvValues(bannerOdv, 'variable', null, bannerRuleId)).toEqual(none)
   })
 
   it('applies the strict shell-safe rules to scripts even when the generator never substitutes (none mode)', () => {
@@ -485,7 +492,7 @@ describe('codeOdvValues', () => {
 
   it('lets JSON show a value that is only unsafe as shell text, still requiring the rule own validation', () => {
     const jsonOnly = codeOdvValues(stringOdv, 'none', 'two words', GENERIC_RULE_ID)
-    expect(jsonOnly).toEqual({ script: null, json: 'two words' })
+    expect(jsonOnly).toEqual({ script: null, json: 'two words', exported: null })
     expect(codeOdvValues(numberOdv, 'none', 0, GENERIC_RULE_ID)).toEqual(none)
   })
 })

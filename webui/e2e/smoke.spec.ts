@@ -1563,6 +1563,22 @@ test.describe('live organization-defined value in code blocks', () => {
     await expect(page.getByText('$ODV stands for the organization-defined value').first()).toBeVisible()
   })
 
+  test('a variable-mode rule shows the export line the generated script runs, and Copy copies it', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'os_policy_banner_ssh_configure', /./)
+    await row.getByRole('button').click()
+    const checkBlock = page.getByTestId('check-target').first().locator('pre').first()
+    await expect(checkBlock).toContainText("export ODV='You are accessing")
+    await expect(page.getByText('Shown with the organization-defined value set as ODV, as the generated script does.').first()).toBeVisible()
+    const displayedText = await checkBlock.textContent()
+    expect(displayedText).toMatch(/^export ODV='You are accessing/)
+    expect(displayedText).toContain('bannerText="$ODV"')
+
+    await checkBlock.locator('xpath=following-sibling::button').click()
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
+    expect(clipboardText.replace(/\r\n/g, '\n')).toBe(displayedText)
+  })
+
   test('Copy puts the substituted text on the clipboard', async ({ page }) => {
     const { odvInput, checkBlock } = await openMinimumLengthRule(page)
     await odvInput.fill('14')

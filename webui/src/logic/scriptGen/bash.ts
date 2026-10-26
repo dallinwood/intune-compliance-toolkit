@@ -118,7 +118,7 @@ function singleLineComment(text: string): string {
 }
 
 // The standard shell idiom: end the quote, insert an escaped quote, resume.
-function bashSingleQuote(text: string): string {
+export function bashSingleQuote(text: string): string {
   return `'${text.replaceAll("'", "'\\''")}'`
 }
 

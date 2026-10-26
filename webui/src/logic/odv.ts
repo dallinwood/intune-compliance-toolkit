@@ -165,6 +165,9 @@ export interface CodeOdvValues {
   script: OrgDefinedValue | null
   // For inline payload JSON, which is never run as a shell command.
   json: OrgDefinedValue | null
+  // Variable mode only: the value the generated script exports as ODV, shown
+  // as an export line above blocks that only expand "$ODV" as a variable.
+  exported: OrgDefinedValue | null
 }
 
 // Code blocks are display-only, but a displayed command gets copied and run,
@@ -175,17 +178,23 @@ export interface CodeOdvValues {
 // working command. JSON is escaped as a string, so it only needs the rule's
 // own validation. In variable mode the script exports ODV and the shell
 // expands "$ODV" itself, so text-replacing it would show a script that is
-// not the one that runs; both stay null there.
+// not the one that runs; script and json stay null there and the value is
+// offered as `exported` instead, validated and canonicalised exactly as the
+// generator does (resolveOdv in checkPlan.ts).
 export function codeOdvValues(
   odv: Odv | null,
   mode: OdvSubstitutionMode,
   value: OrgDefinedValue | null,
   ruleId: string,
 ): CodeOdvValues {
-  if (!odv || value === null || mode === 'variable') return { script: null, json: null }
+  if (!odv || value === null) return { script: null, json: null, exported: null }
   const canonicalValue = canonicalOdvValue(odv, value)
+  if (mode === 'variable') {
+    const exported = validateOdvValue(odv, canonicalValue, mode, ruleId) === null ? canonicalValue : null
+    return { script: null, json: null, exported }
+  }
   const passes = (validationMode: OdvSubstitutionMode) => validateOdvValue(odv, canonicalValue, validationMode, ruleId) === null
-  return { script: passes('text') ? canonicalValue : null, json: passes(mode) ? canonicalValue : null }
+  return { script: passes('text') ? canonicalValue : null, json: passes(mode) ? canonicalValue : null, exported: null }
 }
 
 // For JSON text, the value goes in as the contents of a JSON string so a
