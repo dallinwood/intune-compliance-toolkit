@@ -13,9 +13,17 @@
 // targets is opened. The index is only ever written to the published copy,
 // never to the repo's baselines/.
 //
+// Run it with bun (see the copy-baselines script in webui/package.json): it
+// imports the app's TypeScript, which plain node cannot load.
+//
 // Paths are resolved from this file's own location, not the working
 // directory, so it behaves the same whether invoked from the repo root or
 // from webui/.
+
+if (typeof Bun === "undefined") {
+  console.error("copy-baselines.mjs must run under bun (it imports TypeScript); use `bun run copy-baselines` from webui/.");
+  process.exit(1);
+}
 
 import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
@@ -23,7 +31,7 @@ import { fileURLToPath } from "node:url";
 
 // Bun runs this script, so it can import the app's own TypeScript: one
 // structural check for overlay files, shared with the app.
-import { buildOverlayIndex } from "../webui/src/logic/overlayIndex.ts";
+const { buildOverlayIndex } = await import("../webui/src/logic/overlayIndex.ts");
 
 const OVERLAY_INDEX_NAME = "_index.json";
 // Left over from before the index existed; never an overlay.

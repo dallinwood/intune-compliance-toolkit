@@ -120,6 +120,7 @@ export function parseOverlayIndex(value: unknown): ParsedOverlayIndex | string {
 
   const overlays: IndexedOverlay[] = []
   const warnings: string[] = []
+  const seenIds = new Set<string>()
   for (const entry of value.overlays) {
     const problem = entryProblem(entry)
     if (problem !== null) {
@@ -133,6 +134,17 @@ export function parseOverlayIndex(value: unknown): ParsedOverlayIndex | string {
       targets: OverlayTarget[]
       index_fields: Record<string, unknown>
     }
+    if (seenIds.has(id)) {
+      warnings.push(`Overlay index entry ${id}: the id is already used by an earlier entry. It was skipped.`)
+      continue
+    }
+    // The same wrapper and field-kind checks as an overlay file.
+    const fieldsProblem = parseOverlay({ schema_version: 1, id, targets, fields: index_fields }, file)
+    if ('error' in fieldsProblem) {
+      warnings.push(`Overlay index entry ${id}: ${fieldsProblem.error.replace(`${file}: `, '')}. It was skipped.`)
+      continue
+    }
+    seenIds.add(id)
     overlays.push({ id, file, targets, indexFields: index_fields })
   }
 

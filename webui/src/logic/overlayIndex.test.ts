@@ -148,6 +148,28 @@ describe('parseOverlayIndex', () => {
     expect(parsed.byRule.get('asd_ism.ism-1622')).toEqual(['a'])
   })
 
+  it('drops an entry whose index_fields fail the overlay checks, and a repeated id (first wins)', () => {
+    const built = buildOverlayIndex([{ fileName: 'a.json', value: overlay('a', { tags: ['a'] }) }], () => {})
+    const [good] = built.overlays
+    const parsed = parseOverlayIndex({
+      ...built,
+      overlays: [
+        good,
+        { ...good, id: 'bad-tags', file: 'rules/bad-tags.json', index_fields: { tags: 'not a list' } },
+        { ...good, id: 'bad-wrapper', file: 'rules/bad-wrapper.json', index_fields: { tags: { $replace: [], $append: [] } } },
+        { ...good, file: 'rules/again.json', index_fields: { tags: ['other'] } },
+      ],
+    })
+    if (typeof parsed === 'string') throw new Error(parsed)
+
+    expect(parsed.overlays.map((entry) => [entry.id, entry.file])).toEqual([['a', 'rules/a.json']])
+    expect(parsed.warnings).toEqual([
+      'Overlay index entry bad-tags: tags must be a list value, got a string. It was skipped.',
+      expect.stringMatching(/^Overlay index entry bad-wrapper: tags: a wrapper object must have exactly one key/),
+      'Overlay index entry a: the id is already used by an earlier entry. It was skipped.',
+    ])
+  })
+
   it('refuses a file with the wrong version or shape', () => {
     expect(typeof parseOverlayIndex({ schema_version: 2, overlays: [], by_rule: {} })).toBe('string')
     expect(typeof parseOverlayIndex({ schema_version: 1, overlays: {}, by_rule: {} })).toBe('string')

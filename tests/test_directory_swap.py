@@ -99,10 +99,14 @@ def test_replace_file_raises_a_persistent_permission_error(tmp_path, monkeypatch
     source = tmp_path / "new.json"
     source.write_text("new")
 
+    attempts = []
+
     def locked_replace(source_path, destination_path):
+        attempts.append(source_path)
         raise PermissionError("simulated scanner lock")
 
     monkeypatch.setattr(os, "replace", locked_replace)
     monkeypatch.setattr(directory_swap, "RENAME_RETRY_DELAY_SECONDS", 0)
     with pytest.raises(PermissionError):
         replace_file(source, tmp_path / "manifest.json")
+    assert len(attempts) == directory_swap.RENAME_ATTEMPTS

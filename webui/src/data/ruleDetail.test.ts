@@ -147,4 +147,26 @@ describe('fetchRule with overlays', () => {
     expect(warn).toHaveBeenCalledTimes(2)
     warn.mockRestore()
   })
+
+  it('retries an overlay file that failed to load instead of caching the failure for the session', async () => {
+    const rule = inlineRule({ upstreamId: 'blip_rule', releaseTag: 'release_27.0', overrides: { tags: ['a'] } })
+    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(rule)))
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const overlay = { id: 'blip', targets: [{ rule: rule.id, release: 'release_27.0' }], fields: { tags: ['b'] } }
+    const loadOverlay = vi.fn().mockRejectedValueOnce(new TypeError('Failed to fetch')).mockResolvedValueOnce(overlay)
+    setRuleOverlays({ overlayIdsFor: () => ['blip'], loadOverlay })
+    const ref = refFor('blip_rule')
+
+    const first = await fetchOverlaidRule(ref)
+    const second = await fetchOverlaidRule(ref)
+    const third = await fetchOverlaidRule(ref)
+
+    expect(first.rule.tags).toEqual(['a'])
+    expect(first.skipped).toHaveLength(1)
+    expect(second.rule.tags).toEqual(['a', 'b'])
+    expect(second.skipped).toEqual([])
+    expect(third).toBe(second)
+    expect(loadOverlay).toHaveBeenCalledTimes(2)
+    warn.mockRestore()
+  })
 })

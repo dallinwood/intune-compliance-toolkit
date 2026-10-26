@@ -207,8 +207,8 @@ strings:
   cannot remove a key, so a plain merge would leave both and be rejected.
 - Overlays keep their files in `baselines/_overlays/scripts/` and
   `baselines/_overlays/payloads/` (the overlay files themselves are in
-  `baselines/_overlays/rules/`, the same layout as a source folder). The site serves them from its own
-  `baselines/` copy: the details show a script or text payload as it is,
+  `baselines/_overlays/rules/`, the same layout as a source folder). The site
+  serves them from its own `baselines/` copy: the details show a script or text payload as it is,
   binary payloads as a download link, and the generator reads script
   files before it builds a bundle, so a bundle is the same as with an
   inline script.

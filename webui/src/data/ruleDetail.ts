@@ -4,7 +4,8 @@ import type { Rule } from '../types/library'
 import type { RuleOverlaySource } from './overlays'
 
 const importedCache = new Map<string, Promise<Rule>>()
-const overlaidCache = new Map<string, Promise<OverlaidRule>>()
+type CachedOverlaidRule = OverlaidRule & { hadLoadFailure?: boolean }
+const overlaidCache = new Map<string, Promise<CachedOverlaidRule>>()
 const NO_OVERLAY_SOURCE: RuleOverlaySource = { overlayIdsFor: () => [], loadOverlay: () => Promise.reject(new Error('no overlay source')) }
 let overlaySource: RuleOverlaySource = NO_OVERLAY_SOURCE
 
@@ -69,7 +70,7 @@ export function fetchImportedRule(ref: RuleRef): Promise<Rule> {
 // dropped for this rule alone, with a console warning and a line in the
 // details (an accepted tradeoff: CI validates every overlay against every
 // target before deploy).
-async function loadOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
+async function loadOverlaidRule(ref: RuleRef): Promise<CachedOverlaidRule> {
   const rule = await fetchImportedRule(ref)
   const overlayIds = overlaySource.overlayIdsFor(ref.id)
   if (overlayIds.length === 0) return { rule, provenance: new Map(), applied: [], skipped: [] }
@@ -87,11 +88,22 @@ async function loadOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
   const overlaid = applyOverlays(rule, overlays, rule.source.release_tag)
   const skipped = [...loadFailures, ...overlaid.skipped]
   for (const entry of skipped) console.warn(`Custom content ${entry.overlayId} was skipped: ${entry.message}`)
-  return { ...overlaid, skipped }
+  return { ...overlaid, skipped, hadLoadFailure: loadFailures.length > 0 }
 }
 
+// A merge misfit is deterministic and stays cached. A load failure may be a
+// network blip, so a result that has one is evicted once it resolves and the
+// next call fetches the overlay again.
 export function fetchOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
-  return cached(overlaidCache, ref, loadOverlaidRule)
+  const pending = cached(overlaidCache, ref, loadOverlaidRule)
+  // A rejection is already handled (and evicted) by cached().
+  pending.then(
+    (overlaid) => {
+      if (overlaid.hadLoadFailure && overlaidCache.get(ref.id) === pending) overlaidCache.delete(ref.id)
+    },
+    () => {},
+  )
+  return pending
 }
 
 export function fetchRule(ref: RuleRef): Promise<Rule> {

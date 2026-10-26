@@ -53,10 +53,13 @@ responsibility or liability for any damage, loss or expense incurred as a
 result of reliance on it.
 
 baselines/_overlays/scripts/*.ps1 (referenced by baselines/_overlays/rules/asd-blueprint-*.json)
-are PowerShell scripts copied byte for byte from ASD's Blueprint for Secure Cloud,
+are PowerShell scripts from ASD's Blueprint for Secure Cloud, copied byte for byte
 except that UserApplicationHardeningRemoveFeatures was split by this project into
 three scripts, RemovePowerShellV2.ps1, RemoveDotNet35.ps1 and
-RemoveInternetExplorer.ps1, each otherwise unmodified:
+RemoveInternetExplorer.ps1. Each split script keeps the original header, adds one
+comment line saying it was split, and otherwise holds its feature's original lines
+unmodified apart from line endings (LF) and a final newline. The MIT licence below is
+also published next to the scripts as baselines/_overlays/scripts/LICENSE-Microsoft-MIT.txt:
 
   Project:  https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud
   Commit:   a6e1e5f95e6051f23d2e7d1148c8fd57a6614000

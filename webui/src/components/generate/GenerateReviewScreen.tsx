@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { fetchReferencedText } from '../../data/referencedFiles'
-import { fetchRule } from '../../data/ruleDetail'
+import { fetchOverlaidRule } from '../../data/ruleDetail'
 import { buildBundleFiles } from '../../logic/bundleFiles'
 import {
   classifyRule,
@@ -23,7 +23,15 @@ import { ManualAttestationReport } from './ManualAttestationReport'
 type ReviewState =
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'ready'; scriptedCount: number; chunks: Chunk[]; manual: ManualAttestationEntry[]; blocked: BlockedEntry[] }
+  | {
+      status: 'ready'
+      scriptedCount: number
+      chunks: Chunk[]
+      manual: ManualAttestationEntry[]
+      blocked: BlockedEntry[]
+      // Rules whose custom content could not be applied, shown as imported.
+      overlayIssueRuleIds: string[]
+    }
 
 function byId(left: { id: string }, right: { id: string }): number {
   return left.id.localeCompare(right.id)
@@ -66,14 +74,23 @@ export function GenerateReviewScreen({
     // The macOS check's script files are resolved before classifying, so the
     // bundle holds exactly what an inline script would give.
     Promise.all(
-      enabledEntries.map(async (entry) => ({ entry, rule: await resolveGeneratedCheckFiles(await fetchRule(entry.ref), fetchReferencedText) })),
+      enabledEntries.map(async (entry) => {
+        const overlaid = await fetchOverlaidRule(entry.ref)
+        return {
+          entry,
+          rule: await resolveGeneratedCheckFiles(overlaid.rule, fetchReferencedText),
+          hasOverlayIssue: overlaid.skipped.length > 0,
+        }
+      }),
     )
       .then((loaded) => {
         if (cancelled) return
         const generatable: GeneratableRule[] = []
         const manual: ManualAttestationEntry[] = []
         const blocked: BlockedEntry[] = []
-        for (const { entry, rule } of loaded) {
+        const overlayIssueRuleIds: string[] = []
+        for (const { entry, rule, hasOverlayIssue } of loaded) {
+          if (hasOverlayIssue) overlayIssueRuleIds.push(entry.ref.id)
           const result = classifyRule(rule, entry, coveredVersions, vocabularyIndex)
           if (result.kind === 'generatable') generatable.push(result.rule)
           else if (result.kind === 'manual') manual.push(result.entry)
@@ -88,6 +105,7 @@ export function GenerateReviewScreen({
           chunks,
           manual: manual.sort(byId),
           blocked: blocked.sort(byId),
+          overlayIssueRuleIds: overlayIssueRuleIds.sort(),
         })
       })
       .catch((error: unknown) => {
@@ -137,10 +155,16 @@ function ReviewBody({
   if (state.status === 'loading') return <p className="text-slate-500">Loading selected rules…</p>
   if (state.status === 'error') return <p className="text-red-600">Could not prepare the bundle: {state.message}</p>
 
-  const { scriptedCount, chunks, manual, blocked } = state
+  const { scriptedCount, chunks, manual, blocked, overlayIssueRuleIds } = state
 
   return (
     <>
+      {overlayIssueRuleIds.length > 0 && (
+        <p data-testid="overlay-issues-note" className="mb-4 text-xs break-words text-amber-800">
+          Custom content for {overlayIssueRuleIds.length} rule(s) could not be applied; they are shown as imported:{' '}
+          {overlayIssueRuleIds.map(upstreamRuleId).join(', ')}.
+        </p>
+      )}
       {blocked.length > 0 && (
         <div role="alert" className="mb-4 rounded border border-amber-300 bg-amber-50 p-3 text-amber-900">
           <p className="mb-1 font-medium">Fix these before generating:</p>
