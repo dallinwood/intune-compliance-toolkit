@@ -11,7 +11,7 @@ import {
   type GeneratableRule,
   type ManualAttestationEntry,
 } from '../../logic/chunking'
-import { resolveScriptFiles } from '../../logic/fileReferences'
+import { resolveGeneratedCheckFiles } from '../../logic/fileReferences'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import type { SelectionEntry } from '../../logic/selectionEntry'
 import { buildZip } from '../../logic/zipBundle'
@@ -63,10 +63,10 @@ export function GenerateReviewScreen({
     let cancelled = false
     setState({ status: 'loading' })
 
-    // Script files are resolved before classifying, so the bundle holds
-    // exactly what an inline script would give.
+    // The macOS check's script files are resolved before classifying, so the
+    // bundle holds exactly what an inline script would give.
     Promise.all(
-      enabledEntries.map(async (entry) => ({ entry, rule: await resolveScriptFiles(await fetchRule(entry.ref), fetchReferencedText) })),
+      enabledEntries.map(async (entry) => ({ entry, rule: await resolveGeneratedCheckFiles(await fetchRule(entry.ref), fetchReferencedText) })),
     )
       .then((loaded) => {
         if (cancelled) return

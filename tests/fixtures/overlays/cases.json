@@ -367,6 +367,8 @@
         }
       }
     },
+    {"name": "a plain merge of shell_file onto an inline entry keeps both keys, which the shape checks then reject", "rule": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell": "echo inline", "result": null, "additional_info": null}, "by_version": {}}}}, "fields": {"check": {"macOS": {"default": {"shell_file": "baselines/x/scripts/check.sh"}}}}, "expected": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell": "echo inline", "shell_file": "baselines/x/scripts/check.sh", "result": null, "additional_info": null}, "by_version": {}}}}},
+    {"name": "$replace on the entry switches it from inline to a file", "rule": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell": "echo inline", "result": null, "additional_info": null}, "by_version": {}}}}, "fields": {"check": {"macOS": {"default": {"$replace": {"shell_file": "baselines/x/scripts/check.sh", "result": null, "additional_info": null}}}}}, "expected": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell_file": "baselines/x/scripts/check.sh", "result": null, "additional_info": null}, "by_version": {}}}}},
     {
       "name": "$merge onto a list is a type mismatch",
       "rule": { "id": "x.rule", "tags": ["a"] },
@@ -700,6 +702,24 @@
     {"name": "neither data nor data_file is invalid", "kind": "payload", "entry": {}, "error": true},
     {"name": "a payload file with a disallowed extension is invalid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/Example.txt"}, "error": true},
     {"name": "a payload path outside baselines/ is invalid", "kind": "payload", "entry": {"data_file": "payloads/Example.json"}, "error": true},
-    {"name": "a payload path with a .. segment is invalid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/../../Example.json"}, "error": true}
+    {"name": "a payload path with a .. segment is invalid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/../../Example.json"}, "error": true},
+    {"name": "a percent-encoded .. segment is invalid", "kind": "script", "entry": {"shell_file": "baselines/%2e%2e/x.ps1"}, "language": "powershell", "error": true},
+    {"name": "two percent-encoded .. segments are invalid", "kind": "script", "entry": {"shell_file": "baselines/%2e%2e/%2e%2e/other/x.ps1"}, "language": "powershell", "error": true},
+    {"name": "a half-encoded .. segment with a fragment is invalid", "kind": "script", "entry": {"shell_file": "baselines/.%2E/_manifest.json#.ps1"}, "language": "powershell", "error": true},
+    {"name": "a fragment before the extension is invalid", "kind": "script", "entry": {"shell_file": "baselines/a#.ps1"}, "language": "powershell", "error": true},
+    {"name": "a query string is invalid", "kind": "script", "entry": {"shell_file": "baselines/a.ps1?q=1.ps1"}, "language": "powershell", "error": true},
+    {"name": "a space in a segment is invalid", "kind": "script", "entry": {"shell_file": "baselines/_overlays/scripts/My Script.ps1"}, "language": "powershell", "error": true},
+    {"name": "a two-dot leader lookalike segment is invalid", "kind": "script", "entry": {"shell_file": "baselines/‥/x.ps1"}, "language": "powershell", "error": true},
+    {"name": "an empty segment is invalid", "kind": "script", "entry": {"shell_file": "baselines//x.ps1"}, "language": "powershell", "error": true},
+    {"name": "a . segment is invalid", "kind": "script", "entry": {"shell_file": "baselines/./x.ps1"}, "language": "powershell", "error": true},
+    {"name": "a dot-prefixed folder is invalid", "kind": "script", "entry": {"shell_file": "baselines/.hidden/x.ps1"}, "language": "powershell", "error": true},
+    {"name": "a file name that is only the extension is invalid", "kind": "script", "entry": {"shell_file": "baselines/x/.ps1"}, "language": "powershell", "error": true},
+    {"name": "an uppercase script extension is invalid", "kind": "script", "entry": {"shell_file": "baselines/x/Check.PS1"}, "language": "powershell", "error": true},
+    {"name": "a colon in a segment is invalid", "kind": "script", "entry": {"shell_file": "baselines/c:/x.ps1"}, "language": "powershell", "error": true},
+    {"name": "a script path ending in a newline is invalid", "kind": "script", "entry": {"shell_file": "baselines/x/Check.ps1\n"}, "language": "powershell", "error": true},
+    {"name": "a percent-encoded payload path is invalid", "kind": "payload", "entry": {"data_file": "baselines/%2e%2e/x.json"}, "error": true},
+    {"name": "a payload path with a fragment is invalid", "kind": "payload", "entry": {"data_file": "baselines/x.reg#.json"}, "error": true},
+    {"name": "an uppercase payload extension is invalid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/Registry.POL"}, "error": true},
+    {"name": "dots, digits, underscores and hyphens inside segments are valid", "kind": "script", "entry": {"shell_file": "baselines/_overlays/scripts/v1.2_fix-up.ps1"}, "language": "powershell", "error": false}
   ]
 }

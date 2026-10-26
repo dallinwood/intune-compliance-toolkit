@@ -8,9 +8,11 @@ function describeError(error: unknown): string {
 
 async function loadText(path: string): Promise<string> {
   const failure = (detail: string) => new Error(`Could not load ${path}${detail}`)
+  const url = publishedFileUrl(path, import.meta.env.BASE_URL, window.location.origin)
+  if (url === null) throw failure(': the path is outside the published baselines/ folder')
   let response: Response
   try {
-    response = await fetch(publishedFileUrl(path, import.meta.env.BASE_URL))
+    response = await fetch(url)
   } catch (error) {
     throw failure(`: ${describeError(error)}`)
   }

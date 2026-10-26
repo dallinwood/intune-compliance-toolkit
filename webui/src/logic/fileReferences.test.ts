@@ -7,7 +7,8 @@ import {
   exactlyOneProblem,
   payloadFileDisplay,
   payloadFileProblem,
-  resolveScriptFiles,
+  publishedFileUrl,
+  resolveGeneratedCheckFiles,
   scriptFileProblem,
 } from './fileReferences'
 import { createSelectionEntry } from './selectionEntry'
@@ -40,17 +41,44 @@ describe('shared file reference cases', () => {
   })
 })
 
+const ORIGIN = 'https://example.test'
+
+describe('publishedFileUrl', () => {
+  it('serves a reference from the published baselines/ folder under the base URL', () => {
+    expect(publishedFileUrl('baselines/_overlays/scripts/Fix.ps1', '/app/', ORIGIN)).toBe('/app/baselines/_overlays/scripts/Fix.ps1')
+  })
+
+  it.each([
+    'baselines/%2e%2e/x.ps1',
+    'baselines/%2e%2e/%2e%2e/other/x.ps1',
+    'baselines/.%2E/_manifest.json#.ps1',
+    'baselines/a#.ps1',
+    'baselines/a.ps1?q=1.ps1',
+    'baselines/../x.ps1',
+    'baselines/./x.ps1',
+    'baselines//x.ps1',
+    'https://other.test/baselines/x.ps1',
+    '/baselines/x.ps1',
+  ])('refuses %s', (path) => {
+    expect(publishedFileUrl(path, '/app/', ORIGIN)).toBeNull()
+  })
+})
+
 describe('payloadFileDisplay', () => {
   it('shows a text payload file in full and offers it for download', () => {
-    expect(payloadFileDisplay('baselines/_overlays/payloads/Example.mobileconfig', '/app/')).toEqual({
+    expect(payloadFileDisplay('baselines/_overlays/payloads/Example.mobileconfig', '/app/', ORIGIN)).toEqual({
       fileName: 'Example.mobileconfig',
       url: '/app/baselines/_overlays/payloads/Example.mobileconfig',
       showsContent: true,
     })
   })
 
-  it.each(['Registry.pol', 'App.intunewin', 'UPPER.POL'])('offers the binary file %s only as a download', (fileName) => {
-    expect(payloadFileDisplay(`baselines/_overlays/payloads/${fileName}`, '/').showsContent).toBe(false)
+  it.each(['Registry.pol', 'App.intunewin'])('offers the binary file %s only as a download', (fileName) => {
+    expect(payloadFileDisplay(`baselines/_overlays/payloads/${fileName}`, '/', ORIGIN).showsContent).toBe(false)
+  })
+
+  it('offers no link for a reference outside the published folder', () => {
+    expect(payloadFileDisplay('baselines/%2e%2e/x.reg', '/', ORIGIN).url).toBeNull()
   })
 })
 
@@ -68,25 +96,38 @@ function ruleWithInlineCheck(): Rule {
   return inlineRule({ upstreamId: 'os_file_check', overrides: { check: macosCheck(ruleCheck(SCRIPT_TEXT, { type: 'integer', value: 1 })) } })
 }
 
-describe('resolveScriptFiles', () => {
-  it('replaces every shell_file with the file text as shell, and leaves inline scripts and the input alone', async () => {
+describe('resolveGeneratedCheckFiles', () => {
+  it('replaces only the macOS check script files with their text, and leaves the input alone', async () => {
     const step = { name: 'Fix', language: 'powershell' as const, shell_file: 'baselines/_overlays/scripts/Fix.ps1', additional_info: null, versions: null }
-    const inlineStep = { name: null, language: 'bash' as const, shell: 'echo inline', additional_info: null, versions: null }
-    const rule = { ...ruleWithCheckFile(), remediation: { Windows: { steps: [step, inlineStep], payloads: [] } } }
+    const windowsCheck = {
+      language: 'powershell' as const,
+      default: { shell_file: 'baselines/_overlays/scripts/Check.ps1', result: null, additional_info: null },
+      by_version: {},
+    }
+    const fileRule = ruleWithCheckFile()
+    const rule = { ...fileRule, check: { ...fileRule.check, Windows: windowsCheck }, remediation: { Windows: { steps: [step], payloads: [] } } }
     const loadText = vi.fn(async (path: string) => `text of ${path}`)
 
-    const resolved = await resolveScriptFiles(rule, loadText)
+    const resolved = await resolveGeneratedCheckFiles(rule, loadText)
 
     expect(resolved.check?.macOS.default).toEqual({ shell: `text of ${SCRIPT_PATH}`, result: { type: 'integer', value: 1 }, additional_info: null })
-    expect(resolved.remediation?.Windows.steps).toEqual([
-      { name: 'Fix', language: 'powershell', shell: 'text of baselines/_overlays/scripts/Fix.ps1', additional_info: null, versions: null },
-      inlineStep,
-    ])
-    expect(rule.check?.macOS.default?.shell_file).toBe(SCRIPT_PATH)
+    expect(resolved.check?.Windows).toEqual(windowsCheck)
+    expect(resolved.remediation).toEqual(rule.remediation)
+    expect(loadText.mock.calls).toEqual([[SCRIPT_PATH]])
+    expect(fileRule.check?.macOS.default?.shell_file).toBe(SCRIPT_PATH)
   })
 
-  it('fails when a referenced file cannot be loaded', async () => {
-    await expect(resolveScriptFiles(ruleWithCheckFile(), async () => Promise.reject(new Error('404')))).rejects.toThrow('404')
+  it('fetches nothing for a rule without a macOS check, so a missing Windows script cannot block a bundle', async () => {
+    const step = { name: 'Fix', language: 'powershell' as const, shell_file: 'baselines/_overlays/scripts/Missing.ps1', additional_info: null, versions: null }
+    const rule = { ...ruleWithInlineCheck(), check: null, remediation: { Windows: { steps: [step], payloads: [] } } }
+    const loadText = vi.fn(async () => Promise.reject(new Error('404')))
+
+    await expect(resolveGeneratedCheckFiles(rule, loadText)).resolves.toBe(rule)
+    expect(loadText).not.toHaveBeenCalled()
+  })
+
+  it('fails when a macOS check script file cannot be loaded', async () => {
+    await expect(resolveGeneratedCheckFiles(ruleWithCheckFile(), async () => Promise.reject(new Error('404')))).rejects.toThrow('404')
   })
 
   it('produces the same bundle as the equivalent inline script', async () => {
@@ -98,7 +139,7 @@ describe('resolveScriptFiles', () => {
       return buildBundleFiles(chunks, [], [])
     }
 
-    const fromFile = bundleOf(await resolveScriptFiles(ruleWithCheckFile(), async () => SCRIPT_TEXT))
+    const fromFile = bundleOf(await resolveGeneratedCheckFiles(ruleWithCheckFile(), async () => SCRIPT_TEXT))
     expect(fromFile).toEqual(bundleOf(ruleWithInlineCheck()))
   })
 })

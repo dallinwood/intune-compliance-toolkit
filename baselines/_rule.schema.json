@@ -174,11 +174,11 @@
     },
     "script_file": {
       "type": "string",
-      "pattern": "^baselines/(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+\\.(?:ps1|sh|py)(?![\\s\\S])"
+      "pattern": "^baselines/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.(?:ps1|sh|py)(?![\\s\\S])"
     },
     "payload_file": {
       "type": "string",
-      "pattern": "^baselines/(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+\\.(?:mobileconfig|plist|json|xml|reg|admx|adml|pol|intunewin)(?![\\s\\S])"
+      "pattern": "^baselines/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.(?:mobileconfig|plist|json|xml|reg|admx|adml|pol|intunewin)(?![\\s\\S])"
     },
     "target_name": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" },
     "version": { "type": "string", "pattern": "^\\S+(?![\\s\\S])" },
@@ -203,8 +203,40 @@
           "propertyNames": { "$ref": "#/$defs/version" },
           "additionalProperties": { "$ref": "#/$defs/check_entry" }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "language": { "const": "powershell" } }, "required": ["language"] },
+          "then": {
+            "properties": {
+              "default": { "$ref": "#/$defs/shell_file_ps1" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/shell_file_ps1" } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "language": { "enum": ["bash", "zsh"] } }, "required": ["language"] },
+          "then": {
+            "properties": {
+              "default": { "$ref": "#/$defs/shell_file_sh" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/shell_file_sh" } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "language": { "const": "python" } }, "required": ["language"] },
+          "then": {
+            "properties": {
+              "default": { "$ref": "#/$defs/shell_file_py" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/shell_file_py" } }
+            }
+          }
+        }
+      ]
     },
+    "shell_file_ps1": { "properties": { "shell_file": { "pattern": "\\.ps1(?![\\s\\S])" } } },
+    "shell_file_sh": { "properties": { "shell_file": { "pattern": "\\.sh(?![\\s\\S])" } } },
+    "shell_file_py": { "properties": { "shell_file": { "pattern": "\\.py(?![\\s\\S])" } } },
     "target_remediation": {
       "type": "object",
       "additionalProperties": false,
@@ -229,7 +261,21 @@
         "shell_file": { "$ref": "#/$defs/script_file" },
         "additional_info": { "type": ["string", "null"] },
         "versions": { "$ref": "#/$defs/versions" }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "language": { "const": "powershell" } }, "required": ["language"] },
+          "then": { "$ref": "#/$defs/shell_file_ps1" }
+        },
+        {
+          "if": { "properties": { "language": { "enum": ["bash", "zsh"] } }, "required": ["language"] },
+          "then": { "$ref": "#/$defs/shell_file_sh" }
+        },
+        {
+          "if": { "properties": { "language": { "const": "python" } }, "required": ["language"] },
+          "then": { "$ref": "#/$defs/shell_file_py" }
+        }
+      ]
     },
     "remediation_payload": {
       "type": "object",

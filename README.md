@@ -195,9 +195,16 @@ strings:
   extensions: text `.mobileconfig`, `.plist`, `.json`, `.xml`, `.reg`,
   `.admx`, `.adml`; binary `.pol`, `.intunewin`. A `.json` file must parse
   as JSON. `kind` stays free text.
-- Every path starts with `baselines/` and has no `..` segment, and the
-  file must exist. Text files (scripts included) must use LF line endings;
-  `.gitattributes` marks the binary types as binary.
+- Every path starts with `baselines/`, and each segment after it uses
+  only letters, digits, `.`, `_` and `-` and does not start with `.` (so
+  no `..`, `%`, `?`, `#` or spaces). Extensions are lowercase. The file
+  must exist.
+- Text files (scripts included) must be UTF-8 with LF line endings; a
+  script must not be empty, and a check script file cannot use `$ODV` yet
+  (inline that check). `.gitattributes` marks the binary types as binary.
+- To switch an existing entry between inline and file (`shell` and
+  `shell_file`, or `data` and `data_file`), `$replace` that entry: a merge
+  cannot remove a key, so a plain merge would leave both and be rejected.
 - Overlays keep their files in `baselines/_overlays/scripts/` and
   `baselines/_overlays/payloads/`. The site serves them from its own
   `baselines/` copy: the details show a script or text payload as it is,

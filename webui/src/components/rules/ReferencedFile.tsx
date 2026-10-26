@@ -30,14 +30,20 @@ export function ScriptFile({ path, odvValue }: { path: string; odvValue: OrgDefi
 // A payload from data_file: a text file is shown in full and offered for
 // download; a binary one (.pol, .intunewin) only as a download.
 export function PayloadFile({ label, path, odvValue }: { label: string; path: string; odvValue: OrgDefinedValue | null }) {
-  const display = payloadFileDisplay(path, import.meta.env.BASE_URL)
+  const display = payloadFileDisplay(path, import.meta.env.BASE_URL, window.location.origin)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {display.showsContent && <FileText path={path} odvValue={odvValue} />}
-      <a className="text-xs break-all text-blue-600 underline" href={display.url} download={display.fileName}>
-        Download {display.fileName}
-      </a>
+      {display.url === null ? (
+        <p data-testid="referenced-file-error" className="text-xs break-words text-red-600">
+          {display.fileName} is outside the published baselines/ folder, so it is not offered.
+        </p>
+      ) : (
+        <a className="text-xs break-all text-blue-600 underline" href={display.url} download={display.fileName}>
+          Download {display.fileName}
+        </a>
+      )}
     </div>
   )
 }

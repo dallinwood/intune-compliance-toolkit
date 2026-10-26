@@ -1,3 +1,4 @@
+import copy
 import json
 from pathlib import Path
 
@@ -9,6 +10,8 @@ from tools.file_references import (
     payload_file_problem,
     script_file_problem,
 )
+from tools.validate_library import schema_errors
+from tests.test_library_schema import MINIMAL_RULE
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CASES = json.loads((REPO_ROOT / "tests" / "fixtures" / "overlays" / "cases.json").read_text(encoding="utf-8"))
@@ -112,3 +115,54 @@ def test_a_disallowed_payload_extension_is_an_error(tmp_path):
     write_file(tmp_path, "baselines/_overlays/payloads/Notes.txt", b"x\n")
     payload = {"kind": "notes", "versions": None, "data_file": "baselines/_overlays/payloads/Notes.txt"}
     assert file_reference_errors(rule_with_step(powershell_step(shell="1"), [payload]), tmp_path)
+
+
+def rule_with_reference(case: dict) -> dict:
+    """A schema-valid rule carrying the case's entry where the schema checks it."""
+    rule = copy.deepcopy(MINIMAL_RULE)
+    if case["kind"] == "payload":
+        rule["remediation"]["macOS"]["payloads"] = [{"kind": "example", "versions": None, **case["entry"]}]
+        return rule
+    language = case["language"]
+    rule["check"] = {"Example": {"language": language, "default": {"result": None, "additional_info": None, **case["entry"]}, "by_version": {}}}
+    rule["remediation"]["macOS"]["steps"] = [
+        {"name": None, "language": language, "additional_info": None, "versions": None, **case["entry"]}
+    ]
+    return rule
+
+
+@pytest.mark.parametrize("case", CASES["file_reference_cases"], ids=lambda case: case["name"])
+def test_the_rule_schema_agrees_with_the_shared_file_reference_case(case):
+    assert bool(schema_errors(rule_with_reference(case))) == case["error"]
+
+
+def check_rule_with_file(path: str) -> dict:
+    entry = {"shell_file": path, "result": None, "additional_info": None}
+    return {"check": {"macOS": {"language": "bash", "default": entry, "by_version": {}}}, "remediation": None}
+
+
+def test_a_check_script_file_using_odv_is_an_error_until_the_ui_resolves_files(tmp_path):
+    write_file(tmp_path, "baselines/x/scripts/check.sh", b'test "$(cat /etc/x)" = "$ODV" && echo 1\n')
+    errors = file_reference_errors(check_rule_with_file("baselines/x/scripts/check.sh"), tmp_path)
+    assert len(errors) == 1 and "$ODV" in errors[0] and "inline" in errors[0]
+
+
+def test_a_remediation_script_file_may_mention_odv(tmp_path):
+    write_file(tmp_path, "baselines/_overlays/scripts/Fix.ps1", b"Write-Output $ODV\n")
+    rule = rule_with_step(powershell_step(shell_file="baselines/_overlays/scripts/Fix.ps1"))
+    assert file_reference_errors(rule, tmp_path) == []
+
+
+@pytest.mark.parametrize("content", [b"", b"   \n\t\n"])
+def test_an_empty_or_whitespace_only_script_is_an_error(tmp_path, content):
+    write_file(tmp_path, "baselines/_overlays/scripts/Fix.ps1", content)
+    rule = rule_with_step(powershell_step(shell_file="baselines/_overlays/scripts/Fix.ps1"))
+    errors = file_reference_errors(rule, tmp_path)
+    assert len(errors) == 1 and "is empty" in errors[0]
+
+
+def test_a_text_payload_that_is_not_utf8_is_an_error_suggesting_utf8(tmp_path):
+    write_file(tmp_path, "baselines/_overlays/payloads/Policy.reg", "Windows Registry Editor Version 5.00\n".encode("utf-16"))
+    payload = {"kind": "registry", "versions": None, "data_file": "baselines/_overlays/payloads/Policy.reg"}
+    errors = file_reference_errors(rule_with_step(powershell_step(shell="1"), [payload]), tmp_path)
+    assert len(errors) == 1 and "UTF-8" in errors[0] and "re-save" in errors[0]

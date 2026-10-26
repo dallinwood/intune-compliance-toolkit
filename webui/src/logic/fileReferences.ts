@@ -1,14 +1,20 @@
 // Rules for the files a rule may reference instead of inlining them: a
 // check entry or remediation step names a script with `shell_file`, and a
 // payload names its content with `data_file` (design 2026-10-26, section 7).
-// tools/file_references.py carries the same path, extension and
-// exactly-one rules for CI; tests/fixtures/overlays/cases.json pins both.
-// Only CI can read the repository, so whether a file exists, its line
-// endings and JSON parsing are checked there; the UI reports a failed fetch.
+// tools/file_references.py and the rule schema carry the same path,
+// extension and exactly-one rules; tests/fixtures/overlays/cases.json pins
+// all three. Only CI can read the repository, so whether a file exists, its
+// encoding, line endings and content are checked there; the UI reports a
+// failed fetch.
 
-import type { RemediationStep, Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../types/library'
+import type { Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../types/library'
+import { GENERATED_TARGET } from './checkPlan'
 
 const REFERENCE_PREFIX = 'baselines/'
+// Every segment after baselines/ is plain: no percent-encoding, query or
+// fragment characters a browser would reinterpret, no empty segment, and no
+// leading dot (so no . or .. segment, and nothing the publish copy skips).
+const PATH_SEGMENT_PATTERN = /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/
 
 const SCRIPT_EXTENSIONS_BY_LANGUAGE: Record<ScriptLanguage, readonly string[]> = {
   powershell: ['.ps1'],
@@ -20,10 +26,9 @@ const TEXT_PAYLOAD_EXTENSIONS: readonly string[] = ['.mobileconfig', '.plist', '
 const BINARY_PAYLOAD_EXTENSIONS: readonly string[] = ['.pol', '.intunewin']
 const PAYLOAD_EXTENSIONS: readonly string[] = [...TEXT_PAYLOAD_EXTENSIONS, ...BINARY_PAYLOAD_EXTENSIONS]
 
-function extensionOf(path: string): string {
-  const fileName = fileNameOf(path)
-  const dot = fileName.lastIndexOf('.')
-  return dot <= 0 ? '' : fileName.slice(dot).toLowerCase()
+// Case-sensitive: extensions are lowercase, as in the schema.
+function hasExtension(path: string, extensions: readonly string[]): boolean {
+  return extensions.some((extension) => path.endsWith(extension))
 }
 
 export function fileNameOf(path: string): string {
@@ -34,8 +39,10 @@ function pathProblem(path: unknown): string | null {
   if (typeof path !== 'string' || !path.startsWith(REFERENCE_PREFIX)) {
     return `must be a path starting with ${REFERENCE_PREFIX}, got ${JSON.stringify(path)}`
   }
-  if (path.includes('\\') || path.includes('\n') || path.includes(':')) return `must use forward slashes on one line, got ${JSON.stringify(path)}`
-  if (path.split('/').includes('..')) return `must not contain a .. segment, got ${JSON.stringify(path)}`
+  const segments = path.slice(REFERENCE_PREFIX.length).split('/')
+  if (!segments.every((segment) => PATH_SEGMENT_PATTERN.test(segment))) {
+    return `must have only plain path segments after ${REFERENCE_PREFIX} (letters, digits, ., _ and -, not starting with .), got ${JSON.stringify(path)}`
+  }
   return null
 }
 
@@ -51,37 +58,48 @@ export function scriptFileProblem(path: unknown, language: unknown): string | nu
     ? SCRIPT_EXTENSIONS_BY_LANGUAGE[language as ScriptLanguage]
     : null
   if (allowed === null) return `has no known script extension for language ${JSON.stringify(language)}`
-  if (!allowed.includes(extensionOf(path as string))) return `must end in ${allowed.join(' or ')} for ${String(language)}`
+  if (!hasExtension(path as string, allowed)) return `must end in ${allowed.join(' or ')} for ${String(language)}`
   return null
 }
 
 export function payloadFileProblem(path: unknown): string | null {
   const problem = pathProblem(path)
   if (problem) return problem
-  if (!PAYLOAD_EXTENSIONS.includes(extensionOf(path as string))) return `must end in one of ${PAYLOAD_EXTENSIONS.join(', ')}`
+  if (!hasExtension(path as string, PAYLOAD_EXTENSIONS)) return `must end in one of ${PAYLOAD_EXTENSIONS.join(', ')}`
   return null
 }
 
 export function isBinaryPayloadFile(path: string): boolean {
-  return BINARY_PAYLOAD_EXTENSIONS.includes(extensionOf(path))
+  return hasExtension(path, BINARY_PAYLOAD_EXTENSIONS)
 }
 
-// Where the published site serves a referenced file: the repo's baselines/
-// folder is copied to the site's baselines/ folder as is.
-export function publishedFileUrl(path: string, baseUrl: string): string {
-  return `${baseUrl}${path}`
+// Where the published site serves a referenced file (the repo's baselines/
+// folder is copied to the site's baselines/ folder as is), as a same-origin
+// path, or null when the reference would leave that folder. The shape checks
+// already reject such paths; this is defence in depth before any fetch or
+// link: each segment is encoded, and the URL as the browser resolves it must
+// still be inside the published baselines/ folder.
+export function publishedFileUrl(path: string, baseUrl: string, origin: string): string | null {
+  if (pathProblem(path) !== null) return null
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/')
+  const resolved = new URL(`${baseUrl}${encodedPath}`, origin)
+  const publishedFolder = new URL(`${baseUrl}${REFERENCE_PREFIX}`, origin)
+  if (resolved.origin !== publishedFolder.origin || !resolved.pathname.startsWith(publishedFolder.pathname)) return null
+  if (resolved.search !== '' || resolved.hash !== '') return null
+  return resolved.pathname
 }
 
 export interface PayloadFileDisplay {
   fileName: string
-  url: string
+  // null when the reference is refused (see publishedFileUrl).
+  url: string | null
   // Text files are shown in full as well as offered for download; binary
   // files (.pol, .intunewin) only as a download.
   showsContent: boolean
 }
 
-export function payloadFileDisplay(path: string, baseUrl: string): PayloadFileDisplay {
-  return { fileName: fileNameOf(path), url: publishedFileUrl(path, baseUrl), showsContent: !isBinaryPayloadFile(path) }
+export function payloadFileDisplay(path: string, baseUrl: string, origin: string): PayloadFileDisplay {
+  return { fileName: fileNameOf(path), url: publishedFileUrl(path, baseUrl, origin), showsContent: !isBinaryPayloadFile(path) }
 }
 
 export type LoadText = (path: string) => Promise<string>
@@ -103,35 +121,14 @@ async function resolvedTargetCheck(targetCheck: TargetCheck, loadText: LoadText)
   }
 }
 
-// The rule with every shell_file replaced by the file's text as shell, so
-// the generator (and anything else that reads shell) sees exactly what an
-// inline script would give. Payload data_file is left alone: payloads are
-// never bundled.
-export async function resolveScriptFiles(rule: Rule, loadText: LoadText): Promise<Rule> {
-  const check =
-    rule.check === null
-      ? null
-      : Object.fromEntries(
-          await Promise.all(
-            Object.entries(rule.check).map(async ([target, targetCheck]) => [target, await resolvedTargetCheck(targetCheck, loadText)] as const),
-          ),
-        )
-  const remediation =
-    rule.remediation === null
-      ? null
-      : Object.fromEntries(
-          await Promise.all(
-            Object.entries(rule.remediation).map(
-              async ([target, targetRemediation]) =>
-                [
-                  target,
-                  {
-                    ...targetRemediation,
-                    steps: await Promise.all(targetRemediation.steps.map((step) => resolvedEntry<RemediationStep>(step, loadText))),
-                  },
-                ] as const,
-            ),
-          ),
-        )
-  return { ...rule, check, remediation }
+// The rule with the shell_file of each check entry the generator bundles
+// (the GENERATED_TARGET check) replaced by the file's text as shell, so the
+// bundle holds exactly what an inline script would give. Nothing else is
+// fetched: remediation steps, payloads and other targets' checks are never
+// bundled, so a missing file there cannot block a bundle. The details fetch
+// what they show themselves.
+export async function resolveGeneratedCheckFiles(rule: Rule, loadText: LoadText): Promise<Rule> {
+  const generatedCheck = rule.check?.[GENERATED_TARGET]
+  if (rule.check === null || generatedCheck === undefined) return rule
+  return { ...rule, check: { ...rule.check, [GENERATED_TARGET]: await resolvedTargetCheck(generatedCheck, loadText) } }
 }

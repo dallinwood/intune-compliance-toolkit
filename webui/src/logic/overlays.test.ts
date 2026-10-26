@@ -272,6 +272,8 @@ describe('applyOverlays', () => {
   const malformedResults: [string, Record<string, unknown>, Partial<Rule>][] = [
     ['an applicability entry without benchmarks', { applicability: [{ target: null, version: null }] }, {}],
     ['a remediation target without its required keys', { remediation: { $replace: { Windows: {} } } }, {}],
+    ['a plain merge of shell_file onto an inline check', { check: { macOS: { default: { shell_file: 'baselines/x/scripts/check.sh' } } } }, { check: macosCheck(ruleCheck('echo inline', null)) }],
+    ['a shell_file with a percent-encoded .. segment', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell_file: 'baselines/%2e%2e/x.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a step with both shell and shell_file', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell: 'x', shell_file: 'baselines/_overlays/scripts/X.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a step with neither shell nor shell_file', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a step whose shell_file does not match its language', { remediation: { Windows: { steps: [{ name: null, language: 'bash', shell_file: 'baselines/_overlays/scripts/X.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
