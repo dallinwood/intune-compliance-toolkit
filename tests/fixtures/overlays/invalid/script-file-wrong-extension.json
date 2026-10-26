@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "script-file-wrong-extension", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "remediation": { "Windows": { "steps": [{ "name": null, "language": "bash", "shell_file": "baselines/_overlays/scripts/BlockCerts.ps1", "additional_info": null, "versions": null }], "payloads": [] } } } }

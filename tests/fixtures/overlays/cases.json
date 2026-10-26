@@ -1,5 +1,5 @@
 {
-  "description": "Shared overlay merge cases, run by tests/test_overlays.py and webui/src/logic/overlays.test.ts so the Python and TypeScript merges cannot drift. A merge case applies `fields` to `rule` (only `known_fields` when given) and expects `expected` or, with `error: true`, a rejected overlay. An index case applies `fields` to the index `entry` and recomputes `section` and `has_odv`.",
+  "description": "Shared overlay merge cases, run by tests/test_overlays.py and webui/src/logic/overlays.test.ts so the Python and TypeScript merges cannot drift. A merge case applies `fields` to `rule` (only `known_fields` when given) and expects `expected` or, with `error: true`, a rejected overlay. An index case applies `fields` to the index `entry` and recomputes `section` and `has_odv`. A file reference case checks one check entry or step (`kind` script, with its `language`) or one payload (`kind` payload) for the path, extension and exactly-one rules of `shell_file` and `data_file`; whether the file exists is checked by the Python side only.",
   "merge_cases": [
     {
       "name": "empty fields leave the rule unchanged",
@@ -674,5 +674,32 @@
       "fields": { "tags": { "$merge": { "a": 1 } } },
       "error": true
     }
+  ],
+  "file_reference_cases": [
+    {"name": "an inline shell is valid", "kind": "script", "entry": {"shell": "echo ok"}, "language": "bash", "error": false},
+    {"name": "a null inline shell is valid", "kind": "script", "entry": {"shell": null}, "language": "bash", "error": false},
+    {"name": "a PowerShell file for a powershell entry is valid", "kind": "script", "entry": {"shell_file": "baselines/_overlays/scripts/Example.ps1"}, "language": "powershell", "error": false},
+    {"name": "a .sh file for a bash entry is valid", "kind": "script", "entry": {"shell_file": "baselines/mscp/scripts/check.sh"}, "language": "bash", "error": false},
+    {"name": "a .sh file for a zsh entry is valid", "kind": "script", "entry": {"shell_file": "baselines/mscp/scripts/check.sh"}, "language": "zsh", "error": false},
+    {"name": "a .py file for a python entry is valid", "kind": "script", "entry": {"shell_file": "baselines/x/scripts/check.py"}, "language": "python", "error": false},
+    {"name": "both shell and shell_file is invalid", "kind": "script", "entry": {"shell": "echo", "shell_file": "baselines/_overlays/scripts/Example.ps1"}, "language": "powershell", "error": true},
+    {"name": "neither shell nor shell_file is invalid", "kind": "script", "entry": {}, "language": "powershell", "error": true},
+    {"name": "a script path outside baselines/ is invalid", "kind": "script", "entry": {"shell_file": "scripts/Example.ps1"}, "language": "powershell", "error": true},
+    {"name": "a script path with a leading slash is invalid", "kind": "script", "entry": {"shell_file": "/baselines/_overlays/scripts/Example.ps1"}, "language": "powershell", "error": true},
+    {"name": "a script path with a .. segment is invalid", "kind": "script", "entry": {"shell_file": "baselines/../tools/Example.ps1"}, "language": "powershell", "error": true},
+    {"name": "a script path with a backslash is invalid", "kind": "script", "entry": {"shell_file": "baselines/_overlays\\scripts\\Example.ps1"}, "language": "powershell", "error": true},
+    {"name": "a .ps1 file for a bash entry is invalid", "kind": "script", "entry": {"shell_file": "baselines/_overlays/scripts/Example.ps1"}, "language": "bash", "error": true},
+    {"name": "a .sh file for a powershell entry is invalid", "kind": "script", "entry": {"shell_file": "baselines/_overlays/scripts/Example.sh"}, "language": "powershell", "error": true},
+    {"name": "a shell_file that is not a string is invalid", "kind": "script", "entry": {"shell_file": 5}, "language": "powershell", "error": true},
+    {"name": "inline payload data is valid", "kind": "payload", "entry": {"data": {"key": "value"}}, "error": false},
+    {"name": "a .mobileconfig payload file is valid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/Example.mobileconfig"}, "error": false},
+    {"name": "a .json payload file is valid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/Example.json"}, "error": false},
+    {"name": "a .pol payload file is valid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/Registry.pol"}, "error": false},
+    {"name": "a .intunewin payload file is valid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/App.intunewin"}, "error": false},
+    {"name": "both data and data_file is invalid", "kind": "payload", "entry": {"data": {}, "data_file": "baselines/_overlays/payloads/Example.json"}, "error": true},
+    {"name": "neither data nor data_file is invalid", "kind": "payload", "entry": {}, "error": true},
+    {"name": "a payload file with a disallowed extension is invalid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/payloads/Example.txt"}, "error": true},
+    {"name": "a payload path outside baselines/ is invalid", "kind": "payload", "entry": {"data_file": "payloads/Example.json"}, "error": true},
+    {"name": "a payload path with a .. segment is invalid", "kind": "payload", "entry": {"data_file": "baselines/_overlays/../../Example.json"}, "error": true}
   ]
 }

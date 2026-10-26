@@ -10,12 +10,19 @@ import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleCheck, TargetCheck } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
+import { ScriptFile } from './ReferencedFile'
 
 function CheckEntry({ label, check, odvValue }: { label: string; check: RuleCheck; odvValue: OrgDefinedValue | null }) {
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
-      {check.shell ? <CodeBlock code={check.shell} /> : <p className="text-xs text-slate-500">No check script.</p>}
+      {check.shell_file !== undefined ? (
+        <ScriptFile path={check.shell_file} odvValue={odvValue} />
+      ) : check.shell ? (
+        <CodeBlock code={check.shell} />
+      ) : (
+        <p className="text-xs text-slate-500">No check script.</p>
+      )}
       {check.shell && containsOdvPlaceholder(check.shell) && <OdvNote odvValue={odvValue} />}
       {check.result && (
         <p className="text-xs text-slate-600">

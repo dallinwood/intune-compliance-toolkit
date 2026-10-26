@@ -36,8 +36,11 @@ export interface CheckResult {
   value: number | string
 }
 
+// A script is inline (shell, possibly null) or in a file (shell_file, a
+// repo-root path under baselines/); exactly one of the two is present.
 export interface RuleCheck {
-  shell: string | null
+  shell?: string | null
+  shell_file?: string
   result: CheckResult | null
   additional_info: string | null
 }
@@ -74,15 +77,19 @@ export interface Odv {
 export interface RemediationStep {
   name: string | null
   language: ScriptLanguage
-  shell: string | null
+  shell?: string | null
+  shell_file?: string
   additional_info: string | null
   versions: string[] | null
 }
 
+// Exactly one of data (inline JSON) and data_file (a repo-root path under
+// baselines/) is present.
 export interface RemediationPayload {
   kind: string
   versions: string[] | null
-  data: Record<string, unknown> | unknown[]
+  data?: Record<string, unknown> | unknown[]
+  data_file?: string
 }
 
 export interface TargetRemediation {

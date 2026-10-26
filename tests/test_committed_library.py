@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from tools import import_asd_ism, import_mscp
+from tools.file_references import is_binary_payload
 from tools.source_lock import read_source_lock
 from tools.validate_library import validate_library
 
@@ -74,9 +75,17 @@ def test_committed_library_has_lf_line_endings_only():
     carriage_return_files = [
         path.relative_to(BASELINES_DIR).as_posix()
         for path in BASELINES_DIR.rglob("*")
-        if path.is_file() and b"\r" in path.read_bytes()
+        if path.is_file() and not is_binary_payload(path.name) and b"\r" in path.read_bytes()
     ]
     assert carriage_return_files == []
+
+
+def test_binary_payload_types_are_marked_binary_for_git():
+    attributes = (REPO_ROOT / ".gitattributes").read_text(encoding="utf-8").splitlines()
+    text_rule = attributes.index("baselines/** text eol=lf")
+    for extension in ("pol", "intunewin"):
+        binary_rule = attributes.index(f"baselines/**/*.{extension} binary")
+        assert binary_rule > text_rule, "a later .gitattributes line wins, so the binary rule must follow the text rule"
 
 
 def test_vendored_license_present():

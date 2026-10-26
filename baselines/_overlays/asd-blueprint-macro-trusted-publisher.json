@@ -20,7 +20,7 @@
           {
             "name": "BlockCerts",
             "language": "powershell",
-            "shell": "<#\n.COPYRIGHT\nCopyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.\nSee LICENSE in the project root for license information.\n#>\n\nFunction WriteReg {\n    param (\n        [Parameter(Mandatory = $true)]\n        [string]$registryPath\n    )\n\n    If(!(Test-Path $registryPath)) {\n      New-Item -Path $registryPath -Force | Out-Null\n    }\n\n    New-ItemProperty -Path $registryPath -Name vbarequirelmtrustedpublisher -Value 1 -PropertyType DWORD -Force | Out-Null\n\n}\n\nWriteReg(\"HKCU:\\Software\\Policies\\Microsoft\\office\\16.0\\excel\\security\")",
+            "shell_file": "baselines/_overlays/scripts/BlockCerts.ps1",
             "additional_info": "Source: ASD Blueprint for Secure Cloud, script BlockCerts, commit a6e1e5f95e6051f23d2e7d1148c8fd57a6614000. Licence: Microsoft Corporation, MIT.",
             "versions": null
           }

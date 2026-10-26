@@ -236,6 +236,28 @@ describe('applyOverlays', () => {
     expect(result.rule.check).toEqual({ ...macosOnly.check, Windows: windowsCheck })
   })
 
+  it('accepts a check, a step and payloads that reference files', () => {
+    const fields = {
+      check: { Windows: { language: 'powershell', default: { shell_file: 'baselines/_overlays/scripts/Check.ps1', result: null, additional_info: null }, by_version: {} } },
+      remediation: {
+        Windows: {
+          steps: [{ name: 'Fix', language: 'powershell', shell_file: 'baselines/_overlays/scripts/Fix.ps1', additional_info: null, versions: null }],
+          payloads: [
+            { kind: 'registry', versions: null, data_file: 'baselines/_overlays/payloads/Policy.reg' },
+            { kind: 'registry', versions: null, data_file: 'baselines/_overlays/payloads/Registry.pol' },
+          ],
+        },
+      },
+    }
+    const result = applyOverlays(ism1622Rule(), [overlay('files', fields)], CURRENT_RELEASE)
+
+    expect(result.skipped).toEqual([])
+    expect(result.rule.remediation?.Windows.payloads.map((payload) => payload.data_file)).toEqual([
+      'baselines/_overlays/payloads/Policy.reg',
+      'baselines/_overlays/payloads/Registry.pol',
+    ])
+  })
+
   it('appends a remediation step to a null remediation and to an existing target', () => {
     const step = { name: 'Script', language: 'powershell', shell: 'Remove-Thing', additional_info: null, versions: null }
     const fromNull = applyOverlays(ism1622Rule(), [overlay('step', { remediation: { Windows: { steps: [step], payloads: [] } } })], CURRENT_RELEASE)
@@ -250,6 +272,13 @@ describe('applyOverlays', () => {
   const malformedResults: [string, Record<string, unknown>, Partial<Rule>][] = [
     ['an applicability entry without benchmarks', { applicability: [{ target: null, version: null }] }, {}],
     ['a remediation target without its required keys', { remediation: { $replace: { Windows: {} } } }, {}],
+    ['a step with both shell and shell_file', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell: 'x', shell_file: 'baselines/_overlays/scripts/X.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
+    ['a step with neither shell nor shell_file', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', additional_info: null, versions: null }], payloads: [] } } }, {}],
+    ['a step whose shell_file does not match its language', { remediation: { Windows: { steps: [{ name: null, language: 'bash', shell_file: 'baselines/_overlays/scripts/X.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
+    ['a check whose shell_file is outside baselines/', { check: { Windows: { language: 'powershell', default: { shell_file: '../X.ps1', result: null, additional_info: null }, by_version: {} } } }, {}],
+    ['a payload with both data and data_file', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null, data: {}, data_file: 'baselines/_overlays/payloads/X.reg' }] } } }, {}],
+    ['a payload with neither data nor data_file', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null }] } } }, {}],
+    ['a payload file with a disallowed extension', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null, data_file: 'baselines/_overlays/payloads/X.txt' }] } } }, {}],
     ['an empty remediation target map', { remediation: { $replace: {} } }, {}],
     ['an empty check target map', { check: { $replace: {} } }, {}],
     ['a remediation that is not keyed by target', { remediation: { $replace: { steps: [], payloads: [] } } }, {}],

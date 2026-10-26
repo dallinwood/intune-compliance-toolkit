@@ -28,7 +28,7 @@
           {
             "name": "UserApplicationHardeningRemoveFeatures",
             "language": "powershell",
-            "shell": "<#\n.COPYRIGHT\nCopyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.\nSee LICENSE in the project root for license information.\n#>\n\n## Removing Powershell v 2.0\ntry {\n    Disable-WindowsOptionalFeature -Online -FeatureName MicrosoftWindowsPowerShellV2Root -ErrorAction Stop\n\n} catch {\n    exit $LASTEXITCODE\n\n}\n\n## Removing .NET 3.5 (and below)\ntry {\n    Disable-WindowsOptionalFeature -Online -FeatureName NetFx3 -NoRestart\n\n} catch {\n    exit $LASTEXITCODE\n\n}\n\n## Removing Internet Explorer (for Windows 10)\nif ((Get-WmiObject -class Win32_OperatingSystem).version -gt [version]'10.0.0') {\n    try {\n        Disable-WindowsOptionalFeature -Online -FeatureName Internet-Explorer-Optional-amd64 -NoRestart\n    \n    } catch {\n    \n        exit $LASTEXITCODE\n    \n    }\n}",
+            "shell_file": "baselines/_overlays/scripts/UserApplicationHardeningRemoveFeatures.ps1",
             "additional_info": "Source: ASD Blueprint for Secure Cloud, script UserApplicationHardeningRemoveFeatures, commit a6e1e5f95e6051f23d2e7d1148c8fd57a6614000. Licence: Microsoft Corporation, MIT. This one script removes PowerShell 2.0, .NET Framework 3.5 and Internet Explorer, so it covers all three controls (ISM-1621, ISM-1654 and ISM-1655).",
             "versions": null
           }

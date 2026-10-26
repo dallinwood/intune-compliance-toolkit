@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "data-file-missing", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "remediation": { "Windows": { "steps": [], "payloads": [{ "kind": "registry", "versions": null, "data_file": "baselines/_overlays/payloads/DoesNotExist.reg" }] } } } }

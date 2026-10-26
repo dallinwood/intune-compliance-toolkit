@@ -1268,6 +1268,46 @@ test.describe('custom overlays', () => {
     await expect(detail.getByText(/Custom/)).toHaveCount(0)
     await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
   })
+
+  test('a payload file is shown when it is text and offered for download either way', async ({ page }) => {
+    const payloadsBase = 'baselines/_overlays/payloads'
+    const payloadOverlay = {
+      ...titleOverlay,
+      id: 'payload-files',
+      fields: {
+        ...titleOverlay.fields,
+        remediation: {
+          Windows: {
+            steps: [],
+            payloads: [
+              { kind: 'registry', versions: null, data_file: `${payloadsBase}/Policy.reg` },
+              { kind: 'registry', versions: null, data_file: `${payloadsBase}/Registry.pol` },
+              { kind: 'admx', versions: null, data_file: `${payloadsBase}/Missing.admx` },
+            ],
+          },
+        },
+      },
+    }
+    await serveOverlays(page, { 'a-payloads.json': payloadOverlay })
+    await page.route(`**/${payloadsBase}/*`, (route) => {
+      const fileName = new URL(route.request().url()).pathname.split('/').pop()
+      if (fileName === 'Policy.reg') return route.fulfill({ status: 200, contentType: 'text/plain', body: 'Windows Registry Editor Version 5.00\n' })
+      if (fileName === 'Registry.pol') return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: Buffer.from([0x50, 0x52, 0x65, 0x67, 0x0d, 0x0a]) })
+      return route.fulfill({ status: 404, body: 'Not found' })
+    })
+    await page.goto('/')
+    const detail = await openIsm1622(page)
+    const remediation = detail.getByTestId('remediation-target')
+
+    await expect(remediation.locator('pre', { hasText: 'Windows Registry Editor Version 5.00' })).toBeVisible()
+    await expect(remediation.getByRole('link', { name: 'Download Policy.reg' })).toHaveAttribute('download', 'Policy.reg')
+    const binaryLink = remediation.getByRole('link', { name: 'Download Registry.pol' })
+    await expect(binaryLink).toHaveAttribute('download', 'Registry.pol')
+    await expect(binaryLink).toHaveAttribute('href', new RegExp(`${payloadsBase}/Registry\\.pol$`))
+    // Policy.reg loads; Registry.pol is binary, so a link only; Missing.admx fails to load.
+    await expect(remediation.locator('pre')).toHaveCount(1)
+    await expect(remediation.getByTestId('referenced-file-error')).toContainText('Missing.admx')
+  })
 })
 
 test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerShell remediation step', async ({ page }) => {
@@ -1282,4 +1322,14 @@ test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerS
   await expect(remediation.getByText('UserApplicationHardeningRemoveFeatures', { exact: true })).toBeVisible()
   await expect(detail.getByRole('heading', { name: 'Remediation' }).locator('xpath=..').getByText('Custom', { exact: true })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
+})
+
+test('ISM-1621 shows its Blueprint script loaded from the referenced script file', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1621', /./)
+  await row.getByRole('button').click()
+  const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
+
+  await expect(remediation.locator('pre', { hasText: 'Disable-WindowsOptionalFeature' })).toBeVisible()
+  await expect(remediation.getByTestId('referenced-file-error')).toHaveCount(0)
 })

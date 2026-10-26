@@ -180,6 +180,31 @@ version) and a list of `payloads`. To add a fix script, give the target's
 }
 ```
 
+Long scripts and payloads can live in their own files instead of JSON
+strings:
+
+- **Scripts:** a check entry (`default` or a `by_version` value) or a
+  step takes exactly one of `shell` (inline, or `null`) and `shell_file`,
+  a repo-root path such as
+  `baselines/_overlays/scripts/BlockCerts.ps1`. The extension must match
+  the language: `.ps1` for `powershell`, `.sh` for `bash` and `zsh`, `.py`
+  for `python`. A check entry takes its target's `language`.
+- **Payloads:** a payload takes exactly one of `data` (inline JSON) and
+  `data_file`, for example
+  `baselines/_overlays/payloads/Firewall.mobileconfig`. Allowed
+  extensions: text `.mobileconfig`, `.plist`, `.json`, `.xml`, `.reg`,
+  `.admx`, `.adml`; binary `.pol`, `.intunewin`. A `.json` file must parse
+  as JSON. `kind` stays free text.
+- Every path starts with `baselines/` and has no `..` segment, and the
+  file must exist. Text files (scripts included) must use LF line endings;
+  `.gitattributes` marks the binary types as binary.
+- Overlays keep their files in `baselines/_overlays/scripts/` and
+  `baselines/_overlays/payloads/`. The site serves them from its own
+  `baselines/` copy: the details show a script or text payload as it is,
+  binary payloads as a download link, and the generator reads script
+  files before it builds a bundle, so a bundle is the same as with an
+  inline script.
+
 - `id` is unique and matches `^[a-z0-9][a-z0-9-]*$`.
 - `targets` lists full rule ids (`<source>.<upstream id>`). `release` is
   the source's `release_tag` you wrote the overlay against; when the
@@ -224,7 +249,8 @@ commit a manifest yourself.
 Check overlays with `python -m pytest -W error tests/test_overlays.py` (or
 `python tools/overlays.py` for a plain list of problems). A bad shape, a
 protected field, a type mismatch, a target rule missing from `baselines/`,
-or a merged rule that breaks the rule schema fails; an unknown field name or
+a merged rule that breaks the rule schema, or a `shell_file` or `data_file`
+that is missing or breaks the rules above fails; an unknown field name or
 two overlays setting the same value is reported as a warning.
 
 In the web UI an overlay that fails the shape and type checks, or would

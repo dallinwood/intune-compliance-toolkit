@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { fetchReferencedText } from '../../data/referencedFiles'
 import { fetchRule } from '../../data/ruleDetail'
 import { buildBundleFiles } from '../../logic/bundleFiles'
 import {
@@ -10,6 +11,7 @@ import {
   type GeneratableRule,
   type ManualAttestationEntry,
 } from '../../logic/chunking'
+import { resolveScriptFiles } from '../../logic/fileReferences'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import type { SelectionEntry } from '../../logic/selectionEntry'
 import { buildZip } from '../../logic/zipBundle'
@@ -61,7 +63,11 @@ export function GenerateReviewScreen({
     let cancelled = false
     setState({ status: 'loading' })
 
-    Promise.all(enabledEntries.map(async (entry) => ({ entry, rule: await fetchRule(entry.ref) })))
+    // Script files are resolved before classifying, so the bundle holds
+    // exactly what an inline script would give.
+    Promise.all(
+      enabledEntries.map(async (entry) => ({ entry, rule: await resolveScriptFiles(await fetchRule(entry.ref), fetchReferencedText) })),
+    )
       .then((loaded) => {
         if (cancelled) return
         const generatable: GeneratableRule[] = []

@@ -755,3 +755,63 @@ def test_rejects_the_v4_check_and_remediation_shapes():
 @pytest.mark.parametrize("field", ["check", "remediation"])
 def test_rejects_an_empty_target_map(field):
     assert schema_errors(make_rule(**{field: {}}))
+
+
+SCRIPT_PATH = "baselines/_overlays/scripts/Example.ps1"
+
+
+def test_a_check_entry_and_a_step_may_reference_a_script_file():
+    rule = make_rule()
+    rule["check"]["macOS"]["default"] = {"shell_file": "baselines/x/scripts/check.sh", "result": None, "additional_info": None}
+    rule["remediation"]["macOS"]["steps"][0] = {
+        "name": None, "language": "powershell", "shell_file": SCRIPT_PATH, "additional_info": None, "versions": None,
+    }
+    assert schema_errors(rule) == []
+
+
+@pytest.mark.parametrize("location", ["check", "step"])
+def test_both_or_neither_of_shell_and_shell_file_is_rejected(location):
+    for keys in ({"shell": "echo", "shell_file": SCRIPT_PATH}, {}):
+        rule = make_rule()
+        entry = rule["check"]["macOS"]["default"] if location == "check" else rule["remediation"]["macOS"]["steps"][0]
+        entry.pop("shell")
+        entry.update(keys)
+        assert schema_errors(rule), keys
+
+
+@pytest.mark.parametrize(
+    "bad_path",
+    ["scripts/Example.ps1", "/baselines/a.ps1", "baselines/../tools/a.ps1", "baselines/a/../b.ps1", "baselines/a.txt", "baselines/a.ps1\n"],
+)
+def test_rejects_a_bad_shell_file_path(bad_path):
+    rule = make_rule()
+    del rule["remediation"]["macOS"]["steps"][0]["shell"]
+    rule["remediation"]["macOS"]["steps"][0]["shell_file"] = bad_path
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("extension", ["mobileconfig", "plist", "json", "xml", "reg", "admx", "adml", "pol", "intunewin"])
+def test_a_payload_may_reference_a_data_file(extension):
+    rule = make_rule()
+    payload = rule["remediation"]["macOS"]["payloads"][0]
+    del payload["data"]
+    payload["data_file"] = f"baselines/_overlays/payloads/Example.{extension}"
+    assert schema_errors(rule) == []
+
+
+@pytest.mark.parametrize("bad_path", ["baselines/_overlays/payloads/Example.txt", "payloads/Example.json", "baselines/../Example.json"])
+def test_rejects_a_bad_data_file_path(bad_path):
+    rule = make_rule()
+    payload = rule["remediation"]["macOS"]["payloads"][0]
+    del payload["data"]
+    payload["data_file"] = bad_path
+    assert schema_errors(rule)
+
+
+def test_both_or_neither_of_data_and_data_file_is_rejected():
+    both = make_rule()
+    both["remediation"]["macOS"]["payloads"][0]["data_file"] = "baselines/_overlays/payloads/Example.json"
+    assert schema_errors(both)
+    neither = make_rule()
+    del neither["remediation"]["macOS"]["payloads"][0]["data"]
+    assert schema_errors(neither)

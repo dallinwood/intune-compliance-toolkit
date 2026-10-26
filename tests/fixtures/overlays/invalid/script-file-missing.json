@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "script-file-missing", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "remediation": { "Windows": { "steps": [{ "name": null, "language": "powershell", "shell_file": "baselines/_overlays/scripts/DoesNotExist.ps1", "additional_info": null, "versions": null }], "payloads": [] } } } }

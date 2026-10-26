@@ -1,6 +1,8 @@
 sources/mscp/upstream/** -text
 sources/asd_ism/upstream/** -text
 baselines/** text eol=lf
+baselines/**/*.pol binary
+baselines/**/*.intunewin binary
 sources/mscp/*.json text eol=lf
 sources/asd_ism/*.json text eol=lf
 tests/fixtures/mscp_upstream/** -text

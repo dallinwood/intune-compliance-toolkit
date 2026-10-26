@@ -11,11 +11,13 @@ import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RemediationStep, Rule, TargetRemediation } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
+import { PayloadFile, ScriptFile } from './ReferencedFile'
 
 function StepEntry({ label, step, odvValue }: { label: string; step: RemediationStep; odvValue: OrgDefinedValue | null }) {
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
+      {step.shell_file !== undefined && <ScriptFile path={step.shell_file} odvValue={odvValue} />}
       {step.shell && <CodeBlock code={step.shell} />}
       {step.shell && containsOdvPlaceholder(step.shell) && <OdvNote odvValue={odvValue} />}
       {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValue={odvValue} />}
@@ -57,14 +59,23 @@ function TargetRemediationBlock({
       {steps.map((step, position) => (
         <StepEntry key={`step-${position}`} label={remediationStepLabel(index, target, step)} step={step} odvValue={odvValue} />
       ))}
-      {payloads.map((payload, position) => (
-        <JsonEntry
-          key={`payload-${position}`}
-          label={remediationPayloadLabel(index, target, payload)}
-          value={payload.data}
-          odvValue={odvValue}
-        />
-      ))}
+      {payloads.map((payload, position) =>
+        payload.data_file !== undefined ? (
+          <PayloadFile
+            key={`payload-${position}`}
+            label={remediationPayloadLabel(index, target, payload)}
+            path={payload.data_file}
+            odvValue={odvValue}
+          />
+        ) : (
+          <JsonEntry
+            key={`payload-${position}`}
+            label={remediationPayloadLabel(index, target, payload)}
+            value={payload.data}
+            odvValue={odvValue}
+          />
+        ),
+      )}
     </div>
   )
 }

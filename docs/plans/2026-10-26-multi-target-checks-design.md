@@ -198,6 +198,61 @@ implement.
      shows a Windows · PowerShell remediation tagged Custom.
 3. **One review** over both tasks, then fixes, then push.
 
+## 7. Script files (added 2026-10-26, maintainer decisions)
+
+Long scripts can live in their own files, so they can be edited and
+linted as real `.ps1` or `.sh` files, instead of being embedded as JSON
+strings.
+
+- **Reference key:**
+  - A check entry (`default` or a `by_version` value) and a remediation
+    step each take **exactly one** of `shell` (inline string or `null`)
+    and `shell_file`.
+  - `shell_file` is a repo-root-relative path that must start with
+    `baselines/`, for example
+    `baselines/_overlays/scripts/RequireSignOrSeal.ps1`.
+  - The reference is a plain key rather than `$ref`, so `$` words stay
+    reserved for overlay merge verbs.
+  - `result`, `language`, `name`, `versions` and `additional_info` stay
+    in the rule or overlay.
+- **Layout:**
+  - Each folder under `baselines/` may have a `scripts/` folder next to
+    its `rules/`.
+  - Overlays use `baselines/_overlays/scripts/`.
+  - mSCP keeps its scripts inline, imported like for like. A future
+    importer may write `baselines/<source>/scripts/`.
+- **Validation** (CI, and the overlay tooling in both languages):
+  - The file exists.
+  - The path starts with `baselines/` and contains no `..` segment.
+  - The extension matches the language: `.ps1` for `powershell`, `.sh`
+    for `bash` and `zsh`, `.py` for `python`.
+  - The file is LF.
+  - Exactly one of `shell` and `shell_file` is present.
+- **Web UI:**
+  - When it renders a check or step that has `shell_file`, it fetches the
+    published copy (`baselines/...` maps to the published `baselines/`
+    folder) and shows it exactly like an inline script, with a loading
+    state and a clear error line if the fetch fails.
+  - The generator resolves every `shell_file` in the selection before it
+    builds a bundle, so bundle contents are identical to inline scripts.
+- **Blueprint overlays:** the three scripts move to
+  `baselines/_overlays/scripts/<ScriptName>.ps1`, byte for byte (LF), and
+  the overlays reference them.
+
+- **Payload files** (added 2026-10-26, maintainer decision):
+  - A remediation payload takes exactly one of `data` (inline JSON object
+    or array) and `data_file`, a repo-root path starting `baselines/` with
+    no `..` segment. Folder convention: `<folder>/payloads/`, for example
+    `baselines/_overlays/payloads/`. mSCP keeps inline `data`.
+  - Allowed extensions: text `.mobileconfig`, `.plist`, `.json`, `.xml`,
+    `.reg`, `.admx`, `.adml`; binary `.pol`, `.intunewin`. Anything else
+    is invalid. `kind` stays free text, not tied to the extension.
+  - Text files must be LF and a `.json` file must parse. Binary files are
+    exempt from the LF check and are marked `binary` in `.gitattributes`.
+  - The web UI shows a text payload file's content (fetched like a script)
+    with a download link, and a binary one as a download link only.
+    Payloads are not bundled, so the generator does not read them.
+
 ## Progress log
 
 - 2026-10-26: Design written from the maintainer's answers (no code yet).
@@ -205,3 +260,5 @@ implement.
 - 2026-10-26: Task 2 done. Three ASD Blueprint overlays (`overlays/asd-blueprint-*.json`) add a Windows PowerShell remediation step, copied byte for byte from the Blueprint at the pinned commit, to ISM-1621, 1654, 1655, 1542 and 1674; `NOTICE` carries Microsoft's MIT text and the README names the overlays; one e2e test covers the committed ISM-1621 overlay. Rules stay "Manual - no check" (`feat: add ASD Blueprint PowerShell remediation overlays for five ISM controls`).
 - 2026-10-26: Overlays moved from `overlays/` to `baselines/_overlays/` (`refactor: move custom overlays under baselines/_overlays`). The source location is now `baselines/_overlays/<name>.json`, the publish step copies it with the baselines to `webui/public/baselines/_overlays/` and writes the manifest there (never into the repo), and the UI fetches `baselines/_overlays/_manifest.json`. Earlier entries and sections above describe the old path.
 - 2026-10-26: Review fixes (`fix: keep mSCP default profiles scoped to versions without their own`). Section 3.1 amended: when a rule has per-version profiles, the default `mobileconfig_info` payload now lists the versions without their own (10 mSCP rules, e.g. `os_appleid_prompt_disable` now `["26.0", "27.0"]`) instead of `null`; the updated v4-to-v5 conversion still finds 0 differences across 352 files, a second offline import changed nothing and the bundle snapshot is unchanged. The UI lists remediation steps and payloads newest version first (all-version entries first), like the Check block; data order is unchanged. The check and remediation target maps need at least one target (`minProperties: 1`, mirrored in the UI shape checks), and the ISM-1621 e2e test asserts the "Windows · PowerShell" heading.
+- 2026-10-26: Section 7 (script files referenced by `shell_file`) added from the maintainer's answers.
+- 2026-10-26: Section 7 implemented (`feat: let checks, remediation steps and payloads reference files`). Check entries and steps take `shell` or `shell_file`, payloads `data` or `data_file`, checked by the schema, `tools/file_references.py` (existence, extension, LF, JSON) in CI and the overlay tooling, and the same path, extension and exactly-one rules in `webui/src/logic/fileReferences.ts`, pinned by shared cases. The details fetch referenced files from the published `baselines/` copy with loading and error lines; the generator resolves script files before classifying, and a file-backed check gives the same bundle as the inline one. The three Blueprint scripts moved byte for byte to `baselines/_overlays/scripts/`. Payload files were added to the section from a maintainer decision made during implementation.

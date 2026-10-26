@@ -18,6 +18,7 @@ from jsonschema import Draft202012Validator
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from tools.file_references import file_reference_errors
 from tools.library_output import SCHEMA_VERSION
 from tools.validate_library import load_schema
 
@@ -416,6 +417,7 @@ def _check_rule(
     rule_overlays: list[tuple[str, dict]],
     errors: list[str],
     overlay_warnings: list[str],
+    repository_root: Path,
 ) -> dict:
     rule_schema = load_schema("rule")
     index_schema = load_schema("index")
@@ -457,6 +459,8 @@ def _check_rule(
     rule_validator = Draft202012Validator(rule_schema)
     for problem in sorted(rule_validator.iter_errors(cleaned_rule), key=lambda error: list(error.absolute_path)):
         errors.append(f"{overlay_names}: {rule_id}: merged rule {problem.json_path}: {problem.message}")
+    for problem in file_reference_errors(cleaned_rule, repository_root):
+        errors.append(f"{overlay_names}: {rule_id}: merged rule {problem}")
 
     cleaned_entry, _ = drop_unknown_keys(merged_entry, entry_schema, index_schema)
     index_document = {"schema_version": SCHEMA_VERSION, "source": library_rule["source_name"], "rules": [cleaned_entry]}
@@ -476,7 +480,9 @@ def _validate(directory: Path, baselines_dir: Path) -> tuple[list[str], list[str
         return errors, overlay_warnings, merged_by_rule
     library = _load_library(baselines_dir)
     for rule_id, rule_overlays in _overlays_by_rule(valid_overlays, library, errors).items():
-        merged_by_rule[rule_id] = _check_rule(rule_id, library[rule_id], rule_overlays, errors, overlay_warnings)
+        merged_by_rule[rule_id] = _check_rule(
+            rule_id, library[rule_id], rule_overlays, errors, overlay_warnings, baselines_dir.resolve().parent
+        )
     unique_warnings = list(dict.fromkeys(overlay_warnings))
     return errors, unique_warnings, merged_by_rule
 

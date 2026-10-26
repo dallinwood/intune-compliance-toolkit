@@ -7,6 +7,11 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
+if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tools.file_references import file_reference_errors
+
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 VOCABULARY_FILE_NAME = "_vocabulary.json"
@@ -73,6 +78,7 @@ def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> No
                 f"{rule_path}: rule id {rule['id']} does not match index id {entry['id']}"
             )
         errors.extend(f"{rule_path}: {problem}" for problem in applicability_errors(rule))
+        errors.extend(f"{rule_path}: {problem}" for problem in file_reference_errors(rule, baselines_dir.resolve().parent))
 
 
 def duplicate_term_errors(vocabulary_file: dict) -> list[str]:

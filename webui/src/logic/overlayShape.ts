@@ -5,6 +5,8 @@
 // and the generator. They follow baselines/_rule.schema.json for every field
 // those read; CI still runs the full schema.
 
+import { exactlyOneProblem, payloadFileProblem, scriptFileProblem } from './fileReferences'
+
 type JsonObject = Record<string, unknown>
 type Check = (value: unknown, path: string) => string | null
 
@@ -96,7 +98,41 @@ const checkResult = objectWith({
   type: oneOf('integer', 'string', 'base64'),
   value: (value, path) => expect(isNumberOrString(value), path, 'a number or a string'),
 })
-const checkEntry = objectWith({ shell: textOrNull, result: orNull(checkResult), additional_info: textOrNull })
+const anyValue: Check = () => null
+
+// A script is inline (shell) or in a file (shell_file), a payload inline
+// (data) or in a file (data_file): exactly one of each pair, checked by the
+// rules in fileReferences.ts.
+function exactlyOneOf(inlineKey: string, inlineCheck: Check, fileKey: string, fileCheck: Check): Check {
+  return (value, path) => {
+    if (!isObject(value)) return `${path} must be an object`
+    const problem = exactlyOneProblem(value, inlineKey, fileKey)
+    if (problem) return `${path} ${problem}`
+    return Object.hasOwn(value, inlineKey)
+      ? inlineCheck(value[inlineKey], `${path}.${inlineKey}`)
+      : fileCheck(value[fileKey], `${path}.${fileKey}`)
+  }
+}
+
+function scriptFileFor(scriptLanguage: unknown): Check {
+  return (value, path) => {
+    const problem = scriptFileProblem(value, scriptLanguage)
+    return problem ? `${path} ${problem}` : null
+  }
+}
+
+const payloadFile: Check = (value, path) => {
+  const problem = payloadFileProblem(value)
+  return problem ? `${path} ${problem}` : null
+}
+
+function checkEntryFor(scriptLanguage: unknown): Check {
+  return (value, path) =>
+    firstProblem(
+      () => objectWith({ result: orNull(checkResult), additional_info: textOrNull })(value, path),
+      () => exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
+    )
+}
 const language = oneOf('bash', 'powershell', 'zsh', 'python')
 const versions: Check = (value, path) =>
   value === null
@@ -121,7 +157,20 @@ function targetMapOf(check: Check): Check {
     )
 }
 
-const check = orNull(targetMapOf(objectWith({ language, default: orNull(checkEntry), by_version: mapOf(checkEntry) })))
+// A check entry's script file extension follows its target's language.
+const targetCheck: Check = (value, path) =>
+  firstProblem(
+    () => objectWith({ language, default: anyValue, by_version: mapOf(anyValue) })(value, path),
+    () => {
+      const { language: scriptLanguage, default: defaultCheck, by_version: byVersion } = value as JsonObject
+      const checkEntry = checkEntryFor(scriptLanguage)
+      return firstProblem(
+        () => orNull(checkEntry)(defaultCheck, `${path}.default`),
+        () => mapOf(checkEntry)(byVersion, `${path}.by_version`),
+      )
+    },
+  )
+const check = orNull(targetMapOf(targetCheck))
 
 // Every key is optional, and the schema closes the object, so an unknown
 // key is rejected; logic/odv.ts reads each one with these types.
@@ -153,14 +202,24 @@ const odv = orNull(
   }),
 )
 
-const remediationStep = objectWith({ name: textOrNull, language, shell: textOrNull, additional_info: textOrNull, versions })
-// Payload data is only ever shown through JSON.stringify, so any JSON object
-// or list is safe.
-const remediationPayload = objectWith({
-  kind: text,
-  versions,
-  data: (value, path) => expect(value !== null && typeof value === 'object', path, 'an object or a list'),
-})
+const remediationStep: Check = (value, path) =>
+  firstProblem(
+    () => objectWith({ name: textOrNull, language, additional_info: textOrNull, versions })(value, path),
+    () => exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor((value as JsonObject).language))(value, path),
+  )
+// Inline payload data is only ever shown through JSON.stringify, so any JSON
+// object or list is safe.
+const remediationPayload: Check = (value, path) =>
+  firstProblem(
+    () => objectWith({ kind: text, versions })(value, path),
+    () =>
+      exactlyOneOf(
+        'data',
+        (data, dataPath) => expect(data !== null && typeof data === 'object', dataPath, 'an object or a list'),
+        'data_file',
+        payloadFile,
+      )(value, path),
+  )
 const remediation = orNull(targetMapOf(objectWith({ steps: listOf(remediationStep), payloads: listOf(remediationPayload) })))
 
 const indexFields: Record<string, Check> = {
