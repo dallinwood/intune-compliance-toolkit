@@ -286,13 +286,45 @@ test('each rule credits its own source in the detail panel', async ({ page }) =>
   await expect(credit).toContainText('From NIST mSCP release_27.0 (os_gatekeeper_enable)')
 })
 
-test('the attribution footer names no platform', async ({ page }) => {
+test('the sources dialog names no platform in its rule sources', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
-  const footer = page.getByRole('contentinfo')
-  await expect(footer).toContainText('Rules from the ASD Information Security Manual')
-  await expect(footer).toContainText('Rules from the NIST macOS Security Compliance Project')
-  await expect(footer).not.toContainText('macOS rules')
+  await page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
+  await expect(dialog).toContainText('Rules from the ASD Information Security Manual')
+  await expect(dialog).toContainText('Rules from the NIST macOS Security Compliance Project')
+  await expect(dialog).not.toContainText('macOS rules')
+})
+
+test('the Sources & licences dialog lists sources, custom content and bundled packages', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  const footerButton = page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' })
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await footerButton.click()
+
+  const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog).toContainText('ASD Information Security Manual (v2026.09.4)')
+  await expect(dialog).toContainText('NIST macOS Security Compliance Project (release_27.0)')
+  await expect(dialog).toContainText('modified for this tool')
+
+  const blueprintLink = dialog.getByRole('link', { name: /Blueprint for Secure Cloud/ })
+  await expect(blueprintLink).toHaveAttribute('href', 'https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud')
+  await expect(dialog).toContainText('a6e1e5f95e6051f23d2e7d1148c8fd57a6614000')
+
+  const packages = dialog.getByRole('listitem').filter({ has: page.locator('summary') })
+  const react = packages.filter({ has: page.getByText('react', { exact: true }) })
+  await expect(react).toHaveCount(1, { timeout: 10_000 })
+  await expect(react).toContainText('MIT')
+  const highlight = packages.filter({ has: page.getByText('highlight.js', { exact: true }) })
+  await expect(highlight).toContainText('BSD-3-Clause')
+  await highlight.locator('summary').click()
+  await expect(highlight.locator('pre')).toContainText('Redistribution and use in source and binary forms')
+
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(footerButton).toBeFocused()
 })
 
 test('a facet with no reachable options is not rendered', async ({ page }) => {

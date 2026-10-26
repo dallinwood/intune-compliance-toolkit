@@ -36,6 +36,9 @@ Requires [Bun](https://bun.sh).
 
 - `cd webui && bun install && bun run dev` starts the dev server.
 - `bun run build` produces a static site in `webui/dist`.
+- The site's "Sources & licences" dialog lists the rule sources, the custom
+  content credits and every npm package bundled into the site, with each
+  package's licence text.
 - `bun run test` runs the unit tests. `bun run test:e2e` runs the Playwright
   tests against a running `bun run dev`.
 
