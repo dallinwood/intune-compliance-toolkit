@@ -1,10 +1,19 @@
 import { useReferencedText } from '../../hooks/useReferencedText'
+import { payloadFileHighlightLanguage, type HighlightLanguage } from '../../logic/codeLanguage'
 import { fileNameOf, payloadFileDisplay } from '../../logic/fileReferences'
 import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { CodeBlock, OdvNote } from './CodeBlock'
 
-function FileText({ path, odvValue }: { path: string; odvValue: OrgDefinedValue | null }) {
+function FileText({
+  path,
+  language,
+  odvValue,
+}: {
+  path: string
+  language: HighlightLanguage | undefined
+  odvValue: OrgDefinedValue | null
+}) {
   const state = useReferencedText(path)
   if (state.status === 'loading') return <p className="text-xs text-slate-500">Loading {fileNameOf(path)}…</p>
   if (state.status === 'error') {
@@ -16,15 +25,23 @@ function FileText({ path, odvValue }: { path: string; odvValue: OrgDefinedValue 
   }
   return (
     <>
-      <CodeBlock code={state.text} />
+      <CodeBlock code={state.text} language={language} />
       {containsOdvPlaceholder(state.text) && <OdvNote odvValue={odvValue} />}
     </>
   )
 }
 
 // A script from shell_file, shown exactly like an inline one once loaded.
-export function ScriptFile({ path, odvValue }: { path: string; odvValue: OrgDefinedValue | null }) {
-  return <FileText path={path} odvValue={odvValue} />
+export function ScriptFile({
+  path,
+  language,
+  odvValue,
+}: {
+  path: string
+  language: HighlightLanguage | undefined
+  odvValue: OrgDefinedValue | null
+}) {
+  return <FileText path={path} language={language} odvValue={odvValue} />
 }
 
 // A payload from data_file: a text file is shown in full and offered for
@@ -34,7 +51,7 @@ export function PayloadFile({ label, path, odvValue }: { label: string; path: st
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
-      {display.showsContent && <FileText path={path} odvValue={odvValue} />}
+      {display.showsContent && <FileText path={path} language={payloadFileHighlightLanguage(path)} odvValue={odvValue} />}
       {display.url === null ? (
         <p data-testid="referenced-file-error" className="text-xs break-words text-red-600">
           {display.fileName} is outside the published baselines/ folder, so it is not offered.

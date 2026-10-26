@@ -1,4 +1,5 @@
 import { parseDiscussionIn, parseInline, type DiscussionFormat, type InlineSegment } from '../../logic/discussionMarkup'
+import { sourceAttributeHighlightLanguage } from '../../logic/codeLanguage'
 import { displayWithOdv } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { CodeBlock } from './CodeBlock'
@@ -56,7 +57,9 @@ export function DiscussionText({
           )
         }
         const blockText = displayWithOdv(block.text, odvValue)
-        if (block.kind === 'code') return <CodeBlock key={blockIndex} code={blockText} />
+        if (block.kind === 'code') {
+          return <CodeBlock key={blockIndex} code={blockText} language={sourceAttributeHighlightLanguage(block.sourceLanguage)} />
+        }
         if (block.kind === 'heading') {
           return (
             <p key={blockIndex} className="font-semibold text-slate-800">

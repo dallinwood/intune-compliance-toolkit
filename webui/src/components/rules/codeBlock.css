@@ -1,0 +1,7 @@
+/* Loaded after the highlight.js theme: the theme paints its own background
+   and padding, but the block's slate-900 background and p-2 padding come from
+   the pre element. */
+pre code.hljs {
+  padding: 0;
+  background: transparent;
+}

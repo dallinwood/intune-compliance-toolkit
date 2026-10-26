@@ -1353,6 +1353,8 @@ test.describe('custom overlays', () => {
     const remediation = detail.getByTestId('remediation-target')
 
     await expect(remediation.locator('pre', { hasText: 'Windows Registry Editor Version 5.00' })).toBeVisible()
+    // .reg has no highlight.js language here, so it stays plain text.
+    await expect(remediation.locator('pre .hljs')).toHaveCount(0)
     await expect(remediation.getByRole('link', { name: 'Download Policy.reg' })).toHaveAttribute('download', 'Policy.reg')
     const binaryLink = remediation.getByRole('link', { name: 'Download Registry.pol' })
     await expect(binaryLink).toHaveAttribute('download', 'Registry.pol')
@@ -1400,4 +1402,23 @@ test('ISM-1654 and ISM-1655 each show their own Blueprint script step', async ({
     await expect(remediation.getByText(stepName, { exact: true })).toBeVisible()
     await expect(remediation.getByTestId('referenced-file-error')).toHaveCount(0)
   }
+})
+
+test.describe('code highlighting', () => {
+  test('an mSCP bash check is coloured', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'audit_acls_folders_configure', /./)
+    await row.getByRole('button').click()
+    const check = page.locator('[id^="rule-detail-"]').getByTestId('check-target')
+    await expect(check.locator('pre code.hljs [class*="hljs-"]').first()).toBeVisible()
+  })
+
+  test('the ISM-1621 PowerShell script is coloured', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'ism-1621', /./)
+    await row.getByRole('button').click()
+    const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
+    const script = remediation.locator('pre', { hasText: 'MicrosoftWindowsPowerShellV2Root' })
+    await expect(script.locator('[class*="hljs-"]').first()).toBeVisible()
+  })
 })

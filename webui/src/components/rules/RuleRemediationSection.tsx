@@ -1,3 +1,4 @@
+import { INLINE_PAYLOAD_LANGUAGE, scriptHighlightLanguage } from '../../logic/codeLanguage'
 import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import {
@@ -14,11 +15,12 @@ import { DiscussionText } from './DiscussionText'
 import { PayloadFile, ScriptFile } from './ReferencedFile'
 
 function StepEntry({ label, step, odvValue }: { label: string; step: RemediationStep; odvValue: OrgDefinedValue | null }) {
+  const highlightLanguage = scriptHighlightLanguage(step.language)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
-      {step.shell_file !== undefined && <ScriptFile path={step.shell_file} odvValue={odvValue} />}
-      {step.shell && <CodeBlock code={step.shell} />}
+      {step.shell_file !== undefined && <ScriptFile path={step.shell_file} language={highlightLanguage} odvValue={odvValue} />}
+      {step.shell && <CodeBlock code={step.shell} language={highlightLanguage} />}
       {step.shell && containsOdvPlaceholder(step.shell) && <OdvNote odvValue={odvValue} />}
       {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValue={odvValue} />}
     </div>
@@ -32,7 +34,7 @@ function JsonEntry({ label, value, odvValue }: { label: string; value: unknown; 
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
-      <CodeBlock code={json} />
+      <CodeBlock code={json} language={INLINE_PAYLOAD_LANGUAGE} />
       {containsOdvPlaceholder(json) && <OdvNote odvValue={odvValue} />}
     </div>
   )

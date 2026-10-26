@@ -12,14 +12,14 @@ describe('parseDiscussion', () => {
   it('renders a [source,bash] block delimited by ---- as code', () => {
     expect(parseDiscussion('Run this:\n[source,bash]\n----\n/usr/bin/fdesetup enable\n\necho done\n----\nAfter.')).toEqual([
       { kind: 'paragraph', text: 'Run this:' },
-      { kind: 'code', text: '/usr/bin/fdesetup enable\n\necho done' },
+      { kind: 'code', text: '/usr/bin/fdesetup enable\n\necho done', sourceLanguage: 'bash' },
       { kind: 'paragraph', text: 'After.' },
     ])
   })
 
   it('renders a [source] block without delimiters as code up to the next blank line', () => {
     expect(parseDiscussion('[source,bash]\n-  /usr/sbin/firmwarepasswd -setpasswd\n-\n\nNOTE: text')).toEqual([
-      { kind: 'code', text: '-  /usr/sbin/firmwarepasswd -setpasswd\n-' },
+      { kind: 'code', text: '-  /usr/sbin/firmwarepasswd -setpasswd\n-', sourceLanguage: 'bash' },
       { kind: 'paragraph', text: 'NOTE: text' },
     ])
   })

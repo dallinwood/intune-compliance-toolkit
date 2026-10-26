@@ -1,25 +1,37 @@
 import { versionKey, versionsForTarget } from '../../logic/applicability'
 import { GENERATED_TARGET } from '../../logic/checkPlan'
 import { containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
+import { scriptHighlightLanguage } from '../../logic/codeLanguage'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { targetHeading } from '../../logic/targetDisplay'
 import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import type { Rule, RuleCheck, TargetCheck } from '../../types/library'
+import type { Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 import { ScriptFile } from './ReferencedFile'
 
-function CheckEntry({ label, check, odvValue }: { label: string; check: RuleCheck; odvValue: OrgDefinedValue | null }) {
+function CheckEntry({
+  label,
+  check,
+  language,
+  odvValue,
+}: {
+  label: string
+  check: RuleCheck
+  language: ScriptLanguage
+  odvValue: OrgDefinedValue | null
+}) {
+  const highlightLanguage = scriptHighlightLanguage(language)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {check.shell_file !== undefined ? (
-        <ScriptFile path={check.shell_file} odvValue={odvValue} />
+        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} />
       ) : check.shell ? (
-        <CodeBlock code={check.shell} />
+        <CodeBlock code={check.shell} language={highlightLanguage} />
       ) : (
         <p className="text-xs text-slate-500">No check script.</p>
       )}
@@ -48,13 +60,20 @@ function TargetCheckBlock({ target, targetCheck, odvValue }: { target: string; t
         <CheckEntry
           label={versionChecks.length > 0 ? 'Default check (versions without their own)' : 'Check (all listed versions)'}
           check={targetCheck.default}
+          language={targetCheck.language}
           odvValue={odvValue}
         />
       ) : (
         <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
       )}
       {versionChecks.map(([version, check]) => (
-        <CheckEntry key={version} label={termLabel(index, 'versions', versionKey(target, version))} check={check} odvValue={odvValue} />
+        <CheckEntry
+          key={version}
+          label={termLabel(index, 'versions', versionKey(target, version))}
+          check={check}
+          language={targetCheck.language}
+          odvValue={odvValue}
+        />
       ))}
     </div>
   )

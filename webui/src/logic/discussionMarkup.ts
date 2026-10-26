@@ -8,7 +8,7 @@ export type DiscussionFormat = 'asciidoc' | 'markdown'
 
 export type DiscussionBlock =
   | { kind: 'paragraph'; text: string }
-  | { kind: 'code'; text: string }
+  | { kind: 'code'; text: string; sourceLanguage?: string }
   | { kind: 'heading'; text: string }
   | { kind: 'list'; items: string[] }
 
@@ -26,6 +26,13 @@ const SECTION_TITLE_PATTERN = /^={2,}\s+(.+)$/
 const CODE_DELIMITER = '----'
 const TABLE_DELIMITER = '|==='
 
+// The language is the first positional attribute: [source,bash] or
+// [source, bash, linenums].
+function sourceLanguageOf(sourceAttributeLine: string): string | undefined {
+  const firstAttribute = sourceAttributeLine.slice(1, -1).split(',')[1]?.trim()
+  return firstAttribute ? firstAttribute : undefined
+}
+
 function capitalized(word: string): string {
   return word.charAt(0) + word.slice(1).toLowerCase()
 }
@@ -42,14 +49,15 @@ export function parseDiscussion(text: string): DiscussionBlock[] {
 
   // Collects lines from `start` until `isEnd` matches; returns the index of
   // the line that ended the block (or lines.length).
-  function collectCode(start: number, isEnd: (line: string) => boolean): number {
+  function collectCode(start: number, isEnd: (line: string) => boolean, sourceLanguage?: string): number {
     const codeLines: string[] = []
     let lineIndex = start
     while (lineIndex < lines.length && !isEnd(lines[lineIndex])) {
       codeLines.push(lines[lineIndex])
       lineIndex += 1
     }
-    blocks.push({ kind: 'code', text: codeLines.join('\n') })
+    const text = codeLines.join('\n')
+    blocks.push(sourceLanguage === undefined ? { kind: 'code', text } : { kind: 'code', text, sourceLanguage })
     return lineIndex
   }
 
@@ -58,12 +66,13 @@ export function parseDiscussion(text: string): DiscussionBlock[] {
 
     if (SOURCE_ATTRIBUTE_PATTERN.test(trimmed)) {
       flushParagraph()
+      const sourceLanguage = sourceLanguageOf(trimmed)
       if (lines[lineIndex + 1]?.trim() === CODE_DELIMITER) {
-        lineIndex = collectCode(lineIndex + 2, (line) => line.trim() === CODE_DELIMITER)
+        lineIndex = collectCode(lineIndex + 2, (line) => line.trim() === CODE_DELIMITER, sourceLanguage)
       } else {
         // Some upstream rules omit the ---- delimiters; the listing then
         // runs to the next blank line.
-        lineIndex = collectCode(lineIndex + 1, (line) => line.trim() === '')
+        lineIndex = collectCode(lineIndex + 1, (line) => line.trim() === '', sourceLanguage)
       }
       continue
     }

@@ -1,3 +1,7 @@
+import 'highlight.js/styles/github-dark.css'
+import './codeBlock.css'
+import type { HighlightLanguage } from '../../logic/codeLanguage'
+import { highlightedHtml } from '../../logic/highlighting'
 import { displayWithOdv } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { CustomTag } from './CustomTag'
@@ -8,10 +12,13 @@ const MAX_NOTE_VALUE_LENGTH = 80
 // Long single-line check commands wrap (anywhere, since they rarely contain
 // spaces at useful points) so the whole command is readable on a phone;
 // overflow-x-auto remains a fallback rather than the primary behaviour.
-export function CodeBlock({ code }: { code: string }) {
+// Inserting the highlighted HTML is safe because highlight.js escapes the
+// code before it adds its span markup (see highlightedHtml).
+export function CodeBlock({ code, language }: { code: string; language?: HighlightLanguage }) {
+  const html = highlightedHtml(code, language)
   return (
     <pre className="max-w-full overflow-x-auto rounded bg-slate-900 p-2 font-mono text-xs whitespace-pre-wrap text-slate-100 [overflow-wrap:anywhere]">
-      <code>{code}</code>
+      {html === null ? <code>{code}</code> : <code className="hljs" dangerouslySetInnerHTML={{ __html: html }} />}
     </pre>
   )
 }
