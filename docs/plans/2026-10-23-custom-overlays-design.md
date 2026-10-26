@@ -230,3 +230,4 @@ There are two layers. Neither one blocks the raw data.
 - 2026-10-23: Design drafted from the brainstorming session (no code yet).
 - 2026-10-23: Builder-check answers folded in (protected fields, no derived assessment, index recompute, Custom line, per-overlay stale notes); approved by the maintainer.
 - 2026-10-23: Implemented per `docs/plans/2026-10-23-custom-overlays-plan.md`. One change to section 3.3 made during review: an object, `$merge` or `$append` onto an upstream `null` merges as onto an absent value.
+- 2026-10-26: Overlays moved from `overlays/` to `baselines/_overlays/` (`refactor: move custom overlays under baselines/_overlays`). The source location is now `baselines/_overlays/<name>.json`, the publish step copies it with the baselines to `webui/public/baselines/_overlays/` and writes the manifest there (never into the repo), and the UI fetches `baselines/_overlays/_manifest.json`. Earlier entries and sections above describe the old path.

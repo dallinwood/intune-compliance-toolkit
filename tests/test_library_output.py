@@ -156,3 +156,20 @@ def test_publish_source_writes_tree_and_manifest(tmp_path):
     manifest = json.loads((baselines_dir / MANIFEST_FILE_NAME).read_text(encoding="utf-8"))
     assert [source["name"] for source in manifest["sources"]] == ["example"]
     assert manifest["sources"][0]["rule_count"] == 1
+
+
+def test_publish_source_never_touches_the_overlays_folder(tmp_path):
+    baselines_dir = tmp_path / "baselines"
+    overlay_path = baselines_dir / "_overlays" / "kept.json"
+    overlay_path.parent.mkdir(parents=True)
+    overlay_path.write_text('{"kept": true}\n', encoding="utf-8")
+
+    for _ in range(2):
+        publish_source(
+            baselines_dir,
+            "example",
+            lambda tree_dir: write_rule_tree(tree_dir, "example", example_rule()),
+            lambda rule_count: manifest_entry("example", rule_count),
+        )
+
+    assert overlay_path.read_text(encoding="utf-8") == '{"kept": true}\n'

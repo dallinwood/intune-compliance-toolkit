@@ -1156,7 +1156,7 @@ test.describe('benchmark cell and detail benchmarks', () => {
 })
 
 // These tests serve their own overlays through page.route, replacing the
-// committed overlays/ folder for the page they open.
+// committed baselines/_overlays/ folder for the page they open.
 test.describe('custom overlays', () => {
   test.use({ viewport: { width: 1280, height: 900 } })
 
@@ -1185,7 +1185,7 @@ test.describe('custom overlays', () => {
   }
 
   async function serveOverlays(page: Page, files: Record<string, unknown>) {
-    await page.route('**/overlays/*.json', (route) => {
+    await page.route('**/baselines/_overlays/*.json', (route) => {
       const fileName = new URL(route.request().url()).pathname.split('/').pop() ?? ''
       const body = fileName === '_manifest.json' ? { files: Object.keys(files).sort() } : files[fileName]
       if (body === undefined) return route.fulfill({ status: 404, body: 'Not found' })

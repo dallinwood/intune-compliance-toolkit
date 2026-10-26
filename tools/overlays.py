@@ -1,4 +1,4 @@
-"""Validate maintainer-written overlays under overlays/ against the committed library.
+"""Validate maintainer-written overlays under baselines/_overlays/ against the committed library.
 
 An overlay adds to or replaces fields on imported rules without touching
 baselines/. The web UI applies overlays as it displays rules
@@ -22,7 +22,7 @@ from tools.library_output import SCHEMA_VERSION
 from tools.validate_library import load_schema
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_OVERLAYS_DIR = REPOSITORY_ROOT / "overlays"
+DEFAULT_OVERLAYS_DIR = REPOSITORY_ROOT / "baselines" / "_overlays"
 DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 
 OVERLAY_SCHEMA_VERSION = 1

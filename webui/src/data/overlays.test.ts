@@ -66,7 +66,7 @@ describe('fetchOverlays', () => {
     const { overlays, warnings } = await (await loadFetchOverlays())()
 
     expect(overlays).toEqual([])
-    expect(warnings).toEqual([expect.stringContaining('overlays/_manifest.json: 404 Not Found')])
+    expect(warnings).toEqual([expect.stringContaining('baselines/_overlays/_manifest.json: 404 Not Found')])
   })
 
   it('never rejects when the network fails', async () => {
@@ -222,7 +222,7 @@ describe('loadLibrary with crashing overlays', () => {
         if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 5, sources: [ISM_SOURCE] })
         if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 5, source: 'asd_ism', rules: [ENTRY] })
         if (url.endsWith('/baselines/asd_ism/rules/ism-1622.json')) return jsonResponse(rule)
-        if (url.endsWith('/overlays/_manifest.json')) return jsonResponse({ files: Object.keys(overlayFiles).sort() })
+        if (url.endsWith('/baselines/_overlays/_manifest.json')) return jsonResponse({ files: Object.keys(overlayFiles).sort() })
         const fileName = url.split('/').pop() ?? ''
         return fileName in overlayFiles ? jsonResponse(overlayFiles[fileName]) : new Response('missing', { status: 404 })
       }),

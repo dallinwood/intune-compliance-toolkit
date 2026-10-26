@@ -52,7 +52,7 @@ nature, is not legal advice, and that the Commonwealth accepts no
 responsibility or liability for any damage, loss or expense incurred as a
 result of reliance on it.
 
-overlays/asd-blueprint-*.json each embed a PowerShell script copied byte for
+baselines/_overlays/asd-blueprint-*.json each embed a PowerShell script copied byte for
 byte from ASD's Blueprint for Secure Cloud:
 
   Project:  https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud

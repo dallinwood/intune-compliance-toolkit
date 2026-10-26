@@ -133,7 +133,7 @@ description, extra references) to imported rules without editing
 as it shows rules, and tags every overlaid field **Custom** in the rule
 details.
 
-Put each overlay in its own `overlays/<name>.json`:
+Put each overlay in its own `baselines/_overlays/<name>.json`:
 
 ```json
 {
@@ -213,12 +213,12 @@ Merge rules, applied field by field:
   overlay also sets `assessment` (for example
   `{ "status": "automated", "manual_reason": null }`).
 
-The repo ships three overlays, `overlays/asd-blueprint-*.json`, that add ASD
+The repo ships three overlays, `baselines/_overlays/asd-blueprint-*.json`, that add ASD
 Blueprint for Secure Cloud PowerShell remediation scripts to ISM-1542, ISM-1621,
 ISM-1654, ISM-1655 and ISM-1674 (licence details in `NOTICE`).
 
 Publishing is automatic: `bun run dev` and `bun run build` copy
-`overlays/` into the site with a generated `_manifest.json`. Don't write or
+`baselines/_overlays/` into the site with a generated `_manifest.json`. Don't write or
 commit a manifest yourself.
 
 Check overlays with `python -m pytest -W error tests/test_overlays.py` (or

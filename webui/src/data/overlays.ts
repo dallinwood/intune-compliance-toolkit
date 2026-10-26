@@ -1,7 +1,7 @@
 import { applyOverlayToCheckedIndexEntry, applyOverlayToRule, parseOverlay, type Overlay } from '../logic/overlays'
 import type { IndexEntry, Rule } from '../types/library'
 
-const OVERLAYS_DIRECTORY = 'overlays/'
+const OVERLAYS_DIRECTORY = 'baselines/_overlays/'
 const MANIFEST_PATH = `${OVERLAYS_DIRECTORY}_manifest.json`
 
 export interface LoadedOverlays {

@@ -16,9 +16,6 @@ dist-ssr
 # baselines/ itself is the source of truth, this is just a build artifact.
 public/baselines
 
-# Copied from ../overlays with a generated _manifest.json by the same script.
-public/overlays
-
 # Playwright e2e output
 /test-results/
 /playwright-report/

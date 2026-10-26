@@ -23,7 +23,7 @@ pytestmark = pytest.mark.filterwarnings("default::tools.overlays.OverlayWarning"
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINES_DIR = REPO_ROOT / "baselines"
-OVERLAYS_DIR = REPO_ROOT / "overlays"
+OVERLAYS_DIR = REPO_ROOT / "baselines" / "_overlays"
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "overlays"
 CASES = json.loads((FIXTURES_DIR / "cases.json").read_text(encoding="utf-8"))
 INVALID_SAMPLES = sorted((FIXTURES_DIR / "invalid").glob("*.json"))
