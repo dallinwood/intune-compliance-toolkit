@@ -48,7 +48,7 @@ function DialogHeader({ className, children, ...props }: React.ComponentProps<"d
       {children}
       <DialogPrimitive.Close
         aria-label="Close"
-        className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-muted-foreground focus-visible:outline-none"
+        className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
       >
         <XIcon className="size-4" aria-hidden="true" />
       </DialogPrimitive.Close>

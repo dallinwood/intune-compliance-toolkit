@@ -104,7 +104,7 @@ export function OrgDefinedValueInput({
       <select
         {...commonProps}
         onChange={(event) => handleChange(event.target.value)}
-        className={`h-7 w-full max-w-xs border border-input bg-transparent px-2 ${fieldClass}`}
+        className={`h-7 w-full max-w-xs border border-control-border bg-transparent px-2 ${fieldClass}`}
       >
         <option value="">Use recommended ({String(odv.recommended)})</option>
         {(odv.validation?.enumValues ?? []).map((enumValue) => (
@@ -122,7 +122,7 @@ export function OrgDefinedValueInput({
         {...commonProps}
         rows={4}
         onChange={(event) => handleChange(event.target.value)}
-        className={`w-full border border-input bg-transparent px-2 py-1 ${fieldClass}`}
+        className={`w-full border border-control-border bg-transparent px-2 py-1 ${fieldClass}`}
       />
     )
   } else {

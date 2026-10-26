@@ -14,7 +14,7 @@ export function ThemeToggle() {
       type="button"
       aria-label={`Switch to ${label.toLowerCase()}`}
       onClick={() => setTheme(nextTheme)}
-      className="-my-0.5 inline-flex items-center gap-1.5 rounded px-1.5 py-0.5 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-muted-foreground focus-visible:outline-none"
+      className="-my-0.5 inline-flex items-center gap-1.5 rounded px-1.5 py-0.5 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
     >
       <Icon className="size-3.5" aria-hidden="true" />
       {label}

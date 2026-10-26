@@ -29,6 +29,8 @@ input[type='search']::-webkit-search-cancel-button {
   --color-expanded: var(--expanded);
   --color-link: var(--link);
   --color-control-border: var(--control-border);
+  --color-focus-ring: var(--focus-ring);
+  --color-control-checked-border: var(--control-checked-border);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
@@ -110,8 +112,9 @@ input[type='search']::-webkit-search-cancel-button {
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
   /* App tokens the shadcn preset has no slot for. Every foreground here
-     meets WCAG AA (4.5:1) on its own surface and on --panel; --link and
-     --control-border also clear 3:1 as icon/border colours. */
+     meets WCAG AA (4.5:1) on its own surface and on --panel; --link,
+     --control-border and --focus-ring also clear 3:1 as icon, border and
+     focus-indicator colours. */
   --section-1: oklch(0.9 0.012 223);
   --section-2: oklch(0.937 0.009 223);
   --section-3: oklch(0.965 0.006 223);
@@ -120,7 +123,9 @@ input[type='search']::-webkit-search-cancel-button {
   --panel: oklch(0.985 0 0);
   --expanded: oklch(0.978 0.016 223);
   --link: oklch(0.5 0.105 223);
-  --control-border: oklch(0.62 0.014 286);
+  --control-border: oklch(0.6 0.014 286);
+  --focus-ring: oklch(0.5 0.105 223);
+  --control-checked-border: oklch(0.52 0.105 223.128);
   --success: oklch(0.95 0.052 163.051);
   --success-foreground: oklch(0.432 0.095 166.913);
   --warning: oklch(0.973 0.045 95);
@@ -172,7 +177,11 @@ input[type='search']::-webkit-search-cancel-button {
   --panel: oklch(0.21 0.006 285.885);
   --expanded: oklch(0.245 0.03 223);
   --link: oklch(0.78 0.11 220);
-  --control-border: oklch(0.52 0.014 286);
+  --control-border: oklch(0.56 0.014 286);
+  --focus-ring: oklch(0.72 0.12 220);
+  /* Dark --primary is too close to the page for a 3:1 edge, so a checked
+     box keeps its primary fill inside a lighter border. */
+  --control-checked-border: oklch(0.66 0.11 222);
   --success: oklch(0.262 0.051 172.552);
   --success-foreground: oklch(0.845 0.143 164.978);
   --warning: oklch(0.255 0.055 55);
@@ -184,7 +193,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-focus-ring;
   }
   body {
     @apply bg-background text-foreground;

@@ -277,7 +277,7 @@ function SearchBox({ value, onChange }: { value: string; onChange: (value: strin
           type="button"
           aria-label="Clear search"
           onClick={clearAndRefocus}
-          className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-muted-foreground focus-visible:outline-none"
+          className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           <X className="size-3.5" aria-hidden="true" />
         </button>

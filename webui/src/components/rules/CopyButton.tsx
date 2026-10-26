@@ -12,8 +12,8 @@ const FAILURE_MESSAGES: Record<Exclude<CopyOutcome, 'copied'>, string> = {
 
 const TONE_CLASSES = {
   // The dark tone sits on a code block, which stays dark in both themes.
-  dark: 'text-slate-300 hover:bg-slate-700 hover:text-white focus-visible:ring-blue-400',
-  light: 'text-foreground/80 hover:bg-foreground/10 hover:text-foreground focus-visible:ring-muted-foreground',
+  dark: 'text-slate-300 hover:bg-slate-700 hover:text-white focus-visible:ring-focus-ring',
+  light: 'text-foreground/80 hover:bg-foreground/10 hover:text-foreground focus-visible:ring-focus-ring',
 } as const
 
 type CopyState = { status: 'idle' } | { status: 'copied' } | { status: 'failed'; outcome: Exclude<CopyOutcome, 'copied'> }
