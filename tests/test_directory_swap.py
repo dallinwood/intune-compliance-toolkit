@@ -1,9 +1,10 @@
+import os
 from pathlib import Path
 
 import pytest
 
 from tools import directory_swap
-from tools.directory_swap import replace_directory
+from tools.directory_swap import replace_directory, replace_file
 
 
 def make_directory(path, name, content):
@@ -72,3 +73,36 @@ def test_persistent_permission_error_is_raised(tmp_path, monkeypatch):
     monkeypatch.setattr(directory_swap, "RENAME_RETRY_DELAY_SECONDS", 0)
     with pytest.raises(PermissionError):
         replace_directory(staging, tmp_path / "target")
+
+
+def test_replace_file_retries_a_transient_permission_error(tmp_path, monkeypatch):
+    source = tmp_path / "new.json"
+    source.write_text("new")
+    destination = tmp_path / "manifest.json"
+    destination.write_text("old")
+    original_replace = os.replace
+    failures_remaining = [2]
+
+    def flaky_replace(source_path, destination_path):
+        if failures_remaining[0] > 0:
+            failures_remaining[0] -= 1
+            raise PermissionError("simulated scanner lock")
+        return original_replace(source_path, destination_path)
+
+    monkeypatch.setattr(os, "replace", flaky_replace)
+    monkeypatch.setattr(directory_swap, "RENAME_RETRY_DELAY_SECONDS", 0)
+    replace_file(source, destination)
+    assert destination.read_text() == "new"
+
+
+def test_replace_file_raises_a_persistent_permission_error(tmp_path, monkeypatch):
+    source = tmp_path / "new.json"
+    source.write_text("new")
+
+    def locked_replace(source_path, destination_path):
+        raise PermissionError("simulated scanner lock")
+
+    monkeypatch.setattr(os, "replace", locked_replace)
+    monkeypatch.setattr(directory_swap, "RENAME_RETRY_DELAY_SECONDS", 0)
+    with pytest.raises(PermissionError):
+        replace_file(source, tmp_path / "manifest.json")

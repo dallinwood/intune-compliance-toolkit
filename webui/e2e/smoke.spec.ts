@@ -1045,9 +1045,13 @@ test.describe('section tree and paging', () => {
   })
 
   test('a search opens every section holding a match, and clearing it restores the stored collapse state', async ({ page }) => {
-    await openLibrary(page, '/?size=200')
-    await page.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
-    await page.getByRole('checkbox', { name: 'Guidelines for email', exact: true }).click()
+    // Both sections come from the URL, not two clicks: once the first is
+    // selected the sidebar only offers sections that have rows in the view,
+    // so the second option disappears as soon as the deferred render lands
+    // and a click on it is a race.
+    await openLibrary(page, '/?size=200&section=audit&section=Guidelines%20for%20email')
+    await expect(page.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
+    await expect(page.getByRole('checkbox', { name: 'Guidelines for email', exact: true })).toBeChecked()
     await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
     await page.getByRole('button', { name: 'Expand one level' }).click()
     await expect(ruleRows(page)).toHaveCount(31)

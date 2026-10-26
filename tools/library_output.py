@@ -5,7 +5,7 @@ import tempfile
 from collections.abc import Callable
 from pathlib import Path
 
-from tools.directory_swap import replace_directory
+from tools.directory_swap import replace_directory, replace_file
 from tools.json_output import write_json
 from tools.validate_library import schema_errors, validate_library
 
@@ -78,7 +78,7 @@ def publish_source(
         manifest_temp_path = Path(manifest_temp_name)
         write_json(manifest_temp_path, final_manifest)
         replace_directory(validation_dir / source_name, baselines_dir / source_name)
-        os.replace(manifest_temp_path, baselines_dir / MANIFEST_FILE_NAME)
+        replace_file(manifest_temp_path, baselines_dir / MANIFEST_FILE_NAME)
         manifest_temp_path = None
     finally:
         shutil.rmtree(validation_dir, ignore_errors=True)

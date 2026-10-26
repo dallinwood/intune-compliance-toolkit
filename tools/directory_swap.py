@@ -1,23 +1,33 @@
+import os
 import shutil
 import tempfile
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 RENAME_ATTEMPTS = 5
 RENAME_RETRY_DELAY_SECONDS = 0.5
 
 
-def rename_directory(source: Path, destination: Path) -> None:
+def _retry_on_permission_error(action: Callable[[], None]) -> None:
     # On Windows a virus scanner or indexer can briefly hold a freshly written
-    # directory open, making the rename fail with PermissionError.
+    # file or directory open, making a rename or replace fail with PermissionError.
     for attempt in range(1, RENAME_ATTEMPTS + 1):
         try:
-            source.rename(destination)
+            action()
             return
         except PermissionError:
             if attempt == RENAME_ATTEMPTS:
                 raise
             time.sleep(RENAME_RETRY_DELAY_SECONDS * attempt)
+
+
+def rename_directory(source: Path, destination: Path) -> None:
+    _retry_on_permission_error(lambda: source.rename(destination))
+
+
+def replace_file(source: Path, destination: Path) -> None:
+    _retry_on_permission_error(lambda: os.replace(source, destination))
 
 
 def replace_directory(staging_dir: Path, target_dir: Path) -> None:
