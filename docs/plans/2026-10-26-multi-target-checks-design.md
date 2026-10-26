@@ -1,0 +1,198 @@
+# Design: per-target checks and remediation (schema v5), and ASD Blueprint overlays
+
+Date: 2026-10-26
+Status: Approved 2026-10-26 (maintainer answers in this session)
+
+## 1. Intent
+
+A rule can apply to several targets, but `check` and `remediation` can
+only describe one. They are `{ default, by_version }` keyed by bare
+version, which is implicitly macOS (design 2026-10-22, section 5.3). Some
+rules, especially ASD ISM controls, need a macOS check and a Windows
+check in the same rule. Schema v5 keys checks and remediation by target.
+
+With that in place, the first real overlays add ASD's Blueprint for
+Secure Cloud PowerShell remediation scripts to the ISM controls they
+implement.
+
+## 2. Goals, non-goals, anti-goals
+
+### Goals
+
+- `check` and `remediation` are maps keyed by target. A rule may have
+  entries for any number of targets.
+- Remediation is a list of steps, so several scripts can apply to one
+  target, and an overlay can add a step by appending.
+- Apple-only remediation keys (`mobileconfig_info`,
+  `mobileconfig_by_version`, `ddm_info`) become a general `payloads` list
+  tagged by kind.
+- mSCP is restructured to v5 with **values unchanged**, proved the same
+  way as the v3-to-v4 move: an independent conversion of the committed
+  v4 files compared to the regenerated v5 files.
+- The macOS generator behaves exactly as before. Bundles are
+  byte-identical for any mSCP selection.
+- The UI shows one Check block and one Remediation block per target.
+- Overlays add the Blueprint scripts to ISM-1621, ISM-1654, ISM-1655,
+  ISM-1542 and ISM-1674.
+
+### Non-goals
+
+- Generating Windows (PowerShell) discovery scripts or Intune rules from
+  Windows checks. Out of scope by maintainer decision. The generator
+  keeps reading only `check["macOS"]`.
+- The 16 generic Blueprint registry scripts that match no specific ISM
+  control (maintainer decision: leave them out).
+- Changing any rule's `assessment`. Overlaid ISM rules stay manual.
+
+### Anti-goals
+
+- Any change to mSCP values, bundle bytes, or how a macOS rule displays,
+  other than the per-target block layout.
+- Source-specific or platform-specific top-level keys.
+
+## 3. Schema v5
+
+`schema_version` is 5 in the rule, index and manifest files. Only
+`check` and `remediation` change; every other field is as in v4.
+
+```jsonc
+"check": {                              // object keyed by target, or null
+  "macOS": {
+    "language": "bash",                 // "bash" | "powershell" | "zsh" | "python" (enum, extend when needed)
+    "default": { "shell": "...", "result": { "type": "integer", "value": 0 }, "additional_info": null },  // or null
+    "by_version": { "15.0": { ... } }   // same check_entry shape as v4
+  }
+},
+"remediation": {                        // object keyed by target, or null
+  "macOS": {
+    "steps": [
+      { "name": null, "language": "bash", "shell": "...", "additional_info": null, "versions": null }
+    ],
+    "payloads": [
+      { "kind": "mobileconfig", "versions": null, "data": { ... } },
+      { "kind": "ddm", "versions": null, "data": { ... } }
+    ]
+  }
+}
+```
+
+- **Targets.** Target keys are non-empty strings matching the
+  `applicability` target names (`macOS`, `Windows`, ...). There is no
+  `null` key: a check or remediation always belongs to a target.
+- **Check semantics** are unchanged within a target: `default` plus
+  `by_version` overrides.
+- **Step `versions`:**
+  - `null` means the step applies to every version of the target.
+  - A list means only those versions.
+  - Steps are independent. All steps whose versions match apply, in list
+    order.
+  - A step may have `name` (`string | null`), shown as its heading.
+  - A step with `shell: null` and non-null `additional_info` is a
+    text-only instruction.
+- **Payload `kind`** is a free string. mSCP uses `mobileconfig` and
+  `ddm`. `data` is any JSON object or array. `versions` works as for
+  steps.
+
+### 3.1 mSCP conversion (importer and proof)
+
+- **`check`:** non-null becomes `{ "macOS": { "language": "bash",
+  "default": ..., "by_version": ... } }`.
+- **Remediation steps:**
+  - If `remediation.by_version` is empty, the v4 `default` fix becomes
+    one step with `versions: null`, provided it has a `shell` or
+    `additional_info`. A v4 default of `{ shell: null, additional_info:
+    null }` produces no step.
+  - If `by_version` is non-empty, the default step gets `versions` = the
+    rule's listed macOS versions without a `by_version` entry, ascending.
+    That list is `null` if the rule lists no versions.
+  - Each `by_version[v]` fix becomes a step with `versions: [v]`. Steps
+    are ordered default first, then by ascending version.
+  - Step `name` is `null` and `language` is `"bash"`.
+- **Remediation payloads:**
+  - `mobileconfig_info` becomes `{ kind: "mobileconfig", versions: null,
+    data }`.
+  - Each `mobileconfig_by_version[v]` becomes `{ kind: "mobileconfig",
+    versions: [v], data }`.
+  - `ddm_info` becomes `{ kind: "ddm", versions: null, data }`.
+  - Order: mobileconfig (all versions), mobileconfig per ascending
+    version, then ddm.
+- **`remediation` is `null`** when the result has no steps and no
+  payloads. Otherwise it is `{ "macOS": { steps, payloads } }`.
+
+### 3.2 Overlays
+
+- **Merge contract unchanged.** Adding a Windows entry is a normal object
+  merge onto the target-keyed map, or onto `null`, which merges as absent.
+  Appending a step is a normal list append.
+- **Updates:** the overlay field tables, the UI shape checks, the shared
+  fixture cases, and `FIELD_KINDS` / `INDEX_OVERLAY_FIELDS`.
+- **Existing overlay tests** that used the v4 check shape move to v5.
+
+## 4. Web UI and generator
+
+- **Generator:** `logic/checkPlan.ts` and its helpers read
+  `rule.check?.[GENERATED_TARGET]`. A rule with checks only for other
+  targets is handled as "no macOS check", through the existing problem
+  path. Bundles are byte-identical.
+- **Detail panel:**
+  - **Check:** one block per target, headed by the target's vocabulary
+    label and the language, e.g. "Windows · PowerShell". Inside it, the
+    existing default and per-version layout is unchanged.
+  - **Remediation:** one block per target. Steps are listed in order with
+    their name (if any) and versions (if not all). Payloads are listed by
+    kind, with their versions.
+  - **Single target:** when a rule has one target, the target heading
+    still shows, so the layout is the same for every rule.
+  - **Custom tags** work per top-level field as today.
+- **The "No macOS version listed" warning** keeps its current condition
+  (a macOS applicability entry with no version).
+
+## 5. Blueprint overlays
+
+- **Source:** ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud at commit
+  `a6e1e5f95e6051f23d2e7d1148c8fd57a6614000`, files under
+  `static/content/files/config-scripts/`.
+- **Licence:**
+  - The site is CC BY 4.0, (c) Commonwealth of Australia 2023.
+  - **The scripts themselves are Microsoft code under the MIT licence**
+    (their headers say so), and third-party content is excluded from
+    ASD's grant.
+  - Each script is copied byte for byte, header included, into the
+    overlay step's `shell`.
+  - `NOTICE` gains a section with Microsoft's MIT copyright and licence
+    text, crediting the Blueprint as the place they were obtained.
+  - The overlay's `references` carries the Blueprint page URL.
+- **Overlays** (each targets release `v2026.09.4`; each adds one Windows
+  step with `name` set to the script name and `language: "powershell"`,
+  plus a reference):
+  1. `asd-blueprint-remove-legacy-features.json`, targeting
+     `asd_ism.ism-1621`, `asd_ism.ism-1654` and `asd_ism.ism-1655`, with
+     script `UserApplicationHardeningRemoveFeatures`. The one script
+     removes PowerShell 2.0, .NET 3.5 and Internet Explorer.
+  2. `asd-blueprint-office-ole-packages.json`, targeting
+     `asd_ism.ism-1542`, with script
+     `OfficeMacroHardeningPreventActivationOfOle`.
+  3. `asd-blueprint-macro-trusted-publisher.json`, targeting
+     `asd_ism.ism-1674`, with script `BlockCerts`.
+- **Each step's `additional_info`** states the script's source and
+  licence in one line, and for overlay 1 notes that the same script
+  covers all three controls.
+- **`assessment` is not overlaid**, so the rules stay manual.
+
+## 6. Delivery
+
+1. **Task 1: schema v5.**
+   - The schemas, the mSCP importer and its regenerated data, the
+     values-unchanged proof, the ISM importer (`null` stays `null`),
+     overlay tooling (Python and TypeScript, cases, shape checks), the
+     generator, the UI blocks, and the tests.
+   - The bundle snapshot is byte-identical before and after.
+2. **Task 2: Blueprint overlays.**
+   - The three overlay files, the `NOTICE` and README updates, a CI
+     overlay check pass, and e2e or screenshot confirmation that ISM-1621
+     shows a Windows · PowerShell remediation tagged Custom.
+3. **One review** over both tasks, then fixes, then push.
+
+## Progress log
+
+- 2026-10-26: Design written from the maintainer's answers (no code yet).
