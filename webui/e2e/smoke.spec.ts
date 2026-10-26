@@ -1185,11 +1185,13 @@ test.describe('benchmark cell and detail benchmarks', () => {
     await expect(tooltip).toHaveText(fullText)
   })
 
-  test('the ism-1667 details list its benchmarks under None in a Benchmarks section', async ({ page }) => {
+  test('the ism-1667 details list its benchmarks directly, with no None heading', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1667', /./)
     await row.getByRole('button').click()
-    const items = benchmarkList(page, 'None').getByRole('listitem')
+    const section = page.locator('[id^="rule-detail-"]').getByRole('region', { name: 'Benchmarks' })
+    await expect(section).not.toContainText('None')
+    const items = section.getByRole('listitem')
     await expect(items.filter({ hasText: /^ISM PROTECTED$/ })).toHaveCount(1)
     await expect(items.filter({ hasText: /^Essential Eight ML3$/ })).toHaveCount(1)
     await expect(items).toHaveCount(7)

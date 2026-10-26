@@ -21,10 +21,12 @@ export function RuleBenchmarks({ applicability, custom = false }: { applicabilit
             const scopeLabelId = `${scopeIdPrefix}-${scopePosition}`
             return (
               <div key={scope.scopeKey}>
-                <p id={scopeLabelId} className="font-medium text-slate-600">
-                  {scope.scopeLabel}
-                </p>
-                <ul aria-labelledby={scopeLabelId} className="flex flex-wrap gap-x-3 gap-y-0.5 text-slate-500">
+                {scope.scopeLabel !== null && (
+                  <p id={scopeLabelId} className="font-medium text-slate-600">
+                    {scope.scopeLabel}
+                  </p>
+                )}
+                <ul aria-labelledby={scope.scopeLabel === null ? undefined : scopeLabelId} className="flex flex-wrap gap-x-3 gap-y-0.5 text-slate-500">
                   {scope.benchmarks.map((benchmark) => (
                     <li key={benchmark}>{benchmark}</li>
                   ))}

@@ -153,15 +153,33 @@ describe('benchmarksByScope', () => {
     ])
   })
 
-  it('puts unversioned memberships under None, after the versions', () => {
+  it('puts unversioned memberships under Any platform, after the versions', () => {
     const applicability = [
       { target: 'macOS', version: '27.0', benchmarks: [{ name: 'cis_lvl1', severity: null }] },
       { target: null, version: null, benchmarks: [{ name: 'e8_ml3', severity: null }, { name: 'ism_protected', severity: null }] },
     ]
     const scopes = benchmarksByScope(applicability, vocabularyIndex)
-    expect(scopes.map((scope) => scope.scopeLabel)).toEqual(['macOS 27', 'None'])
+    expect(scopes.map((scope) => scope.scopeLabel)).toEqual(['macOS 27', 'Any platform'])
     expect(scopes[1].scopeKey).toBe(NO_VERSION_KEY)
     expect(scopes[1].benchmarks).toEqual(expect.arrayContaining(['Essential Eight ML3', 'ISM PROTECTED']))
+  })
+
+  it('lists a rule whose only scope is any platform with no version without a heading', () => {
+    const applicability = [{ target: null, version: null, benchmarks: [{ name: 'e8_ml3', severity: null }] }]
+    expect(benchmarksByScope(applicability, vocabularyIndex)).toEqual([
+      { scopeKey: NO_VERSION_KEY, scopeLabel: null, benchmarks: ['Essential Eight ML3'] },
+    ])
+  })
+
+  it('labels an unversioned scope with a target as that target with no specific version', () => {
+    const applicability = [
+      { target: 'macOS', version: '27.0', benchmarks: [{ name: 'cis_lvl1', severity: null }] },
+      { target: 'macOS', version: null, benchmarks: [{ name: 'disa_stig', severity: 'high' }] },
+    ]
+    expect(benchmarksByScope(applicability, vocabularyIndex).map((scope) => scope.scopeLabel)).toEqual([
+      'macOS 27',
+      'macOS, no specific version',
+    ])
   })
 
   it('falls back to raw codes without a vocabulary and is empty for a rule in no benchmark', () => {
