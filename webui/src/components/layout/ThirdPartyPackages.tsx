@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { CopyButton } from '../rules/CopyButton'
 import { fetchThirdPartyPackages, type ThirdPartyPackage } from '../../data/thirdPartyLicences'
 
 type LoadState = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; packages: ThirdPartyPackage[] }
@@ -49,9 +50,12 @@ export function ThirdPartyPackages() {
                   {item.repository}
                 </a>
               )}
-              <pre className="max-h-64 overflow-auto rounded bg-slate-50 p-2 font-mono text-xs whitespace-pre-wrap break-words">
-                {item.licenseText}
-              </pre>
+              <div className="relative">
+                <pre className="max-h-64 overflow-auto rounded bg-slate-50 p-2 pr-10 font-mono text-xs whitespace-pre-wrap break-words">
+                  {item.licenseText}
+                </pre>
+                <CopyButton text={item.licenseText} tone="light" />
+              </div>
             </div>
           </details>
         </li>

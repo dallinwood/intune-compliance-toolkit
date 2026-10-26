@@ -4,6 +4,7 @@ import type { HighlightLanguage } from '../../logic/codeLanguage'
 import { highlightedHtml } from '../../logic/highlighting'
 import { displayWithOdv } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { CopyButton } from './CopyButton'
 import { CustomTag } from './CustomTag'
 
 const ODV_PLACEHOLDER = '$ODV'
@@ -17,9 +18,12 @@ const MAX_NOTE_VALUE_LENGTH = 80
 export function CodeBlock({ code, language }: { code: string; language?: HighlightLanguage }) {
   const html = highlightedHtml(code, language)
   return (
-    <pre className="max-w-full overflow-x-auto rounded bg-slate-900 p-2 font-mono text-xs whitespace-pre-wrap text-slate-100 [overflow-wrap:anywhere]">
-      {html === null ? <code>{code}</code> : <code className="hljs" dangerouslySetInnerHTML={{ __html: html }} />}
-    </pre>
+    <div className="relative">
+      <pre className="max-w-full overflow-x-auto rounded bg-slate-900 p-2 pr-10 font-mono text-xs whitespace-pre-wrap text-slate-100 [overflow-wrap:anywhere]">
+        {html === null ? <code>{code}</code> : <code className="hljs" dangerouslySetInnerHTML={{ __html: html }} />}
+      </pre>
+      <CopyButton text={code} />
+    </div>
   )
 }
 

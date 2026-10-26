@@ -264,7 +264,7 @@ test('a one-level section path shows no breadcrumb while a multi-level one does'
   const detail = page.locator('[id^="rule-detail-"]')
   await expect(detail.getByText('The audit log folder')).toBeVisible()
   await expect(detail.getByTestId('rule-breadcrumb')).toHaveCount(0)
-  await mscpRow.getByRole('button').click()
+  await mscpRow.getByRole('button', { name: /Collapse/ }).click()
 
   const ismRow = await searchForSingleRow(page, 'ism-1803', /./)
   await ismRow.getByRole('button').click()
@@ -1452,5 +1452,51 @@ test.describe('code highlighting', () => {
     const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
     const script = remediation.locator('pre', { hasText: 'MicrosoftWindowsPowerShellV2Root' })
     await expect(script.locator('[class*="hljs-"]').first()).toBeVisible()
+  })
+})
+
+test.describe('code block copy button', () => {
+  test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
+
+  test('copies the displayed text, confirms briefly, then reverts', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
+    await row.getByRole('button').click()
+
+    const checkBlock = page.getByTestId('check-target').first().locator('pre').first()
+    await expect(checkBlock).toContainText('objectIsForcedForKey')
+    const displayedText = await checkBlock.textContent()
+    const copyButton = checkBlock.locator('xpath=following-sibling::button')
+    await expect(copyButton).toHaveAccessibleName('Copy code')
+
+    await copyButton.click()
+    await expect(page.getByRole('status').filter({ hasText: 'Copied' })).toHaveCount(1)
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(displayedText.replace(/\n$/, ''))
+    await expect(page.getByRole('status').filter({ hasText: 'Copied' })).toHaveCount(0, { timeout: 4_000 })
+  })
+
+  test('says so when the clipboard API is unavailable', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
+    })
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
+    await row.getByRole('button').click()
+
+    await page.getByRole('button', { name: 'Copy code' }).first().click()
+    await expect(page.getByRole('status').filter({ hasText: 'Copying is not available here' })).toHaveCount(1)
+  })
+
+  test('the licence text in the Sources & licences dialog can be copied', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' }).click()
+    const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
+    const firstPackage = dialog.locator('details').first()
+    await firstPackage.locator('summary').click()
+    await firstPackage.getByRole('button', { name: 'Copy code' }).click()
+    const licenceText = await firstPackage.locator('pre').textContent()
+    // Windows' clipboard hands multi-line text back with CRLF line endings.
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
+    expect(clipboardText.replace(/\r\n/g, '\n')).toBe(licenceText)
   })
 })
