@@ -5,6 +5,7 @@ import { displayWithOdv, odvSubstitutionMode, usableOdvValue, validateOdvValue }
 import type { OverlaidRule } from '../../logic/overlays'
 import { macosReferences } from '../../logic/references'
 import type { RuleRef } from '../../logic/selectionEntry'
+import { showsRemediationSection } from '../../logic/targetDisplay'
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
@@ -88,7 +89,7 @@ function RuleDetailFor({ ruleRef, ruleState, notice }: { ruleRef: RuleRef; ruleS
 function fieldsWithOwnSection(rule: Rule): Set<string> {
   const fields = new Set(['title', 'check', 'applicability'])
   if (rule.odv) fields.add('odv')
-  if (rule.remediation !== null) fields.add('remediation')
+  if (showsRemediationSection(rule)) fields.add('remediation')
   if (macosReferences(rule.references).length > 0) fields.add('references')
   return fields
 }

@@ -90,7 +90,7 @@ async function libraryTargets(sources: ManifestSource[], indexes: RuleIndex[], o
         entry,
         rule: rules[position],
         buildRow: (overlaidEntry) => {
-          buildRuleRows(source, { schema_version: 4, source: source.name, rules: [overlaidEntry] })
+          buildRuleRows(source, { schema_version: 5, source: source.name, rules: [overlaidEntry] })
         },
       },
     ]),

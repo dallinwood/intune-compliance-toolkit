@@ -39,8 +39,11 @@ describe('odvSubstitutionMode', () => {
     return {
       id,
       check: {
-        default: defaultShell === null ? null : checkOf(defaultShell),
-        by_version: Object.fromEntries(Object.entries(byVersionShells).map(([version, shell]) => [version, checkOf(shell)])),
+        macOS: {
+          language: 'bash',
+          default: defaultShell === null ? null : checkOf(defaultShell),
+          by_version: Object.fromEntries(Object.entries(byVersionShells).map(([version, shell]) => [version, checkOf(shell)])),
+        },
       },
       discussion: 'Mentions $ODV here but that is ignored',
     } as unknown as Rule
@@ -73,6 +76,15 @@ describe('odvSubstitutionMode', () => {
 
   it('is text for a non-allowlisted rule even if it looks safe', () => {
     expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', 'bannerText="$ODV"'))).toBe('text')
+  })
+
+  it('ignores $ODV in a check for a target the generator does not write', () => {
+    const rule = ruleWithChecks(allowlistedId, allowlistedShell)
+    const windowsCheck = { language: 'powershell', default: { shell: 'Write-Output $ODV', result: null, additional_info: null }, by_version: {} }
+    const withWindows = { ...rule, check: { ...rule.check, Windows: windowsCheck } } as unknown as Rule
+    expect(odvSubstitutionMode(withWindows)).toBe('variable')
+    const windowsOnly = { ...rule, check: { Windows: windowsCheck } } as unknown as Rule
+    expect(odvSubstitutionMode(windowsOnly)).toBe('none')
   })
 
   it('is text for a non-allowlisted rule that reuses the allowlisted shell text', () => {

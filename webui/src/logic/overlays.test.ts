@@ -13,7 +13,7 @@ import {
   parseOverlay,
   type Overlay,
 } from './overlays'
-import { inlineRule } from './testRuleFixtures'
+import { inlineRule, macosCheck, ruleCheck } from './testRuleFixtures'
 
 interface MergeCase {
   name: string
@@ -70,15 +70,15 @@ describe('shared index cases', () => {
 
 it('the merged result shares no objects with its inputs', () => {
   const rule = { id: 'x.rule', tags: ['a'], references: { nist: ['AC-1'] } }
-  const fields = { tags: ['b'], check: { $replace: { by_version: {} } } }
+  const fields = { tags: ['b'], check: { $replace: { Windows: { by_version: {} } } } }
 
   const merged = applyOverlayFields(rule, fields) as Record<string, any>
   merged.tags.push('mutated')
   merged.references.nist.push('mutated')
-  merged.check.by_version.mutated = true
+  merged.check.Windows.by_version.mutated = true
 
   expect(rule).toEqual({ id: 'x.rule', tags: ['a'], references: { nist: ['AC-1'] } })
-  expect(fields.check).toEqual({ $replace: { by_version: {} } })
+  expect(fields.check).toEqual({ $replace: { Windows: { by_version: {} } } })
 })
 
 const ISM_1622 = 'asd_ism.ism-1622'
@@ -142,7 +142,7 @@ describe('parseOverlay', () => {
   })
 
   it('accepts null where a field may be null and an object where it may be one', () => {
-    const fields = { check: null, odv: { $replace: null }, remediation: { $replace: { default: { shell: null, additional_info: null } } }, architecture: null }
+    const fields = { check: null, odv: { $replace: null }, remediation: { $replace: { Windows: { steps: [], payloads: [] } } }, architecture: null }
     expect(parseOverlay(overlayFile({ fields }), 'custom.json')).toHaveProperty('overlay')
   })
 })
@@ -220,17 +220,45 @@ describe('applyOverlays', () => {
 
   it('fills a null check from a complete partial object', () => {
     const entry = { shell: 'echo ok', result: null, additional_info: null }
-    const result = applyOverlays(ism1622Rule(), [overlay('check', { check: { default: entry, by_version: {} } })], CURRENT_RELEASE)
+    const windowsCheck = { language: 'powershell', default: entry, by_version: {} }
+    const result = applyOverlays(ism1622Rule(), [overlay('check', { check: { Windows: windowsCheck } })], CURRENT_RELEASE)
 
     expect(result.skipped).toEqual([])
-    expect(result.rule.check).toEqual({ default: entry, by_version: {} })
+    expect(result.rule.check).toEqual({ Windows: windowsCheck })
+  })
+
+  it('adds a check for another target beside the macOS one', () => {
+    const macosOnly = ism1622Rule({ check: macosCheck(ruleCheck('echo mac', null)) })
+    const windowsCheck = { language: 'powershell', default: ruleCheck('Get-Thing', null), by_version: {} }
+    const result = applyOverlays(macosOnly, [overlay('windows', { check: { Windows: windowsCheck } })], CURRENT_RELEASE)
+
+    expect(result.skipped).toEqual([])
+    expect(result.rule.check).toEqual({ ...macosOnly.check, Windows: windowsCheck })
+  })
+
+  it('appends a remediation step to a null remediation and to an existing target', () => {
+    const step = { name: 'Script', language: 'powershell', shell: 'Remove-Thing', additional_info: null, versions: null }
+    const fromNull = applyOverlays(ism1622Rule(), [overlay('step', { remediation: { Windows: { steps: [step], payloads: [] } } })], CURRENT_RELEASE)
+    expect(fromNull.skipped).toEqual([])
+    expect(fromNull.rule.remediation).toEqual({ Windows: { steps: [step], payloads: [] } })
+
+    const appended = applyOverlays(fromNull.rule, [overlay('second', { remediation: { Windows: { steps: [{ ...step, name: 'Second' }] } } })], CURRENT_RELEASE)
+    expect(appended.skipped).toEqual([])
+    expect(appended.rule.remediation?.Windows.steps.map((existing) => existing.name)).toEqual(['Script', 'Second'])
   })
 
   const malformedResults: [string, Record<string, unknown>, Partial<Rule>][] = [
     ['an applicability entry without benchmarks', { applicability: [{ target: null, version: null }] }, {}],
-    ['a remediation without its required keys', { remediation: { $replace: {} } }, {}],
-    ['a check without by_version', { check: { $replace: { default: { shell: 'echo', result: null, additional_info: null } } } }, {}],
-    ['a by_version check that is null', { check: { by_version: { '14.0': null } } }, { check: { default: null, by_version: {} } }],
+    ['a remediation target without its required keys', { remediation: { $replace: { Windows: {} } } }, {}],
+    ['a remediation that is not keyed by target', { remediation: { $replace: { steps: [], payloads: [] } } }, {}],
+    ['a remediation step with an unknown language', { remediation: { Windows: { steps: [{ name: null, language: 'cmd', shell: 'x', additional_info: null, versions: null }], payloads: [] } } }, {}],
+    ['a remediation step with an empty versions list', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell: 'x', additional_info: null, versions: [] }], payloads: [] } } }, {}],
+    ['a payload whose data is not an object or a list', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null, data: 'x' }] } } }, {}],
+    ['a check without by_version', { check: { $replace: { Windows: { language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } } } } }, {}],
+    ['a check without a language', { check: { $replace: { Windows: { default: null, by_version: {} } } } }, {}],
+    ['a check in the v4 shape', { check: { $replace: { default: { shell: 'echo', result: null, additional_info: null }, by_version: {} } } }, {}],
+    ['a check under an empty target name', { check: { $replace: { '': { language: 'bash', default: null, by_version: {} } } } }, {}],
+    ['a by_version check that is null', { check: { macOS: { by_version: { '14.0': null } } } }, { check: macosCheck(null) }],
     ['a tag that is not a string', { tags: [3] }, {}],
     ['an incomplete odv', { odv: { recommended: 5 } }, {}],
     ['an assessment with an unknown status', { assessment: { status: 'sometimes' } }, {}],
@@ -258,7 +286,7 @@ describe('applyOverlays', () => {
   })
 
   it('adding a check leaves the assessment alone', () => {
-    const check = { default: { shell: 'echo ok', result: null, additional_info: null }, by_version: {} }
+    const check = { Windows: { language: 'powershell', default: { shell: 'echo ok', result: null, additional_info: null }, by_version: {} } }
     const rule = ism1622Rule({ assessment: { status: 'manual', manual_reason: 'no_check' } })
 
     const result = applyOverlays(rule, [overlay('check', { check: { $replace: check } })], CURRENT_RELEASE)
@@ -309,7 +337,7 @@ describe('applyOverlaysToIndexEntry', () => {
   })
 })
 
-describe('overlayable fields follow the v4 schemas', () => {
+describe('overlayable fields follow the v5 schemas', () => {
   const schemaProperties = (name: string, pick: (schema: any) => Record<string, unknown>) =>
     Object.keys(pick(JSON.parse(readFileSync(new URL(`../../../baselines/_${name}.schema.json`, import.meta.url), 'utf8')))).sort()
 

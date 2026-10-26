@@ -42,10 +42,16 @@ export interface RuleCheck {
   additional_info: string | null
 }
 
-export interface RuleChecks {
+export type ScriptLanguage = 'bash' | 'powershell' | 'zsh' | 'python'
+
+export interface TargetCheck {
+  language: ScriptLanguage
   default: RuleCheck | null
   by_version: Record<string, RuleCheck>
 }
+
+// Keyed by target name (macOS, Windows, ...).
+export type RuleChecks = Record<string, TargetCheck>
 
 export type OdvDatatype = 'number' | 'string' | 'enum' | 'regex'
 
@@ -64,18 +70,28 @@ export interface Odv {
   by_benchmark: Record<string, number | string>
 }
 
-export interface RemediationEntry {
+// versions: null applies to every version of the target.
+export interface RemediationStep {
+  name: string | null
+  language: ScriptLanguage
   shell: string | null
   additional_info: string | null
+  versions: string[] | null
 }
 
-export interface Remediation {
-  default: RemediationEntry
-  by_version: Record<string, RemediationEntry>
-  mobileconfig_info: Record<string, unknown> | unknown[] | null
-  mobileconfig_by_version: Record<string, Record<string, unknown> | unknown[]>
-  ddm_info: Record<string, unknown> | unknown[] | null
+export interface RemediationPayload {
+  kind: string
+  versions: string[] | null
+  data: Record<string, unknown> | unknown[]
 }
+
+export interface TargetRemediation {
+  steps: RemediationStep[]
+  payloads: RemediationPayload[]
+}
+
+// Keyed by target name (macOS, Windows, ...).
+export type Remediation = Record<string, TargetRemediation>
 
 export interface RuleSource {
   name: string
@@ -90,7 +106,7 @@ export interface RuleSource {
 }
 
 export interface Rule {
-  schema_version: 4
+  schema_version: 5
   id: string
   title: string
   discussion: string
@@ -121,7 +137,7 @@ export interface IndexEntry {
 }
 
 export interface RuleIndex {
-  schema_version: 4
+  schema_version: 5
   source: string
   rules: IndexEntry[]
 }
@@ -139,6 +155,6 @@ export interface ManifestSource {
 }
 
 export interface Manifest {
-  schema_version: 4
+  schema_version: 5
   sources: ManifestSource[]
 }

@@ -17,7 +17,7 @@ const SOURCE: ManifestSource = {
 }
 
 const INDEX: RuleIndex = {
-  schema_version: 4,
+  schema_version: 5,
   source: 'mscp',
   rules: [
     {

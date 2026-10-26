@@ -62,7 +62,7 @@ const RESERVED_KEYS: ReadonlySet<string> = new Set(['__proto__', 'constructor', 
 
 type FieldKind = 'string' | 'list' | 'object' | 'object-or-null' | 'string-or-null'
 
-// The v4 rule fields an overlay may set, with the value kind the rule schema
+// The v5 rule fields an overlay may set, with the value kind the rule schema
 // allows. The shape of the merged result is checked in overlayShape.ts; full
 // schema validation is CI's job.
 export const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {

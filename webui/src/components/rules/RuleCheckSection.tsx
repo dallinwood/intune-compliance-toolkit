@@ -3,11 +3,12 @@ import { GENERATED_TARGET } from '../../logic/checkPlan'
 import { containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { targetHeading } from '../../logic/targetDisplay'
 import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import type { Rule, RuleCheck } from '../../types/library'
-import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
+import type { Rule, RuleCheck, TargetCheck } from '../../types/library'
+import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 
 function CheckEntry({ label, check, odvValue }: { label: string; check: RuleCheck; odvValue: OrgDefinedValue | null }) {
@@ -29,11 +30,32 @@ function CheckEntry({ label, check, odvValue }: { label: string; check: RuleChec
   )
 }
 
+function TargetCheckBlock({ target, targetCheck, odvValue }: { target: string; targetCheck: TargetCheck; odvValue: OrgDefinedValue | null }) {
+  const index = useVocabularyIndex()
+  const versionChecks = Object.entries(targetCheck.by_version).sort(([left], [right]) => compareVersionsDescending(left, right))
+
+  return (
+    <div className="space-y-2" data-testid="check-target">
+      <TargetHeading>{targetHeading(index, target, [targetCheck.language])}</TargetHeading>
+      {targetCheck.default ? (
+        <CheckEntry
+          label={versionChecks.length > 0 ? 'Default check (versions without their own)' : 'Check (all listed versions)'}
+          check={targetCheck.default}
+          odvValue={odvValue}
+        />
+      ) : (
+        <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
+      )}
+      {versionChecks.map(([version, check]) => (
+        <CheckEntry key={version} label={termLabel(index, 'versions', versionKey(target, version))} check={check} odvValue={odvValue} />
+      ))}
+    </div>
+  )
+}
+
 export function RuleCheckSection({ rule, odvValue, custom = false }: { rule: Rule; odvValue: OrgDefinedValue | null; custom?: boolean }) {
   const index = useVocabularyIndex()
-  const versionChecks = Object.entries(rule.check?.by_version ?? {}).sort(([left], [right]) =>
-    compareVersionsDescending(left, right),
-  )
+  const targetChecks = Object.entries(rule.check ?? {})
   // An ISM control has no macOS entry at all, so only an mSCP rule that no
   // release lists is missing a version.
   const hasNoMacosVersion =
@@ -53,25 +75,14 @@ export function RuleCheckSection({ rule, odvValue, custom = false }: { rule: Rul
           Applies to {rule.architecture} Macs only; other Macs report a pass.
         </p>
       )}
-      {!rule.check ? (
+      {targetChecks.length === 0 ? (
         <p className="text-xs text-slate-500">
           No automated check. {assessmentLabel(rule.assessment, index).description}
         </p>
       ) : (
-        <>
-          {rule.check.default ? (
-            <CheckEntry
-              label={versionChecks.length > 0 ? 'Default check (versions without their own)' : 'Check (all listed versions)'}
-              check={rule.check.default}
-              odvValue={odvValue}
-            />
-          ) : (
-            <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
-          )}
-          {versionChecks.map(([version, check]) => (
-            <CheckEntry key={version} label={termLabel(index, 'versions', versionKey(GENERATED_TARGET, version))} check={check} odvValue={odvValue} />
-          ))}
-        </>
+        targetChecks.map(([target, targetCheck]) => (
+          <TargetCheckBlock key={target} target={target} targetCheck={targetCheck} odvValue={odvValue} />
+        ))
       )}
     </div>
   )

@@ -41,3 +41,8 @@ export function SectionHeading({ children, custom = false }: { children: string;
     </div>
   )
 }
+
+// Heads one target's block inside the Check or Remediation section.
+export function TargetHeading({ children }: { children: string }) {
+  return <p className="text-xs font-semibold text-slate-700">{children}</p>
+}

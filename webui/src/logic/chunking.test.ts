@@ -5,7 +5,7 @@ import { serializeRulesJson } from './bundleFiles'
 import { classifyRule, packChunks, type ClassificationResult, type GeneratableRule } from './chunking'
 import { generateBashScript } from './scriptGen/bash'
 import { createSelectionEntry, type OrgDefinedValue, type SelectionEntry } from './selectionEntry'
-import { inlineRule, numberOdv, ruleCheck, type InlineRuleOptions } from './testRuleFixtures'
+import { inlineRule, macosCheck, numberOdv, ruleCheck, type InlineRuleOptions } from './testRuleFixtures'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
 const COVERED_VERSIONS = ['27.0', '26.0', '15.0']
@@ -36,7 +36,7 @@ function odvRule(odv: Odv, title = 'Require a Minimum Password Length of $ODV Ch
     overrides: {
       title,
       odv,
-      check: { default: ruleCheck('echo $ODV', { type: 'integer', value: '$ODV' }), by_version: {} },
+      check: macosCheck(ruleCheck('echo $ODV', { type: 'integer', value: '$ODV' })),
     },
   })
 }
@@ -50,7 +50,7 @@ function generatable(options: InlineRuleOptions = {}): GeneratableRule {
 }
 
 function generatableWithShell(upstreamId: string, shell: string): GeneratableRule {
-  return generatable({ upstreamId, overrides: { check: { default: ruleCheck(shell, { type: 'string', value: 'PASS' }), by_version: {} } } })
+  return generatable({ upstreamId, overrides: { check: macosCheck(ruleCheck(shell, { type: 'string', value: 'PASS' })) } })
 }
 
 function numbered(count: number, section = 'os'): GeneratableRule[] {
@@ -149,7 +149,7 @@ describe('classifyRule', () => {
   })
 
   it('classifies an automated rule the planner cannot script as manual, with the planner problem as the reason', () => {
-    const rule = inlineRule({ overrides: { check: { default: ruleCheck(null, null), by_version: {} } } })
+    const rule = inlineRule({ overrides: { check: macosCheck(ruleCheck(null, null)) } })
 
     expect(classify(rule)).toEqual({
       kind: 'manual',

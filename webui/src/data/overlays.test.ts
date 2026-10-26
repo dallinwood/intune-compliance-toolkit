@@ -113,9 +113,9 @@ function ism1622Rule(overrides: Partial<Rule> = {}): Rule {
 // generation once merged.
 const CRASHING_FIELDS: Record<string, Record<string, unknown>> = {
   'applicability-without-benchmarks.json': { applicability: [{ target: null, version: null }] },
-  'empty-remediation.json': { remediation: { $replace: {} } },
-  'check-without-by-version.json': { check: { $replace: { default: { shell: 'echo', result: null, additional_info: null } } } },
-  'null-by-version-check.json': { check: { by_version: { '14.0': null } } },
+  'empty-remediation.json': { remediation: { $replace: { Windows: {} } } },
+  'check-without-by-version.json': { check: { $replace: { Windows: { language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } } } } },
+  'null-by-version-check.json': { check: { macOS: { by_version: { '14.0': null } } } },
 }
 
 function loadedFrom(files: Record<string, Record<string, unknown>>) {
@@ -137,9 +137,9 @@ describe('overlaysFittingLibrary', () => {
     const { buildRuleRows } = await import('./ruleRows')
     const target = {
       entry: ENTRY,
-      rule: ism1622Rule({ check: { default: null, by_version: {} } }),
+      rule: ism1622Rule({ check: { macOS: { language: 'bash', default: null, by_version: {} } } }),
       buildRow: (entry: IndexEntry) => {
-        buildRuleRows(ISM_SOURCE, { schema_version: 4, source: 'asd_ism', rules: [entry] })
+        buildRuleRows(ISM_SOURCE, { schema_version: 5, source: 'asd_ism', rules: [entry] })
       },
     }
 
@@ -195,15 +195,15 @@ describe('overlaysFittingLibrary', () => {
 
     const result = overlaysFittingLibrary(
       loadedFrom({
-        'a-check.json': { check: { default: { shell: 'echo', result: null, additional_info: null }, by_version: {} } },
-        'b-extend-check.json': { check: { by_version: { '15.0': { shell: 'echo 15', result: null, additional_info: null } } } },
-        'c-break-check.json': { check: { by_version: { '16.0': { shell: 'echo 16' } } } },
+        'a-check.json': { check: { Windows: { language: 'powershell', default: { shell: 'echo', result: null, additional_info: null }, by_version: {} } } },
+        'b-extend-check.json': { check: { Windows: { by_version: { '15.0': { shell: 'echo 15', result: null, additional_info: null } } } } },
+        'c-break-check.json': { check: { Windows: { by_version: { '16.0': { shell: 'echo 16' } } } } },
       }),
       new Map([[ISM_1622, target]]),
     )
 
     expect(result.overlays.map((overlay) => overlay.id)).toEqual(['a-check', 'b-extend-check'])
-    expect(result.warnings).toEqual([expect.stringMatching(/^c-break-check\.json: asd_ism\.ism-1622: check\.by_version\.16\.0 is missing result/)])
+    expect(result.warnings).toEqual([expect.stringMatching(/^c-break-check\.json: asd_ism\.ism-1622: check\.Windows\.by_version\.16\.0 is missing result/)])
   })
 })
 
@@ -219,8 +219,8 @@ describe('loadLibrary with crashing overlays', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string) => {
-        if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 4, sources: [ISM_SOURCE] })
-        if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 4, source: 'asd_ism', rules: [ENTRY] })
+        if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 5, sources: [ISM_SOURCE] })
+        if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 5, source: 'asd_ism', rules: [ENTRY] })
         if (url.endsWith('/baselines/asd_ism/rules/ism-1622.json')) return jsonResponse(rule)
         if (url.endsWith('/overlays/_manifest.json')) return jsonResponse({ files: Object.keys(overlayFiles).sort() })
         const fileName = url.split('/').pop() ?? ''

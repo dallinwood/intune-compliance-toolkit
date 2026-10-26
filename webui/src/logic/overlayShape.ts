@@ -15,7 +15,6 @@ function isObject(value: unknown): value is JsonObject {
 const isString = (value: unknown) => typeof value === 'string'
 const isStringOrNull = (value: unknown) => value === null || typeof value === 'string'
 const isNumberOrString = (value: unknown) => typeof value === 'number' || typeof value === 'string'
-const isObjectArrayOrNull = (value: unknown) => value === null || typeof value === 'object'
 
 function expect(isValid: boolean, path: string, description: string): string | null {
   return isValid ? null : `${path} must be ${description}`
@@ -98,7 +97,29 @@ const checkResult = objectWith({
   value: (value, path) => expect(isNumberOrString(value), path, 'a number or a string'),
 })
 const checkEntry = objectWith({ shell: textOrNull, result: orNull(checkResult), additional_info: textOrNull })
-const check = orNull(objectWith({ default: orNull(checkEntry), by_version: mapOf(checkEntry) }))
+const language = oneOf('bash', 'powershell', 'zsh', 'python')
+const versions: Check = (value, path) =>
+  value === null
+    ? null
+    : firstProblem(
+        () => listOf(text)(value, path),
+        () => expect((value as unknown[]).length > 0, path, 'a non-empty list or null'),
+      )
+
+// check and remediation are keyed by target name, which the details show as
+// a heading, so an empty or multi-line name is rejected as the schema does.
+function targetMapOf(check: Check): Check {
+  return (value, path) =>
+    firstProblem(
+      () => mapOf(check)(value, path),
+      () => {
+        const badName = Object.keys(value as JsonObject).find((name) => name === '' || name.includes('\n'))
+        return badName === undefined ? null : `${path} has a target name that is empty or spans lines`
+      },
+    )
+}
+
+const check = orNull(targetMapOf(objectWith({ language, default: orNull(checkEntry), by_version: mapOf(checkEntry) })))
 
 // Every key is optional, and the schema closes the object, so an unknown
 // key is rejected; logic/odv.ts reads each one with these types.
@@ -120,8 +141,6 @@ const odvValidation: Check = (value, path) => {
   return null
 }
 
-// remediation payloads (mobileconfig_info, mobileconfig_by_version, ddm_info)
-// are only ever shown through JSON.stringify, so any JSON content is safe.
 const odv = orNull(
   objectWith({
     datatype: oneOf('number', 'string', 'enum', 'regex'),
@@ -132,17 +151,15 @@ const odv = orNull(
   }),
 )
 
-const remediationEntry = objectWith({ shell: textOrNull, additional_info: textOrNull })
-const payloads: Check = (value, path) => expect(isObjectArrayOrNull(value), path, 'an object, a list or null')
-const remediation = orNull(
-  objectWith({
-    default: remediationEntry,
-    by_version: mapOf(remediationEntry),
-    mobileconfig_info: payloads,
-    mobileconfig_by_version: mapOf((value, path) => expect(value !== null && typeof value === 'object', path, 'an object or a list')),
-    ddm_info: payloads,
-  }),
-)
+const remediationStep = objectWith({ name: textOrNull, language, shell: textOrNull, additional_info: textOrNull, versions })
+// Payload data is only ever shown through JSON.stringify, so any JSON object
+// or list is safe.
+const remediationPayload = objectWith({
+  kind: text,
+  versions,
+  data: (value, path) => expect(value !== null && typeof value === 'object', path, 'an object or a list'),
+})
+const remediation = orNull(targetMapOf(objectWith({ steps: listOf(remediationStep), payloads: listOf(remediationPayload) })))
 
 const indexFields: Record<string, Check> = {
   title: text,

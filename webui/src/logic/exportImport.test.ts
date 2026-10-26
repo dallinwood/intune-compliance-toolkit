@@ -10,6 +10,7 @@ import {
 } from './exportImport'
 import { ODV_VARIABLE_ALLOWLIST } from './odv'
 import { createSelectionEntry, refKey, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
+import { macosCheck } from './testRuleFixtures'
 
 const REF_A: RuleRef = { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' }
 const REF_B: RuleRef = { id: 'mscp.os_firewall_enable', path: 'mscp/rules/os_firewall_enable.json' }
@@ -137,7 +138,7 @@ describe('sanitizeImportedSelections', () => {
     return {
       id,
       odv,
-      check: { default: { shell: checkShell, result: null, additional_info: null }, by_version: {} },
+      check: macosCheck({ shell: checkShell, result: null, additional_info: null }),
     } as unknown as Rule
   }
 

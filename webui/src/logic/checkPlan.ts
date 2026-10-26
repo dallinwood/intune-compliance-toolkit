@@ -1,4 +1,4 @@
-import type { Architecture, CheckResult, Rule, RuleCheck } from '../types/library'
+import type { Architecture, CheckResult, Rule, RuleCheck, TargetCheck } from '../types/library'
 import { versionsForTarget } from './applicability'
 import type { IntuneDataType } from './operatorMap'
 import {
@@ -50,6 +50,12 @@ export interface RuleCheckPlan {
 // any other target are ignored here.
 export const GENERATED_TARGET = 'macOS'
 
+// The only check the generator reads; checks for other targets are shown in
+// the details but never scripted.
+export function generatedTargetCheck(rule: Pick<Rule, 'check'>): TargetCheck | null {
+  return rule.check?.[GENERATED_TARGET] ?? null
+}
+
 export type RuleCheckPlanResult = RuleCheckPlan | { problem: string }
 
 const NON_SETTING_NAME_CHARACTER = /[^A-Za-z0-9_]/g
@@ -99,7 +105,8 @@ function sameExpected(left: ExpectedResult, right: ExpectedResult): boolean {
 }
 
 function ruleUsesOdv(rule: Rule): boolean {
-  const checks = [rule.check?.default, ...Object.values(rule.check?.by_version ?? {})]
+  const targetCheck = generatedTargetCheck(rule)
+  const checks = [targetCheck?.default, ...Object.values(targetCheck?.by_version ?? {})]
   return checks.some(
     (check) =>
       (check?.shell != null && containsOdvPlaceholder(check.shell)) ||
@@ -135,7 +142,8 @@ interface VersionCheck {
 }
 
 function resolveVersionCheck(rule: Rule, version: string, odv: ResolvedOdv): VersionCheck | { problem: string } {
-  const check: RuleCheck | null = rule.check?.by_version[version] ?? rule.check?.default ?? null
+  const targetCheck = generatedTargetCheck(rule)
+  const check: RuleCheck | null = targetCheck?.by_version[version] ?? targetCheck?.default ?? null
   if (!check?.shell) return { problem: `mSCP has no check for macOS ${version}.` }
   if (!check.result) return { problem: `mSCP gives no expected result for macOS ${version}.` }
 

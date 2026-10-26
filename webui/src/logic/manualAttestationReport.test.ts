@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ManifestSource, ManualReason } from '../types/library'
 import { additionalInfoFor, buildManualAttestationMarkdown, manualReasonText } from './manualAttestationReport'
-import { inlineRule, ruleCheck } from './testRuleFixtures'
+import { inlineRule, macosCheck, ruleCheck } from './testRuleFixtures'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
 const vocabularyIndex = committedVocabularyIndex()
@@ -38,7 +38,7 @@ function manualRule(manualReason: ManualReason | null, additionalInfo: string | 
   return inlineRule({
     overrides: {
       assessment: { status: 'manual', manual_reason: manualReason },
-      check: { default: ruleCheck(null, null, additionalInfo), by_version: {} },
+      check: macosCheck(ruleCheck(null, null, additionalInfo)),
     },
   })
 }
@@ -74,6 +74,16 @@ describe('additionalInfoFor', () => {
 
   it('is the check additional_info, trimmed', () => {
     expect(additionalInfoFor(manualRule('manual', 'Ask the ISSO.\n\nThen record it.\n'), null)).toBe('Ask the ISSO.\n\nThen record it.')
+  })
+
+  it('reads only the macOS check, since the report ships with the macOS bundle', () => {
+    const rule = manualRule('manual')
+    rule.check = {
+      Windows: { language: 'powershell', default: ruleCheck(null, null, 'Ask the Windows team.'), by_version: {} },
+    }
+    expect(additionalInfoFor(rule, null)).toBeNull()
+    rule.check = { ...macosCheck(ruleCheck(null, null, 'Ask the ISSO.')), ...rule.check }
+    expect(additionalInfoFor(rule, null)).toBe('Ask the ISSO.')
   })
 
   it('shows the effective value instead of $ODV', () => {

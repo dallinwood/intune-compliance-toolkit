@@ -32,6 +32,10 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   await expect(page.getByText('objectIsForcedForKey')).toBeVisible()
   // Reference keys are shown raw; friendly names only come from the vocabulary file.
   const detail = page.locator('[id^="rule-detail-"]')
+  // Checks and fixes are listed per target, headed by target and language.
+  await expect(detail.getByTestId('check-target').getByText('macOS · Bash', { exact: true })).toBeVisible()
+  // Its remediation is a profile payload only, so no script language is named.
+  await expect(detail.getByTestId('remediation-target').getByText('macOS', { exact: true })).toBeVisible()
   await expect(detail.getByText('macos_15', { exact: true }).first()).toBeVisible()
   // The Benchmarks section labels versions through the vocabulary, so only the reference keys are checked.
   await expect(detail.locator('li > span', { hasText: /^macOS 15$/ })).toHaveCount(0)

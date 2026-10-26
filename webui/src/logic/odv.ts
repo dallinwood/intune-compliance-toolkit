@@ -1,4 +1,5 @@
 import type { Odv, Rule } from '../types/library'
+import { generatedTargetCheck } from './checkPlan'
 import type { OrgDefinedValue } from './selectionEntry'
 import { termLabel, type VocabularyIndex } from './vocabulary'
 
@@ -55,7 +56,8 @@ export const ODV_VARIABLE_ALLOWLIST: Readonly<Record<string, string>> = {
 }
 
 export function odvSubstitutionMode(rule: Rule): OdvSubstitutionMode {
-  const shellTexts = [rule.check?.default?.shell, ...Object.values(rule.check?.by_version ?? {}).map((check) => check.shell)]
+  const targetCheck = generatedTargetCheck(rule)
+  const shellTexts = [targetCheck?.default?.shell, ...Object.values(targetCheck?.by_version ?? {}).map((check) => check.shell)]
   const shellsWithOdv = shellTexts.filter((shellText): shellText is string => !!shellText?.includes(ODV_PLACEHOLDER))
   if (shellsWithOdv.length === 0) return 'none'
 

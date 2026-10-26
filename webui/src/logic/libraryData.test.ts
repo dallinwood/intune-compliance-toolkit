@@ -104,7 +104,7 @@ describe('committed library data', () => {
         const rulesById = new Map(rulesWithOdv.map((rule) => [rule.source.upstream_rule_id, rule]))
         const actualShells = Object.fromEntries(
           Object.keys(PINNED_CHECK_SHELLS).map((upstreamId) => {
-            const check = rulesById.get(upstreamId)?.check
+            const check = rulesById.get(upstreamId)?.check?.macOS
             const shells: Record<string, string | null | undefined> = { default: check?.default?.shell }
             for (const [version, versionCheck] of Object.entries(check?.by_version ?? {})) shells[version] = versionCheck.shell
             return [upstreamId, shells]

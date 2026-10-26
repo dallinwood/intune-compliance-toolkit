@@ -1,25 +1,18 @@
-import { versionKey } from '../../logic/applicability'
-import { GENERATED_TARGET } from '../../logic/checkPlan'
 import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
-import { compareVersionsDescending } from '../../logic/versions'
-import { termLabel } from '../../logic/vocabulary'
+import { remediationPayloadLabel, remediationStepLabel, showsRemediationSection, targetHeading } from '../../logic/targetDisplay'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import type { RemediationEntry, Rule } from '../../types/library'
-import { CodeBlock, OdvNote, SectionHeading } from './CodeBlock'
+import type { RemediationStep, Rule, TargetRemediation } from '../../types/library'
+import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 
-function hasContent(entry: RemediationEntry): boolean {
-  return entry.shell !== null || entry.additional_info !== null
-}
-
-function FixEntry({ label, entry, odvValue }: { label: string; entry: RemediationEntry; odvValue: OrgDefinedValue | null }) {
+function StepEntry({ label, step, odvValue }: { label: string; step: RemediationStep; odvValue: OrgDefinedValue | null }) {
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
-      {entry.shell && <CodeBlock code={entry.shell} />}
-      {entry.shell && containsOdvPlaceholder(entry.shell) && <OdvNote odvValue={odvValue} />}
-      {entry.additional_info && <DiscussionText text={entry.additional_info} format="asciidoc" odvValue={odvValue} />}
+      {step.shell && <CodeBlock code={step.shell} />}
+      {step.shell && containsOdvPlaceholder(step.shell) && <OdvNote odvValue={odvValue} />}
+      {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValue={odvValue} />}
     </div>
   )
 }
@@ -37,6 +30,38 @@ function JsonEntry({ label, value, odvValue }: { label: string; value: unknown; 
   )
 }
 
+function TargetRemediationBlock({
+  target,
+  targetRemediation,
+  odvValue,
+}: {
+  target: string
+  targetRemediation: TargetRemediation
+  odvValue: OrgDefinedValue | null
+}) {
+  const index = useVocabularyIndex()
+  const { steps, payloads } = targetRemediation
+  const languages = steps.map((step) => step.language)
+
+  return (
+    <div className="space-y-2" data-testid="remediation-target">
+      <TargetHeading>{targetHeading(index, target, languages)}</TargetHeading>
+      {steps.length === 0 && payloads.length === 0 && <p className="text-xs text-slate-500">No remediation provided.</p>}
+      {steps.map((step, position) => (
+        <StepEntry key={`step-${position}`} label={remediationStepLabel(index, target, step)} step={step} odvValue={odvValue} />
+      ))}
+      {payloads.map((payload, position) => (
+        <JsonEntry
+          key={`payload-${position}`}
+          label={remediationPayloadLabel(index, target, payload)}
+          value={payload.data}
+          odvValue={odvValue}
+        />
+      ))}
+    </div>
+  )
+}
+
 export function RuleRemediationSection({
   rule,
   odvValue,
@@ -46,49 +71,16 @@ export function RuleRemediationSection({
   odvValue: OrgDefinedValue | null
   custom?: boolean
 }) {
-  const index = useVocabularyIndex()
-  const versionLabel = (version: string) => termLabel(index, 'versions', versionKey(GENERATED_TARGET, version))
-  const remediation = rule.remediation
-  if (remediation === null) return null
-
-  const versionFixes = Object.entries(remediation.by_version)
-    .filter(([, entry]) => hasContent(entry))
-    .sort(([left], [right]) => compareVersionsDescending(left, right))
-  const versionProfiles = Object.entries(remediation.mobileconfig_by_version).sort(([left], [right]) =>
-    compareVersionsDescending(left, right),
-  )
-  const hasAnything =
-    hasContent(remediation.default) ||
-    versionFixes.length > 0 ||
-    remediation.mobileconfig_info !== null ||
-    versionProfiles.length > 0 ||
-    remediation.ddm_info !== null
+  if (!showsRemediationSection(rule)) return null
+  const targetRemediations = Object.entries(rule.remediation ?? {})
 
   return (
     <div className="space-y-2">
       <SectionHeading custom={custom}>Remediation</SectionHeading>
-      {!hasAnything && <p className="text-xs text-slate-500">No remediation provided.</p>}
-      {hasContent(remediation.default) && (
-        <FixEntry
-          label={versionFixes.length > 0 ? 'Fix (versions without their own)' : 'Fix'}
-          entry={remediation.default}
-          odvValue={odvValue}
-        />
-      )}
-      {versionFixes.map(([version, entry]) => (
-        <FixEntry key={version} label={`Fix for ${versionLabel(version)}`} entry={entry} odvValue={odvValue} />
+      {targetRemediations.length === 0 && <p className="text-xs text-slate-500">No remediation provided.</p>}
+      {targetRemediations.map(([target, targetRemediation]) => (
+        <TargetRemediationBlock key={target} target={target} targetRemediation={targetRemediation} odvValue={odvValue} />
       ))}
-      {remediation.mobileconfig_info !== null && (
-        <JsonEntry
-          label={versionProfiles.length > 0 ? 'Configuration profile payloads (versions without their own)' : 'Configuration profile payloads'}
-          value={remediation.mobileconfig_info}
-          odvValue={odvValue}
-        />
-      )}
-      {versionProfiles.map(([version, payloads]) => (
-        <JsonEntry key={version} label={`Configuration profile payloads for ${versionLabel(version)}`} value={payloads} odvValue={odvValue} />
-      ))}
-      {remediation.ddm_info !== null && <JsonEntry label="Declarative Device Management" value={remediation.ddm_info} odvValue={odvValue} />}
     </div>
   )
 }

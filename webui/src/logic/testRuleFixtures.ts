@@ -1,9 +1,14 @@
 // Shared by the generator tests only; nothing in the app imports it.
-import type { Applicability, BenchmarkMembership, CheckResult, Odv, Rule, RuleCheck } from '../types/library'
+import type { Applicability, BenchmarkMembership, CheckResult, Odv, Rule, RuleCheck, RuleChecks } from '../types/library'
 import { parseVersionKey } from './applicability'
 
 export function ruleCheck(shell: string | null, result: CheckResult | null, additionalInfo: string | null = null): RuleCheck {
   return { shell, result, additional_info: additionalInfo }
+}
+
+// Test shorthand for the only check shape mSCP produces: a bash check for macOS.
+export function macosCheck(defaultCheck: RuleCheck | null, byVersion: Record<string, RuleCheck> = {}): RuleChecks {
+  return { macOS: { language: 'bash', default: defaultCheck, by_version: byVersion } }
 }
 
 // Test shorthand: { 'macOS 27.0': [...] } as the entry list the library stores.
@@ -25,7 +30,7 @@ export function inlineRule({
   overrides = {},
 }: InlineRuleOptions = {}): Rule {
   return {
-    schema_version: 4,
+    schema_version: 5,
     id: `mscp.${upstreamId}`,
     title: `Rule ${upstreamId}`,
     discussion: 'First paragraph.\n\nSecond paragraph.',
@@ -47,15 +52,9 @@ export function inlineRule({
     applicability: applicabilityOfVersions({ 'macOS 15.0': [], 'macOS 26.0': [], 'macOS 27.0': [] }),
     tags: [],
     references: {},
-    check: { default: ruleCheck('echo PASS', { type: 'string', value: 'PASS' }), by_version: {} },
+    check: macosCheck(ruleCheck('echo PASS', { type: 'string', value: 'PASS' })),
     odv: null,
-    remediation: {
-      default: { shell: null, additional_info: null },
-      by_version: {},
-      mobileconfig_info: null,
-      mobileconfig_by_version: {},
-      ddm_info: null,
-    },
+    remediation: null,
     ...overrides,
   }
 }

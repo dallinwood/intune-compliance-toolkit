@@ -1,4 +1,5 @@
 import type { ManifestSource, ManualReason, Rule } from '../types/library'
+import { generatedTargetCheck } from './checkPlan'
 import type { ManualAttestationEntry } from './chunking'
 import { displayWithOdv } from './odv'
 import { upstreamRuleId } from './ruleDisplay'
@@ -13,7 +14,7 @@ export function manualReasonText(manualReason: ManualReason | null, index: Vocab
 }
 
 export function additionalInfoFor(rule: Rule, odvValue: OrgDefinedValue | null): string | null {
-  const additionalInfo = rule.check?.default?.additional_info?.trim()
+  const additionalInfo = generatedTargetCheck(rule)?.default?.additional_info?.trim()
   return additionalInfo ? displayWithOdv(additionalInfo, odvValue) : null
 }
 
