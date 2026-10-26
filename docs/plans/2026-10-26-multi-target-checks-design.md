@@ -170,18 +170,20 @@ implement.
 - **Overlays** (each targets release `v2026.09.4`; each adds one Windows
   step with `name` set to the script name and `language: "powershell"`,
   plus a reference):
-  1. `asd-blueprint-remove-legacy-features.json`, targeting
-     `asd_ism.ism-1621`, `asd_ism.ism-1654` and `asd_ism.ism-1655`, with
-     script `UserApplicationHardeningRemoveFeatures`. The one script
-     removes PowerShell 2.0, .NET 3.5 and Internet Explorer.
+  1. Three overlays, one per control, each with its own script split from
+     `UserApplicationHardeningRemoveFeatures`: `asd-blueprint-remove-powershell-v2.json`
+     (`asd_ism.ism-1621`, `RemovePowerShellV2`),
+     `asd-blueprint-remove-dotnet35.json` (`asd_ism.ism-1655`, `RemoveDotNet35`) and
+     `asd-blueprint-remove-internet-explorer.json` (`asd_ism.ism-1654`,
+     `RemoveInternetExplorer`).
   2. `asd-blueprint-office-ole-packages.json`, targeting
      `asd_ism.ism-1542`, with script
      `OfficeMacroHardeningPreventActivationOfOle`.
   3. `asd-blueprint-macro-trusted-publisher.json`, targeting
      `asd_ism.ism-1674`, with script `BlockCerts`.
 - **Each step's `additional_info`** states the script's source and
-  licence in one line, and for overlay 1 notes that the same script
-  covers all three controls.
+  licence in one line, and for the three split overlays notes the
+  script was split per feature.
 - **`assessment` is not overlaid**, so the rules stay manual.
 
 ## 6. Delivery
@@ -265,3 +267,4 @@ strings.
 - 2026-10-26: Section 7 (script files referenced by `shell_file`) added from the maintainer's answers.
 - 2026-10-26: Section 7 implemented (`221abd6` feat: let checks, remediation steps and payloads reference files). Check entries and steps take `shell` or `shell_file`, payloads `data` or `data_file`, checked by the schema, `tools/file_references.py` (existence, extension, LF, JSON) in CI and the overlay tooling, and the same path, extension and exactly-one rules in `webui/src/logic/fileReferences.ts`, pinned by shared cases. The details fetch referenced files from the published `baselines/` copy with loading and error lines; the generator resolves script files before classifying, and a file-backed check gives the same bundle as the inline one. The three Blueprint scripts moved byte for byte to `baselines/_overlays/scripts/`. Payload files were added to the section from a maintainer decision made during implementation.
 - 2026-10-26: Review fixes for section 7 (`fix: harden file reference paths and checks`). Every path segment after `baselines/` must match `^[A-Za-z0-9_-][A-Za-z0-9._-]*$` in the schema, CI and the UI, which closes percent-encoded dot segments, `?` and `#` (they passed every validator and the browser resolved them outside `baselines/`), and the UI also builds each URL from encoded segments and refuses one that resolves outside the published `baselines/` folder. Extensions are lowercase and case-sensitive, the schema ties the script extension to the language, and the shared cases run through the schema too. CI rejects a check script file using `$ODV` (the details and export do not read script files yet), an empty script, and a text file that is not UTF-8. Bundle generation now resolves only the macOS check's script files, so a missing remediation or Windows script cannot block a bundle.
+- 2026-10-26: Split the combined ASD Blueprint legacy features overlay and script into three, one per ISM control (ISM-1621 `RemovePowerShellV2`, ISM-1655 `RemoveDotNet35`, ISM-1654 `RemoveInternetExplorer`), so each control fails independently; section lines are byte-identical to the original script (`refactor: split the ASD Blueprint legacy features script per ISM control`).

@@ -1319,7 +1319,7 @@ test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerS
   const remediation = detail.getByTestId('remediation-target')
   await expect(remediation).toHaveCount(1)
   await expect(remediation.getByText('Windows · PowerShell', { exact: true })).toBeVisible()
-  await expect(remediation.getByText('UserApplicationHardeningRemoveFeatures', { exact: true })).toBeVisible()
+  await expect(remediation.getByText('RemovePowerShellV2', { exact: true })).toBeVisible()
   await expect(detail.getByRole('heading', { name: 'Remediation' }).locator('xpath=..').getByText('Custom', { exact: true })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
 })
@@ -1330,6 +1330,21 @@ test('ISM-1621 shows its Blueprint script loaded from the referenced script file
   await row.getByRole('button').click()
   const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
 
-  await expect(remediation.locator('pre', { hasText: 'Disable-WindowsOptionalFeature' })).toBeVisible()
+  await expect(remediation.locator('pre', { hasText: 'MicrosoftWindowsPowerShellV2Root' })).toBeVisible()
   await expect(remediation.getByTestId('referenced-file-error')).toHaveCount(0)
+})
+
+test('ISM-1654 and ISM-1655 each show their own Blueprint script step', async ({ page }) => {
+  await page.goto('/')
+  for (const [ruleId, stepName] of [
+    ['ism-1654', 'RemoveInternetExplorer'],
+    ['ism-1655', 'RemoveDotNet35'],
+  ] as const) {
+    const row = await searchForSingleRow(page, ruleId, /./)
+    await row.getByRole('button').click()
+    const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
+    await expect(remediation).toHaveCount(1)
+    await expect(remediation.getByText(stepName, { exact: true })).toBeVisible()
+    await expect(remediation.getByTestId('referenced-file-error')).toHaveCount(0)
+  }
 })

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "asd-blueprint-remove-dotnet35",
+  "description": "Adds the ASD Blueprint for Secure Cloud PowerShell script that removes .NET Framework 3.5.",
+  "targets": [
+    {
+      "rule": "asd_ism.ism-1655",
+      "release": "v2026.09.4"
+    }
+  ],
+  "fields": {
+    "references": {
+      "asd_blueprint": [
+        "https://blueprint.asd.gov.au/configuration/intune/devices/scripts/userapplicationhardening-removefeatures/"
+      ]
+    },
+    "remediation": {
+      "Windows": {
+        "steps": [
+          {
+            "name": "RemoveDotNet35",
+            "language": "powershell",
+            "shell_file": "baselines/_overlays/scripts/RemoveDotNet35.ps1",
+            "additional_info": "Source: ASD Blueprint for Secure Cloud, split from script UserApplicationHardeningRemoveFeatures, commit a6e1e5f95e6051f23d2e7d1148c8fd57a6614000. Licence: Microsoft Corporation, MIT; modified: split into one script per feature.",
+            "versions": null
+          }
+        ],
+        "payloads": []
+      }
+    }
+  }
+}

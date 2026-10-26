@@ -245,9 +245,9 @@ Merge rules, applied field by field:
   overlay also sets `assessment` (for example
   `{ "status": "automated", "manual_reason": null }`).
 
-The repo ships three overlays, `baselines/_overlays/asd-blueprint-*.json`, that add ASD
+The repo ships five overlays, `baselines/_overlays/asd-blueprint-*.json`, that add ASD
 Blueprint for Secure Cloud PowerShell remediation scripts to ISM-1542, ISM-1621,
-ISM-1654, ISM-1655 and ISM-1674 (licence details in `NOTICE`).
+ISM-1654, ISM-1655 and ISM-1674, one script per control (licence details in `NOTICE`).
 
 Publishing is automatic: `bun run dev` and `bun run build` copy
 `baselines/_overlays/` into the site with a generated `_manifest.json`. Don't write or
