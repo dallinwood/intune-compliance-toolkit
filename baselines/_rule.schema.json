@@ -83,6 +83,7 @@
     "references": { "type": "object" },
     "check": {
       "type": ["object", "null"],
+      "minProperties": 1,
       "propertyNames": { "$ref": "#/$defs/target_name" },
       "additionalProperties": { "$ref": "#/$defs/target_check" }
     },
@@ -122,6 +123,7 @@
     },
     "remediation": {
       "type": ["object", "null"],
+      "minProperties": 1,
       "propertyNames": { "$ref": "#/$defs/target_name" },
       "additionalProperties": { "$ref": "#/$defs/target_remediation" }
     }

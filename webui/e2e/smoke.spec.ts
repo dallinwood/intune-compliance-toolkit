@@ -1278,7 +1278,7 @@ test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerS
 
   const remediation = detail.getByTestId('remediation-target')
   await expect(remediation).toHaveCount(1)
-  await expect(remediation.getByText('Windows', { exact: false }).first()).toBeVisible()
+  await expect(remediation.getByText('Windows · PowerShell', { exact: true })).toBeVisible()
   await expect(remediation.getByText('UserApplicationHardeningRemoveFeatures', { exact: true })).toBeVisible()
   await expect(detail.getByRole('heading', { name: 'Remediation' }).locator('xpath=..').getByText('Custom', { exact: true })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)

@@ -107,11 +107,13 @@ const versions: Check = (value, path) =>
       )
 
 // check and remediation are keyed by target name, which the details show as
-// a heading, so an empty or multi-line name is rejected as the schema does.
+// a heading. As in the schema, a map needs at least one target (no target is
+// written null) and an empty or multi-line name is rejected.
 function targetMapOf(check: Check): Check {
   return (value, path) =>
     firstProblem(
       () => mapOf(check)(value, path),
+      () => expect(Object.keys(value as JsonObject).length > 0, path, 'an object with at least one target, or null'),
       () => {
         const badName = Object.keys(value as JsonObject).find((name) => name === '' || name.includes('\n'))
         return badName === undefined ? null : `${path} has a target name that is empty or spans lines`

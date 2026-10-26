@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RemediationPayload, RemediationStep } from '../types/library'
 import {
+  newestVersionsFirst,
   remediationPayloadLabel,
   remediationStepLabel,
   scriptLanguageLabel,
@@ -88,5 +89,24 @@ describe('showsRemediationSection', () => {
   it('hides it for a rule with no remediation and no named target, such as an ISM control', () => {
     const applicability = [{ target: null, version: null, benchmarks: [] }]
     expect(showsRemediationSection({ remediation: null, applicability })).toBe(false)
+  })
+})
+
+describe('newestVersionsFirst', () => {
+  it('puts all-version entries first, then orders by each entry\'s highest version, newest first', () => {
+    const entries = [
+      step({ shell: 'fifteen', versions: ['15.0'] }),
+      step({ shell: 'default', versions: ['26.0', '27.0'] }),
+      step({ shell: 'twenty-six', versions: ['26.0'] }),
+      step({ shell: 'everywhere' }),
+    ]
+    expect(newestVersionsFirst(entries).map((entry) => entry.shell)).toEqual(['everywhere', 'default', 'twenty-six', 'fifteen'])
+  })
+
+  it('keeps list order between entries that tie, and does not change its input', () => {
+    const entries = [step({ shell: 'first' }), step({ shell: 'second' }), payload({ versions: ['15.0'] })]
+    const before = [...entries]
+    expect(newestVersionsFirst(entries)).toEqual(entries)
+    expect(entries).toEqual(before)
   })
 })

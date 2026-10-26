@@ -109,12 +109,17 @@ implement.
     are ordered default first, then by ascending version.
   - Step `name` is `null` and `language` is `"bash"`.
 - **Remediation payloads:**
-  - `mobileconfig_info` becomes `{ kind: "mobileconfig", versions: null,
-    data }`.
+  - `mobileconfig_info` becomes `{ kind: "mobileconfig", versions,
+    data }`. `versions` is `null` when `mobileconfig_by_version` is empty.
+    Otherwise it is the rule's listed macOS versions without a
+    `mobileconfig_by_version` entry, ascending, exactly like the default
+    step (`null` if the rule lists no versions; no payload if that list is
+    empty). (Amended 2026-10-26: `null` here made a default profile claim
+    versions that have their own.)
   - Each `mobileconfig_by_version[v]` becomes `{ kind: "mobileconfig",
     versions: [v], data }`.
   - `ddm_info` becomes `{ kind: "ddm", versions: null, data }`.
-  - Order: mobileconfig (all versions), mobileconfig per ascending
+  - Order: mobileconfig (default), mobileconfig per ascending
     version, then ddm.
 - **`remediation` is `null`** when the result has no steps and no
   payloads. Otherwise it is `{ "macOS": { steps, payloads } }`.
@@ -199,3 +204,4 @@ implement.
 - 2026-10-26: Task 1 done. Schemas, mSCP importer, overlay tooling and the regenerated libraries moved to v5 (`f3f6ac1` feat: key checks and remediation by target (schema v5)); the web UI shows one Check and one Remediation block per target and the generator reads only `check["macOS"]` (`87950b8` refactor: show checks and remediation per target in the web UI). An independent v4-to-v5 conversion found 0 differences across 352 mSCP files, ISM files changed only in `schema_version`, a second offline import changed nothing, and the bundle snapshot of every mSCP rule was byte-identical before and after. Decisions: a fix with no shell or text gives no step, a default fix every listed version overrides is dropped (neither occurs in mSCP today), check `by_version` keys use the applicability version pattern, and a rule with a named target but no remediation still shows "No remediation provided.". Visible changes beyond the target heading: steps are listed in ascending version order with their versions named (16 rules), and the unversioned profile payload no longer says "(versions without their own)" (13 rules), as section 3 defines `versions: null` as every version.
 - 2026-10-26: Task 2 done. Three ASD Blueprint overlays (`overlays/asd-blueprint-*.json`) add a Windows PowerShell remediation step, copied byte for byte from the Blueprint at the pinned commit, to ISM-1621, 1654, 1655, 1542 and 1674; `NOTICE` carries Microsoft's MIT text and the README names the overlays; one e2e test covers the committed ISM-1621 overlay. Rules stay "Manual - no check" (`feat: add ASD Blueprint PowerShell remediation overlays for five ISM controls`).
 - 2026-10-26: Overlays moved from `overlays/` to `baselines/_overlays/` (`refactor: move custom overlays under baselines/_overlays`). The source location is now `baselines/_overlays/<name>.json`, the publish step copies it with the baselines to `webui/public/baselines/_overlays/` and writes the manifest there (never into the repo), and the UI fetches `baselines/_overlays/_manifest.json`. Earlier entries and sections above describe the old path.
+- 2026-10-26: Review fixes (`fix: keep mSCP default profiles scoped to versions without their own`). Section 3.1 amended: when a rule has per-version profiles, the default `mobileconfig_info` payload now lists the versions without their own (10 mSCP rules, e.g. `os_appleid_prompt_disable` now `["26.0", "27.0"]`) instead of `null`; the updated v4-to-v5 conversion still finds 0 differences across 352 files, a second offline import changed nothing and the bundle snapshot is unchanged. The UI lists remediation steps and payloads newest version first (all-version entries first), like the Check block; data order is unchanged. The check and remediation target maps need at least one target (`minProperties: 1`, mirrored in the UI shape checks), and the ISM-1621 e2e test asserts the "Windows · PowerShell" heading.

@@ -250,6 +250,8 @@ describe('applyOverlays', () => {
   const malformedResults: [string, Record<string, unknown>, Partial<Rule>][] = [
     ['an applicability entry without benchmarks', { applicability: [{ target: null, version: null }] }, {}],
     ['a remediation target without its required keys', { remediation: { $replace: { Windows: {} } } }, {}],
+    ['an empty remediation target map', { remediation: { $replace: {} } }, {}],
+    ['an empty check target map', { check: { $replace: {} } }, {}],
     ['a remediation that is not keyed by target', { remediation: { $replace: { steps: [], payloads: [] } } }, {}],
     ['a remediation step with an unknown language', { remediation: { Windows: { steps: [{ name: null, language: 'cmd', shell: 'x', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a remediation step with an empty versions list', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell: 'x', additional_info: null, versions: [] }], payloads: [] } } }, {}],

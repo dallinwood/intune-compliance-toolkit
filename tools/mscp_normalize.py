@@ -170,6 +170,15 @@ def _remediation_step(fix: dict, versions: list[str] | None) -> dict:
     }
 
 
+def _default_versions(listed_versions: list[str], overridden_versions: dict) -> list[str] | None:
+    """The versions a default (fix or profile) covers: every version when
+    nothing overrides it or the rule lists no version, otherwise the listed
+    versions without their own, ascending. An empty list means it covers none."""
+    if not overridden_versions or not listed_versions:
+        return None
+    return sorted((version for version in listed_versions if version not in overridden_versions), key=_version_parts)
+
+
 def _remediation_steps(default_fix: dict, fix_by_version: dict, listed_versions: list[str]) -> list[dict]:
     """The default fix first, for the versions without their own, then each version's fix.
 
@@ -179,24 +188,25 @@ def _remediation_steps(default_fix: dict, fix_by_version: dict, listed_versions:
     """
     steps = []
     if _fix_has_content(default_fix):
-        if not fix_by_version or not listed_versions:
-            steps.append(_remediation_step(default_fix, None))
-        else:
-            uncovered_versions = sorted(
-                (version for version in listed_versions if version not in fix_by_version), key=_version_parts
-            )
-            if uncovered_versions:
-                steps.append(_remediation_step(default_fix, uncovered_versions))
+        default_versions = _default_versions(listed_versions, fix_by_version)
+        if default_versions != []:
+            steps.append(_remediation_step(default_fix, default_versions))
     for version in sorted(fix_by_version, key=_version_parts):
         if _fix_has_content(fix_by_version[version]):
             steps.append(_remediation_step(fix_by_version[version], [version]))
     return steps
 
 
-def _remediation_payloads(mobileconfig_info, mobileconfig_by_version: dict, ddm_info) -> list[dict]:
+def _remediation_payloads(
+    mobileconfig_info, mobileconfig_by_version: dict, ddm_info, listed_versions: list[str]
+) -> list[dict]:
+    """The default profile is scoped like the default fix: to the listed
+    versions without a profile of their own, and dropped if that is none."""
     payloads = []
     if mobileconfig_info is not None:
-        payloads.append({"kind": "mobileconfig", "versions": None, "data": mobileconfig_info})
+        default_versions = _default_versions(listed_versions, mobileconfig_by_version)
+        if default_versions != []:
+            payloads.append({"kind": "mobileconfig", "versions": default_versions, "data": mobileconfig_info})
     for version in sorted(mobileconfig_by_version, key=_version_parts):
         payloads.append({"kind": "mobileconfig", "versions": [version], "data": mobileconfig_by_version[version]})
     if ddm_info is not None:
@@ -213,7 +223,7 @@ def _remediation(
     ddm_info,
 ) -> dict | None:
     steps = _remediation_steps(default_fix, fix_by_version, listed_versions)
-    payloads = _remediation_payloads(mobileconfig_info, mobileconfig_by_version, ddm_info)
+    payloads = _remediation_payloads(mobileconfig_info, mobileconfig_by_version, ddm_info, listed_versions)
     if not steps and not payloads:
         return None
     return {MACOS_TARGET: {"steps": steps, "payloads": payloads}}

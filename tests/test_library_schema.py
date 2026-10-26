@@ -750,3 +750,8 @@ def test_rejects_the_v4_check_and_remediation_shapes():
         "ddm_info": None,
     }
     assert schema_errors(make_rule(remediation=v4_remediation))
+
+
+@pytest.mark.parametrize("field", ["check", "remediation"])
+def test_rejects_an_empty_target_map(field):
+    assert schema_errors(make_rule(**{field: {}}))

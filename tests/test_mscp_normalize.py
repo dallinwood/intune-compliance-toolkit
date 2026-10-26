@@ -360,8 +360,8 @@ def test_mobileconfig_by_version_and_ddm_copied():
             "mobileconfig_info:\n  - PayloadType: c.d\nddm_info:\n  ddm_key: K\n",
         )
     )
+    # The only listed version has its own profile, so the default one covers none and is dropped.
     assert result["remediation"]["macOS"]["payloads"] == [
-        {"kind": "mobileconfig", "versions": None, "data": [{"PayloadType": "c.d"}]},
         {"kind": "mobileconfig", "versions": ["27.0"], "data": [{"PayloadType": "a.b"}]},
         {"kind": "ddm", "versions": None, "data": {"ddm_key": "K"}},
     ]
@@ -680,3 +680,30 @@ def test_mobileconfig_payloads_by_version_ascend():
         )
     )
     assert [payload["versions"] for payload in result["remediation"]["macOS"]["payloads"]] == [["15.0"], ["27.0"]]
+
+
+def test_default_profile_covers_listed_versions_without_their_own_profile():
+    result = normalize(
+        rule_with(
+            """
+            '27.0':
+              benchmarks: []
+            '26.0':
+              benchmarks: []
+            '15.0':
+              mobileconfig_info:
+                - PayloadType: fifteen
+            """,
+            "mobileconfig_info:\n  - PayloadType: default\n",
+        )
+    )
+    assert result["remediation"]["macOS"]["payloads"] == [
+        {"kind": "mobileconfig", "versions": ["26.0", "27.0"], "data": [{"PayloadType": "default"}]},
+        {"kind": "mobileconfig", "versions": ["15.0"], "data": [{"PayloadType": "fifteen"}]},
+    ]
+    assert schema_errors(result) == []
+
+
+def test_default_profile_without_version_profiles_applies_to_every_version():
+    result = normalize(rule_with("'27.0':\n  benchmarks: []\n", "mobileconfig_info:\n  - PayloadType: default\n"))
+    assert result["remediation"]["macOS"]["payloads"][0]["versions"] is None

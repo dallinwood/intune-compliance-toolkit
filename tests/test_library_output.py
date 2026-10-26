@@ -164,7 +164,7 @@ def test_publish_source_never_touches_the_overlays_folder(tmp_path):
     overlay_path.parent.mkdir(parents=True)
     overlay_path.write_text('{"kept": true}\n', encoding="utf-8")
 
-    for _ in range(2):
+    for publish_run in range(2):
         publish_source(
             baselines_dir,
             "example",

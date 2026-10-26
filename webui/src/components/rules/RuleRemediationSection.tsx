@@ -1,6 +1,12 @@
 import { containsOdvPlaceholder } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
-import { remediationPayloadLabel, remediationStepLabel, showsRemediationSection, targetHeading } from '../../logic/targetDisplay'
+import {
+  newestVersionsFirst,
+  remediationPayloadLabel,
+  remediationStepLabel,
+  showsRemediationSection,
+  targetHeading,
+} from '../../logic/targetDisplay'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RemediationStep, Rule, TargetRemediation } from '../../types/library'
 import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
@@ -40,7 +46,8 @@ function TargetRemediationBlock({
   odvValue: OrgDefinedValue | null
 }) {
   const index = useVocabularyIndex()
-  const { steps, payloads } = targetRemediation
+  const steps = newestVersionsFirst(targetRemediation.steps)
+  const payloads = newestVersionsFirst(targetRemediation.payloads)
   const languages = steps.map((step) => step.language)
 
   return (
