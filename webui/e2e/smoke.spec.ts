@@ -467,7 +467,7 @@ test('an invalid stored ODV value is reported as blocking generation until fixed
   await savedValueAlert.getByRole('button', { name: 'Clear saved value' }).click()
   await expect(page.getByRole('alert')).toHaveCount(0)
   await expect(page.getByText('Using recommended value: 6')).toBeVisible()
-  await expect(page.getByText('$ODV stands for the organization-defined value, currently 6.').first()).toBeVisible()
+  await expect(page.getByText('Shown with the organization-defined value: 6').first()).toBeVisible()
 })
 
 // An option that becomes unreachable stays visible, disabled, for a quiet
@@ -1498,5 +1498,67 @@ test.describe('code block copy button', () => {
     // Windows' clipboard hands multi-line text back with CRLF line endings.
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
     expect(clipboardText.replace(/\r\n/g, '\n')).toBe(licenceText)
+  })
+})
+
+test.describe('live organization-defined value in code blocks', () => {
+  test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
+
+  async function openMinimumLengthRule(page: Page) {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
+    await row.getByRole('button').click()
+    const detail = page.locator('[id^="rule-detail-"]')
+    const odvInput = page.getByRole('textbox', { name: /Minimum password length/ })
+    await expect(odvInput).toBeVisible()
+    return { detail, odvInput, checkBlock: detail.getByTestId('check-target').first().locator('pre').first() }
+  }
+
+  test('the check shows the recommended value, follows edits, and reverts on an invalid value', async ({ page }) => {
+    const { detail, odvInput, checkBlock } = await openMinimumLengthRule(page)
+
+    await expect(checkBlock).not.toContainText('$ODV')
+    await expect(checkBlock).toContainText('-v ODV=6 ')
+    await expect(detail.getByText('Shown with the organization-defined value: 6').first()).toBeVisible()
+
+    await odvInput.fill('14')
+    await expect(checkBlock).not.toContainText('$ODV')
+    await expect(checkBlock).toContainText('-v ODV=14 ')
+    await expect(detail.getByText('Shown with the organization-defined value: 14').first()).toBeVisible()
+
+    await odvInput.fill("14'")
+    await expect(page.getByRole('alert')).toContainText('Value must be a whole number.')
+    // The last valid value stays in effect, as it does for generation.
+    await expect(checkBlock).toContainText('-v ODV=14 ')
+
+    await odvInput.fill('')
+    await expect(checkBlock).toContainText('-v ODV=6 ')
+  })
+
+  test('an invalid stored value keeps the literal $ODV and the note', async ({ page }) => {
+    await page.addInitScript(() => {
+      const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
+      const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
+      window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
+    })
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
+    await row.getByRole('button', { name: /Expand/ }).click()
+    const checkBlock = page.locator('[id^="rule-detail-"]').getByTestId('check-target').first().locator('pre').first()
+    await expect(checkBlock).toContainText('$ODV')
+    await expect(page.getByText('$ODV stands for the organization-defined value, currently [value].').first()).toBeVisible()
+  })
+
+  test('Copy puts the substituted text on the clipboard', async ({ page }) => {
+    const { odvInput, checkBlock } = await openMinimumLengthRule(page)
+    await odvInput.fill('14')
+    await expect(checkBlock).not.toContainText('$ODV')
+
+    const displayedText = await checkBlock.textContent()
+    await checkBlock.locator('xpath=following-sibling::button').click()
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
+    expect(clipboardText).toBe(displayedText)
+    expect(clipboardText).toContain('-v ODV=14 ')
+    expect(clipboardText).not.toContain('$ODV')
   })
 })

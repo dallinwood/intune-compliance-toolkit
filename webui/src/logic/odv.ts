@@ -160,6 +160,35 @@ export function substituteOdv(text: string, value: OrgDefinedValue): string {
   return text.replaceAll('$ODV', () => String(value))
 }
 
+// Code blocks are display-only, so they substitute under the generator's own
+// rules and no more: a value the generator would reject is never shown in
+// place of $ODV, and in variable mode the script exports ODV and the shell
+// expands "$ODV" itself, so text-replacing it would show a script that is
+// not the one that runs (quoting and expansion could differ).
+export function odvValueForCode(
+  odv: Odv | null,
+  mode: OdvSubstitutionMode,
+  value: OrgDefinedValue | null,
+  ruleId: string,
+): OrgDefinedValue | null {
+  if (!odv || value === null || mode === 'variable') return null
+  const canonicalValue = canonicalOdvValue(odv, value)
+  return validateOdvValue(odv, canonicalValue, mode, ruleId) === null ? canonicalValue : null
+}
+
+// For JSON text, the value goes in as the contents of a JSON string so a
+// quote or backslash in it cannot break the displayed document.
+export function substituteOdvInJson(jsonText: string, value: OrgDefinedValue): string {
+  const escapedValue = JSON.stringify(String(value)).slice(1, -1)
+  return substituteOdv(jsonText, escapedValue)
+}
+
+// The exact text a code block shows, and therefore copies.
+export function codeTextWithOdv(code: string, codeOdvValue: OrgDefinedValue | null, isJson: boolean): string {
+  if (codeOdvValue === null) return code
+  return isJson ? substituteOdvInJson(code, codeOdvValue) : substituteOdv(code, codeOdvValue)
+}
+
 export function containsOdvPlaceholder(text: string): boolean {
   return text.includes(ODV_PLACEHOLDER)
 }

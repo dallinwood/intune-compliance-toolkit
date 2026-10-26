@@ -1,6 +1,6 @@
 import { versionKey, versionsForTarget } from '../../logic/applicability'
 import { GENERATED_TARGET } from '../../logic/checkPlan'
-import { containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
+import { displayWithOdv } from '../../logic/odv'
 import { scriptHighlightLanguage } from '../../logic/codeLanguage'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
@@ -9,7 +9,7 @@ import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../../types/library'
-import { CodeBlock, OdvNote, SectionHeading, TargetHeading } from './CodeBlock'
+import { OdvCodeBlock, SectionHeading, TargetHeading } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 import { ScriptFile } from './ReferencedFile'
 
@@ -18,24 +18,25 @@ function CheckEntry({
   check,
   language,
   odvValue,
+  codeOdvValue,
 }: {
   label: string
   check: RuleCheck
   language: ScriptLanguage
   odvValue: OrgDefinedValue | null
+  codeOdvValue: OrgDefinedValue | null
 }) {
   const highlightLanguage = scriptHighlightLanguage(language)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {check.shell_file !== undefined ? (
-        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} />
+        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdvValue={codeOdvValue} />
       ) : check.shell ? (
-        <CodeBlock code={check.shell} language={highlightLanguage} />
+        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValue={odvValue} codeOdvValue={codeOdvValue} />
       ) : (
         <p className="text-xs text-slate-500">No check script.</p>
       )}
-      {check.shell && containsOdvPlaceholder(check.shell) && <OdvNote odvValue={odvValue} />}
       {check.result && (
         <p className="text-xs text-slate-600">
           Expected result ({check.result.type}):{' '}
@@ -49,7 +50,17 @@ function CheckEntry({
   )
 }
 
-function TargetCheckBlock({ target, targetCheck, odvValue }: { target: string; targetCheck: TargetCheck; odvValue: OrgDefinedValue | null }) {
+function TargetCheckBlock({
+  target,
+  targetCheck,
+  odvValue,
+  codeOdvValue,
+}: {
+  target: string
+  targetCheck: TargetCheck
+  odvValue: OrgDefinedValue | null
+  codeOdvValue: OrgDefinedValue | null
+}) {
   const index = useVocabularyIndex()
   const versionChecks = Object.entries(targetCheck.by_version).sort(([left], [right]) => compareVersionsDescending(left, right))
 
@@ -62,6 +73,7 @@ function TargetCheckBlock({ target, targetCheck, odvValue }: { target: string; t
           check={targetCheck.default}
           language={targetCheck.language}
           odvValue={odvValue}
+          codeOdvValue={codeOdvValue}
         />
       ) : (
         <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
@@ -73,13 +85,24 @@ function TargetCheckBlock({ target, targetCheck, odvValue }: { target: string; t
           check={check}
           language={targetCheck.language}
           odvValue={odvValue}
+          codeOdvValue={codeOdvValue}
         />
       ))}
     </div>
   )
 }
 
-export function RuleCheckSection({ rule, odvValue, custom = false }: { rule: Rule; odvValue: OrgDefinedValue | null; custom?: boolean }) {
+export function RuleCheckSection({
+  rule,
+  odvValue,
+  codeOdvValue,
+  custom = false,
+}: {
+  rule: Rule
+  odvValue: OrgDefinedValue | null
+  codeOdvValue: OrgDefinedValue | null
+  custom?: boolean
+}) {
   const index = useVocabularyIndex()
   const targetChecks = Object.entries(rule.check ?? {})
   // An ISM control has no macOS entry at all, so only an mSCP rule that no
@@ -107,7 +130,13 @@ export function RuleCheckSection({ rule, odvValue, custom = false }: { rule: Rul
         </p>
       ) : (
         targetChecks.map(([target, targetCheck]) => (
-          <TargetCheckBlock key={target} target={target} targetCheck={targetCheck} odvValue={odvValue} />
+          <TargetCheckBlock
+            key={target}
+            target={target}
+            targetCheck={targetCheck}
+            odvValue={odvValue}
+            codeOdvValue={codeOdvValue}
+          />
         ))
       )}
     </div>

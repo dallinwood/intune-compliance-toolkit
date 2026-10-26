@@ -2,7 +2,7 @@ import 'highlight.js/styles/github-dark.css'
 import './codeBlock.css'
 import type { HighlightLanguage } from '../../logic/codeLanguage'
 import { highlightedHtml } from '../../logic/highlighting'
-import { displayWithOdv } from '../../logic/odv'
+import { codeTextWithOdv, containsOdvPlaceholder, displayWithOdv } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { CopyButton } from './CopyButton'
 import { CustomTag } from './CustomTag'
@@ -39,6 +39,44 @@ export function OdvNote({ odvValue }: { odvValue: OrgDefinedValue | null }) {
       $ODV stands for the organization-defined value, currently{' '}
       {shortenedValue(displayWithOdv(ODV_PLACEHOLDER, odvValue))}.
     </p>
+  )
+}
+
+// Shown under a block whose $ODV has been replaced with the value.
+function OdvSubstitutionNote({ value }: { value: OrgDefinedValue }) {
+  return <p className="text-xs text-slate-500">Shown with the organization-defined value: {shortenedValue(String(value))}</p>
+}
+
+// A block of shipped code that may contain $ODV. codeOdvValue is the value to
+// show in its place, or null to keep the literal placeholder and explain it.
+export function OdvCodeBlock({
+  code,
+  language,
+  odvValue,
+  codeOdvValue,
+  isJson = false,
+}: {
+  code: string
+  language?: HighlightLanguage
+  odvValue: OrgDefinedValue | null
+  codeOdvValue: OrgDefinedValue | null
+  isJson?: boolean
+}) {
+  if (!containsOdvPlaceholder(code)) return <CodeBlock code={code} language={language} />
+  if (codeOdvValue === null) {
+    return (
+      <>
+        <CodeBlock code={code} language={language} />
+        <OdvNote odvValue={odvValue} />
+      </>
+    )
+  }
+  const displayedCode = codeTextWithOdv(code, codeOdvValue, isJson)
+  return (
+    <>
+      <CodeBlock code={displayedCode} language={language} />
+      <OdvSubstitutionNote value={codeOdvValue} />
+    </>
   )
 }
 

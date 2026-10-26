@@ -2,15 +2,18 @@ import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
 import {
   canonicalOdvValue,
+  codeTextWithOdv,
   containsOdvPlaceholder,
   displayWithOdv,
   effectiveOdvValue,
   odvQuickPicks,
   odvSubstitutionMode,
+  odvValueForCode,
   ODV_RULE_VALUE_PATTERNS,
   ODV_VARIABLE_ALLOWLIST,
   prepareOdvValue,
   substituteOdv,
+  substituteOdvInJson,
   usableOdvValue,
   validateOdvValue,
 } from './odv'
@@ -421,5 +424,67 @@ describe('usableOdvValue', () => {
 
   it('is null for a rule without an ODV', () => {
     expect(usableOdvValue(null, 'none', 12, GENERIC_RULE_ID)).toBeNull()
+  })
+})
+
+describe('odvValueForCode', () => {
+  const numberOdv = odv({ recommended: 6, validation: { min: 1 } })
+
+  it('returns a valid value so code blocks show it in place of $ODV', () => {
+    expect(odvValueForCode(numberOdv, 'text', 12, GENERIC_RULE_ID)).toBe(12)
+    expect(substituteOdv('minlen=$ODV and again $ODV', odvValueForCode(numberOdv, 'text', 12, GENERIC_RULE_ID)!)).toBe(
+      'minlen=12 and again 12',
+    )
+  })
+
+  it('returns null when there is no value or the rule has no ODV, keeping $ODV literal', () => {
+    expect(odvValueForCode(numberOdv, 'text', null, GENERIC_RULE_ID)).toBeNull()
+    expect(odvValueForCode(null, 'text', 12, GENERIC_RULE_ID)).toBeNull()
+  })
+
+  it('returns null for a value the generator would reject', () => {
+    expect(odvValueForCode(numberOdv, 'text', 0, GENERIC_RULE_ID)).toBeNull()
+    expect(odvValueForCode(numberOdv, 'text', "12'", GENERIC_RULE_ID)).toBeNull()
+    expect(odvValueForCode(odv({ datatype: 'string' }), 'text', 'a b', GENERIC_RULE_ID)).toBeNull()
+  })
+
+  it('applies the rule-specific value pattern', () => {
+    const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
+    const softwareUpdateRuleId = 'mscp.system_settings_softwareupdate_current'
+    expect(odvValueForCode(deferralOdv, 'text', '30d', softwareUpdateRuleId)).toBe('30d')
+    expect(odvValueForCode(deferralOdv, 'text', '30', softwareUpdateRuleId)).toBeNull()
+  })
+
+  it('returns the canonical value the generator would substitute', () => {
+    expect(odvValueForCode(numberOdv, 'text', '007', GENERIC_RULE_ID)).toBe(7)
+  })
+
+  it('never substitutes in variable mode, where the script exports ODV instead of text-replacing', () => {
+    const bannerOdv = odv({ datatype: 'string', recommended: 'Authorized use only' })
+    expect(odvValueForCode(bannerOdv, 'variable', 'Authorized use only', 'mscp.os_policy_banner_ssh_configure')).toBeNull()
+  })
+
+  it('still substitutes when the rule has no $ODV in its checks (mode none)', () => {
+    expect(odvValueForCode(numberOdv, 'none', 12, GENERIC_RULE_ID)).toBe(12)
+  })
+})
+
+describe('codeTextWithOdv', () => {
+  it('is the displayed and copied text: substituted when a value applies, untouched otherwise', () => {
+    expect(codeTextWithOdv('a $ODV b', 12, false)).toBe('a 12 b')
+    expect(codeTextWithOdv('a $ODV b', null, false)).toBe('a $ODV b')
+    expect(codeTextWithOdv('{"v": "$ODV"}', 'x"y', true)).toBe('{"v": "x\\"y"}')
+  })
+})
+
+describe('substituting special characters into displayed code', () => {
+  it('substitutes regex-special characters and replacement patterns literally', () => {
+    expect(substituteOdv('grep -E "$ODV"', '^a.*$&b$1')).toBe('grep -E "^a.*$&b$1"')
+  })
+
+  it('escapes the value inside displayed JSON so the document stays valid', () => {
+    const json = JSON.stringify({ banner: '$ODV', other: ['$ODV'] }, null, 2)
+    const displayed = substituteOdvInJson(json, 'say "hi"\n')
+    expect(JSON.parse(displayed)).toEqual({ banner: 'say "hi"\n', other: ['say "hi"\n'] })
   })
 })
