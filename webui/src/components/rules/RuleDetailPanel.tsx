@@ -98,10 +98,15 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
   const vocabularyIndex = useVocabularyIndex()
   const sourceLabel = termLabel(vocabularyIndex, 'sources', rule.source.name)
   const staleOverlays = overlaid.applied.filter((application) => application.stale)
-  if (staleOverlays.length === 0) return null
+  if (staleOverlays.length === 0 && overlaid.skipped.length === 0) return null
 
   return (
     <div className="space-y-1 text-xs text-amber-800">
+      {overlaid.skipped.map((skipped) => (
+        <p key={skipped.overlayId} data-testid="skipped-overlay-note" className="break-words">
+          Custom content ({skipped.overlayId}) could not be applied to this rule and was skipped: {skipped.message}
+        </p>
+      ))}
       {staleOverlays.map((application) => (
         <p key={application.overlayId} data-testid="stale-overlay-note" className="break-words">
           Custom content ({application.overlayId}) was written for {sourceLabel} {application.release}; this rule is from{' '}

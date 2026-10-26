@@ -5,20 +5,28 @@
 //
 // The maintainer's overlays live in baselines/_overlays/rules/ (next to
 // scripts/ and payloads/, like a source's rules/ folder) and arrive with that
-// copy. This script also writes webui/public/baselines/_overlays/_manifest.json
-// listing them, since a static site cannot list a directory. The manifest
-// lists bare file names, not paths; the loader (webui/src/data/overlays.ts)
-// adds "rules/" when it fetches each one. The manifest is only ever written to
-// the published copy, never to the repo's baselines/.
+// copy. This script also writes webui/public/baselines/_overlays/_index.json,
+// since a static site cannot list a directory and the app should not fetch
+// every overlay at startup: per overlay it lists the targets and only the
+// fields an index entry carries (see webui/src/logic/overlayIndex.ts), plus a
+// by_rule lookup. The app fetches an overlay's own file when a rule it
+// targets is opened. The index is only ever written to the published copy,
+// never to the repo's baselines/.
 //
 // Paths are resolved from this file's own location, not the working
 // directory, so it behaves the same whether invoked from the repo root or
 // from webui/.
 
-import { cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Bun runs this script, so it can import the app's own TypeScript: one
+// structural check for overlay files, shared with the app.
+import { buildOverlayIndex } from "../webui/src/logic/overlayIndex.ts";
+
+const OVERLAY_INDEX_NAME = "_index.json";
+// Left over from before the index existed; never an overlay.
 const OVERLAY_MANIFEST_NAME = "_manifest.json";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -60,10 +68,17 @@ async function overlayFileNames() {
     .sort();
 }
 
-const overlayFiles = await overlayFileNames();
+const overlayFiles = [];
+for (const fileName of await overlayFileNames()) {
+  const path = join(overlayRulesDestination, fileName);
+  try {
+    overlayFiles.push({ fileName, value: JSON.parse(await readFile(path, "utf8")) });
+  } catch (error) {
+    console.warn(`${fileName}: cannot read JSON (${error.message}). It was skipped.`);
+  }
+}
+const overlayIndex = buildOverlayIndex(overlayFiles, (message) => console.warn(message));
 await mkdir(overlaysDestination, { recursive: true });
-await writeFile(
-  join(overlaysDestination, OVERLAY_MANIFEST_NAME),
-  `${JSON.stringify({ files: overlayFiles }, null, 2)}\n`,
-);
-console.log(`Listed ${overlayFiles.length} overlay file(s) in ${join(overlaysDestination, OVERLAY_MANIFEST_NAME)}`);
+await writeFile(join(overlaysDestination, OVERLAY_INDEX_NAME), `${JSON.stringify(overlayIndex, null, 2)}
+`);
+console.log(`Indexed ${overlayIndex.overlays.length} overlay file(s) in ${join(overlaysDestination, OVERLAY_INDEX_NAME)}`);

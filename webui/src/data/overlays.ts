@@ -1,14 +1,13 @@
-import { applyOverlayToCheckedIndexEntry, applyOverlayToRule, parseOverlay, type Overlay } from '../logic/overlays'
-import type { IndexEntry, Rule } from '../types/library'
+import { indexLevelOverlays, parseOverlayIndex, type IndexedOverlay } from '../logic/overlayIndex'
+import { parseOverlay, type Overlay } from '../logic/overlays'
 
 const OVERLAYS_DIRECTORY = 'baselines/_overlays/'
-const OVERLAY_RULES_DIRECTORY = `${OVERLAYS_DIRECTORY}rules/`
-const MANIFEST_PATH = `${OVERLAYS_DIRECTORY}_manifest.json`
+const INDEX_PATH = `${OVERLAYS_DIRECTORY}_index.json`
 
-export interface LoadedOverlays {
-  overlays: Overlay[]
+export interface LoadedOverlayIndex {
+  overlays: IndexedOverlay[]
+  byRule: ReadonlyMap<string, string[]>
   warnings: string[]
-  fileNameById: ReadonlyMap<string, string>
 }
 
 function describeError(error: unknown): string {
@@ -34,123 +33,76 @@ async function fetchJson(path: string): Promise<{ value: unknown } | { problem: 
   }
 }
 
-function manifestFiles(value: unknown): string[] | null {
-  if (typeof value !== 'object' || value === null || !('files' in value)) return null
-  const { files } = value as { files: unknown }
-  return Array.isArray(files) && files.every((file) => typeof file === 'string') ? files : null
+function noOverlays(warning: string): LoadedOverlayIndex {
+  return { overlays: [], byRule: new Map(), warnings: [warning] }
 }
 
-function noOverlays(warning: string): LoadedOverlays {
-  return { overlays: [], warnings: [warning], fileNameById: new Map() }
-}
-
-async function loadOverlays(): Promise<LoadedOverlays> {
-  const manifest = await fetchJson(MANIFEST_PATH)
-  if ('problem' in manifest) {
-    return noOverlays(`Custom content could not be loaded (${MANIFEST_PATH}: ${manifest.problem}), so rules are shown as imported.`)
+async function loadOverlayIndex(): Promise<LoadedOverlayIndex> {
+  const file = await fetchJson(INDEX_PATH)
+  if ('problem' in file) {
+    return noOverlays(`Custom content could not be loaded (${INDEX_PATH}: ${file.problem}), so rules are shown as imported.`)
   }
-  const fileNames = manifestFiles(manifest.value)
-  if (fileNames === null) {
-    return noOverlays(`Custom content could not be loaded (${MANIFEST_PATH} has no list of files), so rules are shown as imported.`)
+  const parsed = parseOverlayIndex(file.value)
+  if (typeof parsed === 'string') {
+    return noOverlays(`Custom content could not be loaded (${INDEX_PATH}: ${parsed}), so rules are shown as imported.`)
   }
-
-  const loaded = await Promise.all(
-    fileNames.map(async (fileName) => {
-      const file = await fetchJson(`${OVERLAY_RULES_DIRECTORY}${fileName}`)
-      return 'problem' in file ? { error: `${fileName}: ${file.problem}` } : parseOverlay(file.value, fileName)
-    }),
-  )
-
-  const overlays: Overlay[] = []
-  const warnings: string[] = []
-  const fileNameById = new Map<string, string>()
-  loaded.forEach((result, position) => {
-    const fileName = fileNames[position]
-    if ('error' in result) {
-      warnings.push(`${result.error}. It was skipped.`)
-      return
-    }
-    const earlierFile = fileNameById.get(result.overlay.id)
-    if (earlierFile !== undefined) {
-      warnings.push(`${fileName}: id ${result.overlay.id} is already used by ${earlierFile}. It was skipped.`)
-      return
-    }
-    fileNameById.set(result.overlay.id, fileName)
-    overlays.push(result.overlay)
-  })
-  return { overlays, warnings, fileNameById }
+  return parsed
 }
 
-let cachedOverlays: Promise<LoadedOverlays> | null = null
+let cachedIndex: Promise<LoadedOverlayIndex> | null = null
 
 // Cached per session and never rejects: custom content is an addition, so
-// any failure leaves the imported rules usable with a warning.
-export function fetchOverlays(): Promise<LoadedOverlays> {
-  if (!cachedOverlays) {
-    cachedOverlays = loadOverlays().catch((error: unknown) =>
+// any failure leaves the imported rules usable with a warning. Only this
+// index is fetched at startup; an overlay's own file waits until a rule it
+// targets is opened.
+export function fetchOverlayIndex(): Promise<LoadedOverlayIndex> {
+  if (!cachedIndex) {
+    cachedIndex = loadOverlayIndex().catch((error: unknown) =>
       noOverlays(`Custom content could not be loaded (${describeError(error)}), so rules are shown as imported.`),
     )
   }
-  return cachedOverlays
+  return cachedIndex
 }
 
-export interface LibraryTarget {
-  entry: IndexEntry
-  // Null when the rule file could not be fetched at load.
-  rule: Rule | null
-  // Builds the table row for an entry, so anything that would throw there
-  // is found before the real rows are built.
-  buildRow: (entry: IndexEntry) => void
+// What the table, filters and search apply at startup: each overlay's
+// index-level fields.
+export function startupOverlays(loaded: LoadedOverlayIndex): Overlay[] {
+  return indexLevelOverlays(loaded.overlays)
 }
 
-function describeProblem(error: unknown): string {
-  return error instanceof Error ? error.message : String(error)
+export interface RuleOverlaySource {
+  overlayIdsFor: (ruleId: string) => string[]
+  loadOverlay: (overlayId: string) => Promise<Overlay>
 }
 
-// Dry-runs the overlays in manifest order, the order rows and rules use,
-// against the index entries and the full rules they target. An overlay that
-// fails for any target is dropped for every target, with one warning naming
-// its file and the rule; the overlays before it stay applied. A target
-// missing from the library is ignored for that target alone. A target whose
-// rule file could not be loaded keeps its index-level result, with a warning
-// that the full rule went unchecked.
-export function overlaysFittingLibrary(loaded: LoadedOverlays, targets: ReadonlyMap<string, LibraryTarget>): LoadedOverlays {
-  const overlays: Overlay[] = []
-  const warnings = [...loaded.warnings]
-  const currentEntries = new Map<string, IndexEntry>()
-  const currentRules = new Map<string, Rule>()
+// Loads and caches each overlay file on first use. A failure is not cached,
+// so a later open retries instead of replaying it.
+export function ruleOverlaySourceFrom(loaded: LoadedOverlayIndex): RuleOverlaySource {
+  const entryById = new Map(loaded.overlays.map((overlay) => [overlay.id, overlay]))
+  const fileCache = new Map<string, Promise<Overlay>>()
 
-  for (const overlay of loaded.overlays) {
-    const nextEntries = new Map<string, IndexEntry>()
-    const nextRules = new Map<string, Rule>()
-    const uncheckedRuleIds: string[] = []
-    let problem: string | null = null
-    for (const ruleId of new Set(overlay.targets.map((target) => target.rule))) {
-      const target = targets.get(ruleId)
-      if (!target) continue
-      try {
-        const entry = applyOverlayToCheckedIndexEntry(currentEntries.get(ruleId) ?? target.entry, overlay.fields)
-        target.buildRow(entry)
-        nextEntries.set(ruleId, entry)
-        const rule = currentRules.get(ruleId) ?? target.rule
-        if (rule) nextRules.set(ruleId, applyOverlayToRule(rule, overlay.fields))
-        else uncheckedRuleIds.push(ruleId)
-      } catch (error) {
-        problem = `${ruleId}: ${describeProblem(error)}`
-        break
-      }
-    }
-    const fileName = loaded.fileNameById.get(overlay.id) ?? overlay.id
-    if (problem !== null) {
-      warnings.push(`${fileName}: ${problem}. It was skipped.`)
-      continue
-    }
-    for (const ruleId of uncheckedRuleIds) {
-      warnings.push(`${fileName}: ${ruleId}: the rule could not be loaded to check this overlay against it.`)
-    }
-    for (const [ruleId, entry] of nextEntries) currentEntries.set(ruleId, entry)
-    for (const [ruleId, rule] of nextRules) currentRules.set(ruleId, rule)
-    overlays.push(overlay)
+  async function loadFile(entry: IndexedOverlay): Promise<Overlay> {
+    const file = await fetchJson(`${OVERLAYS_DIRECTORY}${entry.file}`)
+    if ('problem' in file) throw new Error(`${entry.file}: ${file.problem}`)
+    const parsed = parseOverlay(file.value, entry.file)
+    if ('error' in parsed) throw new Error(parsed.error)
+    if (parsed.overlay.id !== entry.id) throw new Error(`${entry.file}: id ${parsed.overlay.id} does not match the index (${entry.id})`)
+    return parsed.overlay
   }
-  return { overlays, warnings, fileNameById: loaded.fileNameById }
+
+  return {
+    overlayIdsFor: (ruleId) => loaded.byRule.get(ruleId) ?? [],
+    loadOverlay: (overlayId) => {
+      const existing = fileCache.get(overlayId)
+      if (existing) return existing
+      const entry = entryById.get(overlayId)
+      if (!entry) return Promise.reject(new Error(`${overlayId}: not in the overlay index`))
+      const pending = loadFile(entry)
+      fileCache.set(overlayId, pending)
+      pending.catch(() => {
+        if (fileCache.get(overlayId) === pending) fileCache.delete(overlayId)
+      })
+      return pending
+    },
+  }
 }

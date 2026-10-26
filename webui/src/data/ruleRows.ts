@@ -2,11 +2,11 @@ import { benchmarksAt, parseVersionKey, scopeKeysOf, targetKeysOf } from '../log
 import { GENERATED_TARGET } from '../logic/checkPlan'
 import { applyOverlaysToIndexEntry, type OnOverlaySkipped, type Overlay } from '../logic/overlays'
 import { compareVersionsDescending } from '../logic/versions'
-import type { IndexEntry, ManifestSource, RuleIndex } from '../types/library'
+import type { ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { fetchManifest } from './manifest'
-import { fetchOverlays, overlaysFittingLibrary, type LibraryTarget } from './overlays'
-import { fetchImportedRule, setRuleOverlays } from './ruleDetail'
+import { fetchOverlayIndex, ruleOverlaySourceFrom, startupOverlays } from './overlays'
+import { setRuleOverlays } from './ruleDetail'
 import { fetchRuleIndex } from './ruleIndex'
 
 export interface Library {
@@ -69,42 +69,18 @@ export function coveredVersionsOf(rows: RuleRow[], target: string): string[] {
   return Array.from(versions).sort(compareVersionsDescending)
 }
 
-function ruleRefOf(source: ManifestSource, entry: IndexEntry) {
-  const directory = directoryOf(source.index_path)
-  return { id: entry.id, path: directory ? `${directory}/${entry.file}` : entry.file }
-}
-
-// Every rule an overlay targets, with its full rule file, so the overlays can
-// be dry-run before anything is shown. Overlay targets are few and small.
-async function libraryTargets(sources: ManifestSource[], indexes: RuleIndex[], overlays: Overlay[]): Promise<Map<string, LibraryTarget>> {
-  const targetedIds = new Set(overlays.flatMap((overlay) => overlay.targets.map((target) => target.rule)))
-  const found: { source: ManifestSource; entry: IndexEntry }[] = []
-  sources.forEach((source, position) => {
-    for (const entry of indexes[position].rules) if (targetedIds.has(entry.id)) found.push({ source, entry })
-  })
-  const rules = await Promise.all(found.map(({ source, entry }) => fetchImportedRule(ruleRefOf(source, entry)).catch(() => null)))
-  return new Map(
-    found.map(({ source, entry }, position): [string, LibraryTarget] => [
-      entry.id,
-      {
-        entry,
-        rule: rules[position],
-        buildRow: (overlaidEntry) => {
-          buildRuleRows(source, { schema_version: 5, source: source.name, rules: [overlaidEntry] })
-        },
-      },
-    ]),
-  )
-}
-
+// Startup reads the overlay index only, never an overlay file or a targeted
+// rule: the table applies each overlay's index-level fields, and an overlay
+// that does not fit an entry is skipped for that rule with a warning. The
+// full overlay is fetched and merged when the rule itself is opened.
 export async function loadLibrary(): Promise<Library> {
-  const [manifest, loadedOverlays] = await Promise.all([fetchManifest(), fetchOverlays()])
+  const [manifest, overlayIndex] = await Promise.all([fetchManifest(), fetchOverlayIndex()])
   const indexes = await Promise.all(manifest.sources.map((source) => fetchRuleIndex(source.index_path)))
+  setRuleOverlays(ruleOverlaySourceFrom(overlayIndex))
 
-  const { overlays, warnings } = overlaysFittingLibrary(loadedOverlays, await libraryTargets(manifest.sources, indexes, loadedOverlays.overlays))
-  setRuleOverlays(overlays)
-
+  const warnings = [...overlayIndex.warnings]
   const onSkipped: OnOverlaySkipped = (skipped) => warnings.push(`Overlay ${skipped.overlayId}: ${skipped.message}. It was skipped.`)
+  const overlays = startupOverlays(overlayIndex)
   const rows = manifest.sources.flatMap((source, position) => buildRuleRows(source, indexes[position], overlays, onSkipped))
 
   return {

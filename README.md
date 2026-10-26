@@ -251,8 +251,17 @@ Blueprint for Secure Cloud PowerShell remediation scripts to ISM-1542, ISM-1621,
 ISM-1654, ISM-1655 and ISM-1674, one script per control (licence details in `NOTICE`).
 
 Publishing is automatic: `bun run dev` and `bun run build` copy
-`baselines/_overlays/` (`rules/`, `scripts/`, `payloads/`) into the site with a generated `_manifest.json`. Don't write or
-commit a manifest yourself.
+`baselines/_overlays/` (`rules/`, `scripts/`, `payloads/`) into the site and generate
+`_overlays/_index.json` there: each overlay's targets, the fields an index entry
+carries (title, tags, assessment, applicability, section, architecture, and a
+marker for odv) and a lookup from rule to overlays. A file that is not a valid
+overlay is left out of the index with a line in the build log. Don't write or
+commit an index yourself.
+
+The app reads only that index at startup, so the table, search and filters
+show overlaid titles and tags straight away. An overlay's own file is fetched
+(once) when you open a rule it targets, and the details, the generator and
+the export all use the merged rule.
 
 Check overlays with `python -m pytest -W error tests/test_overlays.py` (or
 `python tools/overlays.py` for a plain list of problems). A bad shape, a
@@ -261,9 +270,11 @@ a merged rule that breaks the rule schema, or a `shell_file` or `data_file`
 that is missing or breaks the rules above fails; an unknown field name or
 two overlays setting the same value is reported as a warning.
 
-In the web UI an overlay that fails the shape and type checks, or would
-leave any rule it targets malformed, is skipped for every target with a
-warning naming the file and the rule; the other overlays still apply. An overlaid
+In the web UI an overlay that does not fit a rule is skipped for that rule
+alone, with a warning (in the "Custom content problems" notice when the
+table cannot take it, or a line in the rule's details when its full file
+cannot be merged); the other overlays still apply. CI is what guarantees
+every overlay fits every target, so this is a safety net. An overlaid
 field carries a **Custom** tag in the rule details (fields with no section
 of their own are listed on a `Custom:` line), and an overlay written for an
 older release shows a note asking you to review it.

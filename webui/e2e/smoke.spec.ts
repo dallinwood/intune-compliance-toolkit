@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { unzipSync } from 'fflate'
+import { buildOverlayIndex } from '../src/logic/overlayIndex'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
@@ -1176,18 +1177,29 @@ test.describe('custom overlays', () => {
     targets: [{ rule: 'asd_ism.ism-1622', release: 'v2025.03.1' }],
     fields: { references: { microsoft: ['https://learn.microsoft.com/powershell/scripting/learn/ps101/01-getting-started'] } },
   }
-  const invalidOverlays = {
-    'c-tags-not-a-list.json': { ...titleOverlay, id: 'tags-not-a-list', fields: { tags: 'powershell' } },
-    'd-two-key-wrapper.json': { ...titleOverlay, id: 'two-key-wrapper', fields: { references: { $replace: {}, $append: [] } } },
-    'e-protected-field.json': { ...titleOverlay, id: 'protected-field', fields: { source: { release_tag: 'v1' } } },
-    // Passes the file checks but would break the table once merged.
-    'f-applicability-shape.json': { ...titleOverlay, id: 'applicability-shape', fields: { applicability: [{ target: null, version: null }] } },
+  // Both pass the overlay file checks, so the generated index lists them.
+  // The first fits no index entry (the table skips it at startup); the
+  // second only fails once the full rule is merged, when the rule is opened.
+  const indexLevelMisfit = {
+    ...titleOverlay,
+    id: 'applicability-shape',
+    fields: { applicability: [{ target: null, version: null }] },
   }
+  const ruleLevelMisfit = { ...titleOverlay, id: 'empty-remediation', fields: { remediation: { $replace: { Windows: {} } } } }
 
+  // Serves the overlays the way the published site does: a generated
+  // _index.json (built from the same code as the publish step) and the
+  // overlay files, which the page fetches only when a targeted rule opens.
   async function serveOverlays(page: Page, files: Record<string, unknown>) {
-    await page.route('**/baselines/_overlays/{_manifest.json,rules/*.json}', (route) => {
-      const fileName = new URL(route.request().url()).pathname.split('/').pop() ?? ''
-      const body = fileName === '_manifest.json' ? { files: Object.keys(files).sort() } : files[fileName]
+    const fileNames = Object.keys(files).sort()
+    const index = buildOverlayIndex(
+      fileNames.map((fileName) => ({ fileName, value: files[fileName] })),
+      () => {},
+    )
+    await page.route('**/baselines/_overlays/{_index.json,rules/*.json}', (route) => {
+      const url = new URL(route.request().url())
+      const fileName = url.pathname.split('/').pop() ?? ''
+      const body = fileName === '_index.json' ? index : files[fileName]
       if (body === undefined) return route.fulfill({ status: 404, body: 'Not found' })
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) })
     })
@@ -1244,19 +1256,40 @@ test.describe('custom overlays', () => {
     await expect(detail.getByTestId('custom-fields')).toHaveText('Custom: tags')
   })
 
-  test('an invalid overlay is skipped with a warning while the valid ones still apply', async ({ page }) => {
-    await serveOverlays(page, { 'a-title.json': titleOverlay, ...invalidOverlays })
+  test('startup reads only the overlay index; an overlay file is fetched when its rule opens', async ({ page }) => {
+    await serveOverlays(page, { 'a-title.json': titleOverlay })
+    const fetchedOverlayFiles: string[] = []
+    page.on('request', (request) => {
+      if (request.url().includes('/baselines/_overlays/rules/')) fetchedOverlayFiles.push(new URL(request.url()).pathname)
+    })
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+    const searchBox = page.getByPlaceholder('Search title or id…')
+    await searchBox.fill('every managed device')
+    await expect(page.locator('table tbody tr').filter({ hasText: CUSTOM_TITLE })).toHaveCount(1)
+    expect(fetchedOverlayFiles).toEqual([])
+
+    const detail = await openIsm1622(page)
+    await expect(detail.getByTestId('custom-fields')).toHaveText('Custom: tags')
+    expect(fetchedOverlayFiles).toEqual(['/baselines/_overlays/rules/a-title.json'])
+  })
+
+  test('a misfit overlay is skipped with a warning while the valid ones still apply', async ({ page }) => {
+    await serveOverlays(page, { 'a-title.json': titleOverlay, 'c-index-misfit.json': indexLevelMisfit, 'd-rule-misfit.json': ruleLevelMisfit })
     await page.goto('/')
     await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
 
     const notice = page.getByRole('status', { name: 'Custom content problems' })
-    for (const fileName of Object.keys(invalidOverlays)) await expect(notice).toContainText(fileName)
+    await expect(notice).toContainText('applicability-shape')
     await expect(page.getByRole('status', { name: 'Display name problems' })).toHaveCount(0)
 
     const detail = await openIsm1622(page)
     await expect(detail.getByTestId('custom-title')).toContainText(CUSTOM_TITLE)
     await expect(detail.getByTestId('custom-fields')).toHaveText('Custom: tags')
-    await expect(detail.getByRole('heading', { name: 'References' })).toHaveCount(0)
+    await expect(detail.getByTestId('skipped-overlay-note')).toHaveCount(2)
+    await expect(detail.getByTestId('skipped-overlay-note').filter({ hasText: 'empty-remediation' })).toHaveCount(1)
+    await expect(detail.getByRole('heading', { name: 'Remediation' })).toHaveCount(0)
   })
 
   test('with no overlays the details show no custom content', async ({ page }) => {

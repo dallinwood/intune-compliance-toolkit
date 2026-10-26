@@ -259,6 +259,43 @@ strings.
     with a download link, and a binary one as a download link only.
     Payloads are not bundled, so the generator does not read them.
 
+## 8. Overlay index (added 2026-10-26, maintainer decision)
+
+Fetching every overlay and every targeted rule at startup does not scale,
+so the app loads overlays lazily through a generated index.
+
+- **Generated file:** the publish step (`scripts/copy-baselines.mjs`)
+  writes `webui/public/baselines/_overlays/_index.json`, never committed,
+  in place of `_manifest.json`:
+  `{ schema_version: 1, overlays: [{ id, file, targets, index_fields }], by_rule: { <rule id>: [<overlay id>, ...] } }`.
+  Overlays are in sorted file-name order and `by_rule` lists keep that order.
+  A missing or empty `_overlays/rules/` gives empty `overlays` and `by_rule`.
+- **`index_fields`** holds only the overlay's `fields` that an index entry
+  carries (`title`, `assessment`, `applicability`, `section_path`,
+  `architecture`, `tags`, `odv`). `odv` keeps its wrapper and its top-level
+  keys with every value replaced by `true`, which is enough to recompute
+  `has_odv` and to apply the "a rule without an odv needs a complete one"
+  check exactly as the full merge does.
+- **Structural check:** the script parses each overlay with the app's own
+  `parseOverlay` (`webui/src/logic/overlayIndex.ts`) and skips, with a log
+  line, a file that is not valid JSON or a valid overlay shape, or reuses
+  an id. It does not run the merge; CI is the full gate.
+- **Startup:** the app fetches only `_index.json`, applies each overlay's
+  `index_fields` to its target index entries (same merge and shape checks,
+  `section` and `has_odv` recomputed) and reports problems in the "Custom
+  content problems" notice. There is no load-time dry run against full
+  rules.
+- **Opening a rule** (details, generator, export): the app looks up
+  `by_rule`, fetches the base rule and only those overlay files (cached),
+  merges them in `by_rule` order and runs the full shape checks. An overlay
+  that cannot be loaded or fails for that rule is dropped for that rule,
+  with a console warning and a line in the details.
+- **Accepted tradeoff:** a misfit overlay is no longer dropped globally up
+  front, so the table may show an overlaid value the opened rule then drops.
+  CI validates every overlay against every target before deploy, so this is
+  a safety net only.
+- `tools/overlays.py` does not read the index.
+
 ## Progress log
 
 - 2026-10-26: Design written from the maintainer's answers (no code yet).
@@ -271,3 +308,4 @@ strings.
 - 2026-10-26: Review fixes for section 7 (`fix: harden file reference paths and checks`). Every path segment after `baselines/` must match `^[A-Za-z0-9_-][A-Za-z0-9._-]*$` in the schema, CI and the UI, which closes percent-encoded dot segments, `?` and `#` (they passed every validator and the browser resolved them outside `baselines/`), and the UI also builds each URL from encoded segments and refuses one that resolves outside the published `baselines/` folder. Extensions are lowercase and case-sensitive, the schema ties the script extension to the language, and the shared cases run through the schema too. CI rejects a check script file using `$ODV` (the details and export do not read script files yet), an empty script, and a text file that is not UTF-8. Bundle generation now resolves only the macOS check's script files, so a missing remediation or Windows script cannot block a bundle.
 - 2026-10-26: Split the combined ASD Blueprint legacy features overlay and script into three, one per ISM control (ISM-1621 `RemovePowerShellV2`, ISM-1655 `RemoveDotNet35`, ISM-1654 `RemoveInternetExplorer`), so each control fails independently; section lines are byte-identical to the original script (`refactor: split the ASD Blueprint legacy features script per ISM control`).
 - 2026-10-26: Overlay files moved from `baselines/_overlays/*.json` to `baselines/_overlays/rules/*.json` (`refactor: keep overlay files under baselines/_overlays/rules`), matching the source folders' `rules/`, `scripts/`, `payloads/` layout. `_manifest.json` stays at `_overlays/_manifest.json` and lists bare file names; the loader adds `rules/`. `tools/overlays.py` defaults to the `rules/` folder. `overlayShape.test.ts` now loads the library once at describe level so its tests do no file IO (it had timed out at 5s under load). Earlier entries describe the flat path.
+- 2026-10-26: Section 8 implemented (`feat: load overlays lazily through a generated overlay index`). `_index.json` replaces `_manifest.json`; startup reads only the index and no overlay file or targeted rule; opening a rule fetches just its overlays. The load-time dry run (`overlaysFittingLibrary`) is gone, so a misfit overlay is skipped per rule instead of globally.

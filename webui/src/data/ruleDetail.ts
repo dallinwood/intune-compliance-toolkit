@@ -1,15 +1,17 @@
-import { applyOverlays, type OverlaidRule, type Overlay } from '../logic/overlays'
+import { applyOverlays, type OverlaidRule, type Overlay, type SkippedOverlay } from '../logic/overlays'
 import type { RuleRef } from '../logic/selectionEntry'
 import type { Rule } from '../types/library'
+import type { RuleOverlaySource } from './overlays'
 
 const importedCache = new Map<string, Promise<Rule>>()
 const overlaidCache = new Map<string, Promise<OverlaidRule>>()
-let ruleOverlays: Overlay[] = []
+const NO_OVERLAY_SOURCE: RuleOverlaySource = { overlayIdsFor: () => [], loadOverlay: () => Promise.reject(new Error('no overlay source')) }
+let overlaySource: RuleOverlaySource = NO_OVERLAY_SOURCE
 
 // Set once the library has loaded, before any rule is fetched. Every caller
 // of fetchRule (details, generator, export) then gets the overlaid rule.
-export function setRuleOverlays(overlays: Overlay[]): void {
-  ruleOverlays = overlays
+export function setRuleOverlays(source: RuleOverlaySource): void {
+  overlaySource = source
   overlaidCache.clear()
 }
 
@@ -62,15 +64,30 @@ export function fetchImportedRule(ref: RuleRef): Promise<Rule> {
   return cached(importedCache, ref, loadRule)
 }
 
+// Fetches only the overlays that target this rule. With no startup dry run
+// any more, an overlay that cannot be loaded or does not fit this rule is
+// dropped for this rule alone, with a console warning and a line in the
+// details (an accepted tradeoff: CI validates every overlay against every
+// target before deploy).
 async function loadOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
   const rule = await fetchImportedRule(ref)
-  const isTargeted = ruleOverlays.some((overlay) => overlay.targets.some((target) => target.rule === ref.id))
-  if (!isTargeted) return { rule, provenance: new Map(), applied: [], skipped: [] }
-  const overlaid = applyOverlays(rule, ruleOverlays, rule.source.release_tag)
-  // The load-time dry run drops misfits, so this only fires if the rule file
-  // changed or could not be checked then.
-  for (const skipped of overlaid.skipped) console.warn(`Custom content ${skipped.overlayId} was skipped: ${skipped.message}`)
-  return overlaid
+  const overlayIds = overlaySource.overlayIdsFor(ref.id)
+  if (overlayIds.length === 0) return { rule, provenance: new Map(), applied: [], skipped: [] }
+
+  const loadFailures: SkippedOverlay[] = []
+  const loaded = await Promise.all(
+    overlayIds.map((overlayId) =>
+      overlaySource.loadOverlay(overlayId).catch((error: unknown) => {
+        loadFailures.push({ overlayId, message: `${ref.id}: ${describeError(error)}` })
+        return null
+      }),
+    ),
+  )
+  const overlays = loaded.filter((overlay): overlay is Overlay => overlay !== null)
+  const overlaid = applyOverlays(rule, overlays, rule.source.release_tag)
+  const skipped = [...loadFailures, ...overlaid.skipped]
+  for (const entry of skipped) console.warn(`Custom content ${entry.overlayId} was skipped: ${entry.message}`)
+  return { ...overlaid, skipped }
 }
 
 export function fetchOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
