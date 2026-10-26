@@ -13,7 +13,7 @@ export function RuleBenchmarks({ applicability, custom = false }: { applicabilit
     <section aria-label="Benchmarks" className="space-y-1">
       <SectionHeading custom={custom}>Benchmarks</SectionHeading>
       {scopes.length === 0 ? (
-        <p className="text-xs text-slate-500 dark:text-muted-foreground italic">Not in a benchmark</p>
+        <p className="text-xs text-muted-foreground italic">Not in a benchmark</p>
       ) : (
         <div className="space-y-1.5 text-xs">
           {scopes.map((scope, scopePosition) => {
@@ -22,11 +22,11 @@ export function RuleBenchmarks({ applicability, custom = false }: { applicabilit
             return (
               <div key={scope.scopeKey}>
                 {scope.scopeLabel !== null && (
-                  <p id={scopeLabelId} className="font-medium text-slate-600 dark:text-zinc-300">
+                  <p id={scopeLabelId} className="font-medium text-foreground/80">
                     {scope.scopeLabel}
                   </p>
                 )}
-                <ul aria-labelledby={scope.scopeLabel === null ? undefined : scopeLabelId} className="flex flex-wrap gap-x-3 gap-y-0.5 text-slate-500 dark:text-muted-foreground">
+                <ul aria-labelledby={scope.scopeLabel === null ? undefined : scopeLabelId} className="flex flex-wrap gap-x-3 gap-y-0.5 text-muted-foreground">
                   {scope.benchmarks.map((benchmark) => (
                     <li key={benchmark}>{benchmark}</li>
                   ))}

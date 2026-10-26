@@ -18,7 +18,7 @@ import { RuleCheckSection } from './RuleCheckSection'
 import { RuleReferences } from './RuleReferences'
 import { RuleRemediationSection } from './RuleRemediationSection'
 
-const PANEL_CLASS = 'border-t border-slate-100 dark:border-border bg-slate-50 dark:bg-card p-4 text-sm'
+const PANEL_CLASS = 'border-t border-border bg-panel p-4 text-sm'
 const BREADCRUMB_SEPARATOR = ' › '
 
 // Only the parts the source provides: mSCP rules have neither, an ISM control
@@ -46,7 +46,7 @@ class DetailErrorBoundary extends Component<{ fallback: ReactNode; children: Rea
 }
 
 export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
-  const failedEntirely = <p className={`${PANEL_CLASS} text-red-600 dark:text-red-400`}>These details could not be displayed.</p>
+  const failedEntirely = <p className={`${PANEL_CLASS} text-destructive`}>These details could not be displayed.</p>
   return (
     <DetailErrorBoundary
       fallback={
@@ -76,10 +76,10 @@ function ImportedRuleDetail({ ruleRef }: { ruleRef: RuleRef }) {
 
 function RuleDetailFor({ ruleRef, ruleState, notice }: { ruleRef: RuleRef; ruleState: RuleLoadState; notice?: string }) {
   if (ruleState.status === 'loading') {
-    return <p className={`${PANEL_CLASS} text-slate-500 dark:text-muted-foreground`}>Loading details…</p>
+    return <p className={`${PANEL_CLASS} text-muted-foreground`}>Loading details…</p>
   }
   if (ruleState.status === 'error') {
-    return <p className={`${PANEL_CLASS} text-red-600 dark:text-red-400`}>Failed to load: {ruleState.message}</p>
+    return <p className={`${PANEL_CLASS} text-destructive`}>Failed to load: {ruleState.message}</p>
   }
   return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} notice={notice} />
 }
@@ -101,7 +101,7 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
   if (staleOverlays.length === 0 && overlaid.skipped.length === 0) return null
 
   return (
-    <div className="space-y-1 text-xs text-amber-800 dark:text-amber-300">
+    <div className="space-y-1 text-xs text-warning-foreground">
       {overlaid.skipped.map((skipped) => (
         <p key={skipped.overlayId} data-testid="skipped-overlay-note" className="break-words">
           Custom content ({skipped.overlayId}) could not be applied to this rule and was skipped: {skipped.message}
@@ -141,17 +141,17 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
 
   return (
     <div className={`space-y-4 ${PANEL_CLASS}`}>
-      {notice && <p className="text-xs break-words text-amber-800 dark:text-amber-300">{notice}</p>}
+      {notice && <p className="text-xs break-words text-warning-foreground">{notice}</p>}
       <OverlayNotes overlaid={overlaid} rule={rule} />
 
       {isCustom('title') && (
-        <p data-testid="custom-title" className="font-medium break-words text-slate-800 dark:text-foreground">
+        <p data-testid="custom-title" className="font-medium break-words text-foreground">
           {displayWithOdv(rule.title, odvValue)} <CustomTag className="ml-1 align-text-bottom" />
         </p>
       )}
 
       {(showBreadcrumb || revision) && (
-        <div className="space-y-0.5 text-xs text-slate-500 dark:text-muted-foreground">
+        <div className="space-y-0.5 text-xs text-muted-foreground">
           {showBreadcrumb && (
             <p data-testid="rule-breadcrumb" className="break-words">
               {rule.section_path.join(BREADCRUMB_SEPARATOR)}
@@ -183,18 +183,18 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
       <RuleReferences references={rule.references} custom={isCustom('references')} />
 
       {customLineFields.length > 0 && (
-        <p data-testid="custom-fields" className="text-xs break-words text-violet-700 dark:text-violet-300">
+        <p data-testid="custom-fields" className="text-xs break-words text-custom-foreground">
           Custom: {customLineFields.join(', ')}
         </p>
       )}
 
-      <p className="text-xs text-slate-500 dark:text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         From{' '}
-        <a className="text-blue-600 dark:text-blue-400 underline" href={source.upstream_url} target="_blank" rel="noreferrer">
+        <a className="text-link underline" href={source.upstream_url} target="_blank" rel="noreferrer">
           {termLabel(vocabularyIndex, 'sources', source.name)} {source.release_tag}
         </a>{' '}
         ({source.upstream_rule_id}), licensed{' '}
-        <a className="text-blue-600 dark:text-blue-400 underline" href={source.license.url} target="_blank" rel="noreferrer">
+        <a className="text-link underline" href={source.license.url} target="_blank" rel="noreferrer">
           {source.license.name}
         </a>
         , modified for this tool.

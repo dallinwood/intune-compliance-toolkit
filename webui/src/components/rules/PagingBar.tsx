@@ -21,7 +21,7 @@ export function PagingBar({ currentPage, pageCount, size, onPageChange, onSizeCh
   const isPaged = size !== 'all'
 
   return (
-    <nav aria-label="Pages" className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-slate-200 dark:border-border px-4 py-3 text-sm text-slate-600 dark:text-zinc-300">
+    <nav aria-label="Pages" className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-border px-4 py-3 text-sm text-foreground/80">
       {isPaged && (
         <div className="flex flex-wrap items-center gap-2">
           <Button type="button" variant="outline" size="icon-sm" aria-label="Previous page" disabled={currentPage <= 1} onClick={() => onPageChange(currentPage - 1)}>
@@ -46,7 +46,7 @@ export function PagingBar({ currentPage, pageCount, size, onPageChange, onSizeCh
             const nextSize = parsePageSize(event.target.value)
             if (nextSize !== null) onSizeChange(nextSize)
           }}
-          className="h-8 rounded-md border border-slate-300 dark:border-zinc-700 bg-white dark:bg-card px-2 text-sm text-slate-700 dark:text-zinc-200"
+          className="h-8 rounded-md border border-control-border bg-card px-2 text-sm text-foreground/90"
         >
           {PAGE_SIZES.map((option) => (
             <option key={String(option)} value={String(option)}>
@@ -90,7 +90,7 @@ function PageJumpInput({ currentPage, pageCount, onPageChange }: PageJumpInputPr
         onKeyDown={(event) => {
           if (event.key === 'Enter') jump()
         }}
-        className="h-8 w-16 rounded-md border border-slate-300 dark:border-zinc-700 bg-white dark:bg-card px-2 text-sm text-slate-700 dark:text-zinc-200 tabular-nums"
+        className="h-8 w-16 rounded-md border border-control-border bg-card px-2 text-sm text-foreground/90 tabular-nums"
       />
     </label>
   )

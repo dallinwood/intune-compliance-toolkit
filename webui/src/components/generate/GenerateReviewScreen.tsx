@@ -120,8 +120,8 @@ export function GenerateReviewScreen({
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-foreground">Review &amp; generate</h2>
-        <button type="button" onClick={onBack} className="text-xs text-slate-500 dark:text-muted-foreground underline hover:text-slate-700 dark:hover:text-foreground">
+        <h2 className="text-lg font-semibold text-foreground">Review &amp; generate</h2>
+        <button type="button" onClick={onBack} className="text-xs text-muted-foreground underline hover:text-foreground">
           Back to browse
         </button>
       </div>
@@ -143,30 +143,30 @@ function ReviewBody({
 }) {
   if (enabledCount === 0) {
     return (
-      <p className="text-slate-500 dark:text-muted-foreground">
+      <p className="text-muted-foreground">
         No rules selected.{' '}
-        <button type="button" onClick={onBack} className="text-blue-600 dark:text-blue-400 underline">
+        <button type="button" onClick={onBack} className="text-link underline">
           Go back and select some
         </button>
         .
       </p>
     )
   }
-  if (state.status === 'loading') return <p className="text-slate-500 dark:text-muted-foreground">Loading selected rules…</p>
-  if (state.status === 'error') return <p className="text-red-600 dark:text-red-400">Could not prepare the bundle: {state.message}</p>
+  if (state.status === 'loading') return <p className="text-muted-foreground">Loading selected rules…</p>
+  if (state.status === 'error') return <p className="text-destructive">Could not prepare the bundle: {state.message}</p>
 
   const { scriptedCount, chunks, manual, blocked, overlayIssueRuleIds } = state
 
   return (
     <>
       {overlayIssueRuleIds.length > 0 && (
-        <p data-testid="overlay-issues-note" className="mb-4 text-xs break-words text-amber-800 dark:text-amber-300">
+        <p data-testid="overlay-issues-note" className="mb-4 text-xs break-words text-warning-foreground">
           Custom content for {overlayIssueRuleIds.length} rule(s) could not be applied; they are shown as imported:{' '}
           {overlayIssueRuleIds.map(upstreamRuleId).join(', ')}.
         </p>
       )}
       {blocked.length > 0 && (
-        <div role="alert" className="mb-4 rounded border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-3 text-amber-900 dark:text-amber-200">
+        <div role="alert" className="mb-4 rounded border border-warning-border bg-warning p-3 text-warning-foreground">
           <p className="mb-1 font-medium">Fix these before generating:</p>
           <ul className="list-disc space-y-1 pl-5 text-xs">
             {blocked.map((entry) => (
@@ -179,7 +179,7 @@ function ReviewBody({
         </div>
       )}
 
-      <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-slate-600 dark:text-zinc-300">
+      <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-foreground/80">
         <span>{blocked.length > 0 ? 'Bundles are packed once nothing is blocked' : `${chunks.length} bundle(s)`}</span>
         <span>{scriptedCount} scripted rule(s)</span>
         <span>{manual.length} rule(s) need manual attestation</span>
@@ -210,8 +210,8 @@ function ReviewBody({
 
 function DeploymentNote() {
   return (
-    <div className="mb-4 rounded border border-slate-200 dark:border-border bg-slate-50 dark:bg-card p-3 text-xs text-slate-600 dark:text-zinc-300">
-      <h3 className="mb-1 text-sm font-medium text-slate-800 dark:text-foreground">Deploying in Intune</h3>
+    <div className="mb-4 rounded border border-border bg-panel p-3 text-xs text-foreground/80">
+      <h3 className="mb-1 text-sm font-medium text-foreground">Deploying in Intune</h3>
       <p>
         For each bundle, add its <span className="font-mono">-discovery.sh</span> under Endpoint security &gt; Device
         compliance &gt; Scripts (macOS) with "Run this script using the logged on credentials" set to No, because the

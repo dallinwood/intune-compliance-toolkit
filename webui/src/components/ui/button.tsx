@@ -18,7 +18,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         // The dark primary is a button fill, too dim to read as text on the dark page.
-        link: "text-primary underline-offset-4 hover:underline dark:text-sky-400",
+        link: "text-link underline-offset-4 hover:underline",
       },
       size: {
         default:

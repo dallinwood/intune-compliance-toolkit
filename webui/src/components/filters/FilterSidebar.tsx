@@ -143,7 +143,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   const { canScrollUp, canScrollDown } = useScrollEdges(scrollAreaRef)
 
   return (
-    <aside className="flex max-h-64 w-full flex-col border-b border-slate-200 dark:border-border text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
+    <aside className="flex max-h-64 w-full flex-col border-b border-border text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
       <div className="p-4 pb-3">
         <SearchBox value={filters.search} onChange={filters.setSearch} />
       </div>
@@ -277,7 +277,7 @@ function SearchBox({ value, onChange }: { value: string; onChange: (value: strin
           type="button"
           aria-label="Clear search"
           onClick={clearAndRefocus}
-          className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded p-0.5 text-slate-500 dark:text-muted-foreground hover:bg-slate-200 dark:hover:bg-zinc-700 hover:text-slate-900 dark:hover:text-foreground focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none"
+          className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-muted-foreground focus-visible:outline-none"
         >
           <X className="size-3.5" aria-hidden="true" />
         </button>
@@ -297,7 +297,7 @@ function ScrollIndicator({ direction, visible }: { direction: 'up' | 'down'; vis
         visible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <Chevron className="size-4 text-slate-400 dark:text-muted-foreground" />
+      <Chevron className="size-4 text-muted-foreground" />
     </div>
   )
 }
@@ -308,7 +308,7 @@ function FacetGroup({ title, children }: { title: string; children: ReactNode })
   const headingId = useId()
   return (
     <div className="mb-4">
-      <h2 id={headingId} className="mb-1 text-xs font-semibold tracking-wide text-slate-400 dark:text-muted-foreground uppercase">
+      <h2 id={headingId} className="mb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         {title}
       </h2>
       <div role="group" aria-labelledby={headingId}>
@@ -349,15 +349,15 @@ function FacetOption({
           htmlFor={id}
           className={
             disabled
-              ? 'inline text-sm leading-4 font-normal text-slate-400 dark:text-muted-foreground line-through'
+              ? 'inline text-sm leading-4 font-normal text-muted-foreground line-through'
               : isSystemGenerated
-                ? 'inline text-sm leading-4 font-normal text-slate-500 dark:text-muted-foreground'
+                ? 'inline text-sm leading-4 font-normal text-muted-foreground'
                 : 'inline text-sm leading-4 font-normal'
           }
         >
           {label}
         </Label>{' '}
-        <span aria-hidden="true" className="text-sm font-normal text-slate-400 dark:text-muted-foreground">
+        <span aria-hidden="true" className="text-sm font-normal text-muted-foreground">
           ({count})
         </span>
       </div>

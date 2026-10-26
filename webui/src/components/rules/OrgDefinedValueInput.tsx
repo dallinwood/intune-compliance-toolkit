@@ -145,13 +145,13 @@ export function OrgDefinedValueInput({
 
   return (
     <div className="space-y-1.5">
-      <Label htmlFor={inputId} className="text-sm font-normal text-slate-700 dark:text-zinc-200">
+      <Label htmlFor={inputId} className="text-sm font-normal text-foreground/90">
         {odv.description}
       </Label>
       {field}
       <div id={messageId} className="space-y-0.5 text-xs">
         {storedValue !== null && storedValueProblem !== null && (
-          <div role="alert" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-red-600 dark:text-red-400">
+          <div role="alert" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-destructive">
             <p className="break-words">
               Saved value '{shortened(storedValue, HINT_VALUE_LENGTH)}' is invalid: {storedValueProblem} Generation is
               blocked until you fix or clear it.
@@ -162,17 +162,17 @@ export function OrgDefinedValueInput({
           </div>
         )}
         {showTypedError && (
-          <p role="alert" className="text-red-600 dark:text-red-400">
+          <p role="alert" className="text-destructive">
             {error} {storedValueIsUsable && storedValue !== null && <>Not saved; still using {shortened(storedValue, HINT_VALUE_LENGTH)}.</>}
             {storedValueProblem !== null && <>Not saved.</>}
           </p>
         )}
         {storedValue === null && (
-          <p className="break-words text-slate-500 dark:text-muted-foreground">
+          <p className="break-words text-muted-foreground">
             Using recommended value: {shortened(odv.recommended, HINT_VALUE_LENGTH)}
           </p>
         )}
-        {hint && <p className="text-slate-400 dark:text-muted-foreground">{hint}</p>}
+        {hint && <p className="text-muted-foreground">{hint}</p>}
       </div>
       {quickPicks.length > 0 && (
         <div className="flex flex-wrap items-center gap-1">

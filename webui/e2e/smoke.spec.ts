@@ -730,7 +730,7 @@ test('the None facet options read as system-generated', async ({ page }) => {
     const noneCheckbox = page.getByRole('group', { name: facetTitle, exact: true }).getByRole('checkbox', { name: 'None', exact: true })
     const noneLabel = page.getByRole('group', { name: facetTitle, exact: true }).locator('label', { hasText: /^None$/ })
     await expect(noneCheckbox).toBeVisible()
-    await expect(noneLabel).toHaveClass(/text-slate-500/)
+    await expect(noneLabel).toHaveClass(/(^|\s)text-muted-foreground(\s|$)/)
     await expect(noneLabel).not.toHaveClass(/(^|\s)italic(\s|$)/)
   }
   await expect(page.getByRole('group', { name: 'Source', exact: true }).locator('label.italic')).toHaveCount(0)

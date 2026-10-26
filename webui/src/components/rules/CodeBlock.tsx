@@ -36,7 +36,7 @@ function shortenedValue(text: string): string {
 // Shown under a script or payload that is displayed raw with $ODV in it.
 export function OdvNote({ odvValue }: { odvValue: OrgDefinedValue | null }) {
   return (
-    <p className="text-xs text-slate-500 dark:text-muted-foreground">
+    <p className="text-xs text-muted-foreground">
       $ODV stands for the organization-defined value, currently{' '}
       {shortenedValue(displayWithOdv(ODV_PLACEHOLDER, odvValue))}.
     </p>
@@ -45,11 +45,11 @@ export function OdvNote({ odvValue }: { odvValue: OrgDefinedValue | null }) {
 
 // Shown under a block whose $ODV has been replaced with the value.
 function OdvSubstitutionNote({ value }: { value: OrgDefinedValue }) {
-  return <p className="text-xs text-slate-500 dark:text-muted-foreground">Shown with the organization-defined value: {shortenedValue(String(value))}</p>
+  return <p className="text-xs text-muted-foreground">Shown with the organization-defined value: {shortenedValue(String(value))}</p>
 }
 
 function OdvExportNote() {
-  return <p className="text-xs text-slate-500 dark:text-muted-foreground">Shown with the organization-defined value set as ODV, as the generated script does.</p>
+  return <p className="text-xs text-muted-foreground">Shown with the organization-defined value set as ODV, as the generated script does.</p>
 }
 
 // A block of shipped code that may contain $ODV. codeOdv holds the values safe to
@@ -95,7 +95,7 @@ export function OdvCodeBlock({
 }
 
 export function SectionHeading({ children, custom = false }: { children: string; custom?: boolean }) {
-  const heading = <h5 className="text-xs font-semibold tracking-wide text-slate-500 dark:text-muted-foreground uppercase">{children}</h5>
+  const heading = <h5 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{children}</h5>
   if (!custom) return heading
   return (
     <div className="flex items-center gap-2">
@@ -107,5 +107,5 @@ export function SectionHeading({ children, custom = false }: { children: string;
 
 // Heads one target's block inside the Check or Remediation section.
 export function TargetHeading({ children }: { children: string }) {
-  return <p className="text-xs font-semibold text-slate-700 dark:text-zinc-200">{children}</p>
+  return <p className="text-xs font-semibold text-foreground/90">{children}</p>
 }

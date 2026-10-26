@@ -116,13 +116,13 @@ export function ExportImportControls({ rows, sources }: { rows: RuleRow[]; sourc
           component forwards the ref/click the same way a real <input> does. */}
       <input ref={fileInputRef} type="file" accept="application/json" className="hidden" onChange={handleFileChosen} />
       {message && (
-        <div role="status" className={`max-w-md text-xs ${message.isError ? 'text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-muted-foreground'}`}>
+        <div role="status" className={`max-w-md text-xs ${message.isError ? 'text-destructive' : 'text-muted-foreground'}`}>
           <span>{message.summary}</span>{' '}
-          <button type="button" onClick={() => setMessage(null)} className="underline hover:text-slate-700 dark:hover:text-foreground">
+          <button type="button" onClick={() => setMessage(null)} className="underline hover:text-foreground">
             Dismiss
           </button>
           {message.details.length > 0 && (
-            <ul className="mt-1 list-disc pl-4 text-amber-700 dark:text-amber-400">
+            <ul className="mt-1 list-disc pl-4 text-warning-foreground">
               {message.details.map((detail) => (
                 <li key={detail} className="break-words">
                   {detail}

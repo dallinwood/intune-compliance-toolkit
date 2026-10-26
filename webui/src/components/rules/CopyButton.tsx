@@ -11,8 +11,9 @@ const FAILURE_MESSAGES: Record<Exclude<CopyOutcome, 'copied'>, string> = {
 }
 
 const TONE_CLASSES = {
-  dark: 'text-slate-300 hover:bg-slate-700 hover:text-white',
-  light: 'text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 hover:text-slate-900 dark:hover:text-foreground',
+  // The dark tone sits on a code block, which stays dark in both themes.
+  dark: 'text-slate-300 hover:bg-slate-700 hover:text-white focus-visible:ring-blue-400',
+  light: 'text-foreground/80 hover:bg-foreground/10 hover:text-foreground focus-visible:ring-muted-foreground',
 } as const
 
 type CopyState = { status: 'idle' } | { status: 'copied' } | { status: 'failed'; outcome: Exclude<CopyOutcome, 'copied'> }
@@ -40,7 +41,7 @@ export function CopyButton({ text, tone = 'dark' }: { text: string; tone?: keyof
         type="button"
         aria-label="Copy code"
         onClick={copy}
-        className={`absolute top-1 right-1 rounded p-1 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:outline-none ${TONE_CLASSES[tone]}`}
+        className={`absolute top-1 right-1 rounded p-1 focus-visible:ring-2 focus-visible:outline-none ${TONE_CLASSES[tone]}`}
       >
         {state.status === 'copied' ? <Check aria-hidden className="size-4" /> : <Copy aria-hidden className="size-4" />}
       </button>
@@ -48,7 +49,7 @@ export function CopyButton({ text, tone = 'dark' }: { text: string; tone?: keyof
         {state.status === 'copied' ? 'Copied' : (failureMessage ?? '')}
       </span>
       {failureMessage && (
-        <span aria-hidden className="absolute top-8 right-1 left-1 rounded bg-amber-100 dark:bg-amber-950 px-2 py-1 text-xs text-amber-900 dark:text-amber-200 shadow">
+        <span aria-hidden className="absolute top-8 right-1 left-1 rounded bg-warning px-2 py-1 text-xs text-warning-foreground shadow">
           {failureMessage}
         </span>
       )}

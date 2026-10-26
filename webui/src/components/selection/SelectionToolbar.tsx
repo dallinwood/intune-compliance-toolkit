@@ -19,8 +19,8 @@ export function SelectionToolbar({
   const clearAll = useSelectionStore((store) => store.clearAll)
 
   return (
-    <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-muted-foreground">
-      <span className="font-medium text-slate-700 dark:text-zinc-200">{selectedCount} selected</span>
+    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+      <span className="font-medium text-foreground/90">{selectedCount} selected</span>
       {selectedCount > 0 && (
         <Button type="button" variant="link" size="xs" onClick={clearAll}>
           Clear selection
