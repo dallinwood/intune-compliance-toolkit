@@ -37,23 +37,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipPrivacySetup').js\nEOS"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "string",
-          "value": "true"
+          "value": "PASS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipPrivacySetup').js\nEOS"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"Privacy\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"Privacy\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The prompt for Privacy Setup services during Setup Assistant _MUST_ be disabled.\n\nOrganizations _MUST_ apply organization-wide configuration settings. The macOS Privacy Setup services prompt guides new users through enabling their own specific privacy settings; this is not essential and, therefore, _MUST_ be disabled to prevent against the risk of individuals electing privacy settings with the potential to override organization-wide settings.\n",
@@ -123,38 +126,45 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {
-      "15.0": [
+    "macOS": {
+      "payloads": [
         {
-          "PayloadContent": [
+          "data": [
             {
-              "SkipPrivacySetup": true
+              "PayloadContent": [
+                {
+                  "SkipSetupItems": [
+                    "Privacy"
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.SetupAssistant.managed"
             }
           ],
-          "PayloadType": "com.apple.SetupAssistant.managed"
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "SkipPrivacySetup": true
+                }
+              ],
+              "PayloadType": "com.apple.SetupAssistant.managed"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": [
+            "15.0"
+          ]
         }
-      ]
-    },
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "SkipSetupItems": [
-              "Privacy"
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.SetupAssistant.managed"
-      }
-    ]
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

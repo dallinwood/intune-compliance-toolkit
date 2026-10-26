@@ -51807,6 +51807,6 @@
       "title": "The use of a Pre-Shared Key as a fallback authentication method for MACsec is disabled."
     }
   ],
-  "schema_version": 4,
+  "schema_version": 5,
   "source": "asd_ism"
 }

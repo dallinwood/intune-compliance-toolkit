@@ -37,23 +37,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "/usr/bin/find /Library -type d -perm -002 ! -perm -1000 ! -xattrname com.apple.rootless 2>/dev/null | /usr/bin/wc -l | /usr/bin/xargs"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "integer",
           "value": 0
         },
-        "shell": "/usr/bin/find /Library -type d -perm -002 ! -perm -1000 ! -xattrname com.apple.rootless 2>/dev/null | /usr/bin/wc -l | /usr/bin/xargs"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+        "shell": "/usr/bin/find /Library -type d -perm -002 ! -perm -1000 ! -xattrname com.apple.rootless 2>/dev/null | /usr/bin/grep -vE \"/Library/AppStore\" | /usr/bin/wc -l | /usr/bin/xargs"
       },
-      "shell": "/usr/bin/find /Library -type d -perm -002 ! -perm -1000 ! -xattrname com.apple.rootless 2>/dev/null | /usr/bin/grep -vE \"/Library/AppStore\" | /usr/bin/wc -l | /usr/bin/xargs"
+      "language": "bash"
     }
   },
   "discussion": "Folders in /System/Volumes/Data/Library _MUST_ not be world-writable.\n\nNOTE: Some vendors are known to create world-writable folders to the System Library folder. You may need to add more exclusions to this check and fix to match your environment.\n",
@@ -98,16 +101,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "IFS=$'\\n'\nfor libPermissions in $(/usr/bin/find /Library -type d -perm -002 ! -perm -1000 ! -xattrname com.apple.rootless 2>/dev/null); do\n  /bin/chmod -R o-w \"$libPermissions\"\ndone"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "IFS=$'\\n'\nfor libPermissions in $(/usr/bin/find /Library -type d -perm -002 ! -perm -1000 ! -xattrname com.apple.rootless 2>/dev/null); do\n  /bin/chmod -R o-w \"$libPermissions\"\ndone",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

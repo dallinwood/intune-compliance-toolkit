@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "No"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "No"
+        },
+        "shell": "/usr/sbin/system_profiler SPStorageDataType | /usr/bin/awk '/Mount Point: \\/$/{x=NR+2}(NR==x){print $2}'"
       },
-      "shell": "/usr/sbin/system_profiler SPStorageDataType | /usr/bin/awk '/Mount Point: \\/$/{x=NR+2}(NR==x){print $2}'"
+      "language": "bash"
     }
   },
   "discussion": "The System volume _MUST_ be mounted as read-only in order to ensure that configurations critical to the integrity of the macOS have not been compromised. System Integrity Protection (SIP) will prevent the system volume from being mounted as writable.\n\nNOTE: The system volume is read only by default in macOS.\n",
@@ -65,16 +68,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE: To remount the System volume as Read Only, rebooting the computer will mount it as Read Only.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE: To remount the System volume as Read Only, rebooting the computer will mount it as Read Only.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

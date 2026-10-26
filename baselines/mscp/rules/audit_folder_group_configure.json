@@ -77,14 +77,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "/bin/ls -dn $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $4}'"
       },
-      "shell": "/bin/ls -dn $(/usr/bin/grep '^dir' /etc/security/audit_control | /usr/bin/awk -F: '{print $2}') | /usr/bin/awk '{print $4}'"
+      "language": "bash"
     }
   },
   "discussion": "Audit log files _MUST_ have the group set to wheel.\n\nThe audit service _MUST_ be configured to create log files with the correct group ownership to prevent normal users from reading audit logs.\n\nAudit logs contain sensitive data about the system and users. If log files are set to be readable and writable only by system administrators, the risk is mitigated.\n",
@@ -176,16 +179,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/chgrp wheel /var/audit"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/chgrp wheel /var/audit",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "audit"
   ],

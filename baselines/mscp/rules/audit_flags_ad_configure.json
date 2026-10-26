@@ -65,14 +65,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'"
       },
-      "shell": "/usr/bin/awk -F':' '/^flags/ { print $NF }' /etc/security/audit_control | /usr/bin/tr ',' '\\n' | /usr/bin/grep -Ec 'ad'"
+      "language": "bash"
     }
   },
   "discussion": "The auditing system _MUST_ be configured to flag administrative action (ad) events.\n\nAdministrative action events include changes made to the system (e.g. modifying authentication policies). If audit records do not include ad events, it is difficult to identify incidents and to correlate incidents to subsequent events.\n\nAudit records can be generated from various components within the information system (e.g., via a module or policy filter).\n\nThe information system audits the execution of privileged functions.\n\nNOTE: We recommend changing the line \"43127:AUE_MAC_SYSCALL:mac_syscall(2):ad\" to \"43127:AUE_MAC_SYSCALL:mac_syscall(2):zz\" in the file /etc/security/audit_event. This will prevent sandbox violations from being audited by the ad flag.\n",
@@ -197,16 +200,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/grep -qE \"^flags.*[^-]ad\" /etc/security/audit_control || /usr/bin/sed -i.bak '/^flags/ s/$/,ad/' /etc/security/audit_control; /usr/sbin/audit -s"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/grep -qE \"^flags.*[^-]ad\" /etc/security/audit_control || /usr/bin/sed -i.bak '/^flags/ s/$/,ad/' /etc/security/audit_control; /usr/sbin/audit -s",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "audit"
   ],

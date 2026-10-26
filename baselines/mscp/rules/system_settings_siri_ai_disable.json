@@ -12,14 +12,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.ironwood.support\"); (ObjC.unwrap(s.objectForKey(\"allowSiri3489\")) == false && s.objectIsForcedForKey(\"allowSiri3489\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.ironwood.support\"); (ObjC.unwrap(s.objectForKey(\"allowSiri3489\")) == false && s.objectIsForcedForKey(\"allowSiri3489\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "Support for Siri and Siri AI is non-essential and _MUST_ be disabled to prevent organizational data from being synchronized to Apple servers.\n\nApple's Siri service does not provide an organization with enough control over the storage and access of data, and, therefore, automated synchronization _MUST_ be controlled by an organization approved service. Apple Intelligence features such as Siri AI that use off device AI _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.\n\n[NOTE]\n=====\nApple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.ironwood.support with the key allowSiri3489 will also block the use of SiriAI.\n=====\n\n[NOTE]\n=====\nDisabling the use of SiriAI may also disable the use of other Apple Intelligence features that use SiriAI.\n=====\n",
@@ -84,29 +87,36 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "AllowSiriAI",
-      "ddm_value": false,
-      "declarationtype": "com.apple.configuration.siri.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowSiri3489": false
-          }
-        ],
-        "PayloadType": "com.apple.ironwood.support"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowSiri3489": false
+                }
+              ],
+              "PayloadType": "com.apple.ironwood.support"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "AllowSiriAI",
+            "ddm_value": false,
+            "declarationtype": "com.apple.configuration.siri.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

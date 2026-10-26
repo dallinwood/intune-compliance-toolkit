@@ -77,23 +77,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -30d \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "integer",
           "value": 1
         },
-        "shell": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -30d \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+        "shell": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi"
       },
-      "shell": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi"
+      "language": "bash"
     }
   },
   "discussion": "Make sure Software Update is updated and current.\n\nlink:https://support.apple.com/en-us/108382[Update macOS on Mac] or if enrolled in an MDM consult your MDM's documentation for automated methods.\n",
@@ -188,21 +191,32 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": "NOTE: See discussion on how to install software updates.",
-        "shell": null
-      }
-    },
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE - This will apply to the whole system",
-      "shell": "/usr/sbin/softwareupdate -i -a"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE - This will apply to the whole system",
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/sbin/softwareupdate -i -a",
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": "NOTE: See discussion on how to install software updates.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "26.0"
+          ]
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

@@ -49,14 +49,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "/usr/sbin/nvram -p | /usr/bin/grep -c \"amfi_get_out_of_my_way=1\""
       },
-      "shell": "/usr/sbin/nvram -p | /usr/bin/grep -c \"amfi_get_out_of_my_way=1\""
+      "language": "bash"
     }
   },
   "discussion": "Mobile file integrity _MUST_ be enabled.",
@@ -102,16 +105,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/sbin/nvram boot-args=\"\""
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/sbin/nvram boot-args=\"\"",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

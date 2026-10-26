@@ -45,14 +45,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "bl_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-bl-corner 2>/dev/null)\"\ntl_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tl-corner 2>/dev/null)\"\ntr_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tr-corner 2>/dev/null)\"\nbr_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-br-corner 2>/dev/null)\"\n\nif [[ \"$bl_corner\" != \"6\" ]] && [[ \"$tl_corner\" != \"6\" ]] && [[ \"$tr_corner\" != \"6\" ]] && [[ \"$br_corner\" != \"6\" ]]; then\n  echo \"0\"\nfi"
       },
-      "shell": "bl_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-bl-corner 2>/dev/null)\"\ntl_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tl-corner 2>/dev/null)\"\ntr_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tr-corner 2>/dev/null)\"\nbr_corner=\"$(/usr/bin/defaults read /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-br-corner 2>/dev/null)\"\n\nif [[ \"$bl_corner\" != \"6\" ]] && [[ \"$tl_corner\" != \"6\" ]] && [[ \"$tr_corner\" != \"6\" ]] && [[ \"$br_corner\" != \"6\" ]]; then\n  echo \"0\"\nfi"
+      "language": "bash"
     }
   },
   "discussion": "Hot corners _MUST_ be secured.\n\nThe information system conceals, via the session lock, information previously visible on the display with a publicly viewable image. Although hot corners can be used to initiate a session lock or to launch useful applications, they can also be configured to disable an automatic session lock from initiating. Such a configuration introduces the risk that a user might forget to manually lock the screen before stepping away from the computer.\n\n[NOTE]\n====\nThe check and fix are for the last logged in user. To get the last logged in user, run the following.\n[source,bash]\n-  CURRENT_USER=$( /usr/bin/defaults read /Library/Preferences/com.apple.loginwindow lastUserName )\n-  ====\n",
@@ -108,16 +111,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-bl-corner 2>/dev/null\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tl-corner 2>/dev/null\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tr-corner 2>/dev/null\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-br-corner 2>/dev/null"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-bl-corner 2>/dev/null\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tl-corner 2>/dev/null\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-tr-corner 2>/dev/null\n/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults delete /Users/\"$CURRENT_USER\"/Library/Preferences/com.apple.dock wvous-br-corner 2>/dev/null",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

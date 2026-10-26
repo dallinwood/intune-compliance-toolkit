@@ -35,14 +35,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "Yes"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "Yes"
+        },
+        "shell": "fail=$(/usr/sbin/diskutil list internal | /usr/bin/grep \"APFS Volume\" | /usr/bin/awk '{print $NF}' | /usr/bin/xargs -n1 /usr/sbin/diskutil info 2>/dev/null | /usr/bin/awk '\n  /Volume Name:/{name=$0; sub(/^[ \\t]*Volume Name:[ \\t]*/,\"\",name)}\n  /FileVault:/{\n    if ($2==\"No\" && name !~ /^(Preboot|Recovery|VM)$/) {\n      if (list==\"\") list=name; else list=list \", \" name\n    }\n  }\n  END{print list}')\nif [ -z \"$fail\" ]; then\n  /bin/echo \"Yes\"\nelse\n  /bin/echo \"Unencrypted internal user APFS volumes: $fail\"\nfi"
       },
-      "shell": "fail=$(/usr/sbin/diskutil list internal | /usr/bin/grep \"APFS Volume\" | /usr/bin/awk '{print $NF}' | /usr/bin/xargs -n1 /usr/sbin/diskutil info 2>/dev/null | /usr/bin/awk '\n  /Volume Name:/{name=$0; sub(/^[ \\t]*Volume Name:[ \\t]*/,\"\",name)}\n  /FileVault:/{\n    if ($2==\"No\" && name !~ /^(Preboot|Recovery|VM)$/) {\n      if (list==\"\") list=name; else list=list \", \" name\n    }\n  }\n  END{print list}')\nif [ -z \"$fail\" ]; then\n  /bin/echo \"Yes\"\nelse\n  /bin/echo \"Unencrypted internal user APFS volumes: $fail\"\nfi"
+      "language": "bash"
     }
   },
   "discussion": "All internal user storage APFS volumes _MUST_ be encrypted.\n\nWhile FileVault protects the boot volume, data may be copied to other attached internal storage and reduce the protection afforded by FileVault. All internal APFS volumes that carry user data and do not have a specific role (Preboot, Recovery, VM) _MUST_ be encrypted to protect user data from loss or tampering.\n",
@@ -76,16 +79,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "Use Disk Utility to erase a user disk and format as APFS (Encrypted).\n\nNOTE: APFS Encrypted disks will be described as \"FileVault\" whether they are the boot volume or not.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "Use Disk Utility to erase a user disk and format as APFS (Encrypted).\n\nNOTE: APFS Encrypted disks will be described as \"FileVault\" whether they are the boot volume or not.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

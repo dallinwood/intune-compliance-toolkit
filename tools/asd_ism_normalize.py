@@ -1,4 +1,4 @@
-"""Convert ASD's ISM OSCAL catalog into the project's v4 rule JSON shape."""
+"""Convert ASD's ISM OSCAL catalog into the project's v5 rule JSON shape."""
 
 import re
 

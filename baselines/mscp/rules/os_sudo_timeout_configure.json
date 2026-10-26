@@ -69,14 +69,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Authentication timestamp timeout: $ODV.0 minutes\""
       },
-      "shell": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Authentication timestamp timeout: $ODV.0 minutes\""
+      "language": "bash"
     }
   },
   "discussion": "The file /etc/sudoers _MUST_ include a timestamp_timeout of $ODV.\n",
@@ -162,21 +165,32 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": null,
-        "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV\" >> /etc/sudoers.d/mscp\n/bin/chmod 440 /etc/sudoers.d/mscp"
-      }
-    },
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV\" >> /etc/sudoers.d/mscp"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV\" >> /etc/sudoers.d/mscp",
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV\" >> /etc/sudoers.d/mscp\n/bin/chmod 440 /etc/sudoers.d/mscp",
+          "versions": [
+            "26.0"
+          ]
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

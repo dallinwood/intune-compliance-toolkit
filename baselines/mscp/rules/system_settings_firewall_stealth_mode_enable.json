@@ -57,14 +57,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n.objectForKey('EnableStealthMode').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n.objectForKey('EnableStealthMode').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Firewall Stealth Mode _MUST_ be enabled.\n\nWhen stealth mode is enabled, the Mac will not respond to any probing requests, and only requests from authorized applications will still be authorized.\n\n[IMPORTANT]\n====\nEnabling firewall stealth mode may prevent certain remote mechanisms used for maintenance and compliance scanning from properly functioning. Information System Security Officers (ISSOs) are advised to first fully weigh the potential risks posed to their organization before opting not to enable stealth mode.\n====\n",
@@ -140,28 +143,38 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "EnableStealthMode": true
-          },
-          {
-            "EnableFirewall": true
-          }
-        ],
-        "PayloadType": "com.apple.security.firewall"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "EnableStealthMode": true
+                },
+                {
+                  "EnableFirewall": true
+                }
+              ],
+              "PayloadType": "com.apple.security.firewall"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/defaults write /Library/Preferences/com.apple.alf stealthenabled -int 1",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

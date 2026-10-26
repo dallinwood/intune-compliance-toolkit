@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.objectForKey('DisableFDEAutoLogin').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.objectForKey('DisableFDEAutoLogin').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "If FileVault is enabled, automatic login _MUST_ be disabled, so that both FileVault and login window authentication are required.\n\nThe default behavior of macOS when FileVault is enabled is to automatically log in to the computer once successfully passing your FileVault credentials.\n\nNOTE: DisableFDEAutoLogin does not have to be set on Apple Silicon based macOS systems that are smartcard enforced as smartcards are available at pre-boot.\n",
@@ -110,25 +113,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "DisableFDEAutoLogin": true
-          }
-        ],
-        "PayloadType": "com.apple.loginwindow"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "DisableFDEAutoLogin": true
+                }
+              ],
+              "PayloadType": "com.apple.loginwindow"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

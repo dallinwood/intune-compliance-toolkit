@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowSafariSummary\")) == false && s.objectIsForcedForKey(\"allowSafariSummary\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowSafariSummary\")) == false && s.objectIsForcedForKey(\"allowSafariSummary\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "Apple Intelligence features such as Safari Reader Summary that use off device AI _MUST_ be disabled.",
@@ -106,33 +109,40 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "Apps",
-      "ddm_value": {
-        "Safari": {
-          "AllowSummary": false
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowSafariSummary": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "Apps",
+            "ddm_value": {
+              "Safari": {
+                "AllowSummary": false
+              }
+            },
+            "declarationtype": "com.apple.configuration.intelligence.settings"
+          },
+          "kind": "ddm",
+          "versions": null
         }
-      },
-      "declarationtype": "com.apple.configuration.intelligence.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowSafariSummary": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      }
-    ]
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

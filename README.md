@@ -148,13 +148,34 @@ Put each overlay in its own `overlays/<name>.json`:
     "references": { "microsoft": ["https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_language_modes"] },
     "tags": ["powershell"],
     "check": {
-      "default": {
-        "shell": "$ExecutionContext.SessionState.LanguageMode",
-        "result": { "type": "string", "value": "ConstrainedLanguage" },
-        "additional_info": null
-      },
-      "by_version": {}
+      "Windows": {
+        "language": "powershell",
+        "default": {
+          "shell": "$ExecutionContext.SessionState.LanguageMode",
+          "result": { "type": "string", "value": "ConstrainedLanguage" },
+          "additional_info": null
+        },
+        "by_version": {}
+      }
     }
+  }
+}
+```
+
+`check` and `remediation` are keyed by target (`macOS`, `Windows`, ...),
+so a rule can carry a check and fixes for several targets. A remediation
+target holds a list of `steps` (each with `name`, `language`, `shell`,
+`additional_info` and `versions`, where `versions: null` means every
+version) and a list of `payloads`. To add a fix script, give the target's
+`steps` a list, which appends:
+
+```json
+"remediation": {
+  "Windows": {
+    "steps": [
+      { "name": "Example", "language": "powershell", "shell": "...", "additional_info": null, "versions": null }
+    ],
+    "payloads": []
   }
 }
 ```
@@ -180,8 +201,9 @@ Merge rules, applied field by field:
 - An upstream `null` counts as absent, at any depth: an object merges
   onto it as onto `{}` and a list appends to it as to `[]`. That is how the
   example above fills in ISM-1622's `check: null`. Give the whole shape
-  (`default` with `shell`, `result` and `additional_info`, plus
-  `by_version`), since a half-filled check is rejected.
+  of a new target (`language`, `default` with `shell`, `result` and
+  `additional_info`, plus `by_version`; or `steps` and `payloads` for a
+  remediation), since a half-filled check or remediation is rejected.
 - A type mismatch is an error, for example appending to a string. Keys
   named `__proto__`, `constructor` or `prototype` are not allowed.
 - Several overlays on one rule apply in file name order; the later file

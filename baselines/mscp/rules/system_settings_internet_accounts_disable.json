@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c com.apple.Internet-Accounts-Settings.extension"
       },
-      "shell": "/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c com.apple.Internet-Accounts-Settings.extension"
+      "language": "bash"
     }
   },
   "discussion": "The Internet Accounts System Setting _MUST_ be disabled to prevent the addition of unauthorized internet accounts.\n\n[IMPORTANT]\n====\nSome organizations may allow the use and configuration of the built-in Mail.app, Calendar.app, and Contacts.app for organizational communication. Information System Security Officers (ISSOs) may make the risk-based decision not to disable the Internet Accounts System Preference pane to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
@@ -87,27 +90,29 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "DisabledSystemSettings": [
-              "com.apple.Internet-Accounts-Settings.extension"
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.systempreferences"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "DisabledSystemSettings": [
+                    "com.apple.Internet-Accounts-Settings.extension"
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.systempreferences"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

@@ -49,14 +49,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "/usr/bin/find /Applications -iname \"*\\.app\" -type d -perm -2 -ls | /usr/bin/wc -l | /usr/bin/xargs"
       },
-      "shell": "/usr/bin/find /Applications -iname \"*\\.app\" -type d -perm -2 -ls | /usr/bin/wc -l | /usr/bin/xargs"
+      "language": "bash"
     }
   },
   "discussion": "Applications in the System Applications Directory (/Applications) _MUST_ not be world-writable.\n",
@@ -101,16 +104,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "IFS=$'\\n'\nfor apps in $( /usr/bin/find /Applications -iname \"*\\.app\" -type d -perm -2 ); do\n  /bin/chmod -R o-w \"$apps\"\ndone"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "IFS=$'\\n'\nfor apps in $( /usr/bin/find /Applications -iname \"*\\.app\" -type d -perm -2 ); do\n  /bin/chmod -R o-w \"$apps\"\ndone",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

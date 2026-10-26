@@ -40,14 +40,17 @@
     "status": "manual"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "/usr/sbin/ioreg -w 0 -c AppleSEPManager | /usr/bin/grep -q 'AppleSEPManager'; /bin/echo $?"
       },
-      "shell": "/usr/sbin/ioreg -w 0 -c AppleSEPManager | /usr/bin/grep -q 'AppleSEPManager'; /bin/echo $?"
+      "language": "bash"
     }
   },
   "discussion": "A system _IS_ configured to provide protected storage for cryptographic keys either by hardware protected key store or an organizationally defined safeguard.\n\nMacs with Apple Silicon or T2 processors provide protected storage for cryptographic keys via the secure enclave.\n\nlink:https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/1/web/1[]\n\nNOTE: This will only return a proper result on a T2 or Apple Silicon Macs.\nNOTE: All iOS/iPadOS and visionOS devices meet this requirement.\n",
@@ -102,16 +105,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "The hardware does not support the requirement.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "The hardware does not support the requirement.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

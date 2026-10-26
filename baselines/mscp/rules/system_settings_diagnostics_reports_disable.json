@@ -69,14 +69,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s1 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SubmitDiagInfo\"); var s2 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); var v1 = ObjC.unwrap(s1.objectForKey(\"AutoSubmit\")); var v2 = ObjC.unwrap(s2.objectForKey(\"allowDiagnosticSubmission\")); var f1 = s1.objectIsForcedForKey(\"AutoSubmit\"); var f2 = s2.objectIsForcedForKey(\"allowDiagnosticSubmission\"); (v1 == false && v2 == false && f1 && f2) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s1 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SubmitDiagInfo\"); var s2 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); var v1 = ObjC.unwrap(s1.objectForKey(\"AutoSubmit\")); var v2 = ObjC.unwrap(s2.objectForKey(\"allowDiagnosticSubmission\")); var f1 = s1.objectIsForcedForKey(\"AutoSubmit\"); var f2 = s2.objectIsForcedForKey(\"allowDiagnosticSubmission\"); (v1 == false && v2 == false && f1 && f2) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The ability to submit diagnostic data to Apple _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling the submission of diagnostic and usage information will mitigate the risk of unwanted data being sent to Apple.\n",
@@ -171,33 +174,35 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "AutoSubmit": false
-          }
-        ],
-        "PayloadType": "com.apple.SubmitDiagInfo"
-      },
-      {
-        "PayloadContent": [
-          {
-            "allowDiagnosticSubmission": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "AutoSubmit": false
+                }
+              ],
+              "PayloadType": "com.apple.SubmitDiagInfo"
+            },
+            {
+              "PayloadContent": [
+                {
+                  "allowDiagnosticSubmission": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

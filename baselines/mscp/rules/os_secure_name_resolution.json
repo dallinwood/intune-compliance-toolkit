@@ -63,17 +63,8 @@
       }
     }
   },
-  "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
-  },
-  "schema_version": 4,
+  "remediation": null,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

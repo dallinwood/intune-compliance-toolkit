@@ -17,14 +17,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "false"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "false"
+        },
+        "shell": "/usr/bin/sudo /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.Siri')\\\n.objectForKey('VoiceTriggerUserEnabled').js\nEOS"
       },
-      "shell": "/usr/bin/sudo /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.Siri')\\\n.objectForKey('VoiceTriggerUserEnabled').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Siri has the ability to listen for \"Hey Siri\" or \"Siri\". Listen for _MUST_ be disabled.\n",
@@ -53,25 +56,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "VoiceTriggerUserEnabled": false
-          }
-        ],
-        "PayloadType": "com.apple.Siri"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "VoiceTriggerUserEnabled": false
+                }
+              ],
+              "PayloadType": "com.apple.Siri"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

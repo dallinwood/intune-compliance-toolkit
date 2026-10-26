@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Normalized rule (v4)",
+  "title": "Normalized rule (v5)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,7 +9,7 @@
     "check", "odv", "remediation"
   ],
   "properties": {
-    "schema_version": { "const": 4 },
+    "schema_version": { "const": 5 },
     "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?![\\s\\S])" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
@@ -83,18 +83,8 @@
     "references": { "type": "object" },
     "check": {
       "type": ["object", "null"],
-      "additionalProperties": false,
-      "required": ["default", "by_version"],
-      "properties": {
-        "default": {
-          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/check_entry" }]
-        },
-        "by_version": {
-          "type": "object",
-          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
-          "additionalProperties": { "$ref": "#/$defs/check_entry" }
-        }
-      }
+      "propertyNames": { "$ref": "#/$defs/target_name" },
+      "additionalProperties": { "$ref": "#/$defs/target_check" }
     },
     "odv": {
       "oneOf": [
@@ -132,26 +122,8 @@
     },
     "remediation": {
       "type": ["object", "null"],
-      "additionalProperties": false,
-      "required": [
-        "default", "by_version", "mobileconfig_info",
-        "mobileconfig_by_version", "ddm_info"
-      ],
-      "properties": {
-        "default": { "$ref": "#/$defs/remediation_entry" },
-        "by_version": {
-          "type": "object",
-          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
-          "additionalProperties": { "$ref": "#/$defs/remediation_entry" }
-        },
-        "mobileconfig_info": { "type": ["object", "array", "null"] },
-        "mobileconfig_by_version": {
-          "type": "object",
-          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+(?![\\s\\S])" },
-          "additionalProperties": { "type": ["object", "array"] }
-        },
-        "ddm_info": { "type": ["object", "array", "null"] }
-      }
+      "propertyNames": { "$ref": "#/$defs/target_name" },
+      "additionalProperties": { "$ref": "#/$defs/target_remediation" }
     }
   },
   "$defs": {
@@ -193,13 +165,60 @@
         }
       }
     },
-    "remediation_entry": {
+    "target_name": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" },
+    "version": { "type": "string", "pattern": "^\\S+(?![\\s\\S])" },
+    "versions": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/version" } }
+      ]
+    },
+    "language": { "enum": ["bash", "powershell", "zsh", "python"] },
+    "target_check": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["shell", "additional_info"],
+      "required": ["language", "default", "by_version"],
       "properties": {
+        "language": { "$ref": "#/$defs/language" },
+        "default": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/check_entry" }]
+        },
+        "by_version": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/version" },
+          "additionalProperties": { "$ref": "#/$defs/check_entry" }
+        }
+      }
+    },
+    "target_remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "payloads"],
+      "properties": {
+        "steps": { "type": "array", "items": { "$ref": "#/$defs/remediation_step" } },
+        "payloads": { "type": "array", "items": { "$ref": "#/$defs/remediation_payload" } }
+      }
+    },
+    "remediation_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "language", "shell", "additional_info", "versions"],
+      "properties": {
+        "name": { "type": ["string", "null"] },
+        "language": { "$ref": "#/$defs/language" },
         "shell": { "type": ["string", "null"] },
-        "additional_info": { "type": ["string", "null"] }
+        "additional_info": { "type": ["string", "null"] },
+        "versions": { "$ref": "#/$defs/versions" }
+      }
+    },
+    "remediation_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "versions", "data"],
+      "properties": {
+        "kind": { "type": "string", "pattern": "^[^\\n]+(?![\\s\\S])" },
+        "versions": { "$ref": "#/$defs/versions" },
+        "data": { "type": ["object", "array"] }
       }
     }
   }

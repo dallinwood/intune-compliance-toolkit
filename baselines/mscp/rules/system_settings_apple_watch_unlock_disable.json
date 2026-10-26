@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowAutoUnlock\")) == false && s.objectIsForcedForKey(\"allowAutoUnlock\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowAutoUnlock\")) == false && s.objectIsForcedForKey(\"allowAutoUnlock\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "Apple Watches are not an approved authenticator and their use _MUST_ be disabled.\n\nDisabling Apple watches is a necessary step to ensuring that the information system retains a session lock until the user reestablishes access using an authorized identification and authentication procedures.\n\nNOTE: Unlocking the system with an Apple Watch is not an approved authenticator for US Federal Government usage as it has not been verified to meet the strength requirements outlined in NIST SP 800-63.\n",
@@ -107,25 +110,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowAutoUnlock": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowAutoUnlock": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

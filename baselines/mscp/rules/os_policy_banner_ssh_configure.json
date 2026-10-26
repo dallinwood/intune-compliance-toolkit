@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "bannerText=\"$ODV\"\ntest \"$(cat /etc/banner)\" = \"$bannerText\" && echo \"1\" || echo \"0\""
       },
-      "shell": "bannerText=\"$ODV\"\ntest \"$(cat /etc/banner)\" = \"$bannerText\" && echo \"1\" || echo \"0\""
+      "language": "bash"
     }
   },
   "discussion": "Remote login service _MUST_ be configured to display a policy banner at login.\n\nDisplaying a standardized and approved use notification before granting access to the operating system ensures that users are provided with privacy and security notification verbiage that is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via login interfaces with human users and are not required when such human interfaces do not exist.\n",
@@ -111,16 +114,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "bannerText=\"$ODV\"\n/bin/echo \"${bannerText}\" > /etc/banner"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "bannerText=\"$ODV\"\n/bin/echo \"${bannerText}\" > /etc/banner",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

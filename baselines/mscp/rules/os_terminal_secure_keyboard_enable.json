@@ -57,14 +57,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.Terminal')\\\n.objectForKey('SecureKeyboardEntry').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.Terminal')\\\n.objectForKey('SecureKeyboardEntry').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Secure keyboard entry _MUST_ be enabled in Terminal.app.\n",
@@ -115,25 +118,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "SecureKeyboardEntry": true
-          }
-        ],
-        "PayloadType": "com.apple.Terminal"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "SecureKeyboardEntry": true
+                }
+              ],
+              "PayloadType": "com.apple.Terminal"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

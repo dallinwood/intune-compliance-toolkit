@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Library manifest (v4)",
+  "title": "Library manifest (v5)",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "sources"],
   "properties": {
-    "schema_version": { "const": 4 },
+    "schema_version": { "const": 5 },
     "sources": {
       "type": "array",
       "items": {

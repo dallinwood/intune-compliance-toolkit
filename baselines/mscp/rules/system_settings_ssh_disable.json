@@ -57,23 +57,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled'"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
-          "type": "integer",
-          "value": 1
+          "type": "string",
+          "value": "PASS"
         },
-        "shell": "/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.openssh.sshd\" => disabled'"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+        "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"com.openssh.sshd\" => enabled')\nrunning=$(/bin/launchctl print system/com.openssh.sshd 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
       },
-      "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"com.openssh.sshd\" => enabled')\nrunning=$(/bin/launchctl print system/com.openssh.sshd 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
+      "language": "bash"
     }
   },
   "discussion": "SSH service _MUST_ be disabled for remote access.\n",
@@ -146,16 +149,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE: Systemsetup with -setremotelogin flag will fail unless you grant Full Disk Access to systemsetup or its parent process. Requires supervision.",
-      "shell": "/usr/sbin/systemsetup -f -setremotelogin off >/dev/null\n/bin/launchctl disable system/com.openssh.sshd"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE: Systemsetup with -setremotelogin flag will fail unless you grant Full Disk Access to systemsetup or its parent process. Requires supervision.",
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/sbin/systemsetup -f -setremotelogin off >/dev/null\n/bin/launchctl disable system/com.openssh.sshd",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

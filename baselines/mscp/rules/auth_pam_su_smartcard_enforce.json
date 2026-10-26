@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 2
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 2
+        },
+        "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_rootok.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/su\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_rootok.so)' /etc/pam.d/su\nfi"
       },
-      "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_rootok.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/su\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_rootok.so)' /etc/pam.d/su\nfi"
+      "language": "bash"
     }
   },
   "discussion": "The system _MUST_ be configured such that, when the su command is used, multifactor authentication is enforced.\n\nAll users _MUST_ go through multifactor authentication to prevent unauthenticated access and potential compromise to the system.\n\nIMPORTANT: Modification of Pluggable Authentication Modules (PAM) now require user authorization, or use of a Privacy Preferences Policy Control (PPPC) profile from MDM that authorizes modifying system administrator files or full disk access.\n\nNOTE: /etc/pam.d/su will be automatically modified to its original state following any update or major upgrade to the operating system.\n",
@@ -127,22 +130,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "config_file": "su",
-      "configuration_key": "file",
-      "configuration_value": "auth        sufficient    pam_smartcard.so\nauth        required      pam_rootok.so\nauth        required      pam_group.so no_warn group=admin,wheel ruser root_only fail_safe\naccount     required      pam_permit.so\naccount     required      pam_opendirectory.so no_check_shell\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so",
-      "declarationtype": "com.apple.configuration.services.configuration-files",
-      "service": "com.apple.pam"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": "/bin/cat > /etc/pam.d/su << SU_END\n# su: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        required      pam_rootok.so\nauth        required      pam_group.so no_warn group=admin,wheel ruser root_only fail_safe\naccount     required      pam_permit.so\naccount     required      pam_opendirectory.so no_check_shell\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nSU_END\n\n# Fix new file ownership and permissions\n/bin/chmod 644 /etc/pam.d/su\n/usr/sbin/chown root:wheel /etc/pam.d/su"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "config_file": "su",
+            "configuration_key": "file",
+            "configuration_value": "auth        sufficient    pam_smartcard.so\nauth        required      pam_rootok.so\nauth        required      pam_group.so no_warn group=admin,wheel ruser root_only fail_safe\naccount     required      pam_permit.so\naccount     required      pam_opendirectory.so no_check_shell\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so",
+            "declarationtype": "com.apple.configuration.services.configuration-files",
+            "service": "com.apple.pam"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/cat > /etc/pam.d/su << SU_END\n# su: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        required      pam_rootok.so\nauth        required      pam_group.so no_warn group=admin,wheel ruser root_only fail_safe\naccount     required      pam_permit.so\naccount     required      pam_opendirectory.so no_check_shell\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nSU_END\n\n# Fix new file ownership and permissions\n/bin/chmod 644 /etc/pam.d/su\n/usr/sbin/chown root:wheel /etc/pam.d/su",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "auth"
   ],

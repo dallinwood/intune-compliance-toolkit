@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 2
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 2
+        },
+        "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/login\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/login\nfi"
       },
-      "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/login\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/login\nfi"
+      "language": "bash"
     }
   },
   "discussion": "The system _MUST_ be configured to enforce multifactor authentication.\n\nAll users _MUST_ go through multifactor authentication to prevent unauthenticated access and potential compromise to the system.\n\nIMPORTANT: Modification of Pluggable Authentication Modules (PAM) now require user authorization, or use of a Privacy Preferences Policy Control (PPPC) profile from MDM that authorizes modifying system administrator files or full disk access.\n\nNOTE: /etc/pam.d/login will be automatically modified to its original state following any update or major upgrade to the operating system.\n",
@@ -128,22 +131,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "config_file": "login",
-      "configuration_key": "file",
-      "configuration_value": "auth        sufficient    pam_smartcard.so\nauth        optional      pam_krb5.so use_kcminit\nauth        optional      pam_ntlm.so try_first_pass\nauth        optional      pam_mount.so try_first_pass\nauth        required      pam_opendirectory.so try_first_pass\nauth        required      pam_deny.so\naccount     required      pam_nologin.so\naccount     required      pam_opendirectory.so\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nsession     required      pam_uwtmp.so\nsession     optional      pam_mount.so",
-      "declarationtype": "com.apple.configuration.services.configuration-files",
-      "service": "com.apple.pam"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": "/bin/cat > /etc/pam.d/login << LOGIN_END\n# login: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        optional      pam_krb5.so use_kcminit\nauth        optional      pam_ntlm.so try_first_pass\nauth        optional      pam_mount.so try_first_pass\nauth        required      pam_opendirectory.so try_first_pass\nauth        required      pam_deny.so\naccount     required      pam_nologin.so\naccount     required      pam_opendirectory.so\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nsession     required      pam_uwtmp.so\nsession     optional      pam_mount.so\nLOGIN_END\n\n\n/bin/chmod 644 /etc/pam.d/login\n/usr/sbin/chown root:wheel /etc/pam.d/login"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "config_file": "login",
+            "configuration_key": "file",
+            "configuration_value": "auth        sufficient    pam_smartcard.so\nauth        optional      pam_krb5.so use_kcminit\nauth        optional      pam_ntlm.so try_first_pass\nauth        optional      pam_mount.so try_first_pass\nauth        required      pam_opendirectory.so try_first_pass\nauth        required      pam_deny.so\naccount     required      pam_nologin.so\naccount     required      pam_opendirectory.so\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nsession     required      pam_uwtmp.so\nsession     optional      pam_mount.so",
+            "declarationtype": "com.apple.configuration.services.configuration-files",
+            "service": "com.apple.pam"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/cat > /etc/pam.d/login << LOGIN_END\n# login: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        optional      pam_krb5.so use_kcminit\nauth        optional      pam_ntlm.so try_first_pass\nauth        optional      pam_mount.so try_first_pass\nauth        required      pam_opendirectory.so try_first_pass\nauth        required      pam_deny.so\naccount     required      pam_nologin.so\naccount     required      pam_opendirectory.so\npassword    required      pam_opendirectory.so\nsession     required      pam_launchd.so\nsession     required      pam_uwtmp.so\nsession     optional      pam_mount.so\nLOGIN_END\n\n\n/bin/chmod 644 /etc/pam.d/login\n/usr/sbin/chown root:wheel /etc/pam.d/login",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "auth"
   ],

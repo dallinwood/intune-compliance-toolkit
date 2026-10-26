@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c \"com.apple.systempreferences.AppleIDSettings\""
       },
-      "shell": "/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c \"com.apple.systempreferences.AppleIDSettings\""
+      "language": "bash"
     }
   },
   "discussion": "The system setting for Apple ID _MUST_ be disabled.\n\nDisabling the system setting prevents login to an Apple Account and synchronizing data to Apple's iCloud service.\n",
@@ -86,27 +89,29 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "DisabledSystemSettings": [
-              "com.apple.systempreferences.AppleIDSettings"
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.systempreferences"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "DisabledSystemSettings": [
+                    "com.apple.systempreferences.AppleIDSettings"
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.systempreferences"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "icloud"
   ],

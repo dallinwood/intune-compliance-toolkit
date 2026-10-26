@@ -32,14 +32,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX.FileVault2')\\\n.objectForKey('ForceEnableInSetupAssistant')\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX.FileVault2')\\\n.objectForKey('ForceEnableInSetupAssistant')\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "FileVault _MUST_ be enforced in Setup Assistant.\n\nThe information system implements cryptographic mechanisms to protect the confidentiality and integrity of information stored on digital media during transport outside of controlled areas.\n",
@@ -96,39 +99,54 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE: See the FileVault supplemental to implement this rule.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {
-      "15.0": [
+    "macOS": {
+      "payloads": [
         {
-          "PayloadContent": [
+          "data": [
             {
-              "ForceEnableInSetupAssistant": true
+              "PayloadContent": [
+                {
+                  "ForceEnableInSetupAssistant": true
+                },
+                {
+                  "Enable": true
+                }
+              ],
+              "PayloadType": "com.apple.MCX.FileVault2"
             }
           ],
-          "PayloadType": "com.apple.MCX.FileVault2"
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "ForceEnableInSetupAssistant": true
+                }
+              ],
+              "PayloadType": "com.apple.MCX.FileVault2"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": [
+            "15.0"
+          ]
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": "NOTE: See the FileVault supplemental to implement this rule.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
         }
       ]
-    },
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "ForceEnableInSetupAssistant": true
-          },
-          {
-            "Enable": true
-          }
-        ],
-        "PayloadType": "com.apple.MCX.FileVault2"
-      }
-    ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

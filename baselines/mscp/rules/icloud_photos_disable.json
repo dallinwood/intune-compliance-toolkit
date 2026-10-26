@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCloudPhotoLibrary\")) == false && s.objectIsForcedForKey(\"allowCloudPhotoLibrary\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCloudPhotoLibrary\")) == false && s.objectIsForcedForKey(\"allowCloudPhotoLibrary\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The built-in Photos.app's connection to Apple's iCloud service _MUST_ be disabled, unless the organization has explicitly authorized the use of iCloud as a approved photo management service.\n\nApple's iCloud service does not provide an organization with enough control over the storage and access of data, and, therefore, automated photo synchronization _MUST_ be controlled by an organization approved service.\n\nThis requirement helps ensure that organizational photo data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
@@ -174,25 +177,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowCloudPhotoLibrary": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowCloudPhotoLibrary": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "icloud"
   ],

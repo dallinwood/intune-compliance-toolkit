@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowMailSmartReplies\")) == false && s.objectIsForcedForKey(\"allowMailSmartReplies\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowMailSmartReplies\")) == false && s.objectIsForcedForKey(\"allowMailSmartReplies\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "Apple Intelligence features such as Mail Smart Replies that use off device AI _MUST_ be disabled.",
@@ -107,33 +110,40 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "Apps",
-      "ddm_value": {
-        "Mail": {
-          "AllowSmartReplies": false
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowMailSmartReplies": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "Apps",
+            "ddm_value": {
+              "Mail": {
+                "AllowSmartReplies": false
+              }
+            },
+            "declarationtype": "com.apple.configuration.intelligence.settings"
+          },
+          "kind": "ddm",
+          "versions": null
         }
-      },
-      "declarationtype": "com.apple.configuration.intelligence.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowMailSmartReplies": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      }
-    ]
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

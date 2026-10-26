@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 7
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 7
+        },
+        "shell": "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total"
       },
-      "shell": "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total"
+      "language": "bash"
     }
   },
   "discussion": "If SSHD is enabled then it _MUST_ be configured to limit the Ciphers, HostbasedAcceptedAlgorithms, HostKeyAlgorithms, KexAlgorithms, MACs, PubkeyAcceptedAlgorithms, CASignatureAlgorithms to algorithms that are FIPS 140 validated.\n\nFIPS 140-3 is the current standard for validating that mechanisms used to access cryptographic modules utilize authentication that meet federal requirements.\n\nOperating systems utilizing encryption _MUST_ use FIPS validated mechanisms for authenticating to cryptographic modules.\n\nNOTE: For more information on FIPS compliance with the version of SSHD included in the macOS, the manual page apple_ssh_and_fips has additional information.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
@@ -126,22 +129,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "config_file": "sshd_config",
-      "configuration_key": "file",
-      "configuration_value": "Ciphers aes128-gcm@openssh.com\nHostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nHostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nKexAlgorithms ecdh-sha2-nistp256\nMACs hmac-sha2-256\nPubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nCASignatureAlgorithms ecdsa-sha2-nistp256",
-      "declarationtype": "com.apple.configuration.services.configuration-files",
-      "service": "com.apple.sshd"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": "if [ -f /etc/ssh/crypto.conf ] && /usr/bin/grep -q \"Include /etc/ssh/crypto.conf\" /etc/ssh/sshd_config.d/100-macos.conf 2>/dev/null; then\n  /bin/ln -fs /etc/ssh/crypto/fips.conf /etc/ssh/crypto.conf\nfi\n\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\nfips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\nsshd_config=$(/usr/sbin/sshd -G)\nfor config in $fips_sshd_config; do\n  if ! echo $sshd_config | /usr/bin/grep -q -i \"$config\" 2>/dev/null; then\n    /usr/bin/grep -qxF \"$config\" \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"$config\" >> \"${include_dir}01-mscp-sshd.conf\"\n  fi\ndone\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "config_file": "sshd_config",
+            "configuration_key": "file",
+            "configuration_value": "Ciphers aes128-gcm@openssh.com\nHostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nHostKeyAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nKexAlgorithms ecdh-sha2-nistp256\nMACs hmac-sha2-256\nPubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\nCASignatureAlgorithms ecdsa-sha2-nistp256",
+            "declarationtype": "com.apple.configuration.services.configuration-files",
+            "service": "com.apple.sshd"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "if [ -f /etc/ssh/crypto.conf ] && /usr/bin/grep -q \"Include /etc/ssh/crypto.conf\" /etc/ssh/sshd_config.d/100-macos.conf 2>/dev/null; then\n  /bin/ln -fs /etc/ssh/crypto/fips.conf /etc/ssh/crypto.conf\nfi\n\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\nfips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\nsshd_config=$(/usr/sbin/sshd -G)\nfor config in $fips_sshd_config; do\n  if ! echo $sshd_config | /usr/bin/grep -q -i \"$config\" 2>/dev/null; then\n    /usr/bin/grep -qxF \"$config\" \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"$config\" >> \"${include_dir}01-mscp-sshd.conf\"\n  fi\ndone\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

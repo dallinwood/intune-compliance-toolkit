@@ -69,14 +69,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\n  if ( timeout <= $ODV ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\n  if ( timeout <= $ODV ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "The screen saver timeout _MUST_ be set to $ODV seconds or a shorter length of time.\n\nThis rule ensures that a full session lock is triggered within no more than $ODV seconds of inactivity.\n",
@@ -173,25 +176,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "idleTime": "$ODV"
-          }
-        ],
-        "PayloadType": "com.apple.screensaver"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "idleTime": "$ODV"
+                }
+              ],
+              "PayloadType": "com.apple.screensaver"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

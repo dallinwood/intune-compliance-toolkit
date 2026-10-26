@@ -69,14 +69,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('ConfigDataInstall').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('ConfigDataInstall').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Software Update _MUST_ be configured to update XProtect Remediator and Gatekeeper automatically.\n\nThis setting enforces definition updates for XProtect Remediator and Gatekeeper; with this setting in place, new malware and adware that Apple has added to the list of malware or untrusted software will not execute. These updates do not require the computer to be restarted.\n\nlink:https://support.apple.com/en-us/HT207005[]\n\nNOTE: Software update will automatically update XProtect Remediator and Gatekeeper by default in the macOS.\n",
@@ -168,25 +171,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "ConfigDataInstall": true
-          }
-        ],
-        "PayloadType": "com.apple.SoftwareUpdate"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "ConfigDataInstall": true
+                }
+              ],
+              "PayloadType": "com.apple.SoftwareUpdate"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

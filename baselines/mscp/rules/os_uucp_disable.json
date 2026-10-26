@@ -37,23 +37,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.apple.uucp\" => disabled'"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
-          "type": "integer",
-          "value": 1
+          "type": "string",
+          "value": "PASS"
         },
-        "shell": "/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.apple.uucp\" => disabled'"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+        "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"com.apple.uucp\" => enabled')\nrunning=$(/bin/launchctl print system/com.apple.uucp 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
       },
-      "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"com.apple.uucp\" => enabled')\nrunning=$(/bin/launchctl print system/com.apple.uucp 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
+      "language": "bash"
     }
   },
   "discussion": "The system _MUST_ not have the Unix-to-Unix Copy Protocol (UUCP) service active.\n\nUUCP, a set of programs that enable the sending of files between different UNIX systems as well as sending commands to be executed on another system, is not essential and _MUST_ be disabled in order to prevent the unauthorized connection of devices, transfer of information, and tunneling.\n\nNOTE: UUCP service is disabled at startup by default macOS.\n",
@@ -124,21 +127,32 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": "The system may need to be restarted for the update to take effect.",
-        "shell": "/bin/launchctl bootout system/com.apple.uucp\n/bin/launchctl disable system/com.apple.uucp"
-      }
-    },
-    "ddm_info": null,
-    "default": {
-      "additional_info": "The system may need to be restarted for the update to take effect.",
-      "shell": "/bin/launchctl disable system/com.apple.uucp"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "The system may need to be restarted for the update to take effect.",
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/launchctl disable system/com.apple.uucp",
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": "The system may need to be restarted for the update to take effect.",
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/launchctl bootout system/com.apple.uucp\n/bin/launchctl disable system/com.apple.uucp",
+          "versions": [
+            "26.0"
+          ]
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

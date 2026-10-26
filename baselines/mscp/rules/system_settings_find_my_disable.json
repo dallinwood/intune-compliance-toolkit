@@ -53,14 +53,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s1 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); var s2 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.icloud.managed\"); var v1 = ObjC.unwrap(s1.objectForKey(\"allowFindMyDevice\")); var v2 = ObjC.unwrap(s1.objectForKey(\"allowFindMyFriends\")); var v3 = ObjC.unwrap(s2.objectForKey(\"DisableFMMiCloudSetting\")); var f1 = s1.objectIsForcedForKey(\"allowFindMyDevice\"); var f2 = s1.objectIsForcedForKey(\"allowFindMyFriends\"); var f3 = s2.objectIsForcedForKey(\"DisableFMMiCloudSetting\"); (v1 == false && v2 == false && v3 == true && f1 && f2 && f3) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s1 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); var s2 = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.icloud.managed\"); var v1 = ObjC.unwrap(s1.objectForKey(\"allowFindMyDevice\")); var v2 = ObjC.unwrap(s1.objectForKey(\"allowFindMyFriends\")); var v3 = ObjC.unwrap(s2.objectForKey(\"DisableFMMiCloudSetting\")); var f1 = s1.objectIsForcedForKey(\"allowFindMyDevice\"); var f2 = s1.objectIsForcedForKey(\"allowFindMyFriends\"); var f3 = s2.objectIsForcedForKey(\"DisableFMMiCloudSetting\"); (v1 == false && v2 == false && v3 == true && f1 && f2 && f3) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The Find My service _MUST_ be disabled.\n\nA device management solution _MUST_ be used to carry out remote locking and wiping instead of Apple's Find My service.\n\nApple's Find My service uses a personal AppleID for authentication. Organizations should rely on MDM solutions, which have much more secure authentication requirements, to perform remote lock and remote wipe.\n",
@@ -143,36 +146,38 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowFindMyDevice": false
-          },
-          {
-            "allowFindMyFriends": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      },
-      {
-        "PayloadContent": [
-          {
-            "DisableFMMiCloudSetting": true
-          }
-        ],
-        "PayloadType": "com.apple.icloud.managed"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowFindMyDevice": false
+                },
+                {
+                  "allowFindMyFriends": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            },
+            {
+              "PayloadContent": [
+                {
+                  "DisableFMMiCloudSetting": true
+                }
+              ],
+              "PayloadType": "com.apple.icloud.managed"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 2
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 2
+        },
+        "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -Ec '(BurnSupport = off;|ProhibitBurn = 1;)'"
       },
-      "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -Ec '(BurnSupport = off;|ProhibitBurn = 1;)'"
+      "language": "bash"
     }
   },
   "discussion": "Burn support _MUST_ be disabled.\n\n[IMPORTANT]\n====\nSome organizations rely on the use of removable media for storing and sharing data. Information System Security Officers (ISSOs) may make the risk-based decision not to disable external hard drives to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
@@ -67,33 +70,35 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "ProhibitBurn": true
-          }
-        ],
-        "PayloadType": "com.apple.finder"
-      },
-      {
-        "PayloadContent": [
-          {
-            "BurnSupport": "off"
-          }
-        ],
-        "PayloadType": "com.apple.DiscRecording"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "ProhibitBurn": true
+                }
+              ],
+              "PayloadType": "com.apple.finder"
+            },
+            {
+              "PayloadContent": [
+                {
+                  "BurnSupport": "off"
+                }
+              ],
+              "PayloadType": "com.apple.DiscRecording"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "false"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "false"
+        },
+        "shell": "/usr/bin/sudo -u _locationd /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.locationd')\\\n.objectForKey('LocationServicesEnabled').js\nEOS"
       },
-      "shell": "/usr/bin/sudo -u _locationd /usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.locationd')\\\n.objectForKey('LocationServicesEnabled').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Location Services _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.  Disabling Location Services helps prevent the unauthorized connection of devices, unauthorized transfer of information, and unauthorized tunneling.\n",
@@ -110,21 +113,32 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": null,
-        "shell": "/usr/bin/defaults write /var/db/locationd/Library/Preferences/ByHost/com.apple.locationd LocationServicesEnabled -bool false;\npid=$(/bin/launchctl print system | /usr/bin/awk '/\\tcom.apple.locationd/ {print $1}')\nkill -9 $pid"
-      }
-    },
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/defaults write /var/db/locationd/Library/Preferences/ByHost/com.apple.locationd LocationServicesEnabled -bool false;\npid=$(/bin/launchctl list | /usr/bin/awk '/com.apple.locationd/ { print $1 }')\nkill -9 $pid"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/defaults write /var/db/locationd/Library/Preferences/ByHost/com.apple.locationd LocationServicesEnabled -bool false;\npid=$(/bin/launchctl list | /usr/bin/awk '/com.apple.locationd/ { print $1 }')\nkill -9 $pid",
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/defaults write /var/db/locationd/Library/Preferences/ByHost/com.apple.locationd LocationServicesEnabled -bool false;\npid=$(/bin/launchctl print system | /usr/bin/awk '/\\tcom.apple.locationd/ {print $1}')\nkill -9 $pid",
+          "versions": [
+            "26.0"
+          ]
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

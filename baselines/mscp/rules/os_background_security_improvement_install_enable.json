@@ -12,14 +12,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "false"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "false"
+        },
+        "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.enableRapidSecurityResponse'"
       },
-      "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.enableRapidSecurityResponse'"
+      "language": "bash"
     }
   },
   "discussion": "Background Security Improvements _MUST_ be configured to enforce automatic installation and that the user cannot modify the setting within Settings.\n",
@@ -51,22 +54,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "RapidSecurityResponse",
-      "ddm_value": {
-        "Enable": true
-      },
-      "declarationtype": "com.apple.configuration.softwareupdate.settings"
-    },
-    "default": {
-      "additional_info": "This is implemented by Declarative Device Management (DDM).",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "ddm_key": "RapidSecurityResponse",
+            "ddm_value": {
+              "Enable": true
+            },
+            "declarationtype": "com.apple.configuration.softwareupdate.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": "This is implemented by Declarative Device Management (DDM).",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

@@ -69,14 +69,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.Accessibility\"); (ObjC.unwrap(s.objectForKey(\"AXSAudioDonationSiriImprovementEnabled\")) == false && s.objectIsForcedForKey(\"AXSAudioDonationSiriImprovementEnabled\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.Accessibility\"); (ObjC.unwrap(s.objectForKey(\"AXSAudioDonationSiriImprovementEnabled\")) == false && s.objectIsForcedForKey(\"AXSAudioDonationSiriImprovementEnabled\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The ability for Apple to store and review audio of your audio recordings and transcripts of your vocal shortcuts and voice control interactions _MUST_ be disabled. This will disable \"Improve Assistive Voice Features\" in Privacy & Security within System Settings.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling the submission of this information will mitigate the risk of unwanted data being sent to Apple.\n",
@@ -162,25 +165,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "AXSAudioDonationSiriImprovementEnabled": false
-          }
-        ],
-        "PayloadType": "com.apple.Accessibility"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "AXSAudioDonationSiriImprovementEnabled": false
+                }
+              ],
+              "PayloadType": "com.apple.Accessibility"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

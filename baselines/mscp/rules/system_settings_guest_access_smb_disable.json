@@ -49,23 +49,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "integer",
-          "value": 0
+          "value": 1
         },
-        "shell": "/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+        "shell": "/usr/sbin/sysadminctl -smbGuestAccess status 2>&1 | /usr/bin/grep -c \"SMB guest access disabled\""
       },
-      "shell": "/usr/sbin/sysadminctl -smbGuestAccess status 2>&1 | /usr/bin/grep -c \"SMB guest access disabled\""
+      "language": "bash"
     }
   },
   "discussion": "Guest access to shared Server Message Block (SMB) folders _MUST_ be disabled.\n\nTurning off guest access prevents anonymous users from accessing files shared via SMB.\n",
@@ -122,16 +125,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/sbin/sysadminctl -smbGuestAccess off"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/sbin/sysadminctl -smbGuestAccess off",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

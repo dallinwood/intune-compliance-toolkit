@@ -22,14 +22,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "Tahoe"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "Tahoe"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('moduleName').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('moduleName').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "A default screen saver _MUST_ be configured to display at the login window and _MUST_ not display any sensitive information.\n",
@@ -69,36 +72,43 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {
-      "15.0": [
+    "macOS": {
+      "payloads": [
         {
-          "PayloadContent": [
+          "data": [
             {
-              "moduleName": "Sequoia"
+              "PayloadContent": [
+                {
+                  "moduleName": "Tahoe"
+                }
+              ],
+              "PayloadType": "com.apple.screensaver"
             }
           ],
-          "PayloadType": "com.apple.screensaver"
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "moduleName": "Sequoia"
+                }
+              ],
+              "PayloadType": "com.apple.screensaver"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": [
+            "15.0"
+          ]
         }
-      ]
-    },
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "moduleName": "Tahoe"
-          }
-        ],
-        "PayloadType": "com.apple.screensaver"
-      }
-    ]
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

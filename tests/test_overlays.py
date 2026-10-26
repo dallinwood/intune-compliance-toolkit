@@ -77,15 +77,15 @@ def test_shared_index_case(case):
 
 def test_merge_result_shares_no_objects_with_its_inputs():
     rule = {"id": "x.rule", "tags": ["a"], "references": {"nist": ["AC-1"]}}
-    fields = {"tags": ["b"], "references": {"cis": ["1.1"]}, "check": {"$replace": {"by_version": {}}}}
+    fields = {"tags": ["b"], "references": {"cis": ["1.1"]}, "check": {"$replace": {"Windows": {"by_version": {}}}}}
 
     merged = apply_overlay_fields(rule, fields)
     merged["tags"].append("mutated")
     merged["references"]["nist"].append("mutated")
-    merged["check"]["by_version"]["mutated"] = True
+    merged["check"]["Windows"]["by_version"]["mutated"] = True
 
     assert rule == {"id": "x.rule", "tags": ["a"], "references": {"nist": ["AC-1"]}}
-    assert fields["check"] == {"$replace": {"by_version": {}}}
+    assert fields["check"] == {"$replace": {"Windows": {"by_version": {}}}}
 
 
 def test_committed_overlays_are_valid():
@@ -214,3 +214,19 @@ def test_a_check_does_not_change_the_assessment(tmp_path):
 
     assert merged[ISM_1622]["check"] is not None
     assert merged[ISM_1622]["assessment"] == {"status": "manual", "manual_reason": "no_check"}
+
+
+def test_a_windows_remediation_step_onto_a_null_remediation_is_valid(tmp_path):
+    step = {
+        "name": "Script",
+        "language": "powershell",
+        "shell": "Remove-Thing",
+        "additional_info": "One line of provenance.",
+        "versions": None,
+    }
+    fields = {"remediation": {"Windows": {"steps": [step], "payloads": []}}}
+    write_overlay(tmp_path, "windows-step.json", ism_1622_overlay("windows-step", fields))
+
+    assert validate_overlays(tmp_path, BASELINES_DIR) == ([], [])
+    merged = overlays.merged_rules(tmp_path, BASELINES_DIR)
+    assert merged[ISM_1622]["remediation"] == {"Windows": {"steps": [step], "payloads": []}}

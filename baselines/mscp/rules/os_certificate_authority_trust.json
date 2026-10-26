@@ -37,14 +37,17 @@
     "status": "manual"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "a list containing approved root certificates"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "a list containing approved root certificates"
+        },
+        "shell": "/usr/bin/security dump-keychain /Library/Keychains/System.keychain | /usr/bin/awk -F'\"' '/labl/ {print $4}'"
       },
-      "shell": "/usr/bin/security dump-keychain /Library/Keychains/System.keychain | /usr/bin/awk -F'\"' '/labl/ {print $4}'"
+      "language": "bash"
     }
   },
   "discussion": "The organization _MUST_ issue or obtain public key certificates from an organization-approved service provider and ensure only approved trust anchors are in the System Keychain.\n",
@@ -108,16 +111,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "Obtain the approved certificates from the appropriate authority and install them to the System Keychain.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "Obtain the approved certificates from the appropriate authority and install them to the System Keychain.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

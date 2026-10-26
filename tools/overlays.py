@@ -18,6 +18,7 @@ from jsonschema import Draft202012Validator
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from tools.library_output import SCHEMA_VERSION
 from tools.validate_library import load_schema
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
@@ -458,7 +459,7 @@ def _check_rule(
         errors.append(f"{overlay_names}: {rule_id}: merged rule {problem.json_path}: {problem.message}")
 
     cleaned_entry, _ = drop_unknown_keys(merged_entry, entry_schema, index_schema)
-    index_document = {"schema_version": 4, "source": library_rule["source_name"], "rules": [cleaned_entry]}
+    index_document = {"schema_version": SCHEMA_VERSION, "source": library_rule["source_name"], "rules": [cleaned_entry]}
     index_validator = Draft202012Validator(index_schema)
     for problem in sorted(index_validator.iter_errors(index_document), key=lambda error: list(error.absolute_path)):
         entry_path = problem.json_path.replace("$.rules[0]", "$", 1)

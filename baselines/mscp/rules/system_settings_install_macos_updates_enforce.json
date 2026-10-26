@@ -65,31 +65,34 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticallyInstallMacOSUpdates').js\nEOS"
+        },
+        "26.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticallyInstallMacOSUpdates').js\nEOS\n)\n\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallOSUpdates')\n\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then\n  echo \"true\"\nelse\n  echo \"false\"\nfi"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
-          "type": "string",
-          "value": "true"
+          "type": "integer",
+          "value": 1
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticallyInstallMacOSUpdates').js\nEOS"
+        "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallOSUpdates'"
       },
-      "26.0": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
-        },
-        "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticallyInstallMacOSUpdates').js\nEOS\n)\n\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallOSUpdates')\n\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then\n  echo \"true\"\nelse\n  echo \"false\"\nfi"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
-      },
-      "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallOSUpdates'"
+      "language": "bash"
     }
   },
   "discussion": "Software Update _MUST_ be configured to enforce automatic installation of macOS updates is enabled.\n",
@@ -147,48 +150,76 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": "This is implemented by Declarative Device Management (DDM) or by a configuration profile.",
-        "shell": null
-      }
-    },
-    "ddm_info": {
-      "ddm_key": "AutomaticActions",
-      "ddm_value": {
-        "InstallOSUpdates": "AlwaysOn"
-      },
-      "declarationtype": "com.apple.configuration.softwareupdate.settings"
-    },
-    "default": {
-      "additional_info": "This is implemented by Declarative Device Management (DDM).",
-      "shell": null
-    },
-    "mobileconfig_by_version": {
-      "15.0": [
+    "macOS": {
+      "payloads": [
         {
-          "PayloadContent": [
+          "data": [
             {
-              "AutomaticallyInstallMacOSUpdates": true
+              "PayloadContent": [
+                {
+                  "AutomaticallyInstallMacOSUpdates": true
+                }
+              ],
+              "PayloadType": "com.apple.SoftwareUpdate"
             }
           ],
-          "PayloadType": "com.apple.SoftwareUpdate"
+          "kind": "mobileconfig",
+          "versions": [
+            "15.0"
+          ]
+        },
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "AutomaticallyInstallMacOSUpdates": true
+                }
+              ],
+              "PayloadType": "com.apple.SoftwareUpdate"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": [
+            "26.0"
+          ]
+        },
+        {
+          "data": {
+            "ddm_key": "AutomaticActions",
+            "ddm_value": {
+              "InstallOSUpdates": "AlwaysOn"
+            },
+            "declarationtype": "com.apple.configuration.softwareupdate.settings"
+          },
+          "kind": "ddm",
+          "versions": null
         }
       ],
-      "26.0": [
+      "steps": [
         {
-          "PayloadContent": [
-            {
-              "AutomaticallyInstallMacOSUpdates": true
-            }
-          ],
-          "PayloadType": "com.apple.SoftwareUpdate"
+          "additional_info": "This is implemented by Declarative Device Management (DDM).",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": "This is implemented by Declarative Device Management (DDM) or by a configuration profile.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "26.0"
+          ]
         }
       ]
-    },
-    "mobileconfig_info": null
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

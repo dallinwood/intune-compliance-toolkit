@@ -37,23 +37,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "error_count=0\nif /usr/sbin/system_profiler SPHardwareDataType | /usr/bin/grep -q \"MacBook\"; then\n  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)\n  if echo \"$cpuType\" | grep -q \"Apple\"; then\n    sleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep '^\\s*sleep' 2>&1 | /usr/bin/awk '{print $2}')\n    displaysleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep displaysleep 2>&1 | /usr/bin/awk '{print $2}')\n    if [[ \"$sleepMode\" == \"\" ]] || [[ \"$sleepMode\" -gt 15 ]]; then\n      ((error_count++))\n    fi\n    if [[ \"$displaysleepMode\" == \"\" ]] || [[ \"$displaysleepMode\" -gt 10 ]] || [[ \"$displaysleepMode\" -gt \"$sleepMode\" ]]; then\n      ((error_count++))\n    fi\n  fi\nfi\necho \"$error_count\""
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "integer",
           "value": 0
         },
-        "shell": "error_count=0\nif /usr/sbin/system_profiler SPHardwareDataType | /usr/bin/grep -q \"MacBook\"; then\n  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)\n  if echo \"$cpuType\" | grep -q \"Apple\"; then\n    sleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep '^\\s*sleep' 2>&1 | /usr/bin/awk '{print $2}')\n    displaysleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep displaysleep 2>&1 | /usr/bin/awk '{print $2}')\n    if [[ \"$sleepMode\" == \"\" ]] || [[ \"$sleepMode\" -gt 15 ]]; then\n      ((error_count++))\n    fi\n    if [[ \"$displaysleepMode\" == \"\" ]] || [[ \"$displaysleepMode\" -gt 10 ]] || [[ \"$displaysleepMode\" -gt \"$sleepMode\" ]]; then\n      ((error_count++))\n    fi\n  fi\nfi\necho \"$error_count\""
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+        "shell": "error_count=0\nif /usr/sbin/system_profiler SPHardwareDataType 2>/dev/null  | /usr/bin/grep -Ei \"MacBook|Mac[0-9]\" > /dev/null ; then\n  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)\n  if echo \"$cpuType\" | grep -q \"Apple\"; then\n    sleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep '^\\s*sleep' 2>&1 | /usr/bin/awk '{print $2}')\n    displaysleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep displaysleep 2>&1 | /usr/bin/awk '{print $2}')\n    if [[ \"$sleepMode\" == \"\" ]] || [[ \"$sleepMode\" -gt 15 ]]; then\n      ((error_count++))\n    fi\n    if [[ \"$displaysleepMode\" == \"\" ]] || [[ \"$displaysleepMode\" -gt 10 ]] || [[ \"$displaysleepMode\" -gt \"$sleepMode\" ]]; then\n      ((error_count++))\n    fi\n  fi\nfi\necho \"$error_count\""
       },
-      "shell": "error_count=0\nif /usr/sbin/system_profiler SPHardwareDataType 2>/dev/null  | /usr/bin/grep -Ei \"MacBook|Mac[0-9]\" > /dev/null ; then\n  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)\n  if echo \"$cpuType\" | grep -q \"Apple\"; then\n    sleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep '^\\s*sleep' 2>&1 | /usr/bin/awk '{print $2}')\n    displaysleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep displaysleep 2>&1 | /usr/bin/awk '{print $2}')\n    if [[ \"$sleepMode\" == \"\" ]] || [[ \"$sleepMode\" -gt 15 ]]; then\n      ((error_count++))\n    fi\n    if [[ \"$displaysleepMode\" == \"\" ]] || [[ \"$displaysleepMode\" -gt 10 ]] || [[ \"$displaysleepMode\" -gt \"$sleepMode\" ]]; then\n      ((error_count++))\n    fi\n  fi\nfi\necho \"$error_count\""
+      "language": "bash"
     }
   },
   "discussion": "Apple Silicon MacBooks should set sleep timeout to 15 minutes (900 seconds) or less and the display sleep timeout should be 10 minutes (600 seconds) or less but less than the sleep setting.\n",
@@ -98,16 +101,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/pmset -a sleep 15\n/usr/bin/pmset -a displaysleep 10"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/pmset -a sleep 15\n/usr/bin/pmset -a displaysleep 10",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

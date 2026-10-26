@@ -27,14 +27,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": -1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": -1
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.integerForKey('AdminHostInfo')\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.integerForKey('AdminHostInfo')\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "The system _MUST_ be configured to not display sensitive information at the login window. If the key `AdminHostInfo` is configured with a string value, it will allow the HostName, IP Address, and operating system version and build to be displayed when clicking on the clock area of the login window.\n\nConfiguring this key to be an integer value, since it expects a string value, will effectively disable the behavior.\n\nNOTE: This configuration requires it to be deployed via Managed Preferences rather than directly to com.apple.loginwindow.\n",
@@ -76,27 +79,29 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "com.apple.loginwindow": {
-              "AdminHostInfo": -1
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "com.apple.loginwindow": {
+                    "AdminHostInfo": -1
+                  }
+                }
+              ],
+              "PayloadType": "com.apple.ManagedClient.preferences"
             }
-          }
-        ],
-        "PayloadType": "com.apple.ManagedClient.preferences"
-      }
-    ]
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": "$ODV"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": "$ODV"
+        },
+        "shell": "/usr/bin/awk -F: '/^minfree/{print $2}' /etc/security/audit_control"
       },
-      "shell": "/usr/bin/awk -F: '/^minfree/{print $2}' /etc/security/audit_control"
+      "language": "bash"
     }
   },
   "discussion": "The audit service _MUST_ be configured to notify the system administrator when the amount of free disk space remaining reaches an organization defined value.\n\nThis rule ensures that the system administrator is notified in advance that action is required to free up more disk space for audit logs.\n",
@@ -108,16 +111,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/sed -i.bak 's/.*minfree.*/minfree:$ODV/' /etc/security/audit_control; /usr/sbin/audit -s"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/sed -i.bak 's/.*minfree.*/minfree:$ODV/' /etc/security/audit_control; /usr/sbin/audit -s",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "audit"
   ],

@@ -61,14 +61,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/profiles status -type enrollment | /usr/bin/awk -F: '/MDM enrollment/ {print $2}' | /usr/bin/grep -c \"Yes (User Approved)\""
       },
-      "shell": "/usr/bin/profiles status -type enrollment | /usr/bin/awk -F: '/MDM enrollment/ {print $2}' | /usr/bin/grep -c \"Yes (User Approved)\""
+      "language": "bash"
     }
   },
   "discussion": "You _MUST_ enroll your Mac in a Mobile Device Management (MDM) software.\n\nUser Approved MDM (UAMDM) enrollment or enrollment via Apple Business/Apple School Manager (ASM) is required to manage certain security settings. Currently these include:\n\n* Allowed Kernel Extensions\n* Allowed Approved System Extensions\n* Privacy Preferences Policy Control Payload\n* ExtensibleSingleSignOn\n* FDEFileVault\n\nIn macOS 11, UAMDM grants Supervised status on a Mac, unlocking the following MDM features, which were previously locked behind ABM:\n\n* Activation Lock Bypass\n* Access to Bootstrap Tokens\n* Scheduling Software Updates\n* Query list and delete local users\n",
@@ -154,16 +157,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "Ensure that system is enrolled via UAMDM.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "Ensure that system is enrolled via UAMDM.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

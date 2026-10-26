@@ -49,14 +49,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 0
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "/usr/bin/find /System/Volumes/Data/System -type d -perm -2 -ls | /usr/bin/grep -vE \"downloadDir|locks\" | /usr/bin/wc -l | /usr/bin/xargs"
       },
-      "shell": "/usr/bin/find /System/Volumes/Data/System -type d -perm -2 -ls | /usr/bin/grep -vE \"downloadDir|locks\" | /usr/bin/wc -l | /usr/bin/xargs"
+      "language": "bash"
     }
   },
   "discussion": "Folders in /System/Volumes/Data/System _MUST_ not be world-writable.\n",
@@ -101,16 +104,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "IFS=$'\\n'\nfor sysPermissions in $( /usr/bin/find /System/Volumes/Data/System -type d -perm -2 | /usr/bin/grep -vE \"downloadDir|locks\" ); do\n  /bin/chmod -R o-w \"$sysPermissions\"\ndone"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "IFS=$'\\n'\nfor sysPermissions in $( /usr/bin/find /System/Volumes/Data/System -type d -perm -2 | /usr/bin/grep -vE \"downloadDir|locks\" ); do\n  /bin/chmod -R o-w \"$sysPermissions\"\ndone",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

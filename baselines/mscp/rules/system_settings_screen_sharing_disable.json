@@ -69,23 +69,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.apple.screensharing\" => disabled'"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
-          "type": "integer",
-          "value": 1
+          "type": "string",
+          "value": "PASS"
         },
-        "shell": "/bin/launchctl print-disabled system | /usr/bin/grep -c '\"com.apple.screensharing\" => disabled'"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+        "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"com.apple.screensharing\" => enabled')\nrunning=$(/bin/launchctl print system/com.apple.screensharing 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
       },
-      "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"com.apple.screensharing\" => enabled')\nrunning=$(/bin/launchctl print system/com.apple.screensharing 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
+      "language": "bash"
     }
   },
   "discussion": "Support for both Screen Sharing and Apple Remote Desktop (ARD) is non-essential and _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling screen sharing and ARD helps prevent the unauthorized connection of devices, the unauthorized transfer of information, and unauthorized tunneling.\n",
@@ -177,21 +180,32 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": "NOTE - This will apply to the whole system",
-        "shell": "/bin/launchctl bootout system/com.apple.screensharing\n/bin/launchctl disable system/com.apple.screensharing"
-      }
-    },
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE - This will apply to the whole system",
-      "shell": "/bin/launchctl disable system/com.apple.screensharing"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE - This will apply to the whole system",
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/launchctl disable system/com.apple.screensharing",
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": "NOTE - This will apply to the whole system",
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/launchctl bootout system/com.apple.screensharing\n/bin/launchctl disable system/com.apple.screensharing",
+          "versions": [
+            "26.0"
+          ]
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

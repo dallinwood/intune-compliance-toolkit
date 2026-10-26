@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\\n.objectForKey('allowSmartCard').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.smartcard')\\\n.objectForKey('allowSmartCard').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Smartcard authentication _MUST_ be allowed.\n\nThe use of smartcard credentials facilitates standardization and reduces the risk of unauthorized access.\n\nWhen enabled, the smartcard can be used for login, authorization, and screen saver unlocking.\n",
@@ -129,25 +132,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowSmartCard": true
-          }
-        ],
-        "PayloadType": "com.apple.security.smartcard"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowSmartCard": true
+                }
+              ],
+              "PayloadType": "com.apple.security.smartcard"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "auth"
   ],

@@ -22,23 +22,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/sbin/pfctl -a '*' -sr &> /dev/null | /usr/bin/grep -c \"block drop in all\""
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "integer",
           "value": 1
         },
-        "shell": "/sbin/pfctl -a '*' -sr &> /dev/null | /usr/bin/grep -c \"block drop in all\""
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+        "shell": "/sbin/pfctl -a '*' -sr 2> /dev/null | /usr/bin/grep -c \"block drop in all\""
       },
-      "shell": "/sbin/pfctl -a '*' -sr 2> /dev/null | /usr/bin/grep -c \"block drop in all\""
+      "language": "bash"
     }
   },
   "discussion": "A deny-all and allow-by-exception firewall policy _MUST_ be employed for managing connections to other systems.\n\nOrganizations _MUST_ ensure the built-in packet filter firewall is configured correctly to employ the default deny rule.\n\nFailure to restrict network connectivity to authorized systems permits inbound connections from malicious systems. It also permits outbound connections that may facilitate the exfiltration of data.\n\nIf you are using a third-party firewall solution, this setting does not apply.\n\n[IMPORTANT]\n====\nConfiguring the built-in packet filter firewall to employ the default deny rule has the potential to interfere with applications on the system in an unpredictable manner. Information System Security Officers (ISSOs) may make the risk-based decision not to configure the built-in packet filter firewall to employ the default deny rule to avoid losing functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
@@ -83,16 +86,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE: See the firewall supplemental which includes a script that has an example policy to implement this rule.",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE: See the firewall supplemental which includes a script that has an example policy to implement this rule.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

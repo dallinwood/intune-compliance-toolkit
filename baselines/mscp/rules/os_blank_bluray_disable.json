@@ -17,14 +17,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "deny"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "deny"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systemuiserver')\\\n.objectForKey('mount-controls'))[\"blankbd\"]\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\nObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systemuiserver')\\\n.objectForKey('mount-controls'))[\"blankbd\"]\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Blank Blu Ray media _MUST_ be disabled.\n\n[IMPORTANT]\n====\nSome organizations rely on the use of removable media for storing and sharing data. Information System Security Officers (ISSOs) may make the risk-based decision not to disable external hard drives to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n\n[IMPORTANT]\n====\nApple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.systemuiserver.yaml#L4-L8[media mount controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
@@ -59,30 +62,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "mount-controls": {
-              "blankbd": [
-                "alert",
-                "eject"
-              ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "mount-controls": {
+                    "blankbd": [
+                      "alert",
+                      "eject"
+                    ]
+                  }
+                }
+              ],
+              "PayloadType": "com.apple.systemuiserver"
             }
-          }
-        ],
-        "PayloadType": "com.apple.systemuiserver"
-      }
-    ]
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

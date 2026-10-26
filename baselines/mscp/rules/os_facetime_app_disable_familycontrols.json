@@ -27,14 +27,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return item.PathPrefix == \"/System/Applications/FaceTime.app\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return item.PathPrefix == \"/System/Applications/FaceTime.app\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The macOS built-in FaceTime.app _MUST_ be disabled, unless FaceTime is an approved collaboration tool.\n\nThe FaceTime.app establishes a connection to Apple's iCloud service, even when security controls have been put in place to disable iCloud access.\n\n[IMPORTANT]\n====\nApple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.applicationaccess.new.yaml#L67-L70[application restriction controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
@@ -101,30 +104,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "familyControlsEnabled": true
-          },
-          {
-            "pathBlackList": [
-              "/Applications/FaceTime.app"
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess.new"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "familyControlsEnabled": true
+                },
+                {
+                  "pathBlackList": [
+                    "/Applications/FaceTime.app"
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess.new"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

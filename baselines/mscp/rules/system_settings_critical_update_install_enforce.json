@@ -65,31 +65,34 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('CriticalUpdateInstall').js\nEOS"
+        },
+        "26.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS $.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\ .objectForKey('CriticalUpdateInstall').js EOS )\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallSystemAndSecurityUpdates')\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then echo \"true\" else echo \"false\" fi"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
-          "type": "string",
-          "value": "true"
+          "type": "integer",
+          "value": 1
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('CriticalUpdateInstall').js\nEOS"
+        "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallSystemAndSecurityUpdates'"
       },
-      "26.0": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
-        },
-        "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS $.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\ .objectForKey('CriticalUpdateInstall').js EOS )\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallSystemAndSecurityUpdates')\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then echo \"true\" else echo \"false\" fi"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
-      },
-      "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyInstallSystemAndSecurityUpdates'"
+      "language": "bash"
     }
   },
   "discussion": "Ensure that security updates are installed as soon as they are available from Apple.\n",
@@ -162,48 +165,76 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": "This is implemented by Declarative Device Management (DDM) or by a configuration profile.",
-        "shell": null
-      }
-    },
-    "ddm_info": {
-      "ddm_key": "AutomaticActions",
-      "ddm_value": {
-        "InstallSecurityUpdate": "AlwaysOn"
-      },
-      "declarationtype": "com.apple.configuration.softwareupdate.settings"
-    },
-    "default": {
-      "additional_info": "This is implemented by Declarative Device Management (DDM)",
-      "shell": null
-    },
-    "mobileconfig_by_version": {
-      "15.0": [
+    "macOS": {
+      "payloads": [
         {
-          "PayloadContent": [
+          "data": [
             {
-              "CriticalUpdateInstall": true
+              "PayloadContent": [
+                {
+                  "CriticalUpdateInstall": true
+                }
+              ],
+              "PayloadType": "com.apple.SoftwareUpdate"
             }
           ],
-          "PayloadType": "com.apple.SoftwareUpdate"
+          "kind": "mobileconfig",
+          "versions": [
+            "15.0"
+          ]
+        },
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "CriticalUpdateInstall": true
+                }
+              ],
+              "PayloadType": "com.apple.SoftwareUpdate"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": [
+            "26.0"
+          ]
+        },
+        {
+          "data": {
+            "ddm_key": "AutomaticActions",
+            "ddm_value": {
+              "InstallSecurityUpdate": "AlwaysOn"
+            },
+            "declarationtype": "com.apple.configuration.softwareupdate.settings"
+          },
+          "kind": "ddm",
+          "versions": null
         }
       ],
-      "26.0": [
+      "steps": [
         {
-          "PayloadContent": [
-            {
-              "CriticalUpdateInstall": true
-            }
-          ],
-          "PayloadType": "com.apple.SoftwareUpdate"
+          "additional_info": "This is implemented by Declarative Device Management (DDM)",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": "This is implemented by Declarative Device Management (DDM) or by a configuration profile.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "26.0"
+          ]
         }
       ]
-    },
-    "mobileconfig_info": null
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

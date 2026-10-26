@@ -1,4 +1,4 @@
-"""Convert upstream mSCP rule YAML into the project's v4 rule JSON shape."""
+"""Convert upstream mSCP rule YAML into the project's v5 rule JSON shape."""
 
 import json
 import re
@@ -18,6 +18,7 @@ LICENSE = {
 }
 
 MACOS_TARGET = "macOS"
+MSCP_SCRIPT_LANGUAGE = "bash"
 VERSION_KEY_PATTERN = re.compile(r"^\d+\.\d+$")
 ODV_PLACEHOLDER = "$ODV"
 VENDOR_DESCRIPTION_MARKER = "Vendor Description"
@@ -145,10 +146,77 @@ def _normalize_benchmarks(version_entry: dict, where: str, rule_id: str) -> list
     return normalized_benchmarks
 
 
+def _version_parts(version: str) -> tuple[int, ...]:
+    return tuple(int(part) for part in version.split("."))
+
+
 def _applicability_sort_key(entry: dict) -> tuple:
     version = entry["version"]
-    version_parts = tuple(int(part) for part in version.split(".")) if version is not None else ()
+    version_parts = _version_parts(version) if version is not None else ()
     return (entry["target"] is not None, entry["target"] or "", version is not None, version_parts)
+
+
+def _fix_has_content(fix: dict) -> bool:
+    return fix["shell"] is not None or fix["additional_info"] is not None
+
+
+def _remediation_step(fix: dict, versions: list[str] | None) -> dict:
+    return {
+        "name": None,
+        "language": MSCP_SCRIPT_LANGUAGE,
+        "shell": fix["shell"],
+        "additional_info": fix["additional_info"],
+        "versions": versions,
+    }
+
+
+def _remediation_steps(default_fix: dict, fix_by_version: dict, listed_versions: list[str]) -> list[dict]:
+    """The default fix first, for the versions without their own, then each version's fix.
+
+    A fix with neither a shell nor additional_info gives no step, and neither
+    does a default fix that every listed version overrides (the schema has
+    no empty versions list, and such a fix would apply nowhere).
+    """
+    steps = []
+    if _fix_has_content(default_fix):
+        if not fix_by_version or not listed_versions:
+            steps.append(_remediation_step(default_fix, None))
+        else:
+            uncovered_versions = sorted(
+                (version for version in listed_versions if version not in fix_by_version), key=_version_parts
+            )
+            if uncovered_versions:
+                steps.append(_remediation_step(default_fix, uncovered_versions))
+    for version in sorted(fix_by_version, key=_version_parts):
+        if _fix_has_content(fix_by_version[version]):
+            steps.append(_remediation_step(fix_by_version[version], [version]))
+    return steps
+
+
+def _remediation_payloads(mobileconfig_info, mobileconfig_by_version: dict, ddm_info) -> list[dict]:
+    payloads = []
+    if mobileconfig_info is not None:
+        payloads.append({"kind": "mobileconfig", "versions": None, "data": mobileconfig_info})
+    for version in sorted(mobileconfig_by_version, key=_version_parts):
+        payloads.append({"kind": "mobileconfig", "versions": [version], "data": mobileconfig_by_version[version]})
+    if ddm_info is not None:
+        payloads.append({"kind": "ddm", "versions": None, "data": ddm_info})
+    return payloads
+
+
+def _remediation(
+    default_fix: dict,
+    fix_by_version: dict,
+    listed_versions: list[str],
+    mobileconfig_info,
+    mobileconfig_by_version: dict,
+    ddm_info,
+) -> dict | None:
+    steps = _remediation_steps(default_fix, fix_by_version, listed_versions)
+    payloads = _remediation_payloads(mobileconfig_info, mobileconfig_by_version, ddm_info)
+    if not steps and not payloads:
+        return None
+    return {MACOS_TARGET: {"steps": steps, "payloads": payloads}}
 
 
 def _manual_reason(tags: list, upstream_rule_id: str, has_check: bool):
@@ -251,7 +319,13 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         else {"shell": None, "additional_info": None}
     )
     check = (
-        {"default": default_check, "by_version": check_by_version}
+        {
+            MACOS_TARGET: {
+                "language": MSCP_SCRIPT_LANGUAGE,
+                "default": default_check,
+                "by_version": check_by_version,
+            }
+        }
         if default_check is not None or check_by_version
         else None
     )
@@ -308,13 +382,14 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         "references": upstream.get("references") or {},
         "check": check,
         "odv": _normalize_odv(upstream.get("odv"), macos_benchmark_names, rule_id),
-        "remediation": {
-            "default": default_fix,
-            "by_version": fix_by_version,
-            "mobileconfig_info": upstream.get("mobileconfig_info"),
-            "mobileconfig_by_version": mobileconfig_by_version,
-            "ddm_info": upstream.get("ddm_info"),
-        },
+        "remediation": _remediation(
+            default_fix,
+            fix_by_version,
+            list(benchmarks_by_version),
+            upstream.get("mobileconfig_info"),
+            mobileconfig_by_version,
+            upstream.get("ddm_info"),
+        ),
     }
     if normalized["odv"] is None and any(
         ODV_PLACEHOLDER in text for text in _iter_strings(normalized)

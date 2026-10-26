@@ -58,6 +58,16 @@ def normalize(yaml_text, path="rules/os/example.yaml"):
     return normalize_rule(load_mscp_yaml(textwrap.dedent(yaml_text)), path, LOCK)
 
 
+def bash_step(shell, versions=None, additional_info=None):
+    return {
+        "name": None,
+        "language": "bash",
+        "shell": shell,
+        "additional_info": additional_info,
+        "versions": versions,
+    }
+
+
 def rule_with(platform_block, extra=""):
     return (
         "id: some_rule\ntitle: T\ndiscussion: D\nreferences: {}\n"
@@ -85,9 +95,12 @@ def test_gatekeeper_like_rule_normalizes():
     assert {"name": "disa_stig", "severity": "high"} in benchmarks_for_27
     assert {"name": "cis_lvl1", "severity": None} in benchmarks_for_27
     assert result["tags"] == ["800-53r5_low", "cisv8"]
-    assert result["remediation"]["default"] == {
-        "shell": "/usr/sbin/spctl --global-enable",
-        "additional_info": None,
+    assert result["check"]["macOS"]["language"] == "bash"
+    assert result["remediation"] == {
+        "macOS": {
+            "steps": [bash_step("/usr/sbin/spctl --global-enable")],
+            "payloads": [],
+        }
     }
     assert schema_errors(result) == []
 
@@ -112,8 +125,8 @@ def test_version_override_result_type_kept():
             "tags: [a]\n",
         )
     )
-    assert result["check"]["default"]["result"] == {"type": "string", "value": "PASS"}
-    assert result["check"]["by_version"]["15.0"]["result"] == {"type": "integer", "value": 1}
+    assert result["check"]["macOS"]["default"]["result"] == {"type": "string", "value": "PASS"}
+    assert result["check"]["macOS"]["by_version"]["15.0"]["result"] == {"type": "integer", "value": 1}
     assert schema_errors(result) == []
 
 
@@ -130,8 +143,8 @@ def test_version_only_check_has_null_default():
             """,
         )
     )
-    assert result["check"]["default"] is None
-    assert result["check"]["by_version"]["15.0"]["shell"] == "defaults read x"
+    assert result["check"]["macOS"]["default"] is None
+    assert result["check"]["macOS"]["by_version"]["15.0"]["shell"] == "defaults read x"
     assert result["assessment"]["status"] == "automated"
     assert result["tags"] == []
     assert schema_errors(result) == []
@@ -150,7 +163,7 @@ def test_check_additional_info_is_carried():
             """,
         )
     )
-    assert result["check"]["default"]["additional_info"] == "Run as root."
+    assert result["check"]["macOS"]["default"]["additional_info"] == "Run as root."
     assert schema_errors(result) == []
 
 
@@ -170,7 +183,7 @@ def test_fix_result_is_dropped():
             """,
         )
     )
-    assert result["remediation"]["default"] == {"shell": "do_it", "additional_info": None}
+    assert result["remediation"]["macOS"]["steps"] == [bash_step("do_it")]
 
 
 def test_manual_tag_wins_over_existing_check():
@@ -187,7 +200,7 @@ def test_manual_tag_wins_over_existing_check():
         )
     )
     assert result["assessment"] == {"status": "manual", "manual_reason": "manual"}
-    assert result["check"]["default"] is not None
+    assert result["check"]["macOS"]["default"] is not None
 
 
 def test_no_check_is_manual_no_check():
@@ -244,7 +257,7 @@ def test_odv_by_benchmark_filtered_to_macos_benchmarks():
         "recommended": 6,
         "by_benchmark": {"cis_lvl1": 15, "disa_stig": 14},
     }
-    assert result["check"]["default"]["result"] == {"type": "integer", "value": "$ODV"}
+    assert result["check"]["macOS"]["default"]["result"] == {"type": "integer", "value": "$ODV"}
     assert schema_errors(result) == []
 
 
@@ -347,9 +360,12 @@ def test_mobileconfig_by_version_and_ddm_copied():
             "mobileconfig_info:\n  - PayloadType: c.d\nddm_info:\n  ddm_key: K\n",
         )
     )
-    assert result["remediation"]["mobileconfig_info"] == [{"PayloadType": "c.d"}]
-    assert result["remediation"]["mobileconfig_by_version"] == {"27.0": [{"PayloadType": "a.b"}]}
-    assert result["remediation"]["ddm_info"] == {"ddm_key": "K"}
+    assert result["remediation"]["macOS"]["payloads"] == [
+        {"kind": "mobileconfig", "versions": None, "data": [{"PayloadType": "c.d"}]},
+        {"kind": "mobileconfig", "versions": ["27.0"], "data": [{"PayloadType": "a.b"}]},
+        {"kind": "ddm", "versions": None, "data": {"ddm_key": "K"}},
+    ]
+    assert result["remediation"]["macOS"]["steps"] == []
     assert schema_errors(result) == []
 
 
@@ -376,7 +392,7 @@ def test_index_entry_fields():
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
-    wrapped = {"schema_version": 4, "source": "mscp", "rules": [entry]}
+    wrapped = {"schema_version": 5, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
 
 
@@ -455,12 +471,12 @@ def test_rule_without_versions_keeps_macos_target():
     assert schema_errors(result) == []
 
 
-def test_v4_source_and_format_fields():
+def test_source_and_format_fields():
     result = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     assert result["discussion_format"] == "asciidoc"
     assert result["source"]["upstream_revision"] is None
     assert result["source"]["upstream_updated"] is None
-    assert result["schema_version"] == 4
+    assert result["schema_version"] == 5
     assert result["section_path"] == ["os"]
     assert "platform" not in result
 
@@ -472,7 +488,7 @@ def test_empty_result_on_manual_rule_normalizes_to_null():
             "tags: [manual]\n",
         )
     )
-    assert result["check"]["default"]["result"] is None
+    assert result["check"]["macOS"]["default"]["result"] is None
     assert result["assessment"]["manual_reason"] == "manual"
     assert schema_errors(result) == []
 
@@ -506,11 +522,10 @@ NESTED_FIX_PLATFORM = """
 
 def test_fix_nested_in_version_check_becomes_version_fix():
     result = normalize(rule_with(NESTED_FIX_PLATFORM))
-    assert result["remediation"]["by_version"]["26.0"] == {
-        "shell": None,
-        "additional_info": "Implemented by DDM.",
-    }
-    assert "fix" not in result["check"]["by_version"]["26.0"]
+    assert result["remediation"]["macOS"]["steps"] == [
+        bash_step(None, versions=["26.0"], additional_info="Implemented by DDM."),
+    ]
+    assert "fix" not in result["check"]["macOS"]["by_version"]["26.0"]
     assert schema_errors(result) == []
 
 
@@ -564,3 +579,104 @@ def test_present_but_non_mapping_macos_raises(macos_value):
 
 def test_missing_macos_key_still_returns_none():
     assert normalize("id: some_rule\ntitle: T\ndiscussion: D\nplatforms:\n  iOS: {}\n") is None
+
+
+
+THREE_VERSIONS_WITH_A_26_FIX = """
+'27.0':
+  benchmarks: []
+'26.0':
+  benchmarks: []
+  enforcement_info:
+    fix:
+      shell: fix_26
+'15.0':
+  benchmarks: []
+  enforcement_info:
+    fix:
+      shell: fix_15
+enforcement_info:
+  check:
+    shell: echo 1
+    result:
+      integer: 1
+  fix:
+    shell: fix_default
+"""
+
+
+def test_default_step_covers_listed_versions_without_their_own_fix():
+    platform = THREE_VERSIONS_WITH_A_26_FIX.replace("  enforcement_info:\n    fix:\n      shell: fix_15\n", "")
+    result = normalize(rule_with(platform))
+    assert result["remediation"]["macOS"]["steps"] == [
+        bash_step("fix_default", versions=["15.0", "27.0"]),
+        bash_step("fix_26", versions=["26.0"]),
+    ]
+    assert schema_errors(result) == []
+
+
+def test_version_steps_follow_the_default_step_in_ascending_version_order():
+    result = normalize(rule_with(THREE_VERSIONS_WITH_A_26_FIX))
+    assert result["remediation"]["macOS"]["steps"] == [
+        bash_step("fix_default", versions=["27.0"]),
+        bash_step("fix_15", versions=["15.0"]),
+        bash_step("fix_26", versions=["26.0"]),
+    ]
+
+
+def test_empty_default_fix_with_version_fixes_produces_no_default_step():
+    platform = THREE_VERSIONS_WITH_A_26_FIX.replace("  fix:\n    shell: fix_default\n", "")
+    result = normalize(rule_with(platform))
+    assert result["remediation"]["macOS"]["steps"] == [
+        bash_step("fix_15", versions=["15.0"]),
+        bash_step("fix_26", versions=["26.0"]),
+    ]
+
+
+def test_default_fix_is_dropped_when_every_listed_version_has_its_own():
+    platform = THREE_VERSIONS_WITH_A_26_FIX.replace(
+        "'27.0':\n  benchmarks: []\n", "'27.0':\n  benchmarks: []\n  enforcement_info:\n    fix:\n      shell: fix_27\n"
+    )
+    result = normalize(rule_with(platform))
+    assert [step["shell"] for step in result["remediation"]["macOS"]["steps"]] == ["fix_15", "fix_26", "fix_27"]
+    assert schema_errors(result) == []
+
+
+def test_version_fix_without_content_produces_no_step():
+    platform = THREE_VERSIONS_WITH_A_26_FIX.replace(
+        "    fix:\n      shell: fix_15\n", "    fix:\n      result:\n        integer: 1\n"
+    )
+    result = normalize(rule_with(platform))
+    assert [step["shell"] for step in result["remediation"]["macOS"]["steps"]] == ["fix_default", "fix_26"]
+    # 15.0 still has its own (empty) fix upstream, so the default step does not cover it.
+    assert result["remediation"]["macOS"]["steps"][0]["versions"] == ["27.0"]
+
+
+def test_no_fix_and_no_payloads_makes_remediation_null():
+    result = normalize(rule_with("'27.0':\n  benchmarks: []\n"))
+    assert result["remediation"] is None
+    assert schema_errors(result) == []
+
+
+def test_payloads_alone_keep_remediation_with_no_steps():
+    result = normalize(rule_with("'27.0':\n  benchmarks: []\n", "ddm_info:\n  ddm_key: K\n"))
+    assert result["remediation"] == {
+        "macOS": {"steps": [], "payloads": [{"kind": "ddm", "versions": None, "data": {"ddm_key": "K"}}]}
+    }
+    assert schema_errors(result) == []
+
+
+def test_mobileconfig_payloads_by_version_ascend():
+    result = normalize(
+        rule_with(
+            """
+            '27.0':
+              mobileconfig_info:
+                - PayloadType: twenty.seven
+            '15.0':
+              mobileconfig_info:
+                - PayloadType: fifteen
+            """,
+        )
+    )
+    assert [payload["versions"] for payload in result["remediation"]["macOS"]["payloads"]] == [["15.0"], ["27.0"]]

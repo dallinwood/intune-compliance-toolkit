@@ -23,7 +23,7 @@
   "odv": null,
   "references": {},
   "remediation": null,
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "Guidelines for system access",
     "Credential management",

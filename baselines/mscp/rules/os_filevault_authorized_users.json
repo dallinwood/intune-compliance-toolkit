@@ -22,14 +22,17 @@
     "status": "manual"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "a list containing authorized users that can unlock FileVault"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "a list containing authorized users that can unlock FileVault"
+        },
+        "shell": "/usr/bin/fdesetup list | /usr/bin/awk -F',' '{print $1}'"
       },
-      "shell": "/usr/bin/fdesetup list | /usr/bin/awk -F',' '{print $1}'"
+      "language": "bash"
     }
   },
   "discussion": "macOS _MUST_ be configured to only allow authorized users to unlock FileVault upon startup.\n",
@@ -58,16 +61,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/fdesetup remove -user NOT_AUTHORIZED_USERNAME"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/fdesetup remove -user NOT_AUTHORIZED_USERNAME",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

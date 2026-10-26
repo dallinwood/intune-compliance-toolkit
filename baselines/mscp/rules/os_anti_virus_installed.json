@@ -65,14 +65,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 2
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 2
+        },
+        "shell": "/usr/bin/xprotect status | /usr/bin/grep -cE \"(launch scans: enabled|background scans: enabled)\""
       },
-      "shell": "/usr/bin/xprotect status | /usr/bin/grep -cE \"(launch scans: enabled|background scans: enabled)\""
+      "language": "bash"
     }
   },
   "discussion": "An approved antivirus product _MUST_ be installed and configured to run.\n\nMalicious software can establish a base on individual desktops and servers. Employing an automated mechanism to detect this type of software will aid in elimination of the software from the operating system.'\n",
@@ -134,16 +137,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": "NOTE: These services cannot be unloaded or loaded while System Integrity Protection (SIP) is enabled.",
-      "shell": "/bin/launchctl load -w /Library/Apple/System/Library/LaunchDaemons/com.apple.XProtect.daemon.scan.plist\n/bin/launchctl load -w /Library/Apple/System/Library/LaunchDaemons/com.apple.XprotectFramework.PluginService.plist"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE: These services cannot be unloaded or loaded while System Integrity Protection (SIP) is enabled.",
+          "language": "bash",
+          "name": null,
+          "shell": "/bin/launchctl load -w /Library/Apple/System/Library/LaunchDaemons/com.apple.XProtect.daemon.scan.plist\n/bin/launchctl load -w /Library/Apple/System/Library/LaunchDaemons/com.apple.XprotectFramework.PluginService.plist",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

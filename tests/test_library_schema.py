@@ -17,7 +17,7 @@ LICENSE = {
 }
 
 MINIMAL_RULE = {
-    "schema_version": 4,
+    "schema_version": 5,
     "id": "mscp.os_gatekeeper_enable",
     "title": "Enable Gatekeeper",
     "discussion": "Gatekeeper _MUST_ be enabled.",
@@ -53,26 +53,36 @@ MINIMAL_RULE = {
     "tags": ["800-53r5_low", "cisv8"],
     "references": {"nist": {"800-53r5": ["CM-14"]}},
     "check": {
-        "default": {
-            "shell": "/usr/sbin/spctl --status",
-            "additional_info": None,
-            "result": {"type": "string", "value": "PASS"},
-        },
-        "by_version": {
-            "15.0": {
-                "shell": "defaults read com.apple.x",
+        "macOS": {
+            "language": "bash",
+            "default": {
+                "shell": "/usr/sbin/spctl --status",
                 "additional_info": None,
-                "result": {"type": "integer", "value": 1},
-            }
-        },
+                "result": {"type": "string", "value": "PASS"},
+            },
+            "by_version": {
+                "15.0": {
+                    "shell": "defaults read com.apple.x",
+                    "additional_info": None,
+                    "result": {"type": "integer", "value": 1},
+                }
+            },
+        }
     },
     "odv": None,
     "remediation": {
-        "default": {"shell": None, "additional_info": None},
-        "by_version": {},
-        "mobileconfig_info": None,
-        "mobileconfig_by_version": {},
-        "ddm_info": None,
+        "macOS": {
+            "steps": [
+                {
+                    "name": None,
+                    "language": "bash",
+                    "shell": "/usr/sbin/spctl --global-enable",
+                    "additional_info": None,
+                    "versions": None,
+                }
+            ],
+            "payloads": [{"kind": "mobileconfig", "versions": ["26.0"], "data": [{"PayloadType": "a.b"}]}],
+        }
     },
 }
 
@@ -108,7 +118,7 @@ def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeepe
     write_json(
         baselines_dir / "_manifest.json",
         {
-            "schema_version": 4,
+            "schema_version": 5,
             "sources": [
                 {
                     "name": "mscp",
@@ -127,7 +137,7 @@ def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeepe
     write_json(
         baselines_dir / "mscp" / "_index.json",
         {
-            "schema_version": 4,
+            "schema_version": 5,
             "source": "mscp",
             "rules": [index_entry_for(rule, index_file)],
         },
@@ -160,9 +170,9 @@ def test_manual_with_reason_is_valid():
 
 def test_odv_placeholder_allowed_as_integer_value():
     rule = make_rule()
-    rule["check"]["default"]["result"] = {"type": "integer", "value": "$ODV"}
+    rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "$ODV"}
     assert schema_errors(rule) == []
-    rule["check"]["default"]["result"] = {"type": "integer", "value": "7"}
+    rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "7"}
     assert schema_errors(rule)
 
 
@@ -314,7 +324,7 @@ def test_validate_library_rejects_null_rule_file(tmp_path):
 )
 def test_index_rejects_unsafe_file_path(unsafe_path):
     index = {
-        "schema_version": 4,
+        "schema_version": 5,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, unsafe_path)],
     }
@@ -323,7 +333,7 @@ def test_index_rejects_unsafe_file_path(unsafe_path):
 
 def test_index_accepts_safe_file_path():
     index = {
-        "schema_version": 4,
+        "schema_version": 5,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, "rules/os..x.json")],
     }
@@ -333,46 +343,46 @@ def test_index_accepts_safe_file_path():
 def test_index_rejects_platform_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["platform"] = "macOS"
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section"]
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section_path():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section_path"]
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("bad_section_path", [[], [""], ["os\nx"], "os"])
 def test_index_rejects_bad_section_path(bad_section_path):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section_path"] = bad_section_path
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("bad_section", ["", "os\n"])
 def test_index_rejects_bad_section(bad_section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = bad_section
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("section", ["os", "Access Control", "3.1 Policy"])
 def test_index_accepts_any_single_line_section(section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = section
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index") == []
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index") == []
 
 
 def test_index_rejects_entry_missing_required_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["has_odv"]
-    assert schema_errors({"schema_version": 4, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
 
 
 def read_manifest(baselines_dir: Path) -> dict:
@@ -570,3 +580,173 @@ def test_validate_library_checks_vocabulary_even_when_manifest_is_broken(tmp_pat
     write_json(tmp_path / "_vocabulary.json", make_vocabulary(frameworks=[]))
     (tmp_path / "_manifest.json").write_text("null", encoding="utf-8")
     assert any("_vocabulary.json" in error for error in validate_library(tmp_path))
+
+
+WINDOWS_CHECK = {
+    "language": "powershell",
+    "default": {"shell": "Get-Item x", "additional_info": None, "result": {"type": "string", "value": "ok"}},
+    "by_version": {},
+}
+
+WINDOWS_STEP = {
+    "name": "BlockCerts",
+    "language": "powershell",
+    "shell": "Remove-Item x",
+    "additional_info": "From the ASD Blueprint.",
+    "versions": None,
+}
+
+
+def test_rule_with_checks_and_remediation_for_two_targets_is_valid():
+    rule = make_rule()
+    rule["check"]["Windows"] = copy.deepcopy(WINDOWS_CHECK)
+    rule["remediation"]["Windows"] = {"steps": [copy.deepcopy(WINDOWS_STEP)], "payloads": []}
+    assert schema_errors(rule) == []
+
+
+def test_null_check_and_remediation_are_valid():
+    assert schema_errors(make_rule(check=None, remediation=None)) == []
+
+
+@pytest.mark.parametrize("language", ["bash", "powershell", "zsh", "python"])
+def test_accepts_each_known_language(language):
+    rule = make_rule()
+    rule["check"]["macOS"]["language"] = language
+    rule["remediation"]["macOS"]["steps"][0]["language"] = language
+    assert schema_errors(rule) == []
+
+
+@pytest.mark.parametrize("language", ["cmd", "Bash", None])
+def test_rejects_unknown_check_language(language):
+    rule = make_rule()
+    rule["check"]["macOS"]["language"] = language
+    assert schema_errors(rule)
+
+
+def test_rejects_unknown_step_language():
+    rule = make_rule()
+    rule["remediation"]["macOS"]["steps"][0]["language"] = "cmd"
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("bad_target", ["", "mac\nOS", "macOS\n"])
+def test_rejects_empty_or_multi_line_target_keys(bad_target):
+    check_rule = make_rule()
+    check_rule["check"][bad_target] = copy.deepcopy(WINDOWS_CHECK)
+    assert schema_errors(check_rule)
+    remediation_rule = make_rule()
+    remediation_rule["remediation"][bad_target] = {"steps": [], "payloads": []}
+    assert schema_errors(remediation_rule)
+
+
+def test_accepts_a_target_key_with_a_space():
+    rule = make_rule()
+    rule["check"]["Microsoft 365"] = copy.deepcopy(WINDOWS_CHECK)
+    assert schema_errors(rule) == []
+
+
+def test_accepts_a_non_numeric_check_version_key():
+    rule = make_rule()
+    windows_check = copy.deepcopy(WINDOWS_CHECK)
+    windows_check["by_version"]["24H2"] = copy.deepcopy(windows_check["default"])
+    rule["check"]["Windows"] = windows_check
+    assert schema_errors(rule) == []
+
+
+@pytest.mark.parametrize("bad_key", ["", "24 H2", "15.0\n"])
+def test_rejects_check_version_keys_with_whitespace_or_empty(bad_key):
+    rule = make_rule()
+    rule["check"]["macOS"]["by_version"][bad_key] = copy.deepcopy(rule["check"]["macOS"]["default"])
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("bad_versions", [[], ["15 .0"], [""], ["15.0\n"], "15.0", [15.0]])
+def test_rejects_bad_step_versions(bad_versions):
+    rule = make_rule()
+    rule["remediation"]["macOS"]["steps"][0]["versions"] = bad_versions
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("bad_versions", [[], ["15 .0"], "15.0"])
+def test_rejects_bad_payload_versions(bad_versions):
+    rule = make_rule()
+    rule["remediation"]["macOS"]["payloads"][0]["versions"] = bad_versions
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("missing_key", ["name", "language", "shell", "additional_info", "versions"])
+def test_rejects_step_missing_a_key(missing_key):
+    rule = make_rule()
+    del rule["remediation"]["macOS"]["steps"][0][missing_key]
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("missing_key", ["kind", "versions", "data"])
+def test_rejects_payload_missing_a_key(missing_key):
+    rule = make_rule()
+    del rule["remediation"]["macOS"]["payloads"][0][missing_key]
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("bad_data", [None, "text", 3])
+def test_rejects_payload_data_that_is_not_an_object_or_list(bad_data):
+    rule = make_rule()
+    rule["remediation"]["macOS"]["payloads"][0]["data"] = bad_data
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("bad_kind", ["", "mobile\nconfig", None])
+def test_rejects_empty_or_multi_line_payload_kind(bad_kind):
+    rule = make_rule()
+    rule["remediation"]["macOS"]["payloads"][0]["kind"] = bad_kind
+    assert schema_errors(rule)
+
+
+def test_accepts_any_payload_kind():
+    rule = make_rule()
+    rule["remediation"]["macOS"]["payloads"][0]["kind"] = "registry"
+    assert schema_errors(rule) == []
+
+
+@pytest.mark.parametrize(
+    "location",
+    [
+        ("check", "macOS"),
+        ("remediation", "macOS"),
+        ("remediation", "macOS", "steps", 0),
+        ("remediation", "macOS", "payloads", 0),
+    ],
+)
+def test_rejects_unknown_keys_in_target_entries(location):
+    rule = make_rule()
+    container = rule
+    for key in location:
+        container = container[key]
+    container["surprise"] = True
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("missing_key", ["language", "default", "by_version"])
+def test_rejects_target_check_missing_a_key(missing_key):
+    rule = make_rule()
+    del rule["check"]["macOS"][missing_key]
+    assert schema_errors(rule)
+
+
+@pytest.mark.parametrize("missing_key", ["steps", "payloads"])
+def test_rejects_target_remediation_missing_a_key(missing_key):
+    rule = make_rule()
+    del rule["remediation"]["macOS"][missing_key]
+    assert schema_errors(rule)
+
+
+def test_rejects_the_v4_check_and_remediation_shapes():
+    assert schema_errors(make_rule(check={"default": None, "by_version": {}}))
+    v4_remediation = {
+        "default": {"shell": None, "additional_info": None},
+        "by_version": {},
+        "mobileconfig_info": None,
+        "mobileconfig_by_version": {},
+        "ddm_info": None,
+    }
+    assert schema_errors(make_rule(remediation=v4_remediation))

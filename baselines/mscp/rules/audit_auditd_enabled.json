@@ -77,23 +77,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "pass"
+          },
+          "shell": "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "string",
           "value": "pass"
         },
-        "shell": "LAUNCHD_RUNNING=$(/bin/launchctl list | /usr/bin/grep -c com.apple.auditd)\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "pass"
+        "shell": "LAUNCHD_RUNNING=$(/bin/launchctl print system | /usr/bin/grep -c -E '\\tcom.apple.auditd')\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
       },
-      "shell": "LAUNCHD_RUNNING=$(/bin/launchctl print system | /usr/bin/grep -c -E '\\tcom.apple.auditd')\nAUDITD_RUNNING=$(/usr/sbin/audit -c | /usr/bin/grep -c \"AUC_AUDITING\")\nif [[ $LAUNCHD_RUNNING == 1 ]] && [[ -e /etc/security/audit_control ]] && [[ $AUDITD_RUNNING == 1 ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
+      "language": "bash"
     }
   },
   "discussion": "The information system _MUST_ be configured to generate audit records.\n\nAudit records establish what types of events have occurred, when they occurred, and which users were involved. These records aid an organization in their efforts to establish, correlate, and investigate the events leading up to an outage or attack.\n\nThe content required to be captured in an audit record varies based on the impact level of an organization's system. Content that may be necessary to satisfy this requirement includes, for example, time stamps, source addresses, destination addresses, user identifiers, event descriptions, success/fail indications, filenames involved, and access or flow control rules invoked.\n\nThe information system initiates session audits at system start-up.\n\nNOTE: Security auditing is NOT enabled by default on macOS 14 and later.\n",
@@ -240,16 +243,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "if [[ ! -e /etc/security/audit_control ]] && [[ -e /etc/security/audit_control.example ]];then\n  /bin/cp /etc/security/audit_control.example /etc/security/audit_control\nfi\n\n/bin/launchctl enable system/com.apple.auditd\n/bin/launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.auditd.plist\n/usr/sbin/audit -i"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "if [[ ! -e /etc/security/audit_control ]] && [[ -e /etc/security/audit_control.example ]];then\n  /bin/cp /etc/security/audit_control.example /etc/security/audit_control\nfi\n\n/bin/launchctl enable system/com.apple.auditd\n/bin/launchctl bootstrap system /System/Library/LaunchDaemons/com.apple.auditd.plist\n/usr/sbin/audit -i",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "audit"
   ],

@@ -9,7 +9,7 @@ from tools.directory_swap import replace_directory
 from tools.json_output import write_json
 from tools.validate_library import schema_errors, validate_library
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 MANIFEST_FILE_NAME = "_manifest.json"
 
 

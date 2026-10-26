@@ -1,4 +1,4 @@
-"""Validate the normalized rule library under baselines/ against the v4 schemas,
+"""Validate the normalized rule library under baselines/ against the v5 schemas,
 plus the hand-edited display-name vocabulary when one is present."""
 
 import json

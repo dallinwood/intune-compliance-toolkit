@@ -32,14 +32,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "$ODV"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "$ODV"
+        },
+        "shell": "/usr/bin/plutil -convert json /var/db/ManagedConfigurationFiles/DiskManagement/DiskManagement_Settings.plist -o - | /usr/bin/jq --raw-output '.Restrictions.ExternalStorage'"
       },
-      "shell": "/usr/bin/plutil -convert json /var/db/ManagedConfigurationFiles/DiskManagement/DiskManagement_Settings.plist -o - | /usr/bin/jq --raw-output '.Restrictions.ExternalStorage'"
+      "language": "bash"
     }
   },
   "discussion": "Access to external storage _MUST_ be managed.\n\nNOTE: Apple's built in method using declarative device management method only allows you to set external storage management to Allowed, ReadOnly, and Disallowed.",
@@ -93,20 +96,30 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "ExternalStorage",
-      "ddm_value": "$ODV",
-      "declarationtype": "com.apple.configuration.diskmanagement.settings"
-    },
-    "default": {
-      "additional_info": "This is implemented by Declarative Device Management (DDM).",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "ddm_key": "ExternalStorage",
+            "ddm_value": "$ODV",
+            "declarationtype": "com.apple.configuration.diskmanagement.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": "This is implemented by Declarative Device Management (DDM).",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

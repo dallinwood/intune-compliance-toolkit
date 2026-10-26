@@ -53,14 +53,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('AllowIdentifiedDevelopers'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('EnableAssessment'))\n  if ( pref1 == true && pref2 == true ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('AllowIdentifiedDevelopers'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('EnableAssessment'))\n  if ( pref1 == true && pref2 == true ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "The information system implements cryptographic mechanisms to authenticate software prior to installation.\n\nGatekeeper settings must be configured correctly to only allow the system to run applications downloaded from the Mac App Store or applications signed with a valid Apple Developer ID code. Administrator users will still have the option to override these settings on a per-app basis. Gatekeeper is a security feature that ensures that applications must be digitally signed by an Apple-issued certificate in order to run. Digital signatures allow the macOS to verify that the application has not been modified by a malicious third party.\n",
@@ -128,28 +131,38 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/sbin/spctl --global-enable; /usr/sbin/spctl --enable"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "AllowIdentifiedDevelopers": true
-          },
-          {
-            "EnableAssessment": true
-          }
-        ],
-        "PayloadType": "com.apple.systempolicy.control"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "AllowIdentifiedDevelopers": true
+                },
+                {
+                  "EnableAssessment": true
+                }
+              ],
+              "PayloadType": "com.apple.systempolicy.control"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/sbin/spctl --global-enable; /usr/sbin/spctl --enable",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

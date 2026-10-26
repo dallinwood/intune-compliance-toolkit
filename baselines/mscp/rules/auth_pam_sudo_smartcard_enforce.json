@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 2
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 2
+        },
+        "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/sudo\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/sudo\nfi"
       },
-      "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/sudo\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/sudo\nfi"
+      "language": "bash"
     }
   },
   "discussion": "The system _MUST_ be configured to enforce multifactor authentication when the sudo command is used to elevate privilege.\n\nAll users _MUST_ go through multifactor authentication to prevent unauthenticated access and potential compromise to the system.\n\nIMPORTANT: Modification of Pluggable Authentication Modules (PAM) now require user authorization, or use of a Privacy Preferences Policy Control (PPPC) profile from MDM that authorizes modifying system administrator files or full disk access.\n\nNOTE: /etc/pam.d/sudo will be automatically modified to its original state following any update or major upgrade to the operating system.\n",
@@ -127,22 +130,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "config_file": "sudo",
-      "configuration_key": "file",
-      "configuration_value": "auth        sufficient    pam_smartcard.so\nauth        required      pam_opendirectory.so\nauth        required      pam_deny.so\naccount     required      pam_permit.so\npassword    required      pam_deny.so\nsession     required      pam_permit.so",
-      "declarationtype": "com.apple.configuration.services.configuration-files",
-      "service": "com.apple.pam"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": "\n/bin/cat > /etc/pam.d/sudo << SUDO_END\n# sudo: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        required      pam_opendirectory.so\nauth        required      pam_deny.so\naccount     required      pam_permit.so\npassword    required      pam_deny.so\nsession     required      pam_permit.so\nSUDO_END\n\n/bin/chmod 444 /etc/pam.d/sudo\n/usr/sbin/chown root:wheel /etc/pam.d/sudo"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "config_file": "sudo",
+            "configuration_key": "file",
+            "configuration_value": "auth        sufficient    pam_smartcard.so\nauth        required      pam_opendirectory.so\nauth        required      pam_deny.so\naccount     required      pam_permit.so\npassword    required      pam_deny.so\nsession     required      pam_permit.so",
+            "declarationtype": "com.apple.configuration.services.configuration-files",
+            "service": "com.apple.pam"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "\n/bin/cat > /etc/pam.d/sudo << SUDO_END\n# sudo: auth account password session\nauth        sufficient    pam_smartcard.so\nauth        required      pam_opendirectory.so\nauth        required      pam_deny.so\naccount     required      pam_permit.so\npassword    required      pam_deny.so\nsession     required      pam_permit.so\nSUDO_END\n\n/bin/chmod 444 /etc/pam.d/sudo\n/usr/sbin/chown root:wheel /etc/pam.d/sudo",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "auth"
   ],

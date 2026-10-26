@@ -37,23 +37,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipUnlockWithWatch').js\nEOS"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "string",
-          "value": "true"
+          "value": "PASS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipUnlockWithWatch').js\nEOS"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"WatchMigration\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"WatchMigration\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The prompt for Apple Watch unlock setup during Setup Assistant _MUST_ be disabled.\n\nDisabling Apple watches is a necessary step to ensuring that the information system retains a session lock until the user reestablishes access using an authorized identification and authentication procedures.\n",
@@ -116,38 +119,45 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {
-      "15.0": [
+    "macOS": {
+      "payloads": [
         {
-          "PayloadContent": [
+          "data": [
             {
-              "SkipUnlockWithWatch": true
+              "PayloadContent": [
+                {
+                  "SkipSetupItems": [
+                    "WatchMigration"
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.SetupAssistant.managed"
             }
           ],
-          "PayloadType": "com.apple.SetupAssistant.managed"
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "SkipUnlockWithWatch": true
+                }
+              ],
+              "PayloadType": "com.apple.SetupAssistant.managed"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": [
+            "15.0"
+          ]
         }
-      ]
-    },
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "SkipSetupItems": [
-              "WatchMigration"
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.SetupAssistant.managed"
-      }
-    ]
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

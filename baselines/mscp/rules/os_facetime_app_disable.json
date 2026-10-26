@@ -17,14 +17,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return ObjC.unwrap(item.objectForKey(\"SigningID\")) == \"com.apple.FaceTime\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return ObjC.unwrap(item.objectForKey(\"SigningID\")) == \"com.apple.FaceTime\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The macOS built-in FaceTime.app _MUST_ be disabled, unless FaceTime is an approved collaboration tool.\n\nThe FaceTime.app establishes a connection to Apple's iCloud service, even when security controls have been put in place to disable iCloud access.\n\n[IMPORTANT]\n====\nPreventing the launch of any application using the DeniedBinaries key will also prevent the launching of ad-hoc signed binaries and unsigned binaries.\n====\n\n[NOTE]\n=====\nApple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.alr will also block the launching of binaries.\n=====\n",
@@ -79,41 +82,48 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "Allowed",
-      "ddm_value": {
-        "DeniedBinaries": [
-          {
-            "SigningID": "com.apple.FaceTime"
-          }
-        ]
-      },
-      "declarationtype": "com.apple.configuration.app.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "DenyList": [
-              {
-                "SigningID": [
-                  "com.apple.FaceTime"
-                ]
-              }
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.alr"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "DenyList": [
+                    {
+                      "SigningID": [
+                        "com.apple.FaceTime"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.alr"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "Allowed",
+            "ddm_value": {
+              "DeniedBinaries": [
+                {
+                  "SigningID": "com.apple.FaceTime"
+                }
+              ]
+            },
+            "declarationtype": "com.apple.configuration.app.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

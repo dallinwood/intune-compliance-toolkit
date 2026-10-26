@@ -77,14 +77,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Guest access _MUST_ be disabled.\n\nTurning off guest access prevents anonymous users from accessing files.\n",
@@ -177,28 +180,30 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "DisableGuestAccount": true
-          },
-          {
-            "EnableGuestAccount": false
-          }
-        ],
-        "PayloadType": "com.apple.MCX"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "DisableGuestAccount": true
+                },
+                {
+                  "EnableGuestAccount": false
+                }
+              ],
+              "PayloadType": "com.apple.MCX"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

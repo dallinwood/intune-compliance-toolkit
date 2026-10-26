@@ -57,14 +57,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -c '\"WebKitPreferences.privateClickMeasurementEnabled\" = 1' | /usr/bin/awk '{ if ($1 >= 1) {print \"1\"} else {print \"0\"}}'"
       },
-      "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -c '\"WebKitPreferences.privateClickMeasurementEnabled\" = 1' | /usr/bin/awk '{ if ($1 >= 1) {print \"1\"} else {print \"0\"}}'"
+      "language": "bash"
     }
   },
   "discussion": "Allow privacy-preserving measurement of ad effectiveness _MUST_ be enabled in Safari.\n",
@@ -115,25 +118,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "WebKitPreferences.privateClickMeasurementEnabled": true
-          }
-        ],
-        "PayloadType": "com.apple.Safari"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "WebKitPreferences.privateClickMeasurementEnabled": true
+                }
+              ],
+              "PayloadType": "com.apple.Safari"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

@@ -65,31 +65,34 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS"
+        },
+        "26.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS\n)\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload')\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then\n  echo \"true\"\nelse\n  echo \"false\"\nfi"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
-          "type": "string",
-          "value": "true"
+          "type": "integer",
+          "value": 1
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS"
+        "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload'"
       },
-      "26.0": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
-        },
-        "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS\n)\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload')\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then\n  echo \"true\"\nelse\n  echo \"false\"\nfi"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
-      },
-      "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload'"
+      "language": "bash"
     }
   },
   "discussion": "Software Update _MUST_ be configured to enforce automatic downloads of updates is enabled.\n",
@@ -147,36 +150,58 @@
     }
   },
   "remediation": {
-    "by_version": {
-      "26.0": {
-        "additional_info": "This is implemented by Declarative Device Management (DDM) or by configuration profile.",
-        "shell": null
-      }
-    },
-    "ddm_info": {
-      "ddm_key": "AutomaticActions",
-      "ddm_value": {
-        "Download": "AlwaysOn"
-      },
-      "declarationtype": "com.apple.configuration.softwareupdate.settings"
-    },
-    "default": {
-      "additional_info": "This is implemented by Declarative Device Management (DDM).",
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "AutomaticDownload": true
-          }
-        ],
-        "PayloadType": "com.apple.SoftwareUpdate"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "AutomaticDownload": true
+                }
+              ],
+              "PayloadType": "com.apple.SoftwareUpdate"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "AutomaticActions",
+            "ddm_value": {
+              "Download": "AlwaysOn"
+            },
+            "declarationtype": "com.apple.configuration.softwareupdate.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": "This is implemented by Declarative Device Management (DDM).",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "15.0",
+            "27.0"
+          ]
+        },
+        {
+          "additional_info": "This is implemented by Declarative Device Management (DDM) or by configuration profile.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": [
+            "26.0"
+          ]
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

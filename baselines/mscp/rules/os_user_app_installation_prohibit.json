@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('familyControlsEnabled'))\n  let pathlist = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess.new')\\\n  .objectForKey('pathBlackList').js\n  for ( let app in pathlist ) {\n      if ( ObjC.unwrap(pathlist[app]) == \"/Users/\" && pref1 == true ){\n          return(\"true\")\n      }\n  }\n  return(\"false\")\n  }\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Users _MUST_ not be allowed to install software.\n\nAllowing regular users to install software, without explicit privileges, presents the risk of untested and potentially malicious software being installed on the system. Explicit privileges (escalated or administrative privileges) provide the regular user with explicit capabilities and control that exceeds the rights of a regular user.\n\nOn macOS, restrict users from installing and running software from the /Users/ folder.\n\n[IMPORTANT]\n====\nFor macOS, Apple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.applicationaccess.new.yaml#L67-L70[application restriction controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
@@ -105,30 +108,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "familyControlsEnabled": true
-          },
-          {
-            "pathBlackList": [
-              "/Users/"
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess.new"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "familyControlsEnabled": true
+                },
+                {
+                  "pathBlackList": [
+                    "/Users/"
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess.new"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

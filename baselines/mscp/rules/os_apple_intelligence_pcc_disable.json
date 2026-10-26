@@ -17,14 +17,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 4
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 4
+        },
+        "shell": "apple_intelligence_servers=(\"127.0.0.1 apple-relay.cloudflare.com\" \"127.0.0.1 apple-relay.fastly-edge.com\" \"127.0.0.1 cp4.cloudflare.com\" \"127.0.0.1 apple-relay.apple.com\")\ntotal=0\nfor config in $apple_intelligence_servers; do\n  total=$(expr $(/usr/bin/grep -i -c \"^$config\" /etc/hosts) + $total)\ndone\necho $total"
       },
-      "shell": "apple_intelligence_servers=(\"127.0.0.1 apple-relay.cloudflare.com\" \"127.0.0.1 apple-relay.fastly-edge.com\" \"127.0.0.1 cp4.cloudflare.com\" \"127.0.0.1 apple-relay.apple.com\")\ntotal=0\nfor config in $apple_intelligence_servers; do\n  total=$(expr $(/usr/bin/grep -i -c \"^$config\" /etc/hosts) + $total)\ndone\necho $total"
+      "language": "bash"
     }
   },
   "discussion": "Apple Intelligence Private Cloud Compute sends data to off-device infrastructure that is not directly controlled by the organization. Therefore, Apple Intelligence features that rely on off-device processing _MUST_ be disabled unless explicitly approved by the organization.\n\nThis requirement helps ensure that organizational data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n\nData may be sent to Apple Intelligence Private Cloud Compute even when Apple's provided controls around Apple Intelligence are disabled. Therefore, organizations should ensure that Apple Intelligence Private Cloud Compute is disabled by blocking access to the following domains:\n- apple-relay.apple.com\n- apple-relay.fastly-edge.com\n- apple-relay.cloudflare.com\n- cp4.cloudflare.com\n",
@@ -85,16 +88,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "note=\"### Apple Intelligence Private Cloud Compute is disabled by the organization (apple-relay, cp4.cloudflare.com, etc). Added by the mSCP ###\"\napple_intelligence_servers=(\"127.0.0.1 apple-relay.cloudflare.com\" \"127.0.0.1 apple-relay.fastly-edge.com\" \"127.0.0.1 cp4.cloudflare.com\" \"127.0.0.1 apple-relay.apple.com\")\n\nhost_file=$(/bin/cat /etc/hosts)\n\nif ! /usr/bin/grep -qxF \"$note\" \"$hosts_file\" 2>/dev/null; then\n  echo \"$note\" >> \"$hosts_file\"\nfi\nfor config in $apple_intelligence_servers; do\n  if ! echo $host_file | /usr/bin/grep -q -i \"^$config\" 2>/dev/null; then\n    /usr/bin/grep -qxF \"^$config\" \"/etc/hosts\" 2>/dev/null || echo \"$config\" >> \"/etc/hosts\"\n  fi\ndone"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "note=\"### Apple Intelligence Private Cloud Compute is disabled by the organization (apple-relay, cp4.cloudflare.com, etc). Added by the mSCP ###\"\napple_intelligence_servers=(\"127.0.0.1 apple-relay.cloudflare.com\" \"127.0.0.1 apple-relay.fastly-edge.com\" \"127.0.0.1 cp4.cloudflare.com\" \"127.0.0.1 apple-relay.apple.com\")\n\nhost_file=$(/bin/cat /etc/hosts)\n\nif ! /usr/bin/grep -qxF \"$note\" \"$hosts_file\" 2>/dev/null; then\n  echo \"$note\" >> \"$hosts_file\"\nfi\nfor config in $apple_intelligence_servers; do\n  if ! echo $host_file | /usr/bin/grep -q -i \"^$config\" 2>/dev/null; then\n    /usr/bin/grep -qxF \"^$config\" \"/etc/hosts\" 2>/dev/null || echo \"$config\" >> \"/etc/hosts\"\n  fi\ndone",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

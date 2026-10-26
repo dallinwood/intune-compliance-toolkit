@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": "$ODV"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": "$ODV"
+        },
+        "shell": "/usr/sbin/sshd -G | /usr/bin/awk '/clientalivecountmax/{print $2}'"
       },
-      "shell": "/usr/sbin/sshd -G | /usr/bin/awk '/clientalivecountmax/{print $2}'"
+      "language": "bash"
     }
   },
   "discussion": "If SSHD is enabled it _MUST_ be configured with the Client Alive Maximum Count set to $ODV.\n\nThis will set the number of client alive messages which may be sent without the SSH server receiving any messages back from the client.  If this threshold is reached while client alive messages are being sent, the SSH server will disconnect the client, terminating the session.  The client alive messages are sent through the encrypted channel and therefore will not be spoofable.  The client alive mechanism is valuable when the client or server depend on knowing when a connection has become unresponsive.\n\nNOTE: This setting is not intended to manage idle user sessions where there is no input from the client. Its purpose is to monitor for interruptions in network connectivity and force the session to terminate after the connection appears to be broken.\n\nNOTE: /etc/ssh/sshd_config will be automatically modified to its original state following any update or major upgrade to the operating system.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
@@ -111,22 +114,32 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "config_file": "sshd_config",
-      "configuration_key": "ClientAliveCountMax",
-      "configuration_value": "$ODV",
-      "declarationtype": "com.apple.configuration.services.configuration-files",
-      "service": "com.apple.sshd"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": "include_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\n/usr/bin/grep -qxF 'clientalivecountmax $ODV' \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"clientalivecountmax $ODV\" >> \"${include_dir}01-mscp-sshd.conf\"\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [
+        {
+          "data": {
+            "config_file": "sshd_config",
+            "configuration_key": "ClientAliveCountMax",
+            "configuration_value": "$ODV",
+            "declarationtype": "com.apple.configuration.services.configuration-files",
+            "service": "com.apple.sshd"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "include_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/sshd_config | /usr/bin/tr -d '*')\n\nif [[ -z $include_dir ]]; then\n  /usr/bin/sed -i.bk \"1s/.*/Include \\/etc\\/ssh\\/sshd_config.d\\/\\*/\" /etc/ssh/sshd_config\nfi\n\n/usr/bin/grep -qxF 'clientalivecountmax $ODV' \"${include_dir}01-mscp-sshd.conf\" 2>/dev/null || echo \"clientalivecountmax $ODV\" >> \"${include_dir}01-mscp-sshd.conf\"\n\nfor file in $(ls ${include_dir}); do\n  if [[ \"$file\" == \"100-macos.conf\" ]]; then\n      continue\n  fi\n  if [[ \"$file\" == \"01-mscp-sshd.conf\" ]]; then\n      break\n  fi\n  /bin/mv ${include_dir}${file} ${include_dir}20-${file}\ndone",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

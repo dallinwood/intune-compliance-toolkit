@@ -12,14 +12,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return ObjC.unwrap(item.objectForKey(\"SigningID\")) == \"com.apple.iCal\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.alr\"); var list = ObjC.unwrap(s.objectForKey(\"DenyList\")) || []; (list.some(function(item) { return ObjC.unwrap(item.objectForKey(\"SigningID\")) == \"com.apple.iCal\"; }) && s.objectIsForcedForKey(\"DenyList\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "The macOS built-in Calendar.app _MUST_ be disabled as this application can establish a connection to non-approved services. This rule is in place to prevent inadvertent data transfers.\n\n[IMPORTANT]\n====\nSome organizations allow the use of the built-in Calendar.app for organizational communication. Information System Security Officers (ISSOs) may make the risk-based decision not to disable the macOS built-in Calendar.app to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n\n[IMPORTANT]\n====\nPreventing the launch of any application using the DeniedBinaries key will also prevent the launching of ad-hoc signed binaries and unsigned binaries.\n====\n\n[NOTE]\n=====\nApple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.alr will also block the launching of binaries.\n=====\n",
@@ -65,41 +68,48 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "Allowed",
-      "ddm_value": {
-        "DeniedBinaries": [
-          {
-            "SigningID": "com.apple.iCal"
-          }
-        ]
-      },
-      "declarationtype": "com.apple.configuration.app.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "DenyList": [
-              {
-                "SigningID": [
-                  "com.apple.iCal"
-                ]
-              }
-            ]
-          }
-        ],
-        "PayloadType": "com.apple.alr"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "DenyList": [
+                    {
+                      "SigningID": [
+                        "com.apple.iCal"
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "PayloadType": "com.apple.alr"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "Allowed",
+            "ddm_value": {
+              "DeniedBinaries": [
+                {
+                  "SigningID": "com.apple.iCal"
+                }
+              ]
+            },
+            "declarationtype": "com.apple.configuration.app.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

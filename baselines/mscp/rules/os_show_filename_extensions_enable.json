@@ -21,14 +21,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": 1
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults read .GlobalPreferences AppleShowAllExtensions 2>/dev/null"
       },
-      "shell": "/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults read .GlobalPreferences AppleShowAllExtensions 2>/dev/null"
+      "language": "bash"
     }
   },
   "discussion": "Show all filename extensions _MUST_ be enabled in the Finder.\n\n[NOTE]\n====\nThe check and fix are for the currently logged in user. To get the currently logged in user, run the following.\n[source,bash]\n-  CURRENT_USER=$( /usr/bin/defaults read /Library/Preferences/com.apple.loginwindow lastUserName )\n-  ====\n",
@@ -61,16 +64,20 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults write /Users/\"$CURRENT_USER\"/Library/Preferences/.GlobalPreferences AppleShowAllExtensions -bool true"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": null
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/sudo -u \"$CURRENT_USER\" /usr/bin/defaults write /Users/\"$CURRENT_USER\"/Library/Preferences/.GlobalPreferences AppleShowAllExtensions -bool true",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

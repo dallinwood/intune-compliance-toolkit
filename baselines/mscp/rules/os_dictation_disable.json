@@ -32,23 +32,26 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {
-      "15.0": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowDictation\")) == false && s.objectIsForcedForKey(\"allowDictation\")) ? \"PASS\" : \"FAIL\"'"
+        }
+      },
+      "default": {
         "additional_info": null,
         "result": {
           "type": "string",
           "value": "PASS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowDictation\")) == false && s.objectIsForcedForKey(\"allowDictation\")) ? \"PASS\" : \"FAIL\"'"
-      }
-    },
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.ironwood.support\"); (ObjC.unwrap(s.objectForKey(\"Ironwood Allowed\")) == false && s.objectIsForcedForKey(\"Ironwood Allowed\")) ? \"PASS\" : \"FAIL\"'"
       },
-      "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.ironwood.support\"); (ObjC.unwrap(s.objectForKey(\"Ironwood Allowed\")) == false && s.objectIsForcedForKey(\"Ironwood Allowed\")) ? \"PASS\" : \"FAIL\"'"
+      "language": "bash"
     }
   },
   "discussion": "Dictation _MUST_ be disabled on Intel based Macs as the feature On Device Dictation is only available on Apple Silicon devices. When enabled on Apple Silicon Macs, on device dictation _MUST_ be enabled as well to prevent data from being sent off device.\n",
@@ -145,29 +148,36 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "AllowDictation",
-      "ddm_value": false,
-      "declarationtype": "com.apple.configuration.keyboard.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "allowDictation": false
-          }
-        ],
-        "PayloadType": "com.apple.applicationaccess"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "allowDictation": false
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "AllowDictation",
+            "ddm_value": false,
+            "declarationtype": "com.apple.configuration.keyboard.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

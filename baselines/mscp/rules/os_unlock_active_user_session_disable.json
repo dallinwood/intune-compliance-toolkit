@@ -69,14 +69,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "PASS"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "RESULT=\"FAIL\"\nSS_RULE=$(/usr/bin/security -q authorizationdb read system.login.screensaver  2>&1 | /usr/bin/xmllint --xpath \"//dict/key[.='rule']/following-sibling::array[1]/string/text()\" -)\n\nif [[ \"${SS_RULE}\" == \"$ODV\" ]]; then\n    RESULT=\"PASS\"\nelse\n    PSSO_CHECK=$(/usr/bin/security -q authorizationdb read \"$SS_RULE\"  2>&1 | /usr/bin/xmllint --xpath '//key[.=\"rule\"]/following-sibling::array[1]/string/text()' -)\n    if /usr/bin/grep -Fxq \"$ODV\" <<<\"$PSSO_CHECK\"; then\n        RESULT=\"PASS\"\n    fi\nfi\n\necho $RESULT"
       },
-      "shell": "RESULT=\"FAIL\"\nSS_RULE=$(/usr/bin/security -q authorizationdb read system.login.screensaver  2>&1 | /usr/bin/xmllint --xpath \"//dict/key[.='rule']/following-sibling::array[1]/string/text()\" -)\n\nif [[ \"${SS_RULE}\" == \"$ODV\" ]]; then\n    RESULT=\"PASS\"\nelse\n    PSSO_CHECK=$(/usr/bin/security -q authorizationdb read \"$SS_RULE\"  2>&1 | /usr/bin/xmllint --xpath '//key[.=\"rule\"]/following-sibling::array[1]/string/text()' -)\n    if /usr/bin/grep -Fxq \"$ODV\" <<<\"$PSSO_CHECK\"; then\n        RESULT=\"PASS\"\n    fi\nfi\n\necho $RESULT"
+      "language": "bash"
     }
   },
   "discussion": "The ability to log in to another user's active or locked session _MUST_ be disabled.\n\nmacOS has a privilege that can be granted to any user that will allow that user to unlock active user's sessions. Disabling the admins and/or user's ability to log into another user's active and locked session prevents unauthorized persons from viewing potentially sensitive and/or personal information.\n\nNOTE: Configuring this setting will change the user experience and disable TouchID from unlocking the screensaver. A configuration profile will be generated to include the setting that restores the expected behavior. You can also apply the settings using `/usr/bin/sudo /usr/bin/defaults write /Library/Preferences/com.apple.loginwindow screenUnlockMode -int 1`.\n\nWARNING: Do not apply this rule if your organization uses smartcards and Platform Single Sign-On (PSSO).\n",
@@ -180,25 +183,35 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": "SS_RULE=$(/usr/bin/security -q authorizationdb read system.login.screensaver 2>&1 | /usr/bin/xmllint --xpath \"//dict/key[.='rule']/following-sibling::array[1]/string/text()\" -)\n\nif [[ \"$SS_RULE\" == *psso* ]]; then\n    /usr/bin/security -q authorizationdb read psso-screensaver > \"/tmp/psso-screensaver-mscp.plist\"\n    /usr/bin/sed -i.bak 's/<string>authenticate-session-owner-or-admin<\\/string>/<string>$ODV<\\/string>/' /tmp/psso-screensaver-mscp.plist\n    /usr/bin/security -q authorizationdb write psso-screensaver-mscp < /tmp/psso-screensaver-mscp.plist\n    /usr/bin/security -q authorizationdb write system.login.screensaver psso-screensaver-mscp 2>&1\nelse\n    /usr/bin/security -q authorizationdb write system.login.screensaver \"$ODV\" 2>&1\nfi"
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "screenUnlockMode": 1
-          }
-        ],
-        "PayloadType": "com.apple.loginwindow"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "screenUnlockMode": 1
+                }
+              ],
+              "PayloadType": "com.apple.loginwindow"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "SS_RULE=$(/usr/bin/security -q authorizationdb read system.login.screensaver 2>&1 | /usr/bin/xmllint --xpath \"//dict/key[.='rule']/following-sibling::array[1]/string/text()\" -)\n\nif [[ \"$SS_RULE\" == *psso* ]]; then\n    /usr/bin/security -q authorizationdb read psso-screensaver > \"/tmp/psso-screensaver-mscp.plist\"\n    /usr/bin/sed -i.bak 's/<string>authenticate-session-owner-or-admin<\\/string>/<string>$ODV<\\/string>/' /tmp/psso-screensaver-mscp.plist\n    /usr/bin/security -q authorizationdb write psso-screensaver-mscp < /tmp/psso-screensaver-mscp.plist\n    /usr/bin/security -q authorizationdb write system.login.screensaver psso-screensaver-mscp 2>&1\nelse\n    /usr/bin/security -q authorizationdb write system.login.screensaver \"$ODV\" 2>&1\nfi",
+          "versions": null
+        }
+      ]
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "os"
   ],

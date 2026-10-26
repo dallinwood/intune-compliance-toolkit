@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "integer",
-        "value": "$ODV"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": "$ODV"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\\n.objectForKey('com.apple.autologout.AutoLogOutDelay').js\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\\n.objectForKey('com.apple.autologout.AutoLogOutDelay').js\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Auto logout _MUST_ be configured to automatically terminate a user session and log out the after $ODV seconds of inactivity.\n\nNOTE:The maximum that macOS can be configured for autologoff is $ODV seconds.\n\n[IMPORTANT]\n====\nThe automatic logout may cause disruptions to an organization's workflow and/or loss of data. Information System Security Officers (ISSOs) are advised to first fully weigh the potential risks posed to their organization before opting to disable the automatic logout setting.\n====\n",
@@ -114,25 +117,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "com.apple.autologout.AutoLogOutDelay": "$ODV"
-          }
-        ],
-        "PayloadType": ".GlobalPreferences"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "com.apple.autologout.AutoLogOutDelay": "$ODV"
+                }
+              ],
+              "PayloadType": ".GlobalPreferences"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

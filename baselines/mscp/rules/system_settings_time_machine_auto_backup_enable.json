@@ -37,14 +37,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "true"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "true"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.TimeMachine')\\\n  .objectForKey('AutoBackup'))\n  if ( pref1  == null ) {\n    return(\"true\")\n  }  else if ( pref1 == 1 ) {\n    return(\"true\")\n  }  else {\n    return(\"false\")\n  }\n}\nEOS"
       },
-      "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.TimeMachine')\\\n  .objectForKey('AutoBackup'))\n  if ( pref1  == null ) {\n    return(\"true\")\n  }  else if ( pref1 == 1 ) {\n    return(\"true\")\n  }  else {\n    return(\"false\")\n  }\n}\nEOS"
+      "language": "bash"
     }
   },
   "discussion": "Automatic backups _MUST_ be enabled when using Time Machine.\n",
@@ -89,25 +92,27 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": null,
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "AutoBackup": true
-          }
-        ],
-        "PayloadType": "com.apple.TimeMachine"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "AutoBackup": true
+                }
+              ],
+              "PayloadType": "com.apple.TimeMachine"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "system_settings"
   ],

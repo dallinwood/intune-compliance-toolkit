@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "step-unknown-language", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "remediation": { "Windows": { "steps": [{ "name": null, "language": "cmd", "shell": "echo fix", "additional_info": null, "versions": null }], "payloads": [] } } } }

@@ -61,14 +61,17 @@
     "status": "automated"
   },
   "check": {
-    "by_version": {},
-    "default": {
-      "additional_info": null,
-      "result": {
-        "type": "string",
-        "value": "pass"
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "pass"
+        },
+        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"autoEnableInSeconds\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1/60 >= $ODV ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
       },
-      "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"autoEnableInSeconds\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1/60 >= $ODV ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
+      "language": "bash"
     }
   },
   "discussion": "The macOS _MUST_ be configured to enforce a lockout time period of at least $ODV minutes when the maximum number of failed logon attempts is reached.\n\nThis rule protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
@@ -158,29 +161,36 @@
     }
   },
   "remediation": {
-    "by_version": {},
-    "ddm_info": {
-      "ddm_key": "MaximumGracePeriodInMinutes",
-      "ddm_value": "$ODV",
-      "declarationtype": "com.apple.configuration.passcode.settings"
-    },
-    "default": {
-      "additional_info": null,
-      "shell": null
-    },
-    "mobileconfig_by_version": {},
-    "mobileconfig_info": [
-      {
-        "PayloadContent": [
-          {
-            "minutesUntilFailedLoginReset": "$ODV"
-          }
-        ],
-        "PayloadType": "com.apple.mobiledevice.passwordpolicy"
-      }
-    ]
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "minutesUntilFailedLoginReset": "$ODV"
+                }
+              ],
+              "PayloadType": "com.apple.mobiledevice.passwordpolicy"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        },
+        {
+          "data": {
+            "ddm_key": "MaximumGracePeriodInMinutes",
+            "ddm_value": "$ODV",
+            "declarationtype": "com.apple.configuration.passcode.settings"
+          },
+          "kind": "ddm",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
   },
-  "schema_version": 4,
+  "schema_version": 5,
   "section_path": [
     "pwpolicy"
   ],

@@ -20216,6 +20216,6 @@
       "title": "Enable Wifi Menu"
     }
   ],
-  "schema_version": 4,
+  "schema_version": 5,
   "source": "mscp"
 }

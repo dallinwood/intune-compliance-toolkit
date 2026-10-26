@@ -11,8 +11,11 @@
     "tags": ["powershell"],
     "check": {
       "$replace": {
-        "default": { "shell": "$ExecutionContext.SessionState.LanguageMode", "result": { "type": "string", "value": "ConstrainedLanguage" }, "additional_info": null },
-        "by_version": {}
+        "Windows": {
+          "language": "powershell",
+          "default": { "shell": "$ExecutionContext.SessionState.LanguageMode", "result": { "type": "string", "value": "ConstrainedLanguage" }, "additional_info": null },
+          "by_version": {}
+        }
       }
     }
   }

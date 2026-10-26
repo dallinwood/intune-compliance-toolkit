@@ -83,7 +83,7 @@ def test_constants_name_the_upstream_source():
     }
 
 
-def test_controls_become_v4_rules():
+def test_controls_become_v5_rules():
     rules = normalize_catalog(load_fixture(), LOCK)
 
     assert [rule["id"] for rule in rules] == EXPECTED_FIXTURE_RULE_IDS
@@ -95,7 +95,7 @@ def test_controls_become_v4_rules():
 def test_rule_fields_follow_the_mapping():
     rule = rules_by_id()["asd_ism.ism-1667"]
 
-    assert rule["schema_version"] == 4
+    assert rule["schema_version"] == 5
     assert rule["id"] == "asd_ism.ism-1667"
     assert rule["title"] == "Microsoft Office is blocked from creating child processes."
     assert rule["discussion_format"] == "markdown"
