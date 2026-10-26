@@ -12,7 +12,7 @@ const FAILURE_MESSAGES: Record<Exclude<CopyOutcome, 'copied'>, string> = {
 
 const TONE_CLASSES = {
   dark: 'text-slate-300 hover:bg-slate-700 hover:text-white',
-  light: 'text-slate-600 hover:bg-slate-200 hover:text-slate-900',
+  light: 'text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 hover:text-slate-900 dark:hover:text-foreground',
 } as const
 
 type CopyState = { status: 'idle' } | { status: 'copied' } | { status: 'failed'; outcome: Exclude<CopyOutcome, 'copied'> }
@@ -48,7 +48,7 @@ export function CopyButton({ text, tone = 'dark' }: { text: string; tone?: keyof
         {state.status === 'copied' ? 'Copied' : (failureMessage ?? '')}
       </span>
       {failureMessage && (
-        <span aria-hidden className="absolute top-8 right-1 left-1 rounded bg-amber-100 px-2 py-1 text-xs text-amber-900 shadow">
+        <span aria-hidden className="absolute top-8 right-1 left-1 rounded bg-amber-100 dark:bg-amber-950 px-2 py-1 text-xs text-amber-900 dark:text-amber-200 shadow">
           {failureMessage}
         </span>
       )}

@@ -63,21 +63,21 @@ export function AppShell({
   return (
     <VocabularyContext value={vocabularyIndex}>
       <div className="flex h-screen flex-col">
-        <header className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
+        <header className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-border px-4 py-3">
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setFiltersOpen((value) => !value)}
               aria-expanded={filtersOpen}
               aria-controls="filter-sidebar"
-              className="rounded border border-slate-300 px-2 py-1 text-xs md:hidden"
+              className="rounded border border-slate-300 dark:border-zinc-700 px-2 py-1 text-xs md:hidden"
             >
               Filters
             </button>
-            <h1 className="text-lg font-semibold text-slate-900">Intune Compliance Toolkit</h1>
+            <h1 className="text-lg font-semibold text-slate-900 dark:text-foreground">Intune Compliance Toolkit</h1>
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-slate-500 dark:text-muted-foreground">
               {filteredRows.length} of {rows.length} rules
             </span>
             <SelectionToolbar

@@ -10,25 +10,25 @@ export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
   const baseName = bundleBaseName(chunk)
 
   return (
-    <section className="rounded border border-slate-200 bg-white p-3 text-sm" aria-label={`Bundle ${baseName}`}>
+    <section className="rounded border border-slate-200 dark:border-border bg-white dark:bg-card p-3 text-sm" aria-label={`Bundle ${baseName}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="font-medium text-slate-800">
+        <h3 className="font-medium text-slate-800 dark:text-foreground">
           {termLabel(index, 'sections', chunk.section)}
           {chunk.partNumber !== null && `, part ${chunk.partNumber}`}
-          <span className="font-normal text-slate-500">
+          <span className="font-normal text-slate-500 dark:text-muted-foreground">
             {' '}
             ({chunk.sourceName} {chunk.releaseTag})
           </span>
         </h3>
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-slate-500 dark:text-muted-foreground">
           {chunk.rules.length} rule(s), {(rulesJsonBytes / 1024).toFixed(1)} KB of rules JSON
         </span>
       </div>
-      <ul className="mt-1 font-mono text-xs break-all text-slate-500" aria-label="Files">
+      <ul className="mt-1 font-mono text-xs break-all text-slate-500 dark:text-muted-foreground" aria-label="Files">
         <li>{baseName}-discovery.sh</li>
         <li>{baseName}-rules.json</li>
       </ul>
-      <ul className="mt-2 space-y-0.5 text-xs text-slate-600">
+      <ul className="mt-2 space-y-0.5 text-xs text-slate-600 dark:text-zinc-300">
         {chunk.rules.map((rule) => (
           <li key={rule.id} className="break-words">
             <span className="font-mono break-all">{upstreamRuleId(rule.id)}</span> - {rule.title}

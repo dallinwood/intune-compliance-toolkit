@@ -29,7 +29,7 @@ function TooltipContent({
           role="tooltip"
           data-slot="tooltip-content"
           className={cn(
-            "max-w-xs rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-white shadow-md",
+            "max-w-xs rounded-md bg-slate-900 px-2.5 py-1.5 text-xs text-white shadow-md dark:bg-zinc-800 dark:text-zinc-100 dark:ring-1 dark:ring-white/10",
             className
           )}
           {...props}

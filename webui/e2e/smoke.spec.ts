@@ -1628,3 +1628,50 @@ test('a URL in a rule reference is a link that opens in a new tab', async ({ pag
   await expect(link.first()).toHaveAttribute('target', '_blank')
   await expect(link.first()).toHaveAttribute('rel', 'noreferrer')
 })
+
+test.describe('light and dark theme', () => {
+  const htmlElement = (page: Page) => page.locator('html')
+
+  test('the footer toggle switches the theme and the choice survives a reload', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' })
+    await openLibrary(page)
+    await expect(htmlElement(page)).not.toHaveClass(/\bdark\b/)
+
+    await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+    await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
+    await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
+
+    await page.reload()
+    await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
+    await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
+
+    await page.getByRole('button', { name: 'Switch to light mode' }).click()
+    await expect(htmlElement(page)).not.toHaveClass(/\bdark\b/)
+    await page.reload()
+    await expect(htmlElement(page)).not.toHaveClass(/\bdark\b/)
+  })
+
+  test.describe('with a dark OS preference', () => {
+    test.use({ colorScheme: 'dark' })
+
+    test('the inline script in index.html sets the class without the app bundle', async ({ page }) => {
+      // With the app's entry module blocked, only the pre-paint script can set it.
+      await page.route('**/src/main.tsx*', (route) => route.abort())
+      await page.goto('/')
+      await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
+    })
+
+    test('a first visit with no stored choice starts dark', async ({ page }) => {
+      await page.goto('/')
+      await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
+      await expect(page.getByText(/^1493 of 1493 rules$/)).toBeVisible({ timeout: 10_000 })
+      await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
+    })
+
+    test('a stored light choice wins over the OS preference', async ({ page }) => {
+      await page.addInitScript(() => window.localStorage.setItem('intune-toolkit:theme', 'light'))
+      await page.goto('/')
+      await expect(htmlElement(page)).not.toHaveClass(/\bdark\b/)
+    })
+  })
+})

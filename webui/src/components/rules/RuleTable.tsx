@@ -146,7 +146,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
-            <p className="p-6 text-sm text-slate-500">No rules match the current filters.</p>
+            <p className="p-6 text-sm text-slate-500 dark:text-muted-foreground">No rules match the current filters.</p>
           ) : (
             <>
               <TooltipProvider>
@@ -172,7 +172,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
         {isCatchingUp && (
           <div role="status" aria-label="Updating rules" className="pointer-events-none absolute inset-0">
             <div className="sticky top-1/3 flex justify-center">
-              <Loader2 className="size-8 animate-spin text-indigo-500" aria-hidden="true" />
+              <Loader2 className="size-8 animate-spin text-indigo-500 dark:text-indigo-400" aria-hidden="true" />
             </div>
           </div>
         )}
@@ -245,9 +245,9 @@ const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onTo
 
 // Tailwind only sees literal class names, so each level's classes are spelled out.
 const SECTION_LEVEL_STYLES: Record<number, string> = {
-  1: 'bg-slate-100 font-semibold',
-  2: 'bg-slate-50 font-medium',
-  3: 'bg-white font-medium',
+  1: 'bg-slate-100 dark:bg-muted font-semibold',
+  2: 'bg-slate-50 dark:bg-card font-medium',
+  3: 'bg-background font-medium',
 }
 const SECTION_LEVEL_INDENTS: Record<number, string> = { 1: 'pl-4', 2: 'pl-8', 3: 'pl-12' }
 const HEADING_TAGS = { 1: 'h2', 2: 'h3', 3: 'h4' } as const
@@ -256,16 +256,16 @@ function SectionHeader({ node, isOpen, onToggle }: { node: SectionNode; isOpen: 
   const level = Math.min(node.depth, 3) as 1 | 2 | 3
   const HeadingTag = HEADING_TAGS[level]
   return (
-    <HeadingTag className={`border-b border-slate-200 text-sm text-slate-700 ${SECTION_LEVEL_STYLES[level]}`}>
+    <HeadingTag className={`border-b border-slate-200 dark:border-border text-sm text-slate-700 dark:text-zinc-200 ${SECTION_LEVEL_STYLES[level]}`}>
       <button
         type="button"
         aria-expanded={isOpen}
         onClick={() => onToggle(node.id)}
-        className={`flex w-full items-center gap-1.5 py-2 pr-4 text-left hover:bg-slate-200/60 ${SECTION_LEVEL_INDENTS[level]}`}
+        className={`flex w-full items-center gap-1.5 py-2 pr-4 text-left hover:bg-slate-200/60 dark:hover:bg-zinc-700/60 ${SECTION_LEVEL_INDENTS[level]}`}
       >
-        <ChevronRight className={`size-4 shrink-0 text-slate-400 transition-transform ${isOpen ? 'rotate-90' : ''}`} aria-hidden="true" />
+        <ChevronRight className={`size-4 shrink-0 text-slate-400 dark:text-muted-foreground transition-transform ${isOpen ? 'rotate-90' : ''}`} aria-hidden="true" />
         <span>
-          {node.label} <span className="font-normal text-slate-400">({node.ruleCount})</span>
+          {node.label} <span className="font-normal text-slate-400 dark:text-muted-foreground">({node.ruleCount})</span>
         </span>
       </button>
     </HeadingTag>
@@ -318,11 +318,11 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
           // Always-reserved, normally-transparent left border (rather
           // than one that appears/disappears) so toggling expand never
           // shifts the row's contents.
-          const expandedAccent = isExpanded ? 'border-indigo-500 bg-indigo-50' : 'border-transparent'
+          const expandedAccent = isExpanded ? 'border-indigo-500 dark:border-indigo-400 bg-indigo-50 dark:bg-indigo-950/50' : 'border-transparent'
           return (
             <Fragment key={key}>
               <tr
-                className={`cursor-pointer border-l-4 align-top ${expandedAccent} ${isExpanded ? 'hover:bg-indigo-100' : 'hover:bg-slate-50'}`}
+                className={`cursor-pointer border-l-4 align-top ${expandedAccent} ${isExpanded ? 'hover:bg-indigo-100 dark:hover:bg-indigo-950' : 'hover:bg-slate-50 dark:hover:bg-muted/60'}`}
                 onClick={(event) => {
                   // Let the checkbox (or any other control in the row)
                   // handle its own click instead of also toggling expand.
@@ -339,7 +339,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                     onCheckedChange={(checked) => setEnabled(row.ref, checked)}
                   />
                 </td>
-                <td className="w-8 py-1.5 text-center text-slate-400">
+                <td className="w-8 py-1.5 text-center text-slate-400 dark:text-muted-foreground">
                   <Button
                     type="button"
                     variant="ghost"
@@ -421,11 +421,11 @@ function RuleTitle({ row }: { row: RuleRow }) {
         {displayWithOdv(row.title, value)}
         {row.hasOdv && (
           <span role="img" title="Has an organization-defined value" aria-label="Has an organization-defined value">
-            <Settings2 className="ml-1.5 inline size-4 align-text-bottom text-indigo-500" />
+            <Settings2 className="ml-1.5 inline size-4 align-text-bottom text-indigo-500 dark:text-indigo-400" />
           </span>
         )}
       </span>
-      <div className="font-mono text-xs break-all text-slate-400">{upstreamRuleId(row.ref.id)}</div>
+      <div className="font-mono text-xs break-all text-slate-400 dark:text-muted-foreground">{upstreamRuleId(row.ref.id)}</div>
     </div>
   )
 }
@@ -436,7 +436,7 @@ function AssessmentBadge({ row }: { row: RuleRow }) {
   const isAutomated = row.assessment.status === 'automated'
   // Semantic green/amber isn't one of the preset's badge variants, so it's
   // applied as a className override on top of the base Badge.
-  const badgeClass = isAutomated ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+  const badgeClass = isAutomated ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400' : 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400'
 
   return (
     <Badge className={badgeClass} title={description ?? undefined}>
@@ -449,9 +449,9 @@ function BenchmarkText({ row }: { row: RuleRow }) {
   const index = useVocabularyIndex()
   const selectedVersions = useFilterStore((store) => store.versions)
   const hasVersionedEntry = row.scopeKeys.some((key) => key !== NO_VERSION_KEY)
-  if (!hasVersionedEntry && row.benchmarks.length === 0) return <span className="text-xs whitespace-nowrap text-slate-400 italic">No version listed</span>
+  if (!hasVersionedEntry && row.benchmarks.length === 0) return <span className="text-xs whitespace-nowrap text-slate-400 dark:text-muted-foreground italic">No version listed</span>
   const summary = benchmarkSummary(row.applicability, versionsUnder(row, selectedVersions, index), index)
-  if (!summary) return <span className="text-xs whitespace-nowrap text-slate-400 italic">Not in a benchmark</span>
+  if (!summary) return <span className="text-xs whitespace-nowrap text-slate-400 dark:text-muted-foreground italic">Not in a benchmark</span>
   return <SingleLineText text={summary} />
 }
 
@@ -480,7 +480,7 @@ function SingleLineText({ text }: { text: string }) {
         tabIndex={isOverflowing ? 0 : undefined}
         data-testid="benchmark-text"
         data-overflowing={isOverflowing}
-        className={`block max-w-full min-w-0 overflow-hidden text-xs whitespace-nowrap text-slate-500 ${fade}`}
+        className={`block max-w-full min-w-0 overflow-hidden text-xs whitespace-nowrap text-slate-500 dark:text-muted-foreground ${fade}`}
       >
         {text}
       </TooltipTrigger>

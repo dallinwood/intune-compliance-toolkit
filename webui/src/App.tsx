@@ -38,10 +38,10 @@ function App() {
   }, [])
 
   if (state.status === 'loading') {
-    return <div className="p-8 text-sm text-slate-500">Loading rule library…</div>
+    return <div className="p-8 text-sm text-slate-500 dark:text-muted-foreground">Loading rule library…</div>
   }
   if (state.status === 'error') {
-    return <div className="p-8 text-sm text-red-600">Failed to load rule library: {state.message}</div>
+    return <div className="p-8 text-sm text-red-600 dark:text-red-400">Failed to load rule library: {state.message}</div>
   }
   const { rows, sources, coveredVersions } = state.library
   return (

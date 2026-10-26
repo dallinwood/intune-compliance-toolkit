@@ -28,7 +28,7 @@ function StepEntry({
   const highlightLanguage = scriptHighlightLanguage(step.language)
   return (
     <div className="space-y-1">
-      <p className="text-xs font-medium text-slate-600">{label}</p>
+      <p className="text-xs font-medium text-slate-600 dark:text-zinc-300">{label}</p>
       {step.shell_file !== undefined && (
         <ScriptFile path={step.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
       )}
@@ -52,7 +52,7 @@ function JsonEntry({
   const json = JSON.stringify(value, null, 2)
   return (
     <div className="space-y-1">
-      <p className="text-xs font-medium text-slate-600">{label}</p>
+      <p className="text-xs font-medium text-slate-600 dark:text-zinc-300">{label}</p>
       <OdvCodeBlock code={json} language={INLINE_PAYLOAD_LANGUAGE} odvValue={odvValue} codeOdv={codeOdv} isJson />
     </div>
   )
@@ -77,7 +77,7 @@ function TargetRemediationBlock({
   return (
     <div className="space-y-2" data-testid="remediation-target">
       <TargetHeading>{targetHeading(index, target, languages)}</TargetHeading>
-      {steps.length === 0 && payloads.length === 0 && <p className="text-xs text-slate-500">No remediation provided.</p>}
+      {steps.length === 0 && payloads.length === 0 && <p className="text-xs text-slate-500 dark:text-muted-foreground">No remediation provided.</p>}
       {steps.map((step, position) => (
         <StepEntry key={`step-${position}`} label={remediationStepLabel(index, target, step)}
           step={step}
@@ -125,7 +125,7 @@ export function RuleRemediationSection({
   return (
     <div className="space-y-2">
       <SectionHeading custom={custom}>Remediation</SectionHeading>
-      {targetRemediations.length === 0 && <p className="text-xs text-slate-500">No remediation provided.</p>}
+      {targetRemediations.length === 0 && <p className="text-xs text-slate-500 dark:text-muted-foreground">No remediation provided.</p>}
       {targetRemediations.map(([target, targetRemediation]) => (
         <TargetRemediationBlock
           key={target}

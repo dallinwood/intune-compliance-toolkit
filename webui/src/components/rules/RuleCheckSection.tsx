@@ -29,18 +29,18 @@ function CheckEntry({
   const highlightLanguage = scriptHighlightLanguage(language)
   return (
     <div className="space-y-1">
-      <p className="text-xs font-medium text-slate-600">{label}</p>
+      <p className="text-xs font-medium text-slate-600 dark:text-zinc-300">{label}</p>
       {check.shell_file !== undefined ? (
         <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
       ) : check.shell ? (
         <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
       ) : (
-        <p className="text-xs text-slate-500">No check script.</p>
+        <p className="text-xs text-slate-500 dark:text-muted-foreground">No check script.</p>
       )}
       {check.result && (
-        <p className="text-xs text-slate-600">
+        <p className="text-xs text-slate-600 dark:text-zinc-300">
           Expected result ({check.result.type}):{' '}
-          <code className="rounded bg-slate-200 px-1 font-mono break-all">
+          <code className="rounded bg-slate-200 dark:bg-muted px-1 font-mono break-all">
             {displayWithOdv(String(check.result.value), odvValue)}
           </code>
         </p>
@@ -76,7 +76,7 @@ function TargetCheckBlock({
           codeOdv={codeOdv}
         />
       ) : (
-        <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
+        <p className="text-xs text-slate-500 dark:text-muted-foreground">No default check; only the versions below have one.</p>
       )}
       {versionChecks.map(([version, check]) => (
         <CheckEntry
@@ -115,17 +115,17 @@ export function RuleCheckSection({
     <div className="space-y-2">
       <SectionHeading custom={custom}>Check</SectionHeading>
       {hasNoMacosVersion && (
-        <p className="text-xs text-amber-700">
+        <p className="text-xs text-amber-700 dark:text-amber-400">
           No macOS version listed: the source does not map this rule to any macOS release.
         </p>
       )}
       {rule.architecture && (
-        <p className="text-xs text-slate-600">
+        <p className="text-xs text-slate-600 dark:text-zinc-300">
           Applies to {rule.architecture} Macs only; other Macs report a pass.
         </p>
       )}
       {targetChecks.length === 0 ? (
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-500 dark:text-muted-foreground">
           No automated check. {assessmentLabel(rule.assessment, index).description}
         </p>
       ) : (

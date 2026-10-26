@@ -9,7 +9,7 @@ interface SectionToolbarProps {
 
 export function SectionToolbar({ onExpandOneLevel, onCollapseOneLevel, onExpandAll, onCollapseAll }: SectionToolbarProps) {
   return (
-    <div role="group" aria-label="Sections" className="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-2">
+    <div role="group" aria-label="Sections" className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-border px-4 py-2">
       <Button type="button" variant="outline" size="xs" onClick={onExpandOneLevel}>
         Expand one level
       </Button>

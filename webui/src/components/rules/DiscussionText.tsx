@@ -11,7 +11,7 @@ function InlineText({ text, format }: { text: string; format: DiscussionFormat }
         return <em key={segmentIndex}>{segment.text}</em>
       case 'code':
         return (
-          <code key={segmentIndex} className="rounded bg-slate-200 px-1 font-mono text-xs break-all">
+          <code key={segmentIndex} className="rounded bg-slate-200 dark:bg-muted px-1 font-mono text-xs break-all">
             {segment.text}
           </code>
         )
@@ -20,7 +20,7 @@ function InlineText({ text, format }: { text: string; format: DiscussionFormat }
         // should wrap at word boundaries.
         const wrapClass = segment.text === segment.href ? 'break-all' : 'break-words'
         return (
-          <a key={segmentIndex} className={`${wrapClass} text-blue-600 underline`} href={segment.href} target="_blank" rel="noreferrer">
+          <a key={segmentIndex} className={`${wrapClass} text-blue-600 dark:text-blue-400 underline`} href={segment.href} target="_blank" rel="noreferrer">
             {segment.text}
           </a>
         )
@@ -45,7 +45,7 @@ export function DiscussionText({
   codeOdv: CodeOdvValues
 }) {
   return (
-    <div className="space-y-2 text-slate-700">
+    <div className="space-y-2 text-slate-700 dark:text-zinc-200">
       {parseDiscussionIn(format, text).map((block, blockIndex) => {
         if (block.kind === 'list') {
           return (
@@ -72,7 +72,7 @@ export function DiscussionText({
         const blockText = displayWithOdv(block.text, odvValue)
         if (block.kind === 'heading') {
           return (
-            <p key={blockIndex} className="font-semibold text-slate-800">
+            <p key={blockIndex} className="font-semibold text-slate-800 dark:text-foreground">
               {blockText}
             </p>
           )

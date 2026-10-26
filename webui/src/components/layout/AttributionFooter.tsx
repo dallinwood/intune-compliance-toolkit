@@ -7,10 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog'
+import { ThemeToggle } from './ThemeToggle'
 import { ThirdPartyPackages } from './ThirdPartyPackages'
 
-const LINK_CLASS = 'underline hover:text-slate-700'
-const SECTION_HEADING_CLASS = 'mb-2 text-sm font-semibold text-slate-900'
+const LINK_CLASS = 'underline hover:text-slate-700 dark:hover:text-foreground'
+const SECTION_HEADING_CLASS = 'mb-2 text-sm font-semibold text-slate-900 dark:text-foreground'
 
 function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -24,14 +25,14 @@ function ExternalLink({ href, children }: { href: string; children: React.ReactN
 // a note that the content was modified.
 export function AttributionFooter({ sources }: { sources: ManifestSource[] }) {
   return (
-    <footer className="border-t border-slate-200 px-4 py-2 text-xs text-slate-500">
+    <footer className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-slate-200 dark:border-border px-4 py-2 text-xs text-slate-500 dark:text-muted-foreground">
       <Dialog>
-        <DialogTrigger className="underline hover:text-slate-700">Sources &amp; licences</DialogTrigger>
+        <DialogTrigger className="underline hover:text-slate-700 dark:hover:text-foreground">Sources &amp; licences</DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Sources &amp; licences</DialogTitle>
           </DialogHeader>
-          <div className="space-y-6 overflow-y-auto px-4 py-4 text-sm text-slate-700">
+          <div className="space-y-6 overflow-y-auto px-4 py-4 text-sm text-slate-700 dark:text-zinc-200">
             <DialogDescription>
               Where the rules and scripts come from, and the open-source packages this site is built with.
             </DialogDescription>
@@ -58,6 +59,7 @@ export function AttributionFooter({ sources }: { sources: ManifestSource[] }) {
           </div>
         </DialogContent>
       </Dialog>
+      <ThemeToggle />
     </footer>
   )
 }

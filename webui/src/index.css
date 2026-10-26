@@ -3,6 +3,8 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+/* The theme class sits on <html> (see src/state/theme.ts), so every element
+   that dark: styles, including portalled dialogs and tooltips, is inside it. */
 @custom-variant dark (&:is(.dark *));
 
 body {
@@ -94,6 +96,8 @@ input[type='search']::-webkit-search-cancel-button {
 }
 
 .dark {
+  /* Native controls (the page size select, number spinners, scrollbars). */
+  color-scheme: dark;
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);

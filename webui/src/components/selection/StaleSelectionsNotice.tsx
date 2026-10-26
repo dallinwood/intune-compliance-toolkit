@@ -12,7 +12,7 @@ export function StaleSelectionsNotice({ unknownIds }: { unknownIds: string[] }) 
     <div
       role="status"
       aria-label="Saved selections not in this library"
-      className="mx-4 mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 rounded border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900"
+      className="mx-4 mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 rounded border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 p-3 text-xs text-amber-900 dark:text-amber-200"
     >
       <p className="min-w-0 flex-1 basis-64 break-words">
         {unknownIds.length} saved selection{unknownIds.length === 1 ? ' is' : 's are'} no longer in this library:{' '}
