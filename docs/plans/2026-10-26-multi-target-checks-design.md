@@ -164,8 +164,10 @@ implement.
     ASD's grant.
   - Each script is copied byte for byte, header included, into the
     overlay step's `shell`.
-  - `NOTICE` gains a section with Microsoft's MIT copyright and licence
-    text, crediting the Blueprint as the place they were obtained.
+  - `NOTICE` credits the Blueprint as the place they were obtained and
+    notes that each script keeps its original header. The separate MIT
+    text and licence file were dropped on 2026-10-26 (see the progress
+    log).
   - The overlay's `references` carries the Blueprint page URL.
 - **Overlays** (each targets release `v2026.09.4`; each adds one Windows
   step with `name` set to the script name and `language: "powershell"`,
@@ -310,3 +312,4 @@ so the app loads overlays lazily through a generated index.
 - 2026-10-26: Overlay files moved from `baselines/_overlays/*.json` to `baselines/_overlays/rules/*.json` (`fe7a8b8` refactor: keep overlay files under baselines/_overlays/rules), matching the source folders' `rules/`, `scripts/`, `payloads/` layout. `_manifest.json` stays at `_overlays/_manifest.json` and lists bare file names; the loader adds `rules/`. `tools/overlays.py` defaults to the `rules/` folder. `overlayShape.test.ts` now loads the library once at describe level so its tests do no file IO (it had timed out at 5s under load). Earlier entries describe the flat path.
 - 2026-10-26: Section 8 implemented (`c70bf83` feat: load overlays lazily through a generated overlay index; flaky tests fixed in `0dbbb68` test: fix intermittent library and section-search tests). `_index.json` replaces `_manifest.json`; startup reads only the index and no overlay file or targeted rule; opening a rule fetches just its overlays. The load-time dry run (`overlaysFittingLibrary`) is gone, so a misfit overlay is skipped per rule instead of globally.
 - 2026-10-26: Review fixes for section 8 (`fix: retry failed overlay loads and tidy overlay index edges`). An overlay file that failed to load is no longer cached for the session (a later open retries; deterministic merge misfits stay cached); the review screen names rules whose custom content could not be applied; `parseOverlayIndex` runs the overlay structural checks on each entry's `index_fields` and rejects repeated ids; `copy-baselines.mjs` fails early outside bun. The Microsoft MIT licence is published as `baselines/_overlays/scripts/LICENSE-Microsoft-MIT.txt` next to the scripts, and `NOTICE` words the split scripts as unmodified apart from line endings and a final newline.
+- 2026-10-26: Dropped the separate MIT notice for the Blueprint scripts (`docs: drop the separate MIT notice for the Blueprint scripts`). The maintainer judges the scripts too small to need one, so `baselines/_overlays/scripts/LICENSE-Microsoft-MIT.txt` is removed and `NOTICE` no longer reproduces the MIT text; it now only credits the Blueprint source (pinned commit) and notes the split of `UserApplicationHardeningRemoveFeatures`. Microsoft's own header comment stays inside each script, and the scripts are unchanged.

@@ -53,42 +53,19 @@ responsibility or liability for any damage, loss or expense incurred as a
 result of reliance on it.
 
 baselines/_overlays/scripts/*.ps1 (referenced by baselines/_overlays/rules/asd-blueprint-*.json)
-are PowerShell scripts from ASD's Blueprint for Secure Cloud, copied byte for byte
-except that UserApplicationHardeningRemoveFeatures was split by this project into
-three scripts, RemovePowerShellV2.ps1, RemoveDotNet35.ps1 and
-RemoveInternetExplorer.ps1. Each split script keeps the original header, adds one
-comment line saying it was split, and otherwise holds its feature's original lines
-unmodified apart from line endings (LF) and a final newline. The MIT licence below is
-also published next to the scripts as baselines/_overlays/scripts/LICENSE-Microsoft-MIT.txt:
+are PowerShell scripts from ASD's Blueprint for Secure Cloud:
 
   Project:  https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud
   Commit:   a6e1e5f95e6051f23d2e7d1148c8fd57a6614000
   Path:     static/content/files/config-scripts/
 
-The Blueprint site is licensed under CC BY 4.0 ((c) Commonwealth of Australia
-2023), but third-party content is excluded from that grant. These scripts are
-Microsoft code, and their headers state they are licensed under the MIT
-licence:
-
-  Copyright (c) Microsoft Corporation.
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  SOFTWARE.
+Each script keeps its original header, including Microsoft's copyright and
+licence comment. They are copied byte for byte, except that
+UserApplicationHardeningRemoveFeatures was split by this project into three
+scripts, RemovePowerShellV2.ps1, RemoveDotNet35.ps1 and
+RemoveInternetExplorer.ps1. Each split script keeps the original header, adds
+one comment line saying it was split, and otherwise holds its feature's original
+lines unmodified apart from line endings (LF) and a final newline.
 
 No endorsement
 --------------
