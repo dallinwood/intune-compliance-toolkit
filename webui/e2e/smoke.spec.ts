@@ -296,7 +296,7 @@ test('the sources dialog names no platform in its rule sources', async ({ page }
   await expect(dialog).not.toContainText('macOS rules')
 })
 
-test('the Sources & licences dialog lists sources, custom content and bundled packages', async ({ page }) => {
+test('the Sources & licences dialog lists sources and bundled packages', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
   const footerButton = page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' })
@@ -308,10 +308,6 @@ test('the Sources & licences dialog lists sources, custom content and bundled pa
   await expect(dialog).toContainText('ASD Information Security Manual (v2026.09.4)')
   await expect(dialog).toContainText('NIST macOS Security Compliance Project (release_27.0)')
   await expect(dialog).toContainText('modified for this tool')
-
-  const blueprintLink = dialog.getByRole('link', { name: /Blueprint for Secure Cloud/ })
-  await expect(blueprintLink).toHaveAttribute('href', 'https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud')
-  await expect(dialog).toContainText('a6e1e5f95e6051f23d2e7d1148c8fd57a6614000')
 
   const packages = dialog.getByRole('listitem').filter({ has: page.locator('summary') })
   const react = packages.filter({ has: page.getByText('react', { exact: true }) })

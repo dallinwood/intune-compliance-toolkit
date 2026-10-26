@@ -1,4 +1,3 @@
-import { CUSTOM_CONTENT_CREDITS } from '../../data/customContentCredits'
 import type { ManifestSource } from '../../types/library'
 import {
   Dialog,
@@ -46,21 +45,6 @@ export function AttributionFooter({ sources }: { sources: ManifestSource[] }) {
                     Rules from the <ExternalLink href={source.repository_url}>{source.display_name}</ExternalLink> (
                     {source.release_tag}), licensed <ExternalLink href={source.license.url}>{source.license.name}</ExternalLink>
                     , modified for this tool.
-                  </li>
-                ))}
-              </ul>
-            </section>
-            <section aria-labelledby="custom-content-heading">
-              <h3 id="custom-content-heading" className={SECTION_HEADING_CLASS}>
-                Custom content
-              </h3>
-              <ul className="space-y-1">
-                {CUSTOM_CONTENT_CREDITS.map((credit) => (
-                  <li key={credit.url}>
-                    Scripts from <ExternalLink href={credit.url}>{credit.name}</ExternalLink> (commit{' '}
-                    <code className="font-mono break-all">{credit.commit}</code>). The Microsoft scripts keep their original
-                    headers, including Microsoft's copyright and licence comment. The Blueprint site is licensed{' '}
-                    <ExternalLink href={credit.licenceUrl}>{credit.licenceName}</ExternalLink>.
                   </li>
                 ))}
               </ul>
