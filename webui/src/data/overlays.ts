@@ -2,6 +2,7 @@ import { applyOverlayToCheckedIndexEntry, applyOverlayToRule, parseOverlay, type
 import type { IndexEntry, Rule } from '../types/library'
 
 const OVERLAYS_DIRECTORY = 'baselines/_overlays/'
+const OVERLAY_RULES_DIRECTORY = `${OVERLAYS_DIRECTORY}rules/`
 const MANIFEST_PATH = `${OVERLAYS_DIRECTORY}_manifest.json`
 
 export interface LoadedOverlays {
@@ -55,7 +56,7 @@ async function loadOverlays(): Promise<LoadedOverlays> {
 
   const loaded = await Promise.all(
     fileNames.map(async (fileName) => {
-      const file = await fetchJson(`${OVERLAYS_DIRECTORY}${fileName}`)
+      const file = await fetchJson(`${OVERLAY_RULES_DIRECTORY}${fileName}`)
       return 'problem' in file ? { error: `${fileName}: ${file.problem}` } : parseOverlay(file.value, fileName)
     }),
   )

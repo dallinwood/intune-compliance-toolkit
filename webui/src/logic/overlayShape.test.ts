@@ -13,13 +13,13 @@ function readJson<T>(relativePath: string): T {
 // a tag would be dropped for upstream reasons.
 describe('the shape checks accept the whole committed library', () => {
   for (const sourceName of ['mscp', 'asd_ism']) {
+    const index = readJson<RuleIndex>(`${sourceName}/_index.json`)
+    const ruleFiles = readdirSync(new URL(`${sourceName}/rules/`, BASELINES_DIRECTORY))
+    const rules = ruleFiles.map((fileName) => readJson(`${sourceName}/rules/${fileName}`))
+
     it(`${sourceName} index entries and rules`, () => {
-      const index = readJson<RuleIndex>(`${sourceName}/_index.json`)
       const entryProblems = index.rules.map((entry) => indexEntryShapeProblem(entry)).filter((problem) => problem !== null)
-      const ruleFiles = readdirSync(new URL(`${sourceName}/rules/`, BASELINES_DIRECTORY))
-      const ruleProblems = ruleFiles
-        .map((fileName) => ruleShapeProblem(readJson(`${sourceName}/rules/${fileName}`)))
-        .filter((problem) => problem !== null)
+      const ruleProblems = rules.map((rule) => ruleShapeProblem(rule)).filter((problem) => problem !== null)
 
       expect(entryProblems).toEqual([])
       expect(ruleProblems).toEqual([])

@@ -160,7 +160,7 @@ def test_publish_source_writes_tree_and_manifest(tmp_path):
 
 def test_publish_source_never_touches_the_overlays_folder(tmp_path):
     baselines_dir = tmp_path / "baselines"
-    overlay_path = baselines_dir / "_overlays" / "kept.json"
+    overlay_path = baselines_dir / "_overlays" / "rules" / "kept.json"
     overlay_path.parent.mkdir(parents=True)
     overlay_path.write_text('{"kept": true}\n', encoding="utf-8")
 

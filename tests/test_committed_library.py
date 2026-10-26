@@ -140,6 +140,6 @@ def test_asd_ism_multi_paragraph_statements_in_this_release_number_forty():
 def test_overlays_folder_is_not_a_source_and_keeps_lf_endings():
     manifest = json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))
     assert OVERLAYS_DIR_NAME not in [source["name"] for source in manifest["sources"]]
-    overlay_paths = sorted((BASELINES_DIR / OVERLAYS_DIR_NAME).glob("*.json"))
+    overlay_paths = sorted((BASELINES_DIR / OVERLAYS_DIR_NAME / "rules").glob("*.json"))
     assert overlay_paths
     assert [path.name for path in overlay_paths if b"\r" in path.read_bytes()] == []

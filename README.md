@@ -133,7 +133,7 @@ description, extra references) to imported rules without editing
 as it shows rules, and tags every overlaid field **Custom** in the rule
 details.
 
-Put each overlay in its own `baselines/_overlays/<name>.json`:
+Put each overlay in its own `baselines/_overlays/rules/<name>.json`:
 
 ```json
 {
@@ -206,7 +206,8 @@ strings:
   `shell_file`, or `data` and `data_file`), `$replace` that entry: a merge
   cannot remove a key, so a plain merge would leave both and be rejected.
 - Overlays keep their files in `baselines/_overlays/scripts/` and
-  `baselines/_overlays/payloads/`. The site serves them from its own
+  `baselines/_overlays/payloads/` (the overlay files themselves are in
+  `baselines/_overlays/rules/`, the same layout as a source folder). The site serves them from its own
   `baselines/` copy: the details show a script or text payload as it is,
   binary payloads as a download link, and the generator reads script
   files before it builds a bundle, so a bundle is the same as with an
@@ -245,12 +246,12 @@ Merge rules, applied field by field:
   overlay also sets `assessment` (for example
   `{ "status": "automated", "manual_reason": null }`).
 
-The repo ships five overlays, `baselines/_overlays/asd-blueprint-*.json`, that add ASD
+The repo ships five overlays, `baselines/_overlays/rules/asd-blueprint-*.json`, that add ASD
 Blueprint for Secure Cloud PowerShell remediation scripts to ISM-1542, ISM-1621,
 ISM-1654, ISM-1655 and ISM-1674, one script per control (licence details in `NOTICE`).
 
 Publishing is automatic: `bun run dev` and `bun run build` copy
-`baselines/_overlays/` into the site with a generated `_manifest.json`. Don't write or
+`baselines/_overlays/` (`rules/`, `scripts/`, `payloads/`) into the site with a generated `_manifest.json`. Don't write or
 commit a manifest yourself.
 
 Check overlays with `python -m pytest -W error tests/test_overlays.py` (or
