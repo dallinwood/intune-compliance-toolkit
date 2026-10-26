@@ -922,6 +922,32 @@ test('a search is restored after a reload', async ({ page }) => {
   await expect(ruleCount(page)).toHaveText('1 of 1493 rules', { timeout: 10_000 })
 })
 
+test('the search clear button appears with text, clears the search and refocuses the box', async ({ page }) => {
+  await openLibrary(page)
+  const clearButton = page.getByRole('button', { name: 'Clear search' })
+  await expect(clearButton).toHaveCount(0)
+
+  await searchBox(page).fill('os_gatekeeper_enable')
+  await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+  await expect(clearButton).toBeVisible()
+  await clearButton.click()
+
+  await expect(searchBox(page)).toHaveValue('')
+  await expect(searchBox(page)).toBeFocused()
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  await expect(clearButton).toHaveCount(0)
+  await expect(page).not.toHaveURL(/[?&]q=/)
+})
+
+test('Escape in the search box clears the search', async ({ page }) => {
+  await openLibrary(page)
+  await searchBox(page).fill('os_gatekeeper_enable')
+  await expect(ruleCount(page)).toHaveText('1 of 1493 rules')
+  await searchBox(page).press('Escape')
+  await expect(searchBox(page)).toHaveValue('')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+})
+
 test('a shared URL with unknown values loads and drops them on the next write', async ({ page }) => {
   await openLibrary(page, '/?benchmark=not_a_benchmark%1Fhigh&tag=no-such-tag&source=nope&target=macOS&unknown=1&automation=bogus&page=abc&size=junk')
   await expect(page.getByRole('radio', { name: 'All rules' })).toBeChecked()

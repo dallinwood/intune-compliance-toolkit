@@ -9,6 +9,12 @@ body {
   margin: 0;
 }
 
+/* The search box draws its own themed clear button (see FilterSidebar). */
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;

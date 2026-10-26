@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, X } from 'lucide-react'
 import { cloneElement, isValidElement, useId, useMemo, useRef, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -145,14 +145,7 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   return (
     <aside className="flex max-h-64 w-full flex-col border-b border-slate-200 text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
       <div className="p-4 pb-3">
-        <Input
-          type="search"
-          aria-label="Search title or id"
-          placeholder="Search title or id…"
-          value={filters.search}
-          onChange={(event) => filters.setSearch(event.target.value)}
-          className="h-8 rounded text-sm"
-        />
+        <SearchBox value={filters.search} onChange={filters.setSearch} />
       </div>
 
       <div className="relative flex min-h-0 flex-1 flex-col">
@@ -249,6 +242,47 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
         <ScrollIndicator direction="down" visible={canScrollDown} />
       </div>
     </aside>
+  )
+}
+
+// The browser's own clear button ignores the theme, so index.css hides it
+// and this one takes its place.
+function SearchBox({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  function clearAndRefocus() {
+    onChange('')
+    inputRef.current?.focus()
+  }
+
+  return (
+    <div className="relative">
+      <Input
+        ref={inputRef}
+        type="search"
+        aria-label="Search title or id"
+        placeholder="Search title or id…"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape' && value !== '') {
+            event.preventDefault()
+            onChange('')
+          }
+        }}
+        className="h-8 rounded pr-8 text-sm"
+      />
+      {value !== '' && (
+        <button
+          type="button"
+          aria-label="Clear search"
+          onClick={clearAndRefocus}
+          className="absolute top-1/2 right-1.5 -translate-y-1/2 rounded p-0.5 text-slate-500 hover:bg-slate-200 hover:text-slate-900 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none"
+        >
+          <X className="size-3.5" aria-hidden="true" />
+        </button>
+      )}
+    </div>
   )
 }
 
