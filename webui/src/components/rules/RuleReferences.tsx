@@ -1,5 +1,6 @@
 import { macosReferences, type ReferenceNode } from '../../logic/references'
 import { SectionHeading } from './CodeBlock'
+import { LinkedText } from './LinkedText'
 
 function ReferenceList({ nodes }: { nodes: ReferenceNode[] }) {
   return (
@@ -7,7 +8,17 @@ function ReferenceList({ nodes }: { nodes: ReferenceNode[] }) {
       {nodes.map((node) => (
         <li key={node.key} className="break-words">
           <span className="font-medium text-slate-600">{node.key}</span>
-          {node.values.length > 0 && <span className="text-slate-500">: {node.values.join(', ')}</span>}
+          {node.values.length > 0 && (
+            <span className="text-slate-500">
+              :{' '}
+              {node.values.map((value, valueIndex) => (
+                <span key={valueIndex}>
+                  {valueIndex > 0 && ', '}
+                  <LinkedText text={value} />
+                </span>
+              ))}
+            </span>
+          )}
           {node.children.length > 0 && (
             <div className="border-l border-slate-200 pl-3">
               <ReferenceList nodes={node.children} />

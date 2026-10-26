@@ -1592,3 +1592,15 @@ test.describe('live organization-defined value in code blocks', () => {
     expect(clipboardText).not.toContain('$ODV')
   })
 })
+
+test('a URL in a rule reference is a link that opens in a new tab', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1674', /./)
+  await row.getByRole('button').click()
+  const detail = page.locator('[id^="rule-detail-"]')
+  await expect(detail.getByRole('heading', { name: 'References' })).toBeVisible()
+  const link = detail.locator('li', { hasText: 'asd_blueprint:' }).locator('a[href^="https://blueprint.asd.gov.au/configuration/intune/devices/scripts/"]')
+  await expect(link.first()).toBeVisible()
+  await expect(link.first()).toHaveAttribute('target', '_blank')
+  await expect(link.first()).toHaveAttribute('rel', 'noreferrer')
+})

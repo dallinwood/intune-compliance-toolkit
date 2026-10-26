@@ -1,5 +1,6 @@
 import type { ManualAttestationEntry } from '../../logic/chunking'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
+import { LinkedText } from '../rules/LinkedText'
 
 const HEADING_ID = 'manual-attestation-heading'
 
@@ -22,7 +23,7 @@ export function ManualAttestationReport({ entries }: { entries: ManualAttestatio
             {entry.additionalInfo && (
               <details className="mt-0.5 text-slate-500">
                 <summary className="cursor-pointer text-slate-600">mSCP guidance</summary>
-                <p className="mt-1 whitespace-pre-line">{entry.additionalInfo}</p>
+                <p className="mt-1 whitespace-pre-line"><LinkedText text={entry.additionalInfo} /></p>
               </details>
             )}
           </li>

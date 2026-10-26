@@ -4,6 +4,8 @@
 // ASD ISM discussions are Markdown, but only `- ` lists and [text](url)
 // links appear in them, so that is all the Markdown reader understands.
 
+import { BARE_URL_PATTERN_SOURCE } from './links'
+
 export type DiscussionFormat = 'asciidoc' | 'markdown'
 
 export type DiscussionBlock =
@@ -150,7 +152,7 @@ export function parseDiscussionIn(format: DiscussionFormat, text: string): Discu
 const INLINE_PATTERN = new RegExp(
   [
     String.raw`link:(?<macroHref>https?:\/\/[^\s\[\]]+)\[(?<macroText>[^\]]*)\]`,
-    String.raw`(?<bareHref>https?:\/\/[^\s<>()\[\]]*[^\s<>()\[\].,;:!?'"])`,
+    `(?<bareHref>${BARE_URL_PATTERN_SOURCE})`,
     '`(?<code>[^`\\n]+)`',
     String.raw`(?<![A-Za-z0-9_])_(?<emphasis>[^_\n]+?)_(?![A-Za-z0-9_])`,
   ].join('|'),
