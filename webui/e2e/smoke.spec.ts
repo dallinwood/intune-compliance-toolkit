@@ -721,12 +721,35 @@ test('facet options show how many rules they would leave in view', async ({ page
   const targetGroup = page.getByRole('group', { name: 'Target', exact: true })
   await expect(optionRow(targetGroup, 'None')).toContainText('(1143)')
   await expect(optionRow(sourceGroup, 'ASD ISM')).toContainText('(1143)')
-  await expect(sourceGroup.getByRole('checkbox', { name: 'NIST mSCP', exact: true })).toHaveCount(0)
   await expect(sourceGroup.getByRole('checkbox', { name: 'ASD ISM', exact: true })).toBeChecked()
+  await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(350)')
 
   await page.getByRole('button', { name: 'Clear filters' }).click()
   await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
   await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(350)')
+})
+
+test('ticking one option leaves the others in its group selectable', async ({ page }) => {
+  await page.goto('/')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+  const sectionGroup = page.getByRole('group', { name: 'Section', exact: true })
+  const sourceGroup = page.getByRole('group', { name: 'Source', exact: true })
+
+  await sectionGroup.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
+  const emailSection = sectionGroup.getByRole('checkbox', { name: 'Guidelines for email', exact: true })
+  await expect(emailSection).toBeVisible()
+  await emailSection.click()
+  await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
+  await expect(sectionGroup.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
+  await expect(emailSection).toBeChecked()
+
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules')
+  await sourceGroup.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
+  await expect(ruleCount(page)).toHaveText('1143 of 1493 rules')
+  const mscpRow = sourceGroup.getByRole('checkbox', { name: 'NIST mSCP', exact: true }).locator('xpath=..')
+  await expect(mscpRow).toBeVisible()
+  await expect(mscpRow).toContainText('(350)')
 })
 
 test('the table shows an Updating rules spinner while it catches up with a large filter change', async ({ page }) => {
@@ -923,9 +946,6 @@ test.describe('section tree and paging', () => {
   })
 
   test('expand and collapse one level walk the mSCP and ISM sections level by level', async ({ page }) => {
-    // Both sections come from the URL: once one Section option is checked
-    // the others count 0 and are disabled (4b931b1), so clicking a second
-    // one only worked when the click beat the deferred re-render.
     await openLibrary(page, '/?size=200&section=audit&section=Guidelines+for+email')
     await expect(ruleCount(page)).toHaveText('57 of 1493 rules')
     const ismRuleIds = ruleTable(page).locator('.font-mono', { hasText: /^ism-/ })
@@ -1045,10 +1065,6 @@ test.describe('section tree and paging', () => {
   })
 
   test('a search opens every section holding a match, and clearing it restores the stored collapse state', async ({ page }) => {
-    // Both sections come from the URL, not two clicks: once the first is
-    // selected the sidebar only offers sections that have rows in the view,
-    // so the second option disappears as soon as the deferred render lands
-    // and a click on it is a race.
     await openLibrary(page, '/?size=200&section=audit&section=Guidelines%20for%20email')
     await expect(page.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
     await expect(page.getByRole('checkbox', { name: 'Guidelines for email', exact: true })).toBeChecked()

@@ -17,7 +17,6 @@ import {
   compareTargetGroupKeys,
   automationOptionCounts,
   facetOptionCounts,
-  rowsInView,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
@@ -94,32 +93,48 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // Options are derived from the deferred filters so a click's urgent render
   // is only the control itself; checked state below still reads the live store.
   const { filters: deferredFilters } = useDeferredFilters()
-  // Counts come from the rows in the current view (own selection included);
-  // an option with no such rows is not offered, a selected one always is.
-  const viewRows = useMemo(() => rowsInView(rows, deferredFilters, index), [rows, deferredFilters, index])
+  // A facet's own selection is left out of its narrowing, so ticking one
+  // option leaves its siblings selectable; a count is how many rules that
+  // option would show.
   const targetCounts = useMemo(
-    () => facetOptionCounts(viewRows, accessors.targetsOf, deferredFilters.targets),
-    [viewRows, deferredFilters.targets, accessors],
+    () => facetOptionCounts(rows, deferredFilters, 'targets', accessors.targetsOf, deferredFilters.targets, index),
+    [rows, deferredFilters, accessors, index],
   )
   const sourceCounts = useMemo(
-    () => facetOptionCounts(viewRows, accessors.sourceOf, deferredFilters.sources),
-    [viewRows, deferredFilters.sources, accessors],
+    () => facetOptionCounts(rows, deferredFilters, 'sources', accessors.sourceOf, deferredFilters.sources, index),
+    [rows, deferredFilters, accessors, index],
   )
   const versionCounts = useMemo(
-    () => facetOptionCounts(viewRows, (row) => versionsListingAnyOf(row, deferredFilters.benchmarks, index), deferredFilters.versions),
-    [viewRows, deferredFilters.versions, deferredFilters.benchmarks, index],
+    () =>
+      facetOptionCounts(
+        rows,
+        deferredFilters,
+        'versions',
+        (row) => versionsListingAnyOf(row, deferredFilters.benchmarks, index),
+        deferredFilters.versions,
+        index,
+      ),
+    [rows, deferredFilters, index],
   )
   const benchmarkCounts = useMemo(
-    () => facetOptionCounts(viewRows, (row) => benchmarksListedUnder(row, deferredFilters.versions, index), deferredFilters.benchmarks),
-    [viewRows, deferredFilters.benchmarks, deferredFilters.versions, index],
+    () =>
+      facetOptionCounts(
+        rows,
+        deferredFilters,
+        'benchmarks',
+        (row) => benchmarksListedUnder(row, deferredFilters.versions, index),
+        deferredFilters.benchmarks,
+        index,
+      ),
+    [rows, deferredFilters, index],
   )
   const sectionCounts = useMemo(
-    () => facetOptionCounts(viewRows, accessors.sectionOf, deferredFilters.sections),
-    [viewRows, deferredFilters.sections, accessors],
+    () => facetOptionCounts(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index),
+    [rows, deferredFilters, accessors, index],
   )
   const tagCounts = useMemo(
-    () => facetOptionCounts(viewRows, accessors.tagsOf, deferredFilters.tags),
-    [viewRows, deferredFilters.tags, accessors],
+    () => facetOptionCounts(rows, deferredFilters, 'tags', accessors.tagsOf, deferredFilters.tags, index),
+    [rows, deferredFilters, accessors, index],
   )
 
   const automationCounts = useMemo(() => automationOptionCounts(rows, deferredFilters, index), [rows, deferredFilters, index])

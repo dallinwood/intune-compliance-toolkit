@@ -20,8 +20,8 @@ import {
   facetOptions,
   matchesFilters,
   parseBenchmarkFacetValue,
-  rowsInView,
   versionsListingAnyOf,
+  type FilterDimension,
   type FilterValues,
 } from './ruleFilters'
 import { NO_TARGET_KEY, NO_VERSION_KEY, benchmarksAt, compareScopeKeys, compareVersionKeys, scopeKeysOf } from './applicability'
@@ -67,6 +67,7 @@ function versionOptionsUnder(rowsToFilter: RuleRow[], filters: FilterValues, ind
   return facetOptions(
     rowsToFilter,
     filters,
+    'versions',
     (r) => versionsListingAnyOf(r, filters.benchmarks, index),
     filters.versions,
     index,
@@ -77,6 +78,7 @@ function benchmarkOptionsUnder(rowsToFilter: RuleRow[], filters: FilterValues, i
   return facetOptions(
     rowsToFilter,
     filters,
+    'benchmarks',
     (r) => benchmarksListedUnder(r, filters.versions, index),
     filters.benchmarks,
     index,
@@ -228,33 +230,33 @@ describe('matchesFilters', () => {
 
 describe('facetOptions', () => {
   it('offers every value present when nothing else is selected', () => {
-    const options = facetOptions(rows, emptyFilters(), (r) => r.section, [], noVocabulary)
+    const options = facetOptions(rows, emptyFilters(), 'sections', (r) => r.section, [], noVocabulary)
     expect(options).toEqual(['os', 'pwpolicy'])
   })
 
   it('narrows to only the values reachable under the other applied filters', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
-    const options = facetOptions(rows, filters, (r) => r.scopeKeys, filters.versions, noVocabulary)
+    const options = facetOptions(rows, filters, 'versions', (r) => r.scopeKeys, filters.versions, noVocabulary)
     expect(options).toEqual(['macOS 26.0', 'macOS 27.0'])
 
     const narrower = emptyFilters({ versions: new Set(['macOS 27.0']) })
-    expect(facetOptions(rows, narrower, (r) => r.section, narrower.sections, noVocabulary)).toEqual(['pwpolicy'])
+    expect(facetOptions(rows, narrower, 'sections', (r) => r.section, narrower.sections, noVocabulary)).toEqual(['pwpolicy'])
   })
 
-  it('narrows a facet by its own selection too', () => {
+  it('does not narrow a facet by its own selection', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']) })
-    const options = facetOptions(rows, filters, (r) => r.section, filters.sections, noVocabulary)
-    expect(options).toEqual(['pwpolicy'])
+    const options = facetOptions(rows, filters, 'sections', (r) => r.section, filters.sections, noVocabulary)
+    expect(options).toEqual(['os', 'pwpolicy'])
   })
 
-  it('keeps an already-selected value visible even once no view row has it', () => {
+  it('keeps an already-selected value visible even once it becomes unreachable', () => {
     const filters = emptyFilters({ sections: new Set(['pwpolicy']), versions: new Set(['macOS 9.9']) })
-    const options = facetOptions(rows, filters, (r) => r.scopeKeys, filters.versions, noVocabulary)
-    expect(options).toEqual(['macOS 9.9'])
+    const options = facetOptions(rows, filters, 'versions', (r) => r.scopeKeys, filters.versions, noVocabulary)
+    expect(options).toEqual(['macOS 26.0', 'macOS 27.0', 'macOS 9.9'])
   })
 
   it('flattens array-valued facets like benchmarks', () => {
-    const options = facetOptions(rows, emptyFilters(), (r) => r.benchmarks, [], noVocabulary)
+    const options = facetOptions(rows, emptyFilters(), 'benchmarks', (r) => r.benchmarks, [], noVocabulary)
     expect(options).toEqual(['cis_lvl1', 'cis_lvl2', 'disa_stig'])
   })
 })
@@ -301,6 +303,7 @@ describe('version-scoped facets', () => {
     const options = facetOptions(
       rows,
       filters,
+      'benchmarks',
       (r) => benchmarksListedUnder(r, filters.versions, noVocabulary),
       filters.benchmarks,
       noVocabulary,
@@ -313,6 +316,7 @@ describe('version-scoped facets', () => {
     const options = facetOptions(
       rows,
       filters,
+      'versions',
       (r) => versionsListingAnyOf(r, filters.benchmarks, noVocabulary),
       filters.versions,
       noVocabulary,
@@ -336,8 +340,8 @@ describe('target and source facets', () => {
   const sourceOf = (rowToRead: RuleRow) => sourceGroupKey(rowToRead, noVocabulary)
 
   it('offers one option per target and per source present in the data', () => {
-    expect(facetOptions(mixedRows, emptyFilters(), targetsOf, [], noVocabulary)).toEqual(['iOS', 'macOS'])
-    expect(facetOptions(mixedRows, emptyFilters(), sourceOf, [], noVocabulary)).toEqual(['cis', 'mscp'])
+    expect(facetOptions(mixedRows, emptyFilters(), 'targets', targetsOf, [], noVocabulary)).toEqual(['iOS', 'macOS'])
+    expect(facetOptions(mixedRows, emptyFilters(), 'sources', sourceOf, [], noVocabulary)).toEqual(['cis', 'mscp'])
   })
 
   it('matches a row on any selected target or source', () => {
@@ -351,18 +355,18 @@ describe('target and source facets', () => {
 
   it('narrows the other facets by the selected target or source, never offering a zero-row option', () => {
     const iosOnly = emptyFilters({ targets: new Set(['iOS']) })
-    expect(facetOptions(mixedRows, iosOnly, sourceOf, iosOnly.sources, noVocabulary)).toEqual(['mscp'])
-    expect(facetOptions(mixedRows, iosOnly, (r) => r.section, [], noVocabulary)).toEqual(['os'])
+    expect(facetOptions(mixedRows, iosOnly, 'sources', sourceOf, iosOnly.sources, noVocabulary)).toEqual(['mscp'])
+    expect(facetOptions(mixedRows, iosOnly, 'sections', (r) => r.section, [], noVocabulary)).toEqual(['os'])
 
     const cisOnly = emptyFilters({ sources: new Set(['cis']) })
-    expect(facetOptions(mixedRows, cisOnly, targetsOf, cisOnly.targets, noVocabulary)).toEqual(['macOS'])
+    expect(facetOptions(mixedRows, cisOnly, 'targets', targetsOf, cisOnly.targets, noVocabulary)).toEqual(['macOS'])
   })
 
-  it('narrows a facet by its own selection, and keeps a selected value visible', () => {
+  it('does not narrow a facet by its own selection, and keeps a selected value visible', () => {
     const iosOnly = emptyFilters({ targets: new Set(['iOS']) })
-    expect(facetOptions(mixedRows, iosOnly, targetsOf, iosOnly.targets, noVocabulary)).toEqual(['iOS'])
+    expect(facetOptions(mixedRows, iosOnly, 'targets', targetsOf, iosOnly.targets, noVocabulary)).toEqual(['iOS', 'macOS'])
     const unreachable = emptyFilters({ targets: new Set(['iOS']), sources: new Set(['cis']) })
-    expect(facetOptions(mixedRows, unreachable, targetsOf, unreachable.targets, noVocabulary)).toEqual(['iOS'])
+    expect(facetOptions(mixedRows, unreachable, 'targets', targetsOf, unreachable.targets, noVocabulary)).toEqual(['iOS', 'macOS'])
   })
 
   it('labels options through the vocabulary, falling back to the raw value', () => {
@@ -421,6 +425,7 @@ describe('grouped terms', () => {
     const options = facetOptions(
       groupedRows,
       emptyFilters(),
+      'benchmarks',
       (r) => benchmarksListedUnder(r, new Set(), groupedVocabulary),
       [],
       groupedVocabulary,
@@ -446,6 +451,7 @@ describe('grouped terms', () => {
     const benchmarkOptions = facetOptions(
       groupedRows,
       onTwentySeven,
+      'benchmarks',
       (r) => benchmarksListedUnder(r, onTwentySeven.versions, groupedVocabulary),
       onTwentySeven.benchmarks,
       groupedVocabulary,
@@ -461,6 +467,7 @@ describe('grouped terms', () => {
     const versionOptions = facetOptions(
       groupedRows,
       stigSelected,
+      'versions',
       (r) => versionsListingAnyOf(r, stigSelected.benchmarks, groupedVocabulary),
       stigSelected.versions,
       groupedVocabulary,
@@ -841,65 +848,46 @@ describe('facetOptionCounts', () => {
   const countsFor = (
     rows: RuleRow[],
     filters: FilterValues,
+    dimension: FilterDimension,
     valueOf: (candidate: RuleRow) => string | string[],
     selected: Iterable<string> = [],
-  ) => facetOptionCounts(rowsInView(rows, filters, noVocabulary), valueOf, selected)
+  ) => facetOptionCounts(rows, filters, dimension, valueOf, selected, noVocabulary)
   const sourceOf = (candidate: RuleRow) => sourceGroupKey(candidate, noVocabulary)
-  const targetsOf = (candidate: RuleRow) => targetGroupKeys(candidate, noVocabulary)
-  const tagsOf = (candidate: RuleRow) => tagGroupKeys(candidate, noVocabulary)
 
   it('counts every row once per option with no filters applied', () => {
     const rows = [macRow('a'), macRow('b'), ismRow('c')]
-    expect(countsFor(rows, emptyFilters(), sourceOf)).toEqual(new Map([['mscp', 2], ['ism', 1]]))
+    expect(countsFor(rows, emptyFilters(), 'sources', sourceOf)).toEqual(new Map([['mscp', 2], ['ism', 1]]))
   })
 
-  it('narrows a facet by its own selection as well as by the other facets', () => {
+  it('narrows a facet by the other facets but not by its own selection', () => {
     const rows = [macRow('a'), macRow('b'), ismRow('c')]
     const filters = emptyFilters({ sources: new Set(['mscp']) })
-    expect(countsFor(rows, filters, sourceOf, filters.sources)).toEqual(new Map([['mscp', 2]]))
-    expect(countsFor(rows, filters, targetsOf)).toEqual(new Map([['macOS', 2]]))
+    expect(countsFor(rows, filters, 'sources', sourceOf)).toEqual(new Map([['mscp', 2], ['ism', 1]]))
+    expect(countsFor(rows, filters, 'targets', (candidate) => targetGroupKeys(candidate, noVocabulary))).toEqual(new Map([['macOS', 2]]))
     const ismSelected = emptyFilters({ sources: new Set(['ism']) })
-    expect(countsFor(rows, ismSelected, targetsOf)).toEqual(new Map([[NO_TARGET_KEY, 1]]))
-    expect(countsFor(rows, ismSelected, sourceOf, ismSelected.sources).get('mscp')).toBeUndefined()
-  })
-
-  it('offers no option beside the selected one once its count is zero', () => {
-    const rows = [macRow('a'), ismRow('c')]
-    const filters = emptyFilters({ sources: new Set(['ism']) })
-    expect(Array.from(countsFor(rows, filters, sourceOf, filters.sources).entries())).toEqual([['ism', 1]])
-    expect(facetOptions(rows, filters, sourceOf, filters.sources, noVocabulary)).toEqual(['ism'])
-  })
-
-  it('keeps a selected option offered at zero so it can be unticked', () => {
-    const rows = [macRow('a'), ismRow('c')]
-    const filters = emptyFilters({ targets: new Set(['macOS']), sources: new Set(['ism']) })
-    expect(countsFor(rows, filters, sourceOf, filters.sources).get('ism')).toBe(0)
-    expect(facetOptions(rows, filters, sourceOf, filters.sources, noVocabulary)).toEqual(['ism'])
+    expect(countsFor(rows, ismSelected, 'targets', (candidate) => targetGroupKeys(candidate, noVocabulary))).toEqual(
+      new Map([[NO_TARGET_KEY, 1]]),
+    )
   })
 
   it('counts search text as an applied filter', () => {
     const rows = [macRow('alpha'), macRow('beta'), ismRow('alpha_two')]
-    const counts = countsFor(rows, emptyFilters({ search: 'alpha' }), sourceOf)
+    const counts = countsFor(rows, emptyFilters({ search: 'alpha' }), 'sources', sourceOf)
     expect(counts).toEqual(new Map([['mscp', 1], ['ism', 1]]))
   })
 
   it('counts a row once for an option it yields twice', () => {
     const rows = [macRow('a'), macRow('b', { tags: ['x', 'y'] })]
     const doubled = (candidate: RuleRow) => [...candidate.targetKeys, ...candidate.targetKeys]
-    expect(countsFor(rows, emptyFilters(), doubled).get('macOS')).toBe(2)
-    expect(countsFor(rows, emptyFilters(), tagsOf)).toEqual(new Map([['800-53r5_high', 1], ['x', 1], ['y', 1]]))
+    expect(countsFor(rows, emptyFilters(), 'targets', doubled).get('macOS')).toBe(2)
+    const tagCounts = countsFor(rows, emptyFilters(), 'tags', (candidate) => tagGroupKeys(candidate, noVocabulary))
+    expect(tagCounts).toEqual(new Map([['800-53r5_high', 1], ['x', 1], ['y', 1]]))
   })
 
-  it('counts tags of the visible rules only', () => {
-    const rows = [macRow('a', { tags: ['x', 'y'] }), ismRow('c', { tags: ['z'] })]
-    const filters = emptyFilters({ sources: new Set(['mscp']) })
-    expect(countsFor(rows, filters, tagsOf)).toEqual(new Map([['x', 1], ['y', 1]]))
-  })
-
-  it('shows a selected option that no view row has as zero', () => {
+  it('shows a selected option that no row reaches as zero', () => {
     const rows = [macRow('a')]
     const filters = emptyFilters({ sources: new Set(['ism']) })
-    const counts = countsFor(rows, filters, tagsOf, ['gone'])
+    const counts = countsFor(rows, filters, 'tags', (candidate) => tagGroupKeys(candidate, noVocabulary), ['gone'])
     expect(counts.get('gone')).toBe(0)
     expect(counts.has('800-53r5_high')).toBe(false)
   })
@@ -920,17 +908,46 @@ describe('facetOptionCounts', () => {
     ]
     const onTwentySix = emptyFilters({ versions: new Set(['macOS 26.0']) })
     expect(
-      countsFor(rows, onTwentySix, (candidate) => benchmarksListedUnder(candidate, onTwentySix.versions, noVocabulary), onTwentySix.benchmarks),
+      countsFor(rows, onTwentySix, 'benchmarks', (candidate) => benchmarksListedUnder(candidate, onTwentySix.versions, noVocabulary)),
     ).toEqual(new Map([['cis_lvl1', 1]]))
 
     const lvl1 = emptyFilters({ benchmarks: new Set(['cis_lvl1']) })
-    expect(countsFor(rows, lvl1, (candidate) => versionsListingAnyOf(candidate, lvl1.benchmarks, noVocabulary))).toEqual(
-      new Map([['macOS 26.0', 1], ['macOS 27.0', 1]]),
-    )
+    expect(
+      countsFor(rows, lvl1, 'versions', (candidate) => versionsListingAnyOf(candidate, lvl1.benchmarks, noVocabulary)),
+    ).toEqual(new Map([['macOS 26.0', 1], ['macOS 27.0', 1]]))
 
     const both = emptyFilters({ versions: new Set(['macOS 27.0']), benchmarks: new Set(['cis_lvl1']) })
-    const benchmarkCounts = countsFor(rows, both, (candidate) => benchmarksListedUnder(candidate, both.versions, noVocabulary))
-    expect(benchmarkCounts).toEqual(new Map([['cis_lvl1', 1]]))
+    const benchmarkCounts = countsFor(rows, both, 'benchmarks', (candidate) => benchmarksListedUnder(candidate, both.versions, noVocabulary))
+    expect(benchmarkCounts).toEqual(new Map([['cis_lvl1', 1], ['cis_lvl2', 1]]))
+  })
+
+  it('keeps the other sections reachable, with their own-facet-excluded counts, once one is ticked', () => {
+    const rows = [macRow('a', { section: 'os' }), macRow('b', { section: 'os' }), macRow('c', { section: 'audit' }), ismRow('d', { section: 'email' })]
+    const sectionOf = (candidate: RuleRow) => sectionGroupKey(candidate, noVocabulary)
+    const filters = emptyFilters({ sections: new Set(['audit']) })
+    expect(countsFor(rows, filters, 'sections', sectionOf, filters.sections)).toEqual(
+      new Map([['os', 2], ['audit', 1], ['email', 1]]),
+    )
+  })
+
+  it('keeps NIST mSCP reachable once ASD ISM is ticked', () => {
+    const rows = [macRow('a'), macRow('b'), ismRow('c')]
+    const filters = emptyFilters({ sources: new Set(['ism']) })
+    expect(countsFor(rows, filters, 'sources', sourceOf, filters.sources)).toEqual(new Map([['mscp', 2], ['ism', 1]]))
+  })
+
+  it('still drops an option that another facet leaves with no rows', () => {
+    const rows = [macRow('a', { section: 'os' }), macRow('b', { section: 'audit' }), ismRow('c', { section: 'email' })]
+    const sectionOf = (candidate: RuleRow) => sectionGroupKey(candidate, noVocabulary)
+    const filters = emptyFilters({ sources: new Set(['ism']), sections: new Set(['email']) })
+    expect(Array.from(countsFor(rows, filters, 'sections', sectionOf, filters.sections).keys())).toEqual(['email'])
+  })
+
+  it('offers the same options as facetOptions', () => {
+    const rows = [macRow('a'), ismRow('c')]
+    const filters = emptyFilters({ tags: new Set(['800-53r5_high']) })
+    const counts = countsFor(rows, filters, 'sources', sourceOf, filters.sources)
+    expect(Array.from(counts.keys()).sort()).toEqual(facetOptions(rows, filters, 'sources', sourceOf, filters.sources, noVocabulary))
   })
 })
 
