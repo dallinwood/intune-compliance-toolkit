@@ -1,7 +1,7 @@
 import { Component, type ReactNode } from 'react'
 import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
 import { termLabel } from '../../logic/vocabulary'
-import { displayWithOdv, odvSubstitutionMode, odvValueForCode, usableOdvValue, validateOdvValue } from '../../logic/odv'
+import { displayWithOdv, odvSubstitutionMode, codeOdvValues, usableOdvValue, validateOdvValue } from '../../logic/odv'
 import type { OverlaidRule } from '../../logic/overlays'
 import { macosReferences } from '../../logic/references'
 import type { RuleRef } from '../../logic/selectionEntry'
@@ -128,7 +128,7 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
   const storedValueIsInvalid =
     rule.odv !== null && storedValue !== null && validateOdvValue(rule.odv, storedValue, mode, rule.id) !== null
   const odvValue = storedValueIsInvalid ? null : usableOdvValue(rule.odv, mode, storedValue, rule.id)
-  const codeOdvValue = odvValueForCode(rule.odv, mode, odvValue, rule.id)
+  const codeOdv = codeOdvValues(rule.odv, mode, odvValue, rule.id)
   const { source } = rule
   const revision = revisionLine(source)
   // A one-level path (every mSCP rule) only repeats the table's group header
@@ -161,7 +161,7 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
         </div>
       )}
 
-      <DiscussionText text={rule.discussion} format={rule.discussion_format} odvValue={odvValue} />
+      <DiscussionText text={rule.discussion} format={rule.discussion_format} odvValue={odvValue} codeOdv={codeOdv} />
 
       {rule.odv && (
         <div className="space-y-1">
@@ -177,8 +177,8 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
         </div>
       )}
 
-      <RuleCheckSection rule={rule} odvValue={odvValue} codeOdvValue={codeOdvValue} custom={isCustom('check')} />
-      <RuleRemediationSection rule={rule} odvValue={odvValue} codeOdvValue={codeOdvValue} custom={isCustom('remediation')} />
+      <RuleCheckSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('check')} />
+      <RuleRemediationSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('remediation')} />
       <RuleBenchmarks applicability={rule.applicability} custom={isCustom('applicability')} />
       <RuleReferences references={rule.references} custom={isCustom('references')} />
 

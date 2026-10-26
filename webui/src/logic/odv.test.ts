@@ -8,7 +8,7 @@ import {
   effectiveOdvValue,
   odvQuickPicks,
   odvSubstitutionMode,
-  odvValueForCode,
+  codeOdvValues,
   ODV_RULE_VALUE_PATTERNS,
   ODV_VARIABLE_ALLOWLIST,
   prepareOdvValue,
@@ -427,45 +427,66 @@ describe('usableOdvValue', () => {
   })
 })
 
-describe('odvValueForCode', () => {
+describe('codeOdvValues', () => {
   const numberOdv = odv({ recommended: 6, validation: { min: 1 } })
+  const stringOdv = odv({ datatype: 'string', recommended: 'ab' })
+  const injection = 'a"; rm -rf ~ #'
+  const none = { script: null, json: null }
 
-  it('returns a valid value so code blocks show it in place of $ODV', () => {
-    expect(odvValueForCode(numberOdv, 'text', 12, GENERIC_RULE_ID)).toBe(12)
-    expect(substituteOdv('minlen=$ODV and again $ODV', odvValueForCode(numberOdv, 'text', 12, GENERIC_RULE_ID)!)).toBe(
-      'minlen=12 and again 12',
-    )
+  it('returns a valid value for scripts and JSON so code blocks show it in place of $ODV', () => {
+    expect(codeOdvValues(numberOdv, 'text', 12, GENERIC_RULE_ID)).toEqual({ script: 12, json: 12 })
+    expect(substituteOdv('minlen=$ODV and again $ODV', 12)).toBe('minlen=12 and again 12')
   })
 
-  it('returns null when there is no value or the rule has no ODV, keeping $ODV literal', () => {
-    expect(odvValueForCode(numberOdv, 'text', null, GENERIC_RULE_ID)).toBeNull()
-    expect(odvValueForCode(null, 'text', 12, GENERIC_RULE_ID)).toBeNull()
+  it('returns nothing when there is no value or the rule has no ODV, keeping $ODV literal', () => {
+    expect(codeOdvValues(numberOdv, 'text', null, GENERIC_RULE_ID)).toEqual(none)
+    expect(codeOdvValues(null, 'text', 12, GENERIC_RULE_ID)).toEqual(none)
   })
 
-  it('returns null for a value the generator would reject', () => {
-    expect(odvValueForCode(numberOdv, 'text', 0, GENERIC_RULE_ID)).toBeNull()
-    expect(odvValueForCode(numberOdv, 'text', "12'", GENERIC_RULE_ID)).toBeNull()
-    expect(odvValueForCode(odv({ datatype: 'string' }), 'text', 'a b', GENERIC_RULE_ID)).toBeNull()
+  it('returns nothing for a value the generator would reject', () => {
+    expect(codeOdvValues(numberOdv, 'text', 0, GENERIC_RULE_ID)).toEqual(none)
+    expect(codeOdvValues(numberOdv, 'text', "12'", GENERIC_RULE_ID)).toEqual(none)
+    expect(codeOdvValues(stringOdv, 'text', 'a b', GENERIC_RULE_ID)).toEqual(none)
   })
 
   it('applies the rule-specific value pattern', () => {
     const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
     const softwareUpdateRuleId = 'mscp.system_settings_softwareupdate_current'
-    expect(odvValueForCode(deferralOdv, 'text', '30d', softwareUpdateRuleId)).toBe('30d')
-    expect(odvValueForCode(deferralOdv, 'text', '30', softwareUpdateRuleId)).toBeNull()
+    expect(codeOdvValues(deferralOdv, 'text', '30d', softwareUpdateRuleId).script).toBe('30d')
+    expect(codeOdvValues(deferralOdv, 'text', '30', softwareUpdateRuleId)).toEqual(none)
   })
 
   it('returns the canonical value the generator would substitute', () => {
-    expect(odvValueForCode(numberOdv, 'text', '007', GENERIC_RULE_ID)).toBe(7)
+    expect(codeOdvValues(numberOdv, 'text', '007', GENERIC_RULE_ID).script).toBe(7)
   })
 
   it('never substitutes in variable mode, where the script exports ODV instead of text-replacing', () => {
     const bannerOdv = odv({ datatype: 'string', recommended: 'Authorized use only' })
-    expect(odvValueForCode(bannerOdv, 'variable', 'Authorized use only', 'mscp.os_policy_banner_ssh_configure')).toBeNull()
+    expect(codeOdvValues(bannerOdv, 'variable', 'Authorized use only', 'mscp.os_policy_banner_ssh_configure')).toEqual(none)
   })
 
-  it('still substitutes when the rule has no $ODV in its checks (mode none)', () => {
-    expect(odvValueForCode(numberOdv, 'none', 12, GENERIC_RULE_ID)).toBe(12)
+  it('applies the strict shell-safe rules to scripts even when the generator never substitutes (none mode)', () => {
+    expect(codeOdvValues(stringOdv, 'none', injection, GENERIC_RULE_ID).script).toBeNull()
+    for (const unsafe of ["it's", 'a`b`', 'a$(id)', 'a${HOME}', 'a\\b', 'a\nb', 'two words']) {
+      expect(codeOdvValues(stringOdv, 'none', unsafe, GENERIC_RULE_ID).script).toBeNull()
+    }
+    expect(codeOdvValues(stringOdv, 'none', 'safe-value_1.2', GENERIC_RULE_ID).script).toBe('safe-value_1.2')
+  })
+
+  it('applies the strict rules to a numeric none-mode rule', () => {
+    expect(codeOdvValues(numberOdv, 'none', 12, GENERIC_RULE_ID).script).toBe(12)
+    expect(codeOdvValues(numberOdv, 'none', '12; id', GENERIC_RULE_ID)).toEqual(none)
+  })
+
+  it('shows the same value as the generator for a text-mode rule', () => {
+    expect(codeOdvValues(stringOdv, 'text', 'safe-value', GENERIC_RULE_ID).script).toBe('safe-value')
+    expect(codeOdvValues(stringOdv, 'text', injection, GENERIC_RULE_ID).script).toBeNull()
+  })
+
+  it('lets JSON show a value that is only unsafe as shell text, still requiring the rule own validation', () => {
+    const jsonOnly = codeOdvValues(stringOdv, 'none', 'two words', GENERIC_RULE_ID)
+    expect(jsonOnly).toEqual({ script: null, json: 'two words' })
+    expect(codeOdvValues(numberOdv, 'none', 0, GENERIC_RULE_ID)).toEqual(none)
   })
 })
 

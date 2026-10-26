@@ -1,8 +1,8 @@
 import { parseDiscussionIn, parseInline, type DiscussionFormat, type InlineSegment } from '../../logic/discussionMarkup'
 import { sourceAttributeHighlightLanguage } from '../../logic/codeLanguage'
-import { displayWithOdv } from '../../logic/odv'
+import { displayWithOdv, type CodeOdvValues } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
-import { CodeBlock } from './CodeBlock'
+import { OdvCodeBlock } from './CodeBlock'
 
 function InlineText({ text, format }: { text: string; format: DiscussionFormat }) {
   return parseInline(text, format).map((segment: InlineSegment, segmentIndex) => {
@@ -37,10 +37,12 @@ export function DiscussionText({
   text,
   format,
   odvValue,
+  codeOdv,
 }: {
   text: string
   format: DiscussionFormat
   odvValue: OrgDefinedValue | null
+  codeOdv: CodeOdvValues
 }) {
   return (
     <div className="space-y-2 text-slate-700">
@@ -56,10 +58,18 @@ export function DiscussionText({
             </ul>
           )
         }
-        const blockText = displayWithOdv(block.text, odvValue)
         if (block.kind === 'code') {
-          return <CodeBlock key={blockIndex} code={blockText} language={sourceAttributeHighlightLanguage(block.sourceLanguage)} />
+          return (
+            <OdvCodeBlock
+              key={blockIndex}
+              code={block.text}
+              language={sourceAttributeHighlightLanguage(block.sourceLanguage)}
+              odvValue={odvValue}
+              codeOdv={codeOdv}
+            />
+          )
         }
+        const blockText = displayWithOdv(block.text, odvValue)
         if (block.kind === 'heading') {
           return (
             <p key={blockIndex} className="font-semibold text-slate-800">

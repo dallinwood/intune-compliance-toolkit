@@ -160,20 +160,32 @@ export function substituteOdv(text: string, value: OrgDefinedValue): string {
   return text.replaceAll('$ODV', () => String(value))
 }
 
-// Code blocks are display-only, so they substitute under the generator's own
-// rules and no more: a value the generator would reject is never shown in
-// place of $ODV, and in variable mode the script exports ODV and the shell
+export interface CodeOdvValues {
+  // For shell and file text: only a value that is safe in a command.
+  script: OrgDefinedValue | null
+  // For inline payload JSON, which is never run as a shell command.
+  json: OrgDefinedValue | null
+}
+
+// Code blocks are display-only, but a displayed command gets copied and run,
+// so a value is shown in place of $ODV only if it is safe there. Scripts
+// always use the strict text-mode rules, even for a rule whose generator
+// never substitutes (and so never applies them): a remediation block
+// containing `a"; rm -rf ~ #` would otherwise be shown and copied as a
+// working command. JSON is escaped as a string, so it only needs the rule's
+// own validation. In variable mode the script exports ODV and the shell
 // expands "$ODV" itself, so text-replacing it would show a script that is
-// not the one that runs (quoting and expansion could differ).
-export function odvValueForCode(
+// not the one that runs; both stay null there.
+export function codeOdvValues(
   odv: Odv | null,
   mode: OdvSubstitutionMode,
   value: OrgDefinedValue | null,
   ruleId: string,
-): OrgDefinedValue | null {
-  if (!odv || value === null || mode === 'variable') return null
+): CodeOdvValues {
+  if (!odv || value === null || mode === 'variable') return { script: null, json: null }
   const canonicalValue = canonicalOdvValue(odv, value)
-  return validateOdvValue(odv, canonicalValue, mode, ruleId) === null ? canonicalValue : null
+  const passes = (validationMode: OdvSubstitutionMode) => validateOdvValue(odv, canonicalValue, validationMode, ruleId) === null
+  return { script: passes('text') ? canonicalValue : null, json: passes(mode) ? canonicalValue : null }
 }
 
 // For JSON text, the value goes in as the contents of a JSON string so a

@@ -1,6 +1,6 @@
 import { versionKey, versionsForTarget } from '../../logic/applicability'
 import { GENERATED_TARGET } from '../../logic/checkPlan'
-import { displayWithOdv } from '../../logic/odv'
+import { displayWithOdv, type CodeOdvValues } from '../../logic/odv'
 import { scriptHighlightLanguage } from '../../logic/codeLanguage'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
@@ -18,22 +18,22 @@ function CheckEntry({
   check,
   language,
   odvValue,
-  codeOdvValue,
+  codeOdv,
 }: {
   label: string
   check: RuleCheck
   language: ScriptLanguage
   odvValue: OrgDefinedValue | null
-  codeOdvValue: OrgDefinedValue | null
+  codeOdv: CodeOdvValues
 }) {
   const highlightLanguage = scriptHighlightLanguage(language)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-slate-600">{label}</p>
       {check.shell_file !== undefined ? (
-        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdvValue={codeOdvValue} />
+        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
       ) : check.shell ? (
-        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValue={odvValue} codeOdvValue={codeOdvValue} />
+        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
       ) : (
         <p className="text-xs text-slate-500">No check script.</p>
       )}
@@ -45,7 +45,7 @@ function CheckEntry({
           </code>
         </p>
       )}
-      {check.additional_info && <DiscussionText text={check.additional_info} format="asciidoc" odvValue={odvValue} />}
+      {check.additional_info && <DiscussionText text={check.additional_info} format="asciidoc" odvValue={odvValue} codeOdv={codeOdv} />}
     </div>
   )
 }
@@ -54,12 +54,12 @@ function TargetCheckBlock({
   target,
   targetCheck,
   odvValue,
-  codeOdvValue,
+  codeOdv,
 }: {
   target: string
   targetCheck: TargetCheck
   odvValue: OrgDefinedValue | null
-  codeOdvValue: OrgDefinedValue | null
+  codeOdv: CodeOdvValues
 }) {
   const index = useVocabularyIndex()
   const versionChecks = Object.entries(targetCheck.by_version).sort(([left], [right]) => compareVersionsDescending(left, right))
@@ -73,7 +73,7 @@ function TargetCheckBlock({
           check={targetCheck.default}
           language={targetCheck.language}
           odvValue={odvValue}
-          codeOdvValue={codeOdvValue}
+          codeOdv={codeOdv}
         />
       ) : (
         <p className="text-xs text-slate-500">No default check; only the versions below have one.</p>
@@ -85,7 +85,7 @@ function TargetCheckBlock({
           check={check}
           language={targetCheck.language}
           odvValue={odvValue}
-          codeOdvValue={codeOdvValue}
+          codeOdv={codeOdv}
         />
       ))}
     </div>
@@ -95,12 +95,12 @@ function TargetCheckBlock({
 export function RuleCheckSection({
   rule,
   odvValue,
-  codeOdvValue,
+  codeOdv,
   custom = false,
 }: {
   rule: Rule
   odvValue: OrgDefinedValue | null
-  codeOdvValue: OrgDefinedValue | null
+  codeOdv: CodeOdvValues
   custom?: boolean
 }) {
   const index = useVocabularyIndex()
@@ -135,7 +135,7 @@ export function RuleCheckSection({
             target={target}
             targetCheck={targetCheck}
             odvValue={odvValue}
-            codeOdvValue={codeOdvValue}
+            codeOdv={codeOdv}
           />
         ))
       )}

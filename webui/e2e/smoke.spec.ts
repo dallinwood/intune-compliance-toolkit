@@ -1471,7 +1471,7 @@ test.describe('code block copy button', () => {
 
     await copyButton.click()
     await expect(page.getByRole('status').filter({ hasText: 'Copied' })).toHaveCount(1)
-    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(displayedText.replace(/\n$/, ''))
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(displayedText)
     await expect(page.getByRole('status').filter({ hasText: 'Copied' })).toHaveCount(0, { timeout: 4_000 })
   })
 
@@ -1547,6 +1547,20 @@ test.describe('live organization-defined value in code blocks', () => {
     const checkBlock = page.locator('[id^="rule-detail-"]').getByTestId('check-target').first().locator('pre').first()
     await expect(checkBlock).toContainText('$ODV')
     await expect(page.getByText('$ODV stands for the organization-defined value, currently [value].').first()).toBeVisible()
+  })
+
+  test('a remediation script only shows a value that is safe to paste into a shell', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'audit_retention_configure', /./)
+    await row.getByRole('button').click()
+    const remediationBlock = page.getByTestId('remediation-target').first().locator('pre').first()
+    await expect(remediationBlock).toContainText('expire-after:7d')
+
+    // "60d OR 5G" satisfies the rule's own pattern but has spaces, so it is not shell-safe.
+    const odvInput = page.getByRole('textbox', { name: /Time or disk size/ })
+    await odvInput.fill('60d OR 5G')
+    await expect(remediationBlock).toContainText('expire-after:$ODV')
+    await expect(page.getByText('$ODV stands for the organization-defined value').first()).toBeVisible()
   })
 
   test('Copy puts the substituted text on the clipboard', async ({ page }) => {
