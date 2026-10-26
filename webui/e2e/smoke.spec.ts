@@ -1155,8 +1155,8 @@ test.describe('benchmark cell and detail benchmarks', () => {
   })
 })
 
-// Overlays are served through page.route so no real overlay is committed;
-// the dev server's own overlays/_manifest.json lists none.
+// These tests serve their own overlays through page.route, replacing the
+// committed overlays/ folder for the page they open.
 test.describe('custom overlays', () => {
   test.use({ viewport: { width: 1280, height: 900 } })
 
@@ -1268,4 +1268,18 @@ test.describe('custom overlays', () => {
     await expect(detail.getByText(/Custom/)).toHaveCount(0)
     await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
   })
+})
+
+test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerShell remediation step', async ({ page }) => {
+  await page.goto('/')
+  const row = await searchForSingleRow(page, 'ism-1621', /./)
+  await row.getByRole('button').click()
+  const detail = page.locator('[id^="rule-detail-"]')
+
+  const remediation = detail.getByTestId('remediation-target')
+  await expect(remediation).toHaveCount(1)
+  await expect(remediation.getByText('Windows', { exact: false }).first()).toBeVisible()
+  await expect(remediation.getByText('UserApplicationHardeningRemoveFeatures', { exact: true })).toBeVisible()
+  await expect(detail.getByRole('heading', { name: 'Remediation' }).locator('xpath=..').getByText('Custom', { exact: true })).toBeVisible()
+  await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
 })

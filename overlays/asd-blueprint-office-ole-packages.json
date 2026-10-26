@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "asd-blueprint-office-ole-packages",
+  "description": "Adds the ASD Blueprint for Secure Cloud PowerShell script that prevents activation of OLE packages in Microsoft Office.",
+  "targets": [
+    {
+      "rule": "asd_ism.ism-1542",
+      "release": "v2026.09.4"
+    }
+  ],
+  "fields": {
+    "references": {
+      "asd_blueprint": [
+        "https://blueprint.asd.gov.au/configuration/intune/devices/scripts/officemacrohardening-preventactivationofole/"
+      ]
+    },
+    "remediation": {
+      "Windows": {
+        "steps": [
+          {
+            "name": "OfficeMacroHardeningPreventActivationOfOle",
+            "language": "powershell",
+            "shell": "<#\n.COPYRIGHT\nCopyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.\nSee LICENSE in the project root for license information.\n#>\n\nFunction WriteRegOLE {\n    param (\n        [Parameter(Mandatory = $true)]\n        [string]$registryPath\n    )\n\n    If(!(Test-Path $registryPath)) {\n      New-Item -Path $registryPath -Force | Out-Null\n    }\n\n    New-ItemProperty -Path $registryPath -Name PackagerPrompt -Value 2 -PropertyType DWORD -Force | Out-Null\n\n}\n\nWriteRegOLE(\"HKCU:\\Software\\Microsoft\\Office\\16.0\\Excel\\Security\")\nWriteRegOLE(\"HKCU:\\Software\\Microsoft\\Office\\16.0\\PowerPoint\\Security\")\nWriteRegOLE(\"HKCU:\\Software\\Microsoft\\Office\\16.0\\Word\\Security\")",
+            "additional_info": "Source: ASD Blueprint for Secure Cloud, script OfficeMacroHardeningPreventActivationOfOle, commit a6e1e5f95e6051f23d2e7d1148c8fd57a6614000. Licence: Microsoft Corporation, MIT.",
+            "versions": null
+          }
+        ],
+        "payloads": []
+      }
+    }
+  }
+}
