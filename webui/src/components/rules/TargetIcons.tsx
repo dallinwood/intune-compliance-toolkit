@@ -6,7 +6,7 @@ import { targetIconsOf } from '../../logic/targetIcons'
 export function TargetIcons({ targetKeys }: { targetKeys: readonly string[] }) {
   return targetIconsOf(targetKeys).map(({ targetName, icon: Icon, label }) => (
     <Tooltip key={targetName}>
-      <TooltipTrigger render={<span role="img" aria-label={label} />} className="inline-flex text-muted-foreground">
+      <TooltipTrigger render={<span role="img" aria-label={label} />} className="inline-flex shrink-0 text-muted-foreground">
         <Icon className="size-4" aria-hidden="true" />
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>

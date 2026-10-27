@@ -1692,6 +1692,16 @@ test.describe('target platform icons', () => {
     await expect(page.getByRole('tooltip', { name: 'macOS' })).toBeVisible()
   })
 
+  test('the longest badge stays on one line with its icon at desktop width', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'pwpolicy_temporary_or_emergency_accounts_disable', /./)
+    const iconBox = await iconNamed(row, 'macOS').boundingBox()
+    const badgeBox = await row.locator('td').nth(3).getByText('Manual - marked by mSCP').boundingBox()
+    expect(iconBox!.y).toBeLessThan(badgeBox!.y + badgeBox!.height)
+    expect(badgeBox!.y).toBeLessThan(iconBox!.y + iconBox!.height)
+    expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(badgeBox!.x)
+  })
+
   test('an ISM control with no overlay shows no target icon', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
