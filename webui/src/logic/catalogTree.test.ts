@@ -44,6 +44,26 @@ describe('effectiveInclusions', () => {
   })
 })
 
+describe('effectiveInclusions with a package', () => {
+  it('keeps the package on a direct inclusion and passes it to features that come through its plan', () => {
+    const products = byId([
+      product('a.suite'),
+      product('a.root', { parent: 'a.suite', plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.child'] }] }),
+      product('a.child', { parent: 'a.root' }),
+    ])
+
+    const inclusions = effectiveInclusions(
+      licence([
+        { product: 'a.suite', availability: 'add_on', note: null },
+        { product: 'a.root', plan: 'plan_1', availability: 'add_on', package: 'a.suite', note: null },
+      ]),
+      products,
+    )
+
+    expect(inclusions.map((inclusion) => `${inclusion.product} ${inclusion.package}`)).toEqual(['a.suite undefined', 'a.root a.suite', 'a.child a.suite'])
+  })
+})
+
 describe('effectiveInclusions with two plans sharing a feature', () => {
   it('keeps the feature once, under the first plan listed', () => {
     const products = byId([

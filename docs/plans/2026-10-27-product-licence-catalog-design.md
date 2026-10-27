@@ -136,6 +136,9 @@ The validator and the publish step read it separately from the rule library.
   "includes": [
     { "product": "microsoft.entra-id", "plan": "plan_2", "availability": "included", "note": null },
     { "product": "microsoft.entra-id-access-reviews", "availability": "included", "note": null },
+    { "product": "microsoft.teams-premium", "availability": "add_on", "note": null },
+    { "product": "microsoft.advanced-meetings", "availability": "add_on",
+      "package": "microsoft.teams-premium", "note": null },   // bundle to buy, listed above as add_on
     { "product": "microsoft.exchange-online",
       "custom_plan": { "title": "Plan 2 (100 GB)", "description": null },
       "availability": "included", "note": null }
@@ -149,9 +152,13 @@ The validator and the publish step read it separately from the rule library.
   this licence. An entry sets at most one of the two.
 - **`availability`:**
   - `included`: comes with the licence.
-  - `add_on`: can be bought for this licence.
-  - `package_feature`: available as part of a package or suite built on this licence, not on
-    its own.
+  - `add_on`: can be bought for this licence. When the feature is only sold as part of a bundle,
+    `package` names that bundle.
+- **`package`** is optional and holds the id of the product to buy to get the feature. It is
+  allowed only on an `add_on` inclusion, must be an ancestor of the inclusion's product, and the
+  licence must list that product itself as `add_on`. The UI shows "Add-on via <package title>"
+  with the title linking to that product. An add-on with no `package` is bought on its own, or
+  its bundle is not recorded yet and the licence's `review` says so.
 - **What a licence includes in effect** is every listed entry, plus the `features` of every
   listed plan. A feature listed directly and through a plan is allowed, and the UI shows it
   once.
@@ -209,8 +216,11 @@ the tests use the same code. A file the validator would reject is skipped with a
   ("100 GB") in the inclusion's `note`. A level seen in only one licence becomes a `custom_plan`
   with the cell text. Plan `features` lists are left empty for the maintainer.
   Licences list each feature directly, which matches the matrix exactly.
-- **Availability:** matrix symbols map as ✔ to `included`, + and Δ to `add_on`, and ⊡ to
-  `package_feature`. Text cells are `included` with the text as the plan or custom plan. A cell's
+- **Availability:** matrix symbols map as ✔ to `included` and + and Δ to `add_on`. The ⊡
+  mark (part of a package) is resolved by walking up the product's ancestors to the nearest one the
+  same licence lists: `included` there makes it `included`, `add_on` there makes it `add_on` with
+  that ancestor as `package`, and with no listed ancestor it is `add_on` with no package and a
+  `review` note. Text cells are `included` with the text as the plan or custom plan. A cell's
   tooltip note goes into `note`.
 - **Cross-check:** the official Enterprise and Business comparison PDFs mark each cell with a "●"
   text character, so a script reads them by position. PDF row names are matched to matrix rows,
@@ -231,7 +241,7 @@ in the URL, so a link opens the same licence or product.
   - Licences grouped by vendor, then family, in a list. Selecting one shows its title, kind,
     requirements, links, review marker, and its effective inclusions grouped by top-level
     product: plan badges on products, features nested under their product, and availability as
-    a badge (Included, Add-on, Package feature).
+    a badge (Included, Add-on). An add-on with a package reads "Add-on via <package title>".
   - A **Compare** mode: pick two or more licences and see a matrix with products and features
     as rows, licences as columns, availability or plan in each cell, and an option to hide rows
     that are the same in every column.
@@ -302,3 +312,4 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
 - 2026-10-27: Maintainer feedback after reviewing the tabs: each view gets its own page path (`/rules`, `/licences`, `/products`) with real browser history; list groups become collapsible (collapsed by default); "package feature" is replaced by `included`, or `add_on` with a `package` reference naming the bundle to buy (plan Tasks 6 and 7).
 - 2026-10-27: Products tab landed in 7b36577 (feat: add the Products tab), then 140a8b4 (fix: tidy the Products tab and keep product and licence ids separate: index namespaces, plan cards and Features in a multi-column list, one Included in row per licence) and a final fix so expanding a group no longer scrolls the list and the chevron has a 32px touch target (`fix: keep the product list still when expanding groups`).
 - 2026-10-27: Each view now has its own path under the base (`rules`, `licences`, `products`; the `view` parameter is gone, old links break by design), `pushState` for navigations and `replaceState` for refinements with a `popstate` listener, `dist/<view>/index.html` copies for GitHub Pages, collapsible vendor/family/category groups (collapsed by default, selection's groups open), a scrollbar-free tab bar, the Rules search box in the Products pill style, and the chevron overlap fix (`feat: give each view its own page and keep browser history`).
+- 2026-10-27: Replaced `package_feature` with `included`, or `add_on` with an optional `package` naming the bundle to buy: schema and validator rules, index and UI ("Add-on via <package>" in the Licences tree, compare cells and Products Included in), and a migration of the 534 existing package features (442 add-on via a package, 21 included, 71 add-on with a review note) (`feat: name the package behind add-on features`).

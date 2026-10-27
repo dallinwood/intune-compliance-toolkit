@@ -191,7 +191,7 @@
     },
     {
       "product": "microsoft.basic-security-usage-reports",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
@@ -237,17 +237,20 @@
     },
     {
       "product": "microsoft.firmware-over-the-air-updates",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.intune",
       "note": null
     },
     {
       "product": "microsoft.specialty-device-management",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.intune",
       "note": null
     },
     {
       "product": "microsoft.tunnel-for-mam",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.intune",
       "note": null
     },
     {
@@ -428,22 +431,26 @@
     },
     {
       "product": "microsoft.entitlement-management-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
       "product": "microsoft.identity-governance-dashboard",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
       "product": "microsoft.lifecycle-workflows",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
       "product": "microsoft.ml-assisted-access-reviews",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
@@ -453,7 +460,8 @@
     },
     {
       "product": "microsoft.face-check",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-verified-id-premium",
       "note": null
     },
     {
@@ -468,7 +476,7 @@
     },
     {
       "product": "microsoft.people-skills-ai-inferencing",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -553,37 +561,44 @@
     },
     {
       "product": "microsoft.authenticated-scan-for-windows",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.block-vulnerable-applications",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.browser-extensions-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.digital-certificate-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.hardware-firmware-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.network-share-analysis",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.security-baselines-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
@@ -628,7 +643,8 @@
     },
     {
       "product": "microsoft.identity-federation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-workload-id-free",
       "note": null
     },
     {
@@ -708,52 +724,52 @@
     },
     {
       "product": "microsoft.copilot-in-viva-learning-preview",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-glint",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-pulse",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-engage",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.answers-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.people-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-connections-50-instances",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-engage-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -858,6 +874,17 @@
     "Official comparison lists these Information protection items with no matching catalog entry: Azure Information Protection Plan 2 (Included), Automatic sensitivity labeling in Microsoft 365 apps (Included), Manual sensitivity labeling for Teams online meetings (Included), Automatic sensitivity labels in Exchange, SharePoint, and OneDrive (Included), Default sensitivity labels for SharePoint document libraries (Included), Sensitivity labels based on advanced classifiers (e.g., Trainable Classifiers, EDM, Named Entities, Contextual) (Included).",
     "Official comparison lists these Data Loss Prevention (DLP) items with no matching catalog entry: DLP for emails and files (Included), DLP for Teams chat (Included).",
     "Official comparison lists these Data lifecycle management items with no matching catalog entry: Basic org-wide or location-wide retention policies (Included), Rules-based automatic retention policies (Included), Machine Learning-based retention (Included), Teams message retention policies (Included).",
-    "Official comparison lists these Insider risk management items with no matching catalog entry: Default sensitivity labels for SharePoint document libraries (Included)."
+    "Official comparison lists these Insider risk management items with no matching catalog entry: Default sensitivity labels for SharePoint document libraries (Included).",
+    "People Skills AI Inferencing: part of a package that is not recorded yet.",
+    "Copilot in Viva Learning (preview): part of a package that is not recorded yet.",
+    "Copilot in Viva Glint: part of a package that is not recorded yet.",
+    "Viva Pulse: part of a package that is not recorded yet.",
+    "Copilot in Viva Amplify: part of a package that is not recorded yet.",
+    "Copilot in Viva Engage: part of a package that is not recorded yet.",
+    "Answers in Viva: part of a package that is not recorded yet.",
+    "People in Viva: part of a package that is not recorded yet.",
+    "Viva Amplify: part of a package that is not recorded yet.",
+    "Viva Connections (50 instances): part of a package that is not recorded yet.",
+    "Viva Engage (premium): part of a package that is not recorded yet."
   ]
 }

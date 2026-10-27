@@ -189,13 +189,29 @@ def _inclusion_key(inclusion: dict) -> tuple:
     return inclusion["product"], inclusion.get("plan"), custom_plan["title"] if custom_plan else None
 
 
-def _inclusion_problems(inclusion: dict, products: dict[str, Entry]) -> list[str]:
+def _package_problems(inclusion: dict, products: dict[str, Entry], add_on_product_ids: set[str]) -> list[str]:
+    package_id = inclusion.get("package")
+    if package_id is None:
+        return []
+    if inclusion["availability"] != "add_on":
+        return [f"sets package {package_id} but is not an add_on"]
+    if package_id not in products:
+        return [f"package {package_id} does not exist"]
+    if package_id not in _ancestor_ids(inclusion["product"], products):
+        return [f"package {package_id} is not an ancestor of {inclusion['product']}"]
+    if package_id not in add_on_product_ids:
+        return [f"package {package_id} is not listed as an add_on by this licence"]
+    return []
+
+
+def _inclusion_problems(inclusion: dict, products: dict[str, Entry], add_on_product_ids: set[str]) -> list[str]:
     problems: list[str] = []
     product_id = inclusion["product"]
     if "plan" in inclusion and "custom_plan" in inclusion:
         problems.append("sets both plan and custom_plan; an inclusion can set at most one")
     if product_id not in products:
         return [*problems, f"product {product_id} does not exist"]
+    problems.extend(_package_problems(inclusion, products, add_on_product_ids))
     defined_plan_ids = {plan["id"] for plan in products[product_id].document["plans"]}
     if "plan" in inclusion and inclusion["plan"] not in defined_plan_ids:
         problems.append(f"plan {inclusion['plan']} is not defined on {product_id}")
@@ -206,8 +222,10 @@ def _licence_problems(licence_id: str, licences: dict[str, Entry], products: dic
     licence = licences[licence_id].document
     problems: list[str] = []
     seen_inclusion_keys: set[tuple] = set()
+    add_on_product_ids = {inclusion["product"] for inclusion in licence["includes"] if inclusion["availability"] == "add_on"}
     for position, inclusion in enumerate(licence["includes"]):
-        problems.extend(f"includes[{position}]: {problem}" for problem in _inclusion_problems(inclusion, products))
+        inclusion_problems = _inclusion_problems(inclusion, products, add_on_product_ids)
+        problems.extend(f"includes[{position}]: {problem}" for problem in inclusion_problems)
         key = _inclusion_key(inclusion)
         if key in seen_inclusion_keys:
             plan_label = key[1] or key[2] or "without a plan"

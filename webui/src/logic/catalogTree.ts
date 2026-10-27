@@ -25,6 +25,7 @@ export function effectiveInclusions(licence: CatalogLicence, productsById: Map<s
     ({ featureId, viaPlanId, inclusion }): EffectiveInclusion => ({
       product: featureId,
       availability: inclusion.availability,
+      package: inclusion.package,
       note: inclusion.note,
       via: 'plan',
       viaPlanId,

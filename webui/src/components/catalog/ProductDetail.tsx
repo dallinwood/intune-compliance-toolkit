@@ -86,6 +86,18 @@ function EntryLine({ row, licenceTitle, lookup }: { row: LicenceRow; licenceTitl
             {title}
           </Badge>
         ))}
+        {row.packageIds.map((packageId) => (
+          <span key={packageId} className="text-xs text-muted-foreground">
+            Add-on via{' '}
+            {lookup.productsById.has(packageId) ? (
+              <CatalogLink view="products" id={packageId} className="break-words">
+                {lookup.productsById.get(packageId)?.title}
+              </CatalogLink>
+            ) : (
+              packageId
+            )}
+          </span>
+        ))}
         {row.viaPlanIds.length > 0 && <span className="text-xs text-muted-foreground">via {row.viaPlanIds.map(planTitleOf).join(', ')}</span>}
       </div>
       {row.notes.map((note) => (

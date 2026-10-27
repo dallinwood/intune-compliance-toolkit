@@ -1721,37 +1721,44 @@
     },
     {
       "product": "microsoft.authenticated-scan-for-windows",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.block-vulnerable-applications",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.browser-extensions-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.digital-certificate-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.hardware-firmware-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.network-share-analysis",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.security-baselines-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
@@ -1802,7 +1809,8 @@
     },
     {
       "product": "microsoft.restricted-site-creation-by-users",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.sharepoint-advanced-management",
       "note": null
     },
     {
@@ -1832,7 +1840,8 @@
     },
     {
       "product": "microsoft.identity-federation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-workload-id-free",
       "note": null
     },
     {
@@ -1927,42 +1936,50 @@
     },
     {
       "product": "microsoft.advanced-collaboration-tools",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-meetings",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-meetings-protection",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-virtual-appointments",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.live-caption-translation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.microsoft-places-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.powerpoint-live-chapters",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.queues-app",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
@@ -2022,7 +2039,8 @@
     },
     {
       "product": "microsoft.copilot-in-viva-learning-preview",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-suite",
       "note": null
     },
     {
@@ -2037,7 +2055,8 @@
     },
     {
       "product": "microsoft.copilot-in-viva-glint",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-workplace-analytics-employee-feedback",
       "note": null
     },
     {
@@ -2057,37 +2076,44 @@
     },
     {
       "product": "microsoft.copilot-in-viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-engage",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.answers-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.people-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.viva-connections-50-instances",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.viva-engage-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {

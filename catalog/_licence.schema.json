@@ -43,7 +43,8 @@
               "description": { "type": ["string", "null"] }
             }
           },
-          "availability": { "enum": ["included", "add_on", "package_feature"] },
+          "availability": { "enum": ["included", "add_on"] },
+          "package": { "type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9][a-z0-9-]*$" },
           "note": { "type": ["string", "null"] }
         }
       }

@@ -5,10 +5,9 @@ import type { EffectiveInclusion } from './catalogTree'
 export const AVAILABILITY_LABELS: Record<Availability, string> = {
   included: 'Included',
   add_on: 'Add-on',
-  package_feature: 'Package feature',
 }
 
-export const AVAILABILITIES: readonly Availability[] = ['included', 'add_on', 'package_feature']
+export const AVAILABILITIES: readonly Availability[] = ['included', 'add_on']
 
 export interface CatalogLookup {
   productsById: Map<string, CatalogProduct>
@@ -22,6 +21,11 @@ export function buildCatalogLookup(index: CatalogIndex): CatalogLookup {
     for (const plan of product.plans) planTitlesByFullId.set(fullPlanId(product.id, plan.id), plan.title)
   }
   return { productsById, planTitlesByFullId }
+}
+
+export function availabilityText(availability: Availability, packageId: string | null | undefined, lookup: CatalogLookup): string {
+  if (packageId === null || packageId === undefined) return AVAILABILITY_LABELS[availability]
+  return `${AVAILABILITY_LABELS[availability]} via ${lookup.productsById.get(packageId)?.title ?? packageId}`
 }
 
 export interface PlanLabel {

@@ -60,6 +60,7 @@ describe('isUniform', () => {
   it('is false when availability or plan differs', () => {
     const included = { product: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
     expect(isUniform(rowFor([included, { ...included, availability: 'add_on' }]))).toBe(false)
+    expect(isUniform(rowFor([{ ...included, availability: 'add_on', package: 'a.root' }, { ...included, availability: 'add_on' }]))).toBe(false)
     expect(isUniform(rowFor([included, { ...included, plan: 'plan_2' }]))).toBe(false)
   })
 

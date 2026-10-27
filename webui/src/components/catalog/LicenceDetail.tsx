@@ -80,7 +80,7 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
     [licence, lookup, normalisedText],
   )
   const counts = useMemo(() => {
-    const byAvailability: Record<AvailabilityFilter, number> = { all: textMatches.length, included: 0, add_on: 0, package_feature: 0 }
+    const byAvailability: Record<AvailabilityFilter, number> = { all: textMatches.length, included: 0, add_on: 0 }
     for (const inclusion of textMatches) byAvailability[inclusion.availability] += 1
     return byAvailability
   }, [textMatches])

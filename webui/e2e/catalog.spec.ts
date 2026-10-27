@@ -44,8 +44,8 @@ const FIXTURE_FILES: CatalogSourceFile[] = [
     title: 'Acme Pro',
     family: 'Acme Business',
     includes: [
-      { product: 'acme.suite', plan: 'plan_2', availability: 'included', note: null },
-      { product: 'acme.feature', availability: 'add_on', note: null },
+      { product: 'acme.suite', plan: 'plan_2', availability: 'add_on', note: null },
+      { product: 'acme.feature', availability: 'add_on', package: 'acme.suite', note: null },
       { product: 'acme.tool', availability: 'included', note: null },
     ],
   }),
@@ -99,8 +99,28 @@ test('availability and plans are labelled in words', async ({ page }) => {
   await page.goto('/licences?licence=acme.pro')
 
   const securitySection = page.getByRole('region', { name: 'Security' })
-  await expect(securitySection.getByText('Add-on', { exact: true })).toBeVisible()
+  await expect(securitySection.getByText('Add-on', { exact: true })).toHaveCount(2)
   await expect(securitySection.getByText('Plan 2', { exact: true })).toBeVisible()
+})
+
+test('an add-on that comes from a package names it and links to that product', async ({ page }) => {
+  await page.goto('/licences?licence=acme.pro')
+
+  const securitySection = page.getByRole('region', { name: 'Security' })
+  const packageLine = securitySection.getByText('Add-on via Security Suite', { exact: true })
+  await expect(packageLine).toBeVisible()
+  await expect(packageLine.getByRole('link', { name: 'Security Suite' })).toHaveAttribute('href', /\/products\?(.*&)?product=acme\.suite/)
+  await expect(page.getByRole('group', { name: 'Availability' }).getByText(/Package feature/)).toHaveCount(0)
+})
+
+test('the compare legend lists Included, Add-on and Not included, and a package add-on says where it comes from', async ({ page }) => {
+  await page.goto('/licences?licence=acme.pro&compare=acme.basic&compare=acme.pro')
+
+  const legend = page.getByRole('list', { name: 'Legend' })
+  await expect(legend.getByRole('listitem')).toHaveText(['Included', 'Add-on', '-Not included'])
+  const featureRow = page.getByRole('row', { name: /Context Feature/ })
+  await expect(featureRow.getByText('Add-on via Security Suite')).toHaveCount(1)
+  await expect(featureRow.getByTitle('Add-on via Security Suite')).toBeVisible()
 })
 
 test('a product link points at the Products tab for that product', async ({ page }) => {
@@ -198,6 +218,7 @@ test('searching the Products tab finds a feature with its breadcrumb, and its de
   const includedIn = page.getByRole('region', { name: 'Included in' })
   await expect(includedIn.getByText('Included', { exact: true })).toBeVisible()
   await expect(includedIn.getByText('Add-on', { exact: true })).toBeVisible()
+  await expect(includedIn.getByRole('link', { name: 'Security Suite' })).toBeVisible()
   await includedIn.getByRole('link', { name: 'Acme Pro' }).click()
   await expect(page).toHaveURL(/\/licences\?(.*&)?licence=acme\.pro/)
   await expect(page.getByRole('heading', { level: 2, name: 'Acme Pro' })).toBeVisible()

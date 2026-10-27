@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { compareRows, withoutIdenticalRows } from '../../logic/licenceCompare'
-import { AVAILABILITIES, AVAILABILITY_LABELS, planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AVAILABILITIES, availabilityText, planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import type { EffectiveInclusion } from '../../logic/catalogTree'
 import type { CatalogLicence } from '../../types/catalog'
 import { AvailabilityBadgeIcon } from './AvailabilityBadge'
@@ -20,10 +20,11 @@ function Cell({ inclusion, lookup }: { inclusion: EffectiveInclusion | null; loo
     )
   }
   const planTitle = planLabelOf(inclusion, lookup)?.title ?? viaPlanTitleOf(inclusion, lookup)
+  const text = availabilityText(inclusion.availability, inclusion.package, lookup)
   return (
     <span className="inline-flex flex-col items-center gap-0.5">
-      <AvailabilityBadgeIcon availability={inclusion.availability} />
-      <span className="sr-only">{AVAILABILITY_LABELS[inclusion.availability]}</span>
+      <AvailabilityBadgeIcon availability={inclusion.availability} title={text} />
+      <span className="sr-only">{text}</span>
       {planTitle !== null && <span className="text-xs text-muted-foreground">{planTitle}</span>}
     </span>
   )
@@ -58,7 +59,7 @@ export function LicenceCompare({
         {AVAILABILITIES.map((availability) => (
           <li key={availability} className="flex items-center gap-1.5">
             <AvailabilityBadgeIcon availability={availability} />
-            {AVAILABILITY_LABELS[availability]}
+            {availabilityText(availability, null, lookup)}
           </li>
         ))}
         <li className="flex items-center gap-1.5">

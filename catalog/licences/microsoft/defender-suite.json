@@ -161,7 +161,7 @@
     },
     {
       "product": "microsoft.basic-security-usage-reports",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
@@ -171,17 +171,17 @@
     },
     {
       "product": "microsoft.firmware-over-the-air-updates",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.specialty-device-management",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.tunnel-for-mam",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -352,22 +352,26 @@
     },
     {
       "product": "microsoft.entitlement-management-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
       "product": "microsoft.identity-governance-dashboard",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
       "product": "microsoft.lifecycle-workflows",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
       "product": "microsoft.ml-assisted-access-reviews",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
       "note": null
     },
     {
@@ -377,7 +381,8 @@
     },
     {
       "product": "microsoft.face-check",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-verified-id-premium",
       "note": null
     },
     {
@@ -387,7 +392,7 @@
     },
     {
       "product": "microsoft.people-skills-ai-inferencing",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -472,37 +477,44 @@
     },
     {
       "product": "microsoft.authenticated-scan-for-windows",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.block-vulnerable-applications",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.browser-extensions-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.digital-certificate-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.hardware-firmware-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.network-share-analysis",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
       "product": "microsoft.security-baselines-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.defender-vulnerability-management-premium",
       "note": null
     },
     {
@@ -542,7 +554,8 @@
     },
     {
       "product": "microsoft.identity-federation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-workload-id-free",
       "note": null
     },
     {
@@ -622,52 +635,52 @@
     },
     {
       "product": "microsoft.copilot-in-viva-learning-preview",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-glint",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-pulse",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-engage",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.answers-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.people-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-connections-50-instances",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.viva-engage-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -766,6 +779,20 @@
     "Official comparison lists these Agent Security items with no matching catalog entry: Configure policies to contain managed local agents (Included), Block unsanctioned local endpoint agents (Included), Discovery of AI on endpoints (Included).",
     "Official comparison lists these Viva Engage items with no matching catalog entry: Communities, Conversations, and Storyline (Included).",
     "Official comparison lists these Threat protection items with no matching catalog entry: Microsoft Defender XDR (Included), Microsoft Defender Application Guard for Office (Included), Microsoft Security Exposure Management (Included).",
-    "Official comparison lists these Identity and access management items with no matching catalog entry: User Provisioning (Included), Cloud user self-service password change (Included), Cloud user self-service password reset (Included), Entitlement Management (Included)."
+    "Official comparison lists these Identity and access management items with no matching catalog entry: User Provisioning (Included), Cloud user self-service password change (Included), Cloud user self-service password reset (Included), Entitlement Management (Included).",
+    "Firmware Over-the-Air Updates: part of a package that is not recorded yet.",
+    "Specialty Device Management: part of a package that is not recorded yet.",
+    "Tunnel for MAM: part of a package that is not recorded yet.",
+    "People Skills AI Inferencing: part of a package that is not recorded yet.",
+    "Copilot in Viva Learning (preview): part of a package that is not recorded yet.",
+    "Copilot in Viva Glint: part of a package that is not recorded yet.",
+    "Viva Pulse: part of a package that is not recorded yet.",
+    "Copilot in Viva Amplify: part of a package that is not recorded yet.",
+    "Copilot in Viva Engage: part of a package that is not recorded yet.",
+    "Answers in Viva: part of a package that is not recorded yet.",
+    "People in Viva: part of a package that is not recorded yet.",
+    "Viva Amplify: part of a package that is not recorded yet.",
+    "Viva Connections (50 instances): part of a package that is not recorded yet.",
+    "Viva Engage (premium): part of a package that is not recorded yet."
   ]
 }

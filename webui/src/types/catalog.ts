@@ -1,4 +1,4 @@
-export type Availability = 'included' | 'add_on' | 'package_feature'
+export type Availability = 'included' | 'add_on'
 
 export interface CatalogPlan {
   id: string
@@ -35,6 +35,8 @@ export interface CatalogInclusion {
   plan?: string
   custom_plan?: { title: string; description: string | null }
   availability: Availability
+  // The product id of the bundle that must be bought to get an add-on.
+  package?: string
   note: string | null
 }
 
@@ -54,6 +56,8 @@ export interface CatalogLicence {
 export interface ProductLicenceEntry {
   licence: string
   availability: Availability
+  // The product id of the bundle that must be bought to get an add-on.
+  package: string | null
   // Full plan id (`<product id>.<plan id>`) when the licence lists a plan of this product.
   planId: string | null
   customPlanTitle: string | null

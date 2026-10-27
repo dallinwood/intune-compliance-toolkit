@@ -26,7 +26,7 @@ export interface CatalogSourceFile {
   value: unknown
 }
 
-const AVAILABILITIES: readonly Availability[] = ['included', 'add_on', 'package_feature']
+const AVAILABILITIES: readonly Availability[] = ['included', 'add_on']
 const LICENCE_KINDS: readonly CatalogLicence['kind'][] = ['subscription', 'add_on']
 
 function isObject(value: unknown): value is JsonObject {
@@ -57,6 +57,7 @@ function isInclusion(value: unknown): value is CatalogInclusion {
   if (!isObject(value) || !isText(value.product) || !isTextOrNull(value.note)) return false
   if (!AVAILABILITIES.includes(value.availability as Availability)) return false
   if (value.plan !== undefined && !isText(value.plan)) return false
+  if (value.package !== undefined && !isText(value.package)) return false
   const customPlan = value.custom_plan
   return customPlan === undefined || (isObject(customPlan) && isText(customPlan.title) && isTextOrNull(customPlan.description))
 }
@@ -127,6 +128,7 @@ function directEntry(licence: CatalogLicence, inclusion: CatalogInclusion): Prod
   return {
     licence: licence.id,
     availability: inclusion.availability,
+    package: inclusion.package ?? null,
     planId: inclusion.plan === undefined ? null : fullPlanId(inclusion.product, inclusion.plan),
     customPlanTitle: inclusion.custom_plan?.title ?? null,
     via: 'direct',
@@ -175,6 +177,7 @@ function buildByProduct(licences: CatalogLicence[], productsById: Map<string, Ca
       add(featureId, {
         licence: licence.id,
         availability: inclusion.availability,
+        package: inclusion.package ?? null,
         planId: null,
         customPlanTitle: null,
         via: 'plan',

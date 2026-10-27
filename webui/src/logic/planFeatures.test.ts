@@ -38,7 +38,7 @@ describe('planFeatureLists', () => {
 
 describe('groupLicenceEntries', () => {
   function entry(licence: string, overrides: Partial<ProductLicenceEntry> = {}): ProductLicenceEntry {
-    return { licence, availability: 'included', planId: null, customPlanTitle: null, via: 'direct', viaPlanId: null, note: null, ...overrides }
+    return { licence, availability: 'included', package: null, planId: null, customPlanTitle: null, via: 'direct', viaPlanId: null, note: null, ...overrides }
   }
 
   it('merges a licence listed under several plans into one row with every plan, ordered by licence', () => {
@@ -53,6 +53,16 @@ describe('groupLicenceEntries', () => {
     expect(rows[1].planIds).toEqual(['p.plan_2', 'p.plan_2_step_up'])
     expect(rows[1].viaPlanIds).toEqual(['p.plan_2'])
     expect(rows[1].notes).toEqual(['Needs setup'])
+  })
+
+  it('collects the packages a licence gets the product through, once each', () => {
+    const rows = groupLicenceEntries([
+      entry('a.x', { availability: 'add_on', package: 'a.suite' }),
+      entry('a.x', { availability: 'add_on', package: 'a.suite', via: 'plan', viaPlanId: 'p.plan_1' }),
+      entry('a.y'),
+    ])
+
+    expect(rows.map((row) => row.packageIds)).toEqual([['a.suite'], []])
   })
 
   it('collects custom plan titles and drops duplicate notes', () => {

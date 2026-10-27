@@ -102,6 +102,20 @@ def mutate_duplicate_inclusion(catalog_dir: Path) -> None:
     edit_json(E3_PATH, lambda licence: licence["includes"].append(dict(licence["includes"][0])))(catalog_dir)
 
 
+def set_pim_package(package: str | None, availability: str = "add_on"):
+    def change(licence: dict) -> None:
+        pim_inclusion = licence["includes"][1]
+        pim_inclusion["availability"] = availability
+        pim_inclusion["package"] = package
+
+    return edit_json(ENTRA_SUITE_PATH, change)
+
+
+def mutate_package_on_included_inclusion(catalog_dir: Path) -> None:
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"][0].update(availability="add_on"))(catalog_dir)
+    set_pim_package("microsoft.entra-id", availability="included")(catalog_dir)
+
+
 def mutate_crlf(catalog_dir: Path) -> None:
     path = catalog_dir / ENTRA_ID_PATH
     path.write_bytes(path.read_bytes().replace(b"\n", b"\r\n"))
@@ -145,6 +159,11 @@ INVALID_CASES = {
     "plan-not-defined-on-product": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(plan="plan_9")), "plan plan_9 is not defined on microsoft.entra-id"),
     "plan-and-custom-plan": (mutate_inclusion_with_both_plan_and_custom_plan, "sets both plan and custom_plan"),
     "unknown-availability": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(availability="sometimes")), "'sometimes' is not one of"),
+    "package_feature-is-gone": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(availability="package_feature")), "'package_feature' is not one of"),
+    "package-is-not-a-product": (set_pim_package("microsoft.ghost"), "package microsoft.ghost does not exist"),
+    "package-is-not-an-ancestor": (set_pim_package("microsoft.entra-id-access-reviews"), "package microsoft.entra-id-access-reviews is not an ancestor of microsoft.entra-id-pim"),
+    "package-with-included-availability": (mutate_package_on_included_inclusion, "but is not an add_on"),
+    "package-not-listed-as-add-on-by-the-licence": (set_pim_package("microsoft.entra-id"), "microsoft.entra-id is not listed as an add_on by this licence"),
     "unknown-licence-kind": (edit_json(E3_PATH, lambda licence: licence.update(kind="bundle")), "'bundle' is not one of"),
     "same-product-and-plan-twice": (mutate_duplicate_inclusion, "lists microsoft.entra-id plan_1 more than once"),
     "requires-unknown-licence": (edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires=["microsoft.ghost"])), "requires microsoft.ghost, which does not exist"),
@@ -190,6 +209,15 @@ def test_errors_start_with_the_file_path_relative_to_the_catalog(catalog_copy):
     edit_json(E3_PATH, lambda licence: licence.update(kind="bundle"))(catalog_copy)
     errors, _warnings = validate_catalog(catalog_copy)
     assert errors[0].startswith(f"{E3_PATH}: ")
+
+
+def test_package_listed_as_add_on_by_the_licence_is_valid(catalog_copy):
+    def list_entra_id_as_add_on(licence: dict) -> None:
+        licence["includes"][0]["availability"] = "add_on"
+
+    edit_json(ENTRA_SUITE_PATH, list_entra_id_as_add_on)(catalog_copy)
+    set_pim_package("microsoft.entra-id")(catalog_copy)
+    assert validate_catalog(catalog_copy) == ([], [])
 
 
 def test_review_notes_are_allowed(catalog_copy):

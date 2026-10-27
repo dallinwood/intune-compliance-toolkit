@@ -381,7 +381,8 @@ and the folder is the id's vendor, so `microsoft.entra-id` is
   `links`, `includes` and `review`. Each `includes` entry is `{ "product",
   "plan", "availability", "note" }`, where `plan` is optional, or `custom_plan`
   (`{ "title", "description" }`) in its place for a level unique to the
-  licence, and `availability` is `included`, `add_on` or `package_feature`.
+  licence, and `availability` is `included` or `add_on`, and an `add_on` may add `package`,
+  the product id of the bundle to buy.
   `review` holds notes for the maintainer; they are reported as warnings and
   never fail validation.
 

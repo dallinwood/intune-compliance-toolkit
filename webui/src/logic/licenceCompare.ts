@@ -70,6 +70,6 @@ export function isUniform(row: CompareRow): boolean {
   const [first, ...rest] = row.cells
   return rest.every((cell) => {
     if (first === null || cell === null) return first === cell
-    return cell.availability === first.availability && inclusionPlanKey(cell) === inclusionPlanKey(first)
+    return cell.availability === first.availability && cell.package === first.package && inclusionPlanKey(cell) === inclusionPlanKey(first)
   })
 }

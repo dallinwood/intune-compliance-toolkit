@@ -35,8 +35,36 @@ describe('buildCatalogIndex', () => {
     ])
 
     expect(index.by_product['a.thing']).toEqual([
-      { licence: 'a.lic', availability: 'add_on', planId: null, customPlanTitle: null, via: 'direct', viaPlanId: null, note: 'n' },
+      { licence: 'a.lic', availability: 'add_on', package: null, planId: null, customPlanTitle: null, via: 'direct', viaPlanId: null, note: 'n' },
     ])
+  })
+
+  it('carries the package an add-on comes from, on the direct entry and on plan-derived features', () => {
+    const { index, warnings } = build([
+      productFile('a.suite'),
+      productFile('a.thing', { parent: 'a.suite', plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
+      productFile('a.x', { parent: 'a.thing' }),
+      licenceFile('a.lic', [
+        { product: 'a.suite', availability: 'add_on', note: null },
+        { product: 'a.thing', plan: 'plan_1', availability: 'add_on', package: 'a.suite', note: null },
+      ]),
+    ])
+
+    expect(warnings).toEqual([])
+    expect(index.by_product['a.thing'][0].package).toBe('a.suite')
+    expect(index.by_product['a.x'][0].package).toBe('a.suite')
+    expect(index.by_product['a.suite'][0].package).toBeNull()
+  })
+
+  it('skips a licence with the retired package_feature availability or a package that is not text', () => {
+    const { index, warnings } = build([
+      productFile('a.thing'),
+      licenceFile('a.old', [{ product: 'a.thing', availability: 'package_feature', note: null }]),
+      licenceFile('a.bad', [{ product: 'a.thing', availability: 'add_on', package: 5, note: null }]),
+    ])
+
+    expect(index.licences).toEqual([])
+    expect(warnings).toHaveLength(2)
   })
 
   it('records the full plan id and a custom plan title on a direct inclusion', () => {
@@ -61,7 +89,7 @@ describe('buildCatalogIndex', () => {
     ])
 
     expect(index.by_product['a.x']).toEqual([
-      { licence: 'a.lic', availability: 'included', planId: null, customPlanTitle: null, via: 'plan', viaPlanId: 'a.thing.plan_2', note: null },
+      { licence: 'a.lic', availability: 'included', package: null, planId: null, customPlanTitle: null, via: 'plan', viaPlanId: 'a.thing.plan_2', note: null },
     ])
   })
 

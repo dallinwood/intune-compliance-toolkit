@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { EffectiveInclusion, InclusionNode } from '../../logic/catalogTree'
 import { planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
-import { AvailabilityBadge } from './AvailabilityBadge'
+import { AvailabilityWithPackage } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 
 const INDENT_REM_PER_LEVEL = 1.25
@@ -26,7 +26,7 @@ function InclusionLine({ inclusion, lookup }: { inclusion: EffectiveInclusion; l
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5">
       <PlanBadge inclusion={inclusion} lookup={lookup} />
-      <AvailabilityBadge availability={inclusion.availability} />
+      <AvailabilityWithPackage availability={inclusion.availability} packageId={inclusion.package} lookup={lookup} />
       {viaPlanTitle !== null && <span className="text-xs text-muted-foreground">via {viaPlanTitle}</span>}
     </span>
   )

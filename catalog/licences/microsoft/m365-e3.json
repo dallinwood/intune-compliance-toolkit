@@ -51,7 +51,7 @@
     },
     {
       "product": "microsoft.conditional-access-for-sites",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -421,32 +421,32 @@
     },
     {
       "product": "microsoft.access-reviews",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
       "product": "microsoft.entitlement-management-basic",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
       "product": "microsoft.entra-id-protection",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
       "product": "microsoft.mfa-registration-policy",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
       "product": "microsoft.privileged-identity-management",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
       "product": "microsoft.risk-based-conditional-access",
-      "availability": "package_feature",
+      "availability": "included",
       "note": null
     },
     {
@@ -954,7 +954,8 @@
     },
     {
       "product": "microsoft.face-check",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-verified-id-premium",
       "note": null
     },
     {
@@ -969,257 +970,308 @@
     },
     {
       "product": "microsoft.copilot-actions",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-chat-work",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-cowork",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-dashboard",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-clipchamp",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-forms",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-loop",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-onedrive",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-outlook",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-planner",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-sharepoint",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-teams",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-whiteboard",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-notebooks",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-prompt-gallery",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-search",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-studio-for-microsoft-365",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.copilot-tuning-preview",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.graph-and-connector-access-included",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.intelligent-recap",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.microsoft-365-agents",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.microsoft-places-ai-features",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.model-choice",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.people-skills-ai-inferencing",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.people-skills-in-copilot",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.sharepoint-agents",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.viva-insights-manager-leader-analyst",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.viva-pulse-for-copilot",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.sharepoint-advanced-management-for-copilot",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-tenant-rename",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.agent-content-access-insights",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.agent-insights",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.ai-powered-insights",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.block-download-policy",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.compare-site-policies",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.content-management-assessments",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.data-access-governance-reports",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.data-access-governance-reports-powershell",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.enterprise-app-insight-reports",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.inactive-sites-policy",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.recent-site-actions",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.request-site-attestation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.restricted-access-control-for-onedrive",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.restricted-access-control-for-sharepoint",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.restricted-content-discovery",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.restricted-site-creation-by-apps",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.sharepoint-app-insights",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.sharepoint-catalog-management",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.site-access-review",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.site-change-history-reports",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
       "product": "microsoft.site-ownership-policy",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.microsoft-365-copilot-premium",
       "note": null
     },
     {
@@ -1324,37 +1376,37 @@
     },
     {
       "product": "microsoft.authenticated-scan-for-windows",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.block-vulnerable-applications",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.browser-extensions-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.digital-certificate-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.hardware-firmware-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.network-share-analysis",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.security-baselines-assessment",
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     },
     {
@@ -1405,7 +1457,8 @@
     },
     {
       "product": "microsoft.restricted-site-creation-by-users",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.sharepoint-advanced-management",
       "note": null
     },
     {
@@ -1440,7 +1493,8 @@
     },
     {
       "product": "microsoft.identity-federation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.entra-workload-id-free",
       "note": null
     },
     {
@@ -1515,42 +1569,50 @@
     },
     {
       "product": "microsoft.advanced-collaboration-tools",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-meetings",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-meetings-protection",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.advanced-virtual-appointments",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.live-caption-translation",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.microsoft-places-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.powerpoint-live-chapters",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
       "product": "microsoft.queues-app",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.teams-premium",
       "note": null
     },
     {
@@ -1610,7 +1672,8 @@
     },
     {
       "product": "microsoft.copilot-in-viva-learning-preview",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-suite",
       "note": null
     },
     {
@@ -1625,7 +1688,8 @@
     },
     {
       "product": "microsoft.copilot-in-viva-glint",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-workplace-analytics-employee-feedback",
       "note": null
     },
     {
@@ -1645,37 +1709,44 @@
     },
     {
       "product": "microsoft.copilot-in-viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.copilot-in-viva-engage",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.answers-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.people-in-viva",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.viva-amplify",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.viva-connections-50-instances",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
       "product": "microsoft.viva-engage-premium",
-      "availability": "package_feature",
+      "availability": "add_on",
+      "package": "microsoft.viva-employee-communications-communities",
       "note": null
     },
     {
@@ -1871,6 +1942,14 @@
     "Official comparison lists these Microsoft Viva items with no matching catalog entry: Viva Insights (Add-on), Viva Learning (Add-on).",
     "Official comparison lists these SharePoint, storage, and migration items with no matching catalog entry: SharePoint Advanced Management (Add-on), Microsoft 365 Extra File Storage (Add-on), Advanced eDiscovery Storage (Add-on).",
     "Official comparison lists these Video editing items with no matching catalog entry: Clipchamp Premium Add-on (Add-on).",
-    "Official comparison lists these Power Platform items with no matching catalog entry: Power Apps per-app (1 app OR website + 250 AI Builder credits per user per month) (Add-on), Power Apps Premium unlimited apps and websites + 500 AI Builder credits per user per month) (Add-on), Power Automate per-user (unlimited flows per user per month) (Add-on), Power Automate Premium (unlimited flows + 5K AI Builder credits per user per month) (Add-on), Power Automate Process per bot per month (Add-on), Power Automate per flow per month for unlimited users (Add-on), Power Pages Authenticated users per website per month (Add-on), Power Pages Anonymous users per website per month (Add-on), Power Apps per app pay-as-you-go meter (Add-on), Power Pages Authenticated users pay-as-you-go meter (Add-on), Power Pages Anonymous users pay-as-you-go meter (Add-on), Dataverse Database Capacity Add-on (Add-on), Dataverse File Capacity Add-On (Add-on), Dataverse Log Capacity Add-On (Add-on)."
+    "Official comparison lists these Power Platform items with no matching catalog entry: Power Apps per-app (1 app OR website + 250 AI Builder credits per user per month) (Add-on), Power Apps Premium unlimited apps and websites + 500 AI Builder credits per user per month) (Add-on), Power Automate per-user (unlimited flows per user per month) (Add-on), Power Automate Premium (unlimited flows + 5K AI Builder credits per user per month) (Add-on), Power Automate Process per bot per month (Add-on), Power Automate per flow per month for unlimited users (Add-on), Power Pages Authenticated users per website per month (Add-on), Power Pages Anonymous users per website per month (Add-on), Power Apps per app pay-as-you-go meter (Add-on), Power Pages Authenticated users pay-as-you-go meter (Add-on), Power Pages Anonymous users pay-as-you-go meter (Add-on), Dataverse Database Capacity Add-on (Add-on), Dataverse File Capacity Add-On (Add-on), Dataverse Log Capacity Add-On (Add-on).",
+    "Conditional Access for Sites: part of a package that is not recorded yet.",
+    "Authenticated Scan For Windows: part of a package that is not recorded yet.",
+    "Block Vulnerable Applications: part of a package that is not recorded yet.",
+    "Browser Extensions Assessment: part of a package that is not recorded yet.",
+    "Digital Certificate Assessment: part of a package that is not recorded yet.",
+    "Hardware & Firmware Assessment: part of a package that is not recorded yet.",
+    "Network Share Analysis: part of a package that is not recorded yet.",
+    "Security Baselines Assessment: part of a package that is not recorded yet."
   ]
 }

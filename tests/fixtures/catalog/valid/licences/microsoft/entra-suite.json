@@ -13,7 +13,7 @@
     {
       "product": "microsoft.entra-id-pim",
       "custom_plan": { "title": "Suite edition", "description": null },
-      "availability": "package_feature",
+      "availability": "add_on",
       "note": null
     }
   ],
