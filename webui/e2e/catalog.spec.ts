@@ -128,16 +128,33 @@ test('an unknown licence id renders the list without a selection and without err
   expect(problems).toEqual([])
 })
 
-test('a missing catalog index shows a warning and leaves the Rules tab working', async ({ page }) => {
+test('a Rules-only visit never requests the catalog index', async ({ page }) => {
+  const catalogRequests: string[] = []
+  page.on('request', (request) => {
+    if (request.url().includes('catalog/_index.json')) catalogRequests.push(request.url())
+  })
+  await page.goto('/')
+  await expect(page.getByText(/^\d+ of \d+ rules$/)).toBeVisible({ timeout: 10_000 })
+  await page.waitForTimeout(500)
+
+  expect(catalogRequests).toEqual([])
+})
+
+test('a missing catalog index warns only inside the Licences tab and leaves the Rules tab working', async ({ page }) => {
   await page.route('**/catalog/_index.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
   await page.goto('/')
 
-  await expect(page.getByRole('status', { name: 'Catalog problems' })).toBeVisible()
   await expect(page.getByText(/^\d+ of \d+ rules$/)).toBeVisible({ timeout: 10_000 })
   await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toBeVisible()
+  await expect(page.getByRole('status', { name: 'Catalog problems' })).toHaveCount(0)
 
   await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Licences' }).click()
+  await expect(page.getByRole('status', { name: 'Catalog problems' })).toBeVisible()
   await expect(page.getByText('The product and licence catalog could not be loaded.', { exact: true })).toBeVisible()
+  await expect(page.getByText(/^\d+ of \d+ rules$/)).toHaveCount(0)
+
+  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' }).click()
+  await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toBeVisible()
 })
 
 test('comparing two licences shows a matrix, and hiding identical rows drops the shared ones', async ({ page }) => {

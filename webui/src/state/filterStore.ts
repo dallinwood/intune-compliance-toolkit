@@ -195,7 +195,8 @@ export function hrefForView(state: FilterState, viewId: string): string {
 }
 
 // The address of a catalog entry in its tab, for a link that can also open
-// in a new tab. The Rules view's own state is left out of it.
+// in a new tab. It keeps the rest of the current state (the Rules filters and
+// the other catalog selection) and sets the view and the entry's own id.
 export function hrefForCatalogEntry(state: FilterState, view: 'licences' | 'products', id: string): string {
   const entryState: UrlState = {
     ...urlStateOf(state),

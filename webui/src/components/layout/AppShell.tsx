@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
-import type { CatalogIndex } from '../../types/catalog'
 import type { MappedRule } from '../../logic/mappingIndex'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
@@ -28,8 +27,6 @@ export function AppShell({
   overlayWarnings,
   mappingsByRule,
   mappingWarnings,
-  catalog,
-  catalogWarnings,
 }: {
   rows: RuleRow[]
   sources: ManifestSource[]
@@ -39,8 +36,6 @@ export function AppShell({
   overlayWarnings: string[]
   mappingsByRule: ReadonlyMap<string, MappedRule[]>
   mappingWarnings: string[]
-  catalog: CatalogIndex | null
-  catalogWarnings: string[]
 }) {
   // Review & generate is a sub-screen of the Rules view, so it is local state
   // rather than a URL view.
@@ -48,6 +43,7 @@ export function AppShell({
   const viewId = useFilterStore((state) => state.view)
   const setViewId = useFilterStore((state) => state.setView)
   const activeView = resolveView(viewId)
+  const isRulesView = activeView.id === DEFAULT_VIEW_ID
   // A view id from a shared URL that no view has is replaced, which also
   // removes it from the URL.
   useEffect(() => {
@@ -84,37 +80,40 @@ export function AppShell({
         <div className="flex h-screen flex-col">
           <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setFiltersOpen((value) => !value)}
-                aria-expanded={filtersOpen}
-                aria-controls="filter-sidebar"
-                className="rounded border border-control-border px-2 py-1 text-xs md:hidden"
-              >
-                Filters
-              </button>
+              {isRulesView && (
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen((value) => !value)}
+                  aria-expanded={filtersOpen}
+                  aria-controls="filter-sidebar"
+                  className="rounded border border-control-border px-2 py-1 text-xs md:hidden"
+                >
+                  Filters
+                </button>
+              )}
               <h1 className="text-lg font-semibold text-foreground">Intune Compliance Toolkit</h1>
             </div>
-            <div className="flex flex-wrap items-center gap-4">
-              <span className="text-sm text-muted-foreground">
-                {filteredRows.length} of {rows.length} rules
-              </span>
-              <SelectionToolbar
-                rows={rows}
-                sources={sources}
-                selectedCount={knownSelections.length}
-                onGenerate={() => {
-                  setViewId(DEFAULT_VIEW_ID)
-                  setIsReviewingSelection(true)
-                }}
-              />
-            </div>
+            {isRulesView && (
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="text-sm text-muted-foreground">
+                  {filteredRows.length} of {rows.length} rules
+                </span>
+                <SelectionToolbar
+                  rows={rows}
+                  sources={sources}
+                  selectedCount={knownSelections.length}
+                  onGenerate={() => {
+                    setViewId(DEFAULT_VIEW_ID)
+                    setIsReviewingSelection(true)
+                  }}
+                />
+              </div>
+            )}
           </header>
           <ViewTabs activeViewId={activeView.id} />
           <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
           <WarningsNotice label="Custom content problems" summary="Some custom content could not be used:" warnings={overlayWarnings} />
           <WarningsNotice label="Mapping problems" summary="Some rule mappings could not be used:" warnings={mappingWarnings} />
-          <WarningsNotice label="Catalog problems" summary="Some of the product and licence catalog could not be used:" warnings={catalogWarnings} />
           <StaleSelectionsNotice unknownIds={unknownIds} />
           {activeView.render({
             rows,
@@ -126,7 +125,6 @@ export function AppShell({
             filtersOpen,
             isReviewingSelection,
             enabledSelections: knownSelections,
-            catalog,
             onCloseReview: () => setIsReviewingSelection(false),
           })}
           <AttributionFooter sources={sources} />

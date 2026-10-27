@@ -14,7 +14,7 @@ export interface ViewDefinition {
 // entry must be DEFAULT_VIEW_ID, which the URL leaves out.
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
-  { id: 'licences', label: 'Licences', render: (context) => <LicencesView catalog={context.catalog} /> },
+  { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
 ]
 
 export function resolveView(id: string, views: readonly ViewDefinition[] = VIEWS): ViewDefinition {

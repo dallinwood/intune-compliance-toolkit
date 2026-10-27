@@ -48,6 +48,24 @@ export function compareRows(licences: CatalogLicence[], productsById: Map<string
   return rows
 }
 
+// Drops the rows that are the same in every column, but keeps any ancestor of
+// a row that stays, so an indented child never appears without its parent.
+export function withoutIdenticalRows(rows: CompareRow[]): CompareRow[] {
+  const keptPositions = new Set<number>()
+  rows.forEach((row, position) => {
+    if (isUniform(row)) return
+    keptPositions.add(position)
+    let ancestorDepth = row.depth
+    for (let earlier = position - 1; earlier >= 0 && ancestorDepth > 0; earlier -= 1) {
+      if (rows[earlier].depth < ancestorDepth) {
+        keptPositions.add(earlier)
+        ancestorDepth = rows[earlier].depth
+      }
+    }
+  })
+  return rows.filter((_, position) => keptPositions.has(position))
+}
+
 export function isUniform(row: CompareRow): boolean {
   const [first, ...rest] = row.cells
   return rest.every((cell) => {

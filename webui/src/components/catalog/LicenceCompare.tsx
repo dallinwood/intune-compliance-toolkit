@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
-import { compareRows, isUniform } from '../../logic/licenceCompare'
-import { AVAILABILITY_LABELS, planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { compareRows, withoutIdenticalRows } from '../../logic/licenceCompare'
+import { AVAILABILITIES, AVAILABILITY_LABELS, planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import type { EffectiveInclusion } from '../../logic/catalogTree'
 import type { CatalogLicence } from '../../types/catalog'
 import { AvailabilityBadgeIcon } from './AvailabilityBadge'
@@ -40,7 +40,7 @@ export function LicenceCompare({
 }) {
   const [hideIdentical, setHideIdentical] = useState(true)
   const rows = useMemo(() => compareRows(licences, lookup.productsById), [licences, lookup])
-  const visibleRows = useMemo(() => (hideIdentical ? rows.filter((row) => !isUniform(row)) : rows), [rows, hideIdentical])
+  const visibleRows = useMemo(() => (hideIdentical ? withoutIdenticalRows(rows) : rows), [rows, hideIdentical])
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 p-4">
@@ -54,8 +54,22 @@ export function LicenceCompare({
       <p className="text-xs text-muted-foreground" aria-live="polite">
         {visibleRows.length} of {rows.length} rows
       </p>
+      <ul aria-label="Legend" className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        {AVAILABILITIES.map((availability) => (
+          <li key={availability} className="flex items-center gap-1.5">
+            <AvailabilityBadgeIcon availability={availability} />
+            {AVAILABILITY_LABELS[availability]}
+          </li>
+        ))}
+        <li className="flex items-center gap-1.5">
+          <span aria-hidden="true" className="inline-flex size-6 items-center justify-center">
+            -
+          </span>
+          Not included
+        </li>
+      </ul>
       <div className="min-h-0 flex-1 overflow-auto rounded border border-border">
-        <table className="border-separate border-spacing-0 text-sm">
+        <table className="w-full border-separate border-spacing-0 text-sm">
           <thead>
             <tr>
               <th scope="col" className={`${STICKY_FIRST_COLUMN} top-0 z-20 border-b border-border px-3 py-2 text-left font-medium`}>

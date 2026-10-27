@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CatalogLicence, CatalogProduct } from '../types/catalog'
-import { compareRows, isUniform } from './licenceCompare'
+import { compareRows, isUniform, withoutIdenticalRows } from './licenceCompare'
 
 function product(id: string, overrides: Partial<CatalogProduct> = {}): CatalogProduct {
   return { id, title: id, vendor: 'a', parent: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides }
@@ -66,5 +66,29 @@ describe('isUniform', () => {
   it('is false when only some licences have the product', () => {
     const rows = compareRows([licence('a.l0', [{ product: 'a.other', availability: 'included', note: null }]), licence('a.l1', [])], productsById)
     expect(isUniform(rows[0])).toBe(false)
+  })
+})
+
+describe('withoutIdenticalRows', () => {
+  it('keeps a uniform ancestor while one of its descendants differs, and drops uniform rows elsewhere', () => {
+    const same = { product: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
+    const rows = compareRows(
+      [
+        licence('a.l0', [same, { product: 'a.child', availability: 'included', note: null }, { product: 'a.other', availability: 'included', note: null }]),
+        licence('a.l1', [same, { product: 'a.child', availability: 'add_on', note: null }, { product: 'a.other', availability: 'included', note: null }]),
+      ],
+      productsById,
+    )
+
+    expect(withoutIdenticalRows(rows).map((row) => row.product.id)).toEqual(['a.root', 'a.child'])
+  })
+
+  it('keeps a context-only ancestor of a differing row', () => {
+    const rows = compareRows(
+      [licence('a.l0', [{ product: 'a.child', availability: 'included', note: null }]), licence('a.l1', [])],
+      productsById,
+    )
+
+    expect(withoutIdenticalRows(rows).map((row) => row.product.id)).toEqual(['a.root', 'a.child'])
   })
 })

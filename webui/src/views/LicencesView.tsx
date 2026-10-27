@@ -1,11 +1,12 @@
 import { ChevronLeft } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { WarningsNotice } from '../components/layout/WarningsNotice'
 import { LicenceCompare } from '../components/catalog/LicenceCompare'
 import { LicenceDetail } from '../components/catalog/LicenceDetail'
 import { LicenceList } from '../components/catalog/LicenceList'
+import { useCatalogIndex } from '../hooks/useCatalogIndex'
 import { buildCatalogLookup } from '../logic/inclusionDisplay'
 import { useFilterStore } from '../state/filterStore'
-import type { CatalogIndex } from '../types/catalog'
 
 const MINIMUM_COMPARED_LICENCES = 2
 
@@ -13,7 +14,9 @@ function Message({ children }: { children: string }) {
   return <p className="p-4 text-sm text-muted-foreground">{children}</p>
 }
 
-export function LicencesView({ catalog }: { catalog: CatalogIndex | null }) {
+export function LicencesView() {
+  const loadedCatalog = useCatalogIndex()
+  const catalog = loadedCatalog?.index ?? null
   const licenceId = useFilterStore((state) => state.licence)
   const compareIds = useFilterStore((state) => state.compare)
   const setLicence = useFilterStore((state) => state.setLicence)
@@ -24,9 +27,17 @@ export function LicencesView({ catalog }: { catalog: CatalogIndex | null }) {
   const [isPickingComparison, setIsPickingComparison] = useState(false)
   const lookup = useMemo(() => (catalog === null ? null : buildCatalogLookup(catalog)), [catalog])
 
+  if (loadedCatalog === null) {
+    return (
+      <main className="flex-1 overflow-y-auto">
+        <Message>Loading the product and licence catalog…</Message>
+      </main>
+    )
+  }
   if (catalog === null || lookup === null) {
     return (
       <main className="flex-1 overflow-y-auto">
+        <WarningsNotice label="Catalog problems" summary="Some of the product and licence catalog could not be used:" warnings={loadedCatalog.warning === null ? [] : [loadedCatalog.warning]} />
         <Message>The product and licence catalog could not be loaded.</Message>
       </main>
     )
