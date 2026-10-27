@@ -218,3 +218,20 @@ test('an unknown product id renders the list without a selection and without err
   await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
   expect(problems).toEqual([])
 })
+
+test('expanding a group leaves the product list where it was scrolled', async ({ page }) => {
+  const fillerProducts = Array.from({ length: 60 }, (_, position) => product(`acme.filler-${position}`, { title: `Filler ${String(position).padStart(2, '0')}`, category: 'Zeta' }))
+  const bigIndex = buildCatalogIndex([...FIXTURE_FILES, ...fillerProducts], () => {})
+  await page.route('**/catalog/_index.json', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(bigIndex) }))
+  await page.setViewportSize({ width: 1440, height: 500 })
+  await page.goto('/?view=products&product=acme.filler-59')
+  const list = page.getByRole('navigation', { name: 'Products' }).locator('xpath=..')
+  await expect(page.getByRole('heading', { level: 2, name: 'Filler 59' })).toBeVisible()
+  await expect.poll(() => list.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
+
+  await list.evaluate((element) => element.scrollTo({ top: 0 }))
+  await page.getByRole('button', { name: /^Expand Security Suite/ }).click()
+  await expect(page.getByRole('link', { name: 'Context Feature' })).toBeVisible()
+
+  expect(await list.evaluate((element) => element.scrollTop)).toBe(0)
+})

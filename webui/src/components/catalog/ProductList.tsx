@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { ancestorsOf, productTree, searchProducts, type ProductTreeNode } from '../../logic/productSearch'
 import type { CatalogIndex, CatalogProduct } from '../../types/catalog'
@@ -32,7 +32,7 @@ function ProductRow({
             onClick={() => onToggle(product.id)}
             aria-expanded={isExpanded}
             aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${product.title} (${children.length} features)`}
-            className="mt-1.5 flex shrink-0 items-center rounded text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            className="-mx-2 -mb-2 -mt-0.5 flex shrink-0 items-center rounded p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
           >
             {isExpanded ? <ChevronDown className="size-4" aria-hidden="true" /> : <ChevronRight className="size-4" aria-hidden="true" />}
           </button>
@@ -107,13 +107,15 @@ export function ProductList({ catalog, selectedProductId }: { catalog: CatalogIn
     setExpandedIds(next)
   }
 
+  const listRef = useRef<HTMLElement>(null)
+  // Only a change of selection scrolls; expanding a group must leave the list where it is.
   useEffect(() => {
-    document.querySelector('nav[aria-label="Products"] [aria-current="true"]')?.scrollIntoView({ block: 'nearest' })
-  }, [selectedProductId, expandedIds])
+    listRef.current?.querySelector('[aria-current="true"]')?.scrollIntoView({ block: 'nearest' })
+  }, [selectedProductId])
 
   const isSearching = query.trim() !== ''
   return (
-    <nav aria-label="Products" className="pb-4">
+    <nav ref={listRef} aria-label="Products" className="pb-4">
       <div className="sticky top-0 z-10 border-b border-border bg-background px-4 py-2">
         <Input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search products…" aria-label="Search products" />
       </div>
