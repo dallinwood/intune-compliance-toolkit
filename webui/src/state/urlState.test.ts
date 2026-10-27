@@ -15,6 +15,7 @@ const everyKeySet: UrlState = {
   tags: ['800-53r5', 'cnssi-1253'],
   page: 3,
   size: 100,
+  openRule: 'asd_ism.ism-1622',
 }
 
 describe('urlState', () => {
@@ -91,6 +92,14 @@ describe('urlState', () => {
     expect(state.sources).toEqual([])
     expect(state.tags).toEqual(['a'])
     expect(state.search).toBe('')
+  })
+
+  it('reads the open rule from rule= and leaves it out when there is none', () => {
+    expect(parseUrlState('?q=ism-1622&rule=asd_ism.ism-1622').openRule).toBe('asd_ism.ism-1622')
+    expect(parseUrlState('?rule=').openRule).toBeNull()
+    expect(serializeUrlState({ ...parseUrlState(''), search: 'ism-1622', openRule: 'asd_ism.ism-1622' }, defaults)).toBe(
+      '?q=ism-1622&rule=asd_ism.ism-1622',
+    )
   })
 
   it('reads a query string with or without the leading question mark', () => {

@@ -52,6 +52,8 @@ function App() {
       vocabularyIndex={state.vocabulary.index}
       vocabularyWarnings={state.vocabulary.warnings}
       overlayWarnings={state.library.overlayWarnings}
+      mappingsByRule={state.library.mappingsByRule}
+      mappingWarnings={state.library.mappingWarnings}
     />
   )
 }

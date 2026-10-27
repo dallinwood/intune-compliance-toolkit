@@ -1,10 +1,12 @@
 import { benchmarksAt, parseVersionKey, scopeKeysOf, targetKeysOf } from '../logic/applicability'
 import { GENERATED_TARGET } from '../logic/checkPlan'
+import { linksWithinLibrary, type MappedRule } from '../logic/mappingIndex'
 import { applyOverlaysToIndexEntry, type OnOverlaySkipped, type Overlay } from '../logic/overlays'
 import { compareVersionsDescending } from '../logic/versions'
 import type { ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { fetchManifest } from './manifest'
+import { fetchMappingIndex } from './mappings'
 import { fetchOverlayIndex, ruleOverlaySourceFrom, startupOverlays } from './overlays'
 import { setRuleOverlays } from './ruleDetail'
 import { fetchRuleIndex } from './ruleIndex'
@@ -14,6 +16,9 @@ export interface Library {
   sources: ManifestSource[]
   coveredVersions: string[]
   overlayWarnings: string[]
+  // Each rule's mapped rules, only where both rules are in this library.
+  mappingsByRule: ReadonlyMap<string, MappedRule[]>
+  mappingWarnings: string[]
 }
 
 function directoryOf(path: string): string {
@@ -74,7 +79,7 @@ export function coveredVersionsOf(rows: RuleRow[], target: string): string[] {
 // that does not fit an entry is skipped for that rule with a warning. The
 // full overlay is fetched and merged when the rule itself is opened.
 export async function loadLibrary(): Promise<Library> {
-  const [manifest, overlayIndex] = await Promise.all([fetchManifest(), fetchOverlayIndex()])
+  const [manifest, overlayIndex, mappingIndex] = await Promise.all([fetchManifest(), fetchOverlayIndex(), fetchMappingIndex()])
   const indexes = await Promise.all(manifest.sources.map((source) => fetchRuleIndex(source.index_path)))
   setRuleOverlays(ruleOverlaySourceFrom(overlayIndex))
 
@@ -88,5 +93,7 @@ export async function loadLibrary(): Promise<Library> {
     sources: manifest.sources,
     coveredVersions: coveredVersionsOf(rows, GENERATED_TARGET),
     overlayWarnings: warnings,
+    mappingsByRule: linksWithinLibrary(mappingIndex.byRule, new Set(rows.map((row) => row.ref.id))),
+    mappingWarnings: mappingIndex.warnings,
   }
 }

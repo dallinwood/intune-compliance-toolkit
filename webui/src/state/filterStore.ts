@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { FilterDimension } from '../logic/ruleFilters'
+import type { FilterDimension, FilterValues } from '../logic/ruleFilters'
 import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, parsePageSize, parseUrlState, serializeUrlState, type PageSize, type UrlState } from './urlState'
 
 export type AutomatableFilter = 'all' | 'automatable' | 'manual'
@@ -15,6 +15,9 @@ export interface FilterState {
   automatable: AutomatableFilter
   page: number
   size: PageSize
+  // A rule a mapped-rule link opened: its details stay open, and it survives
+  // a shared URL. Typing a search or collapsing that rule lets it go.
+  openRule: string | null
   setSearch: (value: string) => void
   toggleTarget: (value: string) => void
   toggleSource: (value: string) => void
@@ -26,6 +29,10 @@ export interface FilterState {
   setPage: (value: number) => void
   setSize: (value: PageSize) => void
   retainKnownValues: (known: Record<FilterDimension, ReadonlySet<string>>) => void
+  // One update, so the URL is written once: the filters that show the rule
+  // (see filtersShowingRule), the first page and the open rule.
+  showRule: (ruleId: string, filters: FilterValues) => void
+  closeOpenRule: () => void
   clear: () => void
 }
 
@@ -91,7 +98,8 @@ export const useFilterStore = create<FilterState>((set) => {
     automatable: automatableFrom(fromUrl.automation),
     page: fromUrl.page,
     size: fromUrl.size,
-    setSearch: (value) => set({ search: value, ...FIRST_PAGE }),
+    openRule: fromUrl.openRule,
+    setSearch: (value) => set({ search: value, openRule: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
     toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value), ...FIRST_PAGE })),
     toggleVersion: (value) => set((state) => ({ versions: toggled(state.versions, value), ...FIRST_PAGE })),
@@ -117,8 +125,11 @@ export const useFilterStore = create<FilterState>((set) => {
         const unchanged = (Object.keys(next) as (keyof typeof next)[]).every((key) => next[key] === state[key])
         return unchanged ? state : next
       }),
+    showRule: (ruleId, filters) => set({ ...filters, openRule: ruleId, ...FIRST_PAGE }),
+    closeOpenRule: () => set({ openRule: null }),
     clear: () =>
       set({
+        openRule: null,
         search: '',
         targets: new Set(),
         sources: new Set(),
@@ -146,6 +157,7 @@ function writeStateToUrl(state: FilterState) {
       tags: Array.from(state.tags),
       page: state.page,
       size: state.size,
+      openRule: state.openRule,
     },
     { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE },
   )

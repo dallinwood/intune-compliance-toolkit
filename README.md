@@ -282,3 +282,68 @@ every overlay fits every target, so this is a safety net. An overlaid
 field carries a **Custom** tag in the rule details (fields with no section
 of their own are listed on a `Custom:` line), and an overlay written for an
 older release shows a note asking you to review it.
+
+## Mapping rules
+
+A mapping links rules that overlap, across any sources: for example the mSCP
+rules that together implement a broad ISM control. Mappings are kept apart
+from the imported data, so every re-import keeps them. The rule details show
+each link from both sides in a "Mapped rules" section, and clicking a mapped
+rule opens it (the search is set to its id and its details open; a filter
+that would hide it is cleared, and the URL holds the opened rule, so the link
+can be shared).
+
+Put each mapping file in `baselines/_mappings/rules/<name>.json` (UTF-8, LF,
+and a file name of letters, digits, `.`, `_` and `-`):
+
+```json
+{
+  "schema_version": 1,
+  "id": "powershell-constrained-language",
+  "description": "mSCP rules that implement ISM-1622.",
+  "links": [
+    {
+      "relation": "implements",
+      "from": [
+        { "kind": "rule", "id": "mscp.os_gatekeeper_enable", "release": "release_27.0" },
+        { "kind": "rule", "id": "mscp.os_dictation_disable", "release": "release_27.0" }
+      ],
+      "to": [{ "kind": "rule", "id": "asd_ism.ism-1622", "release": "v2026.09.4" }],
+      "note": "Covers the PowerShell part only."
+    }
+  ]
+}
+```
+
+- `id` is unique across files and matches `^[a-z0-9][a-z0-9-]*$`;
+  `description` is optional.
+- `relation` is `implements`, `partially_implements` or `related`. For the
+  first two, `from` implements `to`; `related` has no direction. The details
+  word each link from the rule being viewed: "Implements" or "Implemented
+  by", "Partially implements" or "Partially implemented by", and "Related".
+- `from` and `to` are non-empty lists, and a link stands for every
+  `(from, to)` pair, so "mSCP rules 3, 5 and 11 implement ISM-ABC" is one
+  link. `note` is optional (a string or `null`) and applies to every pair.
+- Each endpoint is `{ "kind": "rule", "id": "<source>.<upstream id>",
+  "release": "<release_tag>" }`. `release` is the source release you checked
+  the link against; when the library moves to another release, the details
+  show a note on that link asking you to review it.
+- A rule cannot link to itself, and a pair of rules is linked once: the same
+  pair twice, with two relations, or in both directions of `implements` or
+  `partially_implements`, anywhere across the files, is an error.
+
+Check mappings with `python -m pytest -W error tests/test_mappings.py` (or
+`python tools/mappings.py` for a plain list of problems). An unknown key, a
+bad or reused `id`, an empty `from` or `to`, an unknown `relation` or `kind`,
+a rule missing from `baselines/`, a self-link, a pair defined twice or with
+conflicting relations or directions, or a file that is not UTF-8 or LF fails;
+a `release` other than the library's current one is a warning. The deploy
+workflow runs these tests.
+
+Publishing is automatic: `bun run dev` and `bun run build` generate
+`_mappings/_index.json` in the site's `baselines/` copy, listing every pair
+under both of its rules (an empty index when there are no mappings). A file
+that is not a valid mapping is left out with a line in the build log. Don't
+write or commit an index yourself. The app reads that one index at startup;
+if it cannot, the "Mapping problems" notice says so and the rest of the app
+works as usual.

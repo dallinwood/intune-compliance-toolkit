@@ -13,6 +13,12 @@
 // targets is opened. The index is only ever written to the published copy,
 // never to the repo's baselines/.
 //
+// Rule mappings in baselines/_mappings/rules/ are turned into
+// webui/public/baselines/_mappings/_index.json the same way: one by-rule
+// lookup (see webui/src/logic/mappingIndex.ts), so the app needs a single
+// startup fetch to show a rule's mapped rules from either side. With no
+// mapping files the index is still written, empty.
+//
 // Run it with bun (see the copy-baselines script in webui/package.json): it
 // imports the app's TypeScript, which plain node cannot load.
 //
@@ -32,6 +38,7 @@ import { fileURLToPath } from "node:url";
 // Bun runs this script, so it can import the app's own TypeScript: one
 // structural check for overlay files, shared with the app.
 const { buildOverlayIndex } = await import("../webui/src/logic/overlayIndex.ts");
+const { buildMappingIndex } = await import("../webui/src/logic/mappingIndex.ts");
 
 const OVERLAY_INDEX_NAME = "_index.json";
 // Left over from before the index existed; never an overlay.
@@ -42,6 +49,9 @@ const baselinesSource = join(repoRoot, "baselines");
 const baselinesDestination = join(repoRoot, "webui", "public", "baselines");
 const overlaysDestination = join(baselinesDestination, "_overlays");
 const overlayRulesDestination = join(overlaysDestination, "rules");
+const mappingsDestination = join(baselinesDestination, "_mappings");
+const mappingRulesDestination = join(mappingsDestination, "rules");
+const MAPPING_INDEX_NAME = "_index.json";
 
 await rm(baselinesDestination, { recursive: true, force: true });
 // Dot-prefixed entries (editor/OS droppings, local scratch files) are not
@@ -56,14 +66,17 @@ console.log(`Copied ${baselinesSource} -> ${baselinesDestination}`);
 // from the published copy, which is identical to the source): the
 // plain code-unit sort matches Python's sorted(), so both apply overlays in
 // the same order.
-async function overlayFileNames() {
-  let entries;
+async function directoryEntries(directory) {
   try {
-    entries = await readdir(overlayRulesDestination, { withFileTypes: true });
+    return await readdir(directory, { withFileTypes: true });
   } catch (error) {
     if (error.code === "ENOENT") return [];
     throw error;
   }
+}
+
+async function overlayFileNames() {
+  const entries = await directoryEntries(overlayRulesDestination);
   return entries
     .filter(
       (entry) =>
@@ -90,3 +103,30 @@ await mkdir(overlaysDestination, { recursive: true });
 await writeFile(join(overlaysDestination, OVERLAY_INDEX_NAME), `${JSON.stringify(overlayIndex, null, 2)}
 `);
 console.log(`Indexed ${overlayIndex.overlays.length} overlay file(s) in ${join(overlaysDestination, OVERLAY_INDEX_NAME)}`);
+
+// Same selection and order as mapping_file_names in tools/mappings.py. The
+// copy above already left out .gitkeep, so a folder holding only that is
+// empty or missing here and gives an empty index.
+async function mappingFileNames() {
+  const entries = await directoryEntries(mappingRulesDestination);
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json") && !entry.name.startsWith("."))
+    .map((entry) => entry.name)
+    .sort();
+}
+
+const mappingFiles = [];
+for (const fileName of await mappingFileNames()) {
+  try {
+    mappingFiles.push({ fileName, value: JSON.parse(await readFile(join(mappingRulesDestination, fileName), "utf8")) });
+  } catch (error) {
+    console.warn(`${fileName}: cannot read JSON (${error.message}). It was skipped.`);
+  }
+}
+const mappingIndex = buildMappingIndex(mappingFiles, (message) => console.warn(message));
+await mkdir(mappingsDestination, { recursive: true });
+await writeFile(join(mappingsDestination, MAPPING_INDEX_NAME), `${JSON.stringify(mappingIndex, null, 2)}
+`);
+console.log(
+  `Indexed ${mappingFiles.length} mapping file(s) for ${Object.keys(mappingIndex.by_rule).length} rule(s) in ${join(mappingsDestination, MAPPING_INDEX_NAME)}`,
+);

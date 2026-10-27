@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "id": "a",
+  "links": [
+    {
+      "relation": "related",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_gatekeeper_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1622",
+          "release": "v2026.09.4"
+        }
+      ]
+    },
+    {
+      "relation": "related",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1622",
+          "release": "v2026.09.4"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_gatekeeper_enable",
+          "release": "release_27.0"
+        }
+      ]
+    }
+  ]
+}

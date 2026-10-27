@@ -11,6 +11,8 @@ export interface UrlState {
   tags: string[]
   page: number
   size: PageSize
+  // The full id of the rule whose details a mapped-rule link opened.
+  openRule: string | null
 }
 
 export interface UrlDefaults {
@@ -57,6 +59,7 @@ export function parseUrlState(search: string): UrlState {
     tags: listValues(LIST_PARAMETER_NAMES.tags),
     page: parsePositiveInteger(parameters.get('page')) ?? 1,
     size: parsePageSize(parameters.get('size')) ?? DEFAULT_PAGE_SIZE,
+    openRule: parameters.get('rule') || null,
   }
 }
 
@@ -72,6 +75,7 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   // Infinite scroll has no pages.
   if (state.page > 1 && state.size !== 'all') parameters.set('page', String(state.page))
   if (state.size !== defaults.size) parameters.set('size', String(state.size))
+  if (state.openRule !== null) parameters.set('rule', state.openRule)
 
   const queryString = parameters.toString()
   return queryString === '' ? '' : `?${queryString}`

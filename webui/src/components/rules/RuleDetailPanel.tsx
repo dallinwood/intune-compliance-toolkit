@@ -15,6 +15,7 @@ import { DiscussionText } from './DiscussionText'
 import { OrgDefinedValueInput } from './OrgDefinedValueInput'
 import { RuleBenchmarks } from './RuleBenchmarks'
 import { RuleCheckSection } from './RuleCheckSection'
+import { RuleMappings } from './RuleMappings'
 import { RuleReferences } from './RuleReferences'
 import { RuleRemediationSection } from './RuleRemediationSection'
 
@@ -180,6 +181,7 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
       <RuleCheckSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('check')} />
       <RuleRemediationSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('remediation')} />
       <RuleBenchmarks applicability={rule.applicability} custom={isCustom('applicability')} />
+      <RuleMappings ruleId={rule.id} />
       <RuleReferences references={rule.references} custom={isCustom('references')} />
 
       {customLineFields.length > 0 && (

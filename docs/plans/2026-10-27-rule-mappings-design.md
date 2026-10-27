@@ -152,3 +152,4 @@ Then one review, and push.
 ## Progress log
 
 - 2026-10-27: Design written from the maintainer's answers (no code yet).
+- 2026-10-27: Implemented sections 3-7 (`feat: add many-to-many rule mappings viewable from both sides`). `baselines/_mappings/rules/` holds only a `.gitkeep`; `tools/mappings.py` and `tests/test_mappings.py` check every section 4 error (fixtures in `tests/fixtures/mappings/`, CRLF and non-UTF-8 cases written at test time) and warn on a stale release; the publish step writes `_mappings/_index.json` through `webui/src/logic/mappingIndex.ts`. Navigation decision: a mapped rule is a link that sets the search to the other rule's upstream id, clears only the filters that would hide it, and opens its details through a new `rule=<full id>` URL parameter (kept until that rule is collapsed or a search is typed), moving to the page that holds it. The stale note checks both ends of a link, so it shows from either side.

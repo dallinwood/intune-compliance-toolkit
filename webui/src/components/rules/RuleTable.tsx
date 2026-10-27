@@ -120,15 +120,29 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
 
   const shownItems = pages ? pages[currentPage - 1].items : (revealed?.items ?? [])
 
-  const [expandedRules, setExpandedRules] = useState<ReadonlySet<string>>(new Set())
-  const toggleRule = useCallback((ruleKey: string) => {
-    setExpandedRules((current) => {
-      const next = new Set(current)
-      if (next.has(ruleKey)) next.delete(ruleKey)
-      else next.add(ruleKey)
-      return next
-    })
-  }, [])
+  const [toggledRules, setToggledRules] = useState<ReadonlySet<string>>(new Set())
+  // A rule opened through a mapped-rule link (or a shared URL holding one)
+  // is open on top of the rules toggled here; collapsing it lets it go.
+  const openRule = useFilterStore((store) => store.openRule)
+  const closeOpenRule = useFilterStore((store) => store.closeOpenRule)
+  const expandedRules = useMemo<ReadonlySet<string>>(
+    () => (openRule !== null && !toggledRules.has(openRule) ? new Set([...toggledRules, openRule]) : toggledRules),
+    [openRule, toggledRules],
+  )
+  const toggleRule = useCallback(
+    (ruleKey: string) => {
+      const isClosing = expandedRules.has(ruleKey)
+      if (ruleKey === openRule) closeOpenRule()
+      setToggledRules((current) => {
+        const next = new Set(current)
+        if (isClosing) next.delete(ruleKey)
+        else next.add(ruleKey)
+        return next
+      })
+    },
+    [expandedRules, openRule, closeOpenRule],
+  )
+  useRevealOpenRule(openRule, pages, currentPage, setPage, shownItems)
 
   const tableTopRef = useRef<HTMLDivElement>(null)
   function changePage(page: number) {
@@ -180,6 +194,44 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
       </div>
     </div>
   )
+}
+
+function containsRule(items: VisibleItem[], ruleId: string): boolean {
+  return items.some((item) => item.kind === 'rule' && item.row.ref.id === ruleId)
+}
+
+// Once per opened rule: move to the page holding it, then scroll its row
+// into view when it renders. Paging away afterwards is left alone.
+function useRevealOpenRule(
+  openRule: string | null,
+  pages: { items: VisibleItem[] }[] | null,
+  currentPage: number,
+  setPage: (page: number) => void,
+  shownItems: VisibleItem[],
+) {
+  const pagedFor = useRef<string | null>(null)
+  const scrolledFor = useRef<string | null>(null)
+  useEffect(() => {
+    if (openRule === null) {
+      pagedFor.current = null
+      scrolledFor.current = null
+      return
+    }
+    if (pages && pagedFor.current !== openRule) {
+      const pageIndex = pages.findIndex((page) => containsRule(page.items, openRule))
+      if (pageIndex === -1) return
+      pagedFor.current = openRule
+      if (pageIndex + 1 !== currentPage) {
+        setPage(pageIndex + 1)
+        return
+      }
+    }
+    if (scrolledFor.current === openRule || !containsRule(shownItems, openRule)) return
+    const row = document.querySelector(`[data-rule-id="${CSS.escape(openRule)}"]`)
+    if (!row) return
+    scrolledFor.current = openRule
+    row.scrollIntoView({ block: 'start' })
+  }, [openRule, pages, currentPage, setPage, shownItems])
 }
 
 // Re-subscribes on every reveal (onReveal changes identity), so a sentinel
@@ -325,6 +377,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
           return (
             <Fragment key={key}>
               <tr
+                data-rule-id={row.ref.id}
                 className={`cursor-pointer border-l-4 align-top ${expandedAccent} ${isExpanded ? 'hover:bg-expanded/70' : 'hover:bg-muted/60'}`}
                 onClick={(event) => {
                   // Let the checkbox (or any other control in the row)

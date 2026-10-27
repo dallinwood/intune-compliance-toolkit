@@ -158,11 +158,12 @@ def test_publish_source_writes_tree_and_manifest(tmp_path):
     assert manifest["sources"][0]["rule_count"] == 1
 
 
-def test_publish_source_never_touches_the_overlays_folder(tmp_path):
+@pytest.mark.parametrize("maintainer_dir_name", ["_overlays", "_mappings"])
+def test_publish_source_never_touches_a_maintainer_folder(tmp_path, maintainer_dir_name):
     baselines_dir = tmp_path / "baselines"
-    overlay_path = baselines_dir / "_overlays" / "rules" / "kept.json"
-    overlay_path.parent.mkdir(parents=True)
-    overlay_path.write_text('{"kept": true}\n', encoding="utf-8")
+    kept_path = baselines_dir / maintainer_dir_name / "rules" / "kept.json"
+    kept_path.parent.mkdir(parents=True)
+    kept_path.write_text('{"kept": true}\n', encoding="utf-8")
 
     for publish_run in range(2):
         publish_source(
@@ -172,4 +173,6 @@ def test_publish_source_never_touches_the_overlays_folder(tmp_path):
             lambda rule_count: manifest_entry("example", rule_count),
         )
 
-    assert overlay_path.read_text(encoding="utf-8") == '{"kept": true}\n'
+    assert kept_path.read_text(encoding="utf-8") == '{"kept": true}\n'
+    manifest = json.loads((baselines_dir / MANIFEST_FILE_NAME).read_text(encoding="utf-8"))
+    assert maintainer_dir_name not in [source["name"] for source in manifest["sources"]]

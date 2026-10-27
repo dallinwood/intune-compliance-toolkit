@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "id": "powershell-constrained-language",
+  "description": "mSCP rules that implement ISM-1622.",
+  "links": [
+    {
+      "relation": "implements",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_gatekeeper_enable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_dictation_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1622",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers the PowerShell part only."
+    },
+    {
+      "relation": "partially_implements",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_gatekeeper_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1621",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": null
+    },
+    {
+      "relation": "related",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_dictation_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1621",
+          "release": "v2026.09.4"
+        }
+      ]
+    }
+  ]
+}
