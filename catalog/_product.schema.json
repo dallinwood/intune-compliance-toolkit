@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Catalog product or feature",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "title", "vendor", "parent", "category", "description", "links", "targets", "plans"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "id": { "$ref": "#/$defs/product_id" },
+    "title": { "type": "string", "minLength": 1 },
+    "vendor": { "type": "string", "pattern": "^[a-z0-9]+$" },
+    "parent": { "anyOf": [{ "$ref": "#/$defs/product_id" }, { "type": "null" }] },
+    "category": { "type": ["string", "null"] },
+    "description": { "type": ["string", "null"] },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["title", "url"],
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "targets": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "plans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "description", "features"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_]*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "description": { "type": ["string", "null"] },
+          "features": { "type": "array", "items": { "$ref": "#/$defs/product_id" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "product_id": { "type": "string", "pattern": "^[a-z0-9]+\\.[a-z0-9][a-z0-9-]*$" }
+  }
+}

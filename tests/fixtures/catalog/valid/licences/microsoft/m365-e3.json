@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.m365-e3",
+  "title": "Microsoft 365 E3",
+  "vendor": "microsoft",
+  "family": "Microsoft 365 Enterprise",
+  "kind": "subscription",
+  "requires": [],
+  "description": null,
+  "links": [],
+  "includes": [
+    { "product": "microsoft.entra-id", "plan": "plan_1", "availability": "included", "note": null },
+    { "product": "microsoft.entra-id-access-reviews", "availability": "add_on", "note": "Sold separately" }
+  ],
+  "review": []
+}

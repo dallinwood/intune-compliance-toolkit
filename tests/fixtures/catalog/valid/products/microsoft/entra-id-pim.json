@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-pim",
+  "title": "Privileged Identity Management",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id",
+  "category": null,
+  "description": null,
+  "links": [],
+  "targets": [],
+  "plans": []
+}

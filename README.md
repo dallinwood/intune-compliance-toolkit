@@ -349,3 +349,47 @@ that is not a valid mapping is left out with a line in the build log. Don't
 write or commit an index yourself. The app reads that one index at startup;
 if it cannot, the "Mapping problems" notice says so and the rest of the app
 works as usual.
+
+## Product and licence catalog
+
+The catalog records which products, features and plans each licence includes,
+independent of the rule library. It lives in `catalog/`, beside `baselines/`:
+
+```
+catalog/
+  vendors.json                    every vendor, one list
+  products/<vendor>/<slug>.json   one per product or feature
+  licences/<vendor>/<slug>.json   one per licence
+```
+
+All files are UTF-8 with LF line endings, one JSON document per file, and a
+file name of letters, digits, `.`, `_` and `-`. The file name is the id's slug
+and the folder is the id's vendor, so `microsoft.entra-id` is
+`products/microsoft/entra-id.json`.
+
+- **Vendor** (`vendors.json`): `{ "schema_version": 1, "vendors": [{ "id",
+  "title", "url" }] }`.
+- **Product** (a feature is a product with a `parent`): `schema_version`, `id`
+  (`<vendor>.<slug>`), `title`, `vendor`, `parent` (a product id or `null`),
+  `category`, `description`, `links` (`[{ "title", "url" }]`), `targets` (platform
+  names) and `plans`. Each plan is `{ "id", "title", "description", "features" }`;
+  a plan id matches `^[a-z0-9][a-z0-9_]*$` (for example `plan_1`), its full id is
+  `<product id>.<plan id>`, and `features` lists the ids of descendant products
+  the plan includes.
+- **Licence**: `schema_version`, `id`, `title`, `vendor`, `family`, `kind`
+  (`subscription` or `add_on`), `requires` (licence ids), `description`,
+  `links`, `includes` and `review`. Each `includes` entry is `{ "product",
+  "plan", "availability", "note" }`, where `plan` is optional, or `custom_plan`
+  (`{ "title", "description" }`) in its place for a level unique to the
+  licence, and `availability` is `included`, `add_on` or `package_feature`.
+  `review` holds notes for the maintainer; they are reported as warnings and
+  never fail validation.
+
+Validate the catalog (CI runs the same checks in `tests/test_catalog.py`):
+
+```
+python -m tools.catalog            # validates catalog/
+python -m tools.catalog <dir>      # validates another catalog folder
+```
+
+It exits 1 when there are errors and prints warnings without failing.

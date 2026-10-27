@@ -294,3 +294,4 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
 ## Progress log
 
 - 2026-10-27: Design written from the maintainer's answers (no code yet). Approved with plan ids changed to `plan_1` style, joined to the product id for a full id.
+- 2026-10-27: Added the catalog folder with vendor, product and licence schemas, the Python validator `tools/catalog.py` (structure through the schemas, cross-file checks in Python) and its tests with a valid fixture catalog, and a README section (`feat: add product and licence catalog format and validator`).
