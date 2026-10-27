@@ -1,7 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { FilterSidebar } from '../filters/FilterSidebar'
-import { GenerateReviewScreen } from '../generate/GenerateReviewScreen'
-import { RuleTable } from '../rules/RuleTable'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
@@ -10,17 +7,16 @@ import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
+import { DEFAULT_VIEW_ID } from '../../state/urlState'
+import { resolveView } from '../../views/viewRegistry'
 import { MappingsContext } from '../../state/mappingsContext'
 import { useSelectionStore } from '../../state/selectionStore'
 import { VocabularyContext } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { AttributionFooter } from './AttributionFooter'
+import { ViewTabs } from './ViewTabs'
 import { WarningsNotice } from './WarningsNotice'
-
-// Two views, no router needed: a Zustand store would be overkill for a
-// single boolean owned by (and only ever read by) this one component.
-type View = 'browse' | 'generate'
 
 export function AppShell({
   rows,
@@ -41,7 +37,17 @@ export function AppShell({
   mappingsByRule: ReadonlyMap<string, MappedRule[]>
   mappingWarnings: string[]
 }) {
-  const [view, setView] = useState<View>('browse')
+  // Review & generate is a sub-screen of the Rules view, so it is local state
+  // rather than a URL view.
+  const [isReviewingSelection, setIsReviewingSelection] = useState(false)
+  const viewId = useFilterStore((state) => state.view)
+  const setViewId = useFilterStore((state) => state.setView)
+  const activeView = resolveView(viewId)
+  // A view id from a shared URL that no view has is replaced, which also
+  // removes it from the URL.
+  useEffect(() => {
+    if (viewId !== activeView.id) setViewId(activeView.id)
+  }, [viewId, activeView.id, setViewId])
   const [filtersOpen, setFiltersOpen] = useState(false)
   // The table and the count render from deferred filters so a click or
   // keystroke updates its own control at once while the 1,493-row table
@@ -92,31 +98,30 @@ export function AppShell({
                 rows={rows}
                 sources={sources}
                 selectedCount={knownSelections.length}
-                onGenerate={() => setView('generate')}
+                onGenerate={() => {
+                  setViewId(DEFAULT_VIEW_ID)
+                  setIsReviewingSelection(true)
+                }}
               />
             </div>
           </header>
+          <ViewTabs activeViewId={activeView.id} />
           <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
           <WarningsNotice label="Custom content problems" summary="Some custom content could not be used:" warnings={overlayWarnings} />
           <WarningsNotice label="Mapping problems" summary="Some rule mappings could not be used:" warnings={mappingWarnings} />
           <StaleSelectionsNotice unknownIds={unknownIds} />
-          {view === 'browse' ? (
-            <div className="flex flex-1 flex-col overflow-hidden md:flex-row">
-              <div id="filter-sidebar" className={`shrink-0 ${filtersOpen ? 'block' : 'hidden'} md:flex`}>
-                <FilterSidebar rows={rows} />
-              </div>
-              <main className="flex-1 overflow-y-auto">
-                <RuleTable rows={filteredRows} isStale={isStale} search={deferredFilters.search} />
-              </main>
-            </div>
-          ) : (
-            <GenerateReviewScreen
-              enabledEntries={knownSelections}
-              coveredVersions={coveredVersions}
-              sources={sources}
-              onBack={() => setView('browse')}
-            />
-          )}
+          {activeView.render({
+            rows,
+            filteredRows,
+            isStale,
+            search: deferredFilters.search,
+            sources,
+            coveredVersions,
+            filtersOpen,
+            isReviewingSelection,
+            enabledSelections: knownSelections,
+            onCloseReview: () => setIsReviewingSelection(false),
+          })}
           <AttributionFooter sources={sources} />
         </div>
       </MappingsContext>

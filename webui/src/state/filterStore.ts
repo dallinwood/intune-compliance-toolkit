@@ -5,6 +5,9 @@ import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, parsePageSize, parseUrlState, se
 export type AutomatableFilter = 'all' | 'automatable' | 'manual'
 
 export interface FilterState {
+  // The top-level view's id. The Rules view's own state above stays in the
+  // store, and so in the URL, while another view is shown.
+  view: string
   search: string
   targets: Set<string>
   sources: Set<string>
@@ -21,6 +24,7 @@ export interface FilterState {
   // Counts link clicks, so a click on a link to the rule already open still
   // reveals it again.
   openRuleRequest: number
+  setView: (value: string) => void
   setSearch: (value: string) => void
   toggleTarget: (value: string) => void
   toggleSource: (value: string) => void
@@ -91,6 +95,7 @@ const FIRST_PAGE = { page: 1 }
 export const useFilterStore = create<FilterState>((set) => {
   const fromUrl = initialStateFromUrl()
   return {
+    view: fromUrl.view,
     search: fromUrl.search,
     targets: new Set(fromUrl.targets),
     sources: new Set(fromUrl.sources),
@@ -103,6 +108,7 @@ export const useFilterStore = create<FilterState>((set) => {
     size: fromUrl.size,
     openRule: fromUrl.openRule,
     openRuleRequest: 0,
+    setView: (value) => set({ view: value }),
     setSearch: (value) => set({ search: value, openRule: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
     toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value), ...FIRST_PAGE })),
@@ -148,24 +154,34 @@ export const useFilterStore = create<FilterState>((set) => {
   }
 })
 
+function urlStateOf(state: FilterState): UrlState {
+  return {
+    view: state.view,
+    search: state.search,
+    automation: state.automatable,
+    targets: Array.from(state.targets),
+    versions: Array.from(state.versions),
+    sources: Array.from(state.sources),
+    benchmarks: Array.from(state.benchmarks),
+    sections: Array.from(state.sections),
+    tags: Array.from(state.tags),
+    page: state.page,
+    size: state.size,
+    openRule: state.openRule,
+  }
+}
+
+const URL_DEFAULTS = { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }
+
+// The address of a view with the current filters, so a copied or
+// opened-in-a-new-tab tab link lands on the same Rules state.
+export function hrefForView(state: FilterState, viewId: string): string {
+  return `${window.location.pathname}${serializeUrlState({ ...urlStateOf(state), view: viewId }, URL_DEFAULTS)}${window.location.hash}`
+}
+
 // replaceState, not pushState: filter clicks must not add history entries.
 function writeStateToUrl(state: FilterState) {
-  const queryString = serializeUrlState(
-    {
-      search: state.search,
-      automation: state.automatable,
-      targets: Array.from(state.targets),
-      versions: Array.from(state.versions),
-      sources: Array.from(state.sources),
-      benchmarks: Array.from(state.benchmarks),
-      sections: Array.from(state.sections),
-      tags: Array.from(state.tags),
-      page: state.page,
-      size: state.size,
-      openRule: state.openRule,
-    },
-    { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE },
-  )
+  const queryString = serializeUrlState(urlStateOf(state), URL_DEFAULTS)
   if (queryString === window.location.search) return
   window.history.replaceState(window.history.state, '', `${window.location.pathname}${queryString}${window.location.hash}`)
 }

@@ -1933,3 +1933,31 @@ test.describe('rule mappings', () => {
     await expect(page.getByRole('status', { name: 'Mapping problems' })).toHaveCount(0)
   })
 })
+
+test('the Views navigation shows Rules as the current page', async ({ page }) => {
+  await page.goto('/')
+
+  const views = page.getByRole('navigation', { name: 'Views' })
+  const rulesTab = views.getByRole('link', { name: 'Rules' })
+  await expect(rulesTab).toHaveAttribute('aria-current', 'page')
+  await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+
+  await page.getByPlaceholder('Search title or id…').fill('gatekeeper')
+  await rulesTab.click()
+  await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
+  await expect(page).toHaveURL(/q=gatekeeper/)
+  await expect(page).not.toHaveURL(/view=/)
+})
+
+test('an unknown view in the URL opens Rules and is dropped from the URL', async ({ page }) => {
+  await page.goto('/?view=unknown&q=gatekeeper')
+
+  await expect(page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  )
+  await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
+  await page.getByPlaceholder('Search title or id…').fill('gatekeeper enable')
+  await expect(page).toHaveURL(/q=gatekeeper/)
+  await expect(page).not.toHaveURL(/view=/)
+})

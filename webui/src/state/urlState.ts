@@ -1,6 +1,10 @@
 export type PageSize = number | 'all'
 
+export const DEFAULT_VIEW_ID = 'rules'
+
 export interface UrlState {
+  // Kept as written in the URL; an id no view has is replaced by the app.
+  view: string
   search: string
   automation: string
   targets: string[]
@@ -49,6 +53,7 @@ export function parseUrlState(search: string): UrlState {
   const listValues = (name: string) => parameters.getAll(name).filter((value) => value !== '')
 
   return {
+    view: parameters.get('view') || DEFAULT_VIEW_ID,
     search: parameters.get('q') ?? '',
     automation: parameters.get('automation') || DEFAULT_AUTOMATION,
     targets: listValues(LIST_PARAMETER_NAMES.targets),
@@ -67,6 +72,7 @@ export function parseUrlState(search: string): UrlState {
 // its leading '?', so the result can be appended to a path as is.
 export function serializeUrlState(state: UrlState, defaults: UrlDefaults): string {
   const parameters = new URLSearchParams()
+  if (state.view !== DEFAULT_VIEW_ID) parameters.set('view', state.view)
   if (state.search !== '') parameters.set('q', state.search)
   if (state.automation !== defaults.automation) parameters.set('automation', state.automation)
   for (const [stateKey, parameterName] of Object.entries(LIST_PARAMETER_NAMES)) {

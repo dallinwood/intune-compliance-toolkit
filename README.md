@@ -35,6 +35,8 @@ compliance bundles (a `-discovery.sh` script and a `-rules.json` file).
 Requires [Bun](https://bun.sh).
 
 - `cd webui && bun install && bun run dev` starts the dev server.
+- The top tab bar lists the views, which are registered in
+  `webui/src/views/viewRegistry.tsx` (one entry plus its component per view).
 - `bun run build` produces a static site in `webui/dist`.
 - The site's "Sources & licences" dialog lists the rule sources and every npm
   package bundled into the site, with each package's licence text.
