@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune",
+  "title": "Microsoft Intune",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Enterprise Mobility + Security",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/fundamentals/what-is-intune"
+    }
+  ],
+  "targets": [],
+  "plans": [
+    {
+      "id": "plan_1",
+      "title": "Plan 1",
+      "description": null,
+      "features": [
+        "microsoft.application-management",
+        "microsoft.config-manager",
+        "microsoft.device-management",
+        "microsoft.endpoint-analytics"
+      ]
+    },
+    {
+      "id": "plan_2",
+      "title": "Plan 2",
+      "description": null,
+      "features": [
+        "microsoft.application-management",
+        "microsoft.config-manager",
+        "microsoft.device-management",
+        "microsoft.endpoint-analytics",
+        "microsoft.firmware-over-the-air-updates",
+        "microsoft.specialty-device-management",
+        "microsoft.tunnel-for-mam"
+      ]
+    }
+  ]
+}

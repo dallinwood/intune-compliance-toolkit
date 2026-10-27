@@ -3,7 +3,7 @@
   "id": "microsoft.3rd-party-mfa-integration",
   "title": "3rd Party MFA Integration",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-1",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

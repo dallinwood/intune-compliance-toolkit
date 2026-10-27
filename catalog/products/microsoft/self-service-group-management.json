@@ -3,7 +3,7 @@
   "id": "microsoft.self-service-group-management",
   "title": "Self-Service Group Management",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-1",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

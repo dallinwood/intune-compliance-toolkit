@@ -3,7 +3,7 @@
   "id": "microsoft.automated-investigation-response",
   "title": "Automated Investigation & Response",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-office-365-plan-2",
+  "parent": "microsoft.defender-for-office-365",
   "category": null,
   "description": null,
   "links": [

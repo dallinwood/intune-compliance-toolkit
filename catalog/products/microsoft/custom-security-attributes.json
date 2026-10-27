@@ -3,7 +3,7 @@
   "id": "microsoft.custom-security-attributes",
   "title": "Custom Security Attributes",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-1",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

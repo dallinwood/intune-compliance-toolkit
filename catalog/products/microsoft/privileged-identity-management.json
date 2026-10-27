@@ -3,7 +3,7 @@
   "id": "microsoft.privileged-identity-management",
   "title": "Privileged Identity Management",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-2",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

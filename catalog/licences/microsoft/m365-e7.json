@@ -100,7 +100,8 @@
       "note": null
     },
     {
-      "product": "microsoft.defender-for-office-365-plan-2",
+      "product": "microsoft.defender-for-office-365",
+      "plan": "plan_2",
       "availability": "included",
       "note": null
     },
@@ -146,11 +147,6 @@
     },
     {
       "product": "microsoft.threat-trackers",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-for-office-365-plan-1",
       "availability": "included",
       "note": null
     },
@@ -555,7 +551,14 @@
       "note": null
     },
     {
-      "product": "microsoft.entra-id-plan-2",
+      "product": "microsoft.entra-id",
+      "plan": "plan_2",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-id",
+      "plan": "plan_2_step_up",
       "availability": "included",
       "note": null
     },
@@ -586,11 +589,6 @@
     },
     {
       "product": "microsoft.risk-based-conditional-access",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-1",
       "availability": "included",
       "note": null
     },
@@ -760,7 +758,8 @@
       "note": null
     },
     {
-      "product": "microsoft.intune-plan-1",
+      "product": "microsoft.intune",
+      "plan": "plan_2",
       "availability": "included",
       "note": null
     },
@@ -811,11 +810,6 @@
     },
     {
       "product": "microsoft.intune-remote-help",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-plan-2",
       "availability": "included",
       "note": null
     },
@@ -915,7 +909,8 @@
       "note": null
     },
     {
-      "product": "microsoft.defender-for-endpoint-plan-2",
+      "product": "microsoft.defender-for-endpoint",
+      "plan": "plan_2",
       "availability": "included",
       "note": null
     },
@@ -1006,11 +1001,6 @@
     },
     {
       "product": "microsoft.vulnerability-assessment",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-for-endpoint-plan-1",
       "availability": "included",
       "note": null
     },
@@ -1350,11 +1340,6 @@
       "note": null
     },
     {
-      "product": "microsoft.microsoft-365-copilot-premium-ai-priority-access",
-      "availability": "included",
-      "note": null
-    },
-    {
       "product": "microsoft.copilot-actions",
       "availability": "included",
       "note": null
@@ -1526,11 +1511,6 @@
     },
     {
       "product": "microsoft.compare-site-policies",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-for-copilot-conditional-access-for-sites",
       "availability": "included",
       "note": null
     },
@@ -1775,108 +1755,8 @@
       "note": null
     },
     {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-configuration-assessment",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-continuous-monitoring",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-device-discovery",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-device-inventory",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-remediation-tracking",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-risk-based-prioritization",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-software-inventory",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-software-usage-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.defender-vulnerability-management-premium-defender-vulnerability-management-core-vulnerability-assessment",
-      "availability": "included",
-      "note": null
-    },
-    {
       "product": "microsoft.insider-risk-management-forensic-evidence",
       "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-advanced-analytics",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-cloud-pki",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-endpoint-privilege-management",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-enterprise-app-management",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-remote-help",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-plan-2",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-plan-2-firmware-over-the-air-updates",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-plan-2-specialty-device-management",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-plan-2-tunnel-for-mam",
-      "availability": "included",
       "note": null
     },
     {
@@ -1915,12 +1795,8 @@
       "note": null
     },
     {
-      "product": "microsoft.security-copilot-2",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1",
+      "product": "microsoft.sharepoint-advanced-management",
+      "plan": "plan_1",
       "availability": "add_on",
       "note": null
     },
@@ -1930,222 +1806,12 @@
       "note": null
     },
     {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-advanced-tenant-rename",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-agent-content-access-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-agent-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-ai-powered-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-block-download-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-compare-site-policies",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-conditional-access-for-sites",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-content-management-assessments",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-data-access-governance-reports",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-data-access-governance-reports-powershell",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-enterprise-app-insight-reports",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-inactive-sites-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-recent-site-actions",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-request-site-attestation",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-restricted-access-control-for-onedrive",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-restricted-access-control-for-sharepoint",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-restricted-content-discovery",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-restricted-site-creation-by-apps",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-sharepoint-app-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-sharepoint-catalog-management",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-site-access-review",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-site-change-history-reports",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-site-ownership-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
       "product": "microsoft.entra-domain-services",
       "availability": "add_on",
       "note": null
     },
     {
       "product": "microsoft.entra-external-id",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up-access-reviews",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up-entitlement-management-basic",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up-entra-id-protection",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up-mfa-registration-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up-privileged-identity-management",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-id-plan-2-step-up-risk-based-conditional-access",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-internet-access",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-private-access",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2-entitlement-management-premium",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2-identity-governance-dashboard",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2-lifecycle-workflows",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2-ml-assisted-access-reviews",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-verified-id-premium",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-verified-id-premium-face-check",
       "availability": "included",
       "note": null
     },
@@ -2160,28 +1826,8 @@
       "note": null
     },
     {
-      "product": "microsoft.entra-workload-id-premium-access-reviews",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-workload-id-premium-entra-id-protection",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-workload-id-premium-risk-based-conditional-access",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
       "product": "microsoft.entra-workload-id-free",
       "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-workload-id-free-basic-security-usage-reports",
-      "availability": "package_feature",
       "note": null
     },
     {
@@ -2255,6 +1901,11 @@
       "note": null
     },
     {
+      "product": "microsoft.teams-audio-conferencing-free-add-on",
+      "availability": "included",
+      "note": null
+    },
+    {
       "product": "microsoft.teams-enterprise",
       "availability": "add_on",
       "note": null
@@ -2291,11 +1942,6 @@
     },
     {
       "product": "microsoft.advanced-virtual-appointments",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
-      "product": "microsoft.teams-premium-intelligent-recap",
       "availability": "package_feature",
       "note": null
     },
@@ -2380,11 +2026,6 @@
       "note": null
     },
     {
-      "product": "microsoft.viva-suite-people-skills-ai-inferencing",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
       "product": "microsoft.viva-learning-premium",
       "availability": "add_on",
       "note": null
@@ -2401,11 +2042,6 @@
     },
     {
       "product": "microsoft.viva-glint",
-      "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.viva-workplace-analytics-employee-feedback-viva-insights-manager-leader-analyst",
       "availability": "add_on",
       "note": null
     },
@@ -2495,17 +2131,7 @@
       "note": null
     },
     {
-      "product": "microsoft.app-assure-2",
-      "availability": "add_on",
-      "note": null
-    },
-    {
       "product": "microsoft.azure-virtual-desktop",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.clipchamp-standard-2",
       "availability": "included",
       "note": null
     },
@@ -2570,296 +2196,6 @@
       "note": null
     },
     {
-      "product": "microsoft.microsoft-365-copilot-premium-2",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-ai-priority-access",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-actions",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-chat-work",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-cowork",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-dashboard",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-clipchamp",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-excel",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-forms",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-loop",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-onedrive",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-onenote",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-outlook",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-powerpoint",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-planner",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-sharepoint",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-teams",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-whiteboard",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-in-word",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-notebooks",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-prompt-gallery",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-search",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-studio-for-microsoft-365",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-copilot-tuning-preview",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-graph-and-connector-access-included",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-intelligent-recap",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-microsoft-365-agents",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-microsoft-places-ai-features",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-model-choice",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-people-skills-ai-inferencing",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-people-skills-in-copilot",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-agents",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-viva-insights-manager-leader-analyst",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-viva-pulse-for-copilot",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-advanced-tenant-rename",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-agent-content-access-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-agent-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-ai-powered-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-block-download-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-compare-site-policies",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-conditional-access-for-sites",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-content-management-assessments",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-data-access-governance-reports",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-data-access-governance-reports-powershell",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-enterprise-app-insight-reports",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-inactive-sites-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-recent-site-actions",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-request-site-attestation",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-restricted-access-control-for-onedrive",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-restricted-access-control-for-sharepoint",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-restricted-content-discovery",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-restricted-site-creation-by-apps",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-sharepoint-app-insights",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-sharepoint-catalog-management",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-site-access-review",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-site-change-history-reports",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-site-ownership-policy",
-      "availability": "included",
-      "note": null
-    },
-    {
       "product": "microsoft.microsoft-365-copilot-sales-agent",
       "availability": "add_on",
       "note": null
@@ -2874,8 +2210,6 @@
     "Bookings: official comparison shows Add-on, the earlier data showed Included.",
     "Dataverse for Teams: official comparison shows Add-on, the earlier data showed Included.",
     "Entra ID Free: official comparison shows Not included, the earlier data showed Included.",
-    "Access Reviews: official comparison shows Included, the earlier data showed Package feature.",
-    "Entra ID Protection: official comparison shows Included, the earlier data showed Package feature.",
     "Viva Pulse: official comparison shows Add-on, the earlier data showed Package feature.",
     "Azure Virtual Desktop: official comparison shows Included, the earlier data showed Add-on.",
     "Check Agent ID: the official comparison row \"Agent Identity\" may correspond to it (shows Included here).",

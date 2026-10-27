@@ -3,7 +3,7 @@
   "id": "microsoft.attack-surface-reduction-enhanced",
   "title": "Attack Surface Reduction (enhanced)",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "parent": "microsoft.defender-for-endpoint",
   "category": null,
   "description": null,
   "links": [

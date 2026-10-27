@@ -3,7 +3,7 @@
   "id": "microsoft.evaluation-lab",
   "title": "Evaluation Lab",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-endpoint-plan-2",
+  "parent": "microsoft.defender-for-endpoint",
   "category": null,
   "description": null,
   "links": [

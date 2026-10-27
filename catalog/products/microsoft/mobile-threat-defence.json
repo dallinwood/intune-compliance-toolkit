@@ -3,7 +3,7 @@
   "id": "microsoft.mobile-threat-defence",
   "title": "Mobile Threat Defence",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "parent": "microsoft.defender-for-endpoint",
   "category": null,
   "description": null,
   "links": [

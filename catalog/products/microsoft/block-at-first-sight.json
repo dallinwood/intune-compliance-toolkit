@@ -3,7 +3,7 @@
   "id": "microsoft.block-at-first-sight",
   "title": "Block at First Sight",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "parent": "microsoft.defender-for-endpoint",
   "category": null,
   "description": null,
   "links": [

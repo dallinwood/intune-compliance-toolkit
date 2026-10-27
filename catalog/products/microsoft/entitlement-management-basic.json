@@ -3,7 +3,7 @@
   "id": "microsoft.entitlement-management-basic",
   "title": "Entitlement Management (basic)",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-2",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

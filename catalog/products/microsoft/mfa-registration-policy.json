@@ -3,7 +3,7 @@
   "id": "microsoft.mfa-registration-policy",
   "title": "MFA Registration Policy",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-2",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

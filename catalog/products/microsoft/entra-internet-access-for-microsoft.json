@@ -3,7 +3,7 @@
   "id": "microsoft.entra-internet-access-for-microsoft",
   "title": "Entra Internet Access for Microsoft",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-1",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

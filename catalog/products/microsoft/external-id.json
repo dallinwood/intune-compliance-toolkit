@@ -3,7 +3,7 @@
   "id": "microsoft.external-id",
   "title": "External ID",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-1",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

@@ -3,7 +3,7 @@
   "id": "microsoft.safe-attachments",
   "title": "Safe Attachments",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-office-365-plan-1",
+  "parent": "microsoft.defender-for-office-365",
   "category": null,
   "description": null,
   "links": [

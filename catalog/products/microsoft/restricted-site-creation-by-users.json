@@ -3,7 +3,7 @@
   "id": "microsoft.restricted-site-creation-by-users",
   "title": "Restricted Site Creation by Users",
   "vendor": "microsoft",
-  "parent": "microsoft.sharepoint-advanced-management-plan-1",
+  "parent": "microsoft.sharepoint-advanced-management",
   "category": null,
   "description": null,
   "links": [

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.teams-audio-conferencing-free-add-on",
+  "title": "Teams Audio Conferencing (free add-on)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Communications",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoftteams/audio-conferencing-in-office-365"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

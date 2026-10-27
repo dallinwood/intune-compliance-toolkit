@@ -3,7 +3,7 @@
   "id": "microsoft.advanced-security-reports-alerts",
   "title": "Advanced Security Reports & Alerts",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-1",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "id": "microsoft.sharepoint-advanced-management-plan-1",
-  "title": "SharePoint Advanced Management Plan 1",
+  "id": "microsoft.sharepoint-advanced-management",
+  "title": "SharePoint Advanced Management",
   "vendor": "microsoft",
   "parent": null,
   "category": "Security & Compliance",
@@ -13,5 +13,14 @@
     }
   ],
   "targets": [],
-  "plans": []
+  "plans": [
+    {
+      "id": "plan_1",
+      "title": "Plan 1",
+      "description": null,
+      "features": [
+        "microsoft.restricted-site-creation-by-users"
+      ]
+    }
+  ]
 }

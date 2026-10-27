@@ -3,7 +3,7 @@
   "id": "microsoft.tunnel-for-mam",
   "title": "Tunnel for MAM",
   "vendor": "microsoft",
-  "parent": "microsoft.intune-plan-2",
+  "parent": "microsoft.intune",
   "category": null,
   "description": null,
   "links": [

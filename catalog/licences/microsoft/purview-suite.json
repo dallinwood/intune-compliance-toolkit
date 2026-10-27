@@ -97,11 +97,6 @@
       "note": null
     },
     {
-      "product": "microsoft.teams-audio-conferencing-full",
-      "availability": "add_on",
-      "note": null
-    },
-    {
       "product": "microsoft.teams-data-loss-prevention",
       "availability": "included",
       "note": null
@@ -127,6 +122,46 @@
       "note": null
     },
     {
+      "product": "microsoft.entra-id",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.access-reviews",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-id-protection",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.risk-based-conditional-access",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.basic-security-usage-reports",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.firmware-over-the-air-updates",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.specialty-device-management",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.tunnel-for-mam",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
       "product": "microsoft.rules-based-classification-client-scanner",
       "availability": "included",
       "note": null
@@ -142,6 +177,26 @@
       "note": null
     },
     {
+      "product": "microsoft.entra-internet-access",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-private-access",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-verified-id-premium",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.face-check",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
       "product": "microsoft.fasttrack",
       "availability": "included",
       "note": null
@@ -149,6 +204,11 @@
     {
       "product": "microsoft.insider-risk-management",
       "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.people-skills-ai-inferencing",
+      "availability": "package_feature",
       "note": null
     },
     {
@@ -262,21 +322,6 @@
       "note": null
     },
     {
-      "product": "microsoft.intune-suite-2-intune-plan-2-firmware-over-the-air-updates",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-plan-2-specialty-device-management",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
-      "product": "microsoft.intune-suite-2-intune-plan-2-tunnel-for-mam",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
       "product": "microsoft.microsoft-365-archive",
       "availability": "add_on",
       "note": null
@@ -307,58 +352,13 @@
       "note": null
     },
     {
-      "product": "microsoft.entra-id",
-      "availability": "included",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-internet-access",
-      "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-private-access",
-      "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-verified-id-premium",
-      "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-verified-id-premium-face-check",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
       "product": "microsoft.entra-workload-id-premium",
       "availability": "add_on",
       "note": null
     },
     {
-      "product": "microsoft.entra-workload-id-premium-access-reviews",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-workload-id-premium-entra-id-protection",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-workload-id-premium-risk-based-conditional-access",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
       "product": "microsoft.entra-workload-id-free",
       "availability": "add_on",
-      "note": null
-    },
-    {
-      "product": "microsoft.entra-workload-id-free-basic-security-usage-reports",
-      "availability": "package_feature",
       "note": null
     },
     {
@@ -397,6 +397,11 @@
       "note": null
     },
     {
+      "product": "microsoft.teams-audio-conferencing-free-add-on",
+      "availability": "add_on",
+      "note": null
+    },
+    {
       "product": "microsoft.teams-phone-mobile",
       "availability": "add_on",
       "note": null
@@ -428,11 +433,6 @@
     },
     {
       "product": "microsoft.copilot-in-viva-learning-preview",
-      "availability": "package_feature",
-      "note": null
-    },
-    {
-      "product": "microsoft.viva-suite-people-skills-ai-inferencing",
       "availability": "package_feature",
       "note": null
     },
@@ -558,11 +558,11 @@
     }
   ],
   "review": [
+    "Clipchamp Standard: official comparison shows Not included, the earlier data showed Add-on.",
     "eDiscovery (standard): official comparison shows Included, the earlier data showed Not included.",
     "Office 365 Cloud App Security: official comparison shows Included, the earlier data showed Not included.",
     "Security Copilot: official comparison shows Not included, the earlier data showed Add-on.",
     "Azure Virtual Desktop: official comparison shows Not included, the earlier data showed Add-on.",
-    "Clipchamp Standard: official comparison shows Not included, the earlier data showed Add-on.",
     "Check Agent ID: the official comparison row \"Agent Identity\" may correspond to it (shows Included here).",
     "Check Insider Risk Management: the official comparison row \"Microsoft Purview Insider Risk Management\" may correspond to it (shows Included here).",
     "Official comparison lists these Agent Observability items with no matching catalog entry: Agent Registry (Included), Basic agent usage insights (Included).",

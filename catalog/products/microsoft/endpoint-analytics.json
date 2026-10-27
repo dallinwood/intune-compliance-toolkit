@@ -3,7 +3,7 @@
   "id": "microsoft.endpoint-analytics",
   "title": "Endpoint Analytics",
   "vendor": "microsoft",
-  "parent": "microsoft.intune-plan-1",
+  "parent": "microsoft.intune",
   "category": null,
   "description": null,
   "links": [

@@ -3,7 +3,7 @@
   "id": "microsoft.centralized-management",
   "title": "Centralized Management",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "parent": "microsoft.defender-for-endpoint",
   "category": null,
   "description": null,
   "links": [

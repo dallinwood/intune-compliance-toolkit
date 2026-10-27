@@ -3,7 +3,7 @@
   "id": "microsoft.advanced-anti-phishing",
   "title": "Advanced Anti-Phishing",
   "vendor": "microsoft",
-  "parent": "microsoft.defender-for-office-365-plan-1",
+  "parent": "microsoft.defender-for-office-365",
   "category": null,
   "description": null,
   "links": [

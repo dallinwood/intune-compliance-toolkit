@@ -3,7 +3,7 @@
   "id": "microsoft.entra-id-protection",
   "title": "Entra ID Protection",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-plan-2",
+  "parent": "microsoft.entra-id",
   "category": null,
   "description": null,
   "links": [
