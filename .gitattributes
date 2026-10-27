@@ -8,3 +8,5 @@ sources/asd_ism/*.json text eol=lf
 tests/fixtures/mscp_upstream/** -text
 tests/fixtures/asd_ism/** -text
 tests/fixtures/mappings/** text eol=lf
+catalog/** text eol=lf
+tests/fixtures/catalog/** text eol=lf
