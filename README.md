@@ -251,6 +251,8 @@ Merge rules, applied field by field:
 The repo ships five overlays, `baselines/_overlays/rules/asd-blueprint-*.json`, that add ASD
 Blueprint for Secure Cloud PowerShell remediation scripts to ISM-1542, ISM-1621,
 ISM-1654, ISM-1655 and ISM-1674, one script per control (source and credit in `NOTICE`).
+Each also appends a Windows target to the control's `applicability`, so these controls show the
+Windows icon in the web UI and appear under the Target filter's Windows option.
 
 Publishing is automatic: `bun run dev` and `bun run build` copy
 `baselines/_overlays/` (`rules/`, `scripts/`, `payloads/`) into the site and generate

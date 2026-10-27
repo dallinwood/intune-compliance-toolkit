@@ -1698,3 +1698,24 @@ test.describe('target platform icons', () => {
     await expect(row.getByRole('img', { name: /^(macOS|Windows)$/ })).toHaveCount(0)
   })
 })
+
+test.describe('Windows target from the ASD Blueprint overlays', () => {
+  const blueprintControls = ['ism-1542', 'ism-1621', 'ism-1654', 'ism-1655', 'ism-1674']
+
+  test('ISM-1621 shows a Windows icon', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'ism-1621', /ism-1621/)
+    await expect(row.getByRole('img', { name: 'Windows', exact: true })).toBeVisible()
+  })
+
+  test('the Target "Windows" option lists exactly the five Blueprint-overlaid controls', async ({ page }) => {
+    await page.goto('/')
+    await expect(ruleCount(page)).toHaveText('1493 of 1493 rules', { timeout: 10_000 })
+    await page.getByRole('group', { name: 'Target', exact: true }).getByRole('checkbox', { name: 'Windows', exact: true }).click()
+    await expect(ruleCount(page)).toHaveText('5 of 1493 rules')
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    for (const control of blueprintControls) {
+      await expect(page.getByRole('checkbox', { name: `Select ${control}` })).toBeVisible()
+    }
+  })
+})

@@ -9,6 +9,9 @@
     }
   ],
   "fields": {
+    "applicability": [
+      { "target": "Windows", "version": null, "benchmarks": [] }
+    ],
     "references": {
       "asd_blueprint": [
         "https://blueprint.asd.gov.au/configuration/intune/devices/scripts/officemacrohardening-preventactivationofole/"
