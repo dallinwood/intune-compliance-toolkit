@@ -17,6 +17,11 @@ export interface UrlState {
   size: PageSize
   // The full id of the rule whose details a mapped-rule link opened.
   openRule: string | null
+  // The catalog entries the Licences and Products views have open, and the
+  // licences ticked for comparison.
+  licence: string | null
+  product: string | null
+  compare: string[]
 }
 
 export interface UrlDefaults {
@@ -65,6 +70,9 @@ export function parseUrlState(search: string): UrlState {
     page: parsePositiveInteger(parameters.get('page')) ?? 1,
     size: parsePageSize(parameters.get('size')) ?? DEFAULT_PAGE_SIZE,
     openRule: parameters.get('rule') || null,
+    licence: parameters.get('licence') || null,
+    product: parameters.get('product') || null,
+    compare: listValues('compare'),
   }
 }
 
@@ -82,6 +90,9 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   if (state.page > 1 && state.size !== 'all') parameters.set('page', String(state.page))
   if (state.size !== defaults.size) parameters.set('size', String(state.size))
   if (state.openRule !== null) parameters.set('rule', state.openRule)
+  if (state.licence !== null) parameters.set('licence', state.licence)
+  if (state.product !== null) parameters.set('product', state.product)
+  for (const licenceId of state.compare) parameters.append('compare', licenceId)
 
   const queryString = parameters.toString()
   return queryString === '' ? '' : `?${queryString}`

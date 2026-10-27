@@ -24,7 +24,13 @@ export interface FilterState {
   // Counts link clicks, so a click on a link to the rule already open still
   // reveals it again.
   openRuleRequest: number
+  licence: string | null
+  product: string | null
+  compare: string[]
   setView: (value: string) => void
+  setLicence: (id: string | null) => void
+  setProduct: (id: string | null) => void
+  setCompare: (ids: string[]) => void
   setSearch: (value: string) => void
   toggleTarget: (value: string) => void
   toggleSource: (value: string) => void
@@ -108,7 +114,13 @@ export const useFilterStore = create<FilterState>((set) => {
     size: fromUrl.size,
     openRule: fromUrl.openRule,
     openRuleRequest: 0,
+    licence: fromUrl.licence,
+    product: fromUrl.product,
+    compare: fromUrl.compare,
     setView: (value) => set({ view: value }),
+    setLicence: (id) => set({ licence: id }),
+    setProduct: (id) => set({ product: id }),
+    setCompare: (ids) => set({ compare: ids }),
     setSearch: (value) => set({ search: value, openRule: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
     toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value), ...FIRST_PAGE })),
@@ -168,6 +180,9 @@ function urlStateOf(state: FilterState): UrlState {
     page: state.page,
     size: state.size,
     openRule: state.openRule,
+    licence: state.licence,
+    product: state.product,
+    compare: state.compare,
   }
 }
 
@@ -177,6 +192,18 @@ const URL_DEFAULTS = { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }
 // opened-in-a-new-tab tab link lands on the same Rules state.
 export function hrefForView(state: FilterState, viewId: string): string {
   return `${window.location.pathname}${serializeUrlState({ ...urlStateOf(state), view: viewId }, URL_DEFAULTS)}${window.location.hash}`
+}
+
+// The address of a catalog entry in its tab, for a link that can also open
+// in a new tab. The Rules view's own state is left out of it.
+export function hrefForCatalogEntry(state: FilterState, view: 'licences' | 'products', id: string): string {
+  const entryState: UrlState = {
+    ...urlStateOf(state),
+    view,
+    licence: view === 'licences' ? id : state.licence,
+    product: view === 'products' ? id : state.product,
+  }
+  return `${window.location.pathname}${serializeUrlState(entryState, URL_DEFAULTS)}${window.location.hash}`
 }
 
 // replaceState, not pushState: filter clicks must not add history entries.

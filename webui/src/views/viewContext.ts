@@ -1,4 +1,5 @@
 import type { SelectionEntry } from '../logic/selectionEntry'
+import type { CatalogIndex } from '../types/catalog'
 import type { ManifestSource } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 
@@ -14,4 +15,6 @@ export interface ViewContext {
   isReviewingSelection: boolean
   enabledSelections: SelectionEntry[]
   onCloseReview: () => void
+  // Null when the catalog index could not be loaded.
+  catalog: CatalogIndex | null
 }

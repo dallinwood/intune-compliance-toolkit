@@ -8,6 +8,7 @@ import { buildOverlayIndex } from '../src/logic/overlayIndex'
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
 const EMPTY_MAPPING_INDEX = { schema_version: 1, by_rule: {} }
+const EMPTY_CATALOG_INDEX = { schema_version: 1, vendors: [], products: [], licences: [], by_product: {} }
 
 // Every test starts from no mappings, whatever the committed
 // baselines/_mappings/rules/ folder holds, so a real mapping cannot shift the
@@ -16,6 +17,11 @@ const EMPTY_MAPPING_INDEX = { schema_version: 1, by_rule: {} }
 test.beforeEach(async ({ page }) => {
   await page.route('**/baselines/_mappings/_index.json', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_MAPPING_INDEX) }),
+  )
+  // The catalog is independent of these tests; an empty one keeps whatever the
+  // committed catalog/ folder holds out of them.
+  await page.route('**/catalog/_index.json', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_CATALOG_INDEX) }),
   )
 })
 

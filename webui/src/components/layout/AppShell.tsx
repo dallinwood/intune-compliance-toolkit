@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
+import type { CatalogIndex } from '../../types/catalog'
 import type { MappedRule } from '../../logic/mappingIndex'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
@@ -27,6 +28,8 @@ export function AppShell({
   overlayWarnings,
   mappingsByRule,
   mappingWarnings,
+  catalog,
+  catalogWarnings,
 }: {
   rows: RuleRow[]
   sources: ManifestSource[]
@@ -36,6 +39,8 @@ export function AppShell({
   overlayWarnings: string[]
   mappingsByRule: ReadonlyMap<string, MappedRule[]>
   mappingWarnings: string[]
+  catalog: CatalogIndex | null
+  catalogWarnings: string[]
 }) {
   // Review & generate is a sub-screen of the Rules view, so it is local state
   // rather than a URL view.
@@ -109,6 +114,7 @@ export function AppShell({
           <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
           <WarningsNotice label="Custom content problems" summary="Some custom content could not be used:" warnings={overlayWarnings} />
           <WarningsNotice label="Mapping problems" summary="Some rule mappings could not be used:" warnings={mappingWarnings} />
+          <WarningsNotice label="Catalog problems" summary="Some of the product and licence catalog could not be used:" warnings={catalogWarnings} />
           <StaleSelectionsNotice unknownIds={unknownIds} />
           {activeView.render({
             rows,
@@ -120,6 +126,7 @@ export function AppShell({
             filtersOpen,
             isReviewingSelection,
             enabledSelections: knownSelections,
+            catalog,
             onCloseReview: () => setIsReviewingSelection(false),
           })}
           <AttributionFooter sources={sources} />

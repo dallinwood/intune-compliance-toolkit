@@ -17,6 +17,9 @@ const everyKeySet: UrlState = {
   page: 3,
   size: 100,
   openRule: 'asd_ism.ism-1622',
+  licence: 'microsoft.m365-e5',
+  product: 'microsoft.entra-id',
+  compare: ['microsoft.m365-e3', 'microsoft.m365-e5'],
 }
 
 describe('urlState', () => {
@@ -53,6 +56,19 @@ describe('urlState', () => {
     const state = parseUrlState('?size=25')
     expect(serializeUrlState(state, { automation: 'all', size: 25 })).toBe('')
     expect(serializeUrlState(state, defaults)).toBe('?size=25')
+  })
+
+  it('reads licence, product and repeated compare params and leaves defaults out', () => {
+    const state = parseUrlState('?view=licences&licence=a.one&product=a.p&compare=a.one&compare=a.two')
+    expect(state.licence).toBe('a.one')
+    expect(state.product).toBe('a.p')
+    expect(state.compare).toEqual(['a.one', 'a.two'])
+    expect(serializeUrlState(state, defaults)).toBe('?view=licences&licence=a.one&product=a.p&compare=a.one&compare=a.two')
+    const empty = parseUrlState('?licence=&product=')
+    expect(empty.licence).toBeNull()
+    expect(empty.product).toBeNull()
+    expect(empty.compare).toEqual([])
+    expect(serializeUrlState(empty, defaults)).toBe('')
   })
 
   it('ignores unknown keys', () => {

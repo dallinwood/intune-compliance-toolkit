@@ -1,0 +1,113 @@
+import { ChevronDown, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import type { EffectiveInclusion, InclusionNode } from '../../logic/catalogTree'
+import { planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AvailabilityBadge } from './AvailabilityBadge'
+import { CatalogLink } from './CatalogLink'
+
+const INDENT_REM_PER_LEVEL = 1.25
+
+function PlanBadge({ inclusion, lookup }: { inclusion: EffectiveInclusion; lookup: CatalogLookup }) {
+  const plan = planLabelOf(inclusion, lookup)
+  if (plan === null) return null
+  if (!plan.isCustom) return <Badge variant="outline">{plan.title}</Badge>
+  return (
+    <Tooltip>
+      <TooltipTrigger render={<Badge variant="outline" className="italic" />}>{plan.title}</TooltipTrigger>
+      <TooltipContent>Specific to this licence</TooltipContent>
+    </Tooltip>
+  )
+}
+
+function InclusionLine({ inclusion, lookup }: { inclusion: EffectiveInclusion; lookup: CatalogLookup }) {
+  const viaPlanTitle = viaPlanTitleOf(inclusion, lookup)
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <PlanBadge inclusion={inclusion} lookup={lookup} />
+      <AvailabilityBadge availability={inclusion.availability} />
+      {viaPlanTitle !== null && <span className="text-xs text-muted-foreground">via {viaPlanTitle}</span>}
+    </span>
+  )
+}
+
+function InclusionRow({
+  node,
+  depth,
+  lookup,
+  collapsedIds,
+  onToggle,
+}: {
+  node: InclusionNode
+  depth: number
+  lookup: CatalogLookup
+  collapsedIds: ReadonlySet<string>
+  onToggle: (productId: string) => void
+}) {
+  const isContextOnly = node.inclusions.length === 0
+  const hasChildren = node.children.length > 0
+  const isCollapsed = collapsedIds.has(node.product.id)
+  const notes = node.inclusions.flatMap((inclusion) => (inclusion.note === null ? [] : [inclusion.note]))
+
+  return (
+    <li>
+      <div className="flex items-start gap-1 py-1" style={{ paddingLeft: `${depth * INDENT_REM_PER_LEVEL}rem` }}>
+        {hasChildren ? (
+          <button
+            type="button"
+            onClick={() => onToggle(node.product.id)}
+            aria-expanded={!isCollapsed}
+            aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} ${node.product.title}`}
+            className="mt-0.5 shrink-0 rounded text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+          >
+            {isCollapsed ? <ChevronRight className="size-4" aria-hidden="true" /> : <ChevronDown className="size-4" aria-hidden="true" />}
+          </button>
+        ) : (
+          <span className="size-4 shrink-0" aria-hidden="true" />
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <CatalogLink view="products" id={node.product.id} className={`text-sm break-words ${isContextOnly ? 'text-muted-foreground' : 'font-medium'}`}>
+              {node.product.title}
+            </CatalogLink>
+            {node.inclusions.map((inclusion) => (
+              <InclusionLine key={`${inclusion.via}-${inclusion.plan ?? inclusion.custom_plan?.title ?? inclusion.viaPlanId ?? ''}`} inclusion={inclusion} lookup={lookup} />
+            ))}
+          </div>
+          {notes.map((note) => (
+            <p key={note} className="text-xs text-muted-foreground">
+              {note}
+            </p>
+          ))}
+        </div>
+      </div>
+      {hasChildren && !isCollapsed && (
+        <ul>
+          {node.children.map((child) => (
+            <InclusionRow key={child.product.id} node={child} depth={depth + 1} lookup={lookup} collapsedIds={collapsedIds} onToggle={onToggle} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
+
+export function InclusionTree({ roots, lookup }: { roots: InclusionNode[]; lookup: CatalogLookup }) {
+  const [collapsedIds, setCollapsedIds] = useState<ReadonlySet<string>>(new Set())
+  const toggle = (productId: string) =>
+    setCollapsedIds((current) => {
+      const next = new Set(current)
+      if (next.has(productId)) next.delete(productId)
+      else next.add(productId)
+      return next
+    })
+
+  return (
+    <ul>
+      {roots.map((root) => (
+        <InclusionRow key={root.product.id} node={root} depth={0} lookup={lookup} collapsedIds={collapsedIds} onToggle={toggle} />
+      ))}
+    </ul>
+  )
+}
