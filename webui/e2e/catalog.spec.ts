@@ -77,7 +77,6 @@ test('the Licences tab lists licences under their family and updates the URL on 
   await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Licences' }).click()
   await expect(page).toHaveURL(/\/licences$/)
 
-  await page.getByRole('button', { name: 'Acme', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Acme Business' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Acme Add-ons' })).toBeVisible()
   await page.getByRole('button', { name: 'Acme Business' }).click()
@@ -161,7 +160,6 @@ test('a missing catalog index warns only inside the Licences tab and leaves the 
 
 test('comparing two licences shows a matrix, and hiding identical rows drops the shared ones', async ({ page }) => {
   await page.goto('/licences')
-  await page.getByRole('button', { name: 'Acme', exact: true }).click()
   await page.getByRole('button', { name: 'Acme Business' }).click()
   await page.getByRole('button', { name: 'Compare' }).click()
   await page.getByRole('checkbox', { name: 'Acme Basic' }).click()
@@ -250,19 +248,20 @@ test('a licence opened by its address is shown, its group is open and the others
   await expect(page.getByRole('link', { name: 'Acme Security Pack' })).toHaveCount(0)
 })
 
-test('groups are collapsed by default in both lists', async ({ page }) => {
+test('vendor groups start open and family and category groups start collapsed', async ({ page }) => {
   await page.goto('/licences')
-  await expect(page.getByRole('button', { name: 'Acme', exact: true })).toHaveAttribute('aria-expanded', 'false')
-  await expect(page.getByRole('heading', { name: 'Acme Business' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Acme', exact: true })).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.getByRole('button', { name: 'Acme Business' })).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.getByRole('link', { name: /^Acme Basic/ })).toHaveCount(0)
 
   await page.goto('/products')
-  await expect(page.getByRole('button', { name: 'Acme', exact: true })).toHaveAttribute('aria-expanded', 'false')
-  await expect(page.getByRole('heading', { name: 'Security' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Acme', exact: true })).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.getByRole('button', { name: 'Security', exact: true })).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.getByRole('link', { name: 'Security Suite' })).toHaveCount(0)
 })
 
 test('back and forward walk from a licence to a product and back to the list', async ({ page }) => {
   await page.goto('/licences')
-  await page.getByRole('button', { name: 'Acme', exact: true }).click()
   await page.getByRole('button', { name: 'Acme Business' }).click()
   await page.getByRole('link', { name: /^Acme Basic/ }).click()
   await expect(page).toHaveURL(/\/licences\?licence=acme\.basic/)

@@ -4,17 +4,10 @@ import { Input } from '@/components/ui/input'
 import { ancestorsOf, productTree, searchProducts, type ProductTreeNode, type ProductTreeVendor } from '../../logic/productSearch'
 import type { CatalogIndex, CatalogProduct } from '../../types/catalog'
 import { CatalogLink } from './CatalogLink'
+import { subgroupKey, useExpandedGroups, vendorGroupKey } from '../../hooks/useExpandedGroups'
 import { CollapsibleHeading } from './CollapsibleHeading'
 
 const INDENT_REM_PER_LEVEL = 1
-
-function vendorGroupKey(vendorId: string): string {
-  return vendorId
-}
-
-function categoryGroupKey(vendorId: string, category: string): string {
-  return `${vendorId}/${category}`
-}
 
 function containsProduct(node: ProductTreeNode, productId: string): boolean {
   return node.product.id === productId || node.children.some((child) => containsProduct(child, productId))
@@ -22,7 +15,7 @@ function containsProduct(node: ProductTreeNode, productId: string): boolean {
 
 function groupKeysContaining(vendors: ProductTreeVendor[], productId: string): string[] {
   return vendors.flatMap(({ vendor, categories }) =>
-    categories.filter(({ roots }) => roots.some((root) => containsProduct(root, productId))).flatMap(({ category }) => [vendorGroupKey(vendor.id), categoryGroupKey(vendor.id, category)]),
+    categories.filter(({ roots }) => roots.some((root) => containsProduct(root, productId))).flatMap(({ category }) => [vendorGroupKey(vendor.id), subgroupKey(vendor.id, category)]),
   )
 }
 
@@ -109,10 +102,10 @@ export function ProductList({ catalog, selectedProductId }: { catalog: CatalogIn
   const vendors = useMemo(() => productTree(catalog.products, catalog.vendors), [catalog])
   const productsById = useMemo(() => new Map(catalog.products.map((product) => [product.id, product])), [catalog.products])
   const [expandedIds, setExpandedIds] = useState<ReadonlySet<string>>(new Set())
-  const [expandedGroupKeys, setExpandedGroupKeys] = useState<ReadonlySet<string>>(new Set())
+  const { isExpanded: isGroupExpanded, toggle: toggleGroup, expand: expandGroups } = useExpandedGroups(vendors.map(({ vendor }) => vendorGroupKey(vendor.id)))
   const [revealedProductId, setRevealedProductId] = useState<string | null>(null)
 
-  // Groups start collapsed except the ones holding the selection, including
+  // Vendors start open and categories collapsed, except the ones holding the selection, including
   // when it changes through navigation. A product opened from a link elsewhere
   // is revealed in the tree; adjusting state during render avoids an extra
   // pass through an effect.
@@ -121,15 +114,8 @@ export function ProductList({ catalog, selectedProductId }: { catalog: CatalogIn
     const selected = selectedProductId === null ? undefined : productsById.get(selectedProductId)
     if (selected !== undefined) {
       setExpandedIds(new Set([...expandedIds, ...ancestorsOf(selected, productsById).map((ancestor) => ancestor.id)]))
-      setExpandedGroupKeys(new Set([...expandedGroupKeys, ...groupKeysContaining(vendors, selected.id)]))
+      expandGroups(groupKeysContaining(vendors, selected.id))
     }
-  }
-
-  function toggleGroup(groupKey: string) {
-    const next = new Set(expandedGroupKeys)
-    if (next.has(groupKey)) next.delete(groupKey)
-    else next.add(groupKey)
-    setExpandedGroupKeys(next)
   }
 
   function toggle(productId: string) {
@@ -156,15 +142,15 @@ export function ProductList({ catalog, selectedProductId }: { catalog: CatalogIn
       ) : (
         vendors.map(({ vendor, categories }) => (
           <div key={vendor.id}>
-            <CollapsibleHeading level={3} isExpanded={expandedGroupKeys.has(vendorGroupKey(vendor.id))} onToggle={() => toggleGroup(vendorGroupKey(vendor.id))} headingClassName="pt-2 text-sm font-semibold">
+            <CollapsibleHeading level={3} isExpanded={isGroupExpanded(vendorGroupKey(vendor.id))} onToggle={() => toggleGroup(vendorGroupKey(vendor.id))} headingClassName="pt-2 text-sm font-semibold">
               {vendor.title}
             </CollapsibleHeading>
-            {expandedGroupKeys.has(vendorGroupKey(vendor.id)) &&
+            {isGroupExpanded(vendorGroupKey(vendor.id)) &&
               categories.map(({ category, roots }) => {
-                const isCategoryExpanded = expandedGroupKeys.has(categoryGroupKey(vendor.id, category))
+                const isCategoryExpanded = isGroupExpanded(subgroupKey(vendor.id, category))
                 return (
                   <div key={category}>
-                    <CollapsibleHeading level={4} isExpanded={isCategoryExpanded} onToggle={() => toggleGroup(categoryGroupKey(vendor.id, category))} headingClassName="text-xs font-medium text-muted-foreground">
+                    <CollapsibleHeading level={4} isExpanded={isCategoryExpanded} onToggle={() => toggleGroup(subgroupKey(vendor.id, category))} headingClassName="text-xs font-medium text-muted-foreground">
                       {category}
                     </CollapsibleHeading>
                     {isCategoryExpanded && (

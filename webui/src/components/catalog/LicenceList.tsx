@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { compareText } from '../../logic/catalogIndex'
 import type { CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { CatalogLink } from './CatalogLink'
+import { subgroupKey, useExpandedGroups, vendorGroupKey } from '../../hooks/useExpandedGroups'
 import { CollapsibleHeading } from './CollapsibleHeading'
 
 interface FamilyGroup {
@@ -40,16 +41,8 @@ function groupLicences(catalog: CatalogIndex): VendorGroup[] {
     .sort((left, right) => compareText(left.vendorTitle, right.vendorTitle))
 }
 
-function vendorGroupKey(vendorId: string): string {
-  return vendorId
-}
-
-function familyGroupKey(vendorId: string, family: string): string {
-  return `${vendorId}/${family}`
-}
-
 function groupKeysOf(licence: CatalogLicence): string[] {
-  return [vendorGroupKey(licence.vendor), familyGroupKey(licence.vendor, licence.family)]
+  return [vendorGroupKey(licence.vendor), subgroupKey(licence.vendor, licence.family)]
 }
 
 function LicenceLabel({ licence }: { licence: CatalogLicence }) {
@@ -83,10 +76,10 @@ export function LicenceList({
 }) {
   const groups = useMemo(() => groupLicences(catalog), [catalog])
   const licencesById = useMemo(() => new Map(catalog.licences.map((licence) => [licence.id, licence])), [catalog.licences])
-  const [expandedGroupKeys, setExpandedGroupKeys] = useState<ReadonlySet<string>>(new Set())
+  const { isExpanded, toggle: toggleGroup, expand } = useExpandedGroups(groups.map(({ vendorId }) => vendorGroupKey(vendorId)))
   const [revealedIds, setRevealedIds] = useState('')
 
-  // Groups start collapsed except those holding the selection or a ticked
+  // Vendors start open and families collapsed, except those holding the selection or a ticked
   // licence, including when it changes through navigation; adjusting state
   // during render avoids an extra pass through an effect.
   const idsToReveal = [selectedLicenceId, ...compareIds].filter((id) => id !== null)
@@ -97,14 +90,7 @@ export function LicenceList({
       const licence = licencesById.get(id)
       return licence === undefined ? [] : groupKeysOf(licence)
     })
-    if (keysToExpand.some((key) => !expandedGroupKeys.has(key))) setExpandedGroupKeys(new Set([...expandedGroupKeys, ...keysToExpand]))
-  }
-
-  function toggleGroup(groupKey: string) {
-    const next = new Set(expandedGroupKeys)
-    if (next.has(groupKey)) next.delete(groupKey)
-    else next.add(groupKey)
-    setExpandedGroupKeys(next)
+    expand(keysToExpand)
   }
 
   return (
@@ -133,15 +119,15 @@ export function LicenceList({
       </div>
       {groups.map(({ vendorId, vendorTitle, families }) => (
         <div key={vendorId}>
-          <CollapsibleHeading level={3} isExpanded={expandedGroupKeys.has(vendorGroupKey(vendorId))} onToggle={() => toggleGroup(vendorGroupKey(vendorId))} headingClassName="pt-2 text-sm font-semibold">
+          <CollapsibleHeading level={3} isExpanded={isExpanded(vendorGroupKey(vendorId))} onToggle={() => toggleGroup(vendorGroupKey(vendorId))} headingClassName="pt-2 text-sm font-semibold">
             {vendorTitle}
           </CollapsibleHeading>
-          {expandedGroupKeys.has(vendorGroupKey(vendorId)) &&
+          {isExpanded(vendorGroupKey(vendorId)) &&
             families.map(({ family, licences }) => {
-              const isFamilyExpanded = expandedGroupKeys.has(familyGroupKey(vendorId, family))
+              const isFamilyExpanded = isExpanded(subgroupKey(vendorId, family))
               return (
                 <div key={family}>
-                  <CollapsibleHeading level={4} isExpanded={isFamilyExpanded} onToggle={() => toggleGroup(familyGroupKey(vendorId, family))} headingClassName="text-xs font-medium text-muted-foreground">
+                  <CollapsibleHeading level={4} isExpanded={isFamilyExpanded} onToggle={() => toggleGroup(subgroupKey(vendorId, family))} headingClassName="text-xs font-medium text-muted-foreground">
                     {family}
                   </CollapsibleHeading>
                   {isFamilyExpanded && (
