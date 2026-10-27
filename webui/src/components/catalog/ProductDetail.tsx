@@ -1,73 +1,107 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { compareText } from '../../logic/catalogIndex'
 import { AVAILABILITIES, AVAILABILITY_LABELS, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { groupLicenceEntries, planFeatureLists, type LicenceRow, type PlanFeatureList } from '../../logic/planFeatures'
 import { ancestorsOf } from '../../logic/productSearch'
-import type { Availability, CatalogIndex, CatalogPlan, CatalogProduct, ProductLicenceEntry } from '../../types/catalog'
+import type { Availability, CatalogIndex, CatalogProduct, ProductLicenceEntry } from '../../types/catalog'
 import { TargetIcons } from '../rules/TargetIcons'
 import { AvailabilityBadge } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 
-function ProductLinks({ productIds, lookup }: { productIds: string[]; lookup: CatalogLookup }) {
+const COLLAPSED_FEATURE_COUNT = 12
+
+// One link per line in a responsive grid; long lists show a dozen and a toggle.
+function FeatureGrid({ productIds, lookup }: { productIds: string[]; lookup: CatalogLookup }) {
+  const [isShowingAll, setIsShowingAll] = useState(false)
   const titleOf = (productId: string) => lookup.productsById.get(productId)?.title ?? productId
   const sortedProductIds = [...productIds].sort((left, right) => compareText(titleOf(left), titleOf(right)))
+  const isTruncated = sortedProductIds.length > COLLAPSED_FEATURE_COUNT
+  const shownProductIds = isTruncated && !isShowingAll ? sortedProductIds.slice(0, COLLAPSED_FEATURE_COUNT) : sortedProductIds
   return (
-    <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-      {sortedProductIds.map((productId) => {
-        const linked = lookup.productsById.get(productId)
-        return (
-          <li key={productId} className="break-words">
-            {linked === undefined ? (
-              productId
-            ) : (
-              <CatalogLink view="products" id={productId}>
-                {linked.title}
-              </CatalogLink>
-            )}
-          </li>
-        )
-      })}
-    </ul>
+    <div>
+      <ul className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1 text-sm md:grid-cols-2 xl:grid-cols-3">
+        {shownProductIds.map((productId) => {
+          const linked = lookup.productsById.get(productId)
+          return (
+            <li key={productId} className="break-words">
+              {linked === undefined ? (
+                productId
+              ) : (
+                <CatalogLink view="products" id={productId}>
+                  {linked.title}
+                </CatalogLink>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+      {isTruncated && (
+        <button
+          type="button"
+          aria-expanded={isShowingAll}
+          onClick={() => setIsShowingAll(!isShowingAll)}
+          className="mt-2 rounded text-sm text-link hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+        >
+          {isShowingAll ? 'Show fewer' : `Show all ${sortedProductIds.length}`}
+        </button>
+      )}
+    </div>
   )
 }
 
-function PlanCard({ plan, lookup }: { plan: CatalogPlan; lookup: CatalogLookup }) {
+function PlanCard({ list, lookup }: { list: PlanFeatureList; lookup: CatalogLookup }) {
+  const { plan, basedOnPlanTitle, featureIds } = list
   return (
     <li className="rounded border border-border p-3">
-      <h4 className="text-sm font-medium break-words">{plan.title}</h4>
+      <div className="flex flex-wrap items-baseline gap-x-2">
+        <h4 className="text-sm font-medium break-words">{plan.title}</h4>
+        <span className="text-xs text-muted-foreground">
+          {plan.features.length} {plan.features.length === 1 ? 'feature' : 'features'}
+        </span>
+      </div>
       {plan.description !== null && <p className="text-sm break-words text-muted-foreground">{plan.description}</p>}
-      {plan.features.length > 0 && <ProductLinks productIds={plan.features} lookup={lookup} />}
+      {plan.features.length === 0 && <p className="mt-2 text-sm text-muted-foreground">No features listed yet.</p>}
+      {basedOnPlanTitle !== null && <p className="mt-2 text-sm text-muted-foreground">Everything in {basedOnPlanTitle}{featureIds.length > 0 ? ', plus:' : '.'}</p>}
+      {featureIds.length > 0 && <FeatureGrid productIds={featureIds} lookup={lookup} />}
     </li>
   )
 }
 
-function EntryLine({ entry, licenceTitle, lookup }: { entry: ProductLicenceEntry; licenceTitle: string; lookup: CatalogLookup }) {
-  const planTitle = entry.planId === null ? null : (lookup.planTitlesByFullId.get(entry.planId) ?? entry.planId)
-  const viaPlanTitle = entry.viaPlanId === null ? null : (lookup.planTitlesByFullId.get(entry.viaPlanId) ?? entry.viaPlanId)
+function EntryLine({ row, licenceTitle, lookup }: { row: LicenceRow; licenceTitle: string; lookup: CatalogLookup }) {
+  const planTitleOf = (planId: string) => lookup.planTitlesByFullId.get(planId) ?? planId
   return (
     <li className="py-2">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <CatalogLink view="licences" id={entry.licence} className="text-sm font-medium break-words">
+        <CatalogLink view="licences" id={row.licence} className="text-sm font-medium break-words">
           {licenceTitle}
         </CatalogLink>
-        {planTitle !== null && <Badge variant="outline">{planTitle}</Badge>}
-        {entry.customPlanTitle !== null && (
-          <Badge variant="outline" className="italic" title="Specific to this licence">
-            {entry.customPlanTitle}
+        {row.planIds.map((planId) => (
+          <Badge key={planId} variant="outline">
+            {planTitleOf(planId)}
           </Badge>
-        )}
-        {viaPlanTitle !== null && <span className="text-xs text-muted-foreground">via {viaPlanTitle}</span>}
+        ))}
+        {row.customPlanTitles.map((title) => (
+          <Badge key={title} variant="outline" className="italic" title="Specific to this licence">
+            {title}
+          </Badge>
+        ))}
+        {row.viaPlanIds.length > 0 && <span className="text-xs text-muted-foreground">via {row.viaPlanIds.map(planTitleOf).join(', ')}</span>}
       </div>
-      {entry.note !== null && <p className="text-xs break-words text-muted-foreground">{entry.note}</p>}
+      {row.notes.map((note) => (
+        <p key={note} className="text-xs break-words text-muted-foreground">
+          {note}
+        </p>
+      ))}
     </li>
   )
 }
 
 function IncludedIn({ entries, catalog, lookup }: { entries: ProductLicenceEntry[]; catalog: CatalogIndex; lookup: CatalogLookup }) {
   const licenceTitles = useMemo(() => new Map(catalog.licences.map((licence) => [licence.id, licence.title])), [catalog.licences])
-  const titleOf = (entry: ProductLicenceEntry) => licenceTitles.get(entry.licence) ?? entry.licence
-  const entriesByAvailability = (availability: Availability) =>
-    entries.filter((entry) => entry.availability === availability).sort((left, right) => compareText(titleOf(left), titleOf(right)))
+  const titleOf = (row: LicenceRow) => licenceTitles.get(row.licence) ?? row.licence
+  const rowsByAvailability = (availability: Availability) =>
+    groupLicenceEntries(entries.filter((entry) => entry.availability === availability)).sort((left, right) => compareText(titleOf(left), titleOf(right)))
 
   return (
     <section aria-label="Included in" className="space-y-3">
@@ -76,7 +110,7 @@ function IncludedIn({ entries, catalog, lookup }: { entries: ProductLicenceEntry
         <p className="text-sm text-muted-foreground">No licence in the catalog includes this directly. It may come with a parent product.</p>
       ) : (
         AVAILABILITIES.map((availability) => {
-          const group = entriesByAvailability(availability)
+          const group = rowsByAvailability(availability)
           if (group.length === 0) return null
           return (
             <div key={availability} role="group" aria-label={AVAILABILITY_LABELS[availability]} className="rounded border border-border">
@@ -84,13 +118,8 @@ function IncludedIn({ entries, catalog, lookup }: { entries: ProductLicenceEntry
                 <AvailabilityBadge availability={availability} />
               </div>
               <ul className="divide-y divide-border px-3">
-                {group.map((entry) => (
-                  <EntryLine
-                    key={`${entry.licence}-${entry.planId ?? entry.customPlanTitle ?? entry.viaPlanId ?? ''}`}
-                    entry={entry}
-                    licenceTitle={titleOf(entry)}
-                    lookup={lookup}
-                  />
+                {group.map((row) => (
+                  <EntryLine key={row.licence} row={row} licenceTitle={titleOf(row)} lookup={lookup} />
                 ))}
               </ul>
             </div>
@@ -111,6 +140,7 @@ export function ProductDetail({ product, catalog, lookup }: { product: CatalogPr
         .map((child) => child.id),
     [catalog.products, product.id],
   )
+  const planLists = useMemo(() => planFeatureLists(product.plans), [product.plans])
   const vendorTitle = catalog.vendors.find((vendor) => vendor.id === product.vendor)?.title ?? product.vendor
 
   return (
@@ -153,8 +183,8 @@ export function ProductDetail({ product, catalog, lookup }: { product: CatalogPr
         <section aria-label="Plans" className="space-y-2">
           <h3 className="text-sm font-semibold">Plans</h3>
           <ul className="space-y-2">
-            {product.plans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} lookup={lookup} />
+            {planLists.map((list) => (
+              <PlanCard key={list.plan.id} list={list} lookup={lookup} />
             ))}
           </ul>
         </section>
@@ -163,7 +193,7 @@ export function ProductDetail({ product, catalog, lookup }: { product: CatalogPr
       {childIds.length > 0 && (
         <section aria-label="Features">
           <h3 className="text-sm font-semibold">Features</h3>
-          <ProductLinks productIds={childIds} lookup={lookup} />
+          <FeatureGrid productIds={childIds} lookup={lookup} />
         </section>
       )}
 

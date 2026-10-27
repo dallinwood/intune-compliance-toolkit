@@ -198,16 +198,18 @@ export function buildCatalogIndex(files: CatalogSourceFile[], warn: (message: st
   const vendorsById = new Map<string, CatalogVendor>()
   const productsById = new Map<string, CatalogProduct>()
   const licencesById = new Map<string, CatalogLicence>()
-  const fileById = new Map<string, string>()
+  const fileByKindAndId = new Map<string, string>()
   const orderedFiles = [...files].sort((left, right) => compareText(left.fileName, right.fileName))
 
-  function claimId(id: string, fileName: string): boolean {
-    const earlierFile = fileById.get(id)
+  // Products and licences have separate id namespaces (as in tools/catalog.py).
+  function claimId(kind: 'product' | 'licence', id: string, fileName: string): boolean {
+    const claimKey = `${kind}:${id}`
+    const earlierFile = fileByKindAndId.get(claimKey)
     if (earlierFile !== undefined) {
       warn(`${fileName}: id ${id} is already used by ${earlierFile}. It was skipped.`)
       return false
     }
-    fileById.set(id, fileName)
+    fileByKindAndId.set(claimKey, fileName)
     return true
   }
 
@@ -223,13 +225,13 @@ export function buildCatalogIndex(files: CatalogSourceFile[], warn: (message: st
         warn(`${fileName}: it is not a usable product file. It was skipped.`)
         continue
       }
-      if (claimId(value.id, fileName)) productsById.set(value.id, value)
+      if (claimId('product', value.id, fileName)) productsById.set(value.id, value)
     } else {
       if (!isCatalogLicence(value)) {
         warn(`${fileName}: it is not a usable licence file. It was skipped.`)
         continue
       }
-      if (claimId(value.id, fileName)) licencesById.set(value.id, value)
+      if (claimId('licence', value.id, fileName)) licencesById.set(value.id, value)
     }
   }
 

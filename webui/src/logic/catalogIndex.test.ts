@@ -95,6 +95,18 @@ describe('buildCatalogIndex', () => {
     expect(index.by_product['a.x'][0].availability).toBe('included')
   })
 
+  it('keeps a product and a licence that share an id, but skips a duplicate within one kind', () => {
+    const { index, warnings } = build([
+      productFile('a.suite'),
+      licenceFile('a.suite', []),
+      { ...productFile('a.suite'), fileName: 'products/a/suite-copy.json' },
+    ])
+
+    expect(index.products.map((entry) => entry.id)).toEqual(['a.suite'])
+    expect(index.licences.map((entry) => entry.id)).toEqual(['a.suite'])
+    expect(warnings).toHaveLength(1)
+  })
+
   it('skips a licence file without includes and warns', () => {
     const broken = licenceFile('a.lic', [])
     delete (broken.value as Record<string, unknown>).includes
