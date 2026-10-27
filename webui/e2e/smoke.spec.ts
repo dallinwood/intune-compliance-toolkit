@@ -1684,6 +1684,9 @@ test.describe('target platform icons', () => {
     const row = await searchForSingleRow(page, 'audit_auditd_enabled', /Enable Security Auditing/i)
     const icon = iconNamed(row, 'macOS')
     await expect(icon).toBeVisible()
+    await expect(icon.locator('svg')).toHaveCount(1)
+    const logoBox = await icon.locator('svg').boundingBox()
+    expect(logoBox!.width).toBeGreaterThan(8)
     const badge = row.locator('td').nth(3).getByText(/^(Automated|Manual)/)
     const iconBox = await icon.boundingBox()
     const badgeBox = await badge.boundingBox()
@@ -1715,7 +1718,9 @@ test.describe('Windows target from the ASD Blueprint overlays', () => {
   test('ISM-1621 shows a Windows icon', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1621', /ism-1621/)
-    await expect(row.getByRole('img', { name: 'Windows', exact: true })).toBeVisible()
+    const icon = row.getByRole('img', { name: 'Windows', exact: true })
+    await expect(icon).toBeVisible()
+    await expect(icon.locator('svg')).toHaveCount(1)
   })
 
   test('the Target "Windows" option lists exactly the five Blueprint-overlaid controls', async ({ page }) => {

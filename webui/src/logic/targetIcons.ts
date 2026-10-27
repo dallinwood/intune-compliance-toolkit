@@ -1,22 +1,27 @@
-import { Apple, Grid2x2, Monitor, type LucideIcon } from 'lucide-react'
+import appleSvg from 'bootstrap-icons/icons/apple.svg?raw'
+import displaySvg from 'bootstrap-icons/icons/display.svg?raw'
+import tuxSvg from 'bootstrap-icons/icons/tux.svg?raw'
+import windowsSvg from 'bootstrap-icons/icons/windows.svg?raw'
 import { NO_TARGET_KEY } from './applicability'
 
 export interface TargetIcon {
-  icon: LucideIcon
+  svgMarkup: string
   label: string
 }
 
-// Generic lucide glyphs on purpose: the real brand logos are trademarks.
+// Bootstrap Icons (MIT) brand glyphs, imported as raw markup that already
+// paints with currentColor, so they follow the theme's text colour.
 // Adding a target is one entry here; the entries' order is the display order.
 const TARGET_ICONS: Record<string, TargetIcon> = {
-  macOS: { icon: Apple, label: 'macOS' },
-  Windows: { icon: Grid2x2, label: 'Windows' },
+  macOS: { svgMarkup: appleSvg, label: 'macOS' },
+  Windows: { svgMarkup: windowsSvg, label: 'Windows' },
+  Linux: { svgMarkup: tuxSvg, label: 'Linux' },
 }
 
 const KNOWN_TARGET_NAMES = Object.keys(TARGET_ICONS)
 
 export function targetIconFor(targetName: string): TargetIcon {
-  return TARGET_ICONS[targetName] ?? { icon: Monitor, label: targetName }
+  return TARGET_ICONS[targetName] ?? { svgMarkup: displaySvg, label: targetName }
 }
 
 // The icons a row shows: known targets in map order, then unknown targets
