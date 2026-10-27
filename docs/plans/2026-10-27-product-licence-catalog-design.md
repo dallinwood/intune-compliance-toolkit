@@ -295,3 +295,4 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
 
 - 2026-10-27: Design written from the maintainer's answers (no code yet). Approved with plan ids changed to `plan_1` style, joined to the product id for a full id.
 - 2026-10-27: Added the catalog folder with vendor, product and licence schemas, the Python validator `tools/catalog.py` (structure through the schemas, cross-file checks in Python) and its tests with a valid fixture catalog, and a README section (`feat: add product and licence catalog format and validator`).
+- 2026-10-27: The publish step now copies `catalog/` to `webui/public/catalog/` and writes a compact `_index.json` (vendors, products, licences and a `by_product` lookup) built by a shared TypeScript module, with the inclusion-tree helpers and a never-throwing loader for the app (`feat: generate the catalog index at publish time`).

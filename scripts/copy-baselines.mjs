@@ -19,6 +19,12 @@
 // startup fetch to show a rule's mapped rules from either side. With no
 // mapping files the index is still written, empty.
 //
+// catalog/ (docs/plans/2026-10-27-product-licence-catalog-design.md) is
+// copied to webui/public/catalog/ the same way, and its vendor, product and
+// licence files become webui/public/catalog/_index.json (see
+// webui/src/logic/catalogIndex.ts): everything the Products and Licences views
+// list plus a by_product lookup, so the app makes a single startup fetch.
+//
 // Run it with bun (see the copy-baselines script in webui/package.json): it
 // imports the app's TypeScript, which plain node cannot load.
 //
@@ -39,6 +45,7 @@ import { fileURLToPath } from "node:url";
 // structural check for overlay files, shared with the app.
 const { buildOverlayIndex } = await import("../webui/src/logic/overlayIndex.ts");
 const { buildMappingIndex } = await import("../webui/src/logic/mappingIndex.ts");
+const { buildCatalogIndex } = await import("../webui/src/logic/catalogIndex.ts");
 
 const OVERLAY_INDEX_NAME = "_index.json";
 // Left over from before the index existed; never an overlay.
@@ -52,6 +59,10 @@ const overlayRulesDestination = join(overlaysDestination, "rules");
 const mappingsDestination = join(baselinesDestination, "_mappings");
 const mappingRulesDestination = join(mappingsDestination, "rules");
 const MAPPING_INDEX_NAME = "_index.json";
+const catalogSource = join(repoRoot, "catalog");
+const catalogDestination = join(repoRoot, "webui", "public", "catalog");
+const CATALOG_INDEX_NAME = "_index.json";
+const CATALOG_VENDORS_FILE = "vendors.json";
 
 await rm(baselinesDestination, { recursive: true, force: true });
 // Dot-prefixed entries (editor/OS droppings, local scratch files) are not
@@ -120,9 +131,9 @@ async function mappingFileNames() {
 const SAFE_FILE_NAME = /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/;
 const strictUtf8 = new TextDecoder("utf-8", { fatal: true });
 
-async function readMappingFile(fileName) {
+async function readCheckedJsonFile(directory, fileName) {
   if (!SAFE_FILE_NAME.test(fileName)) return { problem: "the file name must use only letters, digits, '.', '_' and '-'" };
-  const bytes = await readFile(join(mappingRulesDestination, fileName));
+  const bytes = await readFile(join(directory, fileName));
   let text;
   try {
     text = strictUtf8.decode(bytes);
@@ -139,7 +150,7 @@ async function readMappingFile(fileName) {
 
 const mappingFiles = [];
 for (const fileName of await mappingFileNames()) {
-  const file = await readMappingFile(fileName);
+  const file = await readCheckedJsonFile(mappingRulesDestination, fileName);
   if ("problem" in file) console.warn(`${fileName}: ${file.problem}. It was skipped.`);
   else mappingFiles.push({ fileName, value: file.value });
 }
@@ -151,4 +162,59 @@ await writeFile(join(mappingsDestination, MAPPING_INDEX_NAME), `${JSON.stringify
 `);
 console.log(
   `Indexed ${mappingFiles.length} mapping file(s) for ${Object.keys(mappingIndex.by_rule).length} rule(s) in ${join(mappingsDestination, MAPPING_INDEX_NAME)}`,
+);
+
+await rm(catalogDestination, { recursive: true, force: true });
+await cp(catalogSource, catalogDestination, {
+  recursive: true,
+  filter: (entryPath) => !basename(entryPath).startsWith("."),
+});
+console.log(`Copied ${catalogSource} -> ${catalogDestination}`);
+
+// Same selection as _catalog_files in tools/catalog.py: every .json file under
+// products/ and licences/ at any depth. Names are relative paths with forward
+// slashes so warnings read the same on every platform.
+async function catalogJsonFiles(folderName) {
+  const folder = join(catalogDestination, folderName);
+  const entries = await directoryEntries(folder);
+  const relativePaths = [];
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      for (const nestedPath of await catalogJsonFiles(`${folderName}/${entry.name}`)) relativePaths.push(nestedPath);
+    } else if (entry.isFile() && entry.name.endsWith(".json")) {
+      relativePaths.push(`${folderName}/${entry.name}`);
+    }
+  }
+  return relativePaths.sort();
+}
+
+async function readCatalogFile(kind, relativePath) {
+  const separatorPosition = relativePath.lastIndexOf("/");
+  const directory = separatorPosition === -1 ? catalogDestination : join(catalogDestination, relativePath.slice(0, separatorPosition));
+  const file = await readCheckedJsonFile(directory, relativePath.slice(separatorPosition + 1));
+  if ("problem" in file) {
+    console.warn(`${relativePath}: ${file.problem}. It was skipped.`);
+    return null;
+  }
+  return { kind, fileName: relativePath, value: file.value };
+}
+
+const catalogFiles = [];
+const sourceFiles = [
+  ["vendors", [CATALOG_VENDORS_FILE]],
+  ["product", await catalogJsonFiles("products")],
+  ["licence", await catalogJsonFiles("licences")],
+];
+for (const [kind, relativePaths] of sourceFiles) {
+  for (const relativePath of relativePaths) {
+    const catalogFile = await readCatalogFile(kind, relativePath);
+    if (catalogFile !== null) catalogFiles.push(catalogFile);
+  }
+}
+const catalogIndex = buildCatalogIndex(catalogFiles, (message) => console.warn(message));
+// Compact for the same reason as the mapping index.
+await writeFile(join(catalogDestination, CATALOG_INDEX_NAME), `${JSON.stringify(catalogIndex)}
+`);
+console.log(
+  `Indexed ${catalogIndex.products.length} product(s) and ${catalogIndex.licences.length} licence(s) in ${join(catalogDestination, CATALOG_INDEX_NAME)}`,
 );

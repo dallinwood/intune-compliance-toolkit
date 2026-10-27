@@ -16,6 +16,9 @@ dist-ssr
 # baselines/ itself is the source of truth, this is just a build artifact.
 public/baselines
 
+# Copied from ../catalog the same way, plus the generated _index.json.
+public/catalog
+
 # Playwright e2e output
 /test-results/
 /playwright-report/
