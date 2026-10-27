@@ -1,0 +1,29 @@
+import { Apple, Grid2x2, Monitor } from 'lucide-react'
+import { describe, expect, it } from 'vitest'
+import { NO_TARGET_KEY } from './applicability'
+import { targetIconsOf } from './targetIcons'
+
+describe('targetIconsOf', () => {
+  it('maps macOS to the Apple icon and Windows to the grid icon', () => {
+    expect(targetIconsOf(['macOS'])).toEqual([{ targetName: 'macOS', icon: Apple, label: 'macOS' }])
+    expect(targetIconsOf(['Windows'])).toEqual([{ targetName: 'Windows', icon: Grid2x2, label: 'Windows' }])
+  })
+
+  it('falls back to the monitor icon labelled with the raw target name', () => {
+    expect(targetIconsOf(['Linux'])).toEqual([{ targetName: 'Linux', icon: Monitor, label: 'Linux' }])
+  })
+
+  it('shows no icons for a row with no target, and skips the no-target sentinel beside real ones', () => {
+    expect(targetIconsOf([NO_TARGET_KEY])).toEqual([])
+    expect(targetIconsOf([])).toEqual([])
+    expect(targetIconsOf([NO_TARGET_KEY, 'Windows']).map((entry) => entry.label)).toEqual(['Windows'])
+  })
+
+  it('lists each target once', () => {
+    expect(targetIconsOf(['macOS', 'macOS']).map((entry) => entry.label)).toEqual(['macOS'])
+  })
+
+  it('orders known targets by the map, then unknown targets alphabetically', () => {
+    expect(targetIconsOf(['Zeta', 'Windows', 'Alpha', 'macOS']).map((entry) => entry.label)).toEqual(['macOS', 'Windows', 'Alpha', 'Zeta'])
+  })
+})

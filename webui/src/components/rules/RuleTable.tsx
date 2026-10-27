@@ -32,6 +32,7 @@ import type { RuleRow } from '../../types/rule-row'
 import { PagingBar } from './PagingBar'
 import { RuleDetailPanel } from './RuleDetailPanel'
 import { SectionToolbar } from './SectionToolbar'
+import { TargetIcons } from './TargetIcons'
 
 const INFINITE_SCROLL_STEP = 100
 
@@ -355,12 +356,12 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                 <td className={`px-2 py-1.5 ${titleIndent}`}>
                   <RuleTitle row={row} />
                   <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 md:hidden">
-                    <AssessmentBadge row={row} />
+                    <AssessmentCell row={row} />
                     <BenchmarkText row={row} />
                   </div>
                 </td>
                 <td className="hidden w-44 px-2 py-1.5 md:table-cell">
-                  <AssessmentBadge row={row} />
+                  <AssessmentCell row={row} />
                 </td>
                 <td className="hidden w-56 px-2 py-1.5 md:table-cell">
                   <BenchmarkText row={row} />
@@ -426,6 +427,15 @@ function RuleTitle({ row }: { row: RuleRow }) {
         )}
       </span>
       <div className="font-mono text-xs break-all text-muted-foreground">{upstreamRuleId(row.ref.id)}</div>
+    </div>
+  )
+}
+
+function AssessmentCell({ row }: { row: RuleRow }) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      <TargetIcons targetKeys={row.targetKeys} />
+      <AssessmentBadge row={row} />
     </div>
   )
 }

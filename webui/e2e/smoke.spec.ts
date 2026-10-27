@@ -1675,3 +1675,26 @@ test.describe('light and dark theme', () => {
     })
   })
 })
+
+test.describe('target platform icons', () => {
+  const iconNamed = (row: Locator, name: string) => row.getByRole('img', { name, exact: true })
+
+  test('an mSCP row shows a macOS icon to the left of its Automated badge, with a tooltip', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'audit_auditd_enabled', /Enable Security Auditing/i)
+    const icon = iconNamed(row, 'macOS')
+    await expect(icon).toBeVisible()
+    const badge = row.locator('td').nth(3).getByText(/^(Automated|Manual)/)
+    const iconBox = await icon.boundingBox()
+    const badgeBox = await badge.boundingBox()
+    expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(badgeBox!.x)
+    await icon.hover()
+    await expect(page.getByRole('tooltip', { name: 'macOS' })).toBeVisible()
+  })
+
+  test('an ISM control with no overlay shows no target icon', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
+    await expect(row.getByRole('img', { name: /^(macOS|Windows)$/ })).toHaveCount(0)
+  })
+})
