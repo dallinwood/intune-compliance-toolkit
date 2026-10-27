@@ -149,3 +149,40 @@ Inputs are already downloaded to the session scratchpad `sources/` folder: `matr
 - [ ] **Step 4: Verify** as Task 4 Step 4 (screenshots: Microsoft Entra ID detail and a search for "Defender", 375 px and 1440 px, light and dark).
 - [ ] **Step 5: Opus UI review**, fixes, re-screenshot.
 - [ ] **Step 6: Commit** `feat: add the Products tab`, push. Then a whole-branch review.
+
+### Task 6: Page routes, history, collapsible groups and polish (maintainer feedback, 2026-10-27)
+
+**Files:**
+- Modify: `webui/src/state/urlState.ts` (+ test), `webui/src/state/filterStore.ts`, `webui/src/components/layout/ViewTabs.tsx`, `webui/src/components/catalog/LicenceList.tsx`, `webui/src/components/catalog/ProductList.tsx`, the Rules search input component, `webui/package.json` build script (or a small `scripts/route-pages.mjs`), `webui/e2e/*.spec.ts`
+- Modify: `.github/workflows/deploy-pages.yml` only if the build output location changes (it should not)
+
+**Decisions:**
+- **Routes:** the view comes from the path, not `?view=`: `<base>rules`, `<base>licences`, `<base>products`, where `<base>` is Vite's `import.meta.env.BASE_URL` (`/intune-compliance-toolkit/` in production, `/` in dev). `<base>` alone shows Rules and replaces the URL with `<base>rules`. A legacy `?view=<id>` URL is converted to the path form with `replaceState`. All other query parameters keep their names.
+- **Static hosting:** after `vite build`, copy `dist/index.html` to `dist/rules/index.html`, `dist/licences/index.html` and `dist/products/index.html` so a refresh or deep link on GitHub Pages loads the app with status 200. Every runtime fetch (baselines, catalog) must resolve against `BASE_URL`, not the page path.
+- **History:** `pushState` for a view switch, selecting or clearing a licence or product, opening a mapped rule, and entering or leaving compare mode. `replaceState` for search typing, filter changes, paging, and ticking licences inside compare. A `popstate` listener re-parses the URL into the store, so back and forward restore the exact view and selection.
+- **Tab bar:** no scrollbar may appear on the tab bar at any width when the tabs fit. The current one comes from `overflow-x-auto` plus the tabs' `-mb-px`; keep horizontal scrolling only when the tabs genuinely overflow.
+- **Collapsible groups:** in the Licences list, each vendor and each family heading is a collapsible button (chevron, `aria-expanded`). In the Products list, each vendor and each category heading is the same. Groups start collapsed; the group(s) containing the current selection start expanded. While a product search query is active, the flat results list is shown as now (no groups).
+- **Rules search box:** use the same classes as the Products search input (rounded-full pill, same height and focus ring).
+
+- [ ] **Step 1: Write failing tests:** urlState: parse view from path with and without base, legacy `?view=` conversion, serialize to path plus query; e2e: direct load of `/licences?licence=microsoft.m365-e5` shows E5; clicking a licence then a product link then `page.goBack()` twice returns to the licence and then the list; groups are collapsed by default and the selection's group is open; the tab bar has `scrollHeight <= clientHeight`.
+- [ ] **Step 2: Run** them. Expected: fail.
+- [ ] **Step 3: Implement.**
+- [ ] **Step 4: Verify** `bun run test`, `lint`, `build` (check `dist/licences/index.html` exists), `test:e2e`; screenshots of the tab bar, both lists collapsed, and the Rules search at 375 and 1440 px.
+- [ ] **Step 5: Commit** `feat: give each view its own page and keep browser history`, push.
+
+### Task 7: Replace "package feature" with included or add-on via a named package
+
+**Files:**
+- Modify: `catalog/_licence.schema.json`, `tools/catalog.py`, `tests/test_catalog.py` (+ fixtures), `webui/src/types/catalog.ts`, `webui/src/logic/catalogIndex.ts`, `webui/src/logic/catalogTree.ts`, `webui/src/logic/licenceCompare.ts`, `webui/src/components/catalog/*`, their tests and e2e fixtures; every `catalog/licences/microsoft/*.json`; the design doc §4.3, §7.
+
+**Decisions:**
+- `availability` becomes exactly `included` or `add_on`. An inclusion gains optional `package`: the product id of the bundle that must be bought to get it. Validator errors: `package` not an existing product; `package` not an ancestor of the inclusion's product; `package` set with `availability: included`; the licence does not itself list `package` with `availability: add_on`.
+- **Data migration** (a one-off script in the scratchpad, results committed): for each `package_feature` inclusion, walk up the product's ancestors to the nearest one the same licence lists with a non-package availability. Ancestor `included` -> `included`, no package. Ancestor `add_on` -> `add_on` with `package` set to that ancestor. No such ancestor -> `add_on`, no package, and a review note "<title>: part of a package that is not recorded yet." Where the official comparison (scratchpad `extract/pdf.json`, matched rows) marks the row for that licence, its value wins as before.
+- **UI:** the "Package feature" badge goes away. An add-on with a package shows "Add-on via <package title>" with the package title linking to that product, in the Licences tree, the compare matrix tooltip and screen-reader text, and the Products "Included in" list. The compare legend loses "Package feature".
+
+- [ ] **Step 1: Write failing tests** for each new validator error, the index and tree carrying `package`, and the UI text "Add-on via".
+- [ ] **Step 2: Run.** Expected: fail.
+- [ ] **Step 3: Implement** code, migrate data, update design §4.3/§7 text.
+- [ ] **Step 4: Verify** pytest, `python -m tools.catalog`, `bun run test`, `lint`, `build`, `test:e2e`; screenshots of a licence with a Teams Premium package and the compare legend.
+- [ ] **Step 5: Commit** `feat: name the package behind add-on features`, push.
+
