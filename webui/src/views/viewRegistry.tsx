@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { DEFAULT_VIEW_ID } from '../state/urlState'
 import { LicencesView } from './LicencesView'
+import { ProductsView } from './ProductsView'
 import { RulesView } from './RulesView'
 import type { ViewContext } from './viewContext'
 
@@ -15,6 +16,7 @@ export interface ViewDefinition {
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
+  { id: 'products', label: 'Products', render: () => <ProductsView /> },
 ]
 
 export function resolveView(id: string, views: readonly ViewDefinition[] = VIEWS): ViewDefinition {

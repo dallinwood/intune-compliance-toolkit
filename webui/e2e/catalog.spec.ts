@@ -175,3 +175,46 @@ test('comparing two licences shows a matrix, and hiding identical rows drops the
   await expect(matrix.locator('tbody tr')).toHaveCount(3)
   await expect(matrix.getByText('Other Tool')).toBeVisible()
 })
+
+test('a product link in a licence switches to that product on a plain click', async ({ page }) => {
+  await page.goto('/?view=licences&licence=acme.basic')
+  await page.getByRole('link', { name: 'Other Tool' }).click()
+
+  await expect(page).toHaveURL(/view=products&(.*&)?product=acme\.tool/)
+  await expect(page.getByRole('heading', { level: 2, name: 'Other Tool' })).toBeVisible()
+})
+
+test('searching the Products tab finds a feature with its breadcrumb, and its detail lists the licences that include it', async ({ page }) => {
+  await page.goto('/?view=products')
+  await page.getByRole('searchbox', { name: 'Search products' }).fill('context')
+
+  const result = page.getByRole('link', { name: /Context Feature/ })
+  await expect(result).toContainText('Security Suite')
+  await result.click()
+  await expect(page).toHaveURL(/product=acme\.feature/)
+
+  const includedIn = page.getByRole('region', { name: 'Included in' })
+  await expect(includedIn.getByText('Included', { exact: true })).toBeVisible()
+  await expect(includedIn.getByText('Add-on', { exact: true })).toBeVisible()
+  await includedIn.getByRole('link', { name: 'Acme Pro' }).click()
+  await expect(page).toHaveURL(/view=licences&(.*&)?licence=acme\.pro/)
+  await expect(page.getByRole('heading', { level: 2, name: 'Acme Pro' })).toBeVisible()
+})
+
+test('a product detail shows its plans, features and the licences that include it', async ({ page }) => {
+  await page.goto('/?view=products&product=acme.suite')
+
+  await expect(page.getByRole('region', { name: 'Plans' }).getByText('Plan 2', { exact: true })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Features' }).getByRole('link', { name: 'Context Feature' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Included in' }).getByRole('link', { name: 'Acme Security Pack' })).toBeVisible()
+})
+
+test('an unknown product id renders the list without a selection and without error', async ({ page }) => {
+  const problems: string[] = []
+  page.on('pageerror', (error) => problems.push(error.message))
+  await page.goto('/?view=products&product=nope')
+
+  await expect(page.getByRole('searchbox', { name: 'Search products' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
+  expect(problems).toEqual([])
+})
