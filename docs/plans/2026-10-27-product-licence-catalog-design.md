@@ -113,7 +113,10 @@ The validator and the publish step read it separately from the rule library.
   `plan_1`, `premium`). Its full id is the product id and the plan id joined by a dot:
   `microsoft.entra-id.plan_1`. Product ids contain exactly one dot, so a full plan id always
   splits unambiguously. The full id is what the index, URLs and any future mapping use.
-- A plan's `features` lists product ids whose parent chain leads back to this product.
+- Every feature is a full entry in its own file, with its own description, links, targets and
+  plans, linked to its product through `parent`. A plan's `features` holds only references: the
+  ids of those feature files, whose parent chain must lead back to this product. Nothing about a
+  feature is written into the plan.
 - `category` is meant for top-level products. A child inherits its top-level ancestor's category
   in the UI and leaves its own as null.
 
