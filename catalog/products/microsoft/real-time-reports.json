@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.real-time-reports",
+  "title": "Real-Time Reports",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/reports-defender-for-office-365"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

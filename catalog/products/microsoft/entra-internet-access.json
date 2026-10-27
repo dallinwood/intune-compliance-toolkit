@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-internet-access",
+  "title": "Entra Internet Access",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-suite-add-on-to-entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/global-secure-access/concept-internet-access"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

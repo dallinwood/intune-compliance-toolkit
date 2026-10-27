@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.data-policy",
+  "title": "Data Policy",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Purview",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/legacy/concept-policies-data-owner"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

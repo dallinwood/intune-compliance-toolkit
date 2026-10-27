@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-data-security-posture-management",
+  "title": "Agent Data Security Posture Management",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/ai-microsoft-purview#dspm-and-dspm-for-ai-classic"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

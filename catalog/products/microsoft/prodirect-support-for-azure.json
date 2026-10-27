@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.prodirect-support-for-azure",
+  "title": "ProDirect Support for Azure",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Support Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://azure.microsoft.com/support/plans/prodirect/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

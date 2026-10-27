@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.domain-join",
+  "title": "Domain Join",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/accounts-billing/work-school/join-your-work-device-to-your-work-or-school-network"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

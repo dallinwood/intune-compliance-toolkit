@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.audit-standard",
+  "title": "Audit (standard)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/securitycompliance/search-the-audit-log-in-security-and-compliance"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

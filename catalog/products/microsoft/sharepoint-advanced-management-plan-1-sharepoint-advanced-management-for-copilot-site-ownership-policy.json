@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot-site-ownership-policy",
+  "title": "Site Ownership Policy",
+  "vendor": "microsoft",
+  "parent": "microsoft.sharepoint-advanced-management-plan-1-sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/advanced-management#site-ownership-policy"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

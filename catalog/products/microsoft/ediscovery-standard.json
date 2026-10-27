@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.ediscovery-standard",
+  "title": "eDiscovery (standard)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/securitycompliance/ediscovery-cases"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

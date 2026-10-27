@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.teams-dlp-export-graph-api",
+  "title": "Teams DLP & Export Graph API",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-365-security-compliance-licensing-guidance#microsoft-purview-data-loss-prevention-graph-apis-for-teams-data-loss-prevention-dlp-and-for-teams-export"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

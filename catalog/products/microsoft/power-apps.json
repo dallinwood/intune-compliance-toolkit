@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.power-apps",
+  "title": "Power Apps",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Power Platform",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://powerapps.microsoft.com/pricing/#compare-plans"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

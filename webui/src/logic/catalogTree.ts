@@ -1,5 +1,5 @@
 import type { CatalogInclusion, CatalogLicence, CatalogProduct } from '../types/catalog'
-import { fullPlanId } from './catalogIndex'
+import { compareText, planDerivedFeatures } from './catalogIndex'
 
 export type EffectiveInclusion = CatalogInclusion & { via: 'direct' | 'plan'; viaPlanId: string | null }
 
@@ -17,32 +17,19 @@ export interface InclusionCategory {
 
 const OTHER_CATEGORY = 'Other'
 
-function compareText(left: string, right: string): number {
-  if (left < right) return -1
-  return left > right ? 1 : 0
-}
-
 // Every listed entry, plus the features of every listed plan. A product listed
 // directly wins over the same product arriving through a plan.
 export function effectiveInclusions(licence: CatalogLicence, productsById: Map<string, CatalogProduct>): EffectiveInclusion[] {
   const directInclusions = licence.includes.map((inclusion): EffectiveInclusion => ({ ...inclusion, via: 'direct', viaPlanId: null }))
-  const directProductIds = new Set(directInclusions.map((inclusion) => inclusion.product))
-  const planInclusions: EffectiveInclusion[] = []
-  for (const inclusion of licence.includes) {
-    if (inclusion.plan === undefined) continue
-    const plan = productsById.get(inclusion.product)?.plans.find((candidate) => candidate.id === inclusion.plan)
-    if (plan === undefined) continue
-    for (const featureId of plan.features) {
-      if (directProductIds.has(featureId)) continue
-      planInclusions.push({
-        product: featureId,
-        availability: inclusion.availability,
-        note: inclusion.note,
-        via: 'plan',
-        viaPlanId: fullPlanId(inclusion.product, plan.id),
-      })
-    }
-  }
+  const planInclusions = planDerivedFeatures(licence, productsById).map(
+    ({ featureId, viaPlanId, inclusion }): EffectiveInclusion => ({
+      product: featureId,
+      availability: inclusion.availability,
+      note: inclusion.note,
+      via: 'plan',
+      viaPlanId,
+    }),
+  )
   return [...directInclusions, ...planInclusions]
 }
 

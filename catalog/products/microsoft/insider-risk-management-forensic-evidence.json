@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.insider-risk-management-forensic-evidence",
+  "title": "Insider Risk Management Forensic Evidence",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/insider-risk-management-forensic-evidence"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

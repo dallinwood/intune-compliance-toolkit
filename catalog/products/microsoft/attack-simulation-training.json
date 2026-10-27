@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.attack-simulation-training",
+  "title": "Attack Simulation Training",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/attack-simulation-training-get-started"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

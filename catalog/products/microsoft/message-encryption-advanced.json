@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.message-encryption-advanced",
+  "title": "Message Encryption (advanced)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/ome-advanced-message-encryption"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

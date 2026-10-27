@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-lists",
+  "title": "Microsoft Lists",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-365/microsoft-lists"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

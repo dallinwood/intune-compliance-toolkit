@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-teams",
+  "title": "Copilot in Teams",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/teams/copilot/catch-up-on-meetings-with-microsoft-365-copilot-in-teams"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

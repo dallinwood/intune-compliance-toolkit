@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
+  "title": "Entra ID Governance add-on to Entra ID Plan 2",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-suite-add-on-to-entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/en-us/azure/active-directory/governance/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.office-for-the-web",
+  "title": "Office for the Web",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/servicedescriptions/office-online-service-description/office-online-service-description"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

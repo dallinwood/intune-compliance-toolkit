@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-pulse-for-copilot",
+  "title": "Viva Pulse for Copilot",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/pulse/get-started/licensing-requirements"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

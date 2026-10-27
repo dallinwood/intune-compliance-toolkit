@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-unattended-rpa",
+  "title": "Microsoft 365 Unattended RPA",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Automation & Intelligence",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://devblogs.microsoft.com/microsoft365dev/new-licensing-options-for-microsoft-365-for-unattended-scenarios/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.teams-enterprise",
+  "title": "Teams Enterprise",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Communications",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-teams/enterprise"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

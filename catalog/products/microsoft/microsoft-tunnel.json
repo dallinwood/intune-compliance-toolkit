@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-tunnel",
+  "title": "Microsoft Tunnel",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/device-security/microsoft-tunnel/overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.queues-app",
+  "title": "Queues App",
+  "vendor": "microsoft",
+  "parent": "microsoft.teams-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/teams/calls-devices/use-the-queues-app-for-microsoft-teams"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

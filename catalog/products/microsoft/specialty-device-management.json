@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.specialty-device-management",
+  "title": "Specialty Device Management",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/device-management/specialty-devices"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

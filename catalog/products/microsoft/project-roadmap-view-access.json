@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.project-roadmap-view-access",
+  "title": "Project & Roadmap View Access",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/project-for-the-web/office-365-user-view-access-to-project-and-roadmap"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

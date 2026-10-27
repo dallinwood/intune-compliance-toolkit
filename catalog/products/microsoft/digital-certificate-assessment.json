@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.digital-certificate-assessment",
+  "title": "Digital Certificate Assessment",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-vulnerability-management-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-vulnerability-management/tvm-certificate-inventory"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

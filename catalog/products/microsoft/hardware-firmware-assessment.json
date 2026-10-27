@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.hardware-firmware-assessment",
+  "title": "Hardware & Firmware Assessment",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-vulnerability-management-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-vulnerability-management/tvm-hardware-and-firmware"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

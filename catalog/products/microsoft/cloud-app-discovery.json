@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.cloud-app-discovery",
+  "title": "Cloud App Discovery",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-cloud-apps/set-up-cloud-discovery"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

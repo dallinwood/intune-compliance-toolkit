@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-advanced-analytics",
+  "title": "Intune Advanced Analytics",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-suite",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/advanced-analytics/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

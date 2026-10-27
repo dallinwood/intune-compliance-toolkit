@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.accountguard",
+  "title": "AccountGuard",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://accountguard.microsoft.com/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

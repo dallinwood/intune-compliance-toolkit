@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.device-management",
+  "title": "Device Management",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/fundamentals/core-concepts#devices"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

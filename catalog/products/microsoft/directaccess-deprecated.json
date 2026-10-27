@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.directaccess-deprecated",
+  "title": "DirectAccess (deprecated)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows-server/remote/remote-access/directaccess/directaccess"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

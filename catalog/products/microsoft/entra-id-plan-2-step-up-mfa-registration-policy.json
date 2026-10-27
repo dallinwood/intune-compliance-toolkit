@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-plan-2-step-up-mfa-registration-policy",
+  "title": "MFA Registration Policy",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-2-step-up",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/id-protection/howto-identity-protection-configure-mfa-policy"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

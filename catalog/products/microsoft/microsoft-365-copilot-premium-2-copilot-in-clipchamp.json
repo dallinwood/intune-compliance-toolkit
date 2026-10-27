@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-copilot-in-clipchamp",
+  "title": "Copilot in Clipchamp",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/clipchamp/stream-pages/ask-questions-get-summaries-of-any-video-with-microsoft-copilot-in-the-clipchamp-player"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-cloud",
+  "title": "Defender for Cloud",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/cloud-security/microsoft-defender-cloud/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -44,6 +44,28 @@ describe('effectiveInclusions', () => {
   })
 })
 
+describe('effectiveInclusions with two plans sharing a feature', () => {
+  it('keeps the feature once, under the first plan listed', () => {
+    const products = byId([
+      product('a.one', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
+      product('a.two', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
+      product('a.x'),
+    ])
+
+    const inclusions = effectiveInclusions(
+      licence([
+        { product: 'a.one', plan: 'plan_1', availability: 'included', note: null },
+        { product: 'a.two', plan: 'plan_1', availability: 'add_on', note: null },
+      ]),
+      products,
+    )
+
+    const featureInclusions = inclusions.filter((inclusion) => inclusion.product === 'a.x')
+    expect(featureInclusions).toHaveLength(1)
+    expect(featureInclusions[0].viaPlanId).toBe('a.one.plan_1')
+  })
+})
+
 describe('effectiveInclusionTree', () => {
   const products = byId([
     product('a.root', { category: 'Identity' }),

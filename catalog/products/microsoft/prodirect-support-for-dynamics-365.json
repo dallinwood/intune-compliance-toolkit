@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.prodirect-support-for-dynamics-365",
+  "title": "ProDirect Support for Dynamics 365",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Support Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/dynamics-365/support"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-protection",
+  "title": "Entra ID Protection",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/id-protection/overview-identity-protection"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

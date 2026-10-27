@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.face-check",
+  "title": "Face Check",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-verified-id-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/verified-id/using-facecheck"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

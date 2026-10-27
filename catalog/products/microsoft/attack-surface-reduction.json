@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.attack-surface-reduction",
+  "title": "Attack Surface Reduction",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/attack-surface-reduction-rules-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

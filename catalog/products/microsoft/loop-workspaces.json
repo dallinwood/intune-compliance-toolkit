@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.loop-workspaces",
+  "title": "Loop Workspaces",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/loop/loop-access-via-microsoft-365-subscriptions"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

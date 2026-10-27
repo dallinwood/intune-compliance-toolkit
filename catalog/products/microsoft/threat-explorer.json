@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.threat-explorer",
+  "title": "Threat Explorer",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/threat-explorer-real-time-detections-about"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.azure-rms",
+  "title": "Azure RMS",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Enterprise Mobility + Security",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/azure-rights-management-learn-about"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

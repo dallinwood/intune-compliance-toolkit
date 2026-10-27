@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-domain-services",
+  "title": "Entra Domain Services",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Entra",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/domain-services/overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

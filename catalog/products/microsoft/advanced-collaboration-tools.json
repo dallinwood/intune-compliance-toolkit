@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.advanced-collaboration-tools",
+  "title": "Advanced Collaboration Tools",
+  "vendor": "microsoft",
+  "parent": "microsoft.teams-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoftteams/teams-add-on-licensing/licensing-enhance-teams#advanced-collaboration-tools"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

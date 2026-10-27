@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-policy-templates",
+  "title": "Agent Policy Templates",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-agent-365/admin/policy-template"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

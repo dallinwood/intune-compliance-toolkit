@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.self-service-activity-reports",
+  "title": "Self-Service Activity Reports",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-for-office-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/accounts-billing/work-school/view-your-work-or-school-account-sign-in-activity-from-my-sign-ins"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -105,7 +105,7 @@ export function fullPlanId(productId: string, planId: string): string {
 
 // Plain code-unit order, never localeCompare, so the output is byte-stable
 // on every machine.
-function compareText(left: string, right: string): number {
+export function compareText(left: string, right: string): number {
   if (left < right) return -1
   return left > right ? 1 : 0
 }
@@ -135,6 +135,31 @@ function directEntry(licence: CatalogLicence, inclusion: CatalogInclusion): Prod
   }
 }
 
+export interface PlanDerivedFeature {
+  featureId: string
+  viaPlanId: string
+  inclusion: CatalogInclusion
+}
+
+// The features a licence gets through the plans it lists. A feature the
+// licence lists directly is left out (direct wins), and one reached through
+// two plans appears once, under the first plan in the licence's includes order.
+export function planDerivedFeatures(licence: CatalogLicence, productsById: Map<string, CatalogProduct>): PlanDerivedFeature[] {
+  const claimedProductIds = new Set(licence.includes.map((inclusion) => inclusion.product))
+  const derived: PlanDerivedFeature[] = []
+  for (const inclusion of licence.includes) {
+    if (inclusion.plan === undefined) continue
+    const plan = productsById.get(inclusion.product)?.plans.find((candidate) => candidate.id === inclusion.plan)
+    if (plan === undefined) continue
+    for (const featureId of plan.features) {
+      if (claimedProductIds.has(featureId)) continue
+      claimedProductIds.add(featureId)
+      derived.push({ featureId, viaPlanId: fullPlanId(inclusion.product, plan.id), inclusion })
+    }
+  }
+  return derived
+}
+
 function buildByProduct(licences: CatalogLicence[], productsById: Map<string, CatalogProduct>): Record<string, ProductLicenceEntry[]> {
   const byProduct: Record<string, ProductLicenceEntry[]> = {}
 
@@ -143,26 +168,19 @@ function buildByProduct(licences: CatalogLicence[], productsById: Map<string, Ca
   }
 
   for (const licence of licences) {
-    const directProductIds = new Set(licence.includes.map((inclusion) => inclusion.product))
     for (const inclusion of licence.includes) {
       add(inclusion.product, directEntry(licence, inclusion))
     }
-    for (const inclusion of licence.includes) {
-      if (inclusion.plan === undefined) continue
-      const plan = productsById.get(inclusion.product)?.plans.find((candidate) => candidate.id === inclusion.plan)
-      if (plan === undefined) continue
-      for (const featureId of plan.features) {
-        if (directProductIds.has(featureId)) continue
-        add(featureId, {
-          licence: licence.id,
-          availability: inclusion.availability,
-          planId: null,
-          customPlanTitle: null,
-          via: 'plan',
-          viaPlanId: fullPlanId(inclusion.product, plan.id),
-          note: inclusion.note,
-        })
-      }
+    for (const { featureId, viaPlanId, inclusion } of planDerivedFeatures(licence, productsById)) {
+      add(featureId, {
+        licence: licence.id,
+        availability: inclusion.availability,
+        planId: null,
+        customPlanTitle: null,
+        via: 'plan',
+        viaPlanId,
+        note: inclusion.note,
+      })
     }
   }
 

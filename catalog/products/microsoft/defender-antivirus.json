@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-antivirus",
+  "title": "Defender Antivirus",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/windows/comprehensive-security"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

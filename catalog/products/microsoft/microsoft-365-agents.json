@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-agents",
+  "title": "Microsoft 365 Agents",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/blog/2024/11/19/introducing-copilot-actions-new-agents-and-tools-to-empower-it-teams/#agents"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

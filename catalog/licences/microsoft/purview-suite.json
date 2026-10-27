@@ -1,0 +1,576 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.purview-suite",
+  "title": "Microsoft Purview Suite",
+  "vendor": "microsoft",
+  "family": "Microsoft 365 Enterprise",
+  "kind": "add_on",
+  "requires": [
+    "microsoft.m365-e3"
+  ],
+  "description": null,
+  "links": [],
+  "includes": [
+    {
+      "product": "microsoft.audit-premium",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.communication-compliance",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.conditional-access-for-sites",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.copilot-data-loss-prevention",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.customer-key",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.customer-lockbox",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.data-lifecycle-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.double-key-encryption",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.ediscovery-premium",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.ediscovery-standard",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.exact-data-match",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.information-barriers",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.message-encryption-advanced",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.office-365-cloud-app-security",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.privileged-access-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.records-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.rules-based-classification-office-365",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.teams-audio-conferencing-full",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.teams-data-loss-prevention",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.teams-dlp-export-graph-api",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.3x-premium-custom-compliance-templates",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.app-governance",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-for-cloud-apps",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.rules-based-classification-client-scanner",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.adaptive-protection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.endpoint-dlp",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.fasttrack",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.insider-risk-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.trainable-classifiers",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.10-year-audit-log-retention",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-automation",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-backup",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-bastion",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-log-analytics",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-rbac",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-update-manager",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-cspm",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-easm",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-for-cloud",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-for-servers",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-threat-intelligence-retiring",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.defender-threat-intelligence-api",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.authenticated-scan-for-windows",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.block-vulnerable-applications",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.browser-extensions-assessment",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.digital-certificate-assessment",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.hardware-firmware-assessment",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.network-share-analysis",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.security-baselines-assessment",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.insider-risk-management-forensic-evidence",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.intune-suite-2-intune-plan-2-firmware-over-the-air-updates",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.intune-suite-2-intune-plan-2-specialty-device-management",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.intune-suite-2-intune-plan-2-tunnel-for-mam",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-365-archive",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-365-backup",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-sentinel",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.purview-suite",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-domain-services",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-external-id",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-id",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-internet-access",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-private-access",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-verified-id-premium",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-verified-id-premium-face-check",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-workload-id-premium",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-workload-id-premium-access-reviews",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-workload-id-premium-entra-id-protection",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-workload-id-premium-risk-based-conditional-access",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-workload-id-free",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.entra-workload-id-free-basic-security-usage-reports",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.identity-federation",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.data-catalog",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.data-estate-insights",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.data-map",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.data-policy",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.azure-comm-services",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.digital-contact-centre",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.teams-phone-mobile",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.ai-builder-capacity",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.prodirect-support-for-azure",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.prodirect-support-for-dynamics-365",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.prodirect-support-for-microsoft-365",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.unified-support",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.copilot-in-viva-learning-preview",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.viva-suite-people-skills-ai-inferencing",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.copilot-in-viva-glint",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.viva-pulse",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.copilot-in-viva-amplify",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.copilot-in-viva-engage",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.answers-in-viva",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.people-in-viva",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.viva-amplify",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.viva-connections-50-instances",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.viva-engage-premium",
+      "availability": "package_feature",
+      "note": null
+    },
+    {
+      "product": "microsoft.ai-builder",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.copilot-studio",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-dataverse",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.power-apps",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.power-automate",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.power-automate-process-mining",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.power-bi-premium",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.power-pages",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.drive-shipping-for-pst-import",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.dynamics-365-customer-voice",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-industry-clouds",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-365-dev-program",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.sharepoint-embedded",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.windows-365-business",
+      "availability": "add_on",
+      "note": null
+    },
+    {
+      "product": "microsoft.microsoft-365-unattended-rpa",
+      "availability": "add_on",
+      "note": null
+    }
+  ],
+  "review": [
+    "eDiscovery (standard): official comparison shows Included, the earlier data showed Not included.",
+    "Office 365 Cloud App Security: official comparison shows Included, the earlier data showed Not included.",
+    "Security Copilot: official comparison shows Not included, the earlier data showed Add-on.",
+    "Azure Virtual Desktop: official comparison shows Not included, the earlier data showed Add-on.",
+    "Clipchamp Standard: official comparison shows Not included, the earlier data showed Add-on.",
+    "Check Agent ID: the official comparison row \"Agent Identity\" may correspond to it (shows Included here).",
+    "Check Insider Risk Management: the official comparison row \"Microsoft Purview Insider Risk Management\" may correspond to it (shows Included here).",
+    "Official comparison lists these Agent Observability items with no matching catalog entry: Agent Registry (Included), Basic agent usage insights (Included).",
+    "Official comparison lists these Agent Governance items with no matching catalog entry: Admin agent governance actions (Included), Audit logs and eDiscovery for agent activity (Included).",
+    "Official comparison lists these Agent Security items with no matching catalog entry: Configure policies to contain managed local agents (Included).",
+    "Official comparison lists these Email, calendar, and scheduling items with no matching catalog entry: Auto-expanding email archive (Included), Inactive mailboxes (Included).",
+    "Official comparison lists these Data lifecycle management items with no matching catalog entry: Basic org-wide or location-wide retention policies (Included), Rules-based automatic retention policies (Included), Machine Learning-based retention (Included), Teams message retention policies (Included).",
+    "Official comparison lists these Data loss prevention (DLP) items with no matching catalog entry: DLP for emails & files (Included), DLP for Teams chat (Included).",
+    "Official comparison lists these Information protection items with no matching catalog entry: Azure Information Protection Plan 2 (Included), Automatic sensitivity labeling in Microsoft 365 apps (Included), Manual sensitivity labeling for Teams meetings (Included), Default sensitivity labels for SharePoint document libraries (Included), Automatic sensitivity labels in Exchange, SharePoint, and OneDrive (Included), Sensitivity labels based on advanced classifiers (e.g., Trainable Classifiers, EDM, Named Entities, Contextual) (Included)."
+  ]
+}

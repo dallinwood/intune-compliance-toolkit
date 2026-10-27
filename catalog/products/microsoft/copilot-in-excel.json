@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-excel",
+  "title": "Copilot in Excel",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/excel/copilot/get-started-with-copilot-in-excel"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

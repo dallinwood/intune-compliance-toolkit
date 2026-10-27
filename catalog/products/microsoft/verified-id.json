@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.verified-id",
+  "title": "Verified ID",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/identity-access/microsoft-entra-verified-id"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

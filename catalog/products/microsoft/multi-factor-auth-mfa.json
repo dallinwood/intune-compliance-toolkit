@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.multi-factor-auth-mfa",
+  "title": "Multi-Factor Auth (MFA)",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/authentication/concept-mfa-howitworks"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

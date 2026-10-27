@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-suite",
+  "title": "Defender Suite",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/pricing/enterprise/security-suites"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

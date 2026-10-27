@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-join",
+  "title": "Entra ID Join",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/devices/concept-directory-join"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

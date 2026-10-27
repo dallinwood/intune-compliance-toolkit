@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-connections-50-instances",
+  "title": "Viva Connections (50 instances)",
+  "vendor": "microsoft",
+  "parent": "microsoft.viva-employee-communications-communities",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/connections/set-up-admin-center"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

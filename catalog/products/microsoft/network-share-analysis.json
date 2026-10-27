@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.network-share-analysis",
+  "title": "Network Share Analysis",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-vulnerability-management-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-vulnerability-management/tvm-network-share-assessment"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.data-catalog",
+  "title": "Data Catalog",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Purview",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/unified-catalog-data-assets-search"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

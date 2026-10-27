@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-verified-id-premium",
+  "title": "Entra Verified ID Premium",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-suite-add-on-to-entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/fundamentals/licensing#microsoft-entra-verified-id"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

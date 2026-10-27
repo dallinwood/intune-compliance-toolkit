@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.unified-support",
+  "title": "Unified Support",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Support Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-unified"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

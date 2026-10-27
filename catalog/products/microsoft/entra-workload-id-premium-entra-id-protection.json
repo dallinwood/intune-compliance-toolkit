@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-workload-id-premium-entra-id-protection",
+  "title": "Entra ID Protection",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-workload-id-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/id-protection/overview-identity-protection"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

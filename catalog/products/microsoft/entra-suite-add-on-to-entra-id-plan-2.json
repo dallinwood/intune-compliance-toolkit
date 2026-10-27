@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-suite-add-on-to-entra-id-plan-2",
+  "title": "Entra Suite add-on to Entra ID Plan 2",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/fundamentals/licensing"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

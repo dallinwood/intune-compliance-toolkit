@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.prodirect-support-for-microsoft-365",
+  "title": "ProDirect Support for Microsoft 365",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Support Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-365/business/microsoft-365-for-business-support-options"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.active-directory-rms",
+  "title": "Active Directory RMS",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Enterprise Mobility + Security",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/information-protection/compare-on-premise"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

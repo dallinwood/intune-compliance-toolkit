@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.config-manager",
+  "title": "Config Manager",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/configmgr/core/understand/introduction"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

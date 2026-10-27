@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.attack-surface-reduction-enhanced",
+  "title": "Attack Surface Reduction (enhanced)",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/attack-surface-reduction-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

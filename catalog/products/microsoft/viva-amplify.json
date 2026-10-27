@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-amplify",
+  "title": "Viva Amplify",
+  "vendor": "microsoft",
+  "parent": "microsoft.viva-employee-communications-communities",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/amplify/overview-viva-amplify"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

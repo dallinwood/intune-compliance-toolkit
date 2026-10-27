@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-data-loss-prevention",
+  "title": "Copilot Data Loss Prevention",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description#microsoft-purview-data-loss-prevention-dlp-for-microsoft-365-copilot"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

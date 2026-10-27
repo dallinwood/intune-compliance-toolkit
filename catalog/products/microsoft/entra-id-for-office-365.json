@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-for-office-365",
+  "title": "Entra ID for Office 365",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/microsoft-entra-pricing"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

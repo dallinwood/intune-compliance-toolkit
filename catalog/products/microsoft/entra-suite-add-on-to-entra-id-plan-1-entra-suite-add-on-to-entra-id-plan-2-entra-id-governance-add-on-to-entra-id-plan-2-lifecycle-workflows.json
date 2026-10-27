@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2-lifecycle-workflows",
+  "title": "Lifecycle Workflows",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-suite-add-on-to-entra-id-plan-1-entra-suite-add-on-to-entra-id-plan-2-entra-id-governance-add-on-to-entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/id-governance/lifecycle-workflows-deployment"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

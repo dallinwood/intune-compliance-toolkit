@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-virtualization-rights",
+  "title": "Windows Virtualization Rights",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/licensing/guidance/Windows-11-Licensing-for-Virtual-Desktops#section-20-225"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-viva-amplify",
+  "title": "Copilot in Viva Amplify",
+  "vendor": "microsoft",
+  "parent": "microsoft.viva-employee-communications-communities",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/amplify/copilot-in-viva-amplify"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

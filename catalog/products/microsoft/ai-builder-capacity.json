@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.ai-builder-capacity",
+  "title": "AI Builder Capacity",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Extra Capacity",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/ai-builder/administer-licensing#purchase-ai-builder-capacity"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

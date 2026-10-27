@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-image-generator",
+  "title": "Copilot Image Generator",
+  "vendor": "microsoft",
+  "parent": "microsoft.copilot-chat-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-365/microsoft-designer/ai-art-generator"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

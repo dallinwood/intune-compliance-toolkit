@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-defender-for-cloud-apps-integration",
+  "title": "Agent Defender for Cloud Apps Integration",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-xdr/security-for-ai/ai-agent-detection-protection"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.conditional-access-for-sites",
+  "title": "Conditional Access for Sites",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/authentication-context-example"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

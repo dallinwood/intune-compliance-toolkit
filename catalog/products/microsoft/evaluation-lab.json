@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.evaluation-lab",
+  "title": "Evaluation Lab",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/evaluate-microsoft-defender-antivirus"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

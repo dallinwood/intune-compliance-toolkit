@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-11-support-period",
+  "title": "Windows 11 Support Period",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/whats-new/windows-11-plan#servicing-and-support"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

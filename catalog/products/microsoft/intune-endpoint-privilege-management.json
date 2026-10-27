@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-endpoint-privilege-management",
+  "title": "Intune Endpoint Privilege Management",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-suite",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/epm/overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

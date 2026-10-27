@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-identity-governance",
+  "title": "Agent Identity Governance",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/id-governance/agent-id-governance-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

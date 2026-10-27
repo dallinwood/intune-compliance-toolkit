@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.retention-labels",
+  "title": "Retention Labels",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/create-apply-retention-labels"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

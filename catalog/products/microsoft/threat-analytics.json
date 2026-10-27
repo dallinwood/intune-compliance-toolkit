@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.threat-analytics",
+  "title": "Threat Analytics",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-xdr/threat-analytics"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

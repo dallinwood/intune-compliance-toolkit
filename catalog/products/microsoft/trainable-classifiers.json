@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.trainable-classifiers",
+  "title": "Trainable Classifiers",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/trainable-classifiers-learn-about"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

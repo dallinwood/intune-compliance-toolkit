@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entitlement-management-basic",
+  "title": "Entitlement Management (basic)",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/id-governance/entitlement-management-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

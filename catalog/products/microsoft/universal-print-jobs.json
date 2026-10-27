@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.universal-print-jobs",
+  "title": "Universal Print Jobs",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Extra Capacity",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/universal-print/fundamentals/universal-print-license#additional-print-volume"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

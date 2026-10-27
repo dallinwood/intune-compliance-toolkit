@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-code-interpreter",
+  "title": "Copilot Code Interpreter",
+  "vendor": "microsoft",
+  "parent": "microsoft.copilot-chat-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/en-us/microsoft-copilot/for-individuals/do-more-with-ai/general-ai/debug-code"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-plan-1",
+  "title": "Entra ID Plan 1",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/microsoft-entra-pricing"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

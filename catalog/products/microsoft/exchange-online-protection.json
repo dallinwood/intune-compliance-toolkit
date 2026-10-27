@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.exchange-online-protection",
+  "title": "Exchange Online Protection",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/servicedescriptions/exchange-online-protection-service-description/exchange-online-protection-service-description"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

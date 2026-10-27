@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.persistent-memory",
+  "title": "Persistent Memory",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows-server/storage/storage-spaces/deploy-persistent-memory"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

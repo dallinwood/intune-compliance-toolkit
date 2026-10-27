@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.data-access-governance-reports-powershell",
+  "title": "Data Access Governance Reports PowerShell",
+  "vendor": "microsoft",
+  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/advanced-management#data-access-governance-management-via-powershell"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

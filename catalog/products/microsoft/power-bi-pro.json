@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.power-bi-pro",
+  "title": "Power BI Pro",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/power-bi/fundamentals/service-get-started"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

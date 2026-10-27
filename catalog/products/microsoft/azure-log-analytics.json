@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.azure-log-analytics",
+  "title": "Azure Log Analytics",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

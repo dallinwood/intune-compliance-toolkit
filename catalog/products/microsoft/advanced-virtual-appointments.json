@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.advanced-virtual-appointments",
+  "title": "Advanced Virtual Appointments",
+  "vendor": "microsoft",
+  "parent": "microsoft.teams-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoftteams/teams-add-on-licensing/licensing-enhance-teams#virtual-appointments"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

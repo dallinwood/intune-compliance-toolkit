@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.endpoint-dlp",
+  "title": "Endpoint DLP",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/endpoint-dlp-learn-about"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

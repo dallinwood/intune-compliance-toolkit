@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.prompt-injection-protection",
+  "title": "Prompt Injection Protection",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/step-by-step-guides/prompt-injection-protection-defender-for-office-365"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

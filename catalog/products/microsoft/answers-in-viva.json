@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.answers-in-viva",
+  "title": "Answers in Viva",
+  "vendor": "microsoft",
+  "parent": "microsoft.viva-employee-communications-communities",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/engage/eac-answers-overview-set-up"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-loop",
+  "title": "Copilot in Loop",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/loop/frequently-asked-questions-about-copilot-in-loop"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

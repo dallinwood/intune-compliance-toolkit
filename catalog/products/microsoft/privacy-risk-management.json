@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.privacy-risk-management",
+  "title": "Privacy Risk Management",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Priva",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/privacy/priva/risk-management"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

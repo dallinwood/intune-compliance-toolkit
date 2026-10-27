@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.manage-by-mdm",
+  "title": "Manage by MDM",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/client-management/mdm-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

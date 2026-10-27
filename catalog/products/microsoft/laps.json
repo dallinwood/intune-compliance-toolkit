@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.laps",
+  "title": "LAPS",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://techcommunity.microsoft.com/blog/windows-itpro-blog/by-popular-demand-windows-laps-available-now/3788747"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

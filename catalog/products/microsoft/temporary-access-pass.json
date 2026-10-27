@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.temporary-access-pass",
+  "title": "Temporary Access Pass",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

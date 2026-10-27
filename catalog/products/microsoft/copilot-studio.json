@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-studio",
+  "title": "Copilot Studio",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Power Platform",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-365-copilot/microsoft-copilot-studio"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

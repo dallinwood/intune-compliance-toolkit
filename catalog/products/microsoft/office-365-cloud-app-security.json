@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.office-365-cloud-app-security",
+  "title": "Office 365 Cloud App Security",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-cloud-apps/editions-cloud-app-security-o365"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

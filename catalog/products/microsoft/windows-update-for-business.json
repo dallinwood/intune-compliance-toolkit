@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-update-for-business",
+  "title": "Windows Update for Business",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/deployment/update/waas-manage-updates-wufb"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

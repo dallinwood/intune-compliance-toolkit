@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.administrative-units",
+  "title": "Administrative Units",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/role-based-access-control/administrative-units"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

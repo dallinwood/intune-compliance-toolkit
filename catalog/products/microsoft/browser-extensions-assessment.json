@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.browser-extensions-assessment",
+  "title": "Browser Extensions Assessment",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-vulnerability-management-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-vulnerability-management/tvm-browser-extensions"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

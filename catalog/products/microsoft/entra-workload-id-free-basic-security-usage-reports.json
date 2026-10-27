@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-workload-id-free-basic-security-usage-reports",
+  "title": "Basic Security & Usage Reports",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-workload-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/active-directory/workload-identities/workload-identities-faqs#what-features-are-included-in-workload-identities-premium-plan-and-which-features-are-free"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

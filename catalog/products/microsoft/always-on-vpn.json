@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.always-on-vpn",
+  "title": "Always On VPN",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/Windows-server/remote/remote-access/overview-always-on-vpn"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

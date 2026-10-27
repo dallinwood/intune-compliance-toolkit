@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.3rd-party-mfa-integration",
+  "title": "3rd Party MFA Integration",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/active-directory/conditional-access/controls#custom-controls-preview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

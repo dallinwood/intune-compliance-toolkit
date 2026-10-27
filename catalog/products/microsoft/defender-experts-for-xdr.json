@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-experts-for-xdr",
+  "title": "Defender Experts for XDR",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Security Experts",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-xdr/defender-experts/defender-experts-mdr-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

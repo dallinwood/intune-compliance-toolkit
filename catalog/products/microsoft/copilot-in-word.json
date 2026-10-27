@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-word",
+  "title": "Copilot in Word",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/word/copilot/draft-and-add-content-with-copilot-in-word"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

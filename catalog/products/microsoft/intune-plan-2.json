@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-plan-2",
+  "title": "Intune Plan 2",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-suite",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/microsoft-intune-pricing"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

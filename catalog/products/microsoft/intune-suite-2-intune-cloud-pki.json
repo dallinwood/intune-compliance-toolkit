@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-suite-2-intune-cloud-pki",
+  "title": "Intune Cloud PKI",
+  "vendor": "microsoft",
+  "parent": "microsoft.intune-suite-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/intune/cloud-pki/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

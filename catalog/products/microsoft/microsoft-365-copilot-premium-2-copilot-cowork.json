@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-copilot-cowork",
+  "title": "Copilot Cowork",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/blog/2026/03/09/copilot-cowork-a-new-way-of-getting-work-done/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

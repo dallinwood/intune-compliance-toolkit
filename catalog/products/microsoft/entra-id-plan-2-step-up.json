@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-plan-2-step-up",
+  "title": "Entra ID Plan 2 Step-up",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-suite-add-on-to-entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/microsoft-entra-pricing"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

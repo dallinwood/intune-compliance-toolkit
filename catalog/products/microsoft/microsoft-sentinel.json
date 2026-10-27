@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-sentinel",
+  "title": "Microsoft Sentinel",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/siem-and-xdr/microsoft-sentinel-siem"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.terms-of-use",
+  "title": "Terms of Use",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/conditional-access/terms-of-use"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

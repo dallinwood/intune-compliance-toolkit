@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.resilient-file-system-refs",
+  "title": "Resilient File System (ReFS)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows-server/storage/refs/refs-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.insider-risk-management",
+  "title": "Insider Risk Management",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/insider-risk-management"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

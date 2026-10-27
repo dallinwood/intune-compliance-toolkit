@@ -79,6 +79,22 @@ describe('buildCatalogIndex', () => {
     expect(index.by_product['a.x'][0].via).toBe('direct')
   })
 
+  it('lists a feature reached through two plans once, under the first plan listed', () => {
+    const { index } = build([
+      productFile('a.one', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
+      productFile('a.two', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
+      productFile('a.x', { parent: 'a.one' }),
+      licenceFile('a.lic', [
+        { product: 'a.one', plan: 'plan_1', availability: 'included', note: null },
+        { product: 'a.two', plan: 'plan_1', availability: 'add_on', note: null },
+      ]),
+    ])
+
+    expect(index.by_product['a.x']).toHaveLength(1)
+    expect(index.by_product['a.x'][0].viaPlanId).toBe('a.one.plan_1')
+    expect(index.by_product['a.x'][0].availability).toBe('included')
+  })
+
   it('skips a licence file without includes and warns', () => {
     const broken = licenceFile('a.lic', [])
     delete (broken.value as Record<string, unknown>).includes

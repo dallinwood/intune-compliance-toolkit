@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.block-at-first-sight",
+  "title": "Block at First Sight",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/configure-block-at-first-sight-microsoft-defender-antivirus"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

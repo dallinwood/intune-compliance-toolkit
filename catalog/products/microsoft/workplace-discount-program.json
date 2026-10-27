@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.workplace-discount-program",
+  "title": "Workplace Discount Program",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Companion Products & Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/workplace-discount-program"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

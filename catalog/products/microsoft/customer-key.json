@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.customer-key",
+  "title": "Customer Key",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.office.com/article/f2cd475a-e592-46cf-80a3-1bfb0fa17697"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

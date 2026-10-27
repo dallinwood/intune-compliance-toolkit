@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.dynamic-groups",
+  "title": "Dynamic Groups",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/users/groups-create-rule"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

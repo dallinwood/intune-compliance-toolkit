@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-copilot-in-onenote",
+  "title": "Copilot in OneNote",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/onenote/copilot-pages/summarize-your-onenote-notes-with-microsoft-365-copilot"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

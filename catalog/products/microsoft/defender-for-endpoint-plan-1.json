@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-endpoint-plan-1",
+  "title": "Defender for Endpoint Plan 1",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/microsoft-defender-endpoint"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

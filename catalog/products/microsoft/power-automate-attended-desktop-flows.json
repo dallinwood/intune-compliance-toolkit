@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.power-automate-attended-desktop-flows",
+  "title": "Power Automate Attended Desktop Flows",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://go.microsoft.com/fwlink/?linkid=2085130"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

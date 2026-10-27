@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.skype-for-business-plus-cal",
+  "title": "Skype for Business Plus CAL",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/licensing/terms/product/CALandMLEquivalencyLicenses/EAEAS"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

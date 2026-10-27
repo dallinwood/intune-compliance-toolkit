@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.graph-connectors-in-agents-metered",
+  "title": "Graph Connectors in Agents (metered)",
+  "vendor": "microsoft",
+  "parent": "microsoft.copilot-chat-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-copilot-studio/advanced-connectors"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.identity-federation",
+  "title": "Identity Federation",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-workload-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/workload-id/workload-identity-federation"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

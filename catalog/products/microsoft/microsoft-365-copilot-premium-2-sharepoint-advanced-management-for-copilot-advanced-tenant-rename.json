@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-advanced-tenant-rename",
+  "title": "Advanced Tenant Rename",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/change-your-sharepoint-domain-name#advanced-tenant-rename"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

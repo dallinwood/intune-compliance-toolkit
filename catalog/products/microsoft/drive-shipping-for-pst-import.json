@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.drive-shipping-for-pst-import",
+  "title": "Drive Shipping for PST import",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Companion Products & Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/pst-import-drive-shipping"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

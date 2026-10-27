@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.digital-contact-centre",
+  "title": "Digital Contact Centre",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Communications",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/dynamics-365/products/contact-center"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

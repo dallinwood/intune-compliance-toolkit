@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-tool-controls",
+  "title": "Agent Tool Controls",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-365/admin/manage/manage-tools-for-agent"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

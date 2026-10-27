@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-copilot-in-planner",
+  "title": "Copilot in Planner",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/planner/copilot/create-a-new-plan-with-copilot-in-planner-preview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

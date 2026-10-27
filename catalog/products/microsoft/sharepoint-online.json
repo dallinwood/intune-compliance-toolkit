@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.sharepoint-online",
+  "title": "SharePoint Online",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/introduction"
+    }
+  ],
+  "targets": [],
+  "plans": [
+    {
+      "id": "plan_1",
+      "title": "Plan 1",
+      "description": null,
+      "features": []
+    },
+    {
+      "id": "plan_2",
+      "title": "Plan 2",
+      "description": null,
+      "features": []
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.service-level-agreement",
+  "title": "Service Level Agreement",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/licensing/docs/view/Service-Level-Agreements-SLA-for-Online-Services"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

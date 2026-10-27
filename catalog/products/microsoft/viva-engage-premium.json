@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-engage-premium",
+  "title": "Viva Engage (premium)",
+  "vendor": "microsoft",
+  "parent": "microsoft.viva-employee-communications-communities",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/engage/setup#set-up-licensing-for-viva-engage"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

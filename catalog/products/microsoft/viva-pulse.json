@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-pulse",
+  "title": "Viva Pulse",
+  "vendor": "microsoft",
+  "parent": "microsoft.viva-workplace-analytics-employee-feedback",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/viva/pulse/introduction-to-viva-pulse"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

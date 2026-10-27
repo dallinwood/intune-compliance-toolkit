@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-copilot-notebooks",
+  "title": "Copilot Notebooks",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/microsoft-365-copilot/get-started-with-microsoft-365-copilot-notebooks"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

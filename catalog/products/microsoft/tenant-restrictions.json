@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.tenant-restrictions",
+  "title": "Tenant Restrictions",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/external-id/tenant-restrictions-v2"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

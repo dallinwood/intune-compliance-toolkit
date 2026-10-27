@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-sharepoint",
+  "title": "Copilot in SharePoint",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/sharepoint/ai-copilot/microsoft-365-copilot-in-sharepoint-help-learning"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

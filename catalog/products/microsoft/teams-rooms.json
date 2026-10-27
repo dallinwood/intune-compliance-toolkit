@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.teams-rooms",
+  "title": "Teams Rooms",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Communications",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-teams/microsoft-teams-rooms"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

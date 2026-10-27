@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.single-sign-on-to-other-saas",
+  "title": "Single-Sign-On to other SaaS",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/hybrid/connect/how-to-connect-sso"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

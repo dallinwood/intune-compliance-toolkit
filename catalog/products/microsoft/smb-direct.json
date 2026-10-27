@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.smb-direct",
+  "title": "SMB Direct",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows-server/storage/file-server/smb-direct"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

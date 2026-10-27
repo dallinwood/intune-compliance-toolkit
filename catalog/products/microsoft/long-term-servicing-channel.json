@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.long-term-servicing-channel",
+  "title": "Long Term Servicing Channel",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/deployment/update/waas-overview#long-term-servicing-channel"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

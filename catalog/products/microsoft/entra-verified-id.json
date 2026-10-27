@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-verified-id",
+  "title": "Entra Verified ID",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Entra",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/verified-id/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

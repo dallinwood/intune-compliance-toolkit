@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.azure-update-manager",
+  "title": "Azure Update Manager",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/update-manager/overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

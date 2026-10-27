@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.power-apps-for-office-365",
+  "title": "Power Apps for Office 365",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/power-platform/products/power-apps/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

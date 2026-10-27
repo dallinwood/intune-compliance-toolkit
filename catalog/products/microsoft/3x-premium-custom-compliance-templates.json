@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.3x-premium-custom-compliance-templates",
+  "title": "3x Premium & Custom Compliance Templates",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-365/compliance/compliance-manager-faq#what-changed-with-template-licensing-in-december-2022-"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

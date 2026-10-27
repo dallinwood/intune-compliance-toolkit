@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.basic-mobility-security",
+  "title": "Basic Mobility & Security",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-365/admin/security-and-compliance/m365b-devices-basic-mobility-security-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

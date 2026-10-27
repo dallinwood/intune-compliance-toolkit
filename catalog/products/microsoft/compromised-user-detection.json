@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.compromised-user-detection",
+  "title": "Compromised User Detection",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/address-compromised-users-quickly"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

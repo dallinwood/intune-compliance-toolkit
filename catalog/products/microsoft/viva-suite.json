@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-suite",
+  "title": "Viva Suite",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Employee Experience",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/microsoft-viva"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

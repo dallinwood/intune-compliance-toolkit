@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-windows",
+  "title": "Copilot in Windows",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/microsoft-copilot/getting-started-with-copilot-on-windows"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-internet-access-for-microsoft",
+  "title": "Entra Internet Access for Microsoft",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/global-secure-access/overview-what-is-global-secure-access#microsoft-entra-internet-access-for-microsoft-services"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

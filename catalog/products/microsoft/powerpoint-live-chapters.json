@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.powerpoint-live-chapters",
+  "title": "PowerPoint Live Chapters",
+  "vendor": "microsoft",
+  "parent": "microsoft.teams-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/clipchamp/stream-pages/auto-generate-powerpoint-live-chapters-from-your-teams-meeting-recording"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

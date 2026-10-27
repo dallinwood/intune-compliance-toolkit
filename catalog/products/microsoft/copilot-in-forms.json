@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-in-forms",
+  "title": "Copilot in Forms",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/forms/welcome-to-copilot-in-forms"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

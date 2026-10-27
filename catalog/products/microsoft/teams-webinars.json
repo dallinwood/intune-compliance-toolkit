@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.teams-webinars",
+  "title": "Teams Webinars",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/stream/live-event-m365"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

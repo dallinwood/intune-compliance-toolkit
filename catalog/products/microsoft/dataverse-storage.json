@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.dataverse-storage",
+  "title": "Dataverse Storage",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Extra Capacity",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/power-platform/admin/add-storage"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

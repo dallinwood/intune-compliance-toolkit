@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.fasttrack",
+  "title": "FastTrack",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/fasttrack/microsoft-365"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

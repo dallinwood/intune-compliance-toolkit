@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intelligent-recap",
+  "title": "Intelligent Recap",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoftteams/teams-add-on-licensing/licensing-enhance-teams#intelligent-recap"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

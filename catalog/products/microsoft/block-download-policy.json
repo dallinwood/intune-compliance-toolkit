@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.block-download-policy",
+  "title": "Block Download Policy",
+  "vendor": "microsoft",
+  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/advanced-management#block-download-policy-for-sharepoint-and-onedrive-sites"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

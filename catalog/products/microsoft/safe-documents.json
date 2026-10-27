@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.safe-documents",
+  "title": "Safe Documents",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/safe-documents-in-e5-plus-security-about"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

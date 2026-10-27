@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot-site-access-review",
+  "title": "Site Access Review",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/advanced-management#site-access-reviews"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

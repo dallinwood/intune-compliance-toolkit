@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.customized-sign-in-page",
+  "title": "Customized Sign-In Page",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-for-office-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/fundamentals/how-to-customize-branding"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

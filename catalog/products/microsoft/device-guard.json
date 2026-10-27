@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.device-guard",
+  "title": "Device Guard",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/security/threat-protection/device-guard/introduction-to-device-guard-virtualization-based-security-and-windows-defender-application-control"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

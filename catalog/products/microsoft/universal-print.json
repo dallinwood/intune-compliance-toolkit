@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.universal-print",
+  "title": "Universal Print",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/universal-print/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

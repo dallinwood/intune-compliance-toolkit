@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-experts-for-hunting",
+  "title": "Defender Experts for Hunting",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Microsoft Security Experts",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/security/business/services/microsoft-defender-experts-hunting"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

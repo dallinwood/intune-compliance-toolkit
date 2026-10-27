@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.power-pages",
+  "title": "Power Pages",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Power Platform",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://www.microsoft.com/power-platform/products/power-pages/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-iot-eiot-5-devices",
+  "title": "Defender for IoT - eIoT (5 devices)",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Suite Value",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/defender-for-iot/organizations/concept-enterprise"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

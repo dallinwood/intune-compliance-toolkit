@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.ai-standard-access",
+  "title": "AI Standard Access",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/microsoft-365-copilot/standard-versus-priority-access-to-features-in-microsoft-365-copilot-chat"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

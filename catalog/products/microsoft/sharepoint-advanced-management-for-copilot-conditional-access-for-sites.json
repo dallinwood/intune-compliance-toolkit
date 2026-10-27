@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.sharepoint-advanced-management-for-copilot-conditional-access-for-sites",
+  "title": "Conditional Access for Sites",
+  "vendor": "microsoft",
+  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/authentication-context-example"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

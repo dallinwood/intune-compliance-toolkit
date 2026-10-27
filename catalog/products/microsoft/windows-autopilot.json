@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-autopilot",
+  "title": "Windows Autopilot",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/autopilot/overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

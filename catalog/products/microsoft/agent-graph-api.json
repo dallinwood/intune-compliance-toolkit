@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-graph-api",
+  "title": "Agent Graph API",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-agent-365/admin/graph-api"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

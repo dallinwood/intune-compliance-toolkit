@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot-premium-2-sharepoint-advanced-management-for-copilot",
+  "title": "SharePoint Advanced Management for Copilot",
+  "vendor": "microsoft",
+  "parent": "microsoft.microsoft-365-copilot-premium-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/advanced-management#sharepoint-advanced-management-features-in-microsoft-365-copilot-licenses"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

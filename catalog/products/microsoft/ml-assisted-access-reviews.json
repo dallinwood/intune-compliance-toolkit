@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.ml-assisted-access-reviews",
+  "title": "ML Assisted Access Reviews",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/active-directory/governance/review-recommendations-access-reviews#user-to-group-affiliation"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

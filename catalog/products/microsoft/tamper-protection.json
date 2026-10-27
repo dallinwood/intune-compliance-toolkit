@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.tamper-protection",
+  "title": "Tamper Protection",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

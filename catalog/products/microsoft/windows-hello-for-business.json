@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-hello-for-business",
+  "title": "Windows Hello for Business",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/security/identity-protection/hello-for-business/deploy/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

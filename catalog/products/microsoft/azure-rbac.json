@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.azure-rbac",
+  "title": "Azure RBAC",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/role-based-access-control/overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

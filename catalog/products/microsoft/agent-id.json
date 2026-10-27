@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-id",
+  "title": "Agent ID",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-free",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/agent-id/what-is-microsoft-entra-agent-id"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

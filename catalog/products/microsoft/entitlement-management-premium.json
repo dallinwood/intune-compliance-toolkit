@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entitlement-management-premium",
+  "title": "Entitlement Management (premium)",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/active-directory/governance/licensing-fundamentals#features-by-license"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-cspm",
+  "title": "Defender CSPM",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/azure/defender-for-cloud/concept-cloud-security-posture-management"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

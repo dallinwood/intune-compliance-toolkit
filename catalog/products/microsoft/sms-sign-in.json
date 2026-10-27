@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.sms-sign-in",
+  "title": "SMS Sign-In",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/identity/authentication/howto-authentication-sms-signin"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

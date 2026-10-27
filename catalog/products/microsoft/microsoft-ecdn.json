@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-ecdn",
+  "title": "Microsoft eCDN",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Communications",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/ecdn/how-to/enable-microsoft-ecdn-for-your-tenant"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

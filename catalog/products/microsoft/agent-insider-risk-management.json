@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.agent-insider-risk-management",
+  "title": "Agent Insider Risk Management",
+  "vendor": "microsoft",
+  "parent": "microsoft.agent-365",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/ai-microsoft-purview#insider-risk-management-and-ai-interactions"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

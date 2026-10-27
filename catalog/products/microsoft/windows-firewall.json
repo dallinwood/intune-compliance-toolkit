@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-firewall",
+  "title": "Windows Firewall",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

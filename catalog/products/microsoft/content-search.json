@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.content-search",
+  "title": "Content Search",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/ediscovery-content-search-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

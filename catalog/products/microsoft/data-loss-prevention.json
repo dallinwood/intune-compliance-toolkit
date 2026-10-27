@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.data-loss-prevention",
+  "title": "Data Loss Prevention",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/dlp-learn-about-dlp"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

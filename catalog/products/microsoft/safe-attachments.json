@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.safe-attachments",
+  "title": "Safe Attachments",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-office-365/safe-attachments-about"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

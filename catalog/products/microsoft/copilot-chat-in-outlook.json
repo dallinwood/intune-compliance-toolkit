@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.copilot-chat-in-outlook",
+  "title": "Copilot Chat in Outlook",
+  "vendor": "microsoft",
+  "parent": "microsoft.copilot-chat-basic",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://support.microsoft.com/microsoft-365-copilot/how-copilot-chat-works-in-microsoft-365-apps"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

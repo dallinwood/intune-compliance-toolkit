@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.teams-data-loss-prevention",
+  "title": "Teams Data Loss Prevention",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/dlp-microsoft-teams"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

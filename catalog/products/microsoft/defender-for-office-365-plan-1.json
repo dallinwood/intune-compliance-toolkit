@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-office-365-plan-1",
+  "title": "Defender for Office 365 Plan 1",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-office-365-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/servicedescriptions/office-365-advanced-threat-protection-service-description#feature-availability-across-advanced-threat-protection-atp-plans"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

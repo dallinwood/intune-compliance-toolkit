@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.custom-security-attributes",
+  "title": "Custom Security Attributes",
+  "vendor": "microsoft",
+  "parent": "microsoft.entra-id-plan-1",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/entra/fundamentals/custom-security-attributes-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.exchange-online",
+  "title": "Exchange Online",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/office365/servicedescriptions/exchange-online-service-description/exchange-online-service-description#feature-availability-across-exchange-online-standalone-plans"
+    }
+  ],
+  "targets": [],
+  "plans": [
+    {
+      "id": "plan_1",
+      "title": "Plan 1",
+      "description": null,
+      "features": []
+    },
+    {
+      "id": "plan_2",
+      "title": "Plan 2",
+      "description": null,
+      "features": []
+    }
+  ]
+}

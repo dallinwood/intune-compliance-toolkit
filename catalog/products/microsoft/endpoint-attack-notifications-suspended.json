@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.endpoint-attack-notifications-suspended",
+  "title": "Endpoint Attack Notifications (suspended)",
+  "vendor": "microsoft",
+  "parent": "microsoft.defender-for-endpoint-plan-2",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/defender-endpoint/endpoint-attack-notifications"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

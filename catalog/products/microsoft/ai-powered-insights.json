@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.ai-powered-insights",
+  "title": "AI-Powered Insights",
+  "vendor": "microsoft",
+  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "category": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/sharepoint/advanced-management#ai-insights"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

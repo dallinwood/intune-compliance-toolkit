@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.privileged-access-management",
+  "title": "Privileged Access Management",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/purview/privileged-access-management-solution-overview"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

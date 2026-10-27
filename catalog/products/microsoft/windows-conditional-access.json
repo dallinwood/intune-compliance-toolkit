@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.windows-conditional-access",
+  "title": "Windows Conditional Access",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Windows",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/windows-server/identity/ad-fs/operations/configure-device-based-conditional-access-on-premises"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.dataverse-for-teams",
+  "title": "Dataverse for Teams",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Office 365",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/power-apps/teams/overview-data-platform"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

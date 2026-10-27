@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-industry-clouds",
+  "title": "Microsoft Industry Clouds",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Companion Products & Services",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/industry/"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

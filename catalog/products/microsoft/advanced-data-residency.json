@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.advanced-data-residency",
+  "title": "Advanced Data Residency",
+  "vendor": "microsoft",
+  "parent": null,
+  "category": "Security & Compliance",
+  "description": null,
+  "links": [
+    {
+      "title": "Documentation",
+      "url": "https://learn.microsoft.com/microsoft-365/enterprise/advanced-data-residency"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}
