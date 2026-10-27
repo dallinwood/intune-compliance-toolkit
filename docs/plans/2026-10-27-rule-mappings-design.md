@@ -87,7 +87,7 @@ The deploy workflow already runs the Python tests, so a bad mapping cannot be pu
 ## 5. Generated index (publish step)
 
 - **Where:** `scripts/copy-baselines.mjs` writes `webui/public/baselines/_mappings/_index.json`.
-  It is never committed.
+  It is written as compact JSON and never committed.
 - **Shape:**
 
 ```jsonc
@@ -153,3 +153,4 @@ Then one review, and push.
 
 - 2026-10-27: Design written from the maintainer's answers (no code yet).
 - 2026-10-27: Implemented sections 3-7 (`feat: add many-to-many rule mappings viewable from both sides`). `baselines/_mappings/rules/` holds only a `.gitkeep`; `tools/mappings.py` and `tests/test_mappings.py` check every section 4 error (fixtures in `tests/fixtures/mappings/`, CRLF and non-UTF-8 cases written at test time) and warn on a stale release; the publish step writes `_mappings/_index.json` through `webui/src/logic/mappingIndex.ts`. Navigation decision: a mapped rule is a link that sets the search to the other rule's upstream id, clears only the filters that would hide it, and opens its details through a new `rule=<full id>` URL parameter (kept until that rule is collapsed or a search is typed), moving to the page that holds it. The stale note checks both ends of a link, so it shows from either side.
+- 2026-10-27: Review fixes for `a5da82c` (`fix: harden rule mapping validation, titles and tests`). The validator reports a non-string `kind` or `relation` instead of crashing; the publish step skips mapping files with an unsafe name, invalid UTF-8 or CRLF (as CI does) and writes the index as compact JSON; mapped rule titles show the organization-defined value like the table; the open-rule reveal waits for the table to catch up and runs again on every link click, including one to the rule already open. Every e2e test starts from an empty mapping index, and the mapping fixtures (Python and e2e) take the library's current releases from the manifest, with deliberately old releases for the stale cases.

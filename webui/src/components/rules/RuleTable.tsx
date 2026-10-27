@@ -4,9 +4,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useRule, useUsableOdvValue } from '@/hooks/useRule'
+import { useDisplayTitle } from '@/hooks/useDisplayTitle'
 import { NO_VERSION_KEY } from '../../logic/applicability'
-import { displayWithOdv } from '../../logic/odv'
 import { assessmentLabel, benchmarkSummary, upstreamRuleId } from '../../logic/ruleDisplay'
 import { sectionGroupKey, versionsUnder } from '../../logic/ruleFilters'
 import {
@@ -142,7 +141,8 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
     },
     [expandedRules, openRule, closeOpenRule],
   )
-  useRevealOpenRule(openRule, pages, currentPage, setPage, shownItems)
+  const openRuleRequest = useFilterStore((store) => store.openRuleRequest)
+  useRevealOpenRule({ openRule, request: openRuleRequest, pages, currentPage, shownItems, isCatchingUp }, setPage)
 
   const tableTopRef = useRef<HTMLDivElement>(null)
   function changePage(page: number) {
@@ -200,38 +200,44 @@ function containsRule(items: VisibleItem[], ruleId: string): boolean {
   return items.some((item) => item.kind === 'rule' && item.row.ref.id === ruleId)
 }
 
-// Once per opened rule: move to the page holding it, then scroll its row
-// into view when it renders. Paging away afterwards is left alone.
-function useRevealOpenRule(
-  openRule: string | null,
-  pages: { items: VisibleItem[] }[] | null,
-  currentPage: number,
-  setPage: (page: number) => void,
-  shownItems: VisibleItem[],
-) {
-  const pagedFor = useRef<string | null>(null)
-  const scrolledFor = useRef<string | null>(null)
+interface RevealState {
+  openRule: string | null
+  // Changes on every link click, even to the rule already open, so that
+  // click reveals it again.
+  request: number
+  pages: { items: VisibleItem[] }[] | null
+  currentPage: number
+  shownItems: VisibleItem[]
+  // While the table still renders the previous filters, its pages and rows
+  // are not the ones the link asked for.
+  isCatchingUp: boolean
+}
+
+// Once per link click (or shared URL): move to the page holding the opened
+// rule, then scroll its row into view when it renders. Paging or scrolling
+// away afterwards is left alone. Under infinite scroll only the rows revealed
+// so far (the first 100, then more as you scroll) are searched; following a
+// link narrows the table by search, so the rule is normally among them.
+function useRevealOpenRule({ openRule, request, pages, currentPage, shownItems, isCatchingUp }: RevealState, setPage: (page: number) => void) {
+  const pagedFor = useRef<number | null>(null)
+  const scrolledFor = useRef<number | null>(null)
   useEffect(() => {
-    if (openRule === null) {
-      pagedFor.current = null
-      scrolledFor.current = null
-      return
-    }
-    if (pages && pagedFor.current !== openRule) {
+    if (openRule === null || isCatchingUp) return
+    if (pages && pagedFor.current !== request) {
       const pageIndex = pages.findIndex((page) => containsRule(page.items, openRule))
       if (pageIndex === -1) return
-      pagedFor.current = openRule
+      pagedFor.current = request
       if (pageIndex + 1 !== currentPage) {
         setPage(pageIndex + 1)
         return
       }
     }
-    if (scrolledFor.current === openRule || !containsRule(shownItems, openRule)) return
+    if (scrolledFor.current === request || !containsRule(shownItems, openRule)) return
     const row = document.querySelector(`[data-rule-id="${CSS.escape(openRule)}"]`)
     if (!row) return
-    scrolledFor.current = openRule
+    scrolledFor.current = request
     row.scrollIntoView({ block: 'start' })
-  }, [openRule, pages, currentPage, setPage, shownItems])
+  }, [openRule, request, pages, currentPage, setPage, shownItems, isCatchingUp])
 }
 
 // Re-subscribes on every reveal (onReveal changes identity), so a sentinel
@@ -462,19 +468,13 @@ function RowCheckbox({ ruleId, checked, onCheckedChange }: RowCheckboxProps) {
   )
 }
 
-const ODV_PLACEHOLDER = '$ODV'
-
 function RuleTitle({ row }: { row: RuleRow }) {
-  // Only titles that mention $ODV need the rule's recommended value, so only
-  // those fetch the full rule (cached by fetchRule).
-  const needsValue = row.hasOdv && row.title.includes(ODV_PLACEHOLDER)
-  const ruleState = useRule(needsValue ? row.ref : null)
-  const value = useUsableOdvValue(ruleState.status === 'ready' ? ruleState.rule : null, row.ref)
+  const title = useDisplayTitle(row)
 
   return (
     <div className="min-w-0">
       <span className="break-words">
-        {displayWithOdv(row.title, value)}
+        {title}
         {row.hasOdv && (
           <span role="img" title="Has an organization-defined value" aria-label="Has an organization-defined value">
             <Settings2 className="ml-1.5 inline size-4 align-text-bottom text-link" />

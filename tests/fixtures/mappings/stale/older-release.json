@@ -8,7 +8,7 @@
         {
           "kind": "rule",
           "id": "mscp.os_gatekeeper_enable",
-          "release": "release_26.0"
+          "release": "release_0.0"
         }
       ],
       "to": [

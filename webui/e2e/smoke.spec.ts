@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { unzipSync } from 'fflate'
@@ -5,6 +6,18 @@ import { buildMappingIndex } from '../src/logic/mappingIndex'
 import { buildOverlayIndex } from '../src/logic/overlayIndex'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
+
+const EMPTY_MAPPING_INDEX = { schema_version: 1, by_rule: {} }
+
+// Every test starts from no mappings, whatever the committed
+// baselines/_mappings/rules/ folder holds, so a real mapping cannot shift the
+// details layout other tests check. The mapping tests register their own
+// index later, and a later route wins.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/baselines/_mappings/_index.json', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_MAPPING_INDEX) }),
+  )
+})
 
 async function searchForSingleRow(page: Page, search: string, title: RegExp | string) {
   const searchBox = page.getByPlaceholder('Search title or id…')
@@ -1746,8 +1759,15 @@ test.describe('rule mappings', () => {
   const ISM_1621 = 'asd_ism.ism-1621'
   const GATEKEEPER = 'mscp.os_gatekeeper_enable'
   const DICTATION = 'mscp.os_dictation_disable'
-  const ISM_RELEASE = 'v2026.09.4'
-  const MSCP_RELEASE = 'release_27.0'
+  // The library's current releases, so a re-import keeps these links current;
+  // the stale link uses a deliberately old release.
+  const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8')) as {
+    sources: { name: string; release_tag: string }[]
+  }
+  const releaseOf = (sourceName: string) => manifest.sources.find((source) => source.name === sourceName)?.release_tag ?? ''
+  const ISM_RELEASE = releaseOf('asd_ism')
+  const MSCP_RELEASE = releaseOf('mscp')
+  const STALE_ISM_RELEASE = 'v2000.01.1'
   const ISM_1622_TITLE = 'PowerShell is configured to use Constrained Language Mode.'
 
   const ruleEndpoint = (id: string, release: string) => ({ kind: 'rule', id, release })
@@ -1766,7 +1786,7 @@ test.describe('rule mappings', () => {
   const staleRelated = {
     schema_version: 1,
     id: 'older-release',
-    links: [{ relation: 'related', from: [ruleEndpoint(ISM_1621, 'v2025.03.1')], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
+    links: [{ relation: 'related', from: [ruleEndpoint(ISM_1621, STALE_ISM_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
   }
 
   async function serveMappings(page: Page, files: Record<string, unknown>) {
@@ -1803,6 +1823,10 @@ test.describe('rule mappings', () => {
     const gatekeeperImplements = mappedRulesOf(page, GATEKEEPER).getByRole('list', { name: 'Implements' })
     await expect(gatekeeperImplements.getByRole('link')).toHaveText([/ism-1622/])
     await expect(gatekeeperImplements).toContainText(ISM_1622_TITLE)
+    const gatekeeperHeadings = await detailOf(page, GATEKEEPER).locator('h5').allTextContents()
+    const benchmarksPosition = gatekeeperHeadings.indexOf('Benchmarks')
+    expect(benchmarksPosition).toBeGreaterThan(-1)
+    expect(gatekeeperHeadings.slice(benchmarksPosition, benchmarksPosition + 3)).toEqual(['Benchmarks', 'Mapped rules', 'References'])
 
     // A filter that would hide the target is cleared on the way back; the
     // search box keeps the opened rule in view meanwhile.
@@ -1836,10 +1860,54 @@ test.describe('rule mappings', () => {
 
     const related = mappedRulesOf(page, ISM_1622).getByRole('list', { name: 'Related' })
     await expect(related.getByTestId('stale-mapping-note')).toHaveText(
-      `This link was checked against ASD ISM v2025.03.1 for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
+      `This link was checked against ASD ISM ${STALE_ISM_RELEASE} for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
     )
     await related.getByRole('link', { name: /ism-1621/ }).click()
     await expect(mappedRulesOf(page, ISM_1621).getByTestId('stale-mapping-note')).toHaveCount(1)
+  })
+
+  test('a mapped rule title shows its organization-defined value, as the table does', async ({ page }) => {
+    const passwordLength = 'mscp.pwpolicy_minimum_length_enforce'
+    await serveMappings(page, {
+      'password.json': {
+        schema_version: 1,
+        id: 'password-length',
+        links: [{ relation: 'related', from: [ruleEndpoint(passwordLength, MSCP_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
+      },
+    })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+
+    const passwordLink = mappedRulesOf(page, ISM_1622).getByRole('link', { name: /pwpolicy_minimum_length_enforce/ })
+    await expect(passwordLink).toContainText(/Require a Minimum Password Length of \d+ Characters/)
+    await expect(passwordLink).toHaveAccessibleName(/Require a Minimum Password Length of \d+ Characters/)
+    await expect(passwordLink).not.toContainText('$ODV')
+  })
+
+  // os_calendar_app_disable's id is part of
+  // os_calendar_app_disable_familycontrols's, so its search shows both rules
+  // and the second one's link points at the rule already open.
+  test('a link to the rule already open scrolls it back into view', async ({ page }) => {
+    const calendar = 'mscp.os_calendar_app_disable'
+    const familyControls = 'mscp.os_calendar_app_disable_familycontrols'
+    await serveMappings(page, {
+      'calendar.json': {
+        schema_version: 1,
+        id: 'calendar',
+        links: [{ relation: 'related', from: [ruleEndpoint(familyControls, MSCP_RELEASE)], to: [ruleEndpoint(calendar, MSCP_RELEASE)] }],
+      },
+    })
+    await page.setViewportSize({ width: 1280, height: 500 })
+    await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
+    await expect(detailOf(page, calendar)).toBeVisible()
+    await page.locator(`[data-rule-id="${familyControls}"]`).getByRole('button', { name: 'Expand os_calendar_app_disable_familycontrols' }).click()
+
+    const linkBack = mappedRulesOf(page, familyControls).getByRole('link', { name: /os_calendar_app_disable(?!_)/ })
+    await linkBack.scrollIntoViewIfNeeded()
+    const calendarRow = page.locator(`[data-rule-id="${calendar}"]`)
+    await expect(calendarRow).not.toBeInViewport()
+    await linkBack.click()
+    await expect(calendarRow).toBeInViewport()
+    expect(new URL(page.url()).searchParams.get('rule')).toBe(calendar)
   })
 
   test('a broken mapping index is a warning and the app still loads', async ({ page }) => {
@@ -1855,6 +1923,7 @@ test.describe('rule mappings', () => {
   })
 
   test('with no mappings the details show no Mapped rules section', async ({ page }) => {
+    await serveMappings(page, {})
     await openLibrary(page)
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()

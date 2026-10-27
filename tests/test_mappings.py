@@ -21,8 +21,16 @@ INVALID_CASES = sorted(path for path in (FIXTURES_DIR / "invalid").iterdir() if 
 GATEKEEPER = "mscp.os_gatekeeper_enable"
 DICTATION = "mscp.os_dictation_disable"
 ISM_1622 = "asd_ism.ism-1622"
-ISM_RELEASE = "v2026.09.4"
-MSCP_RELEASE = "release_27.0"
+# The fixtures are checked against whatever release the library is at, so a
+# re-import does not break them; the stale samples use releases that are
+# deliberately old.
+CURRENT_RELEASES = {
+    source["name"]: source["release_tag"]
+    for source in json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))["sources"]
+}
+ISM_RELEASE = CURRENT_RELEASES["asd_ism"]
+MSCP_RELEASE = CURRENT_RELEASES["mscp"]
+STALE_MSCP_RELEASE = "release_0.0"
 
 # The message each invalid case must produce, so a case cannot pass by
 # failing for an unrelated reason.
@@ -37,6 +45,7 @@ EXPECTED_ERROR_BY_CASE = {
     "empty-links": "links must be a non-empty list",
     "unknown-relation": "unknown relation 'supersedes'",
     "unknown-kind": "unknown kind 'benchmark'",
+    "unknown-kind-not-string": "unknown kind []",
     "endpoint-without-release": "missing key(s): release",
     "missing-rule": "rule asd_ism.ism-0000 does not exist in the committed library",
     "self-link": f"rule {ISM_1622} is linked to itself",
@@ -53,6 +62,18 @@ EXPECTED_ERROR_BY_CASE = {
 
 def rule_endpoint(rule_id: str, release: str) -> dict:
     return {"kind": "rule", "id": rule_id, "release": release}
+
+
+def copy_with_current_releases(source_dir: Path, destination_dir: Path) -> Path:
+    """Copy each mapping file, setting every endpoint's release to its source's current release."""
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    for path in sorted(source_dir.glob("*.json")):
+        mapping = json.loads(path.read_text(encoding="utf-8"))
+        for link in mapping["links"]:
+            for endpoint in [*link["from"], *link["to"]]:
+                endpoint["release"] = CURRENT_RELEASES[endpoint["id"].split(".", 1)[0]]
+        (destination_dir / path.name).write_bytes((json.dumps(mapping, indent=2) + "\n").encode("utf-8"))
+    return destination_dir
 
 
 def write_bytes(directory: Path, file_name: str, content: bytes) -> None:
@@ -85,8 +106,10 @@ def test_committed_mappings_folder_exists_for_maintainers():
     assert (MAPPINGS_DIR / ".gitkeep").is_file()
 
 
-def test_valid_samples_have_no_errors_or_warnings():
-    assert validate_mappings(FIXTURES_DIR / "valid", BASELINES_DIR) == ([], [])
+def test_valid_samples_have_no_errors_or_warnings(tmp_path):
+    valid_dir = copy_with_current_releases(FIXTURES_DIR / "valid", tmp_path / "valid")
+    assert sorted(path.name for path in valid_dir.iterdir()) == sorted(path.name for path in (FIXTURES_DIR / "valid").iterdir())
+    assert validate_mappings(valid_dir, BASELINES_DIR) == ([], [])
 
 
 def test_every_invalid_case_has_an_expected_message():
@@ -110,7 +133,7 @@ def test_a_release_other_than_the_library_release_is_a_warning_not_an_error():
     assert len(mapping_warnings) == 1
     assert "older-release.json" in mapping_warnings[0]
     assert GATEKEEPER in mapping_warnings[0]
-    assert "release_26.0" in mapping_warnings[0] and MSCP_RELEASE in mapping_warnings[0]
+    assert STALE_MSCP_RELEASE in mapping_warnings[0] and MSCP_RELEASE in mapping_warnings[0]
 
 
 def test_mapping_warnings_are_reported_without_failing_under_warnings_as_errors():
@@ -194,8 +217,10 @@ def test_a_file_name_outside_the_safe_segment_rule_is_an_error(tmp_path):
     assert errors[0].startswith("has space.json: the file name")
 
 
-def test_main_returns_one_on_errors_and_zero_otherwise(capsys):
-    assert mappings.main([str(FIXTURES_DIR / "valid"), str(BASELINES_DIR)]) == 0
+def test_main_returns_one_on_errors_and_zero_otherwise(tmp_path, capsys):
+    valid_dir = copy_with_current_releases(FIXTURES_DIR / "valid", tmp_path / "valid")
+    assert mappings.main([str(valid_dir), str(BASELINES_DIR)]) == 0
+    assert capsys.readouterr().err == ""
     assert mappings.main([str(FIXTURES_DIR / "stale"), str(BASELINES_DIR)]) == 0
     assert "warning:" in capsys.readouterr().err
     assert mappings.main([str(FIXTURES_DIR / "invalid" / "self-link"), str(BASELINES_DIR)]) == 1

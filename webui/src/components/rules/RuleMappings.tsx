@@ -1,4 +1,5 @@
 import { useId, type MouseEvent } from 'react'
+import { useDisplayTitle } from '../../hooks/useDisplayTitle'
 import { groupMappedRules, staleEndpoints, type MappedRule } from '../../logic/mappingIndex'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { filtersShowingRule } from '../../logic/ruleNavigation'
@@ -58,6 +59,7 @@ function MappedRuleItem({ link, self, other, index }: { link: MappedRule; self: 
   const showRule = useFilterStore((store) => store.showRule)
   const otherSourceLabel = termLabel(index, 'sources', other.sourceName)
   const otherUpstreamId = upstreamRuleId(other.ref.id)
+  const otherTitle = useDisplayTitle(other)
   const stale = staleEndpoints(
     link,
     { ruleId: self.ref.id, sourceName: self.sourceName, releaseTag: self.releaseTag },
@@ -75,12 +77,12 @@ function MappedRuleItem({ link, self, other, index }: { link: MappedRule; self: 
       <a
         href={hrefShowing(other.ref.id)}
         onClick={navigate}
-        aria-label={`Show ${otherSourceLabel} ${otherUpstreamId}: ${other.title}`}
+        aria-label={`Show ${otherSourceLabel} ${otherUpstreamId}: ${otherTitle}`}
         className="group block rounded py-0.5 hover:bg-foreground/5"
       >
         <span className="text-muted-foreground">{otherSourceLabel}</span>{' '}
         <span className="font-mono break-all text-link underline underline-offset-4 group-hover:no-underline">{otherUpstreamId}</span>
-        <span className="block text-foreground">{other.title}</span>
+        <span className="block text-foreground">{otherTitle}</span>
       </a>
       {link.note && <p className="text-muted-foreground">{link.note}</p>}
       {stale.map((endpoint) => (

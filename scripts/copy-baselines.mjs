@@ -115,17 +115,39 @@ async function mappingFileNames() {
     .sort();
 }
 
+// The same file checks as load_mappings in tools/mappings.py, so the index
+// never holds a file CI would reject for its name, encoding or line endings.
+const SAFE_FILE_NAME = /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/;
+const strictUtf8 = new TextDecoder("utf-8", { fatal: true });
+
+async function readMappingFile(fileName) {
+  if (!SAFE_FILE_NAME.test(fileName)) return { problem: "the file name must use only letters, digits, '.', '_' and '-'" };
+  const bytes = await readFile(join(mappingRulesDestination, fileName));
+  let text;
+  try {
+    text = strictUtf8.decode(bytes);
+  } catch {
+    return { problem: "the file is not UTF-8" };
+  }
+  if (text.includes("\r")) return { problem: "the file must use LF line endings, not CRLF" };
+  try {
+    return { value: JSON.parse(text) };
+  } catch (error) {
+    return { problem: `cannot read JSON (${error.message})` };
+  }
+}
+
 const mappingFiles = [];
 for (const fileName of await mappingFileNames()) {
-  try {
-    mappingFiles.push({ fileName, value: JSON.parse(await readFile(join(mappingRulesDestination, fileName), "utf8")) });
-  } catch (error) {
-    console.warn(`${fileName}: cannot read JSON (${error.message}). It was skipped.`);
-  }
+  const file = await readMappingFile(fileName);
+  if ("problem" in file) console.warn(`${fileName}: ${file.problem}. It was skipped.`);
+  else mappingFiles.push({ fileName, value: file.value });
 }
 const mappingIndex = buildMappingIndex(mappingFiles, (message) => console.warn(message));
 await mkdir(mappingsDestination, { recursive: true });
-await writeFile(join(mappingsDestination, MAPPING_INDEX_NAME), `${JSON.stringify(mappingIndex, null, 2)}
+// Compact, unlike the overlay index: this one grows with every link (design
+// section 5), and nobody reads it by hand.
+await writeFile(join(mappingsDestination, MAPPING_INDEX_NAME), `${JSON.stringify(mappingIndex)}
 `);
 console.log(
   `Indexed ${mappingFiles.length} mapping file(s) for ${Object.keys(mappingIndex.by_rule).length} rule(s) in ${join(mappingsDestination, MAPPING_INDEX_NAME)}`,

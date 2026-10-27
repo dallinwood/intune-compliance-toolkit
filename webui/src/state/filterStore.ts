@@ -18,6 +18,9 @@ export interface FilterState {
   // A rule a mapped-rule link opened: its details stay open, and it survives
   // a shared URL. Typing a search or collapsing that rule lets it go.
   openRule: string | null
+  // Counts link clicks, so a click on a link to the rule already open still
+  // reveals it again.
+  openRuleRequest: number
   setSearch: (value: string) => void
   toggleTarget: (value: string) => void
   toggleSource: (value: string) => void
@@ -99,6 +102,7 @@ export const useFilterStore = create<FilterState>((set) => {
     page: fromUrl.page,
     size: fromUrl.size,
     openRule: fromUrl.openRule,
+    openRuleRequest: 0,
     setSearch: (value) => set({ search: value, openRule: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
     toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value), ...FIRST_PAGE })),
@@ -125,7 +129,8 @@ export const useFilterStore = create<FilterState>((set) => {
         const unchanged = (Object.keys(next) as (keyof typeof next)[]).every((key) => next[key] === state[key])
         return unchanged ? state : next
       }),
-    showRule: (ruleId, filters) => set({ ...filters, openRule: ruleId, ...FIRST_PAGE }),
+    showRule: (ruleId, filters) =>
+      set((state) => ({ ...filters, openRule: ruleId, openRuleRequest: state.openRuleRequest + 1, ...FIRST_PAGE })),
     closeOpenRule: () => set({ openRule: null }),
     clear: () =>
       set({

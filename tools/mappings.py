@@ -95,7 +95,8 @@ def _endpoint_errors(endpoint: object, path: str) -> list[str]:
     unexpected = sorted(endpoint.keys() - ENDPOINT_KEYS)
     if unexpected:
         errors.append(f"{path}: unexpected key(s): {', '.join(unexpected)}")
-    if "kind" in endpoint and endpoint["kind"] not in ENDPOINT_KINDS:
+    # A kind that is not a string (such as a list) cannot be looked up in a set.
+    if "kind" in endpoint and not (isinstance(endpoint["kind"], str) and endpoint["kind"] in ENDPOINT_KINDS):
         errors.append(f"{path}: unknown kind {endpoint['kind']!r} (expected one of {sorted(ENDPOINT_KINDS)})")
     if "id" in endpoint and not _is_text(endpoint["id"]):
         errors.append(f"{path}: id must be a non-empty string")
@@ -114,7 +115,7 @@ def _link_errors(link: object, path: str) -> list[str]:
     unexpected = sorted(link.keys() - ALLOWED_LINK_KEYS)
     if unexpected:
         errors.append(f"{path}: unexpected key(s): {', '.join(unexpected)}")
-    if "relation" in link and link["relation"] not in RELATIONS:
+    if "relation" in link and not (isinstance(link["relation"], str) and link["relation"] in RELATIONS):
         errors.append(f"{path}: unknown relation {link['relation']!r} (expected one of {list(RELATIONS)})")
     for side in ("from", "to"):
         if side not in link:
