@@ -75,10 +75,12 @@ test.beforeEach(async ({ page }) => {
 test('the Licences tab lists licences under their family and updates the URL on selection', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Licences' }).click()
-  await expect(page).toHaveURL(/view=licences/)
+  await expect(page).toHaveURL(/\/licences$/)
 
+  await page.getByRole('button', { name: 'Acme', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Acme Business' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Acme Add-ons' })).toBeVisible()
+  await page.getByRole('button', { name: 'Acme Business' }).click()
 
   await page.getByRole('link', { name: 'Acme Pro', exact: true }).click()
   await expect(page).toHaveURL(/licence=acme\.pro/)
@@ -86,7 +88,7 @@ test('the Licences tab lists licences under their family and updates the URL on 
 })
 
 test('a feature whose parent the licence does not list shows under that parent as context', async ({ page }) => {
-  await page.goto('/?view=licences&licence=acme.basic')
+  await page.goto('/licences?licence=acme.basic')
 
   const securitySection = page.getByRole('region', { name: 'Security' })
   await expect(securitySection.getByText('Security Suite')).toBeVisible()
@@ -95,7 +97,7 @@ test('a feature whose parent the licence does not list shows under that parent a
 })
 
 test('availability and plans are labelled in words', async ({ page }) => {
-  await page.goto('/?view=licences&licence=acme.pro')
+  await page.goto('/licences?licence=acme.pro')
 
   const securitySection = page.getByRole('region', { name: 'Security' })
   await expect(securitySection.getByText('Add-on', { exact: true })).toBeVisible()
@@ -103,13 +105,13 @@ test('availability and plans are labelled in words', async ({ page }) => {
 })
 
 test('a product link points at the Products tab for that product', async ({ page }) => {
-  await page.goto('/?view=licences&licence=acme.basic')
+  await page.goto('/licences?licence=acme.basic')
 
-  await expect(page.getByRole('link', { name: 'Other Tool' })).toHaveAttribute('href', /view=products&(.*&)?product=acme\.tool/)
+  await expect(page.getByRole('link', { name: 'Other Tool' })).toHaveAttribute('href', /\/products\?(.*&)?product=acme\.tool/)
 })
 
 test('review notes sit in a collapsed callout with their count', async ({ page }) => {
-  await page.goto('/?view=licences&licence=acme.basic')
+  await page.goto('/licences?licence=acme.basic')
 
   const callout = page.getByRole('group', { name: /Needs review/ })
   await expect(callout).toContainText('Needs review (1)')
@@ -121,9 +123,9 @@ test('review notes sit in a collapsed callout with their count', async ({ page }
 test('an unknown licence id renders the list without a selection and without error', async ({ page }) => {
   const problems: string[] = []
   page.on('pageerror', (error) => problems.push(error.message))
-  await page.goto('/?view=licences&licence=nope')
+  await page.goto('/licences?licence=nope')
 
-  await expect(page.getByRole('heading', { name: 'Acme Business' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Acme', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
   expect(problems).toEqual([])
 })
@@ -158,7 +160,9 @@ test('a missing catalog index warns only inside the Licences tab and leaves the 
 })
 
 test('comparing two licences shows a matrix, and hiding identical rows drops the shared ones', async ({ page }) => {
-  await page.goto('/?view=licences')
+  await page.goto('/licences')
+  await page.getByRole('button', { name: 'Acme', exact: true }).click()
+  await page.getByRole('button', { name: 'Acme Business' }).click()
   await page.getByRole('button', { name: 'Compare' }).click()
   await page.getByRole('checkbox', { name: 'Acme Basic' }).click()
   await page.getByRole('checkbox', { name: 'Acme Pro' }).click()
@@ -177,15 +181,15 @@ test('comparing two licences shows a matrix, and hiding identical rows drops the
 })
 
 test('a product link in a licence switches to that product on a plain click', async ({ page }) => {
-  await page.goto('/?view=licences&licence=acme.basic')
+  await page.goto('/licences?licence=acme.basic')
   await page.getByRole('link', { name: 'Other Tool' }).click()
 
-  await expect(page).toHaveURL(/view=products&(.*&)?product=acme\.tool/)
+  await expect(page).toHaveURL(/\/products\?(.*&)?product=acme\.tool/)
   await expect(page.getByRole('heading', { level: 2, name: 'Other Tool' })).toBeVisible()
 })
 
 test('searching the Products tab finds a feature with its breadcrumb, and its detail lists the licences that include it', async ({ page }) => {
-  await page.goto('/?view=products')
+  await page.goto('/products')
   await page.getByRole('searchbox', { name: 'Search products' }).fill('context')
 
   const result = page.getByRole('link', { name: /Context Feature/ })
@@ -197,12 +201,12 @@ test('searching the Products tab finds a feature with its breadcrumb, and its de
   await expect(includedIn.getByText('Included', { exact: true })).toBeVisible()
   await expect(includedIn.getByText('Add-on', { exact: true })).toBeVisible()
   await includedIn.getByRole('link', { name: 'Acme Pro' }).click()
-  await expect(page).toHaveURL(/view=licences&(.*&)?licence=acme\.pro/)
+  await expect(page).toHaveURL(/\/licences\?(.*&)?licence=acme\.pro/)
   await expect(page.getByRole('heading', { level: 2, name: 'Acme Pro' })).toBeVisible()
 })
 
 test('a product detail shows its plans, features and the licences that include it', async ({ page }) => {
-  await page.goto('/?view=products&product=acme.suite')
+  await page.goto('/products?product=acme.suite')
 
   await expect(page.getByRole('region', { name: 'Plans' }).getByText('Plan 2', { exact: true })).toBeVisible()
   await expect(page.getByRole('region', { name: 'Features' }).getByRole('link', { name: 'Context Feature' })).toBeVisible()
@@ -212,7 +216,7 @@ test('a product detail shows its plans, features and the licences that include i
 test('an unknown product id renders the list without a selection and without error', async ({ page }) => {
   const problems: string[] = []
   page.on('pageerror', (error) => problems.push(error.message))
-  await page.goto('/?view=products&product=nope')
+  await page.goto('/products?product=nope')
 
   await expect(page.getByRole('searchbox', { name: 'Search products' })).toBeVisible()
   await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
@@ -224,14 +228,96 @@ test('expanding a group leaves the product list where it was scrolled', async ({
   const bigIndex = buildCatalogIndex([...FIXTURE_FILES, ...fillerProducts], () => {})
   await page.route('**/catalog/_index.json', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(bigIndex) }))
   await page.setViewportSize({ width: 1440, height: 500 })
-  await page.goto('/?view=products&product=acme.filler-59')
+  await page.goto('/products?product=acme.filler-59')
   const list = page.getByRole('navigation', { name: 'Products' }).locator('xpath=..')
   await expect(page.getByRole('heading', { level: 2, name: 'Filler 59' })).toBeVisible()
   await expect.poll(() => list.evaluate((element) => element.scrollTop)).toBeGreaterThan(0)
 
   await list.evaluate((element) => element.scrollTo({ top: 0 }))
+  await page.getByRole('button', { name: 'Security', exact: true }).click()
   await page.getByRole('button', { name: /^Expand Security Suite/ }).click()
   await expect(page.getByRole('link', { name: 'Context Feature' })).toBeVisible()
 
   expect(await list.evaluate((element) => element.scrollTop)).toBe(0)
+})
+
+test('a licence opened by its address is shown, its group is open and the others are collapsed', async ({ page }) => {
+  await page.goto('/licences?licence=acme.pro')
+
+  await expect(page.getByRole('heading', { level: 2, name: 'Acme Pro' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Acme Business' })).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.getByRole('button', { name: 'Acme Add-ons' })).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.getByRole('link', { name: 'Acme Security Pack' })).toHaveCount(0)
+})
+
+test('groups are collapsed by default in both lists', async ({ page }) => {
+  await page.goto('/licences')
+  await expect(page.getByRole('button', { name: 'Acme', exact: true })).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.getByRole('heading', { name: 'Acme Business' })).toHaveCount(0)
+
+  await page.goto('/products')
+  await expect(page.getByRole('button', { name: 'Acme', exact: true })).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.getByRole('heading', { name: 'Security' })).toHaveCount(0)
+})
+
+test('back and forward walk from a licence to a product and back to the list', async ({ page }) => {
+  await page.goto('/licences')
+  await page.getByRole('button', { name: 'Acme', exact: true }).click()
+  await page.getByRole('button', { name: 'Acme Business' }).click()
+  await page.getByRole('link', { name: /^Acme Basic/ }).click()
+  await expect(page).toHaveURL(/\/licences\?licence=acme\.basic/)
+  await page.getByRole('link', { name: 'Other Tool' }).click()
+  await expect(page).toHaveURL(/\/products\?(.*&)?product=acme\.tool/)
+  await expect(page.getByRole('heading', { level: 2, name: 'Other Tool' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Productivity' })).toHaveAttribute('aria-expanded', 'true')
+
+  await page.goBack()
+  await expect(page).toHaveURL(/\/licences\?licence=acme\.basic/)
+  await expect(page.getByRole('heading', { level: 2, name: 'Acme Basic' })).toBeVisible()
+
+  await page.goBack()
+  await expect(page).toHaveURL(/\/licences$/)
+  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
+
+  await page.goForward()
+  await expect(page.getByRole('heading', { level: 2, name: 'Acme Basic' })).toBeVisible()
+})
+
+test('a selection reached by going back opens its group again', async ({ page }) => {
+  await page.goto('/licences?licence=acme.basic')
+  await page.getByRole('link', { name: 'Other Tool' }).click()
+  await expect(page).toHaveURL(/\/products\?/)
+  await page.goBack()
+  await expect(page.getByRole('button', { name: 'Acme Business' })).toHaveAttribute('aria-expanded', 'true')
+  await page.getByRole('button', { name: 'Acme Business' }).click()
+  await page.getByRole('link', { name: 'Other Tool' }).click()
+  await page.goBack()
+  await expect(page.getByRole('button', { name: 'Acme Business' })).toHaveAttribute('aria-expanded', 'true')
+})
+
+test('typing a Rules search adds no history entry', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByPlaceholder('Search title or id…')).toBeVisible({ timeout: 10_000 })
+  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Licences' }).click()
+  await expect(page).toHaveURL(/\/licences$/)
+  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' }).click()
+  await page.getByPlaceholder('Search title or id…').fill('gatekeeper')
+  await expect(page).toHaveURL(/q=gatekeeper/)
+  await page.goBack()
+  await expect(page).toHaveURL(/\/licences$/)
+})
+
+test('the tab bar has no scrollbar at phone and desktop widths', async ({ page }) => {
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 800 })
+    await page.goto('/')
+    const metrics = await page.getByRole('navigation', { name: 'Views' }).evaluate((element) => ({
+      scrollHeight: element.scrollHeight,
+      clientHeight: element.clientHeight,
+      scrollWidth: element.scrollWidth,
+      clientWidth: element.clientWidth,
+    }))
+    expect(metrics.scrollHeight).toBeLessThanOrEqual(metrics.clientHeight)
+    expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth)
+  }
 })

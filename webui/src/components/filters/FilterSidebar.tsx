@@ -270,7 +270,7 @@ function SearchBox({ value, onChange }: { value: string; onChange: (value: strin
             onChange('')
           }
         }}
-        className="h-8 rounded pr-8 text-sm"
+        className="pr-8"
       />
       {value !== '' && (
         <button

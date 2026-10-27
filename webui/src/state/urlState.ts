@@ -3,7 +3,7 @@ export type PageSize = number | 'all'
 export const DEFAULT_VIEW_ID = 'rules'
 
 export interface UrlState {
-  // Kept as written in the URL; an id no view has is replaced by the app.
+  // Read from the path, kept as written; an id no view has is replaced by the app.
   view: string
   search: string
   automation: string
@@ -53,12 +53,18 @@ export function parsePageSize(text: string | null): PageSize | null {
   return PAGE_SIZES.find((size) => String(size) === text) ?? null
 }
 
-export function parseUrlState(search: string): UrlState {
+// The first path segment under the base names the view; the base alone is the default view.
+function viewIdFromPath(pathname: string, basePath: string): string {
+  const relativePath = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname.replace(/^\//, '')
+  return relativePath.split('/')[0] || DEFAULT_VIEW_ID
+}
+
+export function parseUrlState(search: string, pathname = '', basePath = '/'): UrlState {
   const parameters = new URLSearchParams(search)
   const listValues = (name: string) => parameters.getAll(name).filter((value) => value !== '')
 
   return {
-    view: parameters.get('view') || DEFAULT_VIEW_ID,
+    view: viewIdFromPath(pathname, basePath),
     search: parameters.get('q') ?? '',
     automation: parameters.get('automation') || DEFAULT_AUTOMATION,
     targets: listValues(LIST_PARAMETER_NAMES.targets),
@@ -76,11 +82,11 @@ export function parseUrlState(search: string): UrlState {
   }
 }
 
+// The query string only; the view lives in the path (see serializeUrlLocation).
 // Returns '' when everything is at its default, otherwise a query string with
 // its leading '?', so the result can be appended to a path as is.
 export function serializeUrlState(state: UrlState, defaults: UrlDefaults): string {
   const parameters = new URLSearchParams()
-  if (state.view !== DEFAULT_VIEW_ID) parameters.set('view', state.view)
   if (state.search !== '') parameters.set('q', state.search)
   if (state.automation !== defaults.automation) parameters.set('automation', state.automation)
   for (const [stateKey, parameterName] of Object.entries(LIST_PARAMETER_NAMES)) {
@@ -96,4 +102,21 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
 
   const queryString = parameters.toString()
   return queryString === '' ? '' : `?${queryString}`
+}
+
+export function serializeUrlLocation(state: UrlState, defaults: UrlDefaults, basePath: string): string {
+  return `${basePath}${state.view}${serializeUrlState(state, defaults)}`
+}
+
+// Whether moving from one state to the next is a navigation (the back button
+// should undo it) rather than a refinement of the current page (search,
+// filters, paging, ticking licences inside compare).
+export function startsHistoryEntry(previous: UrlState, next: UrlState): boolean {
+  return (
+    next.view !== previous.view ||
+    next.licence !== previous.licence ||
+    next.product !== previous.product ||
+    (next.openRule !== previous.openRule && next.openRule !== null) ||
+    (next.compare.length === 0) !== (previous.compare.length === 0)
+  )
 }

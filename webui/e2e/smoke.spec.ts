@@ -1951,12 +1951,17 @@ test('the Views navigation shows Rules as the current page', async ({ page }) =>
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper')
   await rulesTab.click()
   await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
-  await expect(page).toHaveURL(/q=gatekeeper/)
-  await expect(page).not.toHaveURL(/view=/)
+  await expect(page).toHaveURL(/\/rules\?q=gatekeeper/)
 })
 
-test('an unknown view in the URL opens Rules and is dropped from the URL', async ({ page }) => {
-  await page.goto('/?view=unknown&q=gatekeeper')
+test('a bare base address shows Rules and its address says so', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(page).toHaveURL(/\/rules$/)
+})
+
+test('an unknown view in the URL opens Rules and is replaced in the URL', async ({ page }) => {
+  await page.goto('/unknown?q=gatekeeper')
 
   await expect(page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' })).toHaveAttribute(
     'aria-current',
@@ -1964,6 +1969,5 @@ test('an unknown view in the URL opens Rules and is dropped from the URL', async
   )
   await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper enable')
-  await expect(page).toHaveURL(/q=gatekeeper/)
-  await expect(page).not.toHaveURL(/view=/)
+  await expect(page).toHaveURL(/\/rules\?q=gatekeeper/)
 })

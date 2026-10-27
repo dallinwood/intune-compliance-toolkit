@@ -35,9 +35,7 @@ export function CatalogLink({
           onNavigate()
           return
         }
-        if (view === 'licences') filterState.setLicence(id)
-        else filterState.setProduct(id)
-        filterState.setView(view)
+        filterState.showCatalogEntry(view, id)
       }}
       aria-current={isCurrent ? 'true' : undefined}
       className={cn('text-link underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none', className)}

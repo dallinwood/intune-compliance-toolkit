@@ -1,9 +1,10 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { compareText } from '../../logic/catalogIndex'
 import type { CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { CatalogLink } from './CatalogLink'
+import { CollapsibleHeading } from './CollapsibleHeading'
 
 interface FamilyGroup {
   family: string
@@ -11,6 +12,7 @@ interface FamilyGroup {
 }
 
 interface VendorGroup {
+  vendorId: string
   vendorTitle: string
   families: FamilyGroup[]
 }
@@ -33,9 +35,21 @@ function groupLicences(catalog: CatalogIndex): VendorGroup[] {
           family,
           licences: [...familyLicences].sort((left, right) => compareText(left.title, right.title) || compareText(left.id, right.id)),
         }))
-      return { vendorTitle: vendorTitles.get(vendorId) ?? vendorId, families }
+      return { vendorId, vendorTitle: vendorTitles.get(vendorId) ?? vendorId, families }
     })
     .sort((left, right) => compareText(left.vendorTitle, right.vendorTitle))
+}
+
+function vendorGroupKey(vendorId: string): string {
+  return vendorId
+}
+
+function familyGroupKey(vendorId: string, family: string): string {
+  return `${vendorId}/${family}`
+}
+
+function groupKeysOf(licence: CatalogLicence): string[] {
+  return [vendorGroupKey(licence.vendor), familyGroupKey(licence.vendor, licence.family)]
 }
 
 function LicenceLabel({ licence }: { licence: CatalogLicence }) {
@@ -68,6 +82,30 @@ export function LicenceList({
   onShowComparison: () => void
 }) {
   const groups = useMemo(() => groupLicences(catalog), [catalog])
+  const licencesById = useMemo(() => new Map(catalog.licences.map((licence) => [licence.id, licence])), [catalog.licences])
+  const [expandedGroupKeys, setExpandedGroupKeys] = useState<ReadonlySet<string>>(new Set())
+  const [revealedIds, setRevealedIds] = useState('')
+
+  // Groups start collapsed except those holding the selection or a ticked
+  // licence, including when it changes through navigation; adjusting state
+  // during render avoids an extra pass through an effect.
+  const idsToReveal = [selectedLicenceId, ...compareIds].filter((id) => id !== null)
+  const idsToRevealKey = idsToReveal.join(',')
+  if (idsToRevealKey !== revealedIds) {
+    setRevealedIds(idsToRevealKey)
+    const keysToExpand = idsToReveal.flatMap((id) => {
+      const licence = licencesById.get(id)
+      return licence === undefined ? [] : groupKeysOf(licence)
+    })
+    if (keysToExpand.some((key) => !expandedGroupKeys.has(key))) setExpandedGroupKeys(new Set([...expandedGroupKeys, ...keysToExpand]))
+  }
+
+  function toggleGroup(groupKey: string) {
+    const next = new Set(expandedGroupKeys)
+    if (next.has(groupKey)) next.delete(groupKey)
+    else next.add(groupKey)
+    setExpandedGroupKeys(next)
+  }
 
   return (
     <nav aria-label="Licences" className="pb-4">
@@ -93,44 +131,48 @@ export function LicenceList({
           </>
         )}
       </div>
-      {groups.map(({ vendorTitle, families }) => (
-        <div key={vendorTitle}>
-          <h3 className="px-4 pt-3 text-sm font-semibold">{vendorTitle}</h3>
-          {families.map(({ family, licences }) => (
-            <div key={family}>
-              <h4 className="px-4 pt-2 pb-1 text-xs font-medium text-muted-foreground">{family}</h4>
-              <ul>
-                {licences.map((licence) => {
-                  const isSelected = !isComparing && licence.id === selectedLicenceId
-                  return (
-                    <li key={licence.id}>
-                      {isComparing ? (
-                        <label className="flex cursor-pointer items-center gap-2 px-4 py-1.5 text-sm hover:bg-muted">
-                          <Checkbox
-                            checked={compareIds.includes(licence.id)}
-                            onCheckedChange={() => onToggleCompared(licence.id)}
-                            aria-label={licence.title}
-                          />
-                          <LicenceLabel licence={licence} />
-                        </label>
-                      ) : (
-                        <CatalogLink
-                          view="licences"
-                          id={licence.id}
-                          isCurrent={isSelected}
-                          className={`flex items-center gap-2 px-4 py-1.5 text-sm no-underline hover:bg-muted ${
-                            isSelected ? 'bg-muted font-medium' : 'text-foreground'
-                          }`}
-                        >
-                          <LicenceLabel licence={licence} />
-                        </CatalogLink>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          ))}
+      {groups.map(({ vendorId, vendorTitle, families }) => (
+        <div key={vendorId}>
+          <CollapsibleHeading level={3} isExpanded={expandedGroupKeys.has(vendorGroupKey(vendorId))} onToggle={() => toggleGroup(vendorGroupKey(vendorId))} headingClassName="pt-2 text-sm font-semibold">
+            {vendorTitle}
+          </CollapsibleHeading>
+          {expandedGroupKeys.has(vendorGroupKey(vendorId)) &&
+            families.map(({ family, licences }) => {
+              const isFamilyExpanded = expandedGroupKeys.has(familyGroupKey(vendorId, family))
+              return (
+                <div key={family}>
+                  <CollapsibleHeading level={4} isExpanded={isFamilyExpanded} onToggle={() => toggleGroup(familyGroupKey(vendorId, family))} headingClassName="text-xs font-medium text-muted-foreground">
+                    {family}
+                  </CollapsibleHeading>
+                  {isFamilyExpanded && (
+                    <ul>
+                      {licences.map((licence) => {
+                        const isSelected = !isComparing && licence.id === selectedLicenceId
+                        return (
+                          <li key={licence.id}>
+                            {isComparing ? (
+                              <label className="flex cursor-pointer items-center gap-2 px-4 py-1.5 text-sm hover:bg-muted">
+                                <Checkbox checked={compareIds.includes(licence.id)} onCheckedChange={() => onToggleCompared(licence.id)} aria-label={licence.title} />
+                                <LicenceLabel licence={licence} />
+                              </label>
+                            ) : (
+                              <CatalogLink
+                                view="licences"
+                                id={licence.id}
+                                isCurrent={isSelected}
+                                className={`flex items-center gap-2 px-4 py-1.5 text-sm no-underline hover:bg-muted ${isSelected ? 'bg-muted font-medium' : 'text-foreground'}`}
+                              >
+                                <LicenceLabel licence={licence} />
+                              </CatalogLink>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              )
+            })}
         </div>
       ))}
     </nav>

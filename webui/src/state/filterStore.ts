@@ -1,6 +1,15 @@
 import { create } from 'zustand'
 import type { FilterDimension, FilterValues } from '../logic/ruleFilters'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, parsePageSize, parseUrlState, serializeUrlState, type PageSize, type UrlState } from './urlState'
+import {
+  DEFAULT_AUTOMATION,
+  DEFAULT_PAGE_SIZE,
+  parsePageSize,
+  parseUrlState,
+  serializeUrlLocation,
+  startsHistoryEntry,
+  type PageSize,
+  type UrlState,
+} from './urlState'
 
 export type AutomatableFilter = 'all' | 'automatable' | 'manual'
 
@@ -31,6 +40,10 @@ export interface FilterState {
   setLicence: (id: string | null) => void
   setProduct: (id: string | null) => void
   setCompare: (ids: string[]) => void
+  // One update, so one history entry: a catalog entry opened in its tab, and
+  // a licence opened out of a comparison.
+  showCatalogEntry: (view: 'licences' | 'products', id: string) => void
+  showLicenceFromComparison: (id: string) => void
   setSearch: (value: string) => void
   toggleTarget: (value: string) => void
   toggleSource: (value: string) => void
@@ -87,40 +100,49 @@ function storePageSize(size: PageSize) {
   }
 }
 
+const BASE_PATH = import.meta.env.BASE_URL
+
 // A size in the URL wins; without one, the size this browser last chose.
-function initialStateFromUrl(): UrlState {
+function stateFromLocation(): UrlState {
   if (typeof window === 'undefined') return parseUrlState('')
-  const fromUrl = parseUrlState(window.location.search)
+  const fromUrl = parseUrlState(window.location.search, window.location.pathname, BASE_PATH)
   if (new URLSearchParams(window.location.search).has('size')) return fromUrl
   return { ...fromUrl, size: readStoredPageSize() ?? fromUrl.size }
+}
+
+function filterValuesOf(urlState: UrlState) {
+  return {
+    view: urlState.view,
+    search: urlState.search,
+    targets: new Set(urlState.targets),
+    sources: new Set(urlState.sources),
+    versions: new Set(urlState.versions),
+    benchmarks: new Set(urlState.benchmarks),
+    sections: new Set(urlState.sections),
+    tags: new Set(urlState.tags),
+    automatable: automatableFrom(urlState.automation),
+    page: urlState.page,
+    size: urlState.size,
+    openRule: urlState.openRule,
+    licence: urlState.licence,
+    product: urlState.product,
+    compare: urlState.compare,
+  }
 }
 
 // Any filter or search change goes back to the first page.
 const FIRST_PAGE = { page: 1 }
 
 export const useFilterStore = create<FilterState>((set) => {
-  const fromUrl = initialStateFromUrl()
   return {
-    view: fromUrl.view,
-    search: fromUrl.search,
-    targets: new Set(fromUrl.targets),
-    sources: new Set(fromUrl.sources),
-    versions: new Set(fromUrl.versions),
-    benchmarks: new Set(fromUrl.benchmarks),
-    sections: new Set(fromUrl.sections),
-    tags: new Set(fromUrl.tags),
-    automatable: automatableFrom(fromUrl.automation),
-    page: fromUrl.page,
-    size: fromUrl.size,
-    openRule: fromUrl.openRule,
+    ...filterValuesOf(stateFromLocation()),
     openRuleRequest: 0,
-    licence: fromUrl.licence,
-    product: fromUrl.product,
-    compare: fromUrl.compare,
     setView: (value) => set({ view: value }),
     setLicence: (id) => set({ licence: id }),
     setProduct: (id) => set({ product: id }),
     setCompare: (ids) => set({ compare: ids }),
+    showCatalogEntry: (view, id) => set(view === 'licences' ? { view, licence: id } : { view, product: id }),
+    showLicenceFromComparison: (id) => set({ licence: id, compare: [] }),
     setSearch: (value) => set({ search: value, openRule: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
     toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value), ...FIRST_PAGE })),
@@ -191,7 +213,7 @@ const URL_DEFAULTS = { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }
 // The address of a view with the current filters, so a copied or
 // opened-in-a-new-tab tab link lands on the same Rules state.
 export function hrefForView(state: FilterState, viewId: string): string {
-  return `${window.location.pathname}${serializeUrlState({ ...urlStateOf(state), view: viewId }, URL_DEFAULTS)}${window.location.hash}`
+  return `${serializeUrlLocation({ ...urlStateOf(state), view: viewId }, URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
 }
 
 // The address of a catalog entry in its tab, for a link that can also open
@@ -204,14 +226,42 @@ export function hrefForCatalogEntry(state: FilterState, view: 'licences' | 'prod
     licence: view === 'licences' ? id : state.licence,
     product: view === 'products' ? id : state.product,
   }
-  return `${window.location.pathname}${serializeUrlState(entryState, URL_DEFAULTS)}${window.location.hash}`
+  return `${serializeUrlLocation(entryState, URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
 }
 
-// replaceState, not pushState: filter clicks must not add history entries.
-function writeStateToUrl(state: FilterState) {
-  const queryString = serializeUrlState(urlStateOf(state), URL_DEFAULTS)
-  if (queryString === window.location.search) return
-  window.history.replaceState(window.history.state, '', `${window.location.pathname}${queryString}${window.location.hash}`)
+// Set while a change must not add a history entry: the address already is
+// the new state (back and forward), or the app is correcting the address.
+let isReplacingHistory = false
+
+function runReplacingHistory(action: () => void) {
+  isReplacingHistory = true
+  try {
+    action()
+  } finally {
+    isReplacingHistory = false
+  }
 }
 
-if (typeof window !== 'undefined') useFilterStore.subscribe(writeStateToUrl)
+// An address no view has (or a view-less one) is rewritten in place, so it
+// never becomes a history entry of its own.
+export function replaceView(viewId: string) {
+  runReplacingHistory(() => useFilterStore.getState().setView(viewId))
+}
+
+function writeStateToUrl(state: FilterState, previousState?: FilterState) {
+  const target = `${serializeUrlLocation(urlStateOf(state), URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
+  if (target === `${window.location.pathname}${window.location.search}${window.location.hash}`) return
+  const isNavigation = previousState !== undefined && !isReplacingHistory && startsHistoryEntry(urlStateOf(previousState), urlStateOf(state))
+  if (isNavigation) window.history.pushState(window.history.state, '', target)
+  else window.history.replaceState(window.history.state, '', target)
+}
+
+if (typeof window !== 'undefined') {
+  useFilterStore.subscribe(writeStateToUrl)
+  // Back and forward: the address is already right, so only the store follows.
+  window.addEventListener('popstate', () => {
+    runReplacingHistory(() => useFilterStore.setState(filterValuesOf(stateFromLocation())))
+  })
+  // A bare base address shows Rules, so its address says so.
+  writeStateToUrl(useFilterStore.getState())
+}

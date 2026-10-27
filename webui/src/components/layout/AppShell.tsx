@@ -6,7 +6,7 @@ import type { MappedRule } from '../../logic/mappingIndex'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
-import { useFilterStore } from '../../state/filterStore'
+import { replaceView, useFilterStore } from '../../state/filterStore'
 import { DEFAULT_VIEW_ID } from '../../state/urlState'
 import { resolveView } from '../../views/viewRegistry'
 import { MappingsContext } from '../../state/mappingsContext'
@@ -47,8 +47,8 @@ export function AppShell({
   // A view id from a shared URL that no view has is replaced, which also
   // removes it from the URL.
   useEffect(() => {
-    if (viewId !== activeView.id) setViewId(activeView.id)
-  }, [viewId, activeView.id, setViewId])
+    if (viewId !== activeView.id) replaceView(activeView.id)
+  }, [viewId, activeView.id])
   const [filtersOpen, setFiltersOpen] = useState(false)
   // The table and the count render from deferred filters so a click or
   // keystroke updates its own control at once while the 1,493-row table

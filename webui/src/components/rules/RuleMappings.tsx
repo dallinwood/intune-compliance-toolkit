@@ -6,7 +6,7 @@ import { filtersShowingRule } from '../../logic/ruleNavigation'
 import { termLabel, type VocabularyIndex } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
 import { useRuleMappings } from '../../state/mappingsContext'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, parseUrlState, serializeUrlState } from '../../state/urlState'
+import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 import { SectionHeading } from './CodeBlock'
@@ -14,8 +14,8 @@ import { SectionHeading } from './CodeBlock'
 // What a new tab or a copied link opens: just the search and the open rule.
 // A plain click keeps every filter that does not hide the rule instead.
 function hrefShowing(ruleId: string): string {
-  const state = { ...parseUrlState(''), search: upstreamRuleId(ruleId), openRule: ruleId }
-  return `${window.location.pathname}${serializeUrlState(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE })}`
+  const state = { ...parseUrlState(''), view: DEFAULT_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
+  return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
 }
 
 function isPlainClick(event: MouseEvent): boolean {

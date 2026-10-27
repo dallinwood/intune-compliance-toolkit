@@ -5,8 +5,10 @@ export function ViewTabs({ activeViewId }: { activeViewId: string }) {
   const filterState = useFilterStore()
 
   return (
-    <nav aria-label="Views" className="overflow-x-auto border-b border-border px-4">
-      <ul className="flex min-w-max gap-1">
+    <div className="border-b border-border px-4">
+      {/* Overlapping the border by 1px lets the active underline sit on it; a negative margin on the links instead made the nav scroll vertically. */}
+      <nav aria-label="Views" className="-mb-px overflow-x-auto">
+        <ul className="flex min-w-max gap-1">
         {VIEWS.map((view) => {
           const isActive = view.id === activeViewId
           return (
@@ -20,7 +22,7 @@ export function ViewTabs({ activeViewId }: { activeViewId: string }) {
                   event.preventDefault()
                   if (!isActive) filterState.setView(view.id)
                 }}
-                className={`-mb-px inline-block border-b-2 px-3 py-2 text-sm whitespace-nowrap focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
+                className={`inline-block border-b-2 px-3 py-2 text-sm whitespace-nowrap focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
                   isActive
                     ? 'border-link font-medium text-link'
                     : 'border-transparent text-muted-foreground hover:border-control-border hover:text-foreground'
@@ -31,7 +33,8 @@ export function ViewTabs({ activeViewId }: { activeViewId: string }) {
             </li>
           )
         })}
-      </ul>
-    </nav>
+        </ul>
+      </nav>
+    </div>
   )
 }

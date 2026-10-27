@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { benchmarkFacetValue } from '../logic/ruleFilters'
-import { DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, PAGE_SIZES, parsePageSize, parseUrlState, serializeUrlState, type UrlDefaults, type UrlState } from './urlState'
+import {
+  DEFAULT_PAGE_SIZE,
+  DEFAULT_VIEW_ID,
+  PAGE_SIZES,
+  parsePageSize,
+  parseUrlState,
+  serializeUrlLocation,
+  serializeUrlState,
+  startsHistoryEntry,
+  type UrlDefaults,
+  type UrlState,
+} from './urlState'
 
 const defaults: UrlDefaults = { automation: 'all', size: DEFAULT_PAGE_SIZE }
 
@@ -24,14 +35,14 @@ const everyKeySet: UrlState = {
 
 describe('urlState', () => {
   it('round trips every key, including repeated keys', () => {
-    expect(parseUrlState(serializeUrlState(everyKeySet, defaults))).toEqual(everyKeySet)
+    expect(parseUrlState(serializeUrlState(everyKeySet, defaults))).toEqual({ ...everyKeySet, view: DEFAULT_VIEW_ID })
   })
 
   it('round trips infinite scroll as size=all', () => {
     const infinite: UrlState = { ...everyKeySet, page: 1, size: 'all' }
     const queryString = serializeUrlState(infinite, defaults)
     expect(queryString).toContain('size=all')
-    expect(parseUrlState(queryString)).toEqual(infinite)
+    expect(parseUrlState(queryString)).toEqual({ ...infinite, view: DEFAULT_VIEW_ID })
   })
 
   it('encodes spaces and the benchmark severity separator', () => {
@@ -59,11 +70,11 @@ describe('urlState', () => {
   })
 
   it('reads licence, product and repeated compare params and leaves defaults out', () => {
-    const state = parseUrlState('?view=licences&licence=a.one&product=a.p&compare=a.one&compare=a.two')
+    const state = parseUrlState('?licence=a.one&product=a.p&compare=a.one&compare=a.two')
     expect(state.licence).toBe('a.one')
     expect(state.product).toBe('a.p')
     expect(state.compare).toEqual(['a.one', 'a.two'])
-    expect(serializeUrlState(state, defaults)).toBe('?view=licences&licence=a.one&product=a.p&compare=a.one&compare=a.two')
+    expect(serializeUrlState(state, defaults)).toBe('?licence=a.one&product=a.p&compare=a.one&compare=a.two')
     const empty = parseUrlState('?licence=&product=')
     expect(empty.licence).toBeNull()
     expect(empty.product).toBeNull()
@@ -119,16 +130,51 @@ describe('urlState', () => {
     )
   })
 
-  it('leaves the default view out of the URL and reads a missing view as the default', () => {
-    expect(serializeUrlState({ ...parseUrlState(''), view: DEFAULT_VIEW_ID }, defaults)).toBe('')
-    expect(parseUrlState('').view).toBe(DEFAULT_VIEW_ID)
-    expect(parseUrlState('?view=').view).toBe(DEFAULT_VIEW_ID)
-    expect(serializeUrlState({ ...parseUrlState(''), view: 'reports' }, defaults)).toBe('?view=reports')
+  it('reads the view from the path, with or without the base and a trailing slash', () => {
+    expect(parseUrlState('', '/licences').view).toBe('licences')
+    expect(parseUrlState('', '/licences/').view).toBe('licences')
+    expect(parseUrlState('', '/intune-compliance-toolkit/products', '/intune-compliance-toolkit/').view).toBe('products')
+    expect(parseUrlState('', '/intune-compliance-toolkit/products/', '/intune-compliance-toolkit/').view).toBe('products')
+    expect(parseUrlState('', '/intune-compliance-toolkit/', '/intune-compliance-toolkit/').view).toBe(DEFAULT_VIEW_ID)
+    expect(parseUrlState('', '/').view).toBe(DEFAULT_VIEW_ID)
   })
 
-  it('keeps the rules view state in the URL while another view is shown', () => {
-    const state = { ...parseUrlState('?q=gatekeeper&size=100&rule=a.b'), view: 'reports' }
-    expect(serializeUrlState(state, defaults)).toBe('?view=reports&q=gatekeeper&size=100&rule=a.b')
+  it('ignores a view parameter, since the path carries the view', () => {
+    expect(parseUrlState('?view=licences', '/rules').view).toBe('rules')
+    expect(parseUrlState('?view=licences').view).toBe(DEFAULT_VIEW_ID)
+  })
+
+  it('keeps an unknown path segment as written for the app to replace', () => {
+    expect(parseUrlState('', '/reports').view).toBe('reports')
+  })
+
+  it('serializes to the view path under the base, then the query', () => {
+    const state = { ...parseUrlState('?q=gatekeeper&size=100&rule=a.b'), view: 'licences', licence: 'a.one' }
+    expect(serializeUrlLocation(state, defaults, '/intune-compliance-toolkit/')).toBe('/intune-compliance-toolkit/licences?q=gatekeeper&size=100&rule=a.b&licence=a.one')
+    expect(serializeUrlLocation({ ...parseUrlState(''), view: DEFAULT_VIEW_ID }, defaults, '/')).toBe('/rules')
+  })
+
+  it('never writes a view parameter into the query', () => {
+    expect(serializeUrlState({ ...parseUrlState(''), view: 'reports' }, defaults)).toBe('')
+  })
+
+  describe('startsHistoryEntry', () => {
+    const base = parseUrlState('')
+    it('is true for a view switch, a licence or product selection change, an opened rule and entering or leaving compare', () => {
+      expect(startsHistoryEntry(base, { ...base, view: 'licences' })).toBe(true)
+      expect(startsHistoryEntry(base, { ...base, licence: 'a.one' })).toBe(true)
+      expect(startsHistoryEntry({ ...base, product: 'a.p' }, { ...base, product: null })).toBe(true)
+      expect(startsHistoryEntry(base, { ...base, openRule: 'a.b' })).toBe(true)
+      expect(startsHistoryEntry(base, { ...base, compare: ['a.one'] })).toBe(true)
+      expect(startsHistoryEntry({ ...base, compare: ['a.one', 'a.two'] }, { ...base, compare: [] })).toBe(true)
+    })
+
+    it('is false for search, filters, paging, closing a rule and ticking more licences inside compare', () => {
+      expect(startsHistoryEntry(base, { ...base, search: 'x' })).toBe(false)
+      expect(startsHistoryEntry(base, { ...base, targets: ['macOS'], page: 2, size: 100 })).toBe(false)
+      expect(startsHistoryEntry({ ...base, openRule: 'a.b' }, { ...base, openRule: null })).toBe(false)
+      expect(startsHistoryEntry({ ...base, compare: ['a.one'] }, { ...base, compare: ['a.one', 'a.two'] })).toBe(false)
+    })
   })
 
   it('reads a query string with or without the leading question mark', () => {

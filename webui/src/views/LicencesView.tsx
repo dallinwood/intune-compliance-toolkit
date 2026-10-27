@@ -20,11 +20,14 @@ export function LicencesView() {
   const licenceId = useFilterStore((state) => state.licence)
   const compareIds = useFilterStore((state) => state.compare)
   const setLicence = useFilterStore((state) => state.setLicence)
+  const showLicenceFromComparison = useFilterStore((state) => state.showLicenceFromComparison)
   const setCompare = useFilterStore((state) => state.setCompare)
   const [isComparing, setIsComparing] = useState(compareIds.length > 0)
   // Below the lg breakpoint the list and the right pane take turns; this picks
   // the list while a comparison is being edited.
   const [isPickingComparison, setIsPickingComparison] = useState(false)
+  // Back or forward into a comparison turns compare mode on.
+  if (compareIds.length > 0 && !isComparing) setIsComparing(true)
   const lookup = useMemo(() => (catalog === null ? null : buildCatalogLookup(catalog)), [catalog])
 
   if (loadedCatalog === null) {
@@ -60,9 +63,8 @@ export function LicencesView() {
   }
 
   function openLicenceFromComparison(openedId: string) {
-    setCompare([])
     setIsComparing(false)
-    setLicence(openedId)
+    showLicenceFromComparison(openedId)
   }
 
   return (

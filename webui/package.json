@@ -6,7 +6,7 @@
   "scripts": {
     "copy-baselines": "bun ../scripts/copy-baselines.mjs",
     "dev": "bun run copy-baselines && vite",
-    "build": "bun run copy-baselines && tsc -b && vite build",
+    "build": "bun run copy-baselines && tsc -b && vite build && bun ../scripts/route-pages.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
