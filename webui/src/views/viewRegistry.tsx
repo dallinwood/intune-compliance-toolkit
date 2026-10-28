@@ -11,8 +11,10 @@ export interface ViewDefinition {
   render: (context: ViewContext) => ReactNode
 }
 
-// Tab order. Adding a view is one entry here plus its component. The first
-// entry must be DEFAULT_VIEW_ID, which the URL leaves out.
+// Tab order. Adding a view is one entry here plus its component, and its id
+// in scripts/route-pages.mjs (a test keeps the two in step). The first entry
+// must be DEFAULT_VIEW_ID, the view a bare base address shows; its own
+// address is written out as /rules.
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },

@@ -5,6 +5,8 @@
 // with a single startup fetch. tools/mappings.py is the CI gate; this side
 // only checks structure, skipping what it cannot use.
 
+import { compareText } from './catalogIndex'
+
 export const MAPPING_INDEX_SCHEMA_VERSION = 1
 
 export const MAPPING_RELATIONS = ['implements', 'partially_implements', 'related'] as const
@@ -117,13 +119,6 @@ export function parseMappingFile(value: unknown, fileName: string): { mapping: M
     }),
   )
   return { mapping: { id: value.id, links } }
-}
-
-// Plain code-unit order, never localeCompare, so the output is byte-stable
-// on every machine.
-function compareText(left: string, right: string): number {
-  if (left < right) return -1
-  return left > right ? 1 : 0
 }
 
 export function compareMappingEntries(left: MappingIndexEntry, right: MappingIndexEntry): number {

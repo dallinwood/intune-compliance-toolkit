@@ -26,7 +26,7 @@ export interface CatalogSourceFile {
   value: unknown
 }
 
-const AVAILABILITIES: readonly Availability[] = ['included', 'add_on']
+export const AVAILABILITIES: readonly Availability[] = ['included', 'add_on']
 const LICENCE_KINDS: readonly CatalogLicence['kind'][] = ['subscription', 'add_on']
 
 function isObject(value: unknown): value is JsonObject {

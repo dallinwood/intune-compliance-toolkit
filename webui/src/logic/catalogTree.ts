@@ -15,7 +15,7 @@ export interface InclusionCategory {
   roots: InclusionNode[]
 }
 
-const OTHER_CATEGORY = 'Other'
+export const OTHER_CATEGORY = 'Other'
 
 // Every listed entry, plus the features of every listed plan. A product listed
 // directly wins over the same product arriving through a plan.
@@ -34,24 +34,9 @@ export function effectiveInclusions(licence: CatalogLicence, productsById: Map<s
   return [...directInclusions, ...planInclusions]
 }
 
-export function topLevelAncestor(productId: string, productsById: Map<string, CatalogProduct>): CatalogProduct {
-  let current = productsById.get(productId)
-  if (current === undefined) throw new Error(`Unknown product ${productId}`)
-  const visitedIds = new Set<string>()
-  while (current.parent !== null && !visitedIds.has(current.id)) {
-    visitedIds.add(current.id)
-    const parent = productsById.get(current.parent)
-    if (parent === undefined) break
-    current = parent
-  }
-  return current
-}
-
-export function categoryOf(productId: string, productsById: Map<string, CatalogProduct>): string {
-  return topLevelAncestor(productId, productsById).category ?? OTHER_CATEGORY
-}
-
-function ancestorChain(product: CatalogProduct, productsById: Map<string, CatalogProduct>): CatalogProduct[] {
+// The product's parent chain from its top-level ancestor down to the product
+// itself. A missing parent or a parent cycle ends the chain instead of looping.
+export function ancestorChain(product: CatalogProduct, productsById: Map<string, CatalogProduct>): CatalogProduct[] {
   const chain = [product]
   const visitedIds = new Set([product.id])
   let current = product
@@ -65,8 +50,23 @@ function ancestorChain(product: CatalogProduct, productsById: Map<string, Catalo
   return chain
 }
 
-function sortNodes(nodes: InclusionNode[]): InclusionNode[] {
-  nodes.sort((left, right) => compareText(left.product.title, right.product.title) || compareText(left.product.id, right.product.id))
+export function topLevelAncestor(productId: string, productsById: Map<string, CatalogProduct>): CatalogProduct {
+  const product = productsById.get(productId)
+  if (product === undefined) throw new Error(`Unknown product ${productId}`)
+  return ancestorChain(product, productsById)[0]
+}
+
+export function categoryOf(productId: string, productsById: Map<string, CatalogProduct>): string {
+  return topLevelAncestor(productId, productsById).category ?? OTHER_CATEGORY
+}
+
+export function compareProducts(left: CatalogProduct, right: CatalogProduct): number {
+  return compareText(left.title, right.title) || compareText(left.id, right.id)
+}
+
+// Sorts the nodes and every level beneath them in place.
+export function sortNodes<Node extends { product: CatalogProduct; children: Node[] }>(nodes: Node[]): Node[] {
+  nodes.sort((left, right) => compareProducts(left.product, right.product))
   for (const node of nodes) sortNodes(node.children)
   return nodes
 }

@@ -1,5 +1,6 @@
 import type { CatalogProduct, CatalogVendor } from '../types/catalog'
 import { compareText } from './catalogIndex'
+import { ancestorChain, compareProducts, OTHER_CATEGORY, sortNodes } from './catalogTree'
 
 export interface ProductTreeNode {
   product: CatalogProduct
@@ -17,24 +18,8 @@ export interface ProductSearchResult {
   path: CatalogProduct[]
 }
 
-const OTHER_CATEGORY = 'Other'
-
-function compareProducts(left: CatalogProduct, right: CatalogProduct): number {
-  return compareText(left.title, right.title) || compareText(left.id, right.id)
-}
-
 export function ancestorsOf(product: CatalogProduct, productsById: Map<string, CatalogProduct>): CatalogProduct[] {
-  const ancestors: CatalogProduct[] = []
-  const visitedIds = new Set([product.id])
-  let current = product
-  while (current.parent !== null) {
-    const parent = productsById.get(current.parent)
-    if (parent === undefined || visitedIds.has(parent.id)) break
-    visitedIds.add(parent.id)
-    ancestors.unshift(parent)
-    current = parent
-  }
-  return ancestors
+  return ancestorChain(product, productsById).slice(0, -1)
 }
 
 // The vendors come in separately because a product only carries its vendor id.
@@ -50,12 +35,6 @@ export function productTree(products: CatalogProduct[], vendors: CatalogVendor[]
     const parentNode = product.parent === null || !productsById.has(product.parent) ? undefined : nodesById.get(product.parent)
     if (parentNode !== undefined) parentNode.children.push(node)
     else rootsByVendor.set(product.vendor, [...(rootsByVendor.get(product.vendor) ?? []), node])
-  }
-
-  const sortNodes = (nodes: ProductTreeNode[]): ProductTreeNode[] => {
-    nodes.sort((left, right) => compareProducts(left.product, right.product))
-    for (const node of nodes) sortNodes(node.children)
-    return nodes
   }
 
   return vendors

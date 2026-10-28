@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CatalogIndex, CatalogProduct } from '../types/catalog'
-import { AVAILABILITIES, availabilityText, buildCatalogLookup } from './inclusionDisplay'
+import { AVAILABILITIES } from './catalogIndex'
+import { availabilityText, buildCatalogLookup } from './inclusionDisplay'
 
 function product(id: string, title: string): CatalogProduct {
   return { id, title, vendor: 'a', parent: null, category: null, description: null, links: [], targets: [], plans: [] }

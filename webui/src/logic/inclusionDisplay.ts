@@ -7,8 +7,6 @@ export const AVAILABILITY_LABELS: Record<Availability, string> = {
   add_on: 'Add-on',
 }
 
-export const AVAILABILITIES: readonly Availability[] = ['included', 'add_on']
-
 export interface CatalogLookup {
   productsById: Map<string, CatalogProduct>
   planTitlesByFullId: Map<string, string>
