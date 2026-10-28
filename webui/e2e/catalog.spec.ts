@@ -181,9 +181,14 @@ test('a missing catalog index warns only inside the Licences tab and leaves the 
 test('comparing two licences shows a matrix, and hiding identical rows drops the shared ones', async ({ page }) => {
   await page.goto('/licences')
   await page.getByRole('button', { name: 'Acme Business' }).click()
-  await page.getByRole('button', { name: 'Compare' }).click()
+  await page.getByRole('button', { name: 'Compare', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Exit compare' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByText('Tick two or more licences to compare.')).toBeVisible()
   await page.getByRole('checkbox', { name: 'Acme Basic' }).click()
+  await expect(page.getByText('Tick two or more licences to compare.')).toBeVisible()
   await page.getByRole('checkbox', { name: 'Acme Pro' }).click()
+  await expect(page.getByText('2 selected')).toBeVisible()
+  await expect(page.getByText('Tick two or more licences to compare.')).toHaveCount(0)
   await expect(page).toHaveURL(/compare=acme\.basic&compare=acme\.pro/)
 
   const matrix = page.getByRole('table')
@@ -196,6 +201,9 @@ test('comparing two licences shows a matrix, and hiding identical rows drops the
   await hideIdentical.click()
   await expect(matrix.locator('tbody tr')).toHaveCount(3)
   await expect(matrix.getByText('Other Tool')).toBeVisible()
+
+  await page.getByRole('button', { name: 'Exit compare' }).click()
+  await expect(page.getByRole('button', { name: 'Compare', exact: true })).toHaveAttribute('aria-pressed', 'false')
 })
 
 test('a product link in a licence switches to that product on a plain click', async ({ page }) => {

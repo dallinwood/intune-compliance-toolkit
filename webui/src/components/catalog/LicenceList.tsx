@@ -100,15 +100,17 @@ export function LicenceList({
           type="button"
           aria-pressed={isComparing}
           onClick={onToggleCompareMode}
-          className={`rounded-full border px-3 py-1 text-xs focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
+          className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-xs focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
             isComparing ? 'border-primary bg-primary text-primary-foreground' : 'border-control-border hover:bg-muted'
           }`}
         >
-          Compare
+          {isComparing ? 'Exit compare' : 'Compare'}
         </button>
         {isComparing && (
           <>
-            <span className="text-xs text-muted-foreground">{compareIds.length} selected</span>
+            <span className="text-xs text-muted-foreground">
+              {compareIds.length >= 2 ? `${compareIds.length} selected` : 'Tick two or more licences to compare.'}
+            </span>
             {compareIds.length >= 2 && (
               <button type="button" onClick={onShowComparison} className="rounded-full border border-control-border px-3 py-1 text-xs hover:bg-muted lg:hidden">
                 Show comparison
