@@ -17,12 +17,12 @@ export function CollapsibleHeading({
 }) {
   const Heading = level === 3 ? 'h3' : 'h4'
   return (
-    <Heading className={headingClassName}>
+    <Heading className={`flex ${headingClassName}`}>
       <button
         type="button"
         aria-expanded={isExpanded}
         onClick={onToggle}
-        className="flex w-full items-center gap-1 px-4 py-1 text-left hover:bg-muted focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+        className="-my-1 flex w-full items-center gap-1 px-4 py-2 text-left hover:bg-muted focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
       >
         {isExpanded ? <ChevronDown className="size-4 shrink-0" aria-hidden="true" /> : <ChevronRight className="size-4 shrink-0" aria-hidden="true" />}
         <span className="min-w-0 break-words">{children}</span>

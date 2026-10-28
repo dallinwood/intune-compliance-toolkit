@@ -59,7 +59,7 @@ function InclusionRow({
             onClick={() => onToggle(node.product.id)}
             aria-expanded={!isCollapsed}
             aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} ${node.product.title}`}
-            className="mt-0.5 shrink-0 rounded text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            className="-mt-1.5 -mr-1 -mb-2 -ml-2 flex shrink-0 items-center rounded p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
           >
             {isCollapsed ? <ChevronRight className="size-4" aria-hidden="true" /> : <ChevronDown className="size-4" aria-hidden="true" />}
           </button>
@@ -75,8 +75,8 @@ function InclusionRow({
               <InclusionLine key={`${inclusion.via}-${inclusion.plan ?? inclusion.custom_plan?.title ?? inclusion.viaPlanId ?? ''}`} inclusion={inclusion} lookup={lookup} />
             ))}
           </div>
-          {notes.map((note) => (
-            <p key={note} className="text-xs text-muted-foreground">
+          {notes.map((note, noteIndex) => (
+            <p key={`${noteIndex}-${note}`} className="text-xs text-muted-foreground">
               {note}
             </p>
           ))}

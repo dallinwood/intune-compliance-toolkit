@@ -5,8 +5,12 @@ import { loadCatalogIndex, type LoadedCatalogIndex } from '../data/catalog'
 // a catalog tab asks for it, so the Rules tab never requests the catalog.
 let catalogRequest: Promise<LoadedCatalogIndex> | null = null
 
-function requestCatalogOnce(): Promise<LoadedCatalogIndex> {
-  catalogRequest ??= loadCatalogIndex()
+// A failed load is forgotten, so opening a catalog tab again retries it.
+export function requestCatalogOnce(): Promise<LoadedCatalogIndex> {
+  catalogRequest ??= loadCatalogIndex().then((result) => {
+    if (result.index === null) catalogRequest = null
+    return result
+  })
   return catalogRequest
 }
 

@@ -100,8 +100,8 @@ function EntryLine({ row, licenceTitle, lookup }: { row: LicenceRow; licenceTitl
         ))}
         {row.viaPlanIds.length > 0 && <span className="text-xs text-muted-foreground">via {row.viaPlanIds.map(planTitleOf).join(', ')}</span>}
       </div>
-      {row.notes.map((note) => (
-        <p key={note} className="text-xs break-words text-muted-foreground">
+      {row.notes.map((note, noteIndex) => (
+        <p key={`${noteIndex}-${note}`} className="text-xs break-words text-muted-foreground">
           {note}
         </p>
       ))}
