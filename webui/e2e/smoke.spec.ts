@@ -1916,6 +1916,30 @@ test.describe('rule mappings', () => {
     expect(new URL(page.url()).searchParams.get('rule')).toBe(calendar)
   })
 
+  test('going back to a rule link scrolls that rule into view', async ({ page }) => {
+    const calendar = 'mscp.os_calendar_app_disable'
+    const familyControls = 'mscp.os_calendar_app_disable_familycontrols'
+    await serveMappings(page, {
+      'calendar.json': {
+        schema_version: 1,
+        id: 'calendar',
+        links: [{ relation: 'related', from: [ruleEndpoint(familyControls, MSCP_RELEASE)], to: [ruleEndpoint(calendar, MSCP_RELEASE)] }],
+      },
+    })
+    await page.setViewportSize({ width: 1280, height: 500 })
+    await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
+    await expect(detailOf(page, calendar)).toBeVisible()
+
+    await mappedRulesOf(page, calendar).getByRole('link', { name: /os_calendar_app_disable_familycontrols/ }).click()
+    const calendarRow = page.locator(`[data-rule-id="${calendar}"]`)
+    await expect(page.locator(`[data-rule-id="${familyControls}"]`)).toBeInViewport()
+    await expect(calendarRow).not.toBeInViewport()
+
+    await page.goBack()
+    expect(new URL(page.url()).searchParams.get('rule')).toBe(calendar)
+    await expect(calendarRow).toBeInViewport()
+  })
+
   test('a broken mapping index is a warning and the app still loads', async ({ page }) => {
     await page.route('**/baselines/_mappings/_index.json', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{ broken' }))
     await openLibrary(page)

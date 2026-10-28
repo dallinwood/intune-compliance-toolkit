@@ -260,7 +260,13 @@ if (typeof window !== 'undefined') {
   useFilterStore.subscribe(writeStateToUrl)
   // Back and forward: the address is already right, so only the store follows.
   window.addEventListener('popstate', () => {
-    runReplacingHistory(() => useFilterStore.setState(filterValuesOf(stateFromLocation())))
+    runReplacingHistory(() =>
+      useFilterStore.setState((state) => {
+        const restored = filterValuesOf(stateFromLocation())
+        const shouldRevealRule = restored.openRule !== null
+        return { ...restored, openRuleRequest: shouldRevealRule ? state.openRuleRequest + 1 : state.openRuleRequest }
+      }),
+    )
   })
   // A bare base address shows Rules, so its address says so.
   writeStateToUrl(useFilterStore.getState())

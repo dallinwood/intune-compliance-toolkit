@@ -1,5 +1,5 @@
 import { ChevronLeft } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { WarningsNotice } from '../components/layout/WarningsNotice'
 import { LicenceCompare } from '../components/catalog/LicenceCompare'
 import { LicenceDetail } from '../components/catalog/LicenceDetail'
@@ -28,6 +28,15 @@ export function LicencesView() {
   const [isPickingComparison, setIsPickingComparison] = useState(false)
   // Back or forward into a comparison turns compare mode on.
   if (compareIds.length > 0 && !isComparing) setIsComparing(true)
+  // Back past a comparison leaves compare mode; the store has followed the
+  // address by the time this listener runs, because it registered first.
+  useEffect(() => {
+    function leaveCompareModeWhenHistoryEmptiesComparison() {
+      if (useFilterStore.getState().compare.length === 0) setIsComparing(false)
+    }
+    window.addEventListener('popstate', leaveCompareModeWhenHistoryEmptiesComparison)
+    return () => window.removeEventListener('popstate', leaveCompareModeWhenHistoryEmptiesComparison)
+  }, [])
   const lookup = useMemo(() => (catalog === null ? null : buildCatalogLookup(catalog)), [catalog])
 
   if (loadedCatalog === null) {

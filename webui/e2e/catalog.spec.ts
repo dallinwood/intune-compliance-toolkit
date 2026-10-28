@@ -206,6 +206,26 @@ test('comparing two licences shows a matrix, and hiding identical rows drops the
   await expect(page.getByRole('button', { name: 'Compare', exact: true })).toHaveAttribute('aria-pressed', 'false')
 })
 
+test('going back past a comparison leaves compare mode, and forward restores it', async ({ page }) => {
+  await page.goto('/licences?licence=acme.basic')
+  await expect(page.getByRole('heading', { level: 2, name: 'Acme Basic' })).toBeVisible()
+  await page.getByRole('button', { name: 'Compare', exact: true }).click()
+  await page.getByRole('checkbox', { name: 'Acme Basic' }).click()
+  await page.getByRole('checkbox', { name: 'Acme Pro' }).click()
+  await expect(page.getByText('2 selected')).toBeVisible()
+
+  await page.goBack()
+  await expect(page).not.toHaveURL(/compare=/)
+  await expect(page.getByRole('button', { name: 'Compare', exact: true })).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.getByRole('heading', { level: 2, name: 'Acme Basic' })).toBeVisible()
+  await expect(page.getByText('Tick two or more licences to compare.')).toHaveCount(0)
+
+  await page.goForward()
+  await expect(page).toHaveURL(/compare=acme\.basic&compare=acme\.pro/)
+  await expect(page.getByRole('button', { name: 'Exit compare' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('table').getByRole('columnheader', { name: 'Acme Pro' })).toBeVisible()
+})
+
 test('a product link in a licence switches to that product on a plain click', async ({ page }) => {
   await page.goto('/licences?licence=acme.basic')
   await page.getByRole('link', { name: 'Other Tool' }).click()
