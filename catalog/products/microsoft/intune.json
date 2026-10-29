@@ -4,7 +4,8 @@
   "title": "Microsoft Intune",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Enterprise Mobility + Security",
+  "requires": null,
+  "category": "Endpoint and app management",
   "description": null,
   "links": [
     {
@@ -20,7 +21,6 @@
       "description": null,
       "features": [
         "microsoft.application-management",
-        "microsoft.config-manager",
         "microsoft.device-management",
         "microsoft.endpoint-analytics"
       ]
@@ -31,7 +31,6 @@
       "description": null,
       "features": [
         "microsoft.application-management",
-        "microsoft.config-manager",
         "microsoft.device-management",
         "microsoft.endpoint-analytics",
         "microsoft.firmware-over-the-air-updates",

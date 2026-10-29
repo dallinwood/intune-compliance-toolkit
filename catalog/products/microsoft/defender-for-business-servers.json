@@ -4,7 +4,8 @@
   "title": "Defender for Business Servers",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Threat protection",
   "description": null,
   "links": [
     {

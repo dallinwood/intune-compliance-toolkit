@@ -3,13 +3,18 @@
   "id": "microsoft.intune-advanced-analytics",
   "title": "Intune Advanced Analytics",
   "vendor": "microsoft",
-  "parent": "microsoft.intune-suite",
-  "category": null,
-  "description": null,
+  "parent": null,
+  "requires": "microsoft.intune.plan_1",
+  "category": "Endpoint and app management",
+  "description": "An advanced Intune capability available as an individual add-on or through qualifying Microsoft 365 or Intune Suite licences. Requires Intune Plan 1, not the full Intune Suite.",
   "links": [
     {
       "title": "Documentation",
       "url": "https://learn.microsoft.com/intune/advanced-analytics/"
+    },
+    {
+      "title": "Licensing",
+      "url": "https://www.microsoft.com/en-au/security/microsoft-intune-pricing"
     }
   ],
   "targets": [],

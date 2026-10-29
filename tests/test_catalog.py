@@ -98,22 +98,36 @@ def mutate_inclusion_with_both_plan_and_custom_plan(catalog_dir: Path) -> None:
     edit_json(E3_PATH, add_custom_plan)(catalog_dir)
 
 
-def mutate_duplicate_inclusion(catalog_dir: Path) -> None:
+def add_colliding_licence_id(catalog_dir: Path) -> None:
+    collision = read_json(catalog_dir, E3_PATH)
+    collision.update(id="microsoft.entra-id", requires=None, includes=[])
+    write_json(catalog_dir, "licences/microsoft/entra-id.json", collision)
+
+
+def mutate_missing_licence_inclusion_target(catalog_dir: Path) -> None:
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"].append(
+        {"type": "licence", "target": "microsoft.ghost", "availability": "included", "note": None}
+    ))(catalog_dir)
+
+
+def mutate_self_licence_inclusion(catalog_dir: Path) -> None:
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"].append(
+        {"type": "licence", "target": "microsoft.entra-suite", "availability": "add_on", "note": None}
+    ))(catalog_dir)
+
+
+def mutate_licence_inclusion_cycle(catalog_dir: Path) -> None:
+    edit_json(E3_PATH, lambda licence: licence["includes"].append(
+        {"type": "licence", "target": "microsoft.entra-suite", "availability": "add_on", "note": None}
+    ))(catalog_dir)
+
+
+def mutate_duplicate_product_inclusion(catalog_dir: Path) -> None:
     edit_json(E3_PATH, lambda licence: licence["includes"].append(dict(licence["includes"][0])))(catalog_dir)
 
 
-def set_pim_package(package: str | None, availability: str = "add_on"):
-    def change(licence: dict) -> None:
-        pim_inclusion = licence["includes"][1]
-        pim_inclusion["availability"] = availability
-        pim_inclusion["package"] = package
-
-    return edit_json(ENTRA_SUITE_PATH, change)
-
-
-def mutate_package_on_included_inclusion(catalog_dir: Path) -> None:
-    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"][0].update(availability="add_on"))(catalog_dir)
-    set_pim_package("microsoft.entra-id", availability="included")(catalog_dir)
+def mutate_duplicate_custom_plan_inclusion(catalog_dir: Path) -> None:
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"].append(dict(licence["includes"][1])))(catalog_dir)
 
 
 def mutate_crlf(catalog_dir: Path) -> None:
@@ -155,19 +169,85 @@ INVALID_CASES = {
     "duplicate-plan-id": (edit_json(ENTRA_ID_PATH, lambda product: product["plans"][1].update(id="plan_1")), "plan id 'plan_1' is used more than once"),
     "plan-feature-not-descendant": (mutate_plan_feature_not_descendant, "is not a descendant of microsoft.entra-id"),
     "plan-feature-unknown": (mutate_plan_feature_unknown, "feature microsoft.ghost does not exist"),
-    "inclusion-of-unknown-product": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(product="microsoft.ghost")), "product microsoft.ghost does not exist"),
+    "inclusion-of-unknown-product": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(target="microsoft.ghost")), "product microsoft.ghost does not exist"),
     "plan-not-defined-on-product": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(plan="plan_9")), "plan plan_9 is not defined on microsoft.entra-id"),
     "plan-and-custom-plan": (mutate_inclusion_with_both_plan_and_custom_plan, "sets both plan and custom_plan"),
-    "unknown-availability": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(availability="sometimes")), "'sometimes' is not one of"),
-    "package_feature-is-gone": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(availability="package_feature")), "'package_feature' is not one of"),
-    "package-is-not-a-product": (set_pim_package("microsoft.ghost"), "package microsoft.ghost does not exist"),
-    "package-is-not-an-ancestor": (set_pim_package("microsoft.entra-id-access-reviews"), "package microsoft.entra-id-access-reviews is not an ancestor of microsoft.entra-id-pim"),
-    "package-with-included-availability": (mutate_package_on_included_inclusion, "but is not an add_on"),
-    "package-not-listed-as-add-on-by-the-licence": (set_pim_package("microsoft.entra-id"), "microsoft.entra-id is not listed as an add_on by this licence"),
+    "unknown-availability": (
+        edit_json(E3_PATH, lambda licence: licence["includes"][0].update(availability="sometimes")),
+        "is not valid under any of the given schemas",
+    ),
+    "package-field-is-rejected": (
+        edit_json(E3_PATH, lambda licence: licence["includes"][0].update(package="microsoft.entra-id")),
+        "is not valid under any of the given schemas",
+    ),
+    "legacy-product-field-is-rejected": (
+        edit_json(E3_PATH, lambda licence: licence["includes"][0].update(product="microsoft.entra-id")),
+        "is not valid under any of the given schemas",
+    ),
+    "licence-inclusion-cannot-have-product-plan": (
+        edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"][2].update(plan="plan_1")),
+        "is not valid under any of the given schemas",
+    ),
     "unknown-licence-kind": (edit_json(E3_PATH, lambda licence: licence.update(kind="bundle")), "'bundle' is not one of"),
-    "same-product-and-plan-twice": (mutate_duplicate_inclusion, "lists microsoft.entra-id plan_1 more than once"),
-    "requires-unknown-licence": (edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires=["microsoft.ghost"])), "requires microsoft.ghost, which does not exist"),
-    "requires-itself": (edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires=["microsoft.entra-suite"])), "cannot require itself"),
+    "same-product-and-plan-twice": (mutate_duplicate_product_inclusion, "lists product microsoft.entra-id more than once with the same plan/custom plan selection"),
+    "same-product-and-custom-plan-twice": (mutate_duplicate_custom_plan_inclusion, "lists product microsoft.entra-id-pim more than once with the same plan/custom plan selection"),
+    "missing-included-licence": (mutate_missing_licence_inclusion_target, "licence microsoft.ghost does not exist"),
+    "self-included-licence": (mutate_self_licence_inclusion, "licence microsoft.entra-suite cannot include itself"),
+    "inclusion-cycle": (mutate_licence_inclusion_cycle, "licence inclusion graph forms a cycle"),
+    "requires-unknown-licence": (edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires="microsoft.ghost")), "requires microsoft.ghost, which does not exist"),
+    "requires-itself": (edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires="microsoft.entra-suite")), "cannot require itself"),
+    "requires-unknown-licence-in-a-group": (
+        edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires={"any_of": ["microsoft.m365-e3", "microsoft.ghost"]})),
+        "requires.any_of[1]: requires microsoft.ghost, which does not exist",
+    ),
+    "licence-requires-as-a-list": (edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires=["microsoft.m365-e3"])), "is not valid under any of the given schemas"),
+    "licence-requires-product-id": (
+        edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires="microsoft.entra-id")),
+        "requires microsoft.entra-id, which does not exist",
+    ),
+    "product-requires-unknown-product": (
+        edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires="microsoft.ghost")),
+        "requires: requires microsoft.ghost, which does not exist",
+    ),
+    "product-requires-unknown-plan": (
+        edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires="microsoft.entra-id.plan_9")),
+        "plan plan_9 is not defined on microsoft.entra-id",
+    ),
+    "product-requires-itself": (edit_json(ENTRA_ID_PATH, lambda product: product.update(requires="microsoft.entra-id.plan_1")), "cannot require itself or its own plans"),
+    "requirement-group-of-one": (edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires={"all_of": ["microsoft.entra-id-pim"]})), "is not valid under any of the given schemas"),
+    "requirement-empty-group": (
+        edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires={"all_of": []})),
+        "is not valid under any of the given schemas",
+    ),
+    "requirement-duplicate-member": (
+        edit_json(
+            ACCESS_REVIEWS_PATH,
+            lambda product: product.update(requires={"all_of": ["microsoft.entra-id-pim", "microsoft.entra-id-pim"]}),
+        ),
+        "is not valid under any of the given schemas",
+    ),
+    "requirement-both-operators": (
+        edit_json(
+            ACCESS_REVIEWS_PATH,
+            lambda product: product.update(
+                requires={"all_of": ["microsoft.entra-id-pim", "microsoft.entra-id"], "any_of": ["microsoft.entra-id"]}
+            ),
+        ),
+        "is not valid under any of the given schemas",
+    ),
+    "requirement-unknown-operator": (
+        edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires={"none_of": ["microsoft.entra-id-pim", "microsoft.entra-id"]})),
+        "is not valid under any of the given schemas",
+    ),
+    "requirement-same-operator-nested": (
+        edit_json(
+            ACCESS_REVIEWS_PATH,
+            lambda product: product.update(
+                requires={"any_of": ["microsoft.entra-id-pim", {"any_of": ["microsoft.entra-id.plan_1", "microsoft.entra-id.plan_2"]}]}
+            ),
+        ),
+        "requires.any_of[1]: an any_of directly inside an any_of must be merged into it",
+    ),
     "crlf-file": (mutate_crlf, "the file must use LF line endings, not CRLF"),
     "non-utf8-file": (mutate_not_utf8, "the file is not UTF-8"),
 }
@@ -211,13 +291,26 @@ def test_errors_start_with_the_file_path_relative_to_the_catalog(catalog_copy):
     assert errors[0].startswith(f"{E3_PATH}: ")
 
 
-def test_package_listed_as_add_on_by_the_licence_is_valid(catalog_copy):
-    def list_entra_id_as_add_on(licence: dict) -> None:
-        licence["includes"][0]["availability"] = "add_on"
+def test_product_and_licence_targets_with_same_id_are_distinct(catalog_copy):
+    add_colliding_licence_id(catalog_copy)
 
-    edit_json(ENTRA_SUITE_PATH, list_entra_id_as_add_on)(catalog_copy)
-    set_pim_package("microsoft.entra-id")(catalog_copy)
+    def include_each_namespace(licence: dict) -> None:
+        licence["includes"] = [
+            {"type": "product", "target": "microsoft.entra-id", "plan": "plan_1", "availability": "included", "note": None},
+            {"type": "licence", "target": "microsoft.entra-id", "availability": "add_on", "note": None},
+        ]
+
+    edit_json(E3_PATH, include_each_namespace)(catalog_copy)
     assert validate_catalog(catalog_copy) == ([], [])
+
+
+def test_inclusion_edges_do_not_create_requirement_cycles(catalog_copy):
+    edit_json(E3_PATH, lambda licence: licence["includes"].append(
+        {"type": "licence", "target": "microsoft.entra-suite", "availability": "add_on", "note": None}
+    ))(catalog_copy)
+    errors, warnings = validate_catalog(catalog_copy)
+    assert any("licence inclusion graph forms a cycle" in error for error in errors)
+    assert not any("requirements form a cycle" in warning for warning in warnings)
 
 
 def test_review_notes_are_allowed(catalog_copy):
@@ -225,3 +318,23 @@ def test_review_notes_are_allowed(catalog_copy):
     errors, warnings = validate_catalog(catalog_copy)
     assert errors == []
     assert any("review" in warning and E3_PATH in warning for warning in warnings)
+
+
+def test_nested_and_or_requirements_are_valid(catalog_copy):
+    nested = {"all_of": ["microsoft.entra-id-pim", {"any_of": ["microsoft.entra-id.plan_1", "microsoft.entra-id.plan_2"]}]}
+    edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires=nested))(catalog_copy)
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence.update(requires={"any_of": ["microsoft.m365-e3", {"all_of": ["microsoft.m365-e3", "microsoft.m365-e3x"]}]}))(
+        catalog_copy
+    )
+    licence_e3x = read_json(catalog_copy, E3_PATH)
+    licence_e3x["id"] = "microsoft.m365-e3x"
+    write_json(catalog_copy, "licences/microsoft/m365-e3x.json", licence_e3x)
+    assert validate_catalog(catalog_copy) == ([], [])
+
+
+def test_a_requirement_cycle_is_a_warning(catalog_copy):
+    edit_json(ACCESS_REVIEWS_PATH, lambda product: product.update(requires="microsoft.entra-id-pim"))(catalog_copy)
+    edit_json("products/microsoft/entra-id-pim.json", lambda product: product.update(requires="microsoft.entra-id-access-reviews"))(catalog_copy)
+    errors, warnings = validate_catalog(catalog_copy)
+    assert errors == []
+    assert any(ACCESS_REVIEWS_PATH in warning and "cycle" in warning for warning in warnings)

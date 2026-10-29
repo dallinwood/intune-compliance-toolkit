@@ -4,7 +4,8 @@
   "title": "Manage by MDM",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Windows",
+  "requires": null,
+  "category": "Endpoint and app management",
   "description": null,
   "links": [
     {

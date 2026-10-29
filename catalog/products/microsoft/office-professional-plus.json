@@ -4,7 +4,8 @@
   "title": "Office Professional Plus",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
+  "requires": null,
+  "category": "Microsoft 365 apps",
   "description": null,
   "links": [
     {

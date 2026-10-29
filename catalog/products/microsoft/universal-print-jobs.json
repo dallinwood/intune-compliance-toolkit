@@ -4,7 +4,8 @@
   "title": "Universal Print Jobs",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Extra Capacity",
+  "requires": null,
+  "category": "Windows",
   "description": null,
   "links": [
     {

@@ -12,11 +12,14 @@ import type {
   CatalogLink,
   CatalogPlan,
   CatalogProduct,
+  CatalogRequirement,
   CatalogVendor,
   ProductLicenceEntry,
 } from '../types/catalog'
+import { effectiveInclusions, fullPlanId } from './catalogResolver'
+export { fullPlanId, planDerivedFeatures } from './catalogResolver'
 
-export const CATALOG_INDEX_SCHEMA_VERSION = 1
+export const CATALOG_INDEX_SCHEMA_VERSION = 2
 
 type JsonObject = Record<string, unknown>
 
@@ -49,17 +52,49 @@ function isLinkList(value: unknown): value is CatalogLink[] {
   return Array.isArray(value) && value.every((link) => isObject(link) && isText(link.title) && isText(link.url))
 }
 
+const REQUIREMENT_OPERATORS = ['all_of', 'any_of'] as const
+
+// Same shape as the catalog schemas: an id, or a one-key group of two or more members.
+export function isRequirement(value: unknown): value is CatalogRequirement {
+  if (isText(value)) return true
+  if (!isObject(value)) return false
+  const keys = Object.keys(value)
+  if (keys.length !== 1 || !REQUIREMENT_OPERATORS.includes(keys[0] as (typeof REQUIREMENT_OPERATORS)[number])) return false
+  const members = value[keys[0]]
+  return Array.isArray(members) && members.length >= 2 && members.every(isRequirement)
+}
+
+function isRequirementOrNull(value: unknown): value is CatalogRequirement | null {
+  return value === null || isRequirement(value)
+}
+
 function isPlan(value: unknown): value is CatalogPlan {
   return isObject(value) && isText(value.id) && isText(value.title) && isTextOrNull(value.description) && isTextList(value.features)
 }
 
+function isProductLicenceEntry(value: unknown): value is ProductLicenceEntry {
+  return (
+    isObject(value) &&
+    isText(value.licence) &&
+    AVAILABILITIES.includes(value.availability as Availability) &&
+    isTextOrNull(value.planId) &&
+    isTextOrNull(value.customPlanTitle) &&
+    ['direct', 'plan', 'licence'].includes(value.via as string) &&
+    isTextOrNull(value.viaPlanId) &&
+    isTextList(value.viaLicenceIds) &&
+    isTextOrNull(value.viaProductId) &&
+    isTextOrNull(value.note)
+  )
+}
+
 function isInclusion(value: unknown): value is CatalogInclusion {
-  if (!isObject(value) || !isText(value.product) || !isTextOrNull(value.note)) return false
+  if (!isObject(value) || 'product' in value || 'package' in value || !isText(value.target) || !isTextOrNull(value.note)) return false
   if (!AVAILABILITIES.includes(value.availability as Availability)) return false
+  if (value.type === 'licence') return value.plan === undefined && value.custom_plan === undefined
+  if (value.type !== 'product') return false
   if (value.plan !== undefined && !isText(value.plan)) return false
-  if (value.package !== undefined && !isText(value.package)) return false
-  const customPlan = value.custom_plan
-  return customPlan === undefined || (isObject(customPlan) && isText(customPlan.title) && isTextOrNull(customPlan.description))
+  if (value.custom_plan !== undefined && (!isObject(value.custom_plan) || !isText(value.custom_plan.title) || !isTextOrNull(value.custom_plan.description))) return false
+  return !(value.plan !== undefined && value.custom_plan !== undefined)
 }
 
 export function isCatalogVendor(value: unknown): value is CatalogVendor {
@@ -73,6 +108,7 @@ export function isCatalogProduct(value: unknown): value is CatalogProduct {
     isText(value.title) &&
     isText(value.vendor) &&
     isTextOrNull(value.parent) &&
+    isRequirementOrNull(value.requires) &&
     isTextOrNull(value.category) &&
     isTextOrNull(value.description) &&
     isLinkList(value.links) &&
@@ -91,17 +127,13 @@ export function isCatalogLicence(value: unknown): value is CatalogLicence {
     isText(value.vendor) &&
     isText(value.family) &&
     LICENCE_KINDS.includes(value.kind as CatalogLicence['kind']) &&
-    isTextList(value.requires) &&
+    isRequirementOrNull(value.requires) &&
     isTextOrNull(value.description) &&
     isLinkList(value.links) &&
     Array.isArray(value.includes) &&
     value.includes.every(isInclusion) &&
     isTextList(value.review)
   )
-}
-
-export function fullPlanId(productId: string, planId: string): string {
-  return `${productId}.${planId}`
 }
 
 // Plain code-unit order, never localeCompare, so the output is byte-stable
@@ -124,45 +156,11 @@ function compareEntries(left: ProductLicenceEntry, right: ProductLicenceEntry): 
   )
 }
 
-function directEntry(licence: CatalogLicence, inclusion: CatalogInclusion): ProductLicenceEntry {
-  return {
-    licence: licence.id,
-    availability: inclusion.availability,
-    package: inclusion.package ?? null,
-    planId: inclusion.plan === undefined ? null : fullPlanId(inclusion.product, inclusion.plan),
-    customPlanTitle: inclusion.custom_plan?.title ?? null,
-    via: 'direct',
-    viaPlanId: null,
-    note: inclusion.note,
-  }
-}
-
-export interface PlanDerivedFeature {
-  featureId: string
-  viaPlanId: string
-  inclusion: CatalogInclusion
-}
-
-// The features a licence gets through the plans it lists. A feature the
-// licence lists directly is left out (direct wins), and one reached through
-// two plans appears once, under the first plan in the licence's includes order.
-export function planDerivedFeatures(licence: CatalogLicence, productsById: Map<string, CatalogProduct>): PlanDerivedFeature[] {
-  const claimedProductIds = new Set(licence.includes.map((inclusion) => inclusion.product))
-  const derived: PlanDerivedFeature[] = []
-  for (const inclusion of licence.includes) {
-    if (inclusion.plan === undefined) continue
-    const plan = productsById.get(inclusion.product)?.plans.find((candidate) => candidate.id === inclusion.plan)
-    if (plan === undefined) continue
-    for (const featureId of plan.features) {
-      if (claimedProductIds.has(featureId)) continue
-      claimedProductIds.add(featureId)
-      derived.push({ featureId, viaPlanId: fullPlanId(inclusion.product, plan.id), inclusion })
-    }
-  }
-  return derived
-}
-
-function buildByProduct(licences: CatalogLicence[], productsById: Map<string, CatalogProduct>): Record<string, ProductLicenceEntry[]> {
+function buildByProduct(
+  licences: CatalogLicence[],
+  productsById: Map<string, CatalogProduct>,
+  licencesById: Map<string, CatalogLicence>,
+): Record<string, ProductLicenceEntry[]> {
   const byProduct: Record<string, ProductLicenceEntry[]> = {}
 
   function add(productId: string, entry: ProductLicenceEntry) {
@@ -170,18 +168,16 @@ function buildByProduct(licences: CatalogLicence[], productsById: Map<string, Ca
   }
 
   for (const licence of licences) {
-    for (const inclusion of licence.includes) {
-      add(inclusion.product, directEntry(licence, inclusion))
-    }
-    for (const { featureId, viaPlanId, inclusion } of planDerivedFeatures(licence, productsById)) {
-      add(featureId, {
+    for (const inclusion of effectiveInclusions(licence, productsById, licencesById)) {
+      add(inclusion.target, {
         licence: licence.id,
         availability: inclusion.availability,
-        package: inclusion.package ?? null,
-        planId: null,
-        customPlanTitle: null,
-        via: 'plan',
-        viaPlanId,
+        planId: inclusion.via === 'direct' && inclusion.plan !== undefined ? fullPlanId(inclusion.target, inclusion.plan) : null,
+        customPlanTitle: inclusion.via === 'direct' ? inclusion.custom_plan?.title ?? null : null,
+        via: inclusion.via,
+        viaPlanId: inclusion.viaPlanId,
+        viaLicenceIds: inclusion.viaLicenceIds,
+        viaProductId: inclusion.viaProductId,
         note: inclusion.note,
       })
     }
@@ -239,12 +235,25 @@ export function buildCatalogIndex(files: CatalogSourceFile[], warn: (message: st
   }
 
   const licences = [...licencesById.values()].sort(compareById)
+  const allLicencesById = new Map(licences.map((licence) => [licence.id, licence]))
+  for (const licence of licences) {
+    for (const inclusion of licence.includes) {
+      if (inclusion.type === 'product') {
+        if (!productsById.has(inclusion.target)) warn(`${licence.id}: inclusion references unknown product ${inclusion.target}.`)
+        if (inclusion.plan !== undefined && !productsById.get(inclusion.target)?.plans.some((plan) => plan.id === inclusion.plan)) {
+          warn(`${licence.id}: inclusion references unknown plan ${inclusion.target}.${inclusion.plan}.`)
+        }
+      } else if (!allLicencesById.has(inclusion.target)) {
+        warn(`${licence.id}: inclusion references unknown licence ${inclusion.target}.`)
+      }
+    }
+  }
   return {
     schema_version: CATALOG_INDEX_SCHEMA_VERSION,
     vendors: [...vendorsById.values()].sort(compareById),
     products: [...productsById.values()].sort(compareById),
     licences,
-    by_product: buildByProduct(licences, productsById),
+    by_product: buildByProduct(licences, productsById, allLicencesById),
   }
 }
 
@@ -256,5 +265,8 @@ export function parseCatalogIndex(value: unknown): CatalogIndex | string {
   if (!Array.isArray(value.products) || !value.products.every(isCatalogProduct)) return 'products must be a list of products'
   if (!Array.isArray(value.licences) || !value.licences.every(isCatalogLicence)) return 'licences must be a list of licences'
   if (!isObject(value.by_product)) return 'it needs a by_product object'
+  if (!Object.values(value.by_product).every((entries) => Array.isArray(entries) && entries.every(isProductLicenceEntry))) {
+    return 'by_product must contain lists of product licence entries'
+  }
   return value as unknown as CatalogIndex
 }

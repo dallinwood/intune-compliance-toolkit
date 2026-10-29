@@ -4,6 +4,7 @@
   "title": "3rd Party MFA Integration",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

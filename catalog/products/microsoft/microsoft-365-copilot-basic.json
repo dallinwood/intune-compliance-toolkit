@@ -4,12 +4,13 @@
   "title": "Microsoft 365 Copilot (Basic)",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
-  "description": null,
+  "requires": null,
+  "category": "Copilot",
+  "description": "Microsoft's Basic label for standard-access Copilot experiences in Microsoft 365 apps. This is an experience level, not a separately purchasable subscription.",
   "links": [
     {
-      "title": "Documentation",
-      "url": "https://learn.microsoft.com/copilot/overview"
+      "title": "Experience and licensing",
+      "url": "https://learn.microsoft.com/en-us/copilot/overview"
     }
   ],
   "targets": [],

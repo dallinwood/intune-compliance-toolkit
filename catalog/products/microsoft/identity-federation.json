@@ -4,6 +4,7 @@
   "title": "Identity Federation",
   "vendor": "microsoft",
   "parent": "microsoft.entra-workload-id-free",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

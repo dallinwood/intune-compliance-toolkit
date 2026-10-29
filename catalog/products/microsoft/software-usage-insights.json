@@ -4,6 +4,7 @@
   "title": "Software Usage Insights",
   "vendor": "microsoft",
   "parent": "microsoft.defender-vulnerability-management-core",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

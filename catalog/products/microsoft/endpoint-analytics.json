@@ -4,6 +4,7 @@
   "title": "Endpoint Analytics",
   "vendor": "microsoft",
   "parent": "microsoft.intune",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

@@ -3,7 +3,8 @@
   "id": "microsoft.entitlement-management-premium",
   "title": "Entitlement Management (premium)",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
+  "parent": "microsoft.entra-id-governance",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

@@ -4,7 +4,8 @@
   "title": "Productivity Server CAL",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Microsoft 365",
   "description": null,
   "links": [
     {

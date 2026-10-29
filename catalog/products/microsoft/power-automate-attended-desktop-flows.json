@@ -4,7 +4,8 @@
   "title": "Power Automate Attended Desktop Flows",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Windows",
+  "requires": null,
+  "category": "Automation, app building, and chatbots",
   "description": null,
   "links": [
     {

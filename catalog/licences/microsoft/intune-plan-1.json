@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-plan-1",
+  "title": "Microsoft Intune Plan 1",
+  "vendor": "microsoft",
+  "family": "Microsoft Intune",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://www.microsoft.com/en-au/security/microsoft-intune-pricing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.intune",
+      "availability": "included",
+      "note": null,
+      "plan": "plan_1"
+    },
+    {
+      "type": "product",
+      "target": "microsoft.config-manager",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

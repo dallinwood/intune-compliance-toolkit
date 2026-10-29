@@ -4,7 +4,8 @@
   "title": "Comms. Credits",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Communications",
+  "requires": null,
+  "category": "Meetings, calling, and chat",
   "description": null,
   "links": [
     {

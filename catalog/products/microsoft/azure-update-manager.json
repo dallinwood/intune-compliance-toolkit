@@ -4,7 +4,8 @@
   "title": "Azure Update Manager",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Microsoft Azure",
   "description": null,
   "links": [
     {

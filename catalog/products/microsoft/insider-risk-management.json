@@ -4,7 +4,8 @@
   "title": "Insider Risk Management",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
+  "requires": null,
+  "category": "Insider risk management",
   "description": null,
   "links": [
     {

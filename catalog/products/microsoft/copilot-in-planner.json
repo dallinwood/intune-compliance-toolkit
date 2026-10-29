@@ -4,6 +4,7 @@
   "title": "Copilot in Planner",
   "vendor": "microsoft",
   "parent": "microsoft.microsoft-365-copilot-premium",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

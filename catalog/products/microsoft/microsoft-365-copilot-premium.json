@@ -4,12 +4,13 @@
   "title": "Microsoft 365 Copilot (Premium)",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
-  "description": null,
+  "requires": null,
+  "category": "Copilot",
+  "description": "Microsoft's Premium label for the full paid Microsoft Copilot experience, including priority access and broader organizational grounding.",
   "links": [
     {
-      "title": "Documentation",
-      "url": "https://www.microsoft.com/microsoft-365-copilot"
+      "title": "Experience and licensing",
+      "url": "https://learn.microsoft.com/en-us/copilot/overview"
     }
   ],
   "targets": [],

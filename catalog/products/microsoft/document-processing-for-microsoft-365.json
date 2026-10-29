@@ -4,7 +4,8 @@
   "title": "Document Processing for Microsoft 365",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Automation & Intelligence",
+  "requires": null,
+  "category": "Content services",
   "description": null,
   "links": [
     {

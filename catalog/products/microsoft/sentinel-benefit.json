@@ -4,7 +4,8 @@
   "title": "Sentinel Benefit",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
+  "requires": null,
+  "category": "Threat protection",
   "description": null,
   "links": [
     {

@@ -4,7 +4,8 @@
   "title": "Power BI Pro",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Analytics",
   "description": null,
   "links": [
     {

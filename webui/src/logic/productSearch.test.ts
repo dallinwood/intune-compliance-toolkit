@@ -3,7 +3,7 @@ import type { CatalogProduct, CatalogVendor } from '../types/catalog'
 import { productTree, searchProducts } from './productSearch'
 
 function product(id: string, overrides: Partial<CatalogProduct> = {}): CatalogProduct {
-  return { id, title: id, vendor: 'a', parent: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides }
+  return { id, title: id, vendor: 'a', parent: null, requires: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides }
 }
 
 const VENDORS: CatalogVendor[] = [

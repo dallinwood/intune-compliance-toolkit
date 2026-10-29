@@ -4,7 +4,8 @@
   "title": "Config Manager Endpoint Protection",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Enterprise Mobility + Security",
+  "requires": null,
+  "category": "Endpoint and app management",
   "description": null,
   "links": [
     {

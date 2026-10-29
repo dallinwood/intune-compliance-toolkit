@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { AVAILABILITIES, compareText } from '../../logic/catalogIndex'
-import { AVAILABILITY_LABELS, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AVAILABILITY_LABELS, requiredProductLabelOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import { groupLicenceEntries, planFeatureLists, type LicenceRow, type PlanFeatureList } from '../../logic/planFeatures'
 import { ancestorsOf } from '../../logic/productSearch'
 import type { Availability, CatalogIndex, CatalogProduct, ProductLicenceEntry } from '../../types/catalog'
 import { TargetIcons } from '../rules/TargetIcons'
 import { AvailabilityBadge } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
+import { RequirementText } from './RequirementText'
 
 const COLLAPSED_FEATURE_COUNT = 12
 
@@ -68,8 +69,10 @@ function PlanCard({ list, lookup }: { list: PlanFeatureList; lookup: CatalogLook
   )
 }
 
-function EntryLine({ row, licenceTitle, lookup }: { row: LicenceRow; licenceTitle: string; lookup: CatalogLookup }) {
+function EntryLine({ row, licenceTitle, lookup, product, catalog, availability }: { row: LicenceRow; licenceTitle: string; lookup: CatalogLookup; product: CatalogProduct; catalog: CatalogIndex; availability: Availability }) {
   const planTitleOf = (planId: string) => lookup.planTitlesByFullId.get(planId) ?? planId
+  const hasStandaloneOffer = (catalog.by_product[product.id] ?? []).some((entry) => entry.via === 'direct' && entry.viaLicenceIds.length === 0)
+  const productRoute = hasStandaloneOffer ? undefined : row.viaProductIds[0]
   return (
     <li className="py-2">
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -86,18 +89,20 @@ function EntryLine({ row, licenceTitle, lookup }: { row: LicenceRow; licenceTitl
             {title}
           </Badge>
         ))}
-        {row.packageIds.map((packageId) => (
-          <span key={packageId} className="text-xs text-muted-foreground">
-            Add-on via{' '}
-            {lookup.productsById.has(packageId) ? (
-              <CatalogLink view="products" id={packageId} className="break-words">
-                {lookup.productsById.get(packageId)?.title}
-              </CatalogLink>
-            ) : (
-              packageId
-            )}
+        {row.viaLicenceIds.map((licenceId) => (
+          <span key={licenceId} className="text-xs text-muted-foreground">
+            {availability === 'add_on' ? 'Add-on via ' : 'via '}
+            <CatalogLink view="licences" id={licenceId} className="break-words">{lookup.licencesById.get(licenceId)?.title ?? licenceId}</CatalogLink>
           </span>
         ))}
+        {availability === 'add_on' && productRoute !== undefined && (
+          <span className="text-xs text-muted-foreground">
+            Add-on via{' '}
+            {lookup.productsById.has(productRoute) ? (
+              <CatalogLink view="products" id={productRoute} className="break-words">{lookup.productsById.get(productRoute)?.title}</CatalogLink>
+            ) : productRoute}
+          </span>
+        )}
         {row.viaPlanIds.length > 0 && <span className="text-xs text-muted-foreground">via {row.viaPlanIds.map(planTitleOf).join(', ')}</span>}
       </div>
       {row.notes.map((note, noteIndex) => (
@@ -109,7 +114,7 @@ function EntryLine({ row, licenceTitle, lookup }: { row: LicenceRow; licenceTitl
   )
 }
 
-function IncludedIn({ entries, catalog, lookup }: { entries: ProductLicenceEntry[]; catalog: CatalogIndex; lookup: CatalogLookup }) {
+function IncludedIn({ entries, catalog, lookup, product }: { entries: ProductLicenceEntry[]; catalog: CatalogIndex; lookup: CatalogLookup; product: CatalogProduct }) {
   const licenceTitles = useMemo(() => new Map(catalog.licences.map((licence) => [licence.id, licence.title])), [catalog.licences])
   const titleOf = (row: LicenceRow) => licenceTitles.get(row.licence) ?? row.licence
   const rowsByAvailability = (availability: Availability) =>
@@ -131,7 +136,7 @@ function IncludedIn({ entries, catalog, lookup }: { entries: ProductLicenceEntry
               </div>
               <ul className="divide-y divide-border px-3">
                 {group.map((row) => (
-                  <EntryLine key={row.licence} row={row} licenceTitle={titleOf(row)} lookup={lookup} />
+                  <EntryLine key={row.licence} row={row} licenceTitle={titleOf(row)} lookup={lookup} product={product} catalog={catalog} availability={availability} />
                 ))}
               </ul>
             </div>
@@ -178,6 +183,24 @@ export function ProductDetail({ product, catalog, lookup }: { product: CatalogPr
         </div>
         <p className="text-sm text-muted-foreground">{vendorTitle}</p>
         {product.description !== null && <p className="text-sm break-words">{product.description}</p>}
+        {product.requires !== null && (
+          <p className="text-sm break-words">
+            <span className="text-muted-foreground">Requires: </span>
+            <RequirementText
+              requirement={product.requires}
+              renderId={(requiredId) => {
+                const label = requiredProductLabelOf(requiredId, lookup)
+                return label.productId === null ? (
+                  label.title
+                ) : (
+                  <CatalogLink view="products" id={label.productId}>
+                    {label.title}
+                  </CatalogLink>
+                )
+              }}
+            />
+          </p>
+        )}
         {product.links.length > 0 && (
           <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
             {product.links.map((link) => (
@@ -209,7 +232,7 @@ export function ProductDetail({ product, catalog, lookup }: { product: CatalogPr
         </section>
       )}
 
-      <IncludedIn entries={catalog.by_product[product.id] ?? []} catalog={catalog} lookup={lookup} />
+      <IncludedIn entries={catalog.by_product[product.id] ?? []} catalog={catalog} lookup={lookup} product={product} />
     </div>
   )
 }

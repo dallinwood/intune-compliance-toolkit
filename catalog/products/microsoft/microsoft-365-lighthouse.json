@@ -4,7 +4,8 @@
   "title": "Microsoft 365 Lighthouse",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Microsoft 365",
   "description": null,
   "links": [
     {

@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-copilot",
+  "title": "Microsoft Copilot",
+  "vendor": "microsoft",
+  "family": "Microsoft 365 Copilot",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.business-basic",
+      "microsoft.business-standard",
+      "microsoft.business-premium",
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/copilot/overview"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.microsoft-365-copilot-premium",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-actions",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-chat-work",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-cowork",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-dashboard",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-clipchamp",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-forms",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-loop",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-onedrive",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-outlook",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-planner",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-sharepoint",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-teams",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-whiteboard",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-notebooks",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-prompt-gallery",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-search",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-studio-for-microsoft-365",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-tuning-preview",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.graph-and-connector-access-included",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.intelligent-recap",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.microsoft-365-agents",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.microsoft-places-ai-features",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.model-choice",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.people-skills-ai-inferencing",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.people-skills-in-copilot",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.sharepoint-agents",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.viva-insights-manager-leader-analyst",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.viva-pulse-for-copilot",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.sharepoint-advanced-management",
+      "availability": "included",
+      "note": null,
+      "plan": "copilot"
+    }
+  ],
+  "review": []
+}

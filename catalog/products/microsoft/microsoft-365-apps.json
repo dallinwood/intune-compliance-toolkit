@@ -4,7 +4,8 @@
   "title": "Microsoft 365 Apps",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Microsoft 365 apps",
   "description": null,
   "links": [
     {

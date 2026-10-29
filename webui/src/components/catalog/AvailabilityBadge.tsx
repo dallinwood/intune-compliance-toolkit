@@ -22,21 +22,25 @@ export function AvailabilityBadge({ availability }: { availability: Availability
   )
 }
 
-// An add-on that needs a bundle says which one, linking to that product; the
-// link sits beside the badge because the badge clips long titles.
-export function AvailabilityWithPackage({ availability, packageId, lookup }: { availability: Availability; packageId: string | undefined; lookup: CatalogLookup }) {
-  if (packageId === undefined) return <AvailabilityBadge availability={availability} />
-  const packageProduct = lookup.productsById.get(packageId)
+// An add-on route links to its source licence or product when known.
+export function AvailabilityWithSource({ availability, sourceId, lookup }: { availability: Availability; sourceId: string | undefined; lookup: CatalogLookup }) {
+  if (sourceId === undefined) return <AvailabilityBadge availability={availability} />
+  const sourceLicence = lookup.licencesById.get(sourceId)
+  const sourceProduct = lookup.productsById.get(sourceId)
   return (
     <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
       <AvailabilityBadge availability={availability} />{' '}
       <span className="text-xs text-muted-foreground">
         via{' '}
-        {packageProduct === undefined ? (
-          packageId
+        {sourceLicence !== undefined ? (
+          <CatalogLink view="licences" id={sourceId} className="break-words">
+            {sourceLicence.title}
+          </CatalogLink>
+        ) : sourceProduct === undefined ? (
+          sourceId
         ) : (
-          <CatalogLink view="products" id={packageId} className="break-words">
-            {packageProduct.title}
+          <CatalogLink view="products" id={sourceId} className="break-words">
+            {sourceProduct.title}
           </CatalogLink>
         )}
       </span>

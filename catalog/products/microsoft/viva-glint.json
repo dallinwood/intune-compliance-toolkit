@@ -3,8 +3,9 @@
   "id": "microsoft.viva-glint",
   "title": "Viva Glint",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-workplace-analytics-employee-feedback",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

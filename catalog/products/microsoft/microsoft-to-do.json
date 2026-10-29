@@ -4,7 +4,8 @@
   "title": "Microsoft To Do",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Project and task management",
   "description": null,
   "links": [
     {

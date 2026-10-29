@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-suite",
+  "title": "Microsoft Intune Suite",
+  "vendor": "microsoft",
+  "family": "Microsoft Intune",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.intune-plan-1",
+      "microsoft.business-premium",
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://www.microsoft.com/en-au/security/microsoft-intune-pricing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "licence",
+      "target": "microsoft.intune-plan-2",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.intune-advanced-analytics",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.intune-cloud-pki",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.intune-endpoint-privilege-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.intune-enterprise-app-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.intune-remote-help",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

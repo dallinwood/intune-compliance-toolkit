@@ -4,7 +4,8 @@
   "title": "Microsoft Tunnel",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Endpoint and app management",
   "description": null,
   "links": [
     {

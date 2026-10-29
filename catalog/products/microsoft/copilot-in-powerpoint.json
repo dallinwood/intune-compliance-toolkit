@@ -4,6 +4,7 @@
   "title": "Copilot in PowerPoint",
   "vendor": "microsoft",
   "parent": "microsoft.microsoft-365-copilot-basic",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

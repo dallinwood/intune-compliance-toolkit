@@ -4,7 +4,8 @@
   "title": "Defender Experts for Hunting",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Microsoft Security Experts",
+  "requires": null,
+  "category": "Threat protection",
   "description": null,
   "links": [
     {

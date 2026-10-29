@@ -4,6 +4,7 @@
   "title": "People Skills AI Inferencing",
   "vendor": "microsoft",
   "parent": "microsoft.microsoft-365-copilot-premium",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

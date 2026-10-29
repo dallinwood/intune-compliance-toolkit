@@ -4,7 +4,8 @@
   "title": "Windows Server CAL Rights",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Enterprise Mobility + Security",
+  "requires": null,
+  "category": "Windows",
   "description": null,
   "links": [
     {

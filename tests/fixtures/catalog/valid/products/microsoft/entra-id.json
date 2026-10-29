@@ -4,6 +4,7 @@
   "title": "Microsoft Entra ID",
   "vendor": "microsoft",
   "parent": null,
+  "requires": null,
   "category": "Identity",
   "description": null,
   "links": [],

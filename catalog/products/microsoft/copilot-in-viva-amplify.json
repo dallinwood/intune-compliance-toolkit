@@ -3,8 +3,9 @@
   "id": "microsoft.copilot-in-viva-amplify",
   "title": "Copilot in Viva Amplify",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-employee-communications-communities",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

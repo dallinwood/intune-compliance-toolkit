@@ -3,9 +3,10 @@
   "id": "microsoft.ai-priority-access",
   "title": "AI Priority Access",
   "vendor": "microsoft",
-  "parent": "microsoft.copilot-chat-basic",
+  "parent": "microsoft.microsoft-365-copilot-premium",
+  "requires": null,
   "category": null,
-  "description": null,
+  "description": "Priority access to Copilot capabilities. The baseline Copilot Chat experience provides standard access rather than priority access.",
   "links": [
     {
       "title": "Documentation",

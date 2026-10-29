@@ -4,6 +4,7 @@
   "title": "Multi-Factor Auth (MFA)",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id-free",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

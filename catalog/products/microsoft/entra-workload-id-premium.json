@@ -4,7 +4,8 @@
   "title": "Entra Workload ID Premium",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Microsoft Entra",
+  "requires": null,
+  "category": "Identity and access management",
   "description": null,
   "links": [
     {

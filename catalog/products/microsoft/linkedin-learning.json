@@ -4,7 +4,8 @@
   "title": "LinkedIn Learning",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Employee Experience",
+  "requires": null,
+  "category": "LinkedIn Learning",
   "description": null,
   "links": [
     {

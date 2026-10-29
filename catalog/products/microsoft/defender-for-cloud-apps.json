@@ -4,7 +4,8 @@
   "title": "Defender for Cloud Apps",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Enterprise Mobility + Security",
+  "requires": null,
+  "category": "Cloud access security broker",
   "description": null,
   "links": [
     {

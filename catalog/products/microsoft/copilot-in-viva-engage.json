@@ -3,8 +3,9 @@
   "id": "microsoft.copilot-in-viva-engage",
   "title": "Copilot in Viva Engage",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-employee-communications-communities",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

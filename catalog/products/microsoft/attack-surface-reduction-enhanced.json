@@ -4,6 +4,7 @@
   "title": "Attack Surface Reduction (enhanced)",
   "vendor": "microsoft",
   "parent": "microsoft.defender-for-endpoint",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

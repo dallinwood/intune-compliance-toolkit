@@ -4,6 +4,7 @@
   "title": "Firmware Over-the-Air Updates",
   "vendor": "microsoft",
   "parent": "microsoft.intune",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

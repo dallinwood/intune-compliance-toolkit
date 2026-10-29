@@ -3,7 +3,8 @@
   "id": "microsoft.lifecycle-workflows",
   "title": "Lifecycle Workflows",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-governance-add-on-to-entra-id-plan-2",
+  "parent": "microsoft.entra-id-governance",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

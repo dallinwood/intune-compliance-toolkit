@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.intune-cloud-pki",
+  "title": "Intune Cloud PKI",
+  "vendor": "microsoft",
+  "family": "Microsoft Intune",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.intune-plan-1",
+      "microsoft.business-premium",
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://www.microsoft.com/en-au/security/microsoft-intune-pricing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.intune-cloud-pki",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

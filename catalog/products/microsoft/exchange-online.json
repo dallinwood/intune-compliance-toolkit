@@ -4,7 +4,8 @@
   "title": "Exchange Online",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Email, calendar, and scheduling",
   "description": null,
   "links": [
     {

@@ -94,6 +94,7 @@ The validator and the publish step read it separately from the rule library.
   "title": "Microsoft Entra ID",
   "vendor": "microsoft",                   // must be a vendors.json id, and the id's prefix
   "parent": null,                          // a product id, or null for a top-level product
+  "requires": null,                        // what it needs to work: an id, { "all_of": [...] } or { "any_of": [...] }, or null
   "category": "Identity & Access",         // free text grouping for top-level products, or null
   "description": null,                     // string or null
   "links": [                               // may be empty
@@ -130,16 +131,15 @@ The validator and the publish step read it separately from the rule library.
   "vendor": "microsoft",
   "family": "Microsoft 365 Enterprise",    // grouping shown in the UI
   "kind": "subscription",                  // subscription | add_on
-  "requires": [],                          // licence ids this add-on needs, may be empty
+  "requires": null,                        // licences to buy first: an id, { "all_of": [...] } or { "any_of": [...] }, or null
   "description": null,
   "links": [],
   "includes": [
-    { "product": "microsoft.entra-id", "plan": "plan_2", "availability": "included", "note": null },
-    { "product": "microsoft.entra-id-access-reviews", "availability": "included", "note": null },
-    { "product": "microsoft.teams-premium", "availability": "add_on", "note": null },
-    { "product": "microsoft.advanced-meetings", "availability": "add_on",
-      "package": "microsoft.teams-premium", "note": null },   // bundle to buy, listed above as add_on
-    { "product": "microsoft.exchange-online",
+    { "type": "product", "target": "microsoft.entra-id", "plan": "plan_2", "availability": "included", "note": null },
+    { "type": "product", "target": "microsoft.access-reviews", "availability": "included", "note": null },
+    { "type": "product", "target": "microsoft.teams-premium", "availability": "add_on", "note": null },
+    { "type": "licence", "target": "microsoft.entra-suite", "availability": "add_on", "note": null },
+    { "type": "product", "target": "microsoft.exchange-online",
       "custom_plan": { "title": "Plan 2 (100 GB)", "description": null },
       "availability": "included", "note": null }
   ],
@@ -147,21 +147,23 @@ The validator and the publish step read it separately from the rule library.
 }
 ```
 
-- **`plan`** is the short plan id and must be defined on that product. Licence files keep
-  `product` and `plan` as separate fields so a validation error can say which part is wrong. **`custom_plan`** is for a level unique to
-  this licence. An entry sets at most one of the two.
+- **`type` and `target`** identify either a product or a licence. The two namespaces are
+  independent: a product and a licence can have the same id without ambiguity.
+- **`plan`** is the short plan id and must be defined on the target product.
+  **`custom_plan`** is for a level unique to this licence. An entry sets at most one
+  of the two, and neither is allowed on a licence target.
 - **`availability`:**
   - `included`: comes with the licence.
-  - `add_on`: can be bought for this licence. When the feature is only sold as part of a bundle,
-    `package` names that bundle.
-- **`package`** is optional and holds the id of the product to buy to get the feature. It is
-  allowed only on an `add_on` inclusion, must be an ancestor of the inclusion's product, and the
-  licence must list that product itself as `add_on`. The UI shows "Add-on via <package title>"
-  with the title linking to that product. An add-on with no `package` is bought on its own, or
-  its bundle is not recorded yet and the licence's `review` says so.
-- **What a licence includes in effect** is every listed entry, plus the `features` of every
-  listed plan. A feature listed directly and through a plan is allowed, and the UI shows it
-  once.
+  - `add_on`: can be bought separately, subject to that offer's prerequisites.
+- **Bundles are licences**, not parent products. The former hand-written `package`
+  field is removed. Nested licence provenance supplies the UI's "via" links.
+- **What a licence includes in effect** is every directly listed product, plus the
+  `features` of its listed plans and the included entitlements of nested licences.
+  An `add_on` edge makes those entitlements optional, not included. A nested licence's
+  own optional offers are not inherited. Requirements never grant entitlements.
+  Direct entries win over matching derived entries; the resolver preserves availability
+  and provenance. A product's `parent` provides structural context, not an automatic
+  licence entitlement or purchase prerequisite.
 - **`review`** holds plain-language notes for the maintainer, for example "Official comparison
   shows Entra ID P2 as an add-on here; the matrix showed it as included." It never names the
   matrix site. The UI shows a small "Needs review" marker on a licence with notes.
@@ -176,10 +178,16 @@ Modelled on `tools/mappings.py`. **Errors** (each fails the tests):
 - an unknown vendor;
 - a `parent` that does not exist, belongs to another vendor, or forms a cycle;
 - a duplicate plan id within a product; a plan feature that is not a descendant of the product;
-- a licence inclusion whose product does not exist; a `plan` not defined on that product; both
-  `plan` and `custom_plan`; an unknown `availability`;
-- the same product and plan listed twice in one licence;
-- a `requires` entry that is not a licence id, or that points at itself;
+- a licence inclusion whose target does not exist in the specified namespace;
+  a `plan` not defined on that product; both `plan` and `custom_plan`; any plan on
+  a licence target; an unknown `availability`;
+- a licence including itself, or any indirect inclusion cycle;
+- the same type, target and plan listed twice in one licence;
+- a licence `requires` id that is not a licence, or that points at itself;
+- a product `requires` id that is not a product or a plan defined on one, or that points at the
+  product itself or its own plans;
+- a requirement group with fewer than two members, an unknown operator, or a group nested
+  directly in a group of the same operator (a requirement cycle is only a warning);
 - a file that is not UTF-8 or not LF.
 
 The deploy workflow already runs the Python tests, so an invalid catalog cannot be published.
@@ -189,9 +197,9 @@ The deploy workflow already runs the Python tests, so an invalid catalog cannot 
 `scripts/copy-baselines.mjs` (or a sibling script it calls) copies `catalog/` to
 `webui/public/catalog/` and writes two compact generated files, never committed:
 
-- **`_index.json`:** every vendor, product and licence with the fields the list views need, so
-  the app makes one startup fetch for the catalog. With about 500 products and 9 licences this is
-  well under 1 MB. If it grows a lot, per-file detail fetches can come later.
+- **`_index.json`:** generated schema version 2, with every vendor, product and licence,
+  so the app makes one startup fetch for the catalog. Source documents retain version 1.
+  If it grows a lot, per-file detail fetches can come later.
 - **`by_product`** (inside the same index): for each product id, every licence that includes it,
   with availability, plan and whether it comes directly or through a plan. This is the reverse
   side of the mapping, so product files never store their licences.
@@ -200,6 +208,12 @@ A shared TypeScript module builds the index, as `mappingIndex.ts` does, so the p
 the tests use the same code. A file the validator would reject is skipped with a log line.
 
 ## 7. Seed data (one-off)
+
+This section records the original import, not the current authoring format.
+The 2026-10-28 review replaced package ancestry with typed licence composition,
+corrected independent product identities, and added standalone purchase offers.
+Use section 4 and the catalog schemas for current edits; do not rerun an old
+matrix import over the reviewed files.
 
 - **Scope:** Microsoft 365 Business (Basic, Standard, Premium, and the Defender and Purview
   suites for Business Premium) and Microsoft 365 Enterprise (E3, E5, E7, Defender Suite,
@@ -241,7 +255,8 @@ in the URL, so a link opens the same licence or product.
   - Licences grouped by vendor, then family, in a list. Selecting one shows its title, kind,
     requirements, links, review marker, and its effective inclusions grouped by top-level
     product: plan badges on products, features nested under their product, and availability as
-    a badge (Included, Add-on). An add-on with a package reads "Add-on via <package title>".
+    a badge (Included, Add-on). Nested licences are shown as linked inclusions;
+    derived add-ons link to the licence or product that supplies them.
   - A **Compare** mode: pick two or more licences and see a matrix with products and features
     as rows, licences as columns, availability or plan in each cell, and an option to hide rows
     that are the same in every column.
@@ -315,3 +330,4 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
 - 2026-10-27: Replaced `package_feature` with `included`, or `add_on` with an optional `package` naming the bundle to buy: schema and validator rules, index and UI ("Add-on via <package>" in the Licences tree, compare cells and Products Included in), and a migration of the 534 existing package features (442 add-on via a package, 21 included, 71 add-on with a review note) (`feat: name the package behind add-on features`).
 - 2026-10-28: Reworded the six Viva Pulse review notes that still named the retired package feature value (`fix: reword review notes that named the retired package feature value`), and made the Compare button read "Exit compare" in compare mode with a "Tick two or more licences to compare." hint until two are ticked (`fix: make the Compare button say how to leave compare mode`).
 - 2026-10-28: Final whole-branch review fixes. Back past a comparison now leaves compare mode so the selected licence shows again, and going back to a `rule=` address reveals that rule like a link click (`fix: leave compare mode when going back past a comparison`, 3e0fffd). A failed catalog fetch is retried when a catalog tab next opens, repeated notes no longer share React keys, and the heading and inclusion-tree chevrons have 32px touch targets (`fix: retry a failed catalog load and tidy keys and touch targets`, b3010ed). The catalog helpers were de-duplicated (one `AVAILABILITIES`, `OTHER_CATEGORY`, `sortNodes` and one cycle-safe `ancestorChain`, shared `compareText`), the stale default-view comment was corrected, and a test now keeps `scripts/route-pages.mjs` in step with the view registry (`refactor: share catalog helpers and keep route pages in step with views`).
+- 2026-10-29: Official-source review of products and licences (work begun 2026-10-28, checkpointed here). Bundles are now licences, not parent products: licence `includes` entries are typed (`type: product | licence`, `target`) and `package` is gone, so nested licences supply "via" provenance. Licence and product `requires` accept nested `all_of`/`any_of` groups, and product requirements may name a plan. Entra ID Governance (standard and P2 step-up), Private Access, Internet Access, Entra ID P1/P2, the Intune plans and modules, Defender for Endpoint P2, Defender Vulnerability Management, Copilot and the Viva bundles became purchasable licences with their prerequisites. The Products tab is grouped by the Modern Work Plan Comparison's workloads plus official product families (`docs/catalog-grouping.md`). Stale e2e assertions from the package model were updated to the nested-licence wording (`feat: model bundles as licences and group products by official workload`).

@@ -2,7 +2,9 @@
 
 The catalog (docs/plans/2026-10-27-product-licence-catalog-design.md) lists
 vendors, products (a feature is a product with a parent) and licences that
-include them. The publish step builds an index from these files that only
+include them. A product's `requires` names what it needs to work and a
+licence's `requires` what must be bought first; both are an id or a nested
+all_of / any_of group. The publish step builds an index from these files that only
 checks their structure; this module is the CI gate. JSON Schema files check
 each file's shape, and Python checks everything that spans files.
 """
@@ -167,6 +169,75 @@ def _parent_problems(product_id: str, products: dict[str, Entry]) -> list[str]:
     return problems
 
 
+def _requirement_references(requirement: object, where: str = "requires") -> list[tuple[str, str]]:
+    """Every (location, id) a requirement names, depth first; an absent requirement names nothing."""
+    if requirement is None:
+        return []
+    if isinstance(requirement, str):
+        return [(where, requirement)]
+    operator = next(iter(requirement))
+    references: list[tuple[str, str]] = []
+    for position, member in enumerate(requirement[operator]):
+        references += _requirement_references(member, f"{where}.{operator}[{position}]")
+    return references
+
+
+def _requirement_shape_problems(requirement: object, where: str = "requires") -> list[str]:
+    """A group nested directly in a group of the same operator says nothing more, so it must be merged."""
+    if not isinstance(requirement, dict):
+        return []
+    operator = next(iter(requirement))
+    problems: list[str] = []
+    for position, member in enumerate(requirement[operator]):
+        member_where = f"{where}.{operator}[{position}]"
+        if isinstance(member, dict) and operator in member:
+            problems.append(f"{member_where}: an {operator} directly inside an {operator} must be merged into it")
+        problems += _requirement_shape_problems(member, member_where)
+    return problems
+
+
+def _split_product_reference(reference: str) -> tuple[str, str | None]:
+    """A product id, or a full plan id `<product id>.<plan id>`, as (product id, plan id or None)."""
+    vendor_id, rest = reference.split(".", 1)
+    slug, _separator, plan_id = rest.partition(".")
+    return f"{vendor_id}.{slug}", plan_id or None
+
+
+def _product_requirement_problems(product_id: str, products: dict[str, Entry]) -> list[str]:
+    requirement = products[product_id].document["requires"]
+    problems = _requirement_shape_problems(requirement)
+    for where, reference in _requirement_references(requirement):
+        required_product_id, plan_id = _split_product_reference(reference)
+        if required_product_id == product_id:
+            problems.append(f"{where}: a product cannot require itself or its own plans")
+        elif required_product_id not in products:
+            problems.append(f"{where}: requires {reference}, which does not exist")
+        elif plan_id is not None and plan_id not in {plan["id"] for plan in products[required_product_id].document["plans"]}:
+            problems.append(f"{where}: requires {reference}, but plan {plan_id} is not defined on {required_product_id}")
+    return problems
+
+
+def _requirement_cycle_warnings(entries: dict[str, Entry], target_of) -> list[str]:
+    """One warning per entry that another entry's requirements lead back to; a direct self-reference is an error elsewhere."""
+    required_ids = {
+        entry_id: {target_of(reference) for _where, reference in _requirement_references(entry.document["requires"])} - {entry_id}
+        for entry_id, entry in entries.items()
+    }
+    warnings: list[str] = []
+    for entry_id, entry in entries.items():
+        seen_ids: set[str] = set()
+        pending_ids = list(required_ids[entry_id])
+        while pending_ids:
+            current_id = pending_ids.pop()
+            if current_id in seen_ids or current_id not in required_ids:
+                continue
+            seen_ids.add(current_id)
+            pending_ids.extend(required_ids[current_id])
+        if entry_id in seen_ids:
+            warnings.append(f"{entry.relative_path}: its requirements form a cycle that leads back to {entry_id}")
+    return warnings
+
+
 def _plan_problems(product_id: str, products: dict[str, Entry]) -> list[str]:
     problems: list[str] = []
     seen_plan_ids: set[str] = set()
@@ -185,36 +256,31 @@ def _plan_problems(product_id: str, products: dict[str, Entry]) -> list[str]:
 
 
 def _inclusion_key(inclusion: dict) -> tuple:
+    if inclusion["type"] == "licence":
+        return "licence", inclusion["target"]
     custom_plan = inclusion.get("custom_plan")
-    return inclusion["product"], inclusion.get("plan"), custom_plan["title"] if custom_plan else None
+    custom_plan_key = tuple(sorted(custom_plan.items())) if custom_plan else None
+    return "product", inclusion["target"], inclusion.get("plan"), custom_plan_key
 
 
-def _package_problems(inclusion: dict, products: dict[str, Entry], add_on_product_ids: set[str]) -> list[str]:
-    package_id = inclusion.get("package")
-    if package_id is None:
-        return []
-    if inclusion["availability"] != "add_on":
-        return [f"sets package {package_id} but is not an add_on"]
-    if package_id not in products:
-        return [f"package {package_id} does not exist"]
-    if package_id not in _ancestor_ids(inclusion["product"], products):
-        return [f"package {package_id} is not an ancestor of {inclusion['product']}"]
-    if package_id not in add_on_product_ids:
-        return [f"package {package_id} is not listed as an add_on by this licence"]
-    return []
-
-
-def _inclusion_problems(inclusion: dict, products: dict[str, Entry], add_on_product_ids: set[str]) -> list[str]:
+def _inclusion_problems(
+    inclusion: dict, licence_id: str, licences: dict[str, Entry], products: dict[str, Entry]
+) -> list[str]:
     problems: list[str] = []
-    product_id = inclusion["product"]
+    target_id = inclusion["target"]
+    if inclusion["type"] == "licence":
+        if target_id == licence_id:
+            problems.append(f"licence {target_id} cannot include itself")
+        elif target_id not in licences:
+            problems.append(f"licence {target_id} does not exist")
+        return problems
+    if target_id not in products:
+        return [f"product {target_id} does not exist"]
     if "plan" in inclusion and "custom_plan" in inclusion:
         problems.append("sets both plan and custom_plan; an inclusion can set at most one")
-    if product_id not in products:
-        return [*problems, f"product {product_id} does not exist"]
-    problems.extend(_package_problems(inclusion, products, add_on_product_ids))
-    defined_plan_ids = {plan["id"] for plan in products[product_id].document["plans"]}
+    defined_plan_ids = {plan["id"] for plan in products[target_id].document["plans"]}
     if "plan" in inclusion and inclusion["plan"] not in defined_plan_ids:
-        problems.append(f"plan {inclusion['plan']} is not defined on {product_id}")
+        problems.append(f"plan {inclusion['plan']} is not defined on {target_id}")
     return problems
 
 
@@ -222,21 +288,55 @@ def _licence_problems(licence_id: str, licences: dict[str, Entry], products: dic
     licence = licences[licence_id].document
     problems: list[str] = []
     seen_inclusion_keys: set[tuple] = set()
-    add_on_product_ids = {inclusion["product"] for inclusion in licence["includes"] if inclusion["availability"] == "add_on"}
     for position, inclusion in enumerate(licence["includes"]):
-        inclusion_problems = _inclusion_problems(inclusion, products, add_on_product_ids)
+        inclusion_problems = _inclusion_problems(inclusion, licence_id, licences, products)
         problems.extend(f"includes[{position}]: {problem}" for problem in inclusion_problems)
         key = _inclusion_key(inclusion)
         if key in seen_inclusion_keys:
-            plan_label = key[1] or key[2] or "without a plan"
-            problems.append(f"includes[{position}]: lists {key[0]} {plan_label} more than once")
+            problems.append(f"includes[{position}]: lists {key[0]} {key[1]} more than once with the same plan/custom plan selection")
         seen_inclusion_keys.add(key)
-    for position, required_id in enumerate(licence["requires"]):
+    problems.extend(_requirement_shape_problems(licence["requires"]))
+    for where, required_id in _requirement_references(licence["requires"]):
         if required_id == licence_id:
-            problems.append(f"requires[{position}]: a licence cannot require itself")
+            problems.append(f"{where}: a licence cannot require itself")
         elif required_id not in licences:
-            problems.append(f"requires[{position}]: requires {required_id}, which does not exist")
+            problems.append(f"{where}: requires {required_id}, which does not exist")
     return problems
+
+
+def _inclusion_cycle_members(licences: dict[str, Entry]) -> set[str]:
+    """Return licences participating in an inclusion cycle, regardless of availability."""
+    graph = {
+        licence_id: {
+            inclusion["target"]
+            for inclusion in entry.document["includes"]
+            if inclusion["type"] == "licence" and inclusion["target"] in licences
+        }
+        for licence_id, entry in licences.items()
+    }
+    active: list[str] = []
+    active_set: set[str] = set()
+    complete: set[str] = set()
+    cycle_members: set[str] = set()
+
+    def visit(licence_id: str) -> None:
+        if licence_id in complete:
+            return
+        active.append(licence_id)
+        active_set.add(licence_id)
+        for target_id in graph[licence_id]:
+            if target_id in active_set:
+                cycle_members.update(active[active.index(target_id) :])
+            elif target_id not in complete:
+                visit(target_id)
+        active.pop()
+        active_set.remove(licence_id)
+        complete.add(licence_id)
+
+    for licence_id in graph:
+        if licence_id not in complete:
+            visit(licence_id)
+    return cycle_members
 
 
 def _read_catalog(catalog_dir: Path, errors: list[str]) -> tuple[list[dict] | None, dict[str, Entry], dict[str, Entry]]:
@@ -269,16 +369,22 @@ def validate_catalog(catalog_dir: Path) -> tuple[list[str], list[str]]:
     for product_id, entry in products.items():
         problems = _vendor_problems(product_id, entry.document["vendor"], known_vendor_ids)
         problems += _parent_problems(product_id, products)
+        problems += _product_requirement_problems(product_id, products)
         problems += _plan_problems(product_id, products)
         errors.extend(f"{entry.relative_path}: {problem}" for problem in problems)
+    catalog_warnings += _requirement_cycle_warnings(products, lambda reference: _split_product_reference(reference)[0])
 
+    inclusion_cycle_members = _inclusion_cycle_members(licences)
     for licence_id, entry in licences.items():
         problems = _vendor_problems(licence_id, entry.document["vendor"], known_vendor_ids)
         problems += _licence_problems(licence_id, licences, products)
+        if licence_id in inclusion_cycle_members:
+            problems.append("licence inclusion graph forms a cycle")
         errors.extend(f"{entry.relative_path}: {problem}" for problem in problems)
         review_notes = entry.document["review"]
         if review_notes:
             catalog_warnings.append(f"{entry.relative_path}: {len(review_notes)} review note(s) still to resolve")
+    catalog_warnings += _requirement_cycle_warnings(licences, lambda reference: reference)
     return errors, catalog_warnings
 
 

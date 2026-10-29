@@ -4,6 +4,7 @@
   "title": "Advanced Anti-Phishing",
   "vendor": "microsoft",
   "parent": "microsoft.defender-for-office-365",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

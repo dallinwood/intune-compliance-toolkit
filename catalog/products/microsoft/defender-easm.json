@@ -4,7 +4,8 @@
   "title": "Defender EASM",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Threat protection",
   "description": null,
   "links": [
     {

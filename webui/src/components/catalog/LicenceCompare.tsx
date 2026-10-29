@@ -4,14 +4,14 @@ import { AVAILABILITIES } from '../../logic/catalogIndex'
 import { compareRows, withoutIdenticalRows } from '../../logic/licenceCompare'
 import { availabilityText, planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import type { EffectiveInclusion } from '../../logic/catalogTree'
-import type { CatalogLicence } from '../../types/catalog'
+import type { CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { AvailabilityBadgeIcon } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 
 const INDENT_REM_PER_LEVEL = 1
 const STICKY_FIRST_COLUMN = 'sticky left-0 z-10 bg-background'
 
-function Cell({ inclusion, lookup }: { inclusion: EffectiveInclusion | null; lookup: CatalogLookup }) {
+function Cell({ inclusion, lookup, catalog }: { inclusion: EffectiveInclusion | null; lookup: CatalogLookup; catalog: CatalogIndex }) {
   if (inclusion === null) {
     return (
       <span className="text-muted-foreground">
@@ -21,27 +21,44 @@ function Cell({ inclusion, lookup }: { inclusion: EffectiveInclusion | null; loo
     )
   }
   const planTitle = planLabelOf(inclusion, lookup)?.title ?? viaPlanTitleOf(inclusion, lookup)
-  const text = availabilityText(inclusion.availability, inclusion.package, lookup)
+  const hasStandaloneOffer = (catalog.by_product[inclusion.target] ?? []).some((entry) => entry.via === 'direct' && entry.viaLicenceIds.length === 0)
+  const sourceId = inclusion.viaLicenceIds.at(-1) ?? (inclusion.availability === 'add_on' && !hasStandaloneOffer ? inclusion.viaProductId : null)
+  const text = availabilityText(inclusion.availability, sourceId, lookup)
+  const sourceLicence = sourceId === null ? undefined : lookup.licencesById.get(sourceId)
+  const sourceProduct = sourceId === null ? undefined : lookup.productsById.get(sourceId)
   return (
     <span className="inline-flex flex-col items-center gap-0.5">
       <AvailabilityBadgeIcon availability={inclusion.availability} title={text} />
       <span className="sr-only">{text}</span>
       {planTitle !== null && <span className="text-xs text-muted-foreground">{planTitle}</span>}
+      {sourceId !== null && (
+        <span className="text-xs text-muted-foreground">
+          {inclusion.availability === 'add_on' ? 'Add-on via ' : 'via '}
+          {sourceLicence !== undefined ? (
+            <CatalogLink view="licences" id={sourceId}>{sourceLicence.title}</CatalogLink>
+          ) : sourceProduct !== undefined ? (
+            <CatalogLink view="products" id={sourceId}>{sourceProduct.title}</CatalogLink>
+          ) : sourceId}
+        </span>
+      )}
+      {inclusion.note !== null && <span className="max-w-40 text-xs text-muted-foreground">{inclusion.note}</span>}
     </span>
   )
 }
 
 export function LicenceCompare({
   licences,
+  catalog,
   lookup,
   onOpenLicence,
 }: {
   licences: CatalogLicence[]
+  catalog: CatalogIndex
   lookup: CatalogLookup
   onOpenLicence: (licenceId: string) => void
 }) {
   const [hideIdentical, setHideIdentical] = useState(true)
-  const rows = useMemo(() => compareRows(licences, lookup.productsById), [licences, lookup])
+  const rows = useMemo(() => compareRows(licences, lookup.productsById, catalog.licences), [licences, lookup, catalog.licences])
   const visibleRows = useMemo(() => (hideIdentical ? withoutIdenticalRows(rows) : rows), [rows, hideIdentical])
 
   return (
@@ -100,7 +117,7 @@ export function LicenceCompare({
                 </th>
                 {row.cells.map((inclusion, position) => (
                   <td key={licences[position].id} className="relative border-b border-border px-3 py-1.5 text-center align-middle">
-                    <Cell inclusion={inclusion} lookup={lookup} />
+                    <Cell inclusion={inclusion} lookup={lookup} catalog={catalog} />
                   </td>
                 ))}
               </tr>

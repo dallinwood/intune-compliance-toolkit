@@ -4,7 +4,8 @@
   "title": "Microsoft Entra ID",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Enterprise Mobility + Security",
+  "requires": null,
+  "category": "Identity and access management",
   "description": null,
   "links": [
     {
@@ -26,7 +27,6 @@
         "microsoft.custom-security-attributes",
         "microsoft.entra-id-connect-health",
         "microsoft.entra-internet-access-for-microsoft",
-        "microsoft.external-id",
         "microsoft.microsoft-identity-manager",
         "microsoft.password-protection",
         "microsoft.self-service-group-management",
@@ -40,7 +40,6 @@
         "microsoft.dynamic-groups",
         "microsoft.enterprise-state-roaming",
         "microsoft.self-service-password-reset-in-ad",
-        "microsoft.windows-autopilot",
         "microsoft.entra-id-for-office-365",
         "microsoft.customized-sign-in-page",
         "microsoft.self-service-activity-reports",
@@ -50,8 +49,7 @@
         "microsoft.multi-factor-auth-mfa",
         "microsoft.passwordless-authentication",
         "microsoft.single-sign-on-to-other-saas",
-        "microsoft.temporary-access-pass",
-        "microsoft.verified-id"
+        "microsoft.temporary-access-pass"
       ]
     },
     {
@@ -72,7 +70,6 @@
         "microsoft.custom-security-attributes",
         "microsoft.entra-id-connect-health",
         "microsoft.entra-internet-access-for-microsoft",
-        "microsoft.external-id",
         "microsoft.microsoft-identity-manager",
         "microsoft.password-protection",
         "microsoft.self-service-group-management",
@@ -86,7 +83,6 @@
         "microsoft.dynamic-groups",
         "microsoft.enterprise-state-roaming",
         "microsoft.self-service-password-reset-in-ad",
-        "microsoft.windows-autopilot",
         "microsoft.entra-id-for-office-365",
         "microsoft.customized-sign-in-page",
         "microsoft.self-service-activity-reports",
@@ -96,15 +92,8 @@
         "microsoft.multi-factor-auth-mfa",
         "microsoft.passwordless-authentication",
         "microsoft.single-sign-on-to-other-saas",
-        "microsoft.temporary-access-pass",
-        "microsoft.verified-id"
+        "microsoft.temporary-access-pass"
       ]
-    },
-    {
-      "id": "plan_2_step_up",
-      "title": "Plan 2 Step-up",
-      "description": null,
-      "features": []
     }
   ]
 }

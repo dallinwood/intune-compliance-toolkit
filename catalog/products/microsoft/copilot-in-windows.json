@@ -4,7 +4,8 @@
   "title": "Copilot in Windows",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Windows",
+  "requires": null,
+  "category": "Copilot",
   "description": null,
   "links": [
     {

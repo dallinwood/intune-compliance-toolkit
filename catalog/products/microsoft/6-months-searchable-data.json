@@ -4,6 +4,7 @@
   "title": "6-Months Searchable Data",
   "vendor": "microsoft",
   "parent": "microsoft.defender-for-endpoint",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

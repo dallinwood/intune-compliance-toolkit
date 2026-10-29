@@ -4,6 +4,7 @@
   "title": "Copilot Chat in Outlook",
   "vendor": "microsoft",
   "parent": "microsoft.copilot-chat-basic",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

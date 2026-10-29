@@ -4,7 +4,8 @@
   "title": "Agent 365",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
+  "requires": null,
+  "category": "Microsoft Agent 365",
   "description": null,
   "links": [
     {

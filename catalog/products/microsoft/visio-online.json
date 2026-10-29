@@ -4,7 +4,8 @@
   "title": "Visio Online",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Companion Products & Services",
+  "requires": null,
+  "category": "Project and task management",
   "description": null,
   "links": [
     {

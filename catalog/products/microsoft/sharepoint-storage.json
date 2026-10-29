@@ -4,7 +4,8 @@
   "title": "SharePoint Storage",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Extra Capacity",
+  "requires": null,
+  "category": "Intranet and storage",
   "description": null,
   "links": [
     {

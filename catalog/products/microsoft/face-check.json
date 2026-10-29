@@ -4,6 +4,7 @@
   "title": "Face Check",
   "vendor": "microsoft",
   "parent": "microsoft.entra-verified-id-premium",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

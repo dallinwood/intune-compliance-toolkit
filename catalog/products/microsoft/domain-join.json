@@ -4,6 +4,7 @@
   "title": "Domain Join",
   "vendor": "microsoft",
   "parent": null,
+  "requires": null,
   "category": "Windows",
   "description": null,
   "links": [

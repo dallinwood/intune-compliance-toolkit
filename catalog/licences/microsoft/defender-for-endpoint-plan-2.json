@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-endpoint-plan-2",
+  "title": "Microsoft Defender for Endpoint Plan 2",
+  "vendor": "microsoft",
+  "family": "Microsoft Defender",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing and capabilities",
+      "url": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.defender-for-endpoint",
+      "availability": "included",
+      "note": null,
+      "plan": "plan_2"
+    },
+    {
+      "type": "product",
+      "target": "microsoft.defender-vulnerability-management-core",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.configuration-assessment",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.continuous-monitoring",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.device-discovery",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.device-inventory",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.remediation-tracking",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.risk-based-prioritization",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.software-inventory",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.software-usage-insights",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.vulnerability-assessment",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

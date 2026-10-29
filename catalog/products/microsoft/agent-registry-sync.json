@@ -4,6 +4,7 @@
   "title": "Agent Registry Sync",
   "vendor": "microsoft",
   "parent": "microsoft.agent-365",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

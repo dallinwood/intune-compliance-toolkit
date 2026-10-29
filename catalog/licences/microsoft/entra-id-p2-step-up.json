@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-p2-step-up",
+  "title": "Microsoft Entra ID P2 Step-up",
+  "vendor": "microsoft",
+  "family": "Microsoft Entra",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.entra-id-p1",
+      "microsoft.business-premium",
+      "microsoft.m365-e3"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.entra-id",
+      "availability": "included",
+      "note": null,
+      "plan": "plan_2"
+    }
+  ],
+  "review": []
+}

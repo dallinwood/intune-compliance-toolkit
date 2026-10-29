@@ -4,7 +4,8 @@
   "title": "AI Builder Capacity",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Extra Capacity",
+  "requires": null,
+  "category": "Automation, app building, and chatbots",
   "description": null,
   "links": [
     {

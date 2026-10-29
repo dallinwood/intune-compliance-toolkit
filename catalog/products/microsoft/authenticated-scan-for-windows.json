@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
   "id": "microsoft.authenticated-scan-for-windows",
-  "title": "Authenticated Scan For Windows",
+  "title": "Authenticated scan for Windows (retired)",
   "vendor": "microsoft",
   "parent": "microsoft.defender-vulnerability-management-premium",
+  "requires": null,
   "category": null,
-  "description": null,
+  "description": "The Windows authenticated scan feature is no longer supported. It is not a current Defender Vulnerability Management entitlement.",
   "links": [
     {
       "title": "Documentation",

@@ -4,6 +4,7 @@
   "title": "Agent Data Loss Prevention",
   "vendor": "microsoft",
   "parent": "microsoft.agent-365",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

@@ -4,7 +4,8 @@
   "title": "FastTrack",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
+  "requires": null,
+  "category": "Microsoft 365",
   "description": null,
   "links": [
     {

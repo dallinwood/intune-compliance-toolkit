@@ -1,7 +1,8 @@
-import type { CatalogInclusion, CatalogLicence, CatalogProduct } from '../types/catalog'
-import { compareText, planDerivedFeatures } from './catalogIndex'
+import type { CatalogProduct } from '../types/catalog'
+import { compareText } from './catalogIndex'
+import type { EffectiveInclusion } from './catalogResolver'
 
-export type EffectiveInclusion = CatalogInclusion & { via: 'direct' | 'plan'; viaPlanId: string | null }
+export type { EffectiveInclusion } from './catalogResolver'
 
 export interface InclusionNode {
   product: CatalogProduct
@@ -17,22 +18,7 @@ export interface InclusionCategory {
 
 export const OTHER_CATEGORY = 'Other'
 
-// Every listed entry, plus the features of every listed plan. A product listed
-// directly wins over the same product arriving through a plan.
-export function effectiveInclusions(licence: CatalogLicence, productsById: Map<string, CatalogProduct>): EffectiveInclusion[] {
-  const directInclusions = licence.includes.map((inclusion): EffectiveInclusion => ({ ...inclusion, via: 'direct', viaPlanId: null }))
-  const planInclusions = planDerivedFeatures(licence, productsById).map(
-    ({ featureId, viaPlanId, inclusion }): EffectiveInclusion => ({
-      product: featureId,
-      availability: inclusion.availability,
-      package: inclusion.package,
-      note: inclusion.note,
-      via: 'plan',
-      viaPlanId,
-    }),
-  )
-  return [...directInclusions, ...planInclusions]
-}
+export { effectiveInclusions } from './catalogResolver'
 
 // The product's parent chain from its top-level ancestor down to the product
 // itself. A missing parent or a parent cycle ends the chain instead of looping.
@@ -78,7 +64,7 @@ export function effectiveInclusionTree(inclusions: EffectiveInclusion[], product
   const rootsByCategory = new Map<string, InclusionNode[]>()
 
   for (const inclusion of inclusions) {
-    const product = productsById.get(inclusion.product)
+    const product = productsById.get(inclusion.target)
     if (product === undefined) continue
     let parentNode: InclusionNode | null = null
     for (const chainProduct of ancestorChain(product, productsById)) {

@@ -3,9 +3,10 @@
   "id": "microsoft.entra-workload-id-free",
   "title": "Entra Workload ID Free",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-workload-id-premium",
-  "category": null,
-  "description": null,
+  "parent": null,
+  "requires": null,
+  "category": "Identity and access management",
+  "description": "Base workload identity capabilities. Microsoft Entra Workload ID Premium is not required.",
   "links": [
     {
       "title": "Documentation",

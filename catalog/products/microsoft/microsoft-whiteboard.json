@@ -4,7 +4,8 @@
   "title": "Microsoft Whiteboard",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Meetings, calling, and chat",
   "description": null,
   "links": [
     {

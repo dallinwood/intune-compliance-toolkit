@@ -3,9 +3,10 @@
   "id": "microsoft.restricted-site-creation-by-apps",
   "title": "Restricted Site Creation by Apps",
   "vendor": "microsoft",
-  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "parent": "microsoft.sharepoint-advanced-management",
+  "requires": null,
   "category": null,
-  "description": null,
+  "description": "Requires SharePoint Advanced Management Plan 1; not included with the Copilot-provided SAM entitlement.",
   "links": [
     {
       "title": "Documentation",

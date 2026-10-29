@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-employee-communications-communities",
+  "title": "Viva Employee Communications & Communities",
+  "vendor": "microsoft",
+  "family": "Microsoft Viva",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://www.microsoft.com/en-us/microsoft-viva/pricing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.answers-in-viva",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-viva-amplify",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-viva-engage",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.people-in-viva",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.viva-amplify",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.viva-connections-50-instances",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.viva-engage-premium",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

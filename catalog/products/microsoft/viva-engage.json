@@ -4,7 +4,8 @@
   "title": "Viva Engage",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

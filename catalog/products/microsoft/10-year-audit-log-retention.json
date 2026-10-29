@@ -4,7 +4,8 @@
   "title": "10-Year Audit Log Retention",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "eDiscovery and auditing",
   "description": null,
   "links": [
     {

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-suite",
+  "title": "Microsoft Entra Suite",
+  "vendor": "microsoft",
+  "family": "Microsoft Entra",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.entra-id-p1",
+      "microsoft.entra-id-p2",
+      "microsoft.business-premium",
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7",
+      "microsoft.defender-suite",
+      "microsoft.defender-purview-business-premium"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.entra-private-access",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.entra-internet-access",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "licence",
+      "target": "microsoft.entra-id-governance",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.entra-id-protection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.entra-verified-id",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.entra-verified-id-premium",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.face-check",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

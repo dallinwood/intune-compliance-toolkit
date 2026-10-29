@@ -4,8 +4,9 @@
   "title": "Endpoint Attack Notifications (suspended)",
   "vendor": "microsoft",
   "parent": "microsoft.defender-for-endpoint",
+  "requires": null,
   "category": null,
-  "description": null,
+  "description": "Application-based managed hunting service; new customer intake is paused. It is not an automatic Defender for Endpoint Plan 2 entitlement.",
   "links": [
     {
       "title": "Documentation",

@@ -4,7 +4,8 @@
   "title": "Azure Comm. Services",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Communications",
+  "requires": null,
+  "category": "Microsoft Azure",
   "description": null,
   "links": [
     {

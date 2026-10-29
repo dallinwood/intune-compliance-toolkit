@@ -4,7 +4,8 @@
   "title": "Power Automate for Office 365",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Automation, app building, and chatbots",
   "description": null,
   "links": [
     {

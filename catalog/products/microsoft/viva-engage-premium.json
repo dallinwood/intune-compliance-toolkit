@@ -3,8 +3,9 @@
   "id": "microsoft.viva-engage-premium",
   "title": "Viva Engage (premium)",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-employee-communications-communities",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

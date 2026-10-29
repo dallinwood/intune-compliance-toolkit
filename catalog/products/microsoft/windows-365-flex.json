@@ -4,7 +4,8 @@
   "title": "Windows 365 Flex",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Companion Products & Services",
+  "requires": null,
+  "category": "Windows",
   "description": null,
   "links": [
     {

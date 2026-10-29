@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-p1",
+  "title": "Microsoft Entra ID P1",
+  "vendor": "microsoft",
+  "family": "Microsoft Entra",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.entra-id",
+      "availability": "included",
+      "note": null,
+      "plan": "plan_1"
+    }
+  ],
+  "review": []
+}

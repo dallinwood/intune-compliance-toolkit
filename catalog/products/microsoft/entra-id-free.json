@@ -3,7 +3,8 @@
   "id": "microsoft.entra-id-free",
   "title": "Entra ID Free",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id-for-office-365",
+  "parent": "microsoft.entra-id",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

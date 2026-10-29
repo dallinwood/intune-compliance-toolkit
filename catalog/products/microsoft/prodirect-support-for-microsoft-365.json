@@ -4,7 +4,8 @@
   "title": "ProDirect Support for Microsoft 365",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Support Services",
+  "requires": null,
+  "category": "Microsoft Support",
   "description": null,
   "links": [
     {

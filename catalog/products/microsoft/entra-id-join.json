@@ -4,7 +4,8 @@
   "title": "Entra ID Join",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Windows",
+  "requires": null,
+  "category": "Identity and access management",
   "description": null,
   "links": [
     {

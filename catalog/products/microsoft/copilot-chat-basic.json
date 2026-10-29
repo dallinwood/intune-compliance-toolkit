@@ -3,13 +3,14 @@
   "id": "microsoft.copilot-chat-basic",
   "title": "Copilot Chat (Basic)",
   "vendor": "microsoft",
-  "parent": "microsoft.microsoft-365-copilot-basic",
-  "category": null,
-  "description": null,
+  "parent": null,
+  "requires": null,
+  "category": "Copilot",
+  "description": "The standalone baseline Copilot Chat experience for eligible Microsoft 365 users. A paid Microsoft Copilot add-on is not required.",
   "links": [
     {
-      "title": "Documentation",
-      "url": "https://learn.microsoft.com/copilot/overview"
+      "title": "Overview",
+      "url": "https://learn.microsoft.com/en-us/copilot/overview"
     }
   ],
   "targets": [],

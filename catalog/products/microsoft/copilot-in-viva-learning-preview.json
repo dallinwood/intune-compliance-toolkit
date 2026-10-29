@@ -3,8 +3,9 @@
   "id": "microsoft.copilot-in-viva-learning-preview",
   "title": "Copilot in Viva Learning (preview)",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-suite",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

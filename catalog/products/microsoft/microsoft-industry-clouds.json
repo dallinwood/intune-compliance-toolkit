@@ -4,7 +4,8 @@
   "title": "Microsoft Industry Clouds",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Companion Products & Services",
+  "requires": null,
+  "category": "Microsoft 365",
   "description": null,
   "links": [
     {

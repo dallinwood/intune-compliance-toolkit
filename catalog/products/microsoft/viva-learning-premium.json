@@ -3,8 +3,9 @@
   "id": "microsoft.viva-learning-premium",
   "title": "Viva Learning (premium)",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-suite",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

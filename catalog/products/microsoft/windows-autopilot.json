@@ -3,13 +3,14 @@
   "id": "microsoft.windows-autopilot",
   "title": "Windows Autopilot",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-id",
-  "category": null,
-  "description": null,
+  "parent": null,
+  "requires": null,
+  "category": "Endpoint and app management",
+  "description": "Windows device provisioning using Microsoft Entra ID and a supported MDM service such as Microsoft Intune. See the requirements for supported Windows editions, licensing and deployment scenarios.",
   "links": [
     {
-      "title": "Documentation",
-      "url": "https://learn.microsoft.com/autopilot/overview"
+      "title": "Requirements",
+      "url": "https://learn.microsoft.com/en-us/autopilot/requirements"
     }
   ],
   "targets": [],

@@ -4,6 +4,7 @@
   "title": "Queues App",
   "vendor": "microsoft",
   "parent": "microsoft.teams-premium",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

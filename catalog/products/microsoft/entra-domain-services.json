@@ -4,7 +4,8 @@
   "title": "Entra Domain Services",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Microsoft Entra",
+  "requires": null,
+  "category": "Identity and access management",
   "description": null,
   "links": [
     {

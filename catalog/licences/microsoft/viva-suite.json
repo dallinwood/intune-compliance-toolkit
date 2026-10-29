@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.viva-suite",
+  "title": "Microsoft Viva Suite",
+  "vendor": "microsoft",
+  "family": "Microsoft Viva",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://www.microsoft.com/en-us/microsoft-viva/pricing"
+    }
+  ],
+  "includes": [
+    {
+      "type": "licence",
+      "target": "microsoft.viva-employee-communications-communities",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "licence",
+      "target": "microsoft.viva-workplace-analytics-employee-feedback",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.viva-learning-premium",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.copilot-in-viva-learning-preview",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

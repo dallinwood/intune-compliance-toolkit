@@ -4,7 +4,8 @@
   "title": "Dynamics 365 Customer Voice",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Companion Products & Services",
+  "requires": null,
+  "category": "Microsoft Dynamics 365",
   "description": null,
   "links": [
     {

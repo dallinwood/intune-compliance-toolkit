@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-internet-access",
+  "title": "Entra Internet Access",
+  "vendor": "microsoft",
+  "family": "Microsoft Entra",
+  "kind": "add_on",
+  "requires": {
+    "any_of": [
+      "microsoft.entra-id-p1",
+      "microsoft.entra-id-p2",
+      "microsoft.business-premium",
+      "microsoft.m365-e3",
+      "microsoft.m365-e5",
+      "microsoft.m365-e7",
+      "microsoft.defender-suite",
+      "microsoft.defender-purview-business-premium"
+    ]
+  },
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/entra/global-secure-access/overview-what-is-global-secure-access"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.entra-internet-access",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

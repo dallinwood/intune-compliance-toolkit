@@ -4,7 +4,8 @@
   "title": "Information Protection for M365",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Information protection",
   "description": null,
   "links": [
     {

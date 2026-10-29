@@ -4,7 +4,8 @@
   "title": "Drive Shipping for PST import",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Companion Products & Services",
+  "requires": null,
+  "category": "Email, calendar, and scheduling",
   "description": null,
   "links": [
     {

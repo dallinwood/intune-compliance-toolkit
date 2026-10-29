@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "id": "microsoft.entra-internet-access-for-microsoft",
-  "title": "Entra Internet Access for Microsoft",
+  "title": "Entra Internet Access for Microsoft services",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

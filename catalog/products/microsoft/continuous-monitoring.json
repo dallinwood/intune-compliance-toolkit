@@ -4,6 +4,7 @@
   "title": "Continuous Monitoring",
   "vendor": "microsoft",
   "parent": "microsoft.defender-vulnerability-management-core",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

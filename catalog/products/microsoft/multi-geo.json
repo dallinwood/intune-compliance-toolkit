@@ -4,7 +4,8 @@
   "title": "Multi-Geo",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Intranet and storage",
   "description": null,
   "links": [
     {

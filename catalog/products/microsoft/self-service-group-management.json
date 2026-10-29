@@ -4,6 +4,7 @@
   "title": "Self-Service Group Management",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

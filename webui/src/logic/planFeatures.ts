@@ -22,7 +22,8 @@ export interface LicenceRow {
   planIds: string[]
   customPlanTitles: string[]
   viaPlanIds: string[]
-  packageIds: string[]
+  viaLicenceIds: string[]
+  viaProductIds: string[]
   notes: string[]
 }
 
@@ -37,13 +38,14 @@ export function groupLicenceEntries(entries: ProductLicenceEntry[]): LicenceRow[
   for (const entry of [...entries].sort((left, right) => (left.licence < right.licence ? -1 : left.licence > right.licence ? 1 : 0))) {
     let row = rowsByLicence.get(entry.licence)
     if (row === undefined) {
-      row = { licence: entry.licence, planIds: [], customPlanTitles: [], viaPlanIds: [], packageIds: [], notes: [] }
+      row = { licence: entry.licence, planIds: [], customPlanTitles: [], viaPlanIds: [], viaLicenceIds: [], viaProductIds: [], notes: [] }
       rowsByLicence.set(entry.licence, row)
     }
     appendOnce(row.planIds, entry.planId)
     appendOnce(row.customPlanTitles, entry.customPlanTitle)
     appendOnce(row.viaPlanIds, entry.viaPlanId)
-    appendOnce(row.packageIds, entry.package)
+    for (const licenceId of entry.viaLicenceIds) appendOnce(row.viaLicenceIds, licenceId)
+    appendOnce(row.viaProductIds, entry.viaProductId)
     appendOnce(row.notes, entry.note)
   }
   return [...rowsByLicence.values()]

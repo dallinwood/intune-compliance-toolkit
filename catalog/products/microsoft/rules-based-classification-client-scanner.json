@@ -4,7 +4,8 @@
   "title": "Rules-Based Classification (Client & Scanner)",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Enterprise Mobility + Security",
+  "requires": null,
+  "category": "Information protection",
   "description": null,
   "links": [
     {

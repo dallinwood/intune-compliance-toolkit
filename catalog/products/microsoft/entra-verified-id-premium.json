@@ -3,13 +3,18 @@
   "id": "microsoft.entra-verified-id-premium",
   "title": "Entra Verified ID Premium",
   "vendor": "microsoft",
-  "parent": "microsoft.entra-suite-add-on-to-entra-id-plan-2",
-  "category": null,
-  "description": null,
+  "parent": null,
+  "requires": "microsoft.entra-verified-id",
+  "category": "Identity and access management",
+  "description": "Premium Microsoft Entra Verified ID capabilities, including Face Check. Available through Entra Suite or a separate Face Check add-on; Entra Suite is not required.",
   "links": [
     {
       "title": "Documentation",
       "url": "https://learn.microsoft.com/entra/fundamentals/licensing#microsoft-entra-verified-id"
+    },
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/entra/verified-id/using-facecheck"
     }
   ],
   "targets": [],

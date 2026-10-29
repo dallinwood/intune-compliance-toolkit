@@ -4,6 +4,7 @@
   "title": "Basic Security & Usage Reports",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id-free",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

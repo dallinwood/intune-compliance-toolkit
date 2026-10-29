@@ -4,6 +4,7 @@
   "title": "Customized Sign-In Page",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id-for-office-365",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

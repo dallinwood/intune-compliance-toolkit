@@ -4,6 +4,7 @@
   "title": "Digital Certificate Assessment",
   "vendor": "microsoft",
   "parent": "microsoft.defender-vulnerability-management-premium",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

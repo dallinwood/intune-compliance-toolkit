@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildCatalogIndex, fullPlanId } from './catalogIndex'
+import { buildCatalogIndex, fullPlanId, parseCatalogIndex } from './catalogIndex'
 
 type CatalogFile = Parameters<typeof buildCatalogIndex>[0][number]
 
@@ -8,7 +8,7 @@ function productFile(id: string, overrides: Record<string, unknown> = {}): Catal
   return {
     kind: 'product',
     fileName: `products/a/${slug}.json`,
-    value: { schema_version: 1, id, title: id, vendor: 'a', parent: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides },
+    value: { schema_version: 1, id, title: id, vendor: 'a', parent: null, requires: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides },
   }
 }
 
@@ -17,7 +17,7 @@ function licenceFile(id: string, includes: unknown[], overrides: Record<string, 
   return {
     kind: 'licence',
     fileName: `licences/a/${slug}.json`,
-    value: { schema_version: 1, id, title: id, vendor: 'a', family: 'F', kind: 'subscription', requires: [], description: null, links: [], includes, review: [], ...overrides },
+    value: { schema_version: 1, id, title: id, vendor: 'a', family: 'F', kind: 'subscription', requires: null, description: null, links: [], includes, review: [], ...overrides },
   }
 }
 
@@ -31,40 +31,85 @@ describe('buildCatalogIndex', () => {
   it('lists a direct inclusion with via direct', () => {
     const { index } = build([
       productFile('a.thing'),
-      licenceFile('a.lic', [{ product: 'a.thing', availability: 'add_on', note: 'n' }]),
+      licenceFile('a.lic', [{ type: 'product', target: 'a.thing', availability: 'add_on', note: 'n' }]),
     ])
 
     expect(index.by_product['a.thing']).toEqual([
-      { licence: 'a.lic', availability: 'add_on', package: null, planId: null, customPlanTitle: null, via: 'direct', viaPlanId: null, note: 'n' },
+      { licence: 'a.lic', availability: 'add_on', planId: null, customPlanTitle: null, via: 'direct', viaPlanId: null, viaLicenceIds: [], viaProductId: null, note: 'n' },
     ])
   })
 
-  it('carries the package an add-on comes from, on the direct entry and on plan-derived features', () => {
+  it('derives plan provenance for add-ons without storing package fields', () => {
     const { index, warnings } = build([
       productFile('a.suite'),
       productFile('a.thing', { parent: 'a.suite', plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
       productFile('a.x', { parent: 'a.thing' }),
       licenceFile('a.lic', [
-        { product: 'a.suite', availability: 'add_on', note: null },
-        { product: 'a.thing', plan: 'plan_1', availability: 'add_on', package: 'a.suite', note: null },
+        { type: 'product', target: 'a.suite', availability: 'add_on', note: null },
+        { type: 'product', target: 'a.thing', plan: 'plan_1', availability: 'add_on', note: null },
       ]),
     ])
 
     expect(warnings).toEqual([])
-    expect(index.by_product['a.thing'][0].package).toBe('a.suite')
-    expect(index.by_product['a.x'][0].package).toBe('a.suite')
-    expect(index.by_product['a.suite'][0].package).toBeNull()
+    expect(index.by_product['a.thing'][0].viaProductId).toBeNull()
+    expect(index.by_product['a.x'][0].viaProductId).toBe('a.thing')
+    expect(index.by_product['a.suite'][0].viaProductId).toBeNull()
   })
 
-  it('skips a licence with the retired package_feature availability or a package that is not text', () => {
+  it('rejects legacy product/package fields and conflicting plans', () => {
     const { index, warnings } = build([
       productFile('a.thing'),
-      licenceFile('a.old', [{ product: 'a.thing', availability: 'package_feature', note: null }]),
-      licenceFile('a.bad', [{ product: 'a.thing', availability: 'add_on', package: 5, note: null }]),
+      licenceFile('a.old', [{ product: 'a.thing', availability: 'included', note: null }]),
+      licenceFile('a.bad', [{ type: 'product', target: 'a.thing', availability: 'add_on', plan: 'p1', custom_plan: { title: 'Custom', description: null }, note: null }]),
+      licenceFile('a.package', [{ type: 'product', target: 'a.thing', availability: 'included', package: 'a.thing', note: null }]),
+      licenceFile('a.licence-plan', [{ type: 'licence', target: 'a.target', availability: 'included', plan: 'p1', note: null }]),
     ])
 
     expect(index.licences).toEqual([])
-    expect(warnings).toHaveLength(2)
+    expect(warnings).toHaveLength(4)
+  })
+
+  it('expands nested licences with availability provenance and excludes nested optional add-ons', () => {
+    const { index } = build([
+      productFile('a.included'),
+      productFile('a.optional'),
+      productFile('a.addon-included'),
+      licenceFile('a.inner', [
+        { type: 'product', target: 'a.included', availability: 'included', note: 'inner note' },
+        { type: 'product', target: 'a.optional', availability: 'add_on', note: null },
+        { type: 'licence', target: 'a.inner-child', availability: 'included', note: null },
+      ]),
+      licenceFile('a.inner-child', [{ type: 'product', target: 'a.addon-included', availability: 'included', note: null }]),
+      licenceFile('a.addon-suite', [{ type: 'product', target: 'a.included', availability: 'included', note: null }]),
+      licenceFile('a.outer', [
+        { type: 'licence', target: 'a.inner', availability: 'included', note: null },
+        { type: 'licence', target: 'a.addon-suite', availability: 'add_on', note: null },
+      ]),
+    ])
+
+    expect(index.by_product['a.included'].filter((entry) => entry.licence === 'a.outer').map((entry) => [entry.availability, entry.viaLicenceIds])).toEqual([
+      ['included', ['a.inner']],
+      ['add_on', ['a.addon-suite']],
+    ])
+    expect(index.by_product['a.addon-included'].find((entry) => entry.licence === 'a.outer')).toMatchObject({
+      availability: 'included',
+      viaLicenceIds: ['a.inner', 'a.inner-child'],
+    })
+    expect(index.by_product['a.optional'].some((entry) => entry.licence === 'a.outer')).toBe(false)
+  })
+
+  it('warns when inclusion targets do not resolve', () => {
+    const { warnings } = build([
+      licenceFile('a.bad', [
+        { type: 'product', target: 'a.missing', availability: 'included', note: null },
+        { type: 'licence', target: 'a.ghost', availability: 'add_on', note: null },
+      ]),
+    ])
+
+    expect(warnings).toEqual([
+      'a.bad: inclusion references unknown product a.missing.',
+      'a.bad: inclusion references unknown licence a.ghost.',
+    ])
   })
 
   it('records the full plan id and a custom plan title on a direct inclusion', () => {
@@ -72,8 +117,8 @@ describe('buildCatalogIndex', () => {
       productFile('a.thing', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: [] }] }),
       productFile('a.mail'),
       licenceFile('a.lic', [
-        { product: 'a.thing', plan: 'plan_1', availability: 'included', note: null },
-        { product: 'a.mail', custom_plan: { title: 'Big', description: null }, availability: 'included', note: null },
+        { type: 'product', target: 'a.thing', plan: 'plan_1', availability: 'included', note: null },
+        { type: 'product', target: 'a.mail', custom_plan: { title: 'Big', description: null }, availability: 'included', note: null },
       ]),
     ])
 
@@ -85,11 +130,11 @@ describe('buildCatalogIndex', () => {
     const { index } = build([
       productFile('a.thing', { plans: [{ id: 'plan_2', title: 'P2', description: null, features: ['a.x'] }] }),
       productFile('a.x', { parent: 'a.thing' }),
-      licenceFile('a.lic', [{ product: 'a.thing', plan: 'plan_2', availability: 'included', note: null }]),
+      licenceFile('a.lic', [{ type: 'product', target: 'a.thing', plan: 'plan_2', availability: 'included', note: null }]),
     ])
 
     expect(index.by_product['a.x']).toEqual([
-      { licence: 'a.lic', availability: 'included', package: null, planId: null, customPlanTitle: null, via: 'plan', viaPlanId: 'a.thing.plan_2', note: null },
+      { licence: 'a.lic', availability: 'included', planId: null, customPlanTitle: null, via: 'plan', viaPlanId: 'a.thing.plan_2', viaLicenceIds: [], viaProductId: 'a.thing', note: null },
     ])
   })
 
@@ -98,8 +143,8 @@ describe('buildCatalogIndex', () => {
       productFile('a.thing', { plans: [{ id: 'plan_2', title: 'P2', description: null, features: ['a.x'] }] }),
       productFile('a.x', { parent: 'a.thing' }),
       licenceFile('a.lic', [
-        { product: 'a.thing', plan: 'plan_2', availability: 'included', note: null },
-        { product: 'a.x', availability: 'add_on', note: null },
+        { type: 'product', target: 'a.thing', plan: 'plan_2', availability: 'included', note: null },
+        { type: 'product', target: 'a.x', availability: 'add_on', note: null },
       ]),
     ])
 
@@ -107,20 +152,22 @@ describe('buildCatalogIndex', () => {
     expect(index.by_product['a.x'][0].via).toBe('direct')
   })
 
-  it('lists a feature reached through two plans once, under the first plan listed', () => {
+  it('preserves independent plan routes to the same feature', () => {
     const { index } = build([
       productFile('a.one', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
       productFile('a.two', { plans: [{ id: 'plan_1', title: 'P1', description: null, features: ['a.x'] }] }),
       productFile('a.x', { parent: 'a.one' }),
       licenceFile('a.lic', [
-        { product: 'a.one', plan: 'plan_1', availability: 'included', note: null },
-        { product: 'a.two', plan: 'plan_1', availability: 'add_on', note: null },
+        { type: 'product', target: 'a.one', plan: 'plan_1', availability: 'included', note: null },
+        { type: 'product', target: 'a.two', plan: 'plan_1', availability: 'add_on', note: null },
       ]),
     ])
 
-    expect(index.by_product['a.x']).toHaveLength(1)
-    expect(index.by_product['a.x'][0].viaPlanId).toBe('a.one.plan_1')
-    expect(index.by_product['a.x'][0].availability).toBe('included')
+    expect(index.by_product['a.x']).toHaveLength(2)
+    expect(index.by_product['a.x'].map((entry) => [entry.viaPlanId, entry.availability])).toEqual([
+      ['a.one.plan_1', 'included'],
+      ['a.two.plan_1', 'add_on'],
+    ])
   })
 
   it('keeps a product and a licence that share an id, but skips a duplicate within one kind', () => {
@@ -147,11 +194,32 @@ describe('buildCatalogIndex', () => {
   })
 
   it('passes review and other licence fields through unchanged', () => {
-    const { index } = build([licenceFile('a.lic', [], { review: ['check this'], requires: ['a.other'], family: 'Fam' })])
+    const requires = { any_of: ['a.other', { all_of: ['a.one', 'a.two'] }] }
+    const { index } = build([licenceFile('a.lic', [], { review: ['check this'], requires, family: 'Fam' })])
 
     expect(index.licences[0].review).toEqual(['check this'])
-    expect(index.licences[0].requires).toEqual(['a.other'])
+    expect(index.licences[0].requires).toEqual(requires)
     expect(index.licences[0].family).toBe('Fam')
+  })
+
+  it('passes a product requirement through unchanged', () => {
+    const requires = { all_of: ['a.base', { any_of: ['a.plus.plan_1', 'a.plus.plan_2'] }] }
+    const { index } = build([productFile('a.thing', { requires })])
+
+    expect(index.products[0].requires).toEqual(requires)
+  })
+
+  it.each([
+    ['a list', ['a.other']],
+    ['a group of one', { all_of: ['a.other'] }],
+    ['an unknown operator', { none_of: ['a.one', 'a.two'] }],
+    ['two operators in one group', { all_of: ['a.one', 'a.two'], any_of: ['a.one', 'a.two'] }],
+    ['an empty id', { any_of: ['a.one', ''] }],
+  ])('skips a product whose requirement is %s', (_label, requires) => {
+    const { index, warnings } = build([productFile('a.thing', { requires })])
+
+    expect(index.products).toEqual([])
+    expect(warnings).toHaveLength(1)
   })
 
   it('reads the vendors file', () => {
@@ -175,5 +243,24 @@ describe('buildCatalogIndex', () => {
 describe('fullPlanId', () => {
   it('joins the product id and plan id with a dot', () => {
     expect(fullPlanId('a.thing', 'plan_1')).toBe('a.thing.plan_1')
+  })
+
+  describe('parseCatalogIndex', () => {
+    it('accepts version 2 index data and rejects version 1', () => {
+      const index = build([productFile('a.product'), licenceFile('a.licence', [
+        { type: 'product', target: 'a.product', availability: 'included', note: null },
+      ])]).index
+
+      expect(parseCatalogIndex(index)).toEqual(index)
+      expect(parseCatalogIndex({ ...index, schema_version: 1 })).toBe('schema_version must be 2')
+    })
+
+    it('rejects malformed or legacy by_product entries', () => {
+      const index = build([productFile('a.product'), licenceFile('a.licence', [])]).index
+
+      expect(parseCatalogIndex({ ...index, by_product: { 'a.product': [{ licence: 'a.licence', product: 'a.product' }] } })).toBe(
+        'by_product must contain lists of product licence entries',
+      )
+    })
   })
 })

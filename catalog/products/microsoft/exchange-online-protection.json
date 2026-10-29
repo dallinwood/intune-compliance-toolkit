@@ -4,7 +4,8 @@
   "title": "Exchange Online Protection",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Threat protection",
   "description": null,
   "links": [
     {

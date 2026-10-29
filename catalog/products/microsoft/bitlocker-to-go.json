@@ -4,7 +4,8 @@
   "title": "BitLocker to Go",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Windows",
+  "requires": null,
+  "category": "Threat protection",
   "description": null,
   "links": [
     {

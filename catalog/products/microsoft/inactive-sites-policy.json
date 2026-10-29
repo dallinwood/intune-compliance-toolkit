@@ -3,7 +3,8 @@
   "id": "microsoft.inactive-sites-policy",
   "title": "Inactive Sites Policy",
   "vendor": "microsoft",
-  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "parent": "microsoft.sharepoint-advanced-management",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

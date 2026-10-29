@@ -4,7 +4,8 @@
   "title": "Compliance Premium Assessments",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Analytics",
   "description": null,
   "links": [
     {

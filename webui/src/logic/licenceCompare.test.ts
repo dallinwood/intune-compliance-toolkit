@@ -3,11 +3,11 @@ import type { CatalogLicence, CatalogProduct } from '../types/catalog'
 import { compareRows, isUniform, withoutIdenticalRows } from './licenceCompare'
 
 function product(id: string, overrides: Partial<CatalogProduct> = {}): CatalogProduct {
-  return { id, title: id, vendor: 'a', parent: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides }
+  return { id, title: id, vendor: 'a', parent: null, requires: null, category: null, description: null, links: [], targets: [], plans: [], ...overrides }
 }
 
 function licence(id: string, includes: CatalogLicence['includes']): CatalogLicence {
-  return { id, title: id, vendor: 'a', family: 'F', kind: 'subscription', requires: [], description: null, links: [], includes, review: [] }
+  return { id, title: id, vendor: 'a', family: 'F', kind: 'subscription', requires: null, description: null, links: [], includes, review: [] }
 }
 
 const productsById = new Map(
@@ -20,10 +20,10 @@ const productsById = new Map(
 
 describe('compareRows', () => {
   const left = licence('a.left', [
-    { product: 'a.child', availability: 'included', note: null },
-    { product: 'a.other', availability: 'included', note: null },
+    { type: 'product', target: 'a.child', availability: 'included', note: null },
+    { type: 'product', target: 'a.other', availability: 'included', note: null },
   ])
-  const right = licence('a.right', [{ product: 'a.child', availability: 'add_on', note: null }])
+  const right = licence('a.right', [{ type: 'product', target: 'a.child', availability: 'add_on', note: null }])
 
   it('lists rows in tree order with ancestors as context rows and one cell per licence', () => {
     const rows = compareRows([left, right], productsById)
@@ -53,30 +53,30 @@ describe('isUniform', () => {
   }
 
   it('is true when every cell has the same availability and plan', () => {
-    const included = { product: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
+    const included = { type: 'product' as const, target: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
     expect(isUniform(rowFor([included, { ...included, note: 'different note' }]))).toBe(true)
   })
 
   it('is false when availability or plan differs', () => {
-    const included = { product: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
+    const included = { type: 'product' as const, target: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
     expect(isUniform(rowFor([included, { ...included, availability: 'add_on' }]))).toBe(false)
-    expect(isUniform(rowFor([{ ...included, availability: 'add_on', package: 'a.root' }, { ...included, availability: 'add_on' }]))).toBe(false)
+    expect(isUniform(rowFor([{ ...included, availability: 'add_on' }, { ...included, availability: 'add_on', custom_plan: { title: 'Alternative', description: null }, plan: undefined }]))).toBe(false)
     expect(isUniform(rowFor([included, { ...included, plan: 'plan_2' }]))).toBe(false)
   })
 
   it('is false when only some licences have the product', () => {
-    const rows = compareRows([licence('a.l0', [{ product: 'a.other', availability: 'included', note: null }]), licence('a.l1', [])], productsById)
+    const rows = compareRows([licence('a.l0', [{ type: 'product', target: 'a.other', availability: 'included', note: null }]), licence('a.l1', [])], productsById)
     expect(isUniform(rows[0])).toBe(false)
   })
 })
 
 describe('withoutIdenticalRows', () => {
   it('keeps a uniform ancestor while one of its descendants differs, and drops uniform rows elsewhere', () => {
-    const same = { product: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
+    const same = { type: 'product' as const, target: 'a.root', plan: 'plan_1', availability: 'included' as const, note: null }
     const rows = compareRows(
       [
-        licence('a.l0', [same, { product: 'a.child', availability: 'included', note: null }, { product: 'a.other', availability: 'included', note: null }]),
-        licence('a.l1', [same, { product: 'a.child', availability: 'add_on', note: null }, { product: 'a.other', availability: 'included', note: null }]),
+        licence('a.l0', [same, { type: 'product', target: 'a.child', availability: 'included', note: null }, { type: 'product', target: 'a.other', availability: 'included', note: null }]),
+        licence('a.l1', [same, { type: 'product', target: 'a.child', availability: 'add_on', note: null }, { type: 'product', target: 'a.other', availability: 'included', note: null }]),
       ],
       productsById,
     )
@@ -86,7 +86,7 @@ describe('withoutIdenticalRows', () => {
 
   it('keeps a context-only ancestor of a differing row', () => {
     const rows = compareRows(
-      [licence('a.l0', [{ product: 'a.child', availability: 'included', note: null }]), licence('a.l1', [])],
+      [licence('a.l0', [{ type: 'product', target: 'a.child', availability: 'included', note: null }]), licence('a.l1', [])],
       productsById,
     )
 

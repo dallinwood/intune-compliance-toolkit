@@ -4,7 +4,8 @@
   "title": "Insider Risk Management Forensic Evidence",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Security & Compliance",
+  "requires": null,
+  "category": "Insider risk management",
   "description": null,
   "links": [
     {

@@ -4,7 +4,8 @@
   "title": "SharePoint Embedded",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Companion Products & Services",
+  "requires": null,
+  "category": "Intranet and storage",
   "description": null,
   "links": [
     {

@@ -3,7 +3,8 @@
   "id": "microsoft.enterprise-app-insight-reports",
   "title": "Enterprise App Insight Reports",
   "vendor": "microsoft",
-  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "parent": "microsoft.sharepoint-advanced-management",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

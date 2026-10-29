@@ -4,7 +4,8 @@
   "title": "Power Automate",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Power Platform",
+  "requires": null,
+  "category": "Automation, app building, and chatbots",
   "description": null,
   "links": [
     {

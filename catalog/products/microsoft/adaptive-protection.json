@@ -4,7 +4,8 @@
   "title": "Adaptive Protection",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Suite Value",
+  "requires": null,
+  "category": "Data loss prevention (DLP)",
   "description": null,
   "links": [
     {

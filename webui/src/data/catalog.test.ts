@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { CATALOG_INDEX_SCHEMA_VERSION } from '../logic/catalogIndex'
 
 beforeEach(() => {
   vi.resetModules()
@@ -37,7 +38,7 @@ describe('loadCatalogIndex', () => {
   })
 
   it('returns the index when the file is valid', async () => {
-    const index = { schema_version: 1, vendors: [], products: [], licences: [], by_product: {} }
+    const index = { schema_version: CATALOG_INDEX_SCHEMA_VERSION, vendors: [], products: [], licences: [], by_product: {} }
     serve(() => new Response(JSON.stringify(index), { status: 200, headers: { 'Content-Type': 'application/json' } }))
     const { loadCatalogIndex } = await import('./catalog')
 

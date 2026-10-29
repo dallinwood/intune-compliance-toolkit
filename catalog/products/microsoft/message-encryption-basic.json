@@ -4,7 +4,8 @@
   "title": "Message Encryption (basic)",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "Information protection",
   "description": null,
   "links": [
     {

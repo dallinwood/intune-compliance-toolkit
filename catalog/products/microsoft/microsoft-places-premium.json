@@ -4,6 +4,7 @@
   "title": "Microsoft Places (premium)",
   "vendor": "microsoft",
   "parent": "microsoft.teams-premium",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

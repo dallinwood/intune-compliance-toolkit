@@ -3,7 +3,8 @@
   "id": "microsoft.request-site-attestation",
   "title": "Request Site Attestation",
   "vendor": "microsoft",
-  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "parent": "microsoft.sharepoint-advanced-management",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

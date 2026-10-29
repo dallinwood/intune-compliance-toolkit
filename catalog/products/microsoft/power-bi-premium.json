@@ -4,7 +4,8 @@
   "title": "Power BI Premium",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Power Platform",
+  "requires": null,
+  "category": "Analytics",
   "description": null,
   "links": [
     {

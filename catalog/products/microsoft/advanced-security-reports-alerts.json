@@ -4,6 +4,7 @@
   "title": "Advanced Security Reports & Alerts",
   "vendor": "microsoft",
   "parent": "microsoft.entra-id",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

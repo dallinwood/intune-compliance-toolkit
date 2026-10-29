@@ -4,6 +4,7 @@
   "title": "Graph Connectors in Agents (metered)",
   "vendor": "microsoft",
   "parent": "microsoft.copilot-chat-basic",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

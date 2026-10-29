@@ -4,7 +4,8 @@
   "title": "Audit (standard)",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Office 365",
+  "requires": null,
+  "category": "eDiscovery and auditing",
   "description": null,
   "links": [
     {

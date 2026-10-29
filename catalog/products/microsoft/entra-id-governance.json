@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.entra-id-governance",
+  "title": "Microsoft Entra ID Governance",
+  "vendor": "microsoft",
+  "parent": null,
+  "requires": {
+    "any_of": [
+      "microsoft.entra-id.plan_1",
+      "microsoft.entra-id.plan_2"
+    ]
+  },
+  "category": "Identity and access management",
+  "description": "Identity governance capabilities available separately or through Microsoft Entra Suite. The standard and P2 step-up purchase offers have different licence prerequisites.",
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    }
+  ],
+  "targets": [],
+  "plans": []
+}

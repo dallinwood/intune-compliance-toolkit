@@ -4,6 +4,7 @@
   "title": "Application Management",
   "vendor": "microsoft",
   "parent": "microsoft.intune",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [

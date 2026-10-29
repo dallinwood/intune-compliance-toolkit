@@ -99,7 +99,7 @@ export function LicencesView() {
           All licences
         </button>
         {isShowingComparison ? (
-          <LicenceCompare licences={comparedLicences} lookup={lookup} onOpenLicence={openLicenceFromComparison} />
+          <LicenceCompare licences={comparedLicences} catalog={catalog} lookup={lookup} onOpenLicence={openLicenceFromComparison} />
         ) : selectedLicence !== null ? (
           <LicenceDetail key={selectedLicence.id} licence={selectedLicence} catalog={catalog} lookup={lookup} />
         ) : (

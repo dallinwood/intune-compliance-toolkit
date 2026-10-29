@@ -3,13 +3,18 @@
   "id": "microsoft.config-manager",
   "title": "Config Manager",
   "vendor": "microsoft",
-  "parent": "microsoft.intune",
-  "category": null,
-  "description": null,
+  "parent": null,
+  "requires": null,
+  "category": "Endpoint and app management",
+  "description": "On-premises endpoint management software with its own licensing and servicing model. Intune can confer use rights, but is not the exclusive way to obtain Configuration Manager.",
   "links": [
     {
       "title": "Documentation",
       "url": "https://learn.microsoft.com/configmgr/core/understand/introduction"
+    },
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/intune/configmgr/core/understand/product-and-licensing-faq"
     }
   ],
   "targets": [],

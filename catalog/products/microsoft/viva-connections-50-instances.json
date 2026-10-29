@@ -3,8 +3,9 @@
   "id": "microsoft.viva-connections-50-instances",
   "title": "Viva Connections (50 instances)",
   "vendor": "microsoft",
-  "parent": "microsoft.viva-employee-communications-communities",
-  "category": null,
+  "parent": null,
+  "requires": null,
+  "category": "Microsoft Viva",
   "description": null,
   "links": [
     {

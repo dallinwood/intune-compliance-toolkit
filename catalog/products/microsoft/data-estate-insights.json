@@ -4,6 +4,7 @@
   "title": "Data Estate Insights",
   "vendor": "microsoft",
   "parent": null,
+  "requires": null,
   "category": "Microsoft Purview",
   "description": null,
   "links": [

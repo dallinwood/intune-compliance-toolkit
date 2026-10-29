@@ -4,7 +4,8 @@
   "title": "Microsoft 365 Copilot Sales Agent",
   "vendor": "microsoft",
   "parent": null,
-  "category": "Automation & Intelligence",
+  "requires": null,
+  "category": "Copilot",
   "description": null,
   "links": [
     {

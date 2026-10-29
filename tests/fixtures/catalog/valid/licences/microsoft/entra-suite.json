@@ -5,17 +5,19 @@
   "vendor": "microsoft",
   "family": "Microsoft Entra",
   "kind": "add_on",
-  "requires": ["microsoft.m365-e3"],
+  "requires": "microsoft.m365-e3",
   "description": null,
   "links": [{ "title": "Overview", "url": "https://www.microsoft.com/security/business/microsoft-entra" }],
   "includes": [
-    { "product": "microsoft.entra-id", "plan": "plan_2", "availability": "included", "note": null },
+    { "type": "product", "target": "microsoft.entra-id", "plan": "plan_2", "availability": "included", "note": null },
     {
-      "product": "microsoft.entra-id-pim",
+      "type": "product",
+      "target": "microsoft.entra-id-pim",
       "custom_plan": { "title": "Suite edition", "description": null },
       "availability": "add_on",
       "note": null
-    }
+    },
+    { "type": "licence", "target": "microsoft.m365-e3", "availability": "included", "note": null }
   ],
   "review": []
 }

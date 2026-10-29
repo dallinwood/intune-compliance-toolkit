@@ -3,7 +3,8 @@
   "id": "microsoft.site-change-history-reports",
   "title": "Site Change History Reports",
   "vendor": "microsoft",
-  "parent": "microsoft.sharepoint-advanced-management-for-copilot",
+  "parent": "microsoft.sharepoint-advanced-management",
+  "requires": null,
   "category": null,
   "description": null,
   "links": [
