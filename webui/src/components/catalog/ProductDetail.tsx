@@ -5,7 +5,7 @@ import { groupLicenceEntries, type LicenceRow } from '../../logic/includedIn'
 import { ancestorsOf } from '../../logic/productSearch'
 import type { Availability, CatalogIndex, CatalogProduct, ProductLicenceEntry } from '../../types/catalog'
 import { TargetIcons } from '../rules/TargetIcons'
-import { AvailabilityBadge } from './AvailabilityBadge'
+import { AvailabilityBadge, SourceRouteList } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 import { RequirementText } from './RequirementText'
 
@@ -50,20 +50,20 @@ function FeatureGrid({ productIds, lookup }: { productIds: string[]; lookup: Cat
   )
 }
 
+// The group heading already names the availability, so route lines only name the licence.
 function EntryLine({ row, licenceTitle, lookup, availability }: { row: LicenceRow; licenceTitle: string; lookup: CatalogLookup; availability: Availability }) {
   return (
     <li className="py-2">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <CatalogLink view="licences" id={row.licence} className="text-sm font-medium break-words">
-          {licenceTitle}
-        </CatalogLink>
-        {row.supplyingLicenceIds.map((licenceId) => (
-          <span key={licenceId} className="text-xs text-muted-foreground">
-            {availability === 'add_on' ? 'Add-on via ' : 'via '}
-            <CatalogLink view="licences" id={licenceId} className="break-words">{lookup.licencesById.get(licenceId)?.title ?? licenceId}</CatalogLink>
-          </span>
-        ))}
-      </div>
+      <CatalogLink view="licences" id={row.licence} className="text-sm font-medium break-words">
+        {licenceTitle}
+      </CatalogLink>
+      {row.supplyingLicenceIds.length > 0 && (
+        <SourceRouteList
+          routes={row.supplyingLicenceIds.map((licenceId) => ({ availability, sourceLicenceId: licenceId }))}
+          showsAvailability={false}
+          lookup={lookup}
+        />
+      )}
       {row.notes.map((note, noteIndex) => (
         <p key={`${noteIndex}-${note}`} className="text-xs break-words text-muted-foreground">
           {note}

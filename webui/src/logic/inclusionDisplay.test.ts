@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CatalogIndex, CatalogProduct } from '../types/catalog'
 import { AVAILABILITIES } from './catalogIndex'
 import type { EffectiveInclusion } from './catalogTree'
-import { availabilityText, buildCatalogLookup, requiredProductLabelOf, supplyingLicenceIdOf } from './inclusionDisplay'
+import { availabilityText, buildCatalogLookup, distinctRoutesOf, requiredProductLabelOf, supplyingLicenceIdOf } from './inclusionDisplay'
 
 function product(id: string, title: string): CatalogProduct {
   return { id, title, vendor: 'a', parent: null, requires: null, category: null, description: null, links: [], targets: [] }
@@ -37,6 +37,18 @@ describe('supplyingLicenceIdOf', () => {
 
   it('is null for a product the licence lists itself', () => {
     expect(supplyingLicenceIdOf(inclusionThrough([]))).toBeNull()
+  })
+})
+
+describe('distinctRoutesOf', () => {
+  it('lists each first hop once, keeping a direct route and differing availabilities apart', () => {
+    const addOnThroughP2 = { ...inclusionThrough(['a.p2']), availability: 'add_on' as const }
+    const routes = distinctRoutesOf([inclusionThrough(['a.p2', 'a.p1']), inclusionThrough(['a.p2']), inclusionThrough([]), addOnThroughP2])
+    expect(routes).toEqual([
+      { availability: 'included', sourceLicenceId: 'a.p2' },
+      { availability: 'included', sourceLicenceId: null },
+      { availability: 'add_on', sourceLicenceId: 'a.p2' },
+    ])
   })
 })
 

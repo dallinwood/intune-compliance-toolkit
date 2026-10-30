@@ -1,15 +1,11 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import type { EffectiveInclusion, InclusionNode } from '../../logic/catalogTree'
-import { supplyingLicenceIdOf, type CatalogLookup } from '../../logic/inclusionDisplay'
-import { AvailabilityWithSource } from './AvailabilityBadge'
+import type { InclusionNode } from '../../logic/catalogTree'
+import { distinctRoutesOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AvailabilityBadge, SourceRouteList } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 
 const INDENT_REM_PER_LEVEL = 1.25
-
-function InclusionLine({ inclusion, lookup }: { inclusion: EffectiveInclusion; lookup: CatalogLookup }) {
-  return <AvailabilityWithSource availability={inclusion.availability} sourceLicenceId={supplyingLicenceIdOf(inclusion)} lookup={lookup} />
-}
 
 function InclusionRow({
   node,
@@ -29,6 +25,11 @@ function InclusionRow({
   const isCollapsed = collapsedIds.has(node.product.id)
   // Several routes to one product often carry the same note; show it once.
   const notes = [...new Set(node.inclusions.flatMap((inclusion) => (inclusion.note === null ? [] : [inclusion.note])))]
+  const routes = distinctRoutesOf(node.inclusions)
+  const availabilities = new Set(routes.map((route) => route.availability))
+  // One badge beside the title when every route agrees; otherwise each route line carries its own.
+  const sharedAvailability = availabilities.size === 1 ? routes[0].availability : null
+  const showsRouteList = availabilities.size > 1 || routes.some((route) => route.sourceLicenceId !== null)
 
   return (
     <li>
@@ -51,10 +52,9 @@ function InclusionRow({
             <CatalogLink view="products" id={node.product.id} className={`text-sm break-words ${isContextOnly ? 'text-muted-foreground' : 'font-medium'}`}>
               {node.product.title}
             </CatalogLink>
-            {node.inclusions.map((inclusion, index) => (
-              <InclusionLine key={`${inclusion.via}-${inclusion.viaLicenceIds.join('-')}-${index}`} inclusion={inclusion} lookup={lookup} />
-            ))}
+            {sharedAvailability !== null && <AvailabilityBadge availability={sharedAvailability} />}
           </div>
+          {showsRouteList && <SourceRouteList routes={routes} showsAvailability={sharedAvailability === null} lookup={lookup} />}
           {notes.map((note, noteIndex) => (
             <p key={`${noteIndex}-${note}`} className="text-xs text-muted-foreground">
               {note}

@@ -26,6 +26,23 @@ export function supplyingLicenceIdOf(inclusion: EffectiveInclusion): string | nu
   return inclusion.viaLicenceIds[0] ?? null
 }
 
+export interface InclusionRoute {
+  availability: Availability
+  sourceLicenceId: string | null
+}
+
+// Routes that differ only past their first hop read the same, so each
+// availability and supplying licence pair is listed once, in first-seen order.
+export function distinctRoutesOf(inclusions: EffectiveInclusion[]): InclusionRoute[] {
+  const routesByKey = new Map<string, InclusionRoute>()
+  for (const inclusion of inclusions) {
+    const route = { availability: inclusion.availability, sourceLicenceId: supplyingLicenceIdOf(inclusion) }
+    const routeKey = `${route.availability}\u0000${route.sourceLicenceId ?? ''}`
+    if (!routesByKey.has(routeKey)) routesByKey.set(routeKey, route)
+  }
+  return [...routesByKey.values()]
+}
+
 export function availabilityText(availability: Availability, sourceLicenceId: string | null | undefined, lookup: CatalogLookup): string {
   if (sourceLicenceId === null || sourceLicenceId === undefined) return AVAILABILITY_LABELS[availability]
   const title = lookup.licencesById.get(sourceLicenceId)?.title ?? sourceLicenceId

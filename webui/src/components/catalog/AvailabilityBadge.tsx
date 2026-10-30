@@ -1,7 +1,7 @@
 import { Check, Plus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import type { Availability } from '../../types/catalog'
-import { AVAILABILITY_LABELS, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AVAILABILITY_LABELS, type CatalogLookup, type InclusionRoute } from '../../logic/inclusionDisplay'
 import { CatalogLink } from './CatalogLink'
 
 const AVAILABILITY_ICONS = { included: Check, add_on: Plus } as const
@@ -22,24 +22,35 @@ export function AvailabilityBadge({ availability }: { availability: Availability
   )
 }
 
-// A product brought in by a nested licence links to that licence.
-export function AvailabilityWithSource({ availability, sourceLicenceId, lookup }: { availability: Availability; sourceLicenceId: string | null; lookup: CatalogLookup }) {
-  if (sourceLicenceId === null) return <AvailabilityBadge availability={availability} />
+function SourceText({ sourceLicenceId, lookup }: { sourceLicenceId: string | null; lookup: CatalogLookup }) {
+  if (sourceLicenceId === null) return <span>directly</span>
   const sourceLicence = lookup.licencesById.get(sourceLicenceId)
   return (
-    <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
-      <AvailabilityBadge availability={availability} />{' '}
-      <span className="text-xs text-muted-foreground">
-        via{' '}
-        {sourceLicence === undefined ? (
-          sourceLicenceId
-        ) : (
-          <CatalogLink view="licences" id={sourceLicenceId} className="break-words">
-            {sourceLicence.title}
-          </CatalogLink>
-        )}
-      </span>
+    <span className="break-words">
+      via{' '}
+      {sourceLicence === undefined ? (
+        sourceLicenceId
+      ) : (
+        <CatalogLink view="licences" id={sourceLicenceId}>
+          {sourceLicence.title}
+        </CatalogLink>
+      )}
     </span>
+  )
+}
+
+// One line per route, stacked under the item, so several sources read as
+// alternatives rather than as a chain of licences.
+export function SourceRouteList({ routes, showsAvailability, lookup }: { routes: InclusionRoute[]; showsAvailability: boolean; lookup: CatalogLookup }) {
+  return (
+    <ul className="mt-1 space-y-1 border-l-2 border-border pl-2.5 text-xs text-muted-foreground">
+      {routes.map((route) => (
+        <li key={`${route.availability}-${route.sourceLicenceId ?? ''}`} className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+          {showsAvailability && <AvailabilityBadge availability={route.availability} />}
+          <SourceText sourceLicenceId={route.sourceLicenceId} lookup={lookup} />
+        </li>
+      ))}
+    </ul>
   )
 }
 

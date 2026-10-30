@@ -141,15 +141,18 @@ test('availability is labelled in words and names the tier licence it comes thro
   await page.goto('/licences?licence=acme.pro')
 
   const securitySection = page.getByRole('region', { name: 'Security' })
-  await expect(securitySection.getByText('Add-on', { exact: true })).toHaveCount(5)
-  await expect(securitySection.getByText('Add-on via Security Suite Plan 2', { exact: true })).toHaveCount(3)
+  // Every route agrees on add-on, so each product carries one badge and lists its routes beneath it.
+  await expect(securitySection.getByText('Add-on', { exact: true })).toHaveCount(3)
+  await expect(securitySection.getByText('via Security Suite Plan 2', { exact: true })).toHaveCount(3)
+  const suiteRoutes = securitySection.getByRole('listitem').filter({ has: page.getByRole('link', { name: 'Security Suite', exact: true }) }).first().getByRole('list').first()
+  await expect(suiteRoutes.getByRole('listitem')).toHaveText(['via Acme Security Pack', 'via Security Suite Plan 2'])
 })
 
 test('a nested add-on names and links its source licence without inheriting that licence’s optional add-ons', async ({ page }) => {
   await page.goto('/licences?licence=acme.pro')
 
   const securitySection = page.getByRole('region', { name: 'Security' })
-  const nestedLines = securitySection.getByText('Add-on via Acme Security Pack', { exact: true })
+  const nestedLines = securitySection.getByText('via Acme Security Pack', { exact: true })
   await expect(nestedLines).toHaveCount(2)
   const nestedLine = nestedLines.first()
   await expect(nestedLine).toBeVisible()

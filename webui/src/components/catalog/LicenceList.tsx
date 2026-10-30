@@ -7,6 +7,9 @@ import { CatalogLink } from './CatalogLink'
 import { subgroupKey, useExpandedGroups, vendorGroupKey } from '../../hooks/useExpandedGroups'
 import { CollapsibleHeading } from './CollapsibleHeading'
 
+// Lines a licence up with its family heading's text, past that heading's chevron.
+const LICENCE_ROW_PADDING = 'pr-4 pl-9'
+
 interface FamilyGroup {
   family: string
   licences: CatalogLicence[]
@@ -139,7 +142,7 @@ export function LicenceList({
                         return (
                           <li key={licence.id}>
                             {isComparing ? (
-                              <label className="flex cursor-pointer items-center gap-2 px-4 py-1.5 text-sm hover:bg-muted">
+                              <label className={`flex cursor-pointer items-center gap-2 ${LICENCE_ROW_PADDING} py-1.5 text-sm hover:bg-muted`}>
                                 <Checkbox checked={compareIds.includes(licence.id)} onCheckedChange={() => onToggleCompared(licence.id)} aria-label={licence.title} />
                                 <LicenceLabel licence={licence} />
                               </label>
@@ -148,7 +151,7 @@ export function LicenceList({
                                 view="licences"
                                 id={licence.id}
                                 isCurrent={isSelected}
-                                className={`flex items-center gap-2 px-4 py-1.5 text-sm no-underline hover:bg-muted ${isSelected ? 'bg-muted font-medium' : 'text-foreground'}`}
+                                className={`flex items-center gap-2 ${LICENCE_ROW_PADDING} py-1.5 text-sm no-underline hover:bg-muted ${isSelected ? 'bg-muted font-medium' : 'text-foreground'}`}
                               >
                                 <LicenceLabel licence={licence} />
                               </CatalogLink>
