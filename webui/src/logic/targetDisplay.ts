@@ -15,6 +15,11 @@ const PAYLOAD_KIND_LABELS: Record<string, string> = {
   ddm: 'Declarative Device Management',
 }
 
+const PAYLOAD_BUTTON_LABELS: Record<string, string> = {
+  mobileconfig: 'Configuration profile',
+  ddm: 'DDM declaration',
+}
+
 const HEADING_SEPARATOR = ' · '
 
 export function scriptLanguageLabel(language: ScriptLanguage): string {
@@ -43,6 +48,25 @@ export function remediationStepLabel(index: VocabularyIndex, target: string, ste
 export function remediationPayloadLabel(index: VocabularyIndex, target: string, payload: RemediationPayload): string {
   const kindLabel = Object.hasOwn(PAYLOAD_KIND_LABELS, payload.kind) ? PAYLOAD_KIND_LABELS[payload.kind] : payload.kind
   return withVersions(index, target, kindLabel, payload.versions)
+}
+
+export type RemediationItem =
+  | { type: 'step'; step: RemediationStep }
+  | { type: 'payload'; payload: RemediationPayload }
+
+// The short name on a fix item's button, e.g. "Bash script" or
+// "Configuration profile · macOS 15". An item for every version has no scope.
+export function remediationItemButtonLabel(index: VocabularyIndex, target: string, item: RemediationItem): string {
+  const typeLabel =
+    item.type === 'step'
+      ? `${scriptLanguageLabel(item.step.language)} script`
+      : Object.hasOwn(PAYLOAD_BUTTON_LABELS, item.payload.kind)
+        ? PAYLOAD_BUTTON_LABELS[item.payload.kind]
+        : item.payload.kind
+  const versions = item.type === 'step' ? item.step.versions : item.payload.versions
+  if (versions === null) return typeLabel
+  const versionLabels = versions.map((version) => termLabel(index, 'versions', versionKey(target, version)))
+  return `${typeLabel}${HEADING_SEPARATOR}${versionLabels.join(', ')}`
 }
 
 // A rule written for a named target (every mSCP rule) says so when it has no

@@ -1,17 +1,20 @@
+import { useState } from 'react'
 import { versionKey, versionsForTarget } from '../../logic/applicability'
 import { GENERATED_TARGET } from '../../logic/checkPlan'
 import { displayWithOdv, type CodeOdvValues } from '../../logic/odv'
 import { scriptHighlightLanguage } from '../../logic/codeLanguage'
 import { assessmentLabel } from '../../logic/ruleDisplay'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
-import { targetHeading } from '../../logic/targetDisplay'
+import { scriptLanguageLabel } from '../../logic/targetDisplay'
 import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../../types/library'
-import { OdvCodeBlock, SectionHeading, TargetHeading } from './CodeBlock'
+import { OdvCodeBlock, SectionHeading } from './CodeBlock'
+import { DisclosureButtons, SelectionButtons, type SelectionItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { ScriptFile } from './ReferencedFile'
+import { TargetIcons } from './TargetIcons'
 
 function CheckEntry({
   label,
@@ -50,7 +53,13 @@ function CheckEntry({
   )
 }
 
-function TargetCheckBlock({
+const DEFAULT_CHECK_KEY = 'default'
+
+function versionCheckKey(version: string): string {
+  return `version-${version}`
+}
+
+function TargetCheckPanel({
   target,
   targetCheck,
   odvValue,
@@ -62,32 +71,51 @@ function TargetCheckBlock({
   codeOdv: CodeOdvValues
 }) {
   const index = useVocabularyIndex()
+  const [selectedKey, setSelectedKey] = useState(DEFAULT_CHECK_KEY)
   const versionChecks = Object.entries(targetCheck.by_version).sort(([left], [right]) => compareVersionsDescending(left, right))
+  const selectedVersionCheck = versionChecks.find(([version]) => versionCheckKey(version) === selectedKey)
+
+  if (versionChecks.length === 0) {
+    return targetCheck.default ? (
+      <CheckEntry
+        label="Check (all listed versions)"
+        check={targetCheck.default}
+        language={targetCheck.language}
+        odvValue={odvValue}
+        codeOdv={codeOdv}
+      />
+    ) : (
+      <p className="text-xs text-muted-foreground">No check provided.</p>
+    )
+  }
+
+  const versionItems: SelectionItem[] = [
+    { key: DEFAULT_CHECK_KEY, label: 'Default' },
+    ...versionChecks.map(([version]) => ({ key: versionCheckKey(version), label: termLabel(index, 'versions', versionKey(target, version)) })),
+  ]
 
   return (
-    <div className="space-y-2" data-testid="check-target">
-      <TargetHeading>{targetHeading(index, target, [targetCheck.language])}</TargetHeading>
-      {targetCheck.default ? (
+    <div className="space-y-2">
+      <SelectionButtons items={versionItems} selectedKey={selectedKey} onSelect={setSelectedKey} ariaLabel="Check versions" />
+      {selectedVersionCheck ? (
         <CheckEntry
-          label={versionChecks.length > 0 ? 'Default check (versions without their own)' : 'Check (all listed versions)'}
+          label={termLabel(index, 'versions', versionKey(target, selectedVersionCheck[0]))}
+          check={selectedVersionCheck[1]}
+          language={targetCheck.language}
+          odvValue={odvValue}
+          codeOdv={codeOdv}
+        />
+      ) : targetCheck.default ? (
+        <CheckEntry
+          label="Default check (versions without their own)"
           check={targetCheck.default}
           language={targetCheck.language}
           odvValue={odvValue}
           codeOdv={codeOdv}
         />
       ) : (
-        <p className="text-xs text-muted-foreground">No default check; only the versions below have one.</p>
+        <p className="text-xs text-muted-foreground">No default check; only the listed versions have one.</p>
       )}
-      {versionChecks.map(([version, check]) => (
-        <CheckEntry
-          key={version}
-          label={termLabel(index, 'versions', versionKey(target, version))}
-          check={check}
-          language={targetCheck.language}
-          odvValue={odvValue}
-          codeOdv={codeOdv}
-        />
-      ))}
     </div>
   )
 }
@@ -129,15 +157,19 @@ export function RuleCheckSection({
           No automated check. {assessmentLabel(rule.assessment, index).description}
         </p>
       ) : (
-        targetChecks.map(([target, targetCheck]) => (
-          <TargetCheckBlock
-            key={target}
-            target={target}
-            targetCheck={targetCheck}
-            odvValue={odvValue}
-            codeOdv={codeOdv}
-          />
-        ))
+        <DisclosureButtons
+          items={targetChecks.map(([target, targetCheck]) => ({
+            key: target,
+            panelTestId: 'check-target',
+            buttonContent: (
+              <>
+                <TargetIcons targetKeys={[target]} />
+                {scriptLanguageLabel(targetCheck.language)}
+              </>
+            ),
+            panel: <TargetCheckPanel target={target} targetCheck={targetCheck} odvValue={odvValue} codeOdv={codeOdv} />,
+          }))}
+        />
       )}
     </div>
   )

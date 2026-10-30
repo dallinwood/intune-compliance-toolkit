@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { RemediationPayload, RemediationStep } from '../types/library'
 import {
   newestVersionsFirst,
+  remediationItemButtonLabel,
   remediationPayloadLabel,
   remediationStepLabel,
   scriptLanguageLabel,
@@ -73,6 +74,28 @@ describe('remediationPayloadLabel', () => {
 
   it('names the versions a payload is limited to', () => {
     expect(remediationPayloadLabel(index, 'macOS', payload({ versions: ['15.0'] }))).toBe('Configuration profile payloads for macOS 15')
+  })
+})
+
+describe('remediationItemButtonLabel', () => {
+  it('names a step by its script language, with no suffix when it covers every version', () => {
+    expect(remediationItemButtonLabel(index, 'macOS', { type: 'step', step: step() })).toBe('Bash script')
+    expect(remediationItemButtonLabel(index, 'Windows', { type: 'step', step: step({ language: 'powershell' }) })).toBe('PowerShell script')
+  })
+
+  it('names a payload by the same kind names as the payload label, in singular form', () => {
+    expect(remediationItemButtonLabel(index, 'macOS', { type: 'payload', payload: payload() })).toBe('Configuration profile')
+    expect(remediationItemButtonLabel(index, 'macOS', { type: 'payload', payload: payload({ kind: 'ddm' }) })).toBe('DDM declaration')
+    expect(remediationItemButtonLabel(index, 'Windows', { type: 'payload', payload: payload({ kind: 'registry' }) })).toBe('registry')
+  })
+
+  it('adds the version scope when the item does not cover every version', () => {
+    expect(remediationItemButtonLabel(index, 'macOS', { type: 'payload', payload: payload({ versions: ['15.0'] }) })).toBe(
+      'Configuration profile · macOS 15',
+    )
+    expect(remediationItemButtonLabel(index, 'macOS', { type: 'step', step: step({ versions: ['15.0', '27.0'] }) })).toBe(
+      'Bash script · macOS 15, macOS 27',
+    )
   })
 })
 

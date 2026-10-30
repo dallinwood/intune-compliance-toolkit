@@ -53,10 +53,12 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   await expect(page.getByText('objectIsForcedForKey')).toBeVisible()
   // Reference keys are shown raw; friendly names only come from the vocabulary file.
   const detail = page.locator('[id^="rule-detail-"]')
-  // Checks and fixes are listed per target, headed by target and language.
-  await expect(detail.getByTestId('check-target').getByText('macOS · Bash', { exact: true })).toBeVisible()
+  // Checks and fixes are buttons per target, named by language or fix type; a single one starts open.
+  await expect(detail.getByRole('button', { name: /Bash/ })).toHaveAttribute('aria-expanded', 'true')
+  await expect(detail.getByTestId('check-target')).toBeVisible()
   // Its remediation is a profile payload only, so no script language is named.
-  await expect(detail.getByTestId('remediation-target').getByText('macOS', { exact: true })).toBeVisible()
+  await expect(detail.getByRole('button', { name: /Configuration profile/ })).toHaveAttribute('aria-expanded', 'true')
+  await expect(detail.getByTestId('remediation-target')).toBeVisible()
   await expect(detail.getByText('macos_15', { exact: true }).first()).toBeVisible()
   // The Benchmarks section labels versions through the vocabulary, so only the reference keys are checked.
   await expect(detail.locator('li > span', { hasText: /^macOS 15$/ })).toHaveCount(0)
@@ -1428,15 +1430,25 @@ test.describe('custom overlays', () => {
     const detail = await openIsm1622(page)
     const remediation = detail.getByTestId('remediation-target')
 
+    const fixButtons = detail.getByRole('button', { name: /registry|admx/ })
+    await expect(fixButtons).toHaveCount(3)
+    await expect(remediation).toHaveCount(0)
+
+    await fixButtons.nth(0).click()
     await expect(remediation.locator('pre', { hasText: 'Windows Registry Editor Version 5.00' })).toBeVisible()
     // .reg has no highlight.js language here, so it stays plain text.
     await expect(remediation.locator('pre .hljs')).toHaveCount(0)
     await expect(remediation.getByRole('link', { name: 'Download Policy.reg' })).toHaveAttribute('download', 'Policy.reg')
+
+    // Registry.pol is binary, so a link only and no code block.
+    await fixButtons.nth(1).click()
     const binaryLink = remediation.getByRole('link', { name: 'Download Registry.pol' })
     await expect(binaryLink).toHaveAttribute('download', 'Registry.pol')
     await expect(binaryLink).toHaveAttribute('href', new RegExp(`${payloadsBase}/Registry\\.pol$`))
-    // Policy.reg loads; Registry.pol is binary, so a link only; Missing.admx fails to load.
-    await expect(remediation.locator('pre')).toHaveCount(1)
+    await expect(remediation.locator('pre')).toHaveCount(0)
+
+    // Missing.admx fails to load.
+    await fixButtons.nth(2).click()
     await expect(remediation.getByTestId('referenced-file-error')).toContainText('Missing.admx')
   })
 })
@@ -1449,7 +1461,7 @@ test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerS
 
   const remediation = detail.getByTestId('remediation-target')
   await expect(remediation).toHaveCount(1)
-  await expect(remediation.getByText('Windows · PowerShell', { exact: true })).toBeVisible()
+  await expect(detail.getByRole('button', { name: /PowerShell script/ })).toHaveAttribute('aria-expanded', 'true')
   await expect(remediation.getByText('RemovePowerShellV2', { exact: true })).toBeVisible()
   await expect(detail.getByRole('heading', { name: 'Remediation' }).locator('xpath=..').getByText('Custom', { exact: true })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
@@ -1478,6 +1490,71 @@ test('ISM-1654 and ISM-1655 each show their own Blueprint script step', async ({
     await expect(remediation.getByText(stepName, { exact: true })).toBeVisible()
     await expect(remediation.getByTestId('referenced-file-error')).toHaveCount(0)
   }
+})
+
+test.describe('check and fix buttons', () => {
+  test('a rule with a single check shows it open', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
+    await row.getByRole('button').click()
+    const detail = page.locator('[id^="rule-detail-"]')
+    const checkButton = detail.getByRole('button', { name: 'macOS Bash', exact: true })
+    await expect(checkButton).toHaveAttribute('aria-expanded', 'true')
+    await expect(detail.getByTestId('check-target').locator('pre')).toContainText('objectIsForcedForKey')
+    await expect(detail.getByText('Expected result')).toBeVisible()
+    await checkButton.click()
+    await expect(checkButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(detail.getByTestId('check-target')).toHaveCount(0)
+  })
+
+  test('a fix with two items shows two closed buttons, one open at a time', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'os_sshd_fips_compliant', /./)
+    await row.getByRole('button').click()
+    const detail = page.locator('[id^="rule-detail-"]')
+    const bashButton = detail.getByRole('button', { name: /Bash script/ })
+    const declarationButton = detail.getByRole('button', { name: /DDM declaration/ })
+    const remediation = detail.getByTestId('remediation-target')
+
+    await expect(bashButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(remediation).toHaveCount(0)
+
+    await bashButton.click()
+    await expect(bashButton).toHaveAttribute('aria-expanded', 'true')
+    await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(remediation.locator('pre')).toHaveCount(1)
+    const bashRegionId = await bashButton.getAttribute('aria-controls')
+    expect(await page.locator(`[id="${bashRegionId}"]`).count()).toBe(1)
+
+    await declarationButton.click()
+    await expect(bashButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(declarationButton).toHaveAttribute('aria-expanded', 'true')
+    await expect(remediation).toHaveCount(1)
+
+    await declarationButton.click()
+    await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(remediation).toHaveCount(0)
+  })
+
+  test('a rule with per-version checks shows a version row that swaps the content', async ({ page }) => {
+    await page.goto('/')
+    const row = await searchForSingleRow(page, 'os_authenticated_root_enable', /./)
+    await row.getByRole('button').click()
+    const detail = page.locator('[id^="rule-detail-"]')
+    // A single platform's check starts open.
+    await expect(detail.getByRole('button', { name: 'macOS Bash', exact: true })).toHaveAttribute('aria-expanded', 'true')
+    const versionRow = detail.getByRole('group', { name: 'Check versions' })
+    const defaultButton = versionRow.getByRole('button', { name: 'Default' })
+    const versionButton = versionRow.getByRole('button', { name: 'macOS 15' })
+    await expect(defaultButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(detail.getByTestId('check-target')).toContainText('sealed')
+
+    await versionButton.click()
+    await expect(versionButton).toHaveAttribute('aria-pressed', 'true')
+    await expect(detail.getByTestId('check-target')).toContainText('AuthenticatedRootVolumeEnabled')
+    await expect(detail.getByTestId('check-target')).not.toContainText('sealed')
+  })
 })
 
 test.describe('code highlighting', () => {

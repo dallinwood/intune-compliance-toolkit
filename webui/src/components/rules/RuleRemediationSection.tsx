@@ -3,16 +3,19 @@ import type { CodeOdvValues } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import {
   newestVersionsFirst,
+  remediationItemButtonLabel,
   remediationPayloadLabel,
   remediationStepLabel,
   showsRemediationSection,
-  targetHeading,
+  type RemediationItem,
 } from '../../logic/targetDisplay'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RemediationStep, Rule, TargetRemediation } from '../../types/library'
-import { OdvCodeBlock, SectionHeading, TargetHeading } from './CodeBlock'
+import { OdvCodeBlock, SectionHeading } from './CodeBlock'
+import { DisclosureButtons, type DisclosureItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { PayloadFile, ScriptFile } from './ReferencedFile'
+import { TargetIcons } from './TargetIcons'
 
 function StepEntry({
   label,
@@ -58,53 +61,33 @@ function JsonEntry({
   )
 }
 
-function TargetRemediationBlock({
+function remediationItemsOf(targetRemediation: TargetRemediation): RemediationItem[] {
+  return [
+    ...newestVersionsFirst(targetRemediation.steps).map((step): RemediationItem => ({ type: 'step', step })),
+    ...newestVersionsFirst(targetRemediation.payloads).map((payload): RemediationItem => ({ type: 'payload', payload })),
+  ]
+}
+
+function RemediationItemPanel({
   target,
-  targetRemediation,
+  item,
   odvValue,
   codeOdv,
 }: {
   target: string
-  targetRemediation: TargetRemediation
+  item: RemediationItem
   odvValue: OrgDefinedValue | null
   codeOdv: CodeOdvValues
 }) {
   const index = useVocabularyIndex()
-  const steps = newestVersionsFirst(targetRemediation.steps)
-  const payloads = newestVersionsFirst(targetRemediation.payloads)
-  const languages = steps.map((step) => step.language)
-
-  return (
-    <div className="space-y-2" data-testid="remediation-target">
-      <TargetHeading>{targetHeading(index, target, languages)}</TargetHeading>
-      {steps.length === 0 && payloads.length === 0 && <p className="text-xs text-muted-foreground">No remediation provided.</p>}
-      {steps.map((step, position) => (
-        <StepEntry key={`step-${position}`} label={remediationStepLabel(index, target, step)}
-          step={step}
-          odvValue={odvValue}
-          codeOdv={codeOdv}
-        />
-      ))}
-      {payloads.map((payload, position) =>
-        payload.data_file !== undefined ? (
-          <PayloadFile
-            key={`payload-${position}`}
-            label={remediationPayloadLabel(index, target, payload)}
-            path={payload.data_file}
-            odvValue={odvValue}
-            codeOdv={codeOdv}
-          />
-        ) : (
-          <JsonEntry
-            key={`payload-${position}`}
-            label={remediationPayloadLabel(index, target, payload)}
-            value={payload.data}
-            odvValue={odvValue}
-            codeOdv={codeOdv}
-          />
-        ),
-      )}
-    </div>
+  if (item.type === 'step') {
+    return <StepEntry label={remediationStepLabel(index, target, item.step)} step={item.step} odvValue={odvValue} codeOdv={codeOdv} />
+  }
+  const label = remediationPayloadLabel(index, target, item.payload)
+  return item.payload.data_file !== undefined ? (
+    <PayloadFile label={label} path={item.payload.data_file} odvValue={odvValue} codeOdv={codeOdv} />
+  ) : (
+    <JsonEntry label={label} value={item.payload.data} odvValue={odvValue} codeOdv={codeOdv} />
   )
 }
 
@@ -119,22 +102,31 @@ export function RuleRemediationSection({
   codeOdv: CodeOdvValues
   custom?: boolean
 }) {
+  const index = useVocabularyIndex()
+  const disclosureItems: DisclosureItem[] = Object.entries(rule.remediation ?? {}).flatMap(([target, targetRemediation]) =>
+    remediationItemsOf(targetRemediation).map((item, position) => ({
+      key: `${target}-${item.type}-${position}`,
+      panelTestId: 'remediation-target',
+      buttonContent: (
+        <>
+          <TargetIcons targetKeys={[target]} />
+          {remediationItemButtonLabel(index, target, item)}
+        </>
+      ),
+      panel: <RemediationItemPanel target={target} item={item} odvValue={odvValue} codeOdv={codeOdv} />,
+    })),
+  )
+
   if (!showsRemediationSection(rule)) return null
-  const targetRemediations = Object.entries(rule.remediation ?? {})
 
   return (
     <div className="space-y-2">
       <SectionHeading custom={custom}>Remediation</SectionHeading>
-      {targetRemediations.length === 0 && <p className="text-xs text-muted-foreground">No remediation provided.</p>}
-      {targetRemediations.map(([target, targetRemediation]) => (
-        <TargetRemediationBlock
-          key={target}
-          target={target}
-          targetRemediation={targetRemediation}
-          odvValue={odvValue}
-          codeOdv={codeOdv}
-        />
-      ))}
+      {disclosureItems.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No remediation provided.</p>
+      ) : (
+        <DisclosureButtons items={disclosureItems} />
+      )}
     </div>
   )
 }
