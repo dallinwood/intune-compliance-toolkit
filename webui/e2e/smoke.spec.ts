@@ -1875,16 +1875,42 @@ test.describe('rule mappings', () => {
   })
 
   test('the assessment choice filters rows and the filter survives a tab switch', async ({ page }) => {
-    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    const manualRule = 'mscp.audit_alert_processing_fail'
+    await serveMappings(page, {
+      'powershell.json': supportsIsm1622,
+      'manual.json': {
+        schema_version: 1,
+        id: 'manual-audit',
+        links: [{ relation: 'supports', from: [ruleEndpoint(manualRule, MSCP_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
+      },
+    })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     const panel = mappedRulesPanel(page, ISM_1622)
+    const assessment = panel.getByRole('radiogroup', { name: 'Assessment' })
 
-    await expect(panel.getByRole('radiogroup', { name: 'Assessment' }).getByRole('radio')).toHaveCount(3)
-    await panel.getByRole('textbox', { name: 'Filter mapped rules' }).fill('os_')
+    await expect(assessment.getByRole('radio')).toHaveCount(3)
+    for (const name of ['All', 'Automated', 'Manual']) {
+      await expect(assessment.getByRole('radio', { name, exact: true })).toBeVisible()
+    }
+    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (3)')).toHaveAttribute('aria-expanded', 'false')
+
+    await assessment.getByRole('radio', { name: 'Manual', exact: true }).click()
+    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 3)')).toHaveAttribute('aria-expanded', 'true')
+    await expect(panel.getByRole('listitem')).toHaveCount(1)
+    await expect(panel.getByRole('listitem').first()).toContainText(/audit_alert_processing_fail/)
+
+    await assessment.getByRole('radio', { name: 'Automated', exact: true }).click()
+    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (2 of 3)')).toBeVisible()
+    await expect(panel.getByRole('listitem')).toHaveCount(2)
+
+    await panel.getByRole('textbox', { name: 'Filter mapped rules' }).fill('gatekeeper')
+    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 3)')).toBeVisible()
     await detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' }).click()
     await mappedRulesTab(page, ISM_1622).click()
-    await expect(panel.getByRole('textbox', { name: 'Filter mapped rules' })).toHaveValue('os_')
+    await expect(panel.getByRole('textbox', { name: 'Filter mapped rules' })).toHaveValue('gatekeeper')
+    await expect(assessment.getByRole('radio', { name: 'Automated', exact: true })).toBeChecked()
+    await expect(panel.getByRole('listitem')).toHaveCount(1)
   })
 
   test('a filter matching nothing says so', async ({ page }) => {
