@@ -1,5 +1,6 @@
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react'
 import { useId, useMemo, type MouseEvent } from 'react'
+import { buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -250,15 +251,12 @@ export function MappedRuleRow({
       </div>
       {isExpanded && (
         <div id={detailsId} className="mt-2 overflow-hidden rounded-md border border-border">
-          <p className="bg-panel px-4 pt-3 text-sm">
-            <a
-              href={hrefShowing(row.ref.id)}
-              onClick={navigate}
-              className="text-link underline underline-offset-4 hover:no-underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
-            >
+          <div className="flex justify-end border-b border-border bg-panel px-4 py-2">
+            <a href={hrefShowing(row.ref.id)} onClick={navigate} className={buttonVariants({ variant: 'outline', size: 'xs' })}>
               Go to this rule
+              <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
             </a>
-          </p>
+          </div>
           <RuleDetailPanel ruleRef={row.ref} nested />
         </div>
       )}
