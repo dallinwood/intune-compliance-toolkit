@@ -331,29 +331,6 @@
       "from": [
         {
           "kind": "rule",
-          "id": "mscp.audit_flags_aa_configure",
-          "release": "release_27.0"
-        },
-        {
-          "kind": "rule",
-          "id": "mscp.audit_flags_lo_configure",
-          "release": "release_27.0"
-        }
-      ],
-      "to": [
-        {
-          "kind": "rule",
-          "id": "asd_ism.ism-1895",
-          "release": "v2026.09.4"
-        }
-      ],
-      "note": "Records successful and unsuccessful sign-in events on the Mac itself; forwarding them to a central logging facility is not covered."
-    },
-    {
-      "relation": "supports",
-      "from": [
-        {
-          "kind": "rule",
           "id": "mscp.os_password_hint_remove",
           "release": "release_27.0"
         }

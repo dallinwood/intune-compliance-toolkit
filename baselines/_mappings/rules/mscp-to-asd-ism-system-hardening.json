@@ -540,47 +540,6 @@
         }
       ],
       "note": "Covers the Secure Boot part only; Early Launch Antimalware, Trusted Boot and Measured Boot are not checked."
-    },
-    {
-      "relation": "supports",
-      "from": [
-        {
-          "kind": "rule",
-          "id": "mscp.audit_auditd_enabled",
-          "release": "release_27.0"
-        }
-      ],
-      "to": [
-        {
-          "kind": "rule",
-          "id": "asd_ism.ism-1976",
-          "release": "v2026.09.4"
-        }
-      ],
-      "note": "Turns on and verifies the macOS security audit service that generates the security-relevant event records; sending them to a central logging facility is not covered."
-    },
-    {
-      "relation": "supports",
-      "from": [
-        {
-          "kind": "rule",
-          "id": "mscp.audit_flags_aa_configure",
-          "release": "release_27.0"
-        },
-        {
-          "kind": "rule",
-          "id": "mscp.audit_flags_lo_configure",
-          "release": "release_27.0"
-        }
-      ],
-      "to": [
-        {
-          "kind": "rule",
-          "id": "asd_ism.ism-1976",
-          "release": "v2026.09.4"
-        }
-      ],
-      "note": "Records macOS authentication, authorisation and logon/logoff events locally; forwarding them to a central logging facility is not covered."
     }
   ]
 }

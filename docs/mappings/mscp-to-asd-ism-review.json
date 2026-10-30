@@ -4,25 +4,44 @@
     "open": "not yet researched beyond the first pass",
     "mapped": "confirmed and moved into baselines/_mappings/rules/",
     "rejected": "researched and found not to support the control",
-    "needs_maintainer": "still uncertain after research; the maintainer makes the call"
+    "needs_maintainer": "still uncertain after research; the maintainer makes the call",
+    "answered": "a cross-cutting question that has been settled"
   },
   "mscp_release": "release_27.0",
   "ism_release": "v2026.09.4",
   "cross_cutting_questions": [
     {
       "question": "Do Mac laptops count as ISM 'mobile devices'? If so, several Guidelines for enterprise mobility controls (e.g. ISM-0682, ISM-0864, ISM-0869, ISM-1366, ISM-1888, ISM-2096, ISM-1482) gain candidate mappings, most of which the first pass left out entirely.",
-      "status": "open",
-      "comments": []
+      "status": "answered",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Yes for laptops. The ISM glossary (Cyber security terminology, https://www.cyber.gov.au/ism/latest/cyber-security-terminology, read 2026-10-30) defines a mobile device as 'A portable computing or communications device. For example, smartphones, tablets and laptop computers.' The definition is OS-agnostic, so Mac laptops are treated the same as Windows laptops: mobile device controls apply to MacBooks, not to desktop Macs (iMac, Mac mini, Mac Studio, Mac Pro). Notes on mobile device mappings should say they apply to Mac laptops."
+        }
+      ]
     },
     {
       "question": "Does APFS/FileVault encryption (AES-XTS) count as 'ASD-approved cryptography' (ISM-1059 and similar)? AES is an ASD-approved algorithm, but the control may expect an evaluated implementation at higher classifications.",
-      "status": "open",
-      "comments": []
+      "status": "answered",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Yes. FileVault encrypts with AES-XTS-256 (NIAP validation report CCEVS-VR-VID11696-2026, 'Apple macOS 26 Tahoe: FileVault', completed 2026-07-29, evaluated against the collaborative Protection Profiles for Full Drive Encryption - Authorization Acquisition and Encryption Engine v2.0), and AES-256 is an ASD-Approved Cryptographic Algorithm (ISM-1769, ISM-1770). The maintainer accepts FileVault/APFS encryption as ASD-approved cryptography; FileVault is also the only full disk encryption macOS supports."
+        }
+      ]
     },
     {
       "question": "Should rules that only attest to built-in macOS behaviour (no check and no fix) ever be mapped? The first pass left almost all of them unmapped, even near word-for-word matches such as os_unique_identification to ISM-0414.",
-      "status": "open",
-      "comments": []
+      "status": "answered",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Maintainer ruling: for now, only map rules that have a check or a fix. Attestation-only rules stay unmapped."
+        }
+      ]
     }
   ],
   "items": [
@@ -750,13 +769,18 @@
       "ism_section": "Guidelines for system access > Identity and access management > Privileged access to systems",
       "ism_text": "Privileged access events are centrally logged.",
       "proposed_note": "May record privileged (administrative) actions on the Mac locally; central forwarding is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "The rule adds the 'ad' (administrative) class to the audit_control flags; the mSCP discussion says this audits the execution of privileged functions, which relates to 'Privileged access events are centrally logged'. Whether 'ad' captures privileged access itself (such as sudo or admin authentication) rather than only certain administrative system calls is not established from the rule.",
           "open_question": "Which events /etc/security/audit_event assigns to the 'ad' class on current macOS, and whether sudo and admin elevation events fall under 'ad' or under 'aa'."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -769,13 +793,18 @@
       "ism_section": "Guidelines for system access > Identity and access management > Privileged access to systems",
       "ism_text": "Privileged access events are centrally logged.",
       "proposed_note": "Ensures sudo privilege escalation events are recorded on the device; forwarding them to a central log facility is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "The rule sets 'Defaults log_allowed' in sudoers and checks sudo -V, so every allowed privilege escalation via sudo is logged. This generates the 'privileged access events' the control requires.",
           "open_question": "Decide whether producing the events locally counts as support when the control's key requirement is that they are 'centrally logged'."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -807,13 +836,18 @@
       "ism_section": "Guidelines for system access > Identity and access management > Unprivileged access to systems",
       "ism_text": "Use of unprivileged access is centrally logged.",
       "proposed_note": "Records logons and logoffs on the Mac, which is part of showing use of standard accounts; central forwarding and other activity are not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "The 'lo' class records login and logout for all accounts, including unprivileged ones, which gives a partial record of 'Use of unprivileged access'. Whether logon/logoff events are enough to count as logging use of access is debatable.",
           "open_question": "Whether assessors accept logon/logoff records as evidence of 'use of unprivileged access', or expect activity-level logging."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -1037,13 +1071,18 @@
       "ism_section": "Guidelines for system access > Identity and access management > Privileged access to systems",
       "ism_text": "Privileged user account and security group management events are centrally logged.",
       "proposed_note": "May record user account and group changes on the Mac locally; central forwarding is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "The 'ad' class covers administrative actions such as changes to authentication policies; if it includes local account and group administration it supports 'Privileged user account and security group management events are centrally logged' at the source.",
           "open_question": "Whether macOS account and group management (through opendirectoryd/dscl or System Settings) produces BSM events in the 'ad' class, or is only logged in the unified log."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -1483,13 +1522,18 @@
       "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
       "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
       "proposed_note": "Records some administrative actions on the Mac locally; central forwarding is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "The 'ad' flag in audit_control records administrative action events, and the control's discussion lists 'changes to security policies' as a typical security-relevant macOS event; the mSCP rule cites modifying authentication policies as an 'ad' event. The exact event set in the class is not verified here.",
           "open_question": "Confirm from /etc/security/audit_event that the 'ad' class includes security policy changes on current macOS versions."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -1507,13 +1551,18 @@
       "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
       "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
       "proposed_note": "Records file access and program execution events on the Mac locally (mostly failed attempts); central forwarding is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "The checks verify '-fr', '-fw', '-fm', '-fd' and '-ex' (failed file read, write, attribute change, attribute delete and program execution) and 'fm' (all attribute changes) in the audit_control flags. Denied access attempts are arguably security-relevant events, but the control's discussion list does not name file access, and failed execution is not the same as the 'successful process creations' it does list.",
           "open_question": "Whether file access failure events count as 'security-relevant events' for ISM-1976 in the organisation's logging policy; the discussion list is 'typical' rather than exhaustive."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -1526,13 +1575,18 @@
       "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
       "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
       "proposed_note": "Covers generating detailed Application Firewall log events on the Mac; sending them to a central log store is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "EnableLogging=true with LoggingOption=detail makes the macOS Application Firewall write events to unified logging, a prerequisite for 'security-relevant events for Apple macOS operating systems are centrally logged'.",
           "open_question": "The control requires central logging; local logging only helps indirectly. Firewall events are also marked private unless a separate profile is applied."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -1545,13 +1599,18 @@
       "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
       "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
       "proposed_note": "Ensures sudo privilege escalation events are recorded on the device; central collection is not covered.",
-      "status": "open",
+      "status": "rejected",
       "comments": [
         {
           "date": "2026-10-30",
           "pass": "first",
           "rationale": "sudo log_allowed makes allowed privilege escalations appear in the macOS log, a security-relevant macOS event source for 'Security-relevant events for Apple macOS operating systems are centrally logged'.",
           "open_question": "Decide whether local event generation for one event type counts as support for a control whose substance is central logging."
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix)."
         }
       ]
     },
@@ -1831,6 +1890,80 @@
           "pass": "first",
           "rationale": "checkCertificateTrust=2 performs soft-fail revocation checking: a certificate known to be revoked is refused, but authentication still succeeds if the CRL/OCSP server is unreachable. The control is about revoking credentials when no longer required, which happens at the CA rather than on the device.",
           "open_question": "Same question as the high-trust rule, plus whether soft-fail checking is strong enough to count at all."
+        }
+      ]
+    },
+    {
+      "id": "r093",
+      "mscp": [
+        "mscp.audit_flags_aa_configure",
+        "mscp.audit_flags_lo_configure"
+      ],
+      "ism": "asd_ism.ism-1895",
+      "ism_section": "Guidelines for system access > Identity and access management > Single-factor authentication",
+      "ism_text": "Successful and unsuccessful single-factor authentication events are centrally logged.",
+      "proposed_note": "Records successful and unsuccessful sign-in events on the Mac itself; forwarding them to a central logging facility is not covered.",
+      "status": "rejected",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Committed as confident in 8b6d687 for local event generation.",
+          "open_question": null
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix). Removed from baselines/_mappings/rules/."
+        }
+      ]
+    },
+    {
+      "id": "r094",
+      "mscp": [
+        "mscp.audit_auditd_enabled"
+      ],
+      "ism": "asd_ism.ism-1976",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
+      "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
+      "proposed_note": "Turns on and verifies the macOS security audit service that generates the security-relevant event records; sending them to a central logging facility is not covered.",
+      "status": "rejected",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Committed as confident in 8b6d687 for local event generation.",
+          "open_question": null
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix). Removed from baselines/_mappings/rules/."
+        }
+      ]
+    },
+    {
+      "id": "r095",
+      "mscp": [
+        "mscp.audit_flags_aa_configure",
+        "mscp.audit_flags_lo_configure"
+      ],
+      "ism": "asd_ism.ism-1976",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
+      "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
+      "proposed_note": "Records macOS authentication, authorisation and logon/logoff events locally; forwarding them to a central logging facility is not covered.",
+      "status": "rejected",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Committed as confident in 8b6d687 for local event generation.",
+          "open_question": null
+        },
+        {
+          "date": "2026-10-30",
+          "pass": "maintainer",
+          "comment": "Rejected on the maintainer's ruling (2026-10-30): local logging is not central logging. A rule that produces or keeps logs on the Mac only supports a 'centrally logged' control when paired with something that forwards those logs to a central service, and mSCP has no such rule (audit_off_load_records states the technology does not support it and has no check or fix). Removed from baselines/_mappings/rules/."
         }
       ]
     }
