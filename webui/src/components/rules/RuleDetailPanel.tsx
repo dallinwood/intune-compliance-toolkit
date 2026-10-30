@@ -1,21 +1,24 @@
+import { Tabs } from '@base-ui/react/tabs'
 import { Component, type ReactNode } from 'react'
 import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
+import { distinctMappedRuleCount } from '../../logic/mappedRuleView'
 import { termLabel } from '../../logic/vocabulary'
 import { displayWithOdv, odvSubstitutionMode, codeOdvValues, usableOdvValue, validateOdvValue } from '../../logic/odv'
 import type { OverlaidRule } from '../../logic/overlays'
 import { macosReferences } from '../../logic/references'
 import type { RuleRef } from '../../logic/selectionEntry'
 import { showsRemediationSection } from '../../logic/targetDisplay'
+import { useRuleMappings } from '../../state/mappingsContext'
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
 import { SectionHeading } from './CodeBlock'
 import { CustomTag } from './CustomTag'
 import { DiscussionText } from './DiscussionText'
+import { MappedRulesTab, useMappedRulesViewState, type MappedRulesViewState } from './MappedRulesTab'
 import { OrgDefinedValueInput } from './OrgDefinedValueInput'
 import { RuleBenchmarks } from './RuleBenchmarks'
 import { RuleCheckSection } from './RuleCheckSection'
-import { RuleMappings } from './RuleMappings'
 import { RuleReferences } from './RuleReferences'
 import { RuleRemediationSection } from './RuleRemediationSection'
 
@@ -46,43 +49,58 @@ class DetailErrorBoundary extends Component<{ fallback: ReactNode; children: Rea
   }
 }
 
-export function RuleDetailPanel({ ruleRef }: { ruleRef: RuleRef }) {
+// A nested panel (a mapped rule's details shown inside another rule's) has no
+// tabs and no mapped rules, so nesting stops at one level.
+export function RuleDetailPanel({ ruleRef, nested = false }: { ruleRef: RuleRef; nested?: boolean }) {
+  const mappedView = useMappedRulesViewState()
+  const tabState = nested ? undefined : mappedView
   const failedEntirely = <p className={`${PANEL_CLASS} text-destructive`}>These details could not be displayed.</p>
   return (
     <DetailErrorBoundary
       fallback={
         <DetailErrorBoundary fallback={failedEntirely}>
-          <ImportedRuleDetail ruleRef={ruleRef} />
+          <ImportedRuleDetail ruleRef={ruleRef} mappedView={tabState} />
         </DetailErrorBoundary>
       }
     >
-      <OverlaidRuleDetail ruleRef={ruleRef} />
+      <OverlaidRuleDetail ruleRef={ruleRef} mappedView={tabState} />
     </DetailErrorBoundary>
   )
 }
 
-function OverlaidRuleDetail({ ruleRef }: { ruleRef: RuleRef }) {
-  return <RuleDetailFor ruleRef={ruleRef} ruleState={useRule(ruleRef)} />
+function OverlaidRuleDetail({ ruleRef, mappedView }: { ruleRef: RuleRef; mappedView?: MappedRulesViewState }) {
+  return <RuleDetailFor ruleRef={ruleRef} ruleState={useRule(ruleRef)} mappedView={mappedView} />
 }
 
-function ImportedRuleDetail({ ruleRef }: { ruleRef: RuleRef }) {
+function ImportedRuleDetail({ ruleRef, mappedView }: { ruleRef: RuleRef; mappedView?: MappedRulesViewState }) {
   return (
     <RuleDetailFor
       ruleRef={ruleRef}
+      mappedView={mappedView}
       ruleState={useImportedRule(ruleRef)}
       notice="Custom content for this rule could not be displayed, so it is shown as imported."
     />
   )
 }
 
-function RuleDetailFor({ ruleRef, ruleState, notice }: { ruleRef: RuleRef; ruleState: RuleLoadState; notice?: string }) {
+function RuleDetailFor({
+  ruleRef,
+  ruleState,
+  notice,
+  mappedView,
+}: {
+  ruleRef: RuleRef
+  ruleState: RuleLoadState
+  notice?: string
+  mappedView?: MappedRulesViewState
+}) {
   if (ruleState.status === 'loading') {
     return <p className={`${PANEL_CLASS} text-muted-foreground`}>Loading details…</p>
   }
   if (ruleState.status === 'error') {
     return <p className={`${PANEL_CLASS} text-destructive`}>Failed to load: {ruleState.message}</p>
   }
-  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} notice={notice} />
+  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} notice={notice} mappedView={mappedView} />
 }
 
 // Overlaid top-level fields shown with a Custom tag on their own section;
@@ -118,7 +136,24 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
   )
 }
 
-function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRef; rule: Rule; overlaid: OverlaidRule; notice?: string }) {
+const TAB_CLASS =
+  'border-b-2 border-transparent px-3 py-1.5 text-sm font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring data-active:border-primary data-active:text-foreground'
+
+function LoadedRuleDetail({
+  ruleRef,
+  rule,
+  overlaid,
+  notice,
+  mappedView,
+}: {
+  ruleRef: RuleRef
+  rule: Rule
+  overlaid: OverlaidRule
+  notice?: string
+  mappedView?: MappedRulesViewState
+}) {
+  const { byRule, rowsById } = useRuleMappings()
+  const mappedRuleCount = mappedView ? distinctMappedRuleCount(byRule.get(rule.id) ?? [], rowsById) : 0
   const storedValue = useStoredOdvValue(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
@@ -140,8 +175,8 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
   const ownSections = fieldsWithOwnSection(rule)
   const customLineFields = [...provenance.keys()].filter((field) => !ownSections.has(field))
 
-  return (
-    <div className={`space-y-4 ${PANEL_CLASS}`}>
+  const detailContent = (
+    <>
       {notice && <p className="text-xs break-words text-warning-foreground">{notice}</p>}
       <OverlayNotes overlaid={overlaid} rule={rule} />
 
@@ -181,7 +216,6 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
       <RuleCheckSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('check')} />
       <RuleRemediationSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('remediation')} />
       <RuleBenchmarks applicability={rule.applicability} custom={isCustom('applicability')} />
-      <RuleMappings ruleId={rule.id} />
       <RuleReferences references={rule.references} custom={isCustom('references')} />
 
       {customLineFields.length > 0 && (
@@ -201,6 +235,31 @@ function LoadedRuleDetail({ ruleRef, rule, overlaid, notice }: { ruleRef: RuleRe
         </a>
         , modified for this tool.
       </p>
+    </>
+  )
+
+  return (
+    <div className={`space-y-4 ${PANEL_CLASS}`}>
+      {mappedView && mappedRuleCount > 0 ? (
+        <Tabs.Root defaultValue="details" className="space-y-4">
+          <Tabs.List className="flex flex-wrap border-b border-border">
+            <Tabs.Tab value="details" className={TAB_CLASS}>
+              Details
+            </Tabs.Tab>
+            <Tabs.Tab value="mapped-rules" className={TAB_CLASS}>
+              Mapped rules ({mappedRuleCount})
+            </Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panel value="details" keepMounted className="space-y-4 outline-none">
+            {detailContent}
+          </Tabs.Panel>
+          <Tabs.Panel value="mapped-rules" className="outline-none">
+            <MappedRulesTab ruleId={rule.id} view={mappedView} />
+          </Tabs.Panel>
+        </Tabs.Root>
+      ) : (
+        detailContent
+      )}
     </div>
   )
 }

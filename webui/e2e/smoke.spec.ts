@@ -1807,69 +1807,114 @@ test.describe('rule mappings', () => {
   }
 
   const detailOf = (page: Page, ruleId: string) => page.locator(`[id="rule-detail-${ruleId}"]`)
-  const mappedRulesOf = (page: Page, ruleId: string) => detailOf(page, ruleId).getByRole('region', { name: 'Mapped rules' })
+  const mappedRulesTab = (page: Page, ruleId: string) => detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ })
+  const mappedRulesPanel = (page: Page, ruleId: string) => detailOf(page, ruleId).getByRole('tabpanel', { name: /^Mapped rules/ })
+  const groupButton = (page: Page, ruleId: string, name: string) => mappedRulesPanel(page, ruleId).getByRole('button', { name, exact: true })
 
-  test('an ISM rule and the mSCP rules supporting it link to each other, and each link opens the other rule', async ({ page }) => {
+  async function openMappedRules(page: Page, ruleId: string) {
+    await mappedRulesTab(page, ruleId).click()
+    await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
+  }
+
+  test('a rule with mappings shows Details first and a Mapped rules tab with its count', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page)
-    const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
-    await row.getByRole('button').click()
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
 
-    const ismMappings = mappedRulesOf(page, ISM_1622)
-    const supportedBy = ismMappings.getByRole('list', { name: 'Supported by' })
-    await expect(supportedBy.getByRole('listitem')).toHaveCount(2)
-    await expect(supportedBy.getByRole('link')).toHaveText([/os_dictation_disable/, /os_gatekeeper_enable/])
-    await expect(supportedBy.getByRole('listitem').first()).toContainText('NIST mSCP')
-    await expect(supportedBy.getByRole('listitem').first()).toContainText('Covers the PowerShell part only.')
-    await expect(ismMappings.getByTestId('stale-mapping-note')).toHaveCount(0)
-
-    await supportedBy.getByRole('link', { name: /os_gatekeeper_enable/ }).click()
-    await expect(searchBox(page)).toHaveValue('os_gatekeeper_enable')
-    expect(new URL(page.url()).searchParams.get('rule')).toBe(GATEKEEPER)
-    const gatekeeperSupports = mappedRulesOf(page, GATEKEEPER).getByRole('list', { name: 'Supports' })
-    await expect(gatekeeperSupports.getByRole('link')).toHaveText([/ism-1622/])
-    await expect(gatekeeperSupports).toContainText(ISM_1622_TITLE)
-    const gatekeeperHeadings = await detailOf(page, GATEKEEPER).locator('h5').allTextContents()
-    const benchmarksPosition = gatekeeperHeadings.indexOf('Benchmarks')
-    expect(benchmarksPosition).toBeGreaterThan(-1)
-    expect(gatekeeperHeadings.slice(benchmarksPosition, benchmarksPosition + 3)).toEqual(['Benchmarks', 'Mapped rules', 'References'])
-
-    // A filter that would hide the target is cleared on the way back; the
-    // search box keeps the opened rule in view meanwhile.
-    const mscpSource = page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })
-    await mscpSource.click()
-    await expect(mscpSource).toBeChecked()
-    await expect(detailOf(page, GATEKEEPER)).toBeVisible()
-    await mappedRulesOf(page, GATEKEEPER).getByRole('link', { name: /ism-1622/ }).click()
-    await expect(searchBox(page)).toHaveValue('ism-1622')
-    await expect(mscpSource).not.toBeChecked()
-    await expect(mappedRulesOf(page, ISM_1622).getByRole('list', { name: 'Supported by' }).getByRole('listitem')).toHaveCount(2)
-    expect(new URL(page.url()).searchParams.get('rule')).toBe(ISM_1622)
+    const detail = detailOf(page, ISM_1622)
+    await expect(detail.getByRole('tab', { name: 'Details' })).toHaveAttribute('aria-selected', 'true')
+    await expect(mappedRulesTab(page, ISM_1622)).toHaveAccessibleName('Mapped rules (2)')
+    await expect(mappedRulesTab(page, ISM_1622)).toHaveAttribute('aria-selected', 'false')
+    await expect(detail.getByRole('heading', { name: 'Benchmarks' })).toBeVisible()
   })
 
-  test('a shared URL opens the linked rule with its mapped rules', async ({ page }) => {
+  test('groups start closed and open to show rows like the main table, with the note', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+
+    const group = groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')
+    await expect(group).toHaveAttribute('aria-expanded', 'false')
+    await expect(mappedRulesPanel(page, ISM_1622).getByRole('listitem')).toHaveCount(0)
+    await group.click()
+    await expect(group).toHaveAttribute('aria-expanded', 'true')
+
+    const items = mappedRulesPanel(page, ISM_1622).getByRole('list', { name: 'NIST mSCP Supported by' }).getByRole('listitem')
+    await expect(items).toHaveCount(2)
+    await expect(items.nth(0)).toContainText(/os_dictation_disable/)
+    await expect(items.nth(1)).toContainText(/os_gatekeeper_enable/)
+    await expect(items.first()).toContainText('Covers the PowerShell part only.')
+    await expect(items.first().getByText(/^(Automated|Manual)$/)).toBeVisible()
+    await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveCount(0)
+  })
+
+  test('the mSCP side shows the ISM rule it supports', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    await openLibrary(page, `/?q=os_gatekeeper_enable&rule=${GATEKEEPER}`)
+    await openMappedRules(page, GATEKEEPER)
+
+    const group = groupButton(page, GATEKEEPER, 'ASD ISM Supports (1)')
+    await group.click()
+    const items = mappedRulesPanel(page, GATEKEEPER).getByRole('list', { name: 'ASD ISM Supports' }).getByRole('listitem')
+    await expect(items).toHaveCount(1)
+    await expect(items.first()).toContainText(/ism-1622/)
+    await expect(items.first()).toContainText(ISM_1622_TITLE)
+  })
+
+  test('filtering opens matching groups, shows matching of total, and clearing restores them', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+
+    await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('gatekeeper')
+    const filtered = groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 2)')
+    await expect(filtered).toHaveAttribute('aria-expanded', 'true')
+    await expect(mappedRulesPanel(page, ISM_1622).getByRole('listitem')).toHaveCount(1)
+
+    await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('')
+    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('the assessment choice filters rows and the filter survives a tab switch', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+    const panel = mappedRulesPanel(page, ISM_1622)
+
+    await expect(panel.getByRole('radiogroup', { name: 'Assessment' }).getByRole('radio')).toHaveCount(3)
+    await panel.getByRole('textbox', { name: 'Filter mapped rules' }).fill('os_')
+    await detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' }).click()
+    await mappedRulesTab(page, ISM_1622).click()
+    await expect(panel.getByRole('textbox', { name: 'Filter mapped rules' })).toHaveValue('os_')
+  })
+
+  test('a filter matching nothing says so', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+
+    await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('zzz')
+    await expect(mappedRulesPanel(page, ISM_1622)).toContainText('No mapped rules match these filters.')
+  })
+
+  test('a link checked against an older release shows a review note inside an opened group', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622, 'older.json': staleRelated })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+
+    await groupButton(page, ISM_1622, 'ASD ISM Related (1)').click()
+    await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveText(
+      `This link was checked against ASD ISM ${STALE_ISM_RELEASE} for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
+    )
+  })
+
+  test('a shared URL opens the linked rule and collapsing it lets it go', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=os_dictation_disable&rule=${DICTATION}`)
 
-    const supportsList = mappedRulesOf(page, DICTATION).getByRole('list', { name: 'Supports' })
-    await expect(supportsList.getByRole('link', { name: /ism-1622/ })).toBeVisible()
-
-    // Collapsing the opened rule lets it go, so the URL no longer reopens it.
+    await expect(mappedRulesTab(page, DICTATION)).toHaveAccessibleName('Mapped rules (1)')
     await page.getByRole('button', { name: 'Collapse os_dictation_disable' }).click()
     await expect(detailOf(page, DICTATION)).toHaveCount(0)
     expect(new URL(page.url()).searchParams.has('rule')).toBe(false)
-  })
-
-  test('a link checked against an older release shows a review note from both sides', async ({ page }) => {
-    await serveMappings(page, { 'powershell.json': supportsIsm1622, 'older.json': staleRelated })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
-
-    const related = mappedRulesOf(page, ISM_1622).getByRole('list', { name: 'Related' })
-    await expect(related.getByTestId('stale-mapping-note')).toHaveText(
-      `This link was checked against ASD ISM ${STALE_ISM_RELEASE} for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
-    )
-    await related.getByRole('link', { name: /ism-1621/ }).click()
-    await expect(mappedRulesOf(page, ISM_1621).getByTestId('stale-mapping-note')).toHaveCount(1)
   })
 
   test('a mapped rule title shows its organization-defined value, as the table does', async ({ page }) => {
@@ -1883,7 +1928,9 @@ test.describe('rule mappings', () => {
     })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
 
-    const passwordLink = mappedRulesOf(page, ISM_1622).getByRole('link', { name: /pwpolicy_minimum_length_enforce/ })
+    await openMappedRules(page, ISM_1622)
+    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    const passwordLink = mappedRulesPanel(page, ISM_1622).getByRole('link', { name: /pwpolicy_minimum_length_enforce/ })
     await expect(passwordLink).toContainText(/Require a Minimum Password Length of \d+ Characters/)
     await expect(passwordLink).toHaveAccessibleName(/Require a Minimum Password Length of \d+ Characters/)
     await expect(passwordLink).not.toContainText('$ODV')
@@ -1907,7 +1954,9 @@ test.describe('rule mappings', () => {
     await expect(detailOf(page, calendar)).toBeVisible()
     await page.locator(`[data-rule-id="${familyControls}"]`).getByRole('button', { name: 'Expand os_calendar_app_disable_familycontrols' }).click()
 
-    const linkBack = mappedRulesOf(page, familyControls).getByRole('link', { name: /os_calendar_app_disable(?!_)/ })
+    await openMappedRules(page, familyControls)
+    await groupButton(page, familyControls, 'NIST mSCP Related (1)').click()
+    const linkBack = mappedRulesPanel(page, familyControls).getByRole('link', { name: /os_calendar_app_disable(?!_)/ })
     await linkBack.scrollIntoViewIfNeeded()
     const calendarRow = page.locator(`[data-rule-id="${calendar}"]`)
     await expect(calendarRow).not.toBeInViewport()
@@ -1930,7 +1979,9 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
     await expect(detailOf(page, calendar)).toBeVisible()
 
-    await mappedRulesOf(page, calendar).getByRole('link', { name: /os_calendar_app_disable_familycontrols/ }).click()
+    await openMappedRules(page, calendar)
+    await groupButton(page, calendar, 'NIST mSCP Related (1)').click()
+    await mappedRulesPanel(page, calendar).getByRole('link', { name: /os_calendar_app_disable_familycontrols/ }).click()
     const calendarRow = page.locator(`[data-rule-id="${calendar}"]`)
     await expect(page.locator(`[data-rule-id="${familyControls}"]`)).toBeInViewport()
     await expect(calendarRow).not.toBeInViewport()
@@ -1949,17 +2000,17 @@ test.describe('rule mappings', () => {
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
     await expect(detailOf(page, ISM_1622).getByRole('heading', { name: 'Benchmarks' })).toBeVisible()
-    await expect(mappedRulesOf(page, ISM_1622)).toHaveCount(0)
+    await expect(detailOf(page, ISM_1622).getByRole('tablist')).toHaveCount(0)
   })
 
-  test('with no mappings the details show no Mapped rules section', async ({ page }) => {
+  test('with no mappings the details show no tab strip', async ({ page }) => {
     await serveMappings(page, {})
     await openLibrary(page)
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
 
     await expect(detailOf(page, ISM_1622).getByRole('heading', { name: 'Benchmarks' })).toBeVisible()
-    await expect(mappedRulesOf(page, ISM_1622)).toHaveCount(0)
+    await expect(detailOf(page, ISM_1622).getByRole('tablist')).toHaveCount(0)
     await expect(page.getByRole('status', { name: 'Mapping problems' })).toHaveCount(0)
   })
 })
