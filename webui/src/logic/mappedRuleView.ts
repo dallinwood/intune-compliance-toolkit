@@ -74,7 +74,9 @@ function flattenMarkdown(text: string): string {
   return text
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/^\s{0,3}(#{1,6}|>|[-*+]|\d+\.)\s+/gm, '')
-    .replace(/[*_`~]+/g, '')
+    .replace(/[*`~]+/g, '')
+    // An underscore is emphasis only at a word boundary; inside an identifier like os_airdrop_disable it is part of the name.
+    .replace(/(?<![A-Za-z0-9_])_+(?=\S)|(?<=\S)_+(?![A-Za-z0-9])/g, '')
     .replace(/\s+/g, ' ')
     .trim()
 }

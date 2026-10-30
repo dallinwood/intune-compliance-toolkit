@@ -122,6 +122,11 @@ describe('discussionExcerpt', () => {
     expect(discussionExcerpt('**Bold** text with `code` and [a link](https://x)\n\nNext para', 30)).toBe('Bold text with code and a link...')
   })
 
+  it('keeps underscores inside identifiers and strips them as emphasis', () => {
+    expect(discussionExcerpt('Use os_airdrop_disable and _emphasis_ here', 100)).toBe('Use os_airdrop_disable and emphasis here')
+    expect(discussionExcerpt('A __strong__ word', 100)).toBe('A strong word')
+  })
+
   it('returns a short input unchanged, without an ellipsis', () => {
     expect(discussionExcerpt('Short text.', 100)).toBe('Short text.')
   })

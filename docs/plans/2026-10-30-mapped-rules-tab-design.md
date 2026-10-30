@@ -179,3 +179,4 @@ generated index stay as they are.
 - 2026-10-30: Task 1 - Added the pure grouping, filtering, count and excerpt logic for the mapped rules tab with unit tests (`feat: add grouping and filtering logic for the mapped rules tab`).
 - 2026-10-30: Task 2 - moved the rule table's assessment and benchmark cells into RuleRowCells.tsx so the mapped rules tab can reuse them (refactor: share the rule table's assessment and benchmark cells).
 - 2026-10-30: Task 3 - Replaced the always-open mapped rules list with a Details / Mapped rules tab strip and a source-grouped, filterable tab whose rows reuse the rule table's cells (`feat: show mapped rules in a tab grouped by source`).
+- 2026-10-30: Task 4 - Added hover/focus summaries and click-to-expand details with a "Go to this rule" link to mapped rule rows, moved the view state to its own module, fixed snake_case in excerpts, and added tab lifetime tests (`feat: add hover summaries and in-place details to mapped rules`).

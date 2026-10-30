@@ -1,15 +1,15 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { useId, useMemo, useState, type MouseEvent } from 'react'
+import { useId, useMemo, type MouseEvent } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDisplayTitle } from '../../hooks/useDisplayTitle'
 import {
   filterMappedRuleGroups,
   groupMappedRulesBySource,
   isFilterActive,
   type AssessmentChoice,
-  type MappedRuleFilter,
   type MappedRuleItem,
   type MappedSourceGroup,
 } from '../../logic/mappedRuleView'
@@ -18,33 +18,14 @@ import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { filtersShowingRule } from '../../logic/ruleNavigation'
 import { termLabel } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
+import type { MappedRulesViewState } from '../../state/mappedRulesView'
 import { useRuleMappings } from '../../state/mappingsContext'
 import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
+import { MappedRuleSummary } from './MappedRuleSummary'
+import { RuleDetailPanel } from './RuleDetailPanel'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
-
-export interface MappedRulesViewState {
-  filter: MappedRuleFilter
-  setFilter: (filter: MappedRuleFilter) => void
-  openGroupKeys: ReadonlySet<string>
-  toggleGroup: (groupKey: string) => void
-}
-
-// Kept by the open rule's panel rather than the tab, so switching to Details and
-// back keeps the filter and the open groups, while collapsing the rule resets them.
-export function useMappedRulesViewState(): MappedRulesViewState {
-  const [filter, setFilter] = useState<MappedRuleFilter>({ text: '', assessment: 'all' })
-  const [openGroupKeys, setOpenGroupKeys] = useState<ReadonlySet<string>>(new Set())
-  function toggleGroup(groupKey: string) {
-    setOpenGroupKeys((previous) => {
-      const next = new Set(previous)
-      if (!next.delete(groupKey)) next.add(groupKey)
-      return next
-    })
-  }
-  return { filter, setFilter, openGroupKeys, toggleGroup }
-}
 
 // What a new tab or a copied link opens: just the search and the open rule.
 // A plain click keeps every filter that does not hide the rule instead.
@@ -118,6 +99,7 @@ export function MappedRulesTab({ ruleId, view }: { ruleId: string; view: MappedR
               filtering={filtering}
               isOpen={filtering || view.openGroupKeys.has(group.key)}
               onToggle={() => view.toggleGroup(group.key)}
+              view={view}
             />
           ))}
         </div>
@@ -144,12 +126,14 @@ function MappedSourceGroupSection({
   filtering,
   isOpen,
   onToggle,
+  view,
 }: {
   group: MappedSourceGroup
   self: RuleRow
   filtering: boolean
   isOpen: boolean
   onToggle: () => void
+  view: MappedRulesViewState
 }) {
   const vocabularyIndex = useVocabularyIndex()
   const listId = useId()
@@ -177,7 +161,13 @@ function MappedSourceGroupSection({
       {isOpen && (
         <ul id={listId} aria-label={heading} className="divide-y divide-border border-t border-border px-3">
           {group.items.map((item) => (
-            <MappedRuleRow key={item.link.rule} item={item} self={self} />
+            <MappedRuleRow
+              key={item.link.rule}
+              item={item}
+              self={self}
+              isExpanded={view.expandedRuleIds.has(item.row.ref.id)}
+              onToggle={() => view.toggleRule(item.row.ref.id)}
+            />
           ))}
         </ul>
       )}
@@ -185,10 +175,21 @@ function MappedSourceGroupSection({
   )
 }
 
-export function MappedRuleRow({ item, self }: { item: MappedRuleItem; self: RuleRow }) {
+export function MappedRuleRow({
+  item,
+  self,
+  isExpanded,
+  onToggle,
+}: {
+  item: MappedRuleItem
+  self: RuleRow
+  isExpanded: boolean
+  onToggle: () => void
+}) {
   const { link, row } = item
   const vocabularyIndex = useVocabularyIndex()
   const showRule = useFilterStore((store) => store.showRule)
+  const detailsId = useId()
   const sourceLabel = termLabel(vocabularyIndex, 'sources', row.sourceName)
   const upstreamId = upstreamRuleId(row.ref.id)
   const title = useDisplayTitle(row)
@@ -205,33 +206,56 @@ export function MappedRuleRow({ item, self }: { item: MappedRuleItem; self: Rule
   }
 
   return (
-    <li data-testid="mapped-rule" className="flex flex-col gap-1 py-2 text-xs md:flex-row md:items-start md:gap-3">
-      <div className="min-w-0 break-words md:flex-1">
-        <a
-          href={hrefShowing(row.ref.id)}
-          onClick={navigate}
-          aria-label={`Show ${sourceLabel} ${upstreamId}: ${title}`}
-          className="text-sm text-link underline underline-offset-4 hover:no-underline"
-        >
-          {title}
-        </a>
-        <p className="font-mono break-all text-muted-foreground">{upstreamId}</p>
-        {link.note && <p className="text-muted-foreground">{link.note}</p>}
-        {stale.map((endpoint) => (
-          <p key={endpoint.ruleId} data-testid="stale-mapping-note" className="text-warning-foreground">
-            This link was checked against {termLabel(vocabularyIndex, 'sources', endpoint.sourceName)} {endpoint.mappedRelease} for{' '}
-            {upstreamRuleId(endpoint.ruleId)}, which is now from {endpoint.currentRelease}. Review it for accuracy.
+    <li data-testid="mapped-rule" className="py-2 text-xs">
+      <div className="flex flex-col gap-1 md:flex-row md:items-start md:gap-3">
+        <div className="min-w-0 break-words md:flex-1">
+          <Tooltip>
+            <TooltipTrigger
+              render={<button type="button" />}
+              aria-expanded={isExpanded}
+              aria-controls={isExpanded ? detailsId : undefined}
+              aria-label={`${sourceLabel} ${upstreamId}: ${title}`}
+              onClick={onToggle}
+              className="rounded-sm text-left text-sm text-link underline underline-offset-4 hover:no-underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            >
+              {title}
+            </TooltipTrigger>
+            <TooltipContent className="bg-popover text-popover-foreground ring-1 ring-border dark:bg-popover dark:text-popover-foreground dark:ring-border">
+              <MappedRuleSummary row={row} />
+            </TooltipContent>
+          </Tooltip>
+          <p className="font-mono break-all text-muted-foreground">{upstreamId}</p>
+          {link.note && <p className="text-muted-foreground">{link.note}</p>}
+          {stale.map((endpoint) => (
+            <p key={endpoint.ruleId} data-testid="stale-mapping-note" className="text-warning-foreground">
+              This link was checked against {termLabel(vocabularyIndex, 'sources', endpoint.sourceName)} {endpoint.mappedRelease} for{' '}
+              {upstreamRuleId(endpoint.ruleId)}, which is now from {endpoint.currentRelease}. Review it for accuracy.
+            </p>
+          ))}
+        </div>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:contents">
+          <div className="md:w-52 md:shrink-0">
+            <AssessmentCell row={row} />
+          </div>
+          <div className="max-w-full min-w-0 md:w-44 md:shrink-0">
+            <BenchmarkText row={row} />
+          </div>
+        </div>
+      </div>
+      {isExpanded && (
+        <div id={detailsId} className="mt-2 overflow-hidden rounded-md border border-border">
+          <p className="bg-panel px-4 pt-3 text-sm">
+            <a
+              href={hrefShowing(row.ref.id)}
+              onClick={navigate}
+              className="text-link underline underline-offset-4 hover:no-underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            >
+              Go to this rule
+            </a>
           </p>
-        ))}
-      </div>
-      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 md:contents">
-        <div className="md:w-52 md:shrink-0">
-          <AssessmentCell row={row} />
+          <RuleDetailPanel ruleRef={row.ref} nested />
         </div>
-        <div className="max-w-full min-w-0 md:w-44 md:shrink-0">
-          <BenchmarkText row={row} />
-        </div>
-      </div>
+      )}
     </li>
   )
 }
