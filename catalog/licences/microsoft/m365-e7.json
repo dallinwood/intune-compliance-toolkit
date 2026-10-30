@@ -116,13 +116,6 @@
       "note": null,
       "capacity": null,
       "type": "product",
-      "target": "microsoft.graph-connector-capacity"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "capacity": null,
-      "type": "product",
       "target": "microsoft.information-protection-for-m365"
     },
     {
@@ -454,7 +447,7 @@
     {
       "availability": "included",
       "note": null,
-      "capacity": null,
+      "capacity": "1 Viva Connections experience",
       "type": "product",
       "target": "microsoft.viva-connections"
     },
@@ -1735,7 +1728,6 @@
     "Check Defender Antivirus: the official comparison row \"Microsoft Defender Antimalware\" may correspond to it (shows Included here).",
     "Check Windows Firewall: the official comparison row \"Microsoft Defender Firewall\" may correspond to it (shows Included here).",
     "Check Credential Guard: the official comparison row \"Microsoft Defender Credential Guard\" may correspond to it (shows Included here).",
-    "Check Defender for IoT - eIoT (5 devices): the official comparison row \"Microsoft Defender for IoT – Enterprise IoT\" may correspond to it (shows Included here).",
     "Check Entra Internet Access for Microsoft: the official comparison row \"Microsoft Entra Internet Access for Microsoft Services\" may correspond to it (shows Included here).",
     "Check Self-Service Password Reset in AD: the official comparison row \"Hybrid user self-service password change/reset with on-premises write-back\" may correspond to it (shows Included here).",
     "Check Risk-Based Conditional Access: the official comparison row \"Risk Based Conditional Access / Identity Protection\" may correspond to it (shows Included here).",
@@ -1745,7 +1737,6 @@
     "Check Insider Risk Management: the official comparison row \"Microsoft 365 E5 Insider Risk Management\" may correspond to it (shows Included here).",
     "Check Defender for Servers: the official comparison row \"Microsoft Defender for Endpoint for servers\" may correspond to it (shows Add-on here).",
     "Check Defender Experts for Hunting: the official comparison row \"Microsoft Defender Experts for Hunting - XDR\" may correspond to it (shows Add-on here).",
-    "Check Defender for IoT - eIoT (5 devices): the official comparison row \"Microsoft Defender for IoT – Enterprise for IoT\" may correspond to it (shows Included here).",
     "Check Compliance Premium Assessments: the official comparison row \"Premium Assessments add-on for Compliance Manager\" may correspond to it (shows Add-on here).",
     "Check Privacy Risk Management: the official comparison row \"Priva Privacy Risk Management\" may correspond to it (shows Add-on here).",
     "Check Data Loss Prevention: the official comparison row \"Microsoft Purview Data Loss Prevention (for email and files)\" may correspond to it (shows Included here).",

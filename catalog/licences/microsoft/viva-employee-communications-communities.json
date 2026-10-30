@@ -56,11 +56,11 @@
       "capacity": null
     },
     {
-      "type": "product",
-      "target": "microsoft.viva-connections-50-instances",
       "availability": "included",
-      "note": null,
-      "capacity": null
+      "note": "Every user in the tenant needs Viva Suite or Viva Communications and Communities.",
+      "capacity": "Up to 50 Viva Connections experiences per tenant",
+      "type": "product",
+      "target": "microsoft.viva-connections"
     },
     {
       "type": "product",

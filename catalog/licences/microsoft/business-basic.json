@@ -123,13 +123,6 @@
       "note": null,
       "capacity": null,
       "type": "product",
-      "target": "microsoft.graph-connector-capacity"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "capacity": null,
-      "type": "product",
       "target": "microsoft.loop-workspaces"
     },
     {
@@ -1352,6 +1345,7 @@
     "Hardware & Firmware Assessment: part of a package that is not recorded yet.",
     "Network Share Analysis: part of a package that is not recorded yet.",
     "Security Baselines Assessment: part of a package that is not recorded yet.",
-    "Exchange Online mailbox size: the earlier data said 100 GB, but Exchange Online (Plan 1) is 50 GB mailbox + 50 GB archive in the Modern Work Plan Comparison (Enterprise). Verify against the Business plan comparison."
+    "Exchange Online mailbox size: the earlier data said 100 GB, but Exchange Online (Plan 1) is 50 GB mailbox + 50 GB archive in the Modern Work Plan Comparison (Enterprise). Verify against the Business plan comparison.",
+    "Viva Connections: Microsoft Learn says creating an experience needs an Enterprise, Frontline or Academic licence. Verify whether this Business plan includes Viva Connections."
   ]
 }

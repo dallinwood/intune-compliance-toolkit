@@ -6,11 +6,15 @@
   "parent": null,
   "requires": null,
   "category": "Threat protection",
-  "description": null,
+  "description": "Keeps device data for 180 days in the Microsoft Defender portal, of which 30 days can be queried in advanced hunting.",
   "links": [
     {
       "title": "Documentation",
       "url": "https://learn.microsoft.com/defender-endpoint/microsoft-defender-endpoint"
+    },
+    {
+      "title": "Data storage and privacy",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/data-storage-privacy"
     }
   ],
   "targets": []

@@ -64,13 +64,6 @@
     },
     {
       "type": "product",
-      "target": "microsoft.6-months-searchable-data",
-      "availability": "included",
-      "note": null,
-      "capacity": null
-    },
-    {
-      "type": "product",
       "target": "microsoft.defender-vulnerability-management-core",
       "availability": "included",
       "note": null,

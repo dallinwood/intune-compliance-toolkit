@@ -209,10 +209,10 @@
     },
     {
       "availability": "included",
-      "note": null,
+      "note": "5 devices per licence",
       "capacity": null,
       "type": "product",
-      "target": "microsoft.defender-for-iot-eiot-5-devices"
+      "target": "microsoft.defender-for-iot-enterprise-iot"
     },
     {
       "availability": "included",
@@ -677,13 +677,6 @@
       "note": null,
       "capacity": null,
       "type": "product",
-      "target": "microsoft.viva-connections-50-instances"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
       "target": "microsoft.viva-engage-premium"
     },
     {
@@ -828,7 +821,7 @@
     "Answers in Viva: part of a package that is not recorded yet.",
     "People in Viva: part of a package that is not recorded yet.",
     "Viva Amplify: part of a package that is not recorded yet.",
-    "Viva Connections (50 instances): part of a package that is not recorded yet.",
-    "Viva Engage (premium): part of a package that is not recorded yet."
+    "Viva Engage (premium): part of a package that is not recorded yet.",
+    "Defender for IoT - Enterprise IoT: the 5 devices per licence comes from the earlier data; the official comparison states it only for Microsoft 365 E5 and Defender Suite. Verify, then move it to capacity."
   ]
 }

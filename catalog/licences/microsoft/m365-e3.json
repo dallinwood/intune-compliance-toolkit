@@ -143,13 +143,6 @@
       "note": null,
       "capacity": null,
       "type": "product",
-      "target": "microsoft.graph-connector-capacity"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "capacity": null,
-      "type": "product",
       "target": "microsoft.information-protection-for-m365"
     },
     {
@@ -460,7 +453,7 @@
     {
       "availability": "included",
       "note": null,
-      "capacity": null,
+      "capacity": "1 Viva Connections experience",
       "type": "product",
       "target": "microsoft.viva-connections"
     },

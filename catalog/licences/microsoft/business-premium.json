@@ -137,13 +137,6 @@
       "note": null,
       "capacity": null,
       "type": "product",
-      "target": "microsoft.graph-connector-capacity"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "capacity": null,
-      "type": "product",
       "target": "microsoft.information-protection-for-m365"
     },
     {
@@ -1765,6 +1758,7 @@
     "Conditional Access for Sites: part of a package that is not recorded yet.",
     "Individual Defender/Purview Business Premium purchase offers are not modelled separately. The enterprise Defender/Purview Suite licences require Microsoft 365 E3 and are not substitutes.",
     "Exchange Online mailbox size: the earlier data said 100 GB, but Exchange Online (Plan 1) is 50 GB mailbox + 50 GB archive in the Modern Work Plan Comparison (Enterprise). Verify against the Business plan comparison.",
-    "Exchange Online Archiving: the 1.5 TB archive comes from the earlier data and is not in the Modern Work Plan Comparison (Enterprise). Verify against the Business plan comparison, then move it to capacity."
+    "Exchange Online Archiving: the 1.5 TB archive comes from the earlier data and is not in the Modern Work Plan Comparison (Enterprise). Verify against the Business plan comparison, then move it to capacity.",
+    "Viva Connections: Microsoft Learn says creating an experience needs an Enterprise, Frontline or Academic licence. Verify whether this Business plan includes Viva Connections."
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "id": "microsoft.defender-for-iot-eiot-5-devices",
-  "title": "Defender for IoT - eIoT (5 devices)",
+  "id": "microsoft.defender-for-iot-enterprise-iot",
+  "title": "Microsoft Defender for IoT - Enterprise IoT",
   "vendor": "microsoft",
   "parent": null,
   "requires": null,

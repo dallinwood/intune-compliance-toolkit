@@ -86,9 +86,9 @@
     {
       "availability": "included",
       "note": null,
-      "capacity": null,
+      "capacity": "5 devices per licence",
       "type": "product",
-      "target": "microsoft.defender-for-iot-eiot-5-devices"
+      "target": "microsoft.defender-for-iot-enterprise-iot"
     },
     {
       "availability": "add_on",
@@ -539,13 +539,6 @@
       "note": null,
       "capacity": null,
       "type": "product",
-      "target": "microsoft.viva-connections-50-instances"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
       "target": "microsoft.viva-engage-premium"
     },
     {
@@ -665,7 +658,6 @@
     "Security Copilot: official comparison shows Not included, the earlier data showed Add-on.",
     "Azure Virtual Desktop: official comparison shows Not included, the earlier data showed Add-on.",
     "Check Agent ID: the official comparison row \"Agent Identity\" may correspond to it (shows Included here).",
-    "Check Defender for IoT - eIoT (5 devices): the official comparison row \"Microsoft Defender for IoT – Enterprise IoT\" may correspond to it (shows Included here).",
     "Check Entra Internet Access for Microsoft: the official comparison row \"Microsoft Entra Internet Access for Microsoft Services\" may correspond to it (shows Included here).",
     "Check Self-Service Password Reset in AD: the official comparison row \"Hybrid user self-service password change/reset with on-premises write-back\" may correspond to it (shows Included here).",
     "Check Risk-Based Conditional Access: the official comparison row \"Risk Based Conditional Access / Identity Protection\" may correspond to it (shows Included here).",
@@ -687,7 +679,6 @@
     "Answers in Viva: part of a package that is not recorded yet.",
     "People in Viva: part of a package that is not recorded yet.",
     "Viva Amplify: part of a package that is not recorded yet.",
-    "Viva Connections (50 instances): part of a package that is not recorded yet.",
     "Viva Engage (premium): part of a package that is not recorded yet."
   ]
 }

@@ -186,3 +186,19 @@ def test_suites_take_tier_capacity_from_the_tier_licence_not_a_note():
     for inclusion in document("licences", "m365-e3")["includes"]:
         if inclusion["target"] in {"microsoft.exchange-online-plan-2", "microsoft.onedrive-plan-2", "microsoft.sharepoint-online-plan-2"}:
             assert inclusion["note"] is None
+
+
+@pytest.mark.parametrize("slug", ["6-months-searchable-data", "graph-connector-capacity", "viva-connections-50-instances", "defender-for-iot-eiot-5-devices"])
+def test_capacity_only_products_are_folded_into_capacity(slug):
+    assert not (CATALOG / "products" / "microsoft" / f"{slug}.json").exists()
+
+
+def test_viva_connections_experience_count_depends_on_the_licence():
+    # Microsoft Learn, "Set up Viva Connections in the Microsoft 365 admin center".
+    assert capacity_of("m365-e3", "microsoft.viva-connections") == "1 Viva Connections experience"
+    assert capacity_of("viva-employee-communications-communities", "microsoft.viva-connections") == "Up to 50 Viva Connections experiences per tenant"
+
+
+def test_defender_suite_covers_five_enterprise_iot_devices_per_licence():
+    # Modern Work Plan Comparison (Enterprise), page 10 footnote 7.
+    assert capacity_of("defender-suite", "microsoft.defender-for-iot-enterprise-iot") == "5 devices per licence"
