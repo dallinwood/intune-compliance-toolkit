@@ -28,8 +28,8 @@ ALLOWED_MAPPING_KEYS = REQUIRED_MAPPING_KEYS | {"description"}
 REQUIRED_LINK_KEYS = frozenset({"relation", "from", "to"})
 ALLOWED_LINK_KEYS = REQUIRED_LINK_KEYS | {"note"}
 ENDPOINT_KEYS = frozenset({"kind", "id", "release"})
-RELATIONS = ("implements", "partially_implements", "related")
-DIRECTED_RELATIONS = frozenset({"implements", "partially_implements"})
+RELATIONS = ("supports", "related")
+DIRECTED_RELATIONS = frozenset({"supports"})
 ENDPOINT_KINDS = frozenset({"rule"})
 
 

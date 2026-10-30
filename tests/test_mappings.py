@@ -51,7 +51,7 @@ EXPECTED_ERROR_BY_CASE = {
     "self-link": f"rule {ISM_1622} is linked to itself",
     "duplicate-pair-in-one-list": "is already defined by a.json links[0]",
     "duplicate-pair-across-files": "is already defined by a.json links[0]",
-    "two-relations": "is already linked as implements",
+    "two-relations": "is already linked as supports",
     "both-directions": "is already linked in the other direction",
     "related-twice-reversed": "is already defined by a.json links[0]",
     "note-not-string": "note must be a string or null",
@@ -148,7 +148,7 @@ def test_a_link_expands_to_every_from_and_to_pair():
     mapping = {
         "links": [
             {
-                "relation": "implements",
+                "relation": "supports",
                 "from": [rule_endpoint("mscp.a", "r"), rule_endpoint("mscp.b", "r"), rule_endpoint("mscp.c", "r")],
                 "to": [rule_endpoint("asd_ism.x", "v"), rule_endpoint("asd_ism.y", "v")],
                 "note": "Shared note.",
@@ -166,7 +166,7 @@ def test_a_link_expands_to_every_from_and_to_pair():
         ("mscp.c", "asd_ism.x"),
         ("mscp.c", "asd_ism.y"),
     ]
-    assert all(pair["relation"] == "implements" and pair["note"] == "Shared note." for pair in pairs)
+    assert all(pair["relation"] == "supports" and pair["note"] == "Shared note." for pair in pairs)
 
 
 def test_missing_or_empty_mapping_folder_is_valid(tmp_path):

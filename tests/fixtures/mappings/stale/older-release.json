@@ -3,7 +3,7 @@
   "id": "older-release",
   "links": [
     {
-      "relation": "implements",
+      "relation": "supports",
       "from": [
         {
           "kind": "rule",

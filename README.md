@@ -288,7 +288,7 @@ older release shows a note asking you to review it.
 ## Mapping rules
 
 A mapping links rules that overlap, across any sources: for example the mSCP
-rules that together implement a broad ISM control. Mappings are kept apart
+rules that together support a broad ISM control. Mappings are kept apart
 from the imported data, so every re-import keeps them. The rule details show
 each link from both sides in a "Mapped rules" section, and clicking a mapped
 rule opens it (the search is set to its id and its details open; a filter
@@ -302,10 +302,10 @@ and a file name of letters, digits, `.`, `_` and `-`):
 {
   "schema_version": 1,
   "id": "powershell-constrained-language",
-  "description": "mSCP rules that implement ISM-1622.",
+  "description": "mSCP rules that support ISM-1622.",
   "links": [
     {
-      "relation": "implements",
+      "relation": "supports",
       "from": [
         { "kind": "rule", "id": "mscp.os_gatekeeper_enable", "release": "release_27.0" },
         { "kind": "rule", "id": "mscp.os_dictation_disable", "release": "release_27.0" }
@@ -319,20 +319,21 @@ and a file name of letters, digits, `.`, `_` and `-`):
 
 - `id` is unique across files and matches `^[a-z0-9][a-z0-9-]*$`;
   `description` is optional.
-- `relation` is `implements`, `partially_implements` or `related`. For the
-  first two, `from` implements `to`; `related` has no direction. The details
-  word each link from the rule being viewed: "Implements" or "Implemented
-  by", "Partially implements" or "Partially implemented by", and "Related".
+- `relation` is `supports` or `related`. For `supports`, `from` supports
+  `to`; `related` has no direction. The details word each link from the rule
+  being viewed: "Supports" or "Supported by", and "Related". "Supports" is
+  deliberately loose: a rule may cover all of a control or only a small part
+  of it, so say which part in `note` and leave the reader to confirm the fit.
 - `from` and `to` are non-empty lists, and a link stands for every
-  `(from, to)` pair, so "mSCP rules 3, 5 and 11 implement ISM-ABC" is one
+  `(from, to)` pair, so "mSCP rules 3, 5 and 11 support ISM-ABC" is one
   link. `note` is optional (a string or `null`) and applies to every pair.
 - Each endpoint is `{ "kind": "rule", "id": "<source>.<upstream id>",
   "release": "<release_tag>" }`. `release` is the source release you checked
   the link against; when the library moves to another release, the details
   show a note on that link asking you to review it.
 - A rule cannot link to itself, and a pair of rules is linked once: the same
-  pair twice, with two relations, or in both directions of `implements` or
-  `partially_implements`, anywhere across the files, is an error.
+  pair twice, with two relations, or in both directions of `supports`,
+  anywhere across the files, is an error.
 
 Check mappings with `python -m pytest -W error tests/test_mappings.py` (or
 `python tools/mappings.py` for a plain list of problems). An unknown key, a

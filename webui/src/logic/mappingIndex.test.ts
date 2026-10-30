@@ -37,18 +37,18 @@ function brief(entries: MappingIndexEntry[] | undefined) {
 }
 
 describe('buildMappingIndex', () => {
-  it('writes an implements pair under both rules, outgoing from `from` and incoming to `to`', () => {
-    const { index, logged } = build({ 'a.json': mappingFile('a', [link('implements', ['mscp.a'], ['ism.x'], 'Only part.')]) })
+  it('writes a supports pair under both rules, outgoing from `from` and incoming to `to`', () => {
+    const { index, logged } = build({ 'a.json': mappingFile('a', [link('supports', ['mscp.a'], ['ism.x'], 'Only part.')]) })
 
     expect(logged).toEqual([])
     expect(index).toEqual({
       schema_version: 1,
       by_rule: {
         'ism.x': [
-          { rule: 'mscp.a', relation: 'implements', direction: 'incoming', mapping: 'a', note: 'Only part.', release: 'r1', self_release: 'r1' },
+          { rule: 'mscp.a', relation: 'supports', direction: 'incoming', mapping: 'a', note: 'Only part.', release: 'r1', self_release: 'r1' },
         ],
         'mscp.a': [
-          { rule: 'ism.x', relation: 'implements', direction: 'outgoing', mapping: 'a', note: 'Only part.', release: 'r1', self_release: 'r1' },
+          { rule: 'ism.x', relation: 'supports', direction: 'outgoing', mapping: 'a', note: 'Only part.', release: 'r1', self_release: 'r1' },
         ],
       },
     })
@@ -63,15 +63,15 @@ describe('buildMappingIndex', () => {
   })
 
   it('expands a link to every from and to pair', () => {
-    const { index } = build({ 'a.json': mappingFile('a', [link('implements', ['mscp.a', 'mscp.b', 'mscp.c'], ['ism.x', 'ism.y'])]) })
+    const { index } = build({ 'a.json': mappingFile('a', [link('supports', ['mscp.a', 'mscp.b', 'mscp.c'], ['ism.x', 'ism.y'])]) })
 
-    expect(brief(index.by_rule['ism.x'])).toEqual(['implements incoming mscp.a', 'implements incoming mscp.b', 'implements incoming mscp.c'])
+    expect(brief(index.by_rule['ism.x'])).toEqual(['supports incoming mscp.a', 'supports incoming mscp.b', 'supports incoming mscp.c'])
     expect(brief(index.by_rule['ism.y'])).toHaveLength(3)
-    expect(brief(index.by_rule['mscp.b'])).toEqual(['implements outgoing ism.x', 'implements outgoing ism.y'])
+    expect(brief(index.by_rule['mscp.b'])).toEqual(['supports outgoing ism.x', 'supports outgoing ism.y'])
   })
 
   it('carries each side its own release', () => {
-    const value = mappingFile('a', [{ relation: 'implements', from: [endpoint('mscp.a', 'old')], to: [endpoint('ism.x', 'new')] }])
+    const value = mappingFile('a', [{ relation: 'supports', from: [endpoint('mscp.a', 'old')], to: [endpoint('ism.x', 'new')] }])
     const { index } = build({ 'a.json': value })
 
     expect(index.by_rule['mscp.a'][0]).toMatchObject({ release: 'new', self_release: 'old' })
@@ -80,31 +80,31 @@ describe('buildMappingIndex', () => {
 
   it('sorts rules and entries (relation, then rule id) whatever order the files give them in', () => {
     const files = {
-      'b.json': mappingFile('b', [link('related', ['ism.x'], ['mscp.z']), link('implements', ['mscp.b'], ['ism.x'])]),
-      'a.json': mappingFile('a', [link('partially_implements', ['mscp.a'], ['ism.x']), link('implements', ['mscp.c'], ['ism.x'])]),
+      'b.json': mappingFile('b', [link('related', ['ism.x'], ['mscp.z']), link('supports', ['mscp.b'], ['ism.x'])]),
+      'a.json': mappingFile('a', [link('supports', ['mscp.a'], ['ism.x']), link('supports', ['mscp.c'], ['ism.x'])]),
     }
     const { index } = build(files)
 
     expect(Object.keys(index.by_rule)).toEqual(['ism.x', 'mscp.a', 'mscp.b', 'mscp.c', 'mscp.z'])
     expect(brief(index.by_rule['ism.x'])).toEqual([
-      'implements incoming mscp.b',
-      'implements incoming mscp.c',
-      'partially_implements incoming mscp.a',
       'related related mscp.z',
+      'supports incoming mscp.a',
+      'supports incoming mscp.b',
+      'supports incoming mscp.c',
     ])
     expect(JSON.stringify(build(files).index)).toBe(JSON.stringify(index))
   })
 
   it('skips an invalid file or a reused id with a log line and keeps the rest', () => {
     const { index, logged } = build({
-      'a.json': mappingFile('a', [link('implements', ['mscp.a'], ['ism.x'])]),
+      'a.json': mappingFile('a', [link('supports', ['mscp.a'], ['ism.x'])]),
       'b.json': mappingFile('b', [link('supersedes', ['mscp.b'], ['ism.x'])]),
       'c.json': mappingFile('a', [link('related', ['mscp.c'], ['ism.x'])]),
       'd.json': { ...mappingFile('d', [link('related', ['mscp.d'], ['ism.x'])]), extra: true },
       'e.json': mappingFile('e', [{ relation: 'related', from: [], to: [endpoint('ism.x')] }]),
     })
 
-    expect(brief(index.by_rule['ism.x'])).toEqual(['implements incoming mscp.a'])
+    expect(brief(index.by_rule['ism.x'])).toEqual(['supports incoming mscp.a'])
     expect(logged).toHaveLength(4)
     expect(logged.every((message) => message.endsWith('It was skipped.'))).toBe(true)
     expect(logged[1]).toContain('c.json: id a is already used by a.json')
@@ -113,13 +113,13 @@ describe('buildMappingIndex', () => {
   it('skips a self-link and a pair already defined, in either direction', () => {
     const { index, logged } = build({
       'a.json': mappingFile('a', [
-        link('implements', ['mscp.a'], ['ism.x']),
+        link('supports', ['mscp.a'], ['ism.x']),
         link('related', ['ism.x'], ['mscp.a']),
         link('related', ['ism.y'], ['ism.y']),
       ]),
     })
 
-    expect(brief(index.by_rule['mscp.a'])).toEqual(['implements outgoing ism.x'])
+    expect(brief(index.by_rule['mscp.a'])).toEqual(['supports outgoing ism.x'])
     expect(index.by_rule['ism.y']).toBeUndefined()
     expect(logged).toHaveLength(2)
   })
@@ -131,13 +131,13 @@ describe('buildMappingIndex', () => {
 
 describe('parseMappingIndex', () => {
   it('reads a built index', () => {
-    const { index } = build({ 'a.json': mappingFile('a', [link('implements', ['mscp.a'], ['ism.x'])]) })
+    const { index } = build({ 'a.json': mappingFile('a', [link('supports', ['mscp.a'], ['ism.x'])]) })
     const parsed = parseMappingIndex(JSON.parse(JSON.stringify(index)))
 
     if (typeof parsed === 'string') throw new Error(parsed)
     expect(parsed.warnings).toEqual([])
     expect(parsed.byRule.get('ism.x')).toEqual([
-      { rule: 'mscp.a', relation: 'implements', direction: 'incoming', mapping: 'a', note: null, release: 'r1', selfRelease: 'r1' },
+      { rule: 'mscp.a', relation: 'supports', direction: 'incoming', mapping: 'a', note: null, release: 'r1', selfRelease: 'r1' },
     ])
   })
 
@@ -168,8 +168,8 @@ function mapped(rule: string, relation: MappedRule['relation'], direction: Mappe
 describe('linksWithinLibrary', () => {
   it('drops rules, and links to rules, the library does not have', () => {
     const byRule = new Map([
-      ['ism.x', [mapped('mscp.a', 'implements', 'incoming'), mapped('mscp.gone', 'implements', 'incoming')]],
-      ['mscp.gone', [mapped('ism.x', 'implements', 'outgoing')]],
+      ['ism.x', [mapped('mscp.a', 'supports', 'incoming'), mapped('mscp.gone', 'supports', 'incoming')]],
+      ['mscp.gone', [mapped('ism.x', 'supports', 'outgoing')]],
       ['ism.y', [mapped('mscp.gone', 'related', 'related')]],
     ])
 
@@ -182,31 +182,29 @@ describe('linksWithinLibrary', () => {
 
 describe('wording and grouping', () => {
   it('words each relation from this rule\'s side', () => {
-    expect(mappingGroupLabel('implements', 'outgoing')).toBe('Implements')
-    expect(mappingGroupLabel('implements', 'incoming')).toBe('Implemented by')
-    expect(mappingGroupLabel('partially_implements', 'outgoing')).toBe('Partially implements')
-    expect(mappingGroupLabel('partially_implements', 'incoming')).toBe('Partially implemented by')
+    expect(mappingGroupLabel('supports', 'outgoing')).toBe('Supports')
+    expect(mappingGroupLabel('supports', 'incoming')).toBe('Supported by')
     expect(mappingGroupLabel('related', 'related')).toBe('Related')
   })
 
   it('groups links in a fixed order, leaving out empty groups and keeping link order', () => {
     const groups = groupMappedRules([
       mapped('ism.b', 'related', 'related'),
-      mapped('ism.a', 'implements', 'outgoing'),
-      mapped('mscp.y', 'implements', 'incoming'),
-      mapped('mscp.z', 'implements', 'incoming'),
+      mapped('ism.a', 'supports', 'outgoing'),
+      mapped('mscp.y', 'supports', 'incoming'),
+      mapped('mscp.z', 'supports', 'incoming'),
     ])
 
     expect(groups.map((group) => [group.label, group.links.map((link) => link.rule)])).toEqual([
-      ['Implements', ['ism.a']],
-      ['Implemented by', ['mscp.y', 'mscp.z']],
+      ['Supports', ['ism.a']],
+      ['Supported by', ['mscp.y', 'mscp.z']],
       ['Related', ['ism.b']],
     ])
   })
 })
 
 describe('staleEndpoints', () => {
-  const link = { ...mapped('ism.x', 'implements', 'outgoing'), release: 'v1', selfRelease: 'release_26.0' }
+  const link = { ...mapped('ism.x', 'supports', 'outgoing'), release: 'v1', selfRelease: 'release_26.0' }
 
   it('names each end checked against another release than the loaded one', () => {
     expect(

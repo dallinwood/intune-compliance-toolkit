@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "id": "powershell-constrained-language",
-  "description": "mSCP rules that implement ISM-1622.",
+  "description": "mSCP rules that support ISM-1622.",
   "links": [
     {
-      "relation": "implements",
+      "relation": "supports",
       "from": [
         {
           "kind": "rule",
@@ -27,7 +27,7 @@
       "note": "Covers the PowerShell part only."
     },
     {
-      "relation": "partially_implements",
+      "relation": "supports",
       "from": [
         {
           "kind": "rule",

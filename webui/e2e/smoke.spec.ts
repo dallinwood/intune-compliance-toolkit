@@ -1777,12 +1777,12 @@ test.describe('rule mappings', () => {
   const ISM_1622_TITLE = 'PowerShell is configured to use Constrained Language Mode.'
 
   const ruleEndpoint = (id: string, release: string) => ({ kind: 'rule', id, release })
-  const implementsIsm1622 = {
+  const supportsIsm1622 = {
     schema_version: 1,
     id: 'powershell-constrained-language',
     links: [
       {
-        relation: 'implements',
+        relation: 'supports',
         from: [ruleEndpoint(GATEKEEPER, MSCP_RELEASE), ruleEndpoint(DICTATION, MSCP_RELEASE)],
         to: [ruleEndpoint(ISM_1622, ISM_RELEASE)],
         note: 'Covers the PowerShell part only.',
@@ -1809,26 +1809,26 @@ test.describe('rule mappings', () => {
   const detailOf = (page: Page, ruleId: string) => page.locator(`[id="rule-detail-${ruleId}"]`)
   const mappedRulesOf = (page: Page, ruleId: string) => detailOf(page, ruleId).getByRole('region', { name: 'Mapped rules' })
 
-  test('an ISM rule and the mSCP rules implementing it link to each other, and each link opens the other rule', async ({ page }) => {
-    await serveMappings(page, { 'powershell.json': implementsIsm1622 })
+  test('an ISM rule and the mSCP rules supporting it link to each other, and each link opens the other rule', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page)
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
 
     const ismMappings = mappedRulesOf(page, ISM_1622)
-    const implementedBy = ismMappings.getByRole('list', { name: 'Implemented by' })
-    await expect(implementedBy.getByRole('listitem')).toHaveCount(2)
-    await expect(implementedBy.getByRole('link')).toHaveText([/os_dictation_disable/, /os_gatekeeper_enable/])
-    await expect(implementedBy.getByRole('listitem').first()).toContainText('NIST mSCP')
-    await expect(implementedBy.getByRole('listitem').first()).toContainText('Covers the PowerShell part only.')
+    const supportedBy = ismMappings.getByRole('list', { name: 'Supported by' })
+    await expect(supportedBy.getByRole('listitem')).toHaveCount(2)
+    await expect(supportedBy.getByRole('link')).toHaveText([/os_dictation_disable/, /os_gatekeeper_enable/])
+    await expect(supportedBy.getByRole('listitem').first()).toContainText('NIST mSCP')
+    await expect(supportedBy.getByRole('listitem').first()).toContainText('Covers the PowerShell part only.')
     await expect(ismMappings.getByTestId('stale-mapping-note')).toHaveCount(0)
 
-    await implementedBy.getByRole('link', { name: /os_gatekeeper_enable/ }).click()
+    await supportedBy.getByRole('link', { name: /os_gatekeeper_enable/ }).click()
     await expect(searchBox(page)).toHaveValue('os_gatekeeper_enable')
     expect(new URL(page.url()).searchParams.get('rule')).toBe(GATEKEEPER)
-    const gatekeeperImplements = mappedRulesOf(page, GATEKEEPER).getByRole('list', { name: 'Implements' })
-    await expect(gatekeeperImplements.getByRole('link')).toHaveText([/ism-1622/])
-    await expect(gatekeeperImplements).toContainText(ISM_1622_TITLE)
+    const gatekeeperSupports = mappedRulesOf(page, GATEKEEPER).getByRole('list', { name: 'Supports' })
+    await expect(gatekeeperSupports.getByRole('link')).toHaveText([/ism-1622/])
+    await expect(gatekeeperSupports).toContainText(ISM_1622_TITLE)
     const gatekeeperHeadings = await detailOf(page, GATEKEEPER).locator('h5').allTextContents()
     const benchmarksPosition = gatekeeperHeadings.indexOf('Benchmarks')
     expect(benchmarksPosition).toBeGreaterThan(-1)
@@ -1843,16 +1843,16 @@ test.describe('rule mappings', () => {
     await mappedRulesOf(page, GATEKEEPER).getByRole('link', { name: /ism-1622/ }).click()
     await expect(searchBox(page)).toHaveValue('ism-1622')
     await expect(mscpSource).not.toBeChecked()
-    await expect(mappedRulesOf(page, ISM_1622).getByRole('list', { name: 'Implemented by' }).getByRole('listitem')).toHaveCount(2)
+    await expect(mappedRulesOf(page, ISM_1622).getByRole('list', { name: 'Supported by' }).getByRole('listitem')).toHaveCount(2)
     expect(new URL(page.url()).searchParams.get('rule')).toBe(ISM_1622)
   })
 
   test('a shared URL opens the linked rule with its mapped rules', async ({ page }) => {
-    await serveMappings(page, { 'powershell.json': implementsIsm1622 })
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=os_dictation_disable&rule=${DICTATION}`)
 
-    const implementsList = mappedRulesOf(page, DICTATION).getByRole('list', { name: 'Implements' })
-    await expect(implementsList.getByRole('link', { name: /ism-1622/ })).toBeVisible()
+    const supportsList = mappedRulesOf(page, DICTATION).getByRole('list', { name: 'Supports' })
+    await expect(supportsList.getByRole('link', { name: /ism-1622/ })).toBeVisible()
 
     // Collapsing the opened rule lets it go, so the URL no longer reopens it.
     await page.getByRole('button', { name: 'Collapse os_dictation_disable' }).click()
@@ -1861,7 +1861,7 @@ test.describe('rule mappings', () => {
   })
 
   test('a link checked against an older release shows a review note from both sides', async ({ page }) => {
-    await serveMappings(page, { 'powershell.json': implementsIsm1622, 'older.json': staleRelated })
+    await serveMappings(page, { 'powershell.json': supportsIsm1622, 'older.json': staleRelated })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
 
     const related = mappedRulesOf(page, ISM_1622).getByRole('list', { name: 'Related' })

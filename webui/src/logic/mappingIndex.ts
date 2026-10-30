@@ -9,7 +9,7 @@ import { compareText } from './catalogIndex'
 
 export const MAPPING_INDEX_SCHEMA_VERSION = 1
 
-export const MAPPING_RELATIONS = ['implements', 'partially_implements', 'related'] as const
+export const MAPPING_RELATIONS = ['supports', 'related'] as const
 export type MappingRelation = (typeof MAPPING_RELATIONS)[number]
 // outgoing: this rule is `from`; incoming: this rule is `to`; related has no direction.
 export type MappingDirection = 'outgoing' | 'incoming' | 'related'
@@ -280,10 +280,8 @@ export function linksWithinLibrary(byRule: ReadonlyMap<string, MappedRule[]>, kn
 
 // Wording from this rule's side, in display order.
 const GROUP_LABELS: readonly { relation: MappingRelation; direction: MappingDirection; label: string }[] = [
-  { relation: 'implements', direction: 'outgoing', label: 'Implements' },
-  { relation: 'implements', direction: 'incoming', label: 'Implemented by' },
-  { relation: 'partially_implements', direction: 'outgoing', label: 'Partially implements' },
-  { relation: 'partially_implements', direction: 'incoming', label: 'Partially implemented by' },
+  { relation: 'supports', direction: 'outgoing', label: 'Supports' },
+  { relation: 'supports', direction: 'incoming', label: 'Supported by' },
   { relation: 'related', direction: 'related', label: 'Related' },
 ]
 

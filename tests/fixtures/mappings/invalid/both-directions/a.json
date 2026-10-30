@@ -3,7 +3,7 @@
   "id": "a",
   "links": [
     {
-      "relation": "implements",
+      "relation": "supports",
       "from": [
         {
           "kind": "rule",
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "relation": "implements",
+      "relation": "supports",
       "from": [
         {
           "kind": "rule",

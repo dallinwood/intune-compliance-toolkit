@@ -43,10 +43,10 @@ This work builds the mapping mechanism only. No real mappings are authored yet.
 {
   "schema_version": 1,
   "id": "powershell-constrained-language",          // unique across files, ^[a-z0-9][a-z0-9-]*$
-  "description": "mSCP and Windows rules that implement ISM-1622.",  // optional
+  "description": "mSCP and Windows rules that support ISM-1622.",  // optional
   "links": [
     {
-      "relation": "implements",                      // implements | partially_implements | related
+      "relation": "supports",                        // supports | related
       "from": [ { "kind": "rule", "id": "mscp.a", "release": "release_27.0" },
                 { "kind": "rule", "id": "mscp.b", "release": "release_27.0" } ],
       "to":   [ { "kind": "rule", "id": "asd_ism.ism-1622", "release": "v2026.09.4" } ],
@@ -57,9 +57,9 @@ This work builds the mapping mechanism only. No real mappings are authored yet.
 ```
 
 - **Many to many:** `from` and `to` are non-empty lists. A link entry expands to every
-  `(from, to)` pair, so "mSCP rules 3, 5 and 11 implement ISM-ABC" is one entry.
-- **Direction:** for `implements` and `partially_implements`, `from` implements `to`. For
-  `related` the direction carries no meaning.
+  `(from, to)` pair, so "mSCP rules 3, 5 and 11 support ISM-ABC" is one entry.
+- **Direction:** for `supports`, `from` supports `to`. For `related` the direction carries no
+  meaning.
 - **Endpoint kinds:** only `kind: "rule"` is valid now. New kinds are added later with their own
   `id` rules.
 - **`release`:** the source release the endpoint was checked against (that source's
@@ -95,12 +95,12 @@ The deploy workflow already runs the Python tests, so a bad mapping cannot be pu
   "schema_version": 1,
   "by_rule": {
     "asd_ism.ism-1622": [
-      { "rule": "mscp.a", "relation": "implements", "direction": "incoming",
+      { "rule": "mscp.a", "relation": "supports", "direction": "incoming",
         "mapping": "powershell-constrained-language", "note": "...",
         "release": "release_27.0", "self_release": "v2026.09.4" }
     ],
     "mscp.a": [
-      { "rule": "asd_ism.ism-1622", "relation": "implements", "direction": "outgoing", ... }
+      { "rule": "asd_ism.ism-1622", "relation": "supports", "direction": "outgoing", ... }
     ]
   }
 }
@@ -127,8 +127,7 @@ The deploy workflow already runs the Python tests, so a bad mapping cannot be pu
 
 | relation | outgoing (this rule is `from`) | incoming (this rule is `to`) |
 |---|---|---|
-| implements | Implements | Implemented by |
-| partially_implements | Partially implements | Partially implemented by |
+| supports | Supports | Supported by |
 | related | Related | Related |
 
 - **Link items:** each item shows the other rule's source label, upstream id and title (from the
@@ -154,3 +153,4 @@ Then one review, and push.
 - 2026-10-27: Design written from the maintainer's answers (no code yet).
 - 2026-10-27: Implemented sections 3-7 (`feat: add many-to-many rule mappings viewable from both sides`). `baselines/_mappings/rules/` holds only a `.gitkeep`; `tools/mappings.py` and `tests/test_mappings.py` check every section 4 error (fixtures in `tests/fixtures/mappings/`, CRLF and non-UTF-8 cases written at test time) and warn on a stale release; the publish step writes `_mappings/_index.json` through `webui/src/logic/mappingIndex.ts`. Navigation decision: a mapped rule is a link that sets the search to the other rule's upstream id, clears only the filters that would hide it, and opens its details through a new `rule=<full id>` URL parameter (kept until that rule is collapsed or a search is typed), moving to the page that holds it. The stale note checks both ends of a link, so it shows from either side.
 - 2026-10-27: Review fixes for `a5da82c` (`fix: harden rule mapping validation, titles and tests`). The validator reports a non-string `kind` or `relation` instead of crashing; the publish step skips mapping files with an unsafe name, invalid UTF-8 or CRLF (as CI does) and writes the index as compact JSON; mapped rule titles show the organization-defined value like the table; the open-rule reveal waits for the table to catch up and runs again on every link click, including one to the rule already open. Every e2e test starts from an empty mapping index, and the mapping fixtures (Python and e2e) take the library's current releases from the manifest, with deliberately old releases for the stale cases.
+- 2026-10-30: Replaced the `implements` and `partially_implements` relations with one `supports` relation ("Supports" / "Supported by"), because a rule often covers only part of a control and "supports" leaves the reader to confirm the fit; the note says which part. `related` is unchanged. `schema_version` stays 1 because no real mapping data existed yet.
