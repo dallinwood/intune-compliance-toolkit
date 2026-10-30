@@ -291,19 +291,6 @@ export function mappingGroupLabel(relation: MappingRelation, direction: MappingD
   return group.label
 }
 
-export interface MappingGroup {
-  label: string
-  links: MappedRule[]
-}
-
-// Empty groups are left out; links keep their index order (by rule id).
-export function groupMappedRules(links: readonly MappedRule[]): MappingGroup[] {
-  return GROUP_LABELS.map(({ relation, direction, label }) => ({
-    label,
-    links: links.filter((link) => link.relation === relation && link.direction === direction),
-  })).filter((group) => group.links.length > 0)
-}
-
 export interface StaleEndpoint {
   ruleId: string
   sourceName: string

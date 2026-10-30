@@ -1,5 +1,6 @@
 import { useDisplayTitle } from '../../hooks/useDisplayTitle'
-import { useRule } from '../../hooks/useRule'
+import { useRule, useUsableOdvValue } from '../../hooks/useRule'
+import { displayWithOdv } from '../../logic/odv'
 import { discussionExcerpt } from '../../logic/mappedRuleView'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { termLabel } from '../../logic/vocabulary'
@@ -8,7 +9,7 @@ import type { RuleRow } from '../../types/rule-row'
 import { AssessmentBadge } from './RuleRowCells'
 import { TargetIcons } from './TargetIcons'
 
-const EXCERPT_CHARACTERS = 240
+const EXCERPT_CHARACTERS = 140
 
 function yesOrNo(present: boolean): string {
   return present ? 'yes' : 'no'
@@ -19,6 +20,7 @@ export function MappedRuleSummary({ row }: { row: RuleRow }) {
   const vocabularyIndex = useVocabularyIndex()
   const title = useDisplayTitle(row)
   const ruleState = useRule(row.ref)
+  const odvValue = useUsableOdvValue(ruleState.status === 'ready' ? ruleState.rule : null, row.ref)
 
   return (
     <div className="flex w-72 max-w-full flex-col gap-1.5 break-words whitespace-normal">
@@ -38,7 +40,7 @@ export function MappedRuleSummary({ row }: { row: RuleRow }) {
             <span>Check: {yesOrNo(ruleState.rule.check !== null)}</span>
             <span>Fix: {yesOrNo(ruleState.rule.remediation !== null)}</span>
           </p>
-          <p>{discussionExcerpt(ruleState.rule.discussion, EXCERPT_CHARACTERS)}</p>
+          <p>{discussionExcerpt(displayWithOdv(ruleState.rule.discussion, odvValue), EXCERPT_CHARACTERS)}</p>
         </>
       )}
     </div>

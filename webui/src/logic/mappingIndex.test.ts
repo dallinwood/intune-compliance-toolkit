@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildMappingIndex,
-  groupMappedRules,
   linksWithinLibrary,
   mappingGroupLabel,
   parseMappingIndex,
@@ -180,26 +179,11 @@ describe('linksWithinLibrary', () => {
   })
 })
 
-describe('wording and grouping', () => {
+describe('wording', () => {
   it('words each relation from this rule\'s side', () => {
     expect(mappingGroupLabel('supports', 'outgoing')).toBe('Supports')
     expect(mappingGroupLabel('supports', 'incoming')).toBe('Supported by')
     expect(mappingGroupLabel('related', 'related')).toBe('Related')
-  })
-
-  it('groups links in a fixed order, leaving out empty groups and keeping link order', () => {
-    const groups = groupMappedRules([
-      mapped('ism.b', 'related', 'related'),
-      mapped('ism.a', 'supports', 'outgoing'),
-      mapped('mscp.y', 'supports', 'incoming'),
-      mapped('mscp.z', 'supports', 'incoming'),
-    ])
-
-    expect(groups.map((group) => [group.label, group.links.map((link) => link.rule)])).toEqual([
-      ['Supports', ['ism.a']],
-      ['Supported by', ['mscp.y', 'mscp.z']],
-      ['Related', ['ism.b']],
-    ])
   })
 })
 

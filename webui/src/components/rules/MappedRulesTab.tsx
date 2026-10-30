@@ -207,7 +207,13 @@ export function MappedRuleRow({
 
   return (
     <li data-testid="mapped-rule" className="py-2 text-xs">
-      <div className="flex flex-col gap-1 md:flex-row md:items-start md:gap-3">
+      <div
+        className="flex cursor-pointer flex-col gap-1 md:flex-row md:items-start md:gap-3"
+        onClick={(event) => {
+          if ((event.target as HTMLElement).closest('input, a, button')) return
+          onToggle()
+        }}
+      >
         <div className="min-w-0 break-words md:flex-1">
           <Tooltip>
             <TooltipTrigger

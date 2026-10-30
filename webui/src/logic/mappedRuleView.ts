@@ -70,8 +70,17 @@ export function distinctMappedRuleCount(links: readonly MappedRule[], rowsById: 
   return new Set(links.map((link) => link.rule).filter((ruleId) => rowsById.has(ruleId))).size
 }
 
-function flattenMarkdown(text: string): string {
-  return text
+// The first AsciiDoc block attribute or delimiter line ends the prose; what follows is a note, code or a table.
+const ASCIIDOC_BLOCK_START = /^\s*(\[(NOTE|IMPORTANT|source[^\]]*)\]|-{4,}|={4,})\s*$/m
+
+function leadingProse(text: string): string {
+  const blockStart = text.search(ASCIIDOC_BLOCK_START)
+  return blockStart === -1 ? text : text.slice(0, blockStart)
+}
+
+function flattenMarkup(text: string): string {
+  return leadingProse(text)
+    .replace(/link:\S+?\[([^\]]*)\]/g, '$1')
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/^\s{0,3}(#{1,6}|>|[-*+]|\d+\.)\s+/gm, '')
     .replace(/[*`~]+/g, '')
@@ -82,7 +91,7 @@ function flattenMarkdown(text: string): string {
 }
 
 export function discussionExcerpt(text: string, maximumCharacters: number): string {
-  const plainText = flattenMarkdown(text)
+  const plainText = flattenMarkup(text)
   if (plainText.length <= maximumCharacters) return plainText
   let kept = ''
   for (const word of plainText.split(' ')) {

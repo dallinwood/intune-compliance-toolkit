@@ -172,3 +172,12 @@ Expected: PASS
 
 - [ ] **Step 1: Update the three documents** to describe the tab, the closed groups, the filters, the hover summary and "Go to this rule".
 - [ ] **Step 2: Commit and push**: `docs: describe the mapped rules tab`
+
+## Progress log
+
+- 2026-10-30: Task 1 - 1828867 `feat: add grouping and filtering logic for the mapped rules tab`
+- 2026-10-30: Task 2 - 0a5205f `refactor: share the rule table's assessment and benchmark cells`
+- 2026-10-30: Task 3 - 36f5f90 `feat: show mapped rules in a tab grouped by source`; c229ff2 `test: exercise the mapped rules assessment filter`
+- 2026-10-30: Task 4 - 1ec3f71 `feat: add hover summaries and in-place details to mapped rules`
+- 2026-10-30: Task 5 - 45e3eea `docs: describe the mapped rules tab`
+- 2026-10-30: Final review fixes - `fix: address final review of the mapped rules tab`

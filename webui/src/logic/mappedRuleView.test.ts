@@ -127,6 +127,18 @@ describe('discussionExcerpt', () => {
     expect(discussionExcerpt('A __strong__ word', 100)).toBe('A strong word')
   })
 
+  it('stops at the first AsciiDoc block attribute or delimiter line', () => {
+    expect(discussionExcerpt('Enable it.\n\n[NOTE]\n====\nExtra detail\n====', 100)).toBe('Enable it.')
+    expect(discussionExcerpt('Run this.\n[source,bash]\n----\nsudo x\n----', 100)).toBe('Run this.')
+    expect(discussionExcerpt('Be careful.\n\n[IMPORTANT]\nOnly here.', 100)).toBe('Be careful.')
+    expect(discussionExcerpt('Intro text\n----\ncode', 100)).toBe('Intro text')
+  })
+
+  it('turns an AsciiDoc link into its text, or drops it when the text is empty', () => {
+    expect(discussionExcerpt('See link:https://example.com/doc[the guide] now.', 100)).toBe('See the guide now.')
+    expect(discussionExcerpt('See link:https://example.com/doc[] now.', 100)).toBe('See now.')
+  })
+
   it('returns a short input unchanged, without an ellipsis', () => {
     expect(discussionExcerpt('Short text.', 100)).toBe('Short text.')
   })

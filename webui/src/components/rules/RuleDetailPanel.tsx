@@ -140,6 +140,8 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
 const TAB_CLASS =
   'border-b-2 border-transparent px-3 py-1.5 text-sm font-medium text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring data-active:border-primary data-active:text-foreground'
 
+const PANEL_FOCUS_CLASS = 'outline-none focus-visible:ring-2 focus-visible:ring-focus-ring'
+
 function LoadedRuleDetail({
   ruleRef,
   rule,
@@ -251,10 +253,10 @@ function LoadedRuleDetail({
               Mapped rules ({mappedRuleCount})
             </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="details" keepMounted className="space-y-4 outline-none">
+          <Tabs.Panel value="details" keepMounted className={`space-y-4 ${PANEL_FOCUS_CLASS}`}>
             {detailContent}
           </Tabs.Panel>
-          <Tabs.Panel value="mapped-rules" className="outline-none">
+          <Tabs.Panel value="mapped-rules" className={PANEL_FOCUS_CLASS}>
             <MappedRulesTab ruleId={rule.id} view={mappedView} />
           </Tabs.Panel>
         </Tabs.Root>

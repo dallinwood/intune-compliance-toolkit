@@ -1971,6 +1971,42 @@ test.describe('rule mappings', () => {
     await expect(row.getByRole('heading', { name: 'Check' })).toHaveCount(0)
   })
 
+  test('clicking anywhere on a mapped rule row toggles its details', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622 })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+
+    const row = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
+    const title = titleButton(row, 'os_gatekeeper_enable')
+    await row.getByText('Covers the PowerShell part only.').click()
+    await expect(title).toHaveAttribute('aria-expanded', 'true')
+    await expect(row.getByRole('heading', { name: 'Check' })).toBeVisible()
+
+    await row.getByText('Covers the PowerShell part only.').click()
+    await expect(title).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('the hover summary of a rule with an organization-defined value shows no raw placeholder', async ({ page }) => {
+    const deferral = 'mscp.os_software_update_deferral'
+    await serveMappings(page, {
+      'deferral.json': {
+        schema_version: 1,
+        id: 'deferral',
+        links: [{ relation: 'related', from: [ruleEndpoint(deferral, MSCP_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
+      },
+    })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+
+    await titleButton(mappedRow(page, ISM_1622, 'os_software_update_deferral'), 'os_software_update_deferral').hover()
+    const summary = summaryTooltip(page, 'Check: ')
+    await expect(summary).toBeVisible()
+    await expect(summary).toContainText(/deferred for \d+ days/)
+    await expect(summary).not.toContainText('$ODV')
+  })
+
   test('Go to this rule opens it in the main table, from either side', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page)
@@ -2138,6 +2174,15 @@ test.describe('rule mappings', () => {
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveText(
       `This link was checked against ASD ISM ${STALE_ISM_RELEASE} for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
     )
+  })
+
+  test('the stale note shows from the other side of the link too', async ({ page }) => {
+    await serveMappings(page, { 'powershell.json': supportsIsm1622, 'older.json': staleRelated })
+    await openLibrary(page, `/?q=ism-1621&rule=${ISM_1621}`)
+    await openMappedRules(page, ISM_1621)
+
+    await groupButton(page, ISM_1621, 'ASD ISM Related (1)').click()
+    await expect(mappedRulesPanel(page, ISM_1621).getByTestId('stale-mapping-note')).toHaveCount(1)
   })
 
   test('a shared URL opens the linked rule and collapsing it lets it go', async ({ page }) => {
