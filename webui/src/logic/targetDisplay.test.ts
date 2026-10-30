@@ -7,9 +7,8 @@ import {
   remediationStepLabel,
   scriptLanguageLabel,
   showsRemediationSection,
-  targetHeading,
 } from './targetDisplay'
-import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
+import { committedVocabularyIndex } from './testVocabularyFixtures'
 
 const index = committedVocabularyIndex()
 
@@ -29,23 +28,6 @@ describe('scriptLanguageLabel', () => {
     ['python', 'Python'],
   ] as const)('labels %s as %s', (language, label) => {
     expect(scriptLanguageLabel(language)).toBe(label)
-  })
-})
-
-describe('targetHeading', () => {
-  it('names the target and its one language', () => {
-    expect(targetHeading(index, 'macOS', ['bash'])).toBe('macOS · Bash')
-    expect(targetHeading(index, 'Windows', ['powershell', 'powershell'])).toBe('Windows · PowerShell')
-  })
-
-  it('names only the target when there is no language or more than one', () => {
-    expect(targetHeading(index, 'macOS', [])).toBe('macOS')
-    expect(targetHeading(index, 'Windows', ['powershell', 'python'])).toBe('Windows')
-  })
-
-  it('uses the targets vocabulary label when there is one', () => {
-    const labelled = vocabularyIndexOf({ targets: [{ label: 'Microsoft Windows', terms: ['Windows'] }] })
-    expect(targetHeading(labelled, 'Windows', ['powershell'])).toBe('Microsoft Windows · PowerShell')
   })
 })
 

@@ -26,15 +26,6 @@ export function scriptLanguageLabel(language: ScriptLanguage): string {
   return SCRIPT_LANGUAGE_LABELS[language]
 }
 
-// A target's block is headed by the target and, when every script in it
-// shares one, the language, e.g. "Windows · PowerShell".
-export function targetHeading(index: VocabularyIndex, target: string, languages: readonly ScriptLanguage[]): string {
-  const targetLabel = termLabel(index, 'targets', target)
-  const distinctLanguages = [...new Set(languages)]
-  if (distinctLanguages.length !== 1) return targetLabel
-  return `${targetLabel}${HEADING_SEPARATOR}${scriptLanguageLabel(distinctLanguages[0])}`
-}
-
 function withVersions(index: VocabularyIndex, target: string, label: string, versions: string[] | null): string {
   if (versions === null) return label
   const versionLabels = versions.map((version) => termLabel(index, 'versions', versionKey(target, version)))

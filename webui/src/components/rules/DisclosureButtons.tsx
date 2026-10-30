@@ -30,7 +30,7 @@ export function DisclosureButtons({ items }: { items: readonly DisclosureItem[] 
               type="button"
               id={`${idPrefix}-button-${item.key}`}
               aria-expanded={isOpen}
-              aria-controls={regionId}
+              aria-controls={isOpen ? regionId : undefined}
               onClick={() => setOpenKey(isOpen ? null : item.key)}
               className={cn(buttonVariants({ variant: 'outline', size: 'xs' }), 'aria-expanded:border-foreground/60')}
             >

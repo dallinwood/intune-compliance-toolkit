@@ -62,8 +62,7 @@ while its item is open.
   exactly one is always selected, which makes it a selection rather than a disclosure.
 - When a platform has per-version checks but no default check, "Default" shows the existing "No
   default check" message.
-- `TargetHeading` and `targetHeading` are no longer used by the sections and were left in place.
 
 ## Progress log
 
-- 2026-10-30: Built the buttons for both sections, the label function and the e2e tests - `feat: show checks and fixes as buttons that expand`
+- 2026-10-30: Built the buttons for both sections, the label function and the e2e tests - 210ba50 `feat: show checks and fixes as buttons that expand`

@@ -1519,6 +1519,8 @@ test.describe('check and fix buttons', () => {
     await expect(bashButton).toHaveAttribute('aria-expanded', 'false')
     await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
     await expect(remediation).toHaveCount(0)
+    await expect(bashButton).not.toHaveAttribute('aria-controls')
+    await expect(declarationButton).not.toHaveAttribute('aria-controls')
 
     await bashButton.click()
     await expect(bashButton).toHaveAttribute('aria-expanded', 'true')
@@ -1526,6 +1528,10 @@ test.describe('check and fix buttons', () => {
     await expect(remediation.locator('pre')).toHaveCount(1)
     const bashRegionId = await bashButton.getAttribute('aria-controls')
     expect(await page.locator(`[id="${bashRegionId}"]`).count()).toBe(1)
+    const danglingReferences = await page.evaluate(() =>
+      [...document.querySelectorAll('[aria-controls]')].filter((element) => document.getElementById(element.getAttribute('aria-controls') ?? '') === null).length,
+    )
+    expect(danglingReferences).toBe(0)
 
     await declarationButton.click()
     await expect(bashButton).toHaveAttribute('aria-expanded', 'false')
