@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "id": "mscp-to-asd-ism-enterprise-mobility",
+  "description": "mSCP rules that support ASD ISM controls in the Guidelines for enterprise mobility.",
+  "links": [
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_messages_app_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_messages_app_disable_familycontrols",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0240",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Blocks the Apple Messages app from launching on Mac laptops, so that messaging app cannot be used to send sensitive or classified data; other messaging apps and SMS/MMS are not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_recovery_lock_enable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_firmware_password_require",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0864",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops are protected by a recovery lock (Apple silicon) or firmware password (Intel) so users cannot change startup security."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_gatekeeper_override_disallow",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_install_configuration_profile_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sip_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0864",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops stop users from overriding Gatekeeper, installing their own configuration profiles, or turning off System Integrity Protection."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_external_apfs_hfs_volumes_encrypted",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0869",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops are required to have every external APFS or HFS+ storage volume encrypted."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_internal_apfs_volumes_encrypted",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0869",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Requires internal APFS storage to be encrypted on Mac laptops (mobile devices) using ASD-approved cryptography; removable media is not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0869",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Turns on FileVault to encrypt internal storage on Mac laptops (mobile devices) with ASD-approved cryptography; removable media is not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1085",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops only use FIPS-validated encryption algorithms for SSH connections, covering SSH traffic over public networks."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_critical_update_install_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_install_macos_updates_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1366",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Automatically installs macOS security updates on Mac laptops (mobile devices); installation may still depend on user restarts."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_softwareupdate_current",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1366",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops install security and macOS updates automatically so they are patched soon after release."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_mdm_require",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1886",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Verifies the Mac is enrolled in MDM with User Approved enrolment, which makes a Mac on macOS 11 or later supervised; applies to Mac laptops only, as desktop Macs are not mobile devices."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_minimum_length_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1888",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops must use a password of at least the configured minimum length, so the lock screen password is not trivially short."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_screensaver_ask_for_password_delay_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_screensaver_timeout_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1888",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Mac laptops lock automatically after inactivity and require a password to unlock."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_screensaver_password_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1888",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "On Mac laptops, requires a password to unlock the screen saver; password strength is governed by other rules."
+    }
+  ]
+}

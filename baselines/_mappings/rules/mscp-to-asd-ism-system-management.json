@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "id": "mscp-to-asd-ism-system-management",
+  "description": "mSCP rules that support ASD ISM controls in the Guidelines for system management.",
+  "links": [
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_time_machine_auto_backup_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1511",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Turns on automatic Time Machine backups; retention to business criticality and continuity requirements is not addressed."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_software_update_app_update_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1693",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Automatically installs App Store application updates only; apps installed any other way are not covered, and the one-month timeframe is not verified."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_critical_update_install_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_install_macos_updates_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1695",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Automatically installs macOS updates and critical security updates, which supports the one-month window but does not verify it."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_background_security_improvement_install_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1696",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Enforces automatic installation of Apple Background Security Improvements (macOS 27), which helps apply urgent OS security fixes quickly; it covers only these fixes and does not verify the 48-hour timeframe."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_critical_update_install_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_install_macos_updates_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1696",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Automatically installs macOS updates and critical security updates, making a 48-hour install achievable; the 48-hour deadline itself is not enforced."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_time_machine_encrypted_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1811",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Requires Time Machine backups to be encrypted, covering the 'secure' part of the control; it does not make backups offline, immutable or off-site."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_background_security_improvement_install_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1902",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Enforces automatic installation of Apple Background Security Improvements (macOS 27), helping apply OS security fixes promptly; it covers only these fixes and does not verify the one-month timeframe."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_critical_update_install_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_install_macos_updates_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1902",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Automatically installs macOS updates and critical security updates, which supports the one-month window but does not verify it."
+    }
+  ]
+}

@@ -8,6 +8,24 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.audit_auditd_enabled",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0585",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Enables the macOS audit daemon so events are recorded with date and time, user and process, event type, and file path where the configured audit flags cover file events; identifying the device is not confirmed."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.os_time_server_enabled",
           "release": "release_27.0"
         }
@@ -102,6 +120,29 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_asl_log_files_owner_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_asl_log_files_permissions_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1815",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Sets ownership to root:wheel and mode 640 on the Apple System Log files listed in /etc/asl.conf and /etc/asl, so standard users cannot modify them; it does not check directory permissions or cover other logs."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.os_newsyslog_files_owner_group_configure",
           "release": "release_27.0"
         },
@@ -178,6 +219,29 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_asl_log_files_owner_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_asl_log_files_permissions_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1985",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Restricts Apple System Log files listed in /etc/asl.conf and /etc/asl to root:wheel with mode 640, so standard users cannot read them; local logs only."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.os_newsyslog_files_owner_group_configure",
           "release": "release_27.0"
         },
@@ -195,6 +259,42 @@
         }
       ],
       "note": "Protects local system log files managed by newsyslog from being read by standard users; logs held in a central facility need their own protection."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.audit_retention_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1988",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Keeps local audit records for the configured expire-after period; supports this control only if set to 365d or more, and without an 'OR' size cap that deletes sooner."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_install_log_retention_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1988",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Keeps the local install.log for the configured number of days; meets 12 months only when set to 365 or more, and covers that one log only."
     }
   ]
 }

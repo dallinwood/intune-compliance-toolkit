@@ -113,6 +113,24 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.auth_ssh_password_authentication_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0485",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Disables password and keyboard-interactive SSH logon, leaving public key authentication as the way to log on over SSH."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.os_ssh_fips_compliant",
           "release": "release_27.0"
         },

@@ -26,6 +26,24 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_external_storage_access_defined",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0343",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Blocks or limits writing to external storage when the organisation sets the ExternalStorage restriction to ReadOnly or Disallowed; the Allowed value gives no coverage."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.icloud_addressbook_disable",
           "release": "release_27.0"
         },
@@ -469,6 +487,42 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_system_wide_applications_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1392",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Removes world-writable permissions from apps in /Applications; relevant where application control uses path rules covering /Applications."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_firewall_default_deny_require",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1416",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Verifies the pf firewall has an inbound default-deny rule; outbound restriction and approval by application are not verified."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.system_settings_firewall_enable",
           "release": "release_27.0"
         }
@@ -505,6 +559,162 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_config_data_install_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1417",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Automatically installs XProtect and Gatekeeper data updates, supporting the antivirus requirement that detection signatures update at least daily; the cadence itself is set by Apple."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_external_storage_access_defined",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1418",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Blocks reading from external storage when the organisation sets the ExternalStorage restriction to Disallowed; other values give no coverage."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_mail_smart_reply_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_mail_summary_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_natural_language_editing_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_notes_transcription_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_notes_transcription_summary_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_photos_enhanced_search_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1470",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Disables specific off-device AI and cloud features in Mail, Notes, Calendar or Photos, where the organisation has decided those features are unneeded."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_safari_reader_summary_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1470",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Disables the Safari summary feature that sends page content off-device, where the organisation has decided it is unneeded."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_firmware_password_require",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1584",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Requires a firmware password so users on Intel Macs cannot boot recovery or other media to bypass OS security; not available on Apple Silicon."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_install_configuration_profile_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1584",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Stops users installing configuration profiles through the UI, so security settings change only through the organisation's MDM."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_sip_enable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_system_read_only",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1584",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Keeps System Integrity Protection on and the system volume read-only, so no user, including administrators, can modify protected OS security components."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.system_settings_gatekeeper_override_disallow",
           "release": "release_27.0"
         },
@@ -528,6 +738,47 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_safari_warn_fraudulent_website_enable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_safari_open_safe_downloads_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1585",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Locks two Safari security settings only: the fraudulent website warning is on and automatic opening of 'safe' downloads is off."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_authenticated_root_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1745",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Verifies macOS boots from a sealed, cryptographically signed system volume (Authenticated Root), the macOS counterpart of the Secure Boot and Trusted Boot parts of the control; it does not cover Windows-specific Early Launch Antimalware or Measured Boot."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.os_secure_boot_verify",
           "release": "release_27.0"
         }
@@ -540,6 +791,24 @@
         }
       ],
       "note": "Covers the Secure Boot part only; Early Launch Antimalware, Trusted Boot and Measured Boot are not checked."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_sip_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2127",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Keeps System Integrity Protection enabled, which enforces kernel extension signature verification."
     }
   ]
 }

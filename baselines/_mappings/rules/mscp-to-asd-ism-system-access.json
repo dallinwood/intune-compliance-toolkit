@@ -249,6 +249,24 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.pwpolicy_account_lockout_timeout_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1403",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Sets how long an account stays locked after failed logons (at least 15 minutes recommended); the failed-attempt limit of five is set by a separate rule."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.pwpolicy_account_inactivity_enforce",
           "release": "release_27.0"
         }
@@ -331,6 +349,62 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.auth_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_login_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_su_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_sudo_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1682",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Requires smart card authentication (card plus PIN), which ASD recognises as phishing-resistant MFA, for Mac login and screen unlock, and for su, sudo and login via PAM."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_home_folders_secure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_home_folders_default",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1852",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Stops users reading other users' home folders on a shared Mac (home folders set to mode 700 or 711, or default permissions reset via diskutil); it does not decide who gets accounts."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.os_password_hint_remove",
           "release": "release_27.0"
         }
@@ -361,6 +435,65 @@
         }
       ],
       "note": "Covers password hints at the macOS login window; hint features in other systems or applications are out of scope."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_sleep_and_display_sleep_apple_silicon_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2012",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Sets display sleep to 10 minutes or less and system sleep to 15 minutes or less on Apple Silicon MacBooks; counts as a screen lock only when a password is also required on wake."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_unlock_active_user_session_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2012",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Ensures only the session owner can unlock a locked screen, so re-authentication is by the user who locked it; other screen lock requirements are covered elsewhere."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_apple_watch_unlock_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_biometric_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2012",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Removes Apple Watch and Touch ID as ways to unlock the screen, so unlocking requires the account's primary credential rather than a single-factor shortcut."
     },
     {
       "relation": "supports",
@@ -420,6 +553,42 @@
         }
       ],
       "note": "Covers the inactivity trigger only, and only when the timeout ODV is 900 seconds or less (the mSCP recommended value of 1200 is too long); the power-saving-state, re-authentication and cannot-disable parts need other settings."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_smartcard_certificate_trust_enforce_high",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2145",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Requires a verified positive OCSP/CRL response (hard revocation) for smart card authentication, so a revoked certificate cannot be used to log on to the Mac."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_smartcard_certificate_trust_enforce_moderate",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2145",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Checks smart card certificate revocation (CRL/OCSP) at logon so a revoked certificate is refused, but authentication still succeeds if the responder is unreachable (soft fail)."
     }
   ]
 }

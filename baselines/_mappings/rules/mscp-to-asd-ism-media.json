@@ -62,6 +62,114 @@
       "from": [
         {
           "kind": "rule",
+          "id": "mscp.os_external_apfs_hfs_volumes_encrypted",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1059",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Verifies attached external APFS and HFS+ volumes are encrypted with ASD-approved cryptography; FAT and exFAT volumes are not checked."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_internal_apfs_volumes_encrypted",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1059",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Requires data on internal Mac storage to be encrypted with ASD-approved cryptography; removable media is not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_setup_assistant_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1059",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Forces FileVault to be turned on during Setup Assistant so data on the internal startup disk is encrypted with ASD-approved cryptography."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1059",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Turns on FileVault so data on the Mac's internal storage is encrypted with ASD-approved cryptography; removable media is not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_time_machine_encrypted_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1059",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Checks that Time Machine backup volumes are encrypted with ASD-approved cryptography; other media are not covered, and the fix is manual."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_setup_assistant_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2109",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Enforces FileVault enablement at Setup Assistant, giving pre-boot password authentication for the internal startup volume; it does not test for unattended restarts that bypass the prompt."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
           "id": "mscp.system_settings_filevault_enforce",
           "release": "release_27.0"
         }
