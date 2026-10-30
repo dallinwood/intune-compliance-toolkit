@@ -248,17 +248,17 @@ in the URL, so a link opens the same licence or product.
 - **Licences tab:**
   - Licences grouped by vendor, then family, in a list. Selecting one shows its title, kind,
     requirements, links, review marker, and its effective inclusions grouped by top-level
-    product: plan badges on products, features nested under their product, and availability as
-    a badge (Included, Add-on). Nested licences are shown as linked inclusions;
+    product: features nested under their product, and availability as a badge (Included,
+    Add-on). Nested licences are shown as linked inclusions;
     derived add-ons link to the licence or product that supplies them.
   - A **Compare** mode: pick two or more licences and see a matrix with products and features
-    as rows, licences as columns, availability or plan in each cell, and an option to hide rows
-    that are the same in every column.
+    as rows, licences as columns, availability and the supplying licence ("via Entra ID P1") in
+    each cell, and an option to hide rows that are the same in every column.
 - **Products tab:**
   - A searchable list grouped by vendor and category, with features nested under their product.
     Selecting one shows title, vendor, description, links, target icons (the existing
-    `TargetIcons`), plans with their features, child features, and "Included in", which lists
-    licences grouped by availability with the plan shown.
+    `TargetIcons`), child features, and "Included in", which lists licences grouped by
+    availability with the nested licence each comes through.
 - **Linking:** every product or licence name in a detail panel links to that entry in the other
   tab.
 - Exact layout, responsive behaviour and styling are left to the builder, using the existing
@@ -290,14 +290,14 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
   downloaded into the session scratchpad. Name matching between PDF and matrix rows, where an
   exact normalised match fails, is done by a Haiku subagent working on a short list of
   candidates. No API keys or scripted model calls are involved.
-- **Plan normalisation:** "P1", "Plan 1" and "Plan1" map to plan id `plan_1` with title "Plan 1",
+- **Plan normalisation (seed only, superseded 2026-10-30; tiers are now licences):** "P1", "Plan 1" and "Plan1" map to plan id `plan_1` with title "Plan 1",
   and likewise for 2. Other named levels ("Basic", "Standard", "Premium", "Kiosk") become plans
   with an id from the level name (lowercase, underscores) when the same
   product shows them in two or more in-scope licences.
 - **Precedence for effective inclusions:** when a licence lists a product directly and also gets
-  it through a plan's `features`, the direct entry wins (its availability, plan and note). Two
-  direct entries for the same product and plan cannot exist (section 5).
-- **Index scope:** "through a plan" comes only from `plan.features`. An inclusion is not passed
+  it through a nested licence, the direct entry wins (its availability and note). Two direct
+  entries for the same type and target cannot exist (section 5).
+- **Index scope:** "through a licence" comes only from nested licence inclusions. An inclusion is not passed
   down to child features or up to ancestors. The UI shows the hierarchy so that the context is
   visible anyway.
 - **Validation split:** as with rule mappings, Python (`tools/catalog.py`) is the gate. It uses
