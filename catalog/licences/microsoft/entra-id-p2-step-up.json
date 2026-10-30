@@ -18,37 +18,43 @@
       "type": "product",
       "target": "microsoft.access-reviews",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.entitlement-management-basic",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.entra-id-protection",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.mfa-registration-policy",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.privileged-identity-management",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.risk-based-conditional-access",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

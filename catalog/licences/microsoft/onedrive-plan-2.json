@@ -18,7 +18,8 @@
       "type": "product",
       "target": "microsoft.onedrive",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": "1+ TB OneDrive storage"
     }
   ],
   "review": []

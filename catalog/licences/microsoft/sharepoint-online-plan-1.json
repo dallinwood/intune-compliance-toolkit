@@ -18,7 +18,8 @@
       "type": "product",
       "target": "microsoft.sharepoint-online",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": "10 GB SharePoint storage per licence, added to 1 TB per organisation"
     }
   ],
   "review": []

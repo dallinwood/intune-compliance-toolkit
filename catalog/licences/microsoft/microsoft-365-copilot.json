@@ -27,307 +27,358 @@
       "type": "product",
       "target": "microsoft.microsoft-365-copilot-premium",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-actions",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-chat-work",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-cowork",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-dashboard",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-clipchamp",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-forms",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-loop",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-onedrive",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-outlook",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-planner",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-sharepoint",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-teams",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-whiteboard",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-notebooks",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-prompt-gallery",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-search",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-studio-for-microsoft-365",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-tuning-preview",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.graph-and-connector-access-included",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.intelligent-recap",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.microsoft-365-agents",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.microsoft-places-ai-features",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.model-choice",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.people-skills-ai-inferencing",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.people-skills-in-copilot",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.sharepoint-agents",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.viva-insights-manager-leader-analyst",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.viva-pulse-for-copilot",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.sharepoint-advanced-management",
       "availability": "included",
-      "note": "Only the SharePoint Advanced Management capabilities listed for Microsoft 365 Copilot are included."
+      "note": "Only the SharePoint Advanced Management capabilities listed for Microsoft 365 Copilot are included.",
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.advanced-tenant-rename",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.agent-content-access-insights",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.agent-insights",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.ai-powered-insights",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.block-download-policy",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.compare-site-policies",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.content-management-assessments",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.data-access-governance-reports",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.data-access-governance-reports-powershell",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.enterprise-app-insight-reports",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.inactive-sites-policy",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.recent-site-actions",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.request-site-attestation",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.restricted-access-control-for-onedrive",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.restricted-access-control-for-sharepoint",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.restricted-content-discovery",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.sharepoint-app-insights",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.sharepoint-catalog-management",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.site-access-review",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.site-change-history-reports",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.site-ownership-policy",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

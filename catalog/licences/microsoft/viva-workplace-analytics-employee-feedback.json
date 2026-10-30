@@ -24,19 +24,22 @@
       "type": "product",
       "target": "microsoft.copilot-in-viva-glint",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.viva-glint",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.viva-pulse",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

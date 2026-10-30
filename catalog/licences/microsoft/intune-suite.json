@@ -30,31 +30,36 @@
       "type": "product",
       "target": "microsoft.intune-advanced-analytics",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.intune-cloud-pki",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.intune-endpoint-privilege-management",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.intune-enterprise-app-management",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.intune-remote-help",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

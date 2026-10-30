@@ -36,13 +36,15 @@
       "type": "product",
       "target": "microsoft.viva-learning-premium",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     },
     {
       "type": "product",
       "target": "microsoft.copilot-in-viva-learning-preview",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

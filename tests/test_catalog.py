@@ -170,6 +170,12 @@ INVALID_CASES = {
         edit_json(E3_PATH, lambda licence: licence["includes"][0].update(product="microsoft.entra-id")),
         "is not valid under any of the given schemas",
     ),
+    "missing-capacity": (edit_json(E3_PATH, lambda licence: licence["includes"][0].pop("capacity")), "is not valid under any of the given schemas"),
+    "empty-capacity": (edit_json(E3_PATH, lambda licence: licence["includes"][0].update(capacity="")), "is not valid under any of the given schemas"),
+    "capacity-on-a-licence-inclusion": (
+        edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"][2].update(capacity="100 GB")),
+        "is not valid under any of the given schemas",
+    ),
     "unknown-licence-kind": (edit_json(E3_PATH, lambda licence: licence.update(kind="bundle")), "'bundle' is not one of"),
     "same-product-twice": (mutate_duplicate_product_inclusion, "lists product microsoft.entra-id more than once"),
     "missing-included-licence": (mutate_missing_licence_inclusion_target, "licence microsoft.ghost does not exist"),
@@ -277,7 +283,7 @@ def test_product_and_licence_targets_with_same_id_are_distinct(catalog_copy):
 
     def include_each_namespace(licence: dict) -> None:
         licence["includes"] = [
-            {"type": "product", "target": "microsoft.entra-id", "availability": "included", "note": None},
+            {"type": "product", "target": "microsoft.entra-id", "availability": "included", "note": None, "capacity": None},
             {"type": "licence", "target": "microsoft.entra-id", "availability": "add_on", "note": None},
         ]
 
@@ -292,6 +298,48 @@ def test_inclusion_edges_do_not_create_requirement_cycles(catalog_copy):
     errors, warnings = validate_catalog(catalog_copy)
     assert any("licence inclusion graph forms a cycle" in error for error in errors)
     assert not any("requirements form a cycle" in warning for warning in warnings)
+
+
+def add_licence_granting_entra_id(catalog_dir: Path, capacity: str) -> None:
+    second_licence = read_json(catalog_dir, E3_PATH)
+    second_licence.update(id="microsoft.entra-id-standalone", requires=None, includes=[
+        {"type": "product", "target": "microsoft.entra-id", "availability": "included", "note": None, "capacity": capacity}
+    ])
+    write_json(catalog_dir, "licences/microsoft/entra-id-standalone.json", second_licence)
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"].append(
+        {"type": "licence", "target": "microsoft.entra-id-standalone", "availability": "included", "note": None}
+    ))(catalog_dir)
+
+
+def test_capacity_is_recorded_on_a_product_inclusion(catalog_copy):
+    edit_json(E3_PATH, lambda licence: licence["includes"][0].update(capacity="50,000 objects"))(catalog_copy)
+    assert validate_catalog(catalog_copy) == ([], [])
+
+
+def test_nested_licences_granting_one_product_with_different_capacities_warn(catalog_copy):
+    edit_json(E3_PATH, lambda licence: licence["includes"][0].update(capacity="50,000 objects"))(catalog_copy)
+    add_licence_granting_entra_id(catalog_copy, "Unlimited objects")
+    errors, warnings = validate_catalog(catalog_copy)
+    assert errors == []
+    assert warnings == [
+        f"{ENTRA_SUITE_PATH}: receives microsoft.entra-id with different capacities through its included licences "
+        "(50,000 objects, Unlimited objects); list the product directly with the capacity that applies"
+    ]
+
+
+def test_a_direct_entry_settles_a_capacity_conflict(catalog_copy):
+    edit_json(E3_PATH, lambda licence: licence["includes"][0].update(capacity="50,000 objects"))(catalog_copy)
+    add_licence_granting_entra_id(catalog_copy, "Unlimited objects")
+    edit_json(ENTRA_SUITE_PATH, lambda licence: licence["includes"].append(
+        {"type": "product", "target": "microsoft.entra-id", "availability": "included", "note": None, "capacity": "Unlimited objects"}
+    ))(catalog_copy)
+    assert validate_catalog(catalog_copy) == ([], [])
+
+
+def test_nested_licences_agreeing_on_capacity_do_not_warn(catalog_copy):
+    edit_json(E3_PATH, lambda licence: licence["includes"][0].update(capacity="50,000 objects"))(catalog_copy)
+    add_licence_granting_entra_id(catalog_copy, "50,000 objects")
+    assert validate_catalog(catalog_copy) == ([], [])
 
 
 def test_review_notes_are_allowed(catalog_copy):

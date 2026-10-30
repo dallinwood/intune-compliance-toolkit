@@ -9,8 +9,8 @@
   "description": null,
   "links": [{ "title": "Overview", "url": "https://www.microsoft.com/security/business/microsoft-entra" }],
   "includes": [
-    { "type": "product", "target": "microsoft.entra-id-pim", "availability": "included", "note": null },
-    { "type": "product", "target": "microsoft.entra-id-access-reviews", "availability": "included", "note": "Suite edition" },
+    { "type": "product", "target": "microsoft.entra-id-pim", "availability": "included", "note": null, "capacity": null },
+    { "type": "product", "target": "microsoft.entra-id-access-reviews", "availability": "included", "note": "Suite edition", "capacity": null },
     { "type": "licence", "target": "microsoft.m365-e3", "availability": "included", "note": null }
   ],
   "review": []

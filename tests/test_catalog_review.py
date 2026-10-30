@@ -161,3 +161,28 @@ def test_documented_copilot_experience_labels_are_preserved():
     assert document("products", "microsoft-365-copilot-basic")["title"] == "Microsoft 365 Copilot (Basic)"
     assert document("products", "microsoft-365-copilot-premium")["title"] == "Microsoft 365 Copilot (Premium)"
     assert document("products", "copilot-chat-work")["parent"] == "microsoft.microsoft-365-copilot-premium"
+
+
+def capacity_of(licence_slug: str, product_id: str) -> str | None:
+    return next(
+        inclusion["capacity"] for inclusion in document("licences", licence_slug)["includes"]
+        if inclusion["type"] == "product" and inclusion["target"] == product_id
+    )
+
+
+@pytest.mark.parametrize("licence_slug, product_id, capacity", [
+    # Modern Work Plan Comparison (Enterprise), page 3.
+    ("exchange-online-plan-1", "microsoft.exchange-online", "50 GB mailbox + 50 GB archive"),
+    ("exchange-online-plan-2", "microsoft.exchange-online", "100 GB mailbox + up to 1.5 TB archive"),
+    ("onedrive-plan-1", "microsoft.onedrive", "1 TB OneDrive storage"),
+    ("onedrive-plan-2", "microsoft.onedrive", "1+ TB OneDrive storage"),
+    ("m365-e3", "microsoft.exchange-online-archiving", "Up to 1.5 TB archive"),
+])
+def test_capacity_sits_on_the_licence_that_grants_the_product(licence_slug, product_id, capacity):
+    assert capacity_of(licence_slug, product_id) == capacity
+
+
+def test_suites_take_tier_capacity_from_the_tier_licence_not_a_note():
+    for inclusion in document("licences", "m365-e3")["includes"]:
+        if inclusion["target"] in {"microsoft.exchange-online-plan-2", "microsoft.onedrive-plan-2", "microsoft.sharepoint-online-plan-2"}:
+            assert inclusion["note"] is None

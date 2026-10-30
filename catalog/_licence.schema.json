@@ -32,12 +32,13 @@
           {
             "type": "object",
             "additionalProperties": false,
-            "required": ["type", "target", "availability", "note"],
+            "required": ["type", "target", "availability", "note", "capacity"],
             "properties": {
               "type": { "const": "product" },
               "target": { "$ref": "#/$defs/product_id" },
               "availability": { "$ref": "#/$defs/availability" },
-              "note": { "type": ["string", "null"] }
+              "note": { "type": ["string", "null"] },
+              "capacity": { "type": ["string", "null"], "minLength": 1 }
             }
           },
           {

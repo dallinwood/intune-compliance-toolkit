@@ -18,7 +18,8 @@
       "type": "product",
       "target": "microsoft.exchange-online",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": "50 GB mailbox + 50 GB archive"
     }
   ],
   "review": []

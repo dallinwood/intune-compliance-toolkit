@@ -383,8 +383,11 @@ and the folder is the id's vendor, so `microsoft.entra-id` is
   (`subscription` or `add_on`), `requires` (licence ids), `description`,
   `links`, `includes` and `review`. Each `includes` entry names a `type`
   (`product` or `licence`), a `target` id, `availability` (`included` or
-  `add_on`) and `note`. Product and licence ids are separate namespaces; `type`
-  resolves which one an entry names. A tier is a licence that includes the
+  `add_on`) and `note`; a product entry also has `capacity` (a string or `null`)
+  for an amount that varies by licence while the product stays the same, such as
+  "100 GB mailbox + up to 1.5 TB archive". A version with a different feature
+  set is a separate product, not a capacity. Product and licence ids are separate
+  namespaces; `type` resolves which one an entry names. A tier is a licence that includes the
   product and the features that tier grants; a higher tier includes the lower
   tier's licence (Entra ID P2 includes Entra ID P1), and a suite includes the
   tier licences it comes with (E3 includes Entra ID P1). Every licence must

@@ -18,7 +18,8 @@
       "type": "product",
       "target": "microsoft.intune-cloud-pki",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

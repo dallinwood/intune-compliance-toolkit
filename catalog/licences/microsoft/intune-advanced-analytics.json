@@ -18,7 +18,8 @@
       "type": "product",
       "target": "microsoft.intune-advanced-analytics",
       "availability": "included",
-      "note": null
+      "note": null,
+      "capacity": null
     }
   ],
   "review": []

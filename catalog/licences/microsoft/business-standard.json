@@ -12,66 +12,77 @@
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.activity-reports"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.adoption-score"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.alert-policies"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.audit-standard"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.basic-mobility-security"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.bookings"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.clipchamp-standard"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.compliance-manager"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.conditional-access-for-sites"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.content-search"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.dataverse-for-teams"
     },
@@ -91,29 +102,33 @@
       "type": "licence",
       "target": "microsoft.exchange-online-plan-1",
       "availability": "included",
-      "note": "100 GB; Exchange Online Plan 1"
+      "note": null
     },
     {
       "availability": "included",
-      "note": "50 GB; Exchange Online Archiving",
+      "note": null,
+      "capacity": "50 GB archive",
       "type": "product",
       "target": "microsoft.exchange-online-archiving"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.exchange-online-protection"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.graph-connector-capacity"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.loop-workspaces"
     },
@@ -126,156 +141,182 @@
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-copilot-basic"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.ai-standard-access"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-in-excel"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-in-onenote"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-in-powerpoint"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-in-word"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-chat-basic"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.ai-priority-access"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-chat-web"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-chat-in-outlook"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-code-interpreter"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-file-upload"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-image-generator"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-pages"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.create-agents"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.graph-access-in-agents-metered"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.graph-connectors-in-agents-metered"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-mobile-app"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-forms"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-lists"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-places-core"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-search"
     },
     {
       "availability": "included",
       "note": "Optional; Microsoft Teams (optional)",
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-teams"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-to-do"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-whiteboard"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.office-for-the-web"
     },
@@ -283,47 +324,54 @@
       "type": "licence",
       "target": "microsoft.onedrive-plan-1",
       "availability": "included",
-      "note": "1 TB; OneDrive Plan 1"
+      "note": null
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.planner-for-office-365"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-apps-for-office-365"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-automate-for-office-365"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-bi-pro"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.project-roadmap-view-access"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.safe-links-lite"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.secure-score"
     },
@@ -331,35 +379,40 @@
       "type": "licence",
       "target": "microsoft.sharepoint-online-plan-1",
       "availability": "included",
-      "note": "SharePoint Online Plan 1"
+      "note": null
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.sway"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.teams-webinars"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.visio-for-the-web"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.viva-connections"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.viva-engage"
     },
@@ -367,23 +420,27 @@
       "type": "product",
       "target": "microsoft.viva-insights-personal",
       "availability": "included",
-      "note": "Viva Insights - Personal (basic)"
+      "note": "Viva Insights - Personal (basic)",
+      "capacity": null
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.viva-learning-basic"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-for-cloud-apps"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-for-identity"
     },
@@ -402,66 +459,77 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.access-reviews"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-id-protection"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.risk-based-conditional-access"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-id-free"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.agent-id"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.basic-security-usage-reports"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.multi-factor-auth-mfa"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.passwordless-authentication"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.single-sign-on-to-other-saas"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.temporary-access-pass"
     },
     {
       "availability": "included",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-verified-id"
     },
@@ -486,48 +554,56 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.intune-advanced-analytics"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.intune-cloud-pki"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.intune-endpoint-privilege-management"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.intune-enterprise-app-management"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.intune-remote-help"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.firmware-over-the-air-updates"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.specialty-device-management"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.tunnel-for-mam"
     },
@@ -564,12 +640,14 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-verified-id-premium"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.face-check"
     },
@@ -582,168 +660,196 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.security-copilot"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.accountguard"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.advanced-data-residency"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-automation"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-backup"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-bastion"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-log-analytics"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-rbac"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-update-manager"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.compliance-premium-assessments"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.cross-tenant-migration"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-cspm"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-easm"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-for-business"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-for-cloud"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-for-servers"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-threat-intelligence-retiring"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-threat-intelligence-api"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.block-vulnerable-applications"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.browser-extensions-assessment"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.digital-certificate-assessment"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.hardware-firmware-assessment"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.network-share-analysis"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.security-baselines-assessment"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.insider-risk-management-forensic-evidence"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-archive"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-backup"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-sentinel"
     },
@@ -756,222 +862,259 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.restricted-site-creation-by-users"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-domain-services"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-external-id"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-workload-id-premium"
     },
     {
       "availability": "included",
       "note": "Base workload identity capabilities do not require Workload ID Premium.",
+      "capacity": null,
       "type": "product",
       "target": "microsoft.entra-workload-id-free"
     },
     {
       "availability": "included",
       "note": "Base workload identity capabilities do not require Workload ID Premium.",
+      "capacity": null,
       "type": "product",
       "target": "microsoft.identity-federation"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.data-catalog"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.data-estate-insights"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.data-map"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.data-policy"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-experts-for-hunting"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.defender-experts-for-xdr"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.azure-comm-services"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.digital-contact-centre"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.ehr-connector-for-teams"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-ecdn"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.teams-audio-conferencing-free-add-on"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.teams-essentials"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.teams-phone-mobile"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.teams-premium"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.advanced-collaboration-tools"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.advanced-meetings"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.advanced-meetings-protection"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.advanced-virtual-appointments"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.live-caption-translation"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-places-premium"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.powerpoint-live-chapters"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.queues-app"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.teams-rooms"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.ai-builder-capacity"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.dataverse-storage"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.sharepoint-storage"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.prodirect-support-for-azure"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.prodirect-support-for-dynamics-365"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.prodirect-support-for-microsoft-365"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.unified-support"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.linkedin-learning"
     },
@@ -984,6 +1127,7 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.viva-learning-premium"
     },
@@ -996,12 +1140,14 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.viva-glint"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.viva-pulse"
     },
@@ -1014,114 +1160,133 @@
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.ai-builder"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.copilot-studio"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-dataverse"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-apps"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-automate"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-automate-process-mining"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-bi-premium"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.power-pages"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.drive-shipping-for-pst-import"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.dynamics-365-customer-voice"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-industry-clouds"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-dev-program"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.planner-project"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.sharepoint-embedded"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.visio-online"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.windows-365-business"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.document-processing-for-microsoft-365"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-copilot-sales-agent"
     },
     {
       "availability": "add_on",
       "note": null,
+      "capacity": null,
       "type": "product",
       "target": "microsoft.microsoft-365-unattended-rpa"
     }
@@ -1200,6 +1365,7 @@
     "Digital Certificate Assessment: part of a package that is not recorded yet.",
     "Hardware & Firmware Assessment: part of a package that is not recorded yet.",
     "Network Share Analysis: part of a package that is not recorded yet.",
-    "Security Baselines Assessment: part of a package that is not recorded yet."
+    "Security Baselines Assessment: part of a package that is not recorded yet.",
+    "Exchange Online mailbox size: the earlier data said 100 GB, but Exchange Online (Plan 1) is 50 GB mailbox + 50 GB archive in the Modern Work Plan Comparison (Enterprise). Verify against the Business plan comparison."
   ]
 }

@@ -257,6 +257,38 @@ def _granted_product_ids(licence_id: str, licences: dict[str, Entry], products: 
     return granted_ids
 
 
+def _nested_capacities(licence_id: str, licences: dict[str, Entry], visited_ids: frozenset[str] = frozenset()) -> dict[str, set[str]]:
+    """Capacities that a licence's included nested licences state for each product, keyed by product id."""
+    capacities_by_product: dict[str, set[str]] = {}
+    if licence_id in visited_ids or licence_id not in licences:
+        return capacities_by_product
+    for inclusion in licences[licence_id].document["includes"]:
+        if inclusion["type"] != "licence" or inclusion["availability"] != "included":
+            continue
+        nested_id = inclusion["target"]
+        if nested_id not in licences:
+            continue
+        for nested_inclusion in licences[nested_id].document["includes"]:
+            if nested_inclusion["type"] == "product" and nested_inclusion["availability"] == "included" and nested_inclusion["capacity"] is not None:
+                capacities_by_product.setdefault(nested_inclusion["target"], set()).add(nested_inclusion["capacity"])
+        for product_id, capacities in _nested_capacities(nested_id, licences, visited_ids | {licence_id}).items():
+            capacities_by_product.setdefault(product_id, set()).update(capacities)
+    return capacities_by_product
+
+
+def _capacity_conflict_warnings(licence_id: str, licences: dict[str, Entry]) -> list[str]:
+    # A direct entry decides the capacity itself, so only products reached solely through nesting can conflict.
+    directly_listed_ids = {
+        inclusion["target"] for inclusion in licences[licence_id].document["includes"] if inclusion["type"] == "product"
+    }
+    return [
+        f"receives {product_id} with different capacities through its included licences ({', '.join(sorted(capacities))}); "
+        "list the product directly with the capacity that applies"
+        for product_id, capacities in sorted(_nested_capacities(licence_id, licences).items())
+        if len(capacities) > 1 and product_id not in directly_listed_ids
+    ]
+
+
 def _licence_problems(licence_id: str, licences: dict[str, Entry], products: dict[str, Entry]) -> list[str]:
     licence = licences[licence_id].document
     problems: list[str] = []
@@ -355,6 +387,7 @@ def validate_catalog(catalog_dir: Path) -> tuple[list[str], list[str]]:
         if licence_id in inclusion_cycle_members:
             problems.append("licence inclusion graph forms a cycle")
         errors.extend(f"{entry.relative_path}: {problem}" for problem in problems)
+        catalog_warnings.extend(f"{entry.relative_path}: {warning}" for warning in _capacity_conflict_warnings(licence_id, licences))
         review_notes = entry.document["review"]
         if review_notes:
             catalog_warnings.append(f"{entry.relative_path}: {len(review_notes)} review note(s) still to resolve")
