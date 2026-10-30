@@ -376,6 +376,17 @@ test('expanding a group leaves the product list where it was scrolled', async ({
   expect(await list.evaluate((element) => element.scrollTop)).toBe(0)
 })
 
+test('a product with features lines its title up with one that has none', async ({ page }) => {
+  await page.goto('/products')
+  const productList = page.getByRole('navigation', { name: 'Products' })
+  await productList.getByRole('button', { name: 'Security', exact: true }).click()
+  await productList.getByRole('button', { name: 'Productivity', exact: true }).click()
+
+  const withFeatures = await productList.getByRole('link', { name: 'Security Suite' }).boundingBox()
+  const withoutFeatures = await productList.getByRole('link', { name: 'Other Tool' }).boundingBox()
+  expect(withFeatures?.x).toBe(withoutFeatures?.x)
+})
+
 test('a licence opened by its address is shown, its group is open and the others are collapsed', async ({ page }) => {
   await page.goto('/licences?licence=acme.pro')
 

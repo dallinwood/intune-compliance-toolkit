@@ -130,10 +130,10 @@ The validator and the publish step read it separately from the rule library.
   "links": [],
   "includes": [
     { "type": "licence", "target": "microsoft.entra-id-p2", "availability": "included", "note": null },
-    { "type": "product", "target": "microsoft.access-reviews", "availability": "included", "note": null },
-    { "type": "product", "target": "microsoft.teams-premium", "availability": "add_on", "note": null },
+    { "type": "product", "target": "microsoft.access-reviews", "availability": "included", "note": null, "capacity": null },
+    { "type": "product", "target": "microsoft.teams-premium", "availability": "add_on", "note": null, "capacity": null },
     { "type": "licence", "target": "microsoft.entra-suite", "availability": "add_on", "note": null },
-    { "type": "licence", "target": "microsoft.exchange-online-plan-2", "availability": "included", "note": "100 GB" }
+    { "type": "licence", "target": "microsoft.exchange-online-plan-2", "availability": "included", "note": null }
   ],
   "review": []                             // maintainer worklist strings, removed once resolved
 }
@@ -147,6 +147,12 @@ The validator and the publish step read it separately from the rule library.
   lower tier.
 - **`requires`** names the tier licence. It is met by that licence or any licence that includes
   it as `included`, transitively, so prerequisite lists do not enumerate every suite.
+- **`capacity`** (product entries only) records an amount that differs between licences while
+  the product underneath is the same: Exchange Online (Plan 2) lists `microsoft.exchange-online`
+  with "100 GB mailbox + up to 1.5 TB archive". The amount sits on the licence that grants the
+  product, so a suite including that tier licence inherits it. A version with a different
+  feature set is a separate product instead. If two nested licences give one product different
+  capacities, the validator warns until the outer licence lists the product directly.
 - **`availability`:**
   - `included`: comes with the licence.
   - `add_on`: can be bought separately, subject to that offer's prerequisites.
@@ -328,3 +334,4 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
 - 2026-10-30: Product plans removed; licensing tiers are licences (maintainer decision: the Products tab lists capabilities only, all licensing lives in licences). Tier licences nest (Entra ID P2 includes P1; step-up add-ons carry only the delta), suites include their tier licences, and 12 tier licences were added (Defender for Endpoint P1, Defender for Office 365 P1/P2, Exchange, SharePoint and OneDrive Plans 1/2, Microsoft 365 Apps for business/enterprise, SharePoint Advanced Management). Product `requires` is product-only (technical dependency); licence `requires` names the tier and is met transitively, collapsing the hand-listed suite prerequisites. The validator rejects a licence that grants no product. The compare matrix shows the supplying licence so tier differences survive "hide identical rows". A before/after diff of every licence's effective products showed no change except the intended step-up deltas (`feat: model licensing tiers as licences instead of product plans`).
 - 2026-10-30: Checked three E3 data questions against the official Modern Work Plan Comparison (Enterprise) PDF. Page 7 shows no P2 identity rows for E3 or Purview Suite, so the direct Access Reviews, PIM, Risk-based Conditional Access and Entitlement Management entries were removed from E3 (and Access Reviews and Risk-based CA from Purview Suite). Pages 5 and 11 confirm E3 includes Intune Plan 2, Remote Help and Advanced Analytics, so that data stays. Page 11 lists Entra ID P2 as an E3 add-on and Governance P2 and Entra Suite P2 as E3 add-ons requiring P2, so E3's P2 add-on now points at the `entra-id-p2` licence (making those prerequisites reachable) and both P2 add-ons were added. Business Premium has the same P2 identity entries but is not covered by this PDF, so it is unchanged pending its own source (`fix: align E3 Entra ID P2 features with the official comparison`).
 - 2026-10-30: Maintainer UI feedback. Licences in the sidebar are now indented under their family heading, and "via" sources are listed one per line beneath the product (Licences tree) or licence (Products "Included in") instead of inline, so several sources read as alternatives rather than a chain. In the Licences tree a product whose routes share one availability has one badge beside its title; mixed availabilities put a badge on each route line, and a direct route next to nested ones reads "directly" (`fix: indent sidebar licences and list via sources one per line`).
+- 2026-10-30: A product with features no longer has its title pushed right by its expand chevron, in the Products tree and the Licences inclusion tree; the chevron button keeps its 32px touch target but takes the same 16px as the spacer on rows without one (`fix: line up tree titles whether or not they have a chevron`).

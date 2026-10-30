@@ -44,7 +44,7 @@ function ProductRow({
             onClick={() => onToggle(product.id)}
             aria-expanded={isExpanded}
             aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${product.title} (${children.length} features)`}
-            className="-ml-2 -mr-1 -mb-2 -mt-0.5 flex shrink-0 items-center rounded p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            className="-ml-2 -mr-2 -mb-2 -mt-0.5 flex shrink-0 items-center rounded p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
           >
             {isExpanded ? <ChevronDown className="size-4" aria-hidden="true" /> : <ChevronRight className="size-4" aria-hidden="true" />}
           </button>
