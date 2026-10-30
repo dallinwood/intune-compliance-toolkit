@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "id": "mscp-to-asd-ism-cryptography",
+  "description": "mSCP rules that support ASD ISM controls in the Guidelines for cryptography.",
+  "links": [
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0471",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH connections only; other cryptographic software on the Mac is not restricted."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0474",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH key exchange only; uses P-256 rather than the preferred P-384."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0475",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH host, user and CA signatures only; uses P-256 rather than the preferred P-384."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_login_grace_time_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0484",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers only the 'login authentication timeout of no more than 60 seconds' item, and only while the configured value is 60 or less (recommended 30)."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_permit_root_login_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0484",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers only the 'disable the ability to log in directly as root' item of the SSH daemon configuration."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0994",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH key exchange only."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1446",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH elliptic curve use only."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1761",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH key exchange only; uses P-256 rather than the preferred P-384."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1763",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH signatures only; uses P-256 rather than the preferred P-384."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1766",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH hashing (MAC and key exchange) only; uses SHA-256 rather than the preferred SHA-384 or SHA-512."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1767",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH hashing (MAC and key exchange) only; uses SHA-256 rather than the preferred SHA-384 or SHA-512."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_ssh_fips_compliant",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_sshd_fips_compliant",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1769",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers SSH encryption only; uses AES-128 rather than the preferred AES-256."
+    }
+  ]
+}

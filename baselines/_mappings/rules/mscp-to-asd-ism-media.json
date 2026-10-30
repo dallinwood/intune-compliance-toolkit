@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "id": "mscp-to-asd-ism-media",
+  "description": "mSCP rules that support ASD ISM controls in the Guidelines for media.",
+  "links": [
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_internal_apfs_volumes_encrypted",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0459",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Verifies every internal user-data APFS volume is volume-encrypted; does not cover removable media."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_setup_assistant_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0459",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers the Mac's internal startup disk only; the check reads the enforcement setting rather than the actual encryption state."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0459",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers the Mac's internal storage; removable media and backups are not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_filevault_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2109",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers the internal startup disk."
+    }
+  ]
+}

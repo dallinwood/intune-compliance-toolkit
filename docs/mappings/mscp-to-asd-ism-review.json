@@ -1,0 +1,1838 @@
+{
+  "description": "mSCP to ASD ISM 'supports' mappings that were not certain enough to commit. A later research pass adds a comment to each item and sets its status; whatever stays uncertain goes to the maintainer to decide.",
+  "statuses": {
+    "open": "not yet researched beyond the first pass",
+    "mapped": "confirmed and moved into baselines/_mappings/rules/",
+    "rejected": "researched and found not to support the control",
+    "needs_maintainer": "still uncertain after research; the maintainer makes the call"
+  },
+  "mscp_release": "release_27.0",
+  "ism_release": "v2026.09.4",
+  "cross_cutting_questions": [
+    {
+      "question": "Do Mac laptops count as ISM 'mobile devices'? If so, several Guidelines for enterprise mobility controls (e.g. ISM-0682, ISM-0864, ISM-0869, ISM-1366, ISM-1888, ISM-2096, ISM-1482) gain candidate mappings, most of which the first pass left out entirely.",
+      "status": "open",
+      "comments": []
+    },
+    {
+      "question": "Does APFS/FileVault encryption (AES-XTS) count as 'ASD-approved cryptography' (ISM-1059 and similar)? AES is an ASD-approved algorithm, but the control may expect an evaluated implementation at higher classifications.",
+      "status": "open",
+      "comments": []
+    },
+    {
+      "question": "Should rules that only attest to built-in macOS behaviour (no check and no fix) ever be mapped? The first pass left almost all of them unmapped, even near word-for-word matches such as os_unique_identification to ISM-0414.",
+      "status": "open",
+      "comments": []
+    }
+  ],
+  "items": [
+    {
+      "id": "r001",
+      "mscp": [
+        "mscp.os_messages_app_disable",
+        "mscp.os_messages_app_disable_familycontrols"
+      ],
+      "ism": "asd_ism.ism-0240",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device usage > Using paging, message services and messaging apps",
+      "ism_text": "Paging, Multimedia Message Service, Short Message Service and messaging apps are not used to communicate sensitive or classified data.",
+      "proposed_note": "Blocks Apple Messages only; other messaging apps, and SMS/MMS on other devices, are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Preventing Messages.app from launching stops that messaging app being used on the Mac, which supports 'messaging apps are not used to communicate sensitive or classified data'.",
+          "open_question": "The control is a usage restriction on sensitive data rather than a ban on apps; a reviewer may consider blocking one app too indirect to count."
+        }
+      ]
+    },
+    {
+      "id": "r002",
+      "mscp": [
+        "mscp.os_blank_cd_disable",
+        "mscp.os_blank_dvd_disable",
+        "mscp.os_blank_bluray_disable",
+        "mscp.os_dvdram_disable",
+        "mscp.os_cd_read_only_enforce",
+        "mscp.os_bluray_read_only_enforce"
+      ],
+      "ism": "asd_ism.ism-0343",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Device access control",
+      "ism_text": "If there is no business requirement for writing to removable media and devices, such functionality is disabled via the use of a device access control application or by disabling external communication interfaces.",
+      "proposed_note": "Covers blocking writes to optical media (blank discs and DVD-RAM ejected, CD and Blu-ray mounted read-only), using a configuration key Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "com.apple.systemuiserver mount-controls set blankcd/blankdvd/blankbd/dvdram to alert/eject and cd/bd to read-only, which would disable 'writing to removable media' for optical media.",
+          "open_question": "Each rule warns that Apple has deprecated media mount-controls and they 'may not work as expected'; confirm the controls are enforced on current macOS (or that third-party device control is used instead)."
+        }
+      ]
+    },
+    {
+      "id": "r003",
+      "mscp": [
+        "mscp.os_external_storage_access_defined"
+      ],
+      "ism": "asd_ism.ism-0343",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Device access control",
+      "ism_text": "If there is no business requirement for writing to removable media and devices, such functionality is disabled via the use of a device access control application or by disabling external communication interfaces.",
+      "proposed_note": "Covers blocking writes to external storage only when the organisation sets the value to ReadOnly or Disallowed.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The DDM disk management ExternalStorage restriction (Allowed|ReadOnly|Disallowed) is verified against the organisation-defined value; ReadOnly or Disallowed disables 'writing to removable media and devices'.",
+          "open_question": "The rule's recommended value is Allowed, which provides no support; the mapping only holds where the organisation sets ReadOnly or Disallowed."
+        }
+      ]
+    },
+    {
+      "id": "r004",
+      "mscp": [
+        "mscp.os_removable_media_disable"
+      ],
+      "ism": "asd_ism.ism-0343",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Device access control",
+      "ism_text": "If there is no business requirement for writing to removable media and devices, such functionality is disabled via the use of a device access control application or by disabling external communication interfaces.",
+      "proposed_note": "Blocks mounting of external hard disks only, using a control Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Ejecting external disks on connect also prevents writing to them, matching 'If there is no business requirement for writing to removable media and devices, such functionality is disabled'.",
+          "open_question": "Same as for ism-1418: confirm the deprecated mount-controls payload still takes effect."
+        }
+      ]
+    },
+    {
+      "id": "r005",
+      "mscp": [
+        "mscp.system_settings_usb_restricted_mode"
+      ],
+      "ism": "asd_ism.ism-0345",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Device access control",
+      "ism_text": "External communication interfaces that allow DMA are disabled.",
+      "proposed_note": "Blocks newly connected USB/Thunderbolt accessories until approved and while the Mac is locked; it does not disable the interfaces.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Accessory security stops new USB-C/Thunderbolt devices communicating with a locked Mac, which mitigates the locked-device DMA attack described in the control's discussion, but it does not meet 'External communication interfaces that allow DMA are disabled'.",
+          "open_question": "Whether a 'block until authorised / while locked' restriction counts as partial support for a control whose wording requires the DMA-capable interface to be disabled."
+        }
+      ]
+    },
+    {
+      "id": "r006",
+      "mscp": [
+        "mscp.os_calendar_app_disable_familycontrols",
+        "mscp.os_facetime_app_disable_familycontrols"
+      ],
+      "ism": "asd_ism.ism-0380",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unneeded user accounts, components, services and functionality of operating systems are disabled or removed.",
+      "proposed_note": "Covers blocking the bundled Calendar.app or FaceTime.app, but through a configuration method Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "These variants block /Applications/Calendar.app and /Applications/FaceTime.app via the legacy familyControlsEnabled/pathBlackList keys, which would disable that bundled OS functionality as ISM-0380 asks ('functionality of operating systems are disabled').",
+          "open_question": "Apple has deprecated the com.apple.applicationaccess.new path blacklist; confirm it is still honoured on the targeted macOS versions before treating it as enforcing anything."
+        }
+      ]
+    },
+    {
+      "id": "r007",
+      "mscp": [
+        "mscp.os_disk_image_disable"
+      ],
+      "ism": "asd_ism.ism-0380",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unneeded user accounts, components, services and functionality of operating systems are disabled or removed.",
+      "proposed_note": "Covers disabling the mounting of disk images, using a configuration key Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Sets com.apple.systemuiserver mount-controls disk-image to alert/eject so disk images cannot be mounted, which disables a piece of operating system functionality ('functionality of operating systems are disabled').",
+          "open_question": "The rule itself warns that Apple has deprecated media mount-controls and they 'may not work as expected'; confirm enforcement on current macOS."
+        }
+      ]
+    },
+    {
+      "id": "r008",
+      "mscp": [
+        "mscp.os_mail_app_disable",
+        "mscp.os_messages_app_disable",
+        "mscp.os_messages_app_disable_familycontrols"
+      ],
+      "ism": "asd_ism.ism-0380",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unneeded user accounts, components, services and functionality of operating systems are disabled or removed.",
+      "proposed_note": "Blocks the bundled Mail and Messages apps from launching; covers only those two apps.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Configuration profiles block /Applications/Mail.app and Messages (com.apple.MobileSMS) from launching, disabling 'components ... of operating systems'.",
+          "open_question": "Whether the organisation deems these apps unneeded (the Mail rule itself allows Mail where it is an approved email tool), and whether bundled apps count as operating system components rather than user applications (ISM-1470)."
+        }
+      ]
+    },
+    {
+      "id": "r009",
+      "mscp": [
+        "mscp.system_settings_diagnostics_reports_disable",
+        "mscp.system_settings_improve_assistive_voice_disable",
+        "mscp.system_settings_improve_search_disable",
+        "mscp.system_settings_improve_siri_dictation_disable",
+        "mscp.system_settings_personalized_advertising_disable"
+      ],
+      "ism": "asd_ism.ism-0380",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unneeded user accounts, components, services and functionality of operating systems are disabled or removed.",
+      "proposed_note": "Turns off one data-sharing-with-Apple option; this is closer to a privacy setting than removal of an OS component or service.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rules disable sending diagnostics, voice/search/Siri improvement data and ad personalisation. The rule text frames them as 'provide only essential capabilities', which echoes 'unneeded ... functionality', but they are preference opt-outs rather than disabling a component or service. Test applied to every disable-a-feature rule for ism-0380: confident when the rule turns off an OS service that accepts inbound connections or access from other devices or people (a sharing/remote-access listener or a built-in account), because removing such a service is the core of the control; unsure when it turns off a client-side feature or a data-sharing preference, because whether that counts as 'unneeded ... functionality' is a per-organisation business decision rather than an attack-surface consensus.",
+          "open_question": "Whether a reviewer accepts telemetry and data-sharing opt-outs as 'functionality of operating systems' under ism-0380, rather than as data-handling or privacy measures outside this control."
+        }
+      ]
+    },
+    {
+      "id": "r010",
+      "mscp": [
+        "mscp.auth_ssh_password_authentication_disable"
+      ],
+      "ism": "asd_ism.ism-0485",
+      "ism_section": "Guidelines for cryptography > Secure Shell > Authentication mechanisms",
+      "ism_text": "Public key-based authentication is used for SSH connections.",
+      "proposed_note": "Would cover removing password-based SSH logon, which leaves public key authentication as the main remaining method.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Setting PasswordAuthentication no and KbdInteractiveAuthentication no in sshd removes password-based methods. The control says 'public key-based authentication is used for SSH connections', but this rule does not itself enable or require public key authentication, and other methods (for example GSSAPI/Kerberos) are not addressed.",
+          "open_question": "Check whether, with these two settings disabled on macOS sshd, public key is effectively the only enabled method, or whether another rule must also confirm PubkeyAuthentication and disable GSSAPI."
+        }
+      ]
+    },
+    {
+      "id": "r011",
+      "mscp": [
+        "mscp.audit_auditd_enabled"
+      ],
+      "ism": "asd_ism.ism-0585",
+      "ism_section": "Guidelines for security assurance > Security monitoring > Event log details",
+      "ism_text": "For each event logged, the date and time of the event, the relevant user or process, the relevant filename, the event description, and the information technology equipment involved are captured.",
+      "proposed_note": "macOS audit records include date and time, user and process, file path and event type; whether the device is identified in each record is not confirmed.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "With auditd enabled, each BSM record carries a header token (event type and timestamp), a subject token (audit user, effective user and process ID) and path tokens for file events, covering 'date and time of the event, the relevant user or process, the relevant filename, the event description'. The 'information technology equipment involved' is not obviously in each record.",
+          "open_question": "Whether BSM records include a host identifier (for example a header_ex or subject_ex address, or the audit host setting), or whether the device is only identified by the collecting system."
+        }
+      ]
+    },
+    {
+      "id": "r012",
+      "mscp": [
+        "mscp.system_settings_bluetooth_disable"
+      ],
+      "ism": "asd_ism.ism-0682",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device usage > Using Bluetooth functionality",
+      "ism_text": "Bluetooth functionality is not enabled on SECRET and TOP SECRET mobile devices.",
+      "proposed_note": "Turns Bluetooth off on the Mac; relevant only to SECRET and TOP SECRET Mac laptops.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets DisableBluetooth, which directly meets 'Bluetooth functionality is not enabled on SECRET and TOP SECRET mobile devices'.",
+          "open_question": "The mechanism is a direct match; the open point is whether the organisation treats MacBooks as ISM 'mobile devices' (the ISM glossary is understood to include laptops, but no glossary is in the repo to verify this)."
+        }
+      ]
+    },
+    {
+      "id": "r013",
+      "mscp": [
+        "mscp.os_gatekeeper_enable"
+      ],
+      "ism": "asd_ism.ism-0843",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Application control",
+      "ism_text": "Application control is implemented on workstations.",
+      "proposed_note": "Covers Gatekeeper's check that apps are signed by an Apple-issued developer certificate before they run, which is not a full organisation-approved application allowlist.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "EnableAssessment=true turns on Gatekeeper, which blocks unsigned or un-notarised apps at launch, a form of execution control on workstations ('application control is implemented on workstations').",
+          "open_question": "ISM application control means restricting execution to an organisation-approved set (see ISM-1657); Gatekeeper permits any Apple-signed developer and admins can override it, so decide whether it counts as application control at all."
+        }
+      ]
+    },
+    {
+      "id": "r014",
+      "mscp": [
+        "mscp.system_settings_gatekeeper_identified_developers_allowed"
+      ],
+      "ism": "asd_ism.ism-0843",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Application control",
+      "ism_text": "Application control is implemented on workstations.",
+      "proposed_note": "Gatekeeper only allows App Store or Apple Developer ID signed apps; it is not an organisation-approved allowlist.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Gatekeeper restricts execution to code signed by Apple-issued certificates, a form of publisher-based execution control related to 'Application control is implemented on workstations'. ISM application control (see ism-1657) means restricting execution to an organisation-approved set, which Gatekeeper does not do, and admins can override per app.",
+          "open_question": "Whether Gatekeeper's signed-code requirement is accepted as partial support for application control, or treated as a separate code-signing control with no ISM equivalent."
+        }
+      ]
+    },
+    {
+      "id": "r015",
+      "mscp": [
+        "mscp.system_settings_automatic_logout_enforce"
+      ],
+      "ism": "asd_ism.ism-0853",
+      "ism_section": "Guidelines for system access > Identity and access management > Session termination",
+      "ism_text": "Interactive user sessions are terminated and workstations are restarted at least daily.",
+      "proposed_note": "Logs out sessions idle for ODV seconds (86400 recommended); an active user is never logged out and no daily restart is forced.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Auto logout after 24 hours of inactivity terminates abandoned interactive sessions, which is part of 'Interactive user sessions are terminated and workstations are restarted at least daily', but it is inactivity-based rather than a daily termination and it does not restart the workstation.",
+          "open_question": "Whether an inactivity-based logout is accepted as partial support for a control that requires termination at least daily regardless of activity, plus a restart."
+        }
+      ]
+    },
+    {
+      "id": "r016",
+      "mscp": [
+        "mscp.os_internal_apfs_volumes_encrypted"
+      ],
+      "ism": "asd_ism.ism-0869",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device management > Encrypted storage",
+      "ism_text": "Mobile devices encrypt their internal storage and any removable media using ASD-approved cryptography.",
+      "proposed_note": "Covers internal storage encryption on Mac laptops only (desktops are not mobile devices), and does not verify ASD-approved cryptography or removable media.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Requiring all internal APFS user volumes to be encrypted matches 'Mobile devices encrypt their internal storage' when the Mac is a laptop.",
+          "open_question": "Whether Mac laptops are in scope as 'mobile devices' for this control, and whether APFS encryption counts as ASD-approved cryptography."
+        }
+      ]
+    },
+    {
+      "id": "r017",
+      "mscp": [
+        "mscp.system_settings_filevault_enforce"
+      ],
+      "ism": "asd_ism.ism-0869",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device management > Encrypted storage",
+      "ism_text": "Mobile devices encrypt their internal storage and any removable media using ASD-approved cryptography.",
+      "proposed_note": "Encrypts the Mac's internal storage; removable media are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "For Mac laptops, FileVault meets 'Mobile devices encrypt their internal storage ... using ASD-approved cryptography' for the internal storage part.",
+          "open_question": "Two points: whether the organisation treats MacBooks as ISM 'mobile devices' (the ISM glossary is understood to include laptops, but no glossary is in the repo to verify this), and whether FileVault counts as ASD-approved cryptography."
+        }
+      ]
+    },
+    {
+      "id": "r018",
+      "mscp": [
+        "mscp.icloud_private_relay_disable"
+      ],
+      "ism": "asd_ism.ism-0874",
+      "ism_section": "Guidelines for enterprise mobility > Enterprise mobility > Mobile devices and desktop computers accessing the internet",
+      "ism_text": "Mobile devices and desktop computers access the internet via an organisation’s internet gateway rather than via a direct connection to the internet.",
+      "proposed_note": "Prevents Safari and unencrypted app traffic from being tunnelled through Apple's relays past the organisation's gateway controls; it does not route the device's internet traffic via the organisation's gateway.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "With allowCloudPrivateRelay forced false, Private Relay cannot wrap browsing traffic in Apple's relay, which would otherwise hide destinations from the organisation's internet gateway (web content filtering, protective DNS) that the control's discussion relies on. The control's words 'access the internet via an organisation's internet gateway' still need a VPN or network design to be met.",
+          "open_question": "Whether a setting that only removes one bypass of gateway inspection counts as supporting this control, given the control is about routing all internet access through the organisation's gateway."
+        }
+      ]
+    },
+    {
+      "id": "r019",
+      "mscp": [
+        "mscp.os_external_apfs_hfs_volumes_encrypted"
+      ],
+      "ism": "asd_ism.ism-1059",
+      "ism_section": "Guidelines for media > Media usage > Encrypting media",
+      "ism_text": "All data stored on media is encrypted using ASD-approved cryptography.",
+      "proposed_note": "Covers verifying that attached external APFS and HFS+ volumes are encrypted; other file systems such as FAT and exFAT are not checked.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The check lists external APFS/HFS+ volumes with diskutil and fails if any reports FileVault: No, i.e. it verifies 'all data stored on media is encrypted' for those volumes using APFS/FileVault AES encryption.",
+          "open_question": "Whether APFS/HFS+ volume encryption (AES-XTS) counts as 'ASD-approved cryptography' for the classification in scope; also FAT and exFAT volumes are not checked."
+        }
+      ]
+    },
+    {
+      "id": "r020",
+      "mscp": [
+        "mscp.os_internal_apfs_volumes_encrypted"
+      ],
+      "ism": "asd_ism.ism-1059",
+      "ism_section": "Guidelines for media > Media usage > Encrypting media",
+      "ism_text": "All data stored on media is encrypted using ASD-approved cryptography.",
+      "proposed_note": "Ensures data on internal Mac storage is encrypted, but does not verify the cryptography is ASD-approved and does not cover removable media.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Encrypting all internal user APFS volumes means data stored on that media is encrypted, matching 'All data stored on media is encrypted'.",
+          "open_question": "Whether Apple's APFS/FileVault AES-XTS implementation counts as 'ASD-approved cryptography' (approved algorithm versus evaluated implementation)."
+        }
+      ]
+    },
+    {
+      "id": "r021",
+      "mscp": [
+        "mscp.os_setup_assistant_filevault_enforce"
+      ],
+      "ism": "asd_ism.ism-1059",
+      "ism_section": "Guidelines for media > Media usage > Encrypting media",
+      "ism_text": "All data stored on media is encrypted using ASD-approved cryptography.",
+      "proposed_note": "Covers data on the internal startup disk only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "FileVault enforced at setup encrypts the internal data volume with AES-XTS, which supports 'All data stored on media is encrypted using ASD-approved cryptography' for that disk.",
+          "open_question": "Confirm FileVault's AES-XTS (AES-128 block cipher with a 256-bit XTS key) counts as ASD-approved for the classification in scope, and whether checking the ForceEnableInSetupAssistant key rather than fdesetup status is adequate evidence."
+        }
+      ]
+    },
+    {
+      "id": "r022",
+      "mscp": [
+        "mscp.system_settings_filevault_enforce"
+      ],
+      "ism": "asd_ism.ism-1059",
+      "ism_section": "Guidelines for media > Media usage > Encrypting media",
+      "ism_text": "All data stored on media is encrypted using ASD-approved cryptography.",
+      "proposed_note": "Encrypts data on the Mac's internal storage with AES-XTS; removable media are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "FileVault encrypts internal storage with AES-XTS, supporting 'All data stored on media is encrypted using ASD-approved cryptography' for the internal drive.",
+          "open_question": "Whether FileVault (AES-XTS with keys protected by the Secure Enclave) is accepted as 'ASD-approved cryptography' for the classification in question; AES is an ASD-approved algorithm but higher classifications may require an evaluated implementation."
+        }
+      ]
+    },
+    {
+      "id": "r023",
+      "mscp": [
+        "mscp.system_settings_time_machine_encrypted_configure"
+      ],
+      "ism": "asd_ism.ism-1059",
+      "ism_section": "Guidelines for media > Media usage > Encrypting media",
+      "ism_text": "All data stored on media is encrypted using ASD-approved cryptography.",
+      "proposed_note": "Checks that Time Machine backup volumes are encrypted; other media are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Encrypted Time Machine destinations mean backup data stored on that media is encrypted, part of 'All data stored on media is encrypted using ASD-approved cryptography'.",
+          "open_question": "Whether Time Machine's encryption (APFS, AES-XTS) is accepted as ASD-approved cryptography; the rule is also manual-fix only."
+        }
+      ]
+    },
+    {
+      "id": "r024",
+      "mscp": [
+        "mscp.system_settings_critical_update_install_enforce",
+        "mscp.system_settings_install_macos_updates_enforce"
+      ],
+      "ism": "asd_ism.ism-1366",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device management > Maintaining mobile device security",
+      "ism_text": "Security updates are applied to mobile devices as soon as they become available.",
+      "proposed_note": "Automatically installs macOS security updates on Mac laptops.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Automatic installation of security updates is the mechanism for 'Security updates are applied to mobile devices as soon as they become available'.",
+          "open_question": "Two points: whether the organisation treats MacBooks as ISM 'mobile devices' (the ISM glossary is understood to include laptops, but no glossary is in the repo to verify this), and whether automatic installation is accepted as 'as soon as they become available' given deferrals and restarts."
+        }
+      ]
+    },
+    {
+      "id": "r025",
+      "mscp": [
+        "mscp.os_system_wide_applications_configure"
+      ],
+      "ism": "asd_ism.ism-1392",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Application control",
+      "ism_text": "When implementing application control using path rules, only approved users can modify approved files and write to approved folders.",
+      "proposed_note": "Relevant only when application control uses path rules on /Applications.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule finds and removes world-writable permissions on apps in /Applications, so only owners or admins can modify them, supporting 'only approved users can modify approved files and write to approved folders'.",
+          "open_question": "Only applies if application control path rules include /Applications; removing world-write does not by itself restrict writes to 'approved users'."
+        }
+      ]
+    },
+    {
+      "id": "r026",
+      "mscp": [
+        "mscp.pwpolicy_account_lockout_timeout_enforce"
+      ],
+      "ism": "asd_ism.ism-1403",
+      "ism_section": "Guidelines for system access > Identity and access management > User account lockouts",
+      "ism_text": "User accounts, except for break glass accounts, are protected by fixed or risk-based lockout mechanisms aligned to a maximum of five failed logon attempts, with either indefinite or automated lockout durations.",
+      "proposed_note": "Would cover the lockout duration part of the control; the control accepts any automated duration, so this only confirms one is configured.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "minutesUntilFailedLoginReset / autoEnableInSeconds sets how long an account stays locked after the failed-attempt limit, matching 'with either indefinite or automated lockout durations'. It does not set the attempt threshold, which is the substantive requirement of the control.",
+          "open_question": "Decide whether configuring the lockout duration counts as supporting a control that permits any duration, or whether only the attempt-threshold rule should map."
+        }
+      ]
+    },
+    {
+      "id": "r027",
+      "mscp": [
+        "mscp.os_firewall_default_deny_require"
+      ],
+      "ism": "asd_ism.ism-1416",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Software firewall",
+      "ism_text": "A software firewall is implemented on workstations and servers to restrict inbound and outbound network connections to an organisation-approved set of applications and services.",
+      "proposed_note": "Covers verifying that the built-in pf packet filter has an inbound default-deny rule; outbound restriction and restricting by approved application are not verified.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The check requires 'block drop in all' in the active pf ruleset, which is a software firewall on the workstation restricting inbound network connections, i.e. part of 'restrict inbound and outbound network connections'.",
+          "open_question": "pf allows traffic by port and host rather than by application, and the check only proves an inbound default-deny exists; decide whether that is enough to call it support for 'an organisation-approved set of applications and services'."
+        }
+      ]
+    },
+    {
+      "id": "r028",
+      "mscp": [
+        "mscp.system_settings_firewall_stealth_mode_enable"
+      ],
+      "ism": "asd_ism.ism-1416",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Software firewall",
+      "ism_text": "A software firewall is implemented on workstations and servers to restrict inbound and outbound network connections to an organisation-approved set of applications and services.",
+      "proposed_note": "Stealth mode stops the Mac answering unsolicited probes; it hardens the software firewall rather than restricting connections to approved applications.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Stealth mode makes the Application Firewall drop probes (e.g. ICMP ping, closed-port responses), a refinement of the inbound filtering in ism-1416, but it does not itself restrict connections 'to an organisation-approved set of applications and services'.",
+          "open_question": "Whether a firewall hardening option, rather than the restriction itself, should be counted as supporting ism-1416."
+        }
+      ]
+    },
+    {
+      "id": "r029",
+      "mscp": [
+        "mscp.os_config_data_install_enforce"
+      ],
+      "ism": "asd_ism.ism-1417",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Antivirus application",
+      "ism_text": "An antivirus application is implemented on workstations and servers with:",
+      "proposed_note": "Covers automatic installation of XProtect and Gatekeeper definition updates, which helps keep antivirus signatures current.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "ConfigDataInstall=true makes Software Update install XProtect Remediator and Gatekeeper data automatically, supporting the sub-requirement 'detection signatures configured to update at least daily'.",
+          "open_question": "Automatic install does not guarantee updates 'at least daily' as the control requires; confirm Apple's update cadence and check interval before treating this as meeting that bullet."
+        }
+      ]
+    },
+    {
+      "id": "r030",
+      "mscp": [
+        "mscp.os_external_storage_access_defined"
+      ],
+      "ism": "asd_ism.ism-1418",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Device access control",
+      "ism_text": "If there is no business requirement for reading from removable media and devices, such functionality is disabled via the use of a device access control application or by disabling external communication interfaces.",
+      "proposed_note": "Covers blocking reads from external storage only when the organisation sets the value to Disallowed.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The DDM disk management ExternalStorage restriction set to Disallowed prevents external storage from mounting, disabling 'reading from removable media and devices'.",
+          "open_question": "The rule's recommended value is Allowed; the mapping only holds where the organisation chooses Disallowed."
+        }
+      ]
+    },
+    {
+      "id": "r031",
+      "mscp": [
+        "mscp.os_removable_media_disable"
+      ],
+      "ism": "asd_ism.ism-1418",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Device access control",
+      "ism_text": "If there is no business requirement for reading from removable media and devices, such functionality is disabled via the use of a device access control application or by disabling external communication interfaces.",
+      "proposed_note": "Blocks mounting of external hard disks only, using a control Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets com.apple.systemuiserver mount-controls harddisk-external to alert and eject so external disks are not mounted, which would disable reading from removable media as in 'such functionality is disabled via the use of a device access control application or by disabling external communication interfaces'.",
+          "open_question": "The rule itself warns Apple deprecated media mount controls and they may not work; confirm they still take effect on the target macOS versions."
+        }
+      ]
+    },
+    {
+      "id": "r032",
+      "mscp": [
+        "mscp.os_mail_smart_reply_disable",
+        "mscp.os_mail_summary_disable",
+        "mscp.os_natural_language_editing_disable",
+        "mscp.os_notes_transcription_disable",
+        "mscp.os_notes_transcription_summary_disable",
+        "mscp.os_photos_enhanced_search_disable"
+      ],
+      "ism": "asd_ism.ism-1470",
+      "ism_section": "Guidelines for system hardening > User application hardening > Hardening user application configurations",
+      "ism_text": "Unneeded user accounts, components, services and functionality of user applications are disabled or removed.",
+      "proposed_note": "Disables specific off-device AI and cloud lookup features inside Mail, Notes, Calendar/Reminders and Photos; covers only those features.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Restrictions (allowMailSmartReplies, allowMailSummary, allowNotesTranscription, allowNotesTranscriptionSummary, Calendar AllowNaturalLanguageEditing, IPXDefaultEnhancedVisualSearchEnabled all false) disable functionality of user applications, matching 'Unneeded ... functionality of user applications are disabled or removed'.",
+          "open_question": "Whether the organisation deems these features unneeded (the rules disable them unless explicitly approved), and whether Apple-bundled apps are treated as user applications (ISM-1470) rather than OS components (ISM-0380)."
+        }
+      ]
+    },
+    {
+      "id": "r033",
+      "mscp": [
+        "mscp.os_safari_reader_summary_disable"
+      ],
+      "ism": "asd_ism.ism-1470",
+      "ism_section": "Guidelines for system hardening > User application hardening > Hardening user application configurations",
+      "ism_text": "Unneeded user accounts, components, services and functionality of user applications are disabled or removed.",
+      "proposed_note": "Disables the off-device Safari summary feature only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets allowSafariSummary=false (and the intelligence DDM declaration), disabling a Safari feature that sends page content to Apple's Private Cloud Compute, supporting 'Unneeded ... functionality of user applications are disabled'.",
+          "open_question": "Whether the feature is 'unneeded' is an organisational decision; confirm the organisation has not approved it."
+        }
+      ]
+    },
+    {
+      "id": "r034",
+      "mscp": [
+        "mscp.icloud_addressbook_disable",
+        "mscp.icloud_appleid_system_settings_disable",
+        "mscp.icloud_bookmarks_disable",
+        "mscp.icloud_calendar_disable",
+        "mscp.icloud_drive_disable",
+        "mscp.icloud_freeform_disable",
+        "mscp.icloud_keychain_disable",
+        "mscp.icloud_mail_disable",
+        "mscp.icloud_notes_disable",
+        "mscp.icloud_photos_disable",
+        "mscp.icloud_reminders_disable",
+        "mscp.icloud_sync_disable"
+      ],
+      "ism": "asd_ism.ism-1482",
+      "ism_section": "Guidelines for enterprise mobility > Enterprise mobility > Organisation-owned mobile devices and desktop computers",
+      "ism_text": "Personnel using organisation-owned mobile devices or desktop computers to access classified systems or data have enforced separation of classified data and personal data.",
+      "proposed_note": "Stops organisational data on an organisation-owned Mac from syncing into a user's personal iCloud account; it does not by itself enforce separation of classified and personal data on the device.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The control requires 'enforced separation of classified data and personal data' for personnel using organisation-owned desktop computers to access classified systems or data. Forcing iCloud sync off prevents classified data handled on the Mac from being mixed into the user's personal iCloud data store, which is part of that separation.",
+          "open_question": "Whether blocking sync to a personal cloud account is accepted as 'enforced separation', or whether ASD expects a device-level separation mechanism (separate profiles, managed containers) that these settings do not provide."
+        }
+      ]
+    },
+    {
+      "id": "r035",
+      "mscp": [
+        "mscp.os_implement_memory_protection"
+      ],
+      "ism": "asd_ism.ism-1492",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Operating system exploit protection functionality is enabled.",
+      "proposed_note": "Covers macOS's always-on memory exploit protections (ASLR, NX stack and heap), which cannot be turned off by configuration.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule records that macOS inherently enforces ASLR, PIE, stack canaries and non-executable stack and heap, i.e. 'operating system exploit protection functionality is enabled'.",
+          "open_question": "The rule has no automated check or setting; it is an inherent-capability statement, so decide whether such rules should carry mappings."
+        }
+      ]
+    },
+    {
+      "id": "r036",
+      "mscp": [
+        "mscp.os_library_validation_enabled",
+        "mscp.os_mobile_file_integrity_enable"
+      ],
+      "ism": "asd_ism.ism-1492",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Operating system exploit protection functionality is enabled.",
+      "proposed_note": "Keeps two macOS code-integrity protections (library validation and Apple Mobile File Integrity) switched on; other exploit protections are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "DisableLibraryValidation=false blocks loading of libraries not signed by Apple or the same team, and the AMFI rule ensures the amfi_get_out_of_my_way boot-arg is not set; both are OS protections against code injection, supporting 'Operating system exploit protection functionality is enabled'.",
+          "open_question": "ISM's 'exploit protection' wording derives from Windows Exploit Protection (DEP, ASLR, CFG and similar); it needs agreement that macOS code-signing enforcement counts as the equivalent."
+        }
+      ]
+    },
+    {
+      "id": "r037",
+      "mscp": [
+        "mscp.audit_flags_ad_configure"
+      ],
+      "ism": "asd_ism.ism-1509",
+      "ism_section": "Guidelines for system access > Identity and access management > Privileged access to systems",
+      "ism_text": "Privileged access events are centrally logged.",
+      "proposed_note": "May record privileged (administrative) actions on the Mac locally; central forwarding is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule adds the 'ad' (administrative) class to the audit_control flags; the mSCP discussion says this audits the execution of privileged functions, which relates to 'Privileged access events are centrally logged'. Whether 'ad' captures privileged access itself (such as sudo or admin authentication) rather than only certain administrative system calls is not established from the rule.",
+          "open_question": "Which events /etc/security/audit_event assigns to the 'ad' class on current macOS, and whether sudo and admin elevation events fall under 'ad' or under 'aa'."
+        }
+      ]
+    },
+    {
+      "id": "r038",
+      "mscp": [
+        "mscp.os_sudo_log_enforce"
+      ],
+      "ism": "asd_ism.ism-1509",
+      "ism_section": "Guidelines for system access > Identity and access management > Privileged access to systems",
+      "ism_text": "Privileged access events are centrally logged.",
+      "proposed_note": "Ensures sudo privilege escalation events are recorded on the device; forwarding them to a central log facility is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets 'Defaults log_allowed' in sudoers and checks sudo -V, so every allowed privilege escalation via sudo is logged. This generates the 'privileged access events' the control requires.",
+          "open_question": "Decide whether producing the events locally counts as support when the control's key requirement is that they are 'centrally logged'."
+        }
+      ]
+    },
+    {
+      "id": "r039",
+      "mscp": [
+        "mscp.system_settings_time_machine_auto_backup_enable"
+      ],
+      "ism": "asd_ism.ism-1511",
+      "ism_section": "Guidelines for system management > Data backup and restoration > Performing and retaining backups",
+      "ism_text": "Backups of data, applications and settings are performed and retained in accordance with business criticality and business continuity requirements.",
+      "proposed_note": "Turns on automatic Time Machine backups of the Mac; retention to business-criticality requirements is not addressed.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Automatic Time Machine backups mean 'Backups of data, applications and settings are performed' for that Mac, but the control also requires performing and retaining them 'in accordance with business criticality and business continuity requirements', which is an organisational decision.",
+          "open_question": "Whether an organisation relying on Time Machine (rather than central backup) treats it as its backup mechanism for workstations; most will not."
+        }
+      ]
+    },
+    {
+      "id": "r040",
+      "mscp": [
+        "mscp.audit_flags_lo_configure"
+      ],
+      "ism": "asd_ism.ism-1566",
+      "ism_section": "Guidelines for system access > Identity and access management > Unprivileged access to systems",
+      "ism_text": "Use of unprivileged access is centrally logged.",
+      "proposed_note": "Records logons and logoffs on the Mac, which is part of showing use of standard accounts; central forwarding and other activity are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The 'lo' class records login and logout for all accounts, including unprivileged ones, which gives a partial record of 'Use of unprivileged access'. Whether logon/logoff events are enough to count as logging use of access is debatable.",
+          "open_question": "Whether assessors accept logon/logoff records as evidence of 'use of unprivileged access', or expect activity-level logging."
+        }
+      ]
+    },
+    {
+      "id": "r041",
+      "mscp": [
+        "mscp.os_firmware_password_require"
+      ],
+      "ism": "asd_ism.ism-1584",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems.",
+      "proposed_note": "Covers preventing users on Intel Macs from booting into recovery, single-user mode or other boot media to get around OS security settings.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "firmwarepasswd -check must report a firmware password is enabled, which blocks Option-key boot tools that could be used for 'bypassing, disabling or modifying security functionality of operating systems'.",
+          "open_question": "Intel-only (not supported on Apple Silicon), and the threat is physical-access bypass rather than the in-OS user rights the control mainly targets."
+        }
+      ]
+    },
+    {
+      "id": "r042",
+      "mscp": [
+        "mscp.os_install_configuration_profile_disable"
+      ],
+      "ism": "asd_ism.ism-1584",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems.",
+      "proposed_note": "Covers stopping users from installing configuration profiles through the UI, so profiles come only from the organisation's MDM.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "allowUIConfigurationProfileInstallation=false blocks manual profile installation, preventing users adding profiles that could alter settings such as certificates, VPN or restrictions ('modifying security functionality of operating systems').",
+          "open_question": "MDM-delivered restrictions generally cannot be overridden by a user-installed profile anyway; confirm which security settings a manually installed profile could weaken."
+        }
+      ]
+    },
+    {
+      "id": "r043",
+      "mscp": [
+        "mscp.os_prevent_priv_functions"
+      ],
+      "ism": "asd_ism.ism-1584",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems.",
+      "proposed_note": "macOS inherently blocks standard users from privileged functions such as disabling security safeguards; the rule records this rather than setting or checking anything.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule states standard users cannot execute privileged functions, which it defines as including 'disabling, circumventing, or altering implemented security safeguards', closely matching 'Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems'.",
+          "open_question": "Whether a manual, attestation-only rule with no check or remediation counts as 'supporting' a control under this project's definition."
+        }
+      ]
+    },
+    {
+      "id": "r044",
+      "mscp": [
+        "mscp.os_rapid_security_response_removal_disable"
+      ],
+      "ism": "asd_ism.ism-1584",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems.",
+      "proposed_note": "Prevents users removing Apple Rapid Security Responses only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The restriction allowRapidSecurityResponseRemoval=false stops users removing installed Rapid Security Responses (vendor security mitigations), supporting 'Unprivileged users are prevented from bypassing, disabling or modifying security functionality'.",
+          "open_question": "Decide whether an installed security patch counts as 'security functionality of operating systems'."
+        }
+      ]
+    },
+    {
+      "id": "r045",
+      "mscp": [
+        "mscp.os_sip_enable",
+        "mscp.os_system_read_only"
+      ],
+      "ism": "asd_ism.ism-1584",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems.",
+      "proposed_note": "Protects core macOS files and the system volume from modification; other security functionality is covered elsewhere.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "SIP (checked with csrutil status) and the read-only sealed system volume prevent any user, including root, from modifying protected OS components and audit tools, which supports 'Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems'.",
+          "open_question": "Unprivileged users are already blocked by file permissions; decide whether a protection aimed mainly at root and admin users counts toward a control worded about unprivileged users."
+        }
+      ]
+    },
+    {
+      "id": "r046",
+      "mscp": [
+        "mscp.system_settings_background_security_improvement_removal_disable"
+      ],
+      "ism": "asd_ism.ism-1584",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Unprivileged users are prevented from bypassing, disabling or modifying security functionality of operating systems.",
+      "proposed_note": "Stops users rolling back Apple's Background Security Improvements (rapid security fixes).",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Rolling back a Background Security Improvement removes an applied security mitigation; blocking the rollback via DDM supports 'Unprivileged users are prevented from bypassing, disabling or modifying security functionality'.",
+          "open_question": "Whether removing an installed security patch is 'security functionality of operating systems' in the ISM sense, and whether the DDM restriction applies to standard users or to all users."
+        }
+      ]
+    },
+    {
+      "id": "r047",
+      "mscp": [
+        "mscp.os_safari_warn_fraudulent_website_enable",
+        "mscp.os_safari_open_safe_downloads_disable"
+      ],
+      "ism": "asd_ism.ism-1585",
+      "ism_section": "Guidelines for system hardening > User application hardening > Web browsers",
+      "ism_text": "Web browser security settings cannot be changed by human users.",
+      "proposed_note": "Locks these two Safari security settings only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rules deliver WarnAboutFraudulentWebsites=true and AutoOpenSafeDownloads=false in a com.apple.Safari configuration profile, so these Safari security settings are enforced by management rather than left to users, supporting 'Web browser security settings cannot be changed by human users'.",
+          "open_question": "Confirm that profile-managed com.apple.Safari keys are locked in Safari's Settings UI on the target macOS versions, rather than only set as defaults."
+        }
+      ]
+    },
+    {
+      "id": "r048",
+      "mscp": [
+        "mscp.os_user_app_installation_prohibit"
+      ],
+      "ism": "asd_ism.ism-1592",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Application management",
+      "ism_text": "Unprivileged human users do not have the ability to install unapproved applications.",
+      "proposed_note": "Blocks apps installed into user home folders only, using a control Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Blocking execution from /Users/ stops standard users installing and running apps from their home folder, supporting 'Unprivileged human users do not have the ability to install unapproved applications'.",
+          "open_question": "Confirm the deprecated restriction still works, and whether other install paths available to standard users (such as the App Store) are blocked elsewhere."
+        }
+      ]
+    },
+    {
+      "id": "r049",
+      "mscp": [
+        "mscp.pwpolicy_force_password_change"
+      ],
+      "ism": "asd_ism.ism-1595",
+      "ism_section": "Guidelines for system access > Credential management > Setting credentials for user accounts",
+      "ism_text": "Credentials provided to human users are changed on first use.",
+      "proposed_note": "Would cover changing an issued password on first use, but only if an administrator sets the flag on each account that is given a password.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "pwpolicy -setpolicy newPasswordRequired=1 forces the user to change the password at next logon, which is the mechanism for 'credentials provided to human users are changed on first use'. The mSCP rule has no check and no remediation ('technology inherently meets'), so it neither enforces nor verifies anything on its own.",
+          "open_question": "Decide whether an available-but-unenforced capability with no check is enough to count as supporting the control."
+        }
+      ]
+    },
+    {
+      "id": "r050",
+      "mscp": [
+        "mscp.os_obscure_password"
+      ],
+      "ism": "asd_ism.ism-1597",
+      "ism_section": "Guidelines for system access > Credential management > Protecting credentials",
+      "ism_text": "Credentials are obscured as they are entered into systems.",
+      "proposed_note": "macOS password fields always mask input; the rule records this inherent behaviour rather than setting or checking anything.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule states macOS uses NSSecureTextField for password entry, which obscures typed characters, matching 'Credentials are obscured as they are entered into systems' almost word for word.",
+          "open_question": "Whether a manual, attestation-only rule with no check or remediation counts as 'supporting' a control under this project's definition."
+        }
+      ]
+    },
+    {
+      "id": "r051",
+      "mscp": [
+        "mscp.icloud_private_relay_disable"
+      ],
+      "ism": "asd_ism.ism-1628",
+      "ism_section": "Guidelines for networking > Network design and configuration > Blocking anonymity network traffic",
+      "ism_text": "Outbound network connections to anonymity networks are blocked.",
+      "proposed_note": "Disables use of Apple's iCloud Private Relay from the device; it does not block outbound connections to other anonymity networks such as Tor.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Private Relay is a two-hop relay that masks the user's IP address and destinations from network operators, functionally similar to the anonymity networks the control targets. Forcing allowCloudPrivateRelay false stops the device making those outbound relay connections, matching 'outbound network connections to anonymity networks are blocked' for this one service.",
+          "open_question": "Whether ASD regards iCloud Private Relay as an 'anonymity network' (the discussion names only Tor as an example), and whether a device-side restriction counts when the control is normally implemented at the network boundary."
+        }
+      ]
+    },
+    {
+      "id": "r052",
+      "mscp": [
+        "mscp.audit_flags_ad_configure"
+      ],
+      "ism": "asd_ism.ism-1650",
+      "ism_section": "Guidelines for system access > Identity and access management > Privileged access to systems",
+      "ism_text": "Privileged user account and security group management events are centrally logged.",
+      "proposed_note": "May record user account and group changes on the Mac locally; central forwarding is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The 'ad' class covers administrative actions such as changes to authentication policies; if it includes local account and group administration it supports 'Privileged user account and security group management events are centrally logged' at the source.",
+          "open_question": "Whether macOS account and group management (through opendirectoryd/dscl or System Settings) produces BSM events in the 'ad' class, or is only logged in the unified log."
+        }
+      ]
+    },
+    {
+      "id": "r053",
+      "mscp": [
+        "mscp.auth_smartcard_enforce",
+        "mscp.auth_pam_login_smartcard_enforce",
+        "mscp.auth_pam_su_smartcard_enforce",
+        "mscp.auth_pam_sudo_smartcard_enforce"
+      ],
+      "ism": "asd_ism.ism-1682",
+      "ism_section": "Guidelines for system access > Identity and access management > Multi-factor authentication",
+      "ism_text": "Multi-factor authentication used for authenticating human users of systems is phishing-resistant.",
+      "proposed_note": "Would cover phishing resistance of multi-factor authentication to the Mac where a smartcard is enforced.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Certificate-based smartcard authentication binds the private key to the card and is generally regarded as phishing-resistant. No ISM text in this repository names smart cards as phishing-resistant, and local console, su and sudo authentication is not a typical real-time phishing surface.",
+          "open_question": "Confirm against ASD's definition of phishing-resistant multi-factor authentication (outside this repository) whether PIV/CAC-style smartcard authentication to a local workstation qualifies."
+        }
+      ]
+    },
+    {
+      "id": "r054",
+      "mscp": [
+        "mscp.system_settings_software_update_app_update_enforce"
+      ],
+      "ism": "asd_ism.ism-1693",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in applications other than office productivity suites, web browsers and their extensions, email clients, PDF applications, and security products are applied within one month of release.",
+      "proposed_note": "Auto-updates App Store applications only; apps installed outside the App Store are not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Automatic App Store app updates support 'Patches ... in applications other than office productivity suites, web browsers ... are applied within one month of release' for App Store-delivered apps.",
+          "open_question": "Whether the organisation's apps are delivered through the App Store (many are not), and whether automatic updating without verification counts toward a time-bound control."
+        }
+      ]
+    },
+    {
+      "id": "r055",
+      "mscp": [
+        "mscp.os_software_update_deferral"
+      ],
+      "ism": "asd_ism.ism-1695",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release.",
+      "proposed_note": "Limits how long macOS updates can be hidden by deferral; it does not force updates to be installed.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The deferral cap of the ODV days (recommended 30) keeps updates from being withheld beyond a month, relating to 'applied within one month of release' for workstation operating systems.",
+          "open_question": "Same as for ism-1902: a deferral limit is not installation, and the payload is only defined for macOS 15.0."
+        }
+      ]
+    },
+    {
+      "id": "r056",
+      "mscp": [
+        "mscp.system_settings_critical_update_install_enforce",
+        "mscp.system_settings_install_macos_updates_enforce"
+      ],
+      "ism": "asd_ism.ism-1695",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release.",
+      "proposed_note": "Automatically installs macOS updates, which supports the one-month window without guaranteeing it.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Same mechanism as for ism-1902; ism-1695 is the Essential Eight ML1 form of the workstation OS patching requirement ('applied within one month of release').",
+          "open_question": "Same as for ism-1696: whether automatic installation without a verified timeframe counts toward a time-bound control."
+        }
+      ]
+    },
+    {
+      "id": "r057",
+      "mscp": [
+        "mscp.system_settings_softwareupdate_current"
+      ],
+      "ism": "asd_ism.ism-1695",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release.",
+      "proposed_note": "Verifies that macOS last completed a full software update within ODV days (30 days in CIS/STIG, 7 in NLMAPGOV).",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Same mechanism as for ism-1902, against the Essential Eight ML1 wording 'applied within one month of release'.",
+          "open_question": "Whether LastFullSuccessfulDate reliably means all available updates were installed; the ODV must also be 30d or less."
+        }
+      ]
+    },
+    {
+      "id": "r058",
+      "mscp": [
+        "mscp.os_background_security_improvement_install_enable"
+      ],
+      "ism": "asd_ism.ism-1696",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within 48 hours of release when vulnerabilities are assessed as critical by vendors or when working exploits exist.",
+      "proposed_note": "Covers automatic installation of Apple Background Security Improvements, which helps apply critical OS security fixes quickly.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "A DDM declaration enforces automatic installation of Background Security Improvements and prevents users changing it, helping 'patches ... for vulnerabilities in operating systems of workstations ... are applied within 48 hours of release'.",
+          "open_question": "Only covers Background Security Improvements, not full OS updates, and does not verify the 48-hour timeframe is met."
+        }
+      ]
+    },
+    {
+      "id": "r059",
+      "mscp": [
+        "mscp.os_rapid_security_response_allow"
+      ],
+      "ism": "asd_ism.ism-1696",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within 48 hours of release when vulnerabilities are assessed as critical by vendors or when working exploits exist.",
+      "proposed_note": "Allows Rapid Security Responses to install, enabling fast OS fixes; it does not enforce the 48-hour timeframe.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "allowRapidSecurityResponseInstallation=true ensures Apple's urgent OS mitigations are not blocked by policy, supporting applying 'vendor mitigations for vulnerabilities in operating systems of workstations ... within 48 hours'.",
+          "open_question": "Allowing (rather than forcing) installation only removes a blocker and matches the default; a reviewer may consider this too indirect without a setting that enforces install deadlines."
+        }
+      ]
+    },
+    {
+      "id": "r060",
+      "mscp": [
+        "mscp.system_settings_critical_update_install_enforce",
+        "mscp.system_settings_install_macos_updates_enforce"
+      ],
+      "ism": "asd_ism.ism-1696",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within 48 hours of release when vulnerabilities are assessed as critical by vendors or when working exploits exist.",
+      "proposed_note": "Automatically installs macOS security and OS updates, which makes the 48-hour window achievable but does not guarantee it.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Enforcing automatic installation of security responses and macOS updates supports 'Patches ... in operating systems of workstations ... are applied within 48 hours of release when vulnerabilities are assessed as critical', but installation timing depends on the device being online, deferral settings and user restarts.",
+          "open_question": "Whether automatic installation without a verified deadline counts as support for a time-bound patching control; a DDM enforced-install deadline or a compliance check would be stronger evidence."
+        }
+      ]
+    },
+    {
+      "id": "r061",
+      "mscp": [
+        "mscp.os_authenticated_root_enable"
+      ],
+      "ism": "asd_ism.ism-1745",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Early Launch Antimalware, Secure Boot, Trusted Boot and Measured Boot functionality is enabled.",
+      "proposed_note": "Covers booting macOS from a cryptographically signed and sealed system volume, which is comparable to the Secure Boot and Trusted Boot parts of the control.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The check verifies csrutil authenticated-root is enabled, so the system volume is verified against Apple's signature at boot, providing the boot integrity that 'Secure Boot, Trusted Boot ... functionality is enabled' aims at.",
+          "open_question": "ISM-1745 names Windows features (Early Launch Antimalware, Measured Boot); decide whether macOS signed system volume verification is an accepted equivalent."
+        }
+      ]
+    },
+    {
+      "id": "r062",
+      "mscp": [
+        "mscp.icloud_private_relay_disable"
+      ],
+      "ism": "asd_ism.ism-1782",
+      "ism_section": "Guidelines for networking > Network design and configuration > Protective Domain Name System Services",
+      "ism_text": "A protective DNS service is used to block access to known malicious domain names.",
+      "proposed_note": "Keeps Safari's DNS lookups from being diverted to Apple's relay resolvers so the organisation's protective DNS service can see and block them; it does not configure or require a protective DNS service.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "When Private Relay is on, Safari resolves names through Apple's relay (oblivious DNS-over-HTTPS) instead of the configured resolver, bypassing a protective DNS service. Forcing allowCloudPrivateRelay false removes that bypass, which helps 'a protective DNS service is used to block access to known malicious domain names' remain effective.",
+          "open_question": "This is indirect support (removing a bypass rather than providing the service); a reviewer needs to decide whether that is enough to count as 'supports'."
+        }
+      ]
+    },
+    {
+      "id": "r063",
+      "mscp": [
+        "mscp.system_settings_time_machine_encrypted_configure"
+      ],
+      "ism": "asd_ism.ism-1811",
+      "ism_section": "Guidelines for system management > Data backup and restoration > Performing and retaining backups",
+      "ism_text": "Backups of data, applications and settings are retained in a secure and resilient manner.",
+      "proposed_note": "Encrypting the backup volume adds confidentiality; it does not make backups resilient (offline, immutable or off-site).",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Encrypted Time Machine volumes contribute to backups being 'retained in a secure ... manner', but nothing here addresses the 'resilient' part.",
+          "open_question": "Whether encryption of a local backup disk alone is enough to count as supporting 'secure and resilient' retention."
+        }
+      ]
+    },
+    {
+      "id": "r064",
+      "mscp": [
+        "mscp.os_asl_log_files_owner_group_configure",
+        "mscp.os_asl_log_files_permissions_configure"
+      ],
+      "ism": "asd_ism.ism-1815",
+      "ism_section": "Guidelines for security assurance > Security monitoring > Centralised event logging facility",
+      "ism_text": "Event logs are protected from unauthorised modification and deletion.",
+      "proposed_note": "Covers preventing standard users from modifying local Apple System Log files.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Root ownership and mode 640 mean only root can write the ASL log files, supporting 'event logs are protected from unauthorised modification and deletion' for those local files.",
+          "open_question": "Same section-scope question as ISM-1985 (centralised facility); deletion also depends on directory permissions, which these rules do not check."
+        }
+      ]
+    },
+    {
+      "id": "r065",
+      "mscp": [
+        "mscp.os_home_folders_secure",
+        "mscp.os_home_folders_default"
+      ],
+      "ism": "asd_ism.ism-1852",
+      "ism_section": "Guidelines for system access > Identity and access management > Unprivileged access to systems",
+      "ism_text": "Unprivileged access to systems and their resources is limited to only what is required for users to undertake their duties or functions.",
+      "proposed_note": "Covers preventing users from browsing other users' home folders on the same Mac.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rules remove group and other access from each user's home folder (secure) or reset it to Apple's default restrictive permissions, limiting users' access to other users' data, part of 'unprivileged access to systems and their resources is limited'.",
+          "open_question": "ISM-1852 is about limiting access to what duties require, which is largely an account and role decision; decide whether file-system permissions on local home folders count as direct support."
+        }
+      ]
+    },
+    {
+      "id": "r066",
+      "mscp": [
+        "mscp.os_user_app_installation_prohibit"
+      ],
+      "ism": "asd_ism.ism-1870",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Application control",
+      "ism_text": "Application control is applied to user profiles and temporary folders used by operating systems, web browsers and email clients.",
+      "proposed_note": "Blocks running apps from user home folders only, not temporary folders, using a control Apple has deprecated.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule enables com.apple.applicationaccess.new familyControlsEnabled with pathBlackList /Users/, a path rule preventing software running from user profiles, which matches 'Application control is applied to user profiles ...'.",
+          "open_question": "The rule itself warns Apple deprecated these application restriction controls; confirm they still work, and note temporary folders are not covered."
+        }
+      ]
+    },
+    {
+      "id": "r067",
+      "mscp": [
+        "mscp.os_mdm_require"
+      ],
+      "ism": "asd_ism.ism-1886",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device management > Maintaining mobile device security",
+      "ism_text": "Mobile devices are configured to operate in a supervised (or equivalent) mode.",
+      "proposed_note": "Verifies User Approved MDM enrolment, which gives Mac laptops supervised status on macOS 11 and later; desktops are not mobile devices.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The check confirms 'MDM enrollment: Yes (User Approved)'; the rule discussion states that UAMDM grants Supervised status on macOS 11+, matching 'configured to operate in a supervised (or equivalent) mode'.",
+          "open_question": "Whether Mac laptops are in scope as mobile devices, and whether User Approved enrolment (as opposed to Automated Device Enrollment) is accepted as 'supervised (or equivalent)' on current macOS."
+        }
+      ]
+    },
+    {
+      "id": "r068",
+      "mscp": [
+        "mscp.system_settings_screensaver_password_enforce"
+      ],
+      "ism": "asd_ism.ism-1888",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device management > Maintaining mobile device security",
+      "ism_text": "Mobile devices are configured with secure password-based lock screens.",
+      "proposed_note": "Requires a password to unlock the screen on Mac laptops; password strength is governed by other rules.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Requiring authentication to dismiss the screen saver is a password-based lock screen, supporting 'Mobile devices are configured with secure password-based lock screens'.",
+          "open_question": "Two points: whether the organisation treats MacBooks as ISM 'mobile devices' (the ISM glossary is understood to include laptops, but no glossary is in the repo to verify this), and whether 'secure' also requires the password policy rules to be applied."
+        }
+      ]
+    },
+    {
+      "id": "r069",
+      "mscp": [
+        "mscp.os_background_security_improvement_install_enable"
+      ],
+      "ism": "asd_ism.ism-1902",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist.",
+      "proposed_note": "Covers automatic installation of Apple Background Security Improvements, which helps apply OS security fixes within the required timeframe.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "A DDM declaration enforces automatic installation of Background Security Improvements, helping 'patches ... for vulnerabilities in operating systems of workstations ... are applied within one month of release'.",
+          "open_question": "Only covers Background Security Improvements, not full OS updates, and does not verify the timeframe is met."
+        }
+      ]
+    },
+    {
+      "id": "r070",
+      "mscp": [
+        "mscp.os_rapid_security_response_allow"
+      ],
+      "ism": "asd_ism.ism-1902",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist.",
+      "proposed_note": "Allows Rapid Security Responses to install; it does not enforce the one-month timeframe.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "allowRapidSecurityResponseInstallation=true ensures Apple's OS mitigations delivered as RSRs are not blocked, supporting applying OS patches 'within one month of release'.",
+          "open_question": "As for ISM-1696: enabling a delivery mechanism does not enforce a timeframe, and RSRs mostly target urgent rather than non-critical fixes."
+        }
+      ]
+    },
+    {
+      "id": "r071",
+      "mscp": [
+        "mscp.os_software_update_deferral"
+      ],
+      "ism": "asd_ism.ism-1902",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist.",
+      "proposed_note": "Limits how long macOS updates can be hidden by deferral; it does not force updates to be installed.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule caps com.apple.applicationaccess enforcedSoftwareUpdateDelay at the ODV (recommended 30 days), so updates become available within about a month, which relates to OS patches being 'applied within one month of release'.",
+          "open_question": "Decide whether capping deferral counts as support when installation still depends on other update enforcement; also the payload is only defined for macOS 15.0."
+        }
+      ]
+    },
+    {
+      "id": "r072",
+      "mscp": [
+        "mscp.system_settings_critical_update_install_enforce",
+        "mscp.system_settings_install_macos_updates_enforce"
+      ],
+      "ism": "asd_ism.ism-1902",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist.",
+      "proposed_note": "Automatically installs macOS updates, which supports the one-month window without guaranteeing it.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Automatic installation of macOS and security updates supports 'Patches ... in operating systems of workstations ... are applied within one month of release when vulnerabilities are assessed as non-critical', subject to the device being online and restarting.",
+          "open_question": "Same as for ism-1696: whether automatic installation without a verified timeframe counts toward a time-bound control."
+        }
+      ]
+    },
+    {
+      "id": "r073",
+      "mscp": [
+        "mscp.system_settings_software_update_enforce",
+        "mscp.system_settings_software_update_download_enforce"
+      ],
+      "ism": "asd_ism.ism-1902",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist.",
+      "proposed_note": "Automatic checking and downloading are prerequisites for timely patching; they do not install anything.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Enforcing automatic update checks and downloads shortens the path to 'applied within one month of release', but applying the patch still depends on the install rules or the user.",
+          "open_question": "Whether prerequisite settings that do not apply patches should be mapped at all; they may be better left unmapped."
+        }
+      ]
+    },
+    {
+      "id": "r074",
+      "mscp": [
+        "mscp.system_settings_softwareupdate_current"
+      ],
+      "ism": "asd_ism.ism-1902",
+      "ism_section": "Guidelines for system management > System maintenance > Mitigating known vulnerabilities",
+      "ism_text": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist.",
+      "proposed_note": "Verifies that macOS last completed a full software update within ODV days (30 days in CIS/STIG, 7 in NLMAPGOV).",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "If the last full successful Software Update was within 30 days, OS updates released more than a month ago should already be installed, which verifies 'applied within one month of release'.",
+          "open_question": "Whether LastFullSuccessfulDate reliably means all available updates were installed (rather than only a successful scan); the ODV must also be 30d or less."
+        }
+      ]
+    },
+    {
+      "id": "r075",
+      "mscp": [
+        "mscp.audit_flags_ad_configure"
+      ],
+      "ism": "asd_ism.ism-1976",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
+      "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
+      "proposed_note": "Records some administrative actions on the Mac locally; central forwarding is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The 'ad' flag in audit_control records administrative action events, and the control's discussion lists 'changes to security policies' as a typical security-relevant macOS event; the mSCP rule cites modifying authentication policies as an 'ad' event. The exact event set in the class is not verified here.",
+          "open_question": "Confirm from /etc/security/audit_event that the 'ad' class includes security policy changes on current macOS versions."
+        }
+      ]
+    },
+    {
+      "id": "r076",
+      "mscp": [
+        "mscp.audit_flags_ex_configure",
+        "mscp.audit_flags_fd_configure",
+        "mscp.audit_flags_fm_configure",
+        "mscp.audit_flags_fm_failed_configure",
+        "mscp.audit_flags_fr_configure",
+        "mscp.audit_flags_fw_configure"
+      ],
+      "ism": "asd_ism.ism-1976",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
+      "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
+      "proposed_note": "Records file access and program execution events on the Mac locally (mostly failed attempts); central forwarding is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The checks verify '-fr', '-fw', '-fm', '-fd' and '-ex' (failed file read, write, attribute change, attribute delete and program execution) and 'fm' (all attribute changes) in the audit_control flags. Denied access attempts are arguably security-relevant events, but the control's discussion list does not name file access, and failed execution is not the same as the 'successful process creations' it does list.",
+          "open_question": "Whether file access failure events count as 'security-relevant events' for ISM-1976 in the organisation's logging policy; the discussion list is 'typical' rather than exhaustive."
+        }
+      ]
+    },
+    {
+      "id": "r077",
+      "mscp": [
+        "mscp.os_firewall_log_enable"
+      ],
+      "ism": "asd_ism.ism-1976",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
+      "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
+      "proposed_note": "Covers generating detailed Application Firewall log events on the Mac; sending them to a central log store is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "EnableLogging=true with LoggingOption=detail makes the macOS Application Firewall write events to unified logging, a prerequisite for 'security-relevant events for Apple macOS operating systems are centrally logged'.",
+          "open_question": "The control requires central logging; local logging only helps indirectly. Firewall events are also marked private unless a separate profile is applied."
+        }
+      ]
+    },
+    {
+      "id": "r078",
+      "mscp": [
+        "mscp.os_sudo_log_enforce"
+      ],
+      "ism": "asd_ism.ism-1976",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Operating system event logging",
+      "ism_text": "Security-relevant events for Apple macOS operating systems are centrally logged.",
+      "proposed_note": "Ensures sudo privilege escalation events are recorded on the device; central collection is not covered.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "sudo log_allowed makes allowed privilege escalations appear in the macOS log, a security-relevant macOS event source for 'Security-relevant events for Apple macOS operating systems are centrally logged'.",
+          "open_question": "Decide whether local event generation for one event type counts as support for a control whose substance is central logging."
+        }
+      ]
+    },
+    {
+      "id": "r079",
+      "mscp": [
+        "mscp.os_asl_log_files_owner_group_configure",
+        "mscp.os_asl_log_files_permissions_configure"
+      ],
+      "ism": "asd_ism.ism-1985",
+      "ism_section": "Guidelines for security assurance > Security monitoring > Centralised event logging facility",
+      "ism_text": "Event logs are protected from unauthorised access.",
+      "proposed_note": "Covers restricting read access to local Apple System Log files to root and the wheel group.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rules set ASL log files listed in /etc/asl.conf to root:wheel ownership and mode 640 or less, so standard users cannot read them, matching 'event logs are protected from unauthorised access' for those local files.",
+          "open_question": "ISM-1985 sits under 'Centralised event logging facility', so it may be intended for the central log store rather than local host logs; ASL is also largely superseded by unified logging on modern macOS."
+        }
+      ]
+    },
+    {
+      "id": "r080",
+      "mscp": [
+        "mscp.audit_retention_configure"
+      ],
+      "ism": "asd_ism.ism-1988",
+      "ism_section": "Guidelines for security assurance > Security monitoring > Event log retention",
+      "ism_text": "Event logs are retained in a searchable manner for at least 12 months.",
+      "proposed_note": "Sets how long the Mac keeps its local audit trail; only helps if set to at least 12 months, and local files are not easily searchable.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets 'expire-after' in /etc/security/audit_control to an organisation-defined value. The control requires 'Event logs are retained in a searchable manner for at least 12 months'. Shipped benchmark values are 7d, 60d and 180d, and a size limit (for example '60d OR 5G') can expire logs earlier, so the default configuration does not meet the control; retention is normally achieved in the central facility.",
+          "open_question": "Whether the organisation sets expire-after to 12 months or more without a size cap, and whether local BSM files (searchable with auditreduce/praudit) count as 'searchable'."
+        }
+      ]
+    },
+    {
+      "id": "r081",
+      "mscp": [
+        "mscp.os_install_log_retention_configure"
+      ],
+      "ism": "asd_ism.ism-1988",
+      "ism_section": "Guidelines for security assurance > Security monitoring > Event log retention",
+      "ism_text": "Event logs are retained in a searchable manner for at least 12 months.",
+      "proposed_note": "Keeps the local install.log for the configured number of days; only meets the 12-month minimum when that value is 365 or more, and covers that one log only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets and checks the aslmanager TTL for /var/log/install.log to be at least $ODV days (recommended 365). With ODV >= 365 this directly makes one event log be 'retained ... for at least 12 months'.",
+          "open_question": "The ODV validation allows values as low as 1, so support depends on the deployed value; also whether a single local software-install log, rather than a centralised searchable store, is what a reviewer accepts as 'event logs are retained in a searchable manner'."
+        }
+      ]
+    },
+    {
+      "id": "r082",
+      "mscp": [
+        "mscp.os_sleep_and_display_sleep_apple_silicon_enable"
+      ],
+      "ism": "asd_ism.ism-2012",
+      "ism_section": "Guidelines for system access > Identity and access management > Screen locking",
+      "ism_text": "Systems are configured with a screen lock that:",
+      "proposed_note": "Sets display sleep to 10 minutes or less on Apple Silicon laptops; it does not itself require a password on wake.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets pmset displaysleep to 10 minutes or less and sleep to 15 minutes or less, within the control's 'maximum of 15 minutes of human user inactivity', and keeps display sleep shorter than system sleep.",
+          "open_question": "Display sleep only locks the screen if a password is required on wake, which is set by a different rule; decide whether this timer alone counts as support."
+        }
+      ]
+    },
+    {
+      "id": "r083",
+      "mscp": [
+        "mscp.os_unlock_active_user_session_disable"
+      ],
+      "ism": "asd_ism.ism-2012",
+      "ism_section": "Guidelines for system access > Identity and access management > Screen locking",
+      "ism_text": "Systems are configured with a screen lock that:",
+      "proposed_note": "Ensures only the session owner can unlock a locked screen; other screen lock requirements are covered elsewhere.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The rule sets the system.login.screensaver authorization rule to authenticate-session-owner (screenUnlockMode), so administrators cannot unlock another user's locked session, supporting the 'requires re-authentication by human users ... to unlock the system' part.",
+          "open_question": "Decide whether restricting who can unlock is part of the control, which is about the re-authentication requirement itself."
+        }
+      ]
+    },
+    {
+      "id": "r084",
+      "mscp": [
+        "mscp.system_settings_apple_watch_unlock_disable",
+        "mscp.system_settings_biometric_disable"
+      ],
+      "ism": "asd_ism.ism-2012",
+      "ism_section": "Guidelines for system access > Identity and access management > Screen locking",
+      "ism_text": "Systems are configured with a screen lock that:",
+      "proposed_note": "Removes Apple Watch and Touch ID as alternative ways to unlock, so unlocking falls back to the account's primary credential.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "The control requires unlocking with 're-authentication by human users using all authentication factors'. An Apple Watch proximity unlock or a fingerprint alone lets the user skip the full credential; disabling them pushes unlock back to the password or smart card.",
+          "open_question": "Whether removing alternative single-factor unlock methods counts as enforcing 'all authentication factors', given the remaining macOS unlock is typically still a single password unless smart card enforcement is also configured."
+        }
+      ]
+    },
+    {
+      "id": "r085",
+      "mscp": [
+        "mscp.system_settings_hot_corners_secure"
+      ],
+      "ism": "asd_ism.ism-2012",
+      "ism_section": "Guidelines for system access > Identity and access management > Screen locking",
+      "ism_text": "Systems are configured with a screen lock that:",
+      "proposed_note": "Removes a hot corner that would prevent the screen lock from starting; it does not stop users re-adding it.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "A hot corner set to 'Disable Screen Saver' lets a user suppress the inactivity lock; removing it supports 'denies human users the ability to disable the screen locking mechanism'. However the check and fix act on the current user's own com.apple.dock preferences rather than a managed profile, so the user can reconfigure it afterwards.",
+          "open_question": "Whether the deployment enforces this through a managed profile (which would actually deny the user the ability) or only remediates the user preference after the fact."
+        }
+      ]
+    },
+    {
+      "id": "r086",
+      "mscp": [
+        "mscp.pwpolicy_simple_sequence_disable"
+      ],
+      "ism": "asd_ism.ism-2078",
+      "ism_section": "Guidelines for system access > Credential management > Password strength",
+      "ism_text": "Passwords appearing in lists of commonly used passwords or lists of compromised passwords are not used.",
+      "proposed_note": "Would partly cover the control by rejecting passwords made of repeated or sequential characters, a common subset of compromised passwords, without checking against an actual password list.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "allowSimple=false / RequireComplexPasscode=true rejects repeating, ascending and descending character sequences (for example 1111 or abcd); it is not a character-class rule, so it does not conflict with ISM-2080. The mSCP note says it 'prevents use of passwords which are regularly found in compromised password lists'. The control requires that passwords 'appearing in lists of commonly used passwords or lists of compromised passwords are not used', which is a list check this setting does not perform.",
+          "open_question": "Decide whether a pattern-based block of trivially guessable passwords counts as partial support for a list-based control."
+        }
+      ]
+    },
+    {
+      "id": "r087",
+      "mscp": [
+        "mscp.icloud_addressbook_disable",
+        "mscp.icloud_appleid_system_settings_disable",
+        "mscp.icloud_bookmarks_disable",
+        "mscp.icloud_calendar_disable",
+        "mscp.icloud_drive_disable",
+        "mscp.icloud_freeform_disable",
+        "mscp.icloud_keychain_disable",
+        "mscp.icloud_mail_disable",
+        "mscp.icloud_notes_disable",
+        "mscp.icloud_photos_disable",
+        "mscp.icloud_reminders_disable",
+        "mscp.icloud_sync_disable"
+      ],
+      "ism": "asd_ism.ism-2096",
+      "ism_section": "Guidelines for enterprise mobility > Mobile device management > Maintaining mobile device security",
+      "ism_text": "Mobile devices are configured to enforce separation between organisational and personal mobile applications and data.",
+      "proposed_note": "Stops organisational files, mail, contacts, calendars, notes, photos, bookmarks and passwords on the Mac from syncing into a user's personal iCloud account; it does not separate personal and organisational apps or data on the device itself.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "Disabling iCloud sync (and Apple Account sign-in) removes the main built-in path by which organisational data on a Mac would be copied into a personal Apple account, which is one aspect of 'enforce separation between organisational and personal mobile applications and data'.",
+          "open_question": "Two points: (1) whether ISM's 'mobile devices' covers macOS laptops (the ISM glossary is not in this repo to confirm; ASD's published glossary is understood to include notebook computers, unverified here); (2) whether ASD intends 'separation' to mean managed/unmanaged app and data containers, which blocking iCloud sync does not provide, rather than blocking flows to personal cloud storage."
+        }
+      ]
+    },
+    {
+      "id": "r088",
+      "mscp": [
+        "mscp.os_setup_assistant_filevault_enforce"
+      ],
+      "ism": "asd_ism.ism-2109",
+      "ism_section": "Guidelines for media > Media usage > Encrypting media",
+      "ism_text": "Pre-boot authentication using passwords, or managed network-based key release, is implemented for media containing encrypted system volumes.",
+      "proposed_note": "Covers pre-boot password authentication for the internal startup volume only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "With FileVault enabled, a user password must be entered at startup before the encrypted volume is unlocked, which matches 'Pre-boot authentication using passwords ... is implemented for media containing encrypted system volumes'.",
+          "open_question": "Decide whether enforcing FileVault is enough to count as pre-boot authentication, given that unattended restarts (fdesetup authrestart) bypass the prompt and the rule does not check for them."
+        }
+      ]
+    },
+    {
+      "id": "r089",
+      "mscp": [
+        "mscp.os_mobile_file_integrity_enable"
+      ],
+      "ism": "asd_ism.ism-2127",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Digital signature verification functionality for drivers is enforced before they are loaded.",
+      "proposed_note": "Ensures macOS code-signature enforcement is not switched off, which underpins signature checks on kernel extensions; it does not configure driver policy itself.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "AMFI is the kernel component that enforces code signatures; checking that amfi_get_out_of_my_way=1 is absent keeps signature verification active, supporting 'Digital signature verification functionality for drivers is enforced before they are loaded'.",
+          "open_question": "Whether AMFI is the mechanism that verifies kext/driver signatures on current macOS, or whether kext signing is enforced independently (e.g. by SIP and kernel policy), in which case this rule does not support the control."
+        }
+      ]
+    },
+    {
+      "id": "r090",
+      "mscp": [
+        "mscp.os_sip_enable"
+      ],
+      "ism": "asd_ism.ism-2127",
+      "ism_section": "Guidelines for system hardening > Operating system hardening > Hardening operating system configurations",
+      "ism_text": "Digital signature verification functionality for drivers is enforced before they are loaded.",
+      "proposed_note": "Covers kernel extension signing enforcement only.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "With SIP enabled, macOS enforces kernel extension signing; disabling SIP is what allows unsigned kexts to load. This relates to 'Digital signature verification functionality for drivers is enforced before they are loaded'.",
+          "open_question": "Confirm against Apple platform security documentation that SIP status is what governs kext signature enforcement on current macOS versions."
+        }
+      ]
+    },
+    {
+      "id": "r091",
+      "mscp": [
+        "mscp.auth_smartcard_certificate_trust_enforce_high"
+      ],
+      "ism": "asd_ism.ism-2145",
+      "ism_section": "Guidelines for system access > Credential management > Revoking credentials",
+      "ism_text": "Credentials for user accounts are revoked when they are no longer required.",
+      "proposed_note": "Would cover the device side of credential revocation: a revoked smartcard certificate can no longer be used to log on to the Mac.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "checkCertificateTrust=3 requires a positive CRL/OCSP response (hard fail) before smartcard authentication succeeds, so a credential revoked at the CA is refused at the Mac. The control text 'credentials for user accounts are revoked when they are no longer required' is about the act of revoking, which happens at the CA, not on the device.",
+          "open_question": "Decide whether enforcing revocation status at authentication counts as supporting a control about revoking credentials, or whether the control is purely an identity-management process."
+        }
+      ]
+    },
+    {
+      "id": "r092",
+      "mscp": [
+        "mscp.auth_smartcard_certificate_trust_enforce_moderate"
+      ],
+      "ism": "asd_ism.ism-2145",
+      "ism_section": "Guidelines for system access > Credential management > Revoking credentials",
+      "ism_text": "Credentials for user accounts are revoked when they are no longer required.",
+      "proposed_note": "Would cover the device side of credential revocation, but only when the CRL/OCSP responder is reachable.",
+      "status": "open",
+      "comments": [
+        {
+          "date": "2026-10-30",
+          "pass": "first",
+          "rationale": "checkCertificateTrust=2 performs soft-fail revocation checking: a certificate known to be revoked is refused, but authentication still succeeds if the CRL/OCSP server is unreachable. The control is about revoking credentials when no longer required, which happens at the CA rather than on the device.",
+          "open_question": "Same question as the high-trust rule, plus whether soft-fail checking is strong enough to count at all."
+        }
+      ]
+    }
+  ]
+}

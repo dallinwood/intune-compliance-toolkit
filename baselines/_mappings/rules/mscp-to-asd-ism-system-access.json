@@ -1,0 +1,448 @@
+{
+  "schema_version": 1,
+  "id": "mscp-to-asd-ism-system-access",
+  "description": "mSCP rules that support ASD ISM controls in the Guidelines for system access.",
+  "links": [
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_policy_banner_loginwindow_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0408",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Shows a banner at the macOS login window; the organisation must write banner text that reminds personnel of their security responsibilities, as the check only confirms the banner file exists."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_policy_banner_ssh_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_policy_banner_ssh_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0408",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Shows a banner for SSH (remote) logons only; the banner text must remind personnel of their security responsibilities."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_loginwindow_loginwindowtext_enable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0408",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Sets a login window banner; the message (ODV) must actually remind users of their security responsibilities - the baseline defaults are test strings."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_minimum_length_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0421",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Supports the control only when the minimum length is set to 15 or more; the mSCP recommended value of 6 does not meet it, while the CIS value of 15 does."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_minimum_length_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0422",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Supports the control only when the minimum length is set to 20 or more, which no mSCP benchmark value reaches (the highest is 15)."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_login_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0974",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers only the terminal login command path (/etc/pam.d/login), not the graphical login window."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0974",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers multi-factor authentication for logging on to, authorising on and unlocking the Mac itself, not for other systems or online services."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_login_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1173",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers only the terminal login command path (/etc/pam.d/login), not the graphical login window."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_su_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_sudo_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1173",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers multi-factor authentication when privileges are elevated on the Mac with su or sudo, not the initial logon."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1173",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers multi-factor authentication when privileged users log on to, authorise on or unlock the Mac itself, not for other systems or online services."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.auth_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_login_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_su_smartcard_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.auth_pam_sudo_smartcard_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1401",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers the type of multi-factor authentication used wherever these rules enforce a smartcard on the Mac."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_account_lockout_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1403",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Supports the control only when the failed-attempt limit is set to 5 or fewer; the mSCP recommended value of 6 passes the mSCP check but exceeds the ISM maximum, while the CIS (5) and DISA STIG (3) values meet it."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_account_inactivity_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1404",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers local macOS accounts only and requires the inactivity period to stay at 45 days or fewer; the mSCP default of 35 meets this."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_guest_account_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_guest_access_smb_disable",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_automatic_login_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1546",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Closes specific unauthenticated paths into the Mac (guest login, guest SMB access, automatic login); it does not by itself establish authentication for every access path."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_minimum_length_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1557",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Supports the control only when the minimum length is set to 17 or more, which no mSCP benchmark value reaches (the highest is 15)."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.pwpolicy_account_inactivity_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1648",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers local macOS administrator accounts only and requires the inactivity period to stay at 45 days or fewer; the mSCP default of 35 meets this."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.audit_flags_aa_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_flags_lo_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1895",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Records successful and unsuccessful sign-in events on the Mac itself; forwarding them to a central logging facility is not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_password_hint_remove",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1980",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Removes password hints already stored on local accounts; it does not by itself stop the login window offering hints (a separate setting)."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_password_hints_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1980",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers password hints at the macOS login window; hint features in other systems or applications are out of scope."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_hot_corners_disable",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2012",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers one way a user could disable the screen lock (a 'Disable Screen Saver' hot corner); the timeout, re-authentication and power-saving parts need other settings."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_screensaver_password_enforce",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_screensaver_ask_for_password_delay_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2012",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers requiring the user to authenticate to unlock once the screen saver starts; the inactivity timeout, power-saving order and all-factors re-authentication are handled elsewhere."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_screensaver_timeout_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-2012",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Covers the inactivity trigger only, and only when the timeout ODV is 900 seconds or less (the mSCP recommended value of 1200 is too long); the power-saving-state, re-authentication and cannot-disable parts need other settings."
+    }
+  ]
+}

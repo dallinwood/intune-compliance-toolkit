@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "id": "mscp-to-asd-ism-security-assurance",
+  "description": "mSCP rules that support ASD ISM controls in the Guidelines for security assurance.",
+  "links": [
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_time_server_enabled",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0988",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Ensures the device keeps synchronised time; which time server is used, and the logging facility itself, are configured elsewhere."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_time_server_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.system_settings_time_server_enforce",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-0988",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Sets and enforces the device's network time source; the logging facility itself is configured elsewhere."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.audit_acls_files_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_acls_folders_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_files_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_files_mode_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_files_owner_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_folder_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_folder_owner_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_folders_mode_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1815",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Protects the audit trail stored on the Mac from modification or deletion by non-administrators; copies held in a central logging facility need their own protection."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_newsyslog_files_owner_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_newsyslog_files_permissions_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1815",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Prevents standard users from modifying local newsyslog-managed log files; deletion depends on the log directory permissions, which these rules do not set, and central log copies are not covered."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.audit_acls_files_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_acls_folders_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_files_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_files_mode_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_files_owner_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_folder_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_folder_owner_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.audit_folders_mode_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1985",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Protects the audit trail stored on the Mac from access by non-administrators; copies held in a central logging facility need their own protection."
+    },
+    {
+      "relation": "supports",
+      "from": [
+        {
+          "kind": "rule",
+          "id": "mscp.os_newsyslog_files_owner_group_configure",
+          "release": "release_27.0"
+        },
+        {
+          "kind": "rule",
+          "id": "mscp.os_newsyslog_files_permissions_configure",
+          "release": "release_27.0"
+        }
+      ],
+      "to": [
+        {
+          "kind": "rule",
+          "id": "asd_ism.ism-1985",
+          "release": "v2026.09.4"
+        }
+      ],
+      "note": "Protects local system log files managed by newsyslog from being read by standard users; logs held in a central facility need their own protection."
+    }
+  ]
+}

@@ -351,6 +351,13 @@ write or commit an index yourself. The app reads that one index at startup;
 if it cannot, the "Mapping problems" notice says so and the rest of the app
 works as usual.
 
+Only mappings that a reviewer can agree with without debate go into
+`baselines/_mappings/rules/`. Candidates that are still uncertain wait in
+`docs/mappings/mscp-to-asd-ism-review.json`, each with the first pass's
+reasoning and open question. A later research pass adds a comment and sets
+its status (`mapped`, `rejected` or `needs_maintainer`); the maintainer
+decides whatever is still uncertain.
+
 ## Product and licence catalog
 
 The catalog records which products and features each licence includes,
