@@ -141,58 +141,32 @@
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
+      "type": "licence",
       "target": "microsoft.intune-advanced-analytics"
     },
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
+      "type": "licence",
       "target": "microsoft.intune-cloud-pki"
     },
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
+      "type": "licence",
       "target": "microsoft.intune-endpoint-privilege-management"
     },
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
+      "type": "licence",
       "target": "microsoft.intune-enterprise-app-management"
     },
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
+      "type": "licence",
       "target": "microsoft.intune-remote-help"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.firmware-over-the-air-updates"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.specialty-device-management"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.tunnel-for-mam"
     },
     {
       "availability": "included",
@@ -244,48 +218,6 @@
       "note": null,
       "type": "licence",
       "target": "microsoft.entra-id-governance-step-up-for-entra-id-p2"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.entitlement-management-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.identity-governance-dashboard"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.lifecycle-workflows"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.ml-assisted-access-reviews"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.entra-verified-id-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.face-check"
     },
     {
       "availability": "included",

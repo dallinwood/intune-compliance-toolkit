@@ -115,48 +115,6 @@
       "target": "microsoft.entra-id-governance-step-up-for-entra-id-p2"
     },
     {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.entitlement-management-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.identity-governance-dashboard"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.lifecycle-workflows"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.ml-assisted-access-reviews"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.entra-verified-id-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.face-check"
-    },
-    {
       "availability": "included",
       "note": null,
       "capacity": null,

@@ -956,13 +956,6 @@
       "target": "microsoft.microsoft-365-copilot"
     },
     {
-      "availability": "add_on",
-      "note": "Requires the SharePoint Advanced Management Plan 1 add-on; not included with the Copilot-provided SAM entitlement.",
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.restricted-site-creation-by-apps"
-    },
-    {
       "availability": "included",
       "note": null,
       "capacity": null,
@@ -1217,13 +1210,6 @@
       "target": "microsoft.sharepoint-advanced-management",
       "availability": "add_on",
       "note": null
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.restricted-site-creation-by-users"
     },
     {
       "availability": "add_on",
@@ -1514,29 +1500,8 @@
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.viva-learning-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
       "type": "licence",
       "target": "microsoft.viva-workplace-analytics-employee-feedback"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.viva-glint"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.viva-pulse"
     },
     {
       "availability": "add_on",

@@ -838,48 +838,6 @@
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.entitlement-management-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.identity-governance-dashboard"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.lifecycle-workflows"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.ml-assisted-access-reviews"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.entra-verified-id-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.face-check"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
       "type": "licence",
       "target": "microsoft.microsoft-365-copilot"
     },
@@ -1138,13 +1096,6 @@
       "target": "microsoft.sharepoint-advanced-management",
       "availability": "add_on",
       "note": null
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.restricted-site-creation-by-users"
     },
     {
       "availability": "add_on",
@@ -1435,29 +1386,8 @@
     {
       "availability": "add_on",
       "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.viva-learning-premium"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
       "type": "licence",
       "target": "microsoft.viva-workplace-analytics-employee-feedback"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.viva-glint"
-    },
-    {
-      "availability": "add_on",
-      "note": null,
-      "capacity": null,
-      "type": "product",
-      "target": "microsoft.viva-pulse"
     },
     {
       "availability": "add_on",
