@@ -151,19 +151,7 @@
       "availability": "included",
       "note": null,
       "type": "product",
-      "target": "microsoft.access-reviews"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
       "target": "microsoft.entra-id-protection"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.risk-based-conditional-access"
     },
     {
       "availability": "included",

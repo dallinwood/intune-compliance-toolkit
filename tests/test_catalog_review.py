@@ -67,9 +67,32 @@ def test_licensing_tiers_are_licences_that_nest():
     assert included_targets("entra-id-p2")["microsoft.entra-id-p1"] == "included"
     assert included_targets("m365-e3")["microsoft.entra-id-p1"] == "included"
     assert included_targets("m365-e5")["microsoft.entra-id-p2"] == "included"
-    assert "microsoft.entra-id-p2" not in included_targets("m365-e3")
-    assert included_targets("m365-e3")["microsoft.entra-id-p2-step-up"] == "add_on"
     assert included_targets("m365-e3")["microsoft.intune-plan-1"] == "included"
+
+
+def test_e3_matches_the_official_comparison_for_entra_id_p2_features():
+    # Modern Work Plan Comparison (Enterprise), page 7: E3 has no P2 identity rows.
+    # Page 11: Entra ID P2 can be added to E3, which in turn unlocks the P2-only add-ons.
+    e3 = included_targets("m365-e3")
+    for p2_only_product in [
+        "microsoft.access-reviews", "microsoft.privileged-identity-management",
+        "microsoft.risk-based-conditional-access", "microsoft.entitlement-management-basic",
+    ]:
+        assert p2_only_product not in e3
+    assert e3["microsoft.entra-id-p2"] == "add_on"
+    for p2_add_on in ["entra-id-governance-step-up-for-entra-id-p2", "entra-suite-add-on-for-entra-id-p2"]:
+        assert e3[f"microsoft.{p2_add_on}"] == "add_on"
+        assert document("licences", p2_add_on)["requires"] == "microsoft.entra-id-p2"
+
+
+def test_e3_includes_intune_plan_2_and_its_modules_per_the_official_comparison():
+    # Pages 5 and 11: Plan 2, Remote Help and Advanced Analytics are included in E3 (added July 2026).
+    e3 = included_targets("m365-e3")
+    for included_slug in ["intune-plan-2", "intune-remote-help", "intune-advanced-analytics"]:
+        assert e3[f"microsoft.{included_slug}"] == "included"
+    for add_on_slug in ["intune-suite", "intune-cloud-pki", "intune-endpoint-privilege-management",
+                        "intune-enterprise-app-management"]:
+        assert e3[f"microsoft.{add_on_slug}"] == "add_on"
 
 
 @pytest.mark.parametrize("slug", [

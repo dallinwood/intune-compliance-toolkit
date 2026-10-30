@@ -463,19 +463,7 @@
       "availability": "add_on",
       "note": null,
       "type": "licence",
-      "target": "microsoft.entra-id-p2-step-up"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.access-reviews"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.entitlement-management-basic"
+      "target": "microsoft.entra-id-p2"
     },
     {
       "availability": "add_on",
@@ -488,18 +476,6 @@
       "note": null,
       "type": "product",
       "target": "microsoft.mfa-registration-policy"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.privileged-identity-management"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.risk-based-conditional-access"
     },
     {
       "availability": "included",
@@ -1460,6 +1436,18 @@
       "target": "microsoft.entra-id-governance",
       "availability": "add_on",
       "note": null
+    },
+    {
+      "availability": "add_on",
+      "note": null,
+      "type": "licence",
+      "target": "microsoft.entra-id-governance-step-up-for-entra-id-p2"
+    },
+    {
+      "availability": "add_on",
+      "note": null,
+      "type": "licence",
+      "target": "microsoft.entra-suite-add-on-for-entra-id-p2"
     }
   ],
   "review": [
@@ -1469,10 +1457,8 @@
     "Power BI Pro: official comparison shows Add-on, the earlier data showed Not included.",
     "Defender for Cloud Apps: official comparison shows Add-on, the earlier data showed Not included.",
     "Defender for Identity: official comparison shows Add-on, the earlier data showed Not included.",
-    "Microsoft Entra ID Plan 2: official comparison shows Add-on, the earlier data showed Not included.",
     "Entra ID Free: official comparison shows Not included, the earlier data showed Included.",
     "Microsoft Defender for Endpoint Plan 2: official comparison shows Add-on, the earlier data showed Not included.",
-    "Entra Suite add-on to Entra ID Plan 2: official comparison shows Add-on, the earlier data showed Not included.",
     "Insider Risk Management Forensic Evidence: official comparison shows Add-on, the earlier data showed Not included.",
     "Defender Experts for XDR: official comparison shows Add-on, the earlier data showed Not included.",
     "Viva Pulse: official comparison shows Add-on, the earlier data showed it as part of a package.",
@@ -1502,7 +1488,6 @@
     "Check Privacy Risk Management: the official comparison row \"Priva Privacy Risk Management\" may correspond to it (shows Add-on here).",
     "Check Data Loss Prevention: the official comparison row \"Microsoft Purview Data Loss Prevention (for email and files)\" may correspond to it (shows Included here).",
     "Check Exchange Online Archiving: the official comparison row \"Exchange Archiving\" may correspond to it (shows Included here).",
-    "Check Entra ID Governance add-on to Entra ID Plan 2: the official comparison row \"Microsoft Entra ID Governance Plan 2\" may correspond to it (shows Add-on here).",
     "Check Intune Enterprise App Management: the official comparison row \"Microsoft Intune Enterprise Application Management\" may correspond to it (shows Add-on here).",
     "Check Intune Cloud PKI: the official comparison row \"Microsoft Cloud PKI\" may correspond to it (shows Add-on here).",
     "Check Copilot Studio: the official comparison row \"Copilot Studio per tenant per month\" may correspond to it (shows Add-on here).",
