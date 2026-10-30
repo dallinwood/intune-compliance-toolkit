@@ -4,7 +4,7 @@
   "title": "Intune Enterprise App Management",
   "vendor": "microsoft",
   "parent": null,
-  "requires": "microsoft.intune.plan_1",
+  "requires": "microsoft.intune",
   "category": "Endpoint and app management",
   "description": "An advanced Intune capability available as an individual add-on or through qualifying Microsoft 365 or Intune Suite licences. Requires Intune Plan 1, not the full Intune Suite.",
   "links": [
@@ -17,6 +17,5 @@
       "url": "https://www.microsoft.com/en-au/security/microsoft-intune-pricing"
     }
   ],
-  "targets": [],
-  "plans": []
+  "targets": []
 }

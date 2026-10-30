@@ -22,8 +22,9 @@ After seeding, the maintainer owns and edits the data by hand.
     description, links and target platforms.
   - A list of licences by vendor, each referencing the products, features and plans it
     includes.
-  - Product plans (such as "Plan 1" and "Plan 2") are defined once on the product, and every
-    licence references them. A licence can define its own custom plan when one is unique to it.
+  - Licensing tiers (such as "Plan 1" and "Plan 2") are licences that include the features the
+    tier grants, and suites include the tier licences. (Superseded 2026-10-30: tiers were
+    originally product plans; see the progress log.)
   - Features are mappable on their own, so add-on features can be listed separately and, later,
     linked to rules such as ISM controls.
   - Vendor-neutral: nothing in the format or UI assumes Microsoft.
@@ -50,11 +51,11 @@ After seeding, the maintainer owns and edits the data by hand.
 - **Product:** a catalog entry for a product, service or feature. A feature is a product with a
   `parent` (such as "Access Reviews" under "Microsoft Entra ID"). Nesting can be several levels
   deep.
-- **Plan:** a level of a product ("Plan 1", "Plan 2", "Standard", "Premium"). Plans are defined on
-  the product and may list the features (child products) that the plan includes.
+- **Tier:** a level of a product ("Plan 1", "Plan 2"). A tier is a licence, not part of the
+  product, so the Products tab lists capabilities only and all licensing lives in licences.
 - **Licence:** a purchasable subscription or add-on from one vendor. It lists what it includes.
-- **Inclusion:** one entry in a licence's `includes` list, pointing at a product and optionally
-  one of its plans or a custom plan, with an availability.
+- **Inclusion:** one entry in a licence's `includes` list, pointing at a product or another
+  licence, with an availability.
 
 ## 4. Files
 
@@ -100,24 +101,17 @@ The validator and the publish step read it separately from the rule library.
   "links": [                               // may be empty
     { "title": "Documentation", "url": "https://learn.microsoft.com/entra/fundamentals/whatis" }
   ],
-  "targets": [],                           // platform names, using the rule library's keys ("Windows", "macOS", "Linux", ...)
-  "plans": [                               // may be empty
-    { "id": "plan_1", "title": "Plan 1", "description": null, "features": [] },
-    { "id": "plan_2", "title": "Plan 2", "description": null,
-      "features": ["microsoft.entra-id-access-reviews", "microsoft.entra-id-pim"] }
-  ]
+  "targets": []                            // platform names, using the rule library's keys ("Windows", "macOS", "Linux", ...)
 }
 ```
 
 - The file name is the id's slug: `products/microsoft/entra-id.json`.
-- A plan id is unique within its product and matches `^[a-z0-9][a-z0-9_]*$` (for example
-  `plan_1`, `premium`). Its full id is the product id and the plan id joined by a dot:
-  `microsoft.entra-id.plan_1`. Product ids contain exactly one dot, so a full plan id always
-  splits unambiguously. The full id is what the index, URLs and any future mapping use.
-- Every feature is a full entry in its own file, with its own description, links, targets and
-  plans, linked to its product through `parent`. A plan's `features` holds only references: the
-  ids of those feature files, whose parent chain must lead back to this product. Nothing about a
-  feature is written into the plan.
+- Every feature is a full entry in its own file, with its own description, links and targets,
+  linked to its product through `parent`.
+- `requires` is a technical dependency between products (product ids only), never a licensing
+  prerequisite; those belong on licences.
+- Products have no plans. A tier such as Entra ID P1 is the licence `microsoft.entra-id-p1`,
+  which includes `microsoft.entra-id` and the features P1 grants.
 - `category` is meant for top-level products. A child inherits its top-level ancestor's category
   in the UI and leaves its own as null.
 
@@ -135,13 +129,11 @@ The validator and the publish step read it separately from the rule library.
   "description": null,
   "links": [],
   "includes": [
-    { "type": "product", "target": "microsoft.entra-id", "plan": "plan_2", "availability": "included", "note": null },
+    { "type": "licence", "target": "microsoft.entra-id-p2", "availability": "included", "note": null },
     { "type": "product", "target": "microsoft.access-reviews", "availability": "included", "note": null },
     { "type": "product", "target": "microsoft.teams-premium", "availability": "add_on", "note": null },
     { "type": "licence", "target": "microsoft.entra-suite", "availability": "add_on", "note": null },
-    { "type": "product", "target": "microsoft.exchange-online",
-      "custom_plan": { "title": "Plan 2 (100 GB)", "description": null },
-      "availability": "included", "note": null }
+    { "type": "licence", "target": "microsoft.exchange-online-plan-2", "availability": "included", "note": "100 GB" }
   ],
   "review": []                             // maintainer worklist strings, removed once resolved
 }
@@ -149,16 +141,19 @@ The validator and the publish step read it separately from the rule library.
 
 - **`type` and `target`** identify either a product or a licence. The two namespaces are
   independent: a product and a licence can have the same id without ambiguity.
-- **`plan`** is the short plan id and must be defined on the target product.
-  **`custom_plan`** is for a level unique to this licence. An entry sets at most one
-  of the two, and neither is allowed on a licence target.
+- **Tiers are licences.** A full tier subscription includes the tier below it as a licence
+  (Entra ID P2 includes Entra ID P1) plus what it adds. A step-up add-on (Entra ID P2 Step-up,
+  Intune Plan 2) includes only what it adds, because its `requires` already guarantees the
+  lower tier.
+- **`requires`** names the tier licence. It is met by that licence or any licence that includes
+  it as `included`, transitively, so prerequisite lists do not enumerate every suite.
 - **`availability`:**
   - `included`: comes with the licence.
   - `add_on`: can be bought separately, subject to that offer's prerequisites.
 - **Bundles are licences**, not parent products. The former hand-written `package`
   field is removed. Nested licence provenance supplies the UI's "via" links.
 - **What a licence includes in effect** is every directly listed product, plus the
-  `features` of its listed plans and the included entitlements of nested licences.
+  included entitlements of nested licences.
   An `add_on` edge makes those entitlements optional, not included. A nested licence's
   own optional offers are not inherited. Requirements never grant entitlements.
   Direct entries win over matching derived entries; the resolver preserves availability
@@ -177,15 +172,14 @@ Modelled on `tools/mappings.py`. **Errors** (each fails the tests):
   does not match the id's slug and vendor folder;
 - an unknown vendor;
 - a `parent` that does not exist, belongs to another vendor, or forms a cycle;
-- a duplicate plan id within a product; a plan feature that is not a descendant of the product;
-- a licence inclusion whose target does not exist in the specified namespace;
-  a `plan` not defined on that product; both `plan` and `custom_plan`; any plan on
-  a licence target; an unknown `availability`;
+- a licence inclusion whose target does not exist in the specified namespace, or an unknown
+  `availability` (a `plan` or `custom_plan` field is rejected by the schema);
+- a licence that grants no existing product as `included`, directly or through included
+  licences;
 - a licence including itself, or any indirect inclusion cycle;
-- the same type, target and plan listed twice in one licence;
+- the same type and target listed twice in one licence;
 - a licence `requires` id that is not a licence, or that points at itself;
-- a product `requires` id that is not a product or a plan defined on one, or that points at the
-  product itself or its own plans;
+- a product `requires` id that is not a product, or that points at the product itself;
 - a requirement group with fewer than two members, an unknown operator, or a group nested
   directly in a group of the same operator (a requirement cycle is only a warning);
 - a file that is not UTF-8 or not LF.
@@ -197,11 +191,11 @@ The deploy workflow already runs the Python tests, so an invalid catalog cannot 
 `scripts/copy-baselines.mjs` (or a sibling script it calls) copies `catalog/` to
 `webui/public/catalog/` and writes two compact generated files, never committed:
 
-- **`_index.json`:** generated schema version 2, with every vendor, product and licence,
+- **`_index.json`:** generated schema version 3, with every vendor, product and licence,
   so the app makes one startup fetch for the catalog. Source documents retain version 1.
   If it grows a lot, per-file detail fetches can come later.
 - **`by_product`** (inside the same index): for each product id, every licence that includes it,
-  with availability, plan and whether it comes directly or through a plan. This is the reverse
+  with availability and the nested licence it comes through, if any. This is the reverse
   side of the mapping, so product files never store their licences.
 
 A shared TypeScript module builds the index, as `mappingIndex.ts` does, so the publish step and
@@ -331,3 +325,4 @@ Coding goes to Sonnet subagents. UI and styling decisions are reviewed by Opus.
 - 2026-10-28: Reworded the six Viva Pulse review notes that still named the retired package feature value (`fix: reword review notes that named the retired package feature value`), and made the Compare button read "Exit compare" in compare mode with a "Tick two or more licences to compare." hint until two are ticked (`fix: make the Compare button say how to leave compare mode`).
 - 2026-10-28: Final whole-branch review fixes. Back past a comparison now leaves compare mode so the selected licence shows again, and going back to a `rule=` address reveals that rule like a link click (`fix: leave compare mode when going back past a comparison`, 3e0fffd). A failed catalog fetch is retried when a catalog tab next opens, repeated notes no longer share React keys, and the heading and inclusion-tree chevrons have 32px touch targets (`fix: retry a failed catalog load and tidy keys and touch targets`, b3010ed). The catalog helpers were de-duplicated (one `AVAILABILITIES`, `OTHER_CATEGORY`, `sortNodes` and one cycle-safe `ancestorChain`, shared `compareText`), the stale default-view comment was corrected, and a test now keeps `scripts/route-pages.mjs` in step with the view registry (`refactor: share catalog helpers and keep route pages in step with views`).
 - 2026-10-29: Official-source review of products and licences (work begun 2026-10-28, checkpointed here). Bundles are now licences, not parent products: licence `includes` entries are typed (`type: product | licence`, `target`) and `package` is gone, so nested licences supply "via" provenance. Licence and product `requires` accept nested `all_of`/`any_of` groups, and product requirements may name a plan. Entra ID Governance (standard and P2 step-up), Private Access, Internet Access, Entra ID P1/P2, the Intune plans and modules, Defender for Endpoint P2, Defender Vulnerability Management, Copilot and the Viva bundles became purchasable licences with their prerequisites. The Products tab is grouped by the Modern Work Plan Comparison's workloads plus official product families (`docs/catalog-grouping.md`). Stale e2e assertions from the package model were updated to the nested-licence wording (`feat: model bundles as licences and group products by official workload`).
+- 2026-10-30: Product plans removed; licensing tiers are licences (maintainer decision: the Products tab lists capabilities only, all licensing lives in licences). Tier licences nest (Entra ID P2 includes P1; step-up add-ons carry only the delta), suites include their tier licences, and 12 tier licences were added (Defender for Endpoint P1, Defender for Office 365 P1/P2, Exchange, SharePoint and OneDrive Plans 1/2, Microsoft 365 Apps for business/enterprise, SharePoint Advanced Management). Product `requires` is product-only (technical dependency); licence `requires` names the tier and is met transitively, collapsing the hand-listed suite prerequisites. The validator rejects a licence that grants no product. The compare matrix shows the supplying licence so tier differences survive "hide identical rows". A before/after diff of every licence's effective products showed no change except the intended step-up deltas (`feat: model licensing tiers as licences instead of product plans`).

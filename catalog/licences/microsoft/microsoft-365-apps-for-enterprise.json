@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.microsoft-365-apps-for-enterprise",
+  "title": "Microsoft 365 Apps for enterprise",
+  "vendor": "microsoft",
+  "family": "Microsoft 365 Apps",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/office-365-platform-service-description/office-365-plan-options"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.microsoft-365-apps",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

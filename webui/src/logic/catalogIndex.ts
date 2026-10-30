@@ -10,16 +10,14 @@ import type {
   CatalogInclusion,
   CatalogLicence,
   CatalogLink,
-  CatalogPlan,
   CatalogProduct,
   CatalogRequirement,
   CatalogVendor,
   ProductLicenceEntry,
 } from '../types/catalog'
-import { effectiveInclusions, fullPlanId } from './catalogResolver'
-export { fullPlanId, planDerivedFeatures } from './catalogResolver'
+import { effectiveInclusions } from './catalogResolver'
 
-export const CATALOG_INDEX_SCHEMA_VERSION = 2
+export const CATALOG_INDEX_SCHEMA_VERSION = 3
 
 type JsonObject = Record<string, unknown>
 
@@ -68,33 +66,28 @@ function isRequirementOrNull(value: unknown): value is CatalogRequirement | null
   return value === null || isRequirement(value)
 }
 
-function isPlan(value: unknown): value is CatalogPlan {
-  return isObject(value) && isText(value.id) && isText(value.title) && isTextOrNull(value.description) && isTextList(value.features)
-}
-
 function isProductLicenceEntry(value: unknown): value is ProductLicenceEntry {
   return (
     isObject(value) &&
     isText(value.licence) &&
     AVAILABILITIES.includes(value.availability as Availability) &&
-    isTextOrNull(value.planId) &&
-    isTextOrNull(value.customPlanTitle) &&
-    ['direct', 'plan', 'licence'].includes(value.via as string) &&
-    isTextOrNull(value.viaPlanId) &&
+    ['direct', 'licence'].includes(value.via as string) &&
     isTextList(value.viaLicenceIds) &&
-    isTextOrNull(value.viaProductId) &&
     isTextOrNull(value.note)
   )
 }
 
+// Fields from retired formats, refused so a stale file is reported rather than half-read.
+const LEGACY_INCLUSION_FIELDS = ['product', 'package', 'plan', 'custom_plan']
+
 function isInclusion(value: unknown): value is CatalogInclusion {
-  if (!isObject(value) || 'product' in value || 'package' in value || !isText(value.target) || !isTextOrNull(value.note)) return false
-  if (!AVAILABILITIES.includes(value.availability as Availability)) return false
-  if (value.type === 'licence') return value.plan === undefined && value.custom_plan === undefined
-  if (value.type !== 'product') return false
-  if (value.plan !== undefined && !isText(value.plan)) return false
-  if (value.custom_plan !== undefined && (!isObject(value.custom_plan) || !isText(value.custom_plan.title) || !isTextOrNull(value.custom_plan.description))) return false
-  return !(value.plan !== undefined && value.custom_plan !== undefined)
+  if (!isObject(value) || LEGACY_INCLUSION_FIELDS.some((field) => field in value)) return false
+  return (
+    (value.type === 'product' || value.type === 'licence') &&
+    isText(value.target) &&
+    AVAILABILITIES.includes(value.availability as Availability) &&
+    isTextOrNull(value.note)
+  )
 }
 
 export function isCatalogVendor(value: unknown): value is CatalogVendor {
@@ -113,9 +106,7 @@ export function isCatalogProduct(value: unknown): value is CatalogProduct {
     isTextOrNull(value.description) &&
     isLinkList(value.links) &&
     Array.isArray(value.targets) &&
-    value.targets.every(isText) &&
-    Array.isArray(value.plans) &&
-    value.plans.every(isPlan)
+    value.targets.every(isText)
   )
 }
 
@@ -151,16 +142,12 @@ function compareEntries(left: ProductLicenceEntry, right: ProductLicenceEntry): 
   return (
     compareText(left.licence, right.licence) ||
     compareText(left.via, right.via) ||
-    compareText(left.planId ?? '', right.planId ?? '') ||
-    compareText(left.viaPlanId ?? '', right.viaPlanId ?? '')
+    compareText(left.viaLicenceIds.join('/'), right.viaLicenceIds.join('/')) ||
+    compareText(left.availability, right.availability)
   )
 }
 
-function buildByProduct(
-  licences: CatalogLicence[],
-  productsById: Map<string, CatalogProduct>,
-  licencesById: Map<string, CatalogLicence>,
-): Record<string, ProductLicenceEntry[]> {
+function buildByProduct(licences: CatalogLicence[], licencesById: Map<string, CatalogLicence>): Record<string, ProductLicenceEntry[]> {
   const byProduct: Record<string, ProductLicenceEntry[]> = {}
 
   function add(productId: string, entry: ProductLicenceEntry) {
@@ -168,16 +155,12 @@ function buildByProduct(
   }
 
   for (const licence of licences) {
-    for (const inclusion of effectiveInclusions(licence, productsById, licencesById)) {
+    for (const inclusion of effectiveInclusions(licence, licencesById)) {
       add(inclusion.target, {
         licence: licence.id,
         availability: inclusion.availability,
-        planId: inclusion.via === 'direct' && inclusion.plan !== undefined ? fullPlanId(inclusion.target, inclusion.plan) : null,
-        customPlanTitle: inclusion.via === 'direct' ? inclusion.custom_plan?.title ?? null : null,
         via: inclusion.via,
-        viaPlanId: inclusion.viaPlanId,
         viaLicenceIds: inclusion.viaLicenceIds,
-        viaProductId: inclusion.viaProductId,
         note: inclusion.note,
       })
     }
@@ -240,9 +223,6 @@ export function buildCatalogIndex(files: CatalogSourceFile[], warn: (message: st
     for (const inclusion of licence.includes) {
       if (inclusion.type === 'product') {
         if (!productsById.has(inclusion.target)) warn(`${licence.id}: inclusion references unknown product ${inclusion.target}.`)
-        if (inclusion.plan !== undefined && !productsById.get(inclusion.target)?.plans.some((plan) => plan.id === inclusion.plan)) {
-          warn(`${licence.id}: inclusion references unknown plan ${inclusion.target}.${inclusion.plan}.`)
-        }
       } else if (!allLicencesById.has(inclusion.target)) {
         warn(`${licence.id}: inclusion references unknown licence ${inclusion.target}.`)
       }
@@ -253,7 +233,7 @@ export function buildCatalogIndex(files: CatalogSourceFile[], warn: (message: st
     vendors: [...vendorsById.values()].sort(compareById),
     products: [...productsById.values()].sort(compareById),
     licences,
-    by_product: buildByProduct(licences, productsById, allLicencesById),
+    by_product: buildByProduct(licences, allLicencesById),
   }
 }
 

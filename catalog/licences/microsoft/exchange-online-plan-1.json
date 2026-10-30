@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.exchange-online-plan-1",
+  "title": "Exchange Online (Plan 1)",
+  "vendor": "microsoft",
+  "family": "Exchange Online",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/exchange-online-service-description/exchange-online-service-description"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.exchange-online",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

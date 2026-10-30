@@ -1,12 +1,5 @@
 export type Availability = 'included' | 'add_on'
 
-export interface CatalogPlan {
-  id: string
-  title: string
-  description: string | null
-  features: string[]
-}
-
 export interface CatalogVendor {
   id: string
   title: string
@@ -18,8 +11,8 @@ export interface CatalogLink {
   url: string
 }
 
-// An id (product or full plan id for a product, licence id for a licence), or
-// a group whose members must all hold (all_of) or at least one hold (any_of).
+// An id (a product id for a product, a licence id for a licence), or a group
+// whose members must all hold (all_of) or at least one hold (any_of).
 export type CatalogRequirement = string | { all_of: CatalogRequirement[] } | { any_of: CatalogRequirement[] }
 
 export interface CatalogProduct {
@@ -33,14 +26,11 @@ export interface CatalogProduct {
   description: string | null
   links: CatalogLink[]
   targets: string[]
-  plans: CatalogPlan[]
 }
 
 export interface ProductInclusion {
   type: 'product'
   target: string
-  plan?: string
-  custom_plan?: { title: string; description: string | null }
   availability: Availability
   note: string | null
 }
@@ -71,21 +61,14 @@ export interface CatalogLicence {
 export interface ProductLicenceEntry {
   licence: string
   availability: Availability
-  // Full plan id (`<product id>.<plan id>`) when the licence lists a plan of this product.
-  planId: string | null
-  customPlanTitle: string | null
-  via: 'direct' | 'plan' | 'licence'
-  // Full id of the plan that brings this product in, when via is 'plan'.
-  viaPlanId: string | null
+  via: 'direct' | 'licence'
   // Nested licence path from the outer licence to the licence listing the product.
   viaLicenceIds: string[]
-  // Add-on routes may be available via a product plan or a nested licence.
-  viaProductId: string | null
   note: string | null
 }
 
 export interface CatalogIndex {
-  schema_version: 2
+  schema_version: 3
   vendors: CatalogVendor[]
   products: CatalogProduct[]
   licences: CatalogLicence[]

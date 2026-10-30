@@ -13,38 +13,5 @@
       "url": "https://learn.microsoft.com/office365/servicedescriptions/office-365-advanced-threat-protection-service-description#feature-availability-across-advanced-threat-protection-atp-plans"
     }
   ],
-  "targets": [],
-  "plans": [
-    {
-      "id": "plan_1",
-      "title": "Plan 1",
-      "description": null,
-      "features": [
-        "microsoft.advanced-anti-phishing",
-        "microsoft.real-time-reports",
-        "microsoft.safe-attachments",
-        "microsoft.safe-links"
-      ]
-    },
-    {
-      "id": "plan_2",
-      "title": "Plan 2",
-      "description": null,
-      "features": [
-        "microsoft.attack-simulation-training",
-        "microsoft.automated-investigation-response",
-        "microsoft.campaign-views",
-        "microsoft.compromised-user-detection",
-        "microsoft.prompt-injection-protection",
-        "microsoft.teams-message-entity-panel",
-        "microsoft.teams-message-quarantine",
-        "microsoft.threat-explorer",
-        "microsoft.threat-trackers",
-        "microsoft.advanced-anti-phishing",
-        "microsoft.real-time-reports",
-        "microsoft.safe-attachments",
-        "microsoft.safe-links"
-      ]
-    }
-  ]
+  "targets": []
 }

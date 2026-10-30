@@ -5,13 +5,7 @@
   "vendor": "microsoft",
   "family": "Microsoft Entra",
   "kind": "add_on",
-  "requires": {
-    "any_of": [
-      "microsoft.entra-id-p1",
-      "microsoft.business-premium",
-      "microsoft.m365-e3"
-    ]
-  },
+  "requires": "microsoft.entra-id-p1",
   "description": null,
   "links": [
     {
@@ -22,10 +16,39 @@
   "includes": [
     {
       "type": "product",
-      "target": "microsoft.entra-id",
+      "target": "microsoft.access-reviews",
       "availability": "included",
-      "note": null,
-      "plan": "plan_2"
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.entitlement-management-basic",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.entra-id-protection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.mfa-registration-policy",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.privileged-identity-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.risk-based-conditional-access",
+      "availability": "included",
+      "note": null
     }
   ],
   "review": []

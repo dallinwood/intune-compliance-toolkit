@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-office-365-plan-1",
+  "title": "Microsoft Defender for Office 365 Plan 1",
+  "vendor": "microsoft",
+  "family": "Microsoft Defender",
+  "kind": "add_on",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/office-365-advanced-threat-protection-service-description"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.defender-for-office-365",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.advanced-anti-phishing",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.real-time-reports",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.safe-attachments",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.safe-links",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": [
+    "Purchase prerequisites not yet verified against an official source."
+  ]
+}

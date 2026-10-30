@@ -13,6 +13,5 @@
       "url": "https://learn.microsoft.com/windows-server/identity/ad-fs/operations/configure-device-based-conditional-access-on-premises"
     }
   ],
-  "targets": [],
-  "plans": []
+  "targets": []
 }

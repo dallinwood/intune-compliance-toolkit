@@ -1,69 +1,34 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { EffectiveInclusion, InclusionNode } from '../../logic/catalogTree'
-import { planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { supplyingLicenceIdOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import { AvailabilityWithSource } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 
 const INDENT_REM_PER_LEVEL = 1.25
 
-function PlanBadge({ inclusion, lookup }: { inclusion: EffectiveInclusion; lookup: CatalogLookup }) {
-  const plan = planLabelOf(inclusion, lookup)
-  if (plan === null) return null
-  if (!plan.isCustom) return <Badge variant="outline">{plan.title}</Badge>
-  return (
-    <Tooltip>
-      <TooltipTrigger render={<Badge variant="outline" className="italic" />}>{plan.title}</TooltipTrigger>
-      <TooltipContent>Specific to this licence</TooltipContent>
-    </Tooltip>
-  )
-}
-
-function InclusionLine({
-  inclusion,
-  lookup,
-  standaloneProductIds,
-}: {
-  inclusion: EffectiveInclusion
-  lookup: CatalogLookup
-  standaloneProductIds: ReadonlySet<string>
-}) {
-  const viaPlanTitle = viaPlanTitleOf(inclusion, lookup)
-  const viaProductId = inclusion.viaProductId !== null && !standaloneProductIds.has(inclusion.target) ? inclusion.viaProductId : undefined
-  return (
-    <span className="inline-flex flex-wrap items-center gap-1.5">
-      <PlanBadge inclusion={inclusion} lookup={lookup} />
-      <AvailabilityWithSource
-        availability={inclusion.availability}
-        sourceId={inclusion.viaLicenceIds.at(-1) ?? (inclusion.availability === 'add_on' ? viaProductId : undefined)}
-        lookup={lookup}
-      />
-      {viaPlanTitle !== null && <span className="text-xs text-muted-foreground">via {viaPlanTitle}</span>}
-    </span>
-  )
+function InclusionLine({ inclusion, lookup }: { inclusion: EffectiveInclusion; lookup: CatalogLookup }) {
+  return <AvailabilityWithSource availability={inclusion.availability} sourceLicenceId={supplyingLicenceIdOf(inclusion)} lookup={lookup} />
 }
 
 function InclusionRow({
   node,
   depth,
   lookup,
-  standaloneProductIds,
   collapsedIds,
   onToggle,
 }: {
   node: InclusionNode
   depth: number
   lookup: CatalogLookup
-  standaloneProductIds: ReadonlySet<string>
   collapsedIds: ReadonlySet<string>
   onToggle: (productId: string) => void
 }) {
   const isContextOnly = node.inclusions.length === 0
   const hasChildren = node.children.length > 0
   const isCollapsed = collapsedIds.has(node.product.id)
-  const notes = node.inclusions.flatMap((inclusion) => (inclusion.note === null ? [] : [inclusion.note]))
+  // Several routes to one product often carry the same note; show it once.
+  const notes = [...new Set(node.inclusions.flatMap((inclusion) => (inclusion.note === null ? [] : [inclusion.note])))]
 
   return (
     <li>
@@ -87,7 +52,7 @@ function InclusionRow({
               {node.product.title}
             </CatalogLink>
             {node.inclusions.map((inclusion, index) => (
-              <InclusionLine key={`${inclusion.via}-${inclusion.viaLicenceIds.join('-')}-${inclusion.plan ?? inclusion.custom_plan?.title ?? inclusion.viaPlanId ?? ''}-${index}`} inclusion={inclusion} lookup={lookup} standaloneProductIds={standaloneProductIds} />
+              <InclusionLine key={`${inclusion.via}-${inclusion.viaLicenceIds.join('-')}-${index}`} inclusion={inclusion} lookup={lookup} />
             ))}
           </div>
           {notes.map((note, noteIndex) => (
@@ -100,7 +65,7 @@ function InclusionRow({
       {hasChildren && !isCollapsed && (
         <ul>
           {node.children.map((child) => (
-            <InclusionRow key={child.product.id} node={child} depth={depth + 1} lookup={lookup} standaloneProductIds={standaloneProductIds} collapsedIds={collapsedIds} onToggle={onToggle} />
+            <InclusionRow key={child.product.id} node={child} depth={depth + 1} lookup={lookup} collapsedIds={collapsedIds} onToggle={onToggle} />
           ))}
         </ul>
       )}
@@ -108,7 +73,7 @@ function InclusionRow({
   )
 }
 
-export function InclusionTree({ roots, lookup, standaloneProductIds }: { roots: InclusionNode[]; lookup: CatalogLookup; standaloneProductIds: ReadonlySet<string> }) {
+export function InclusionTree({ roots, lookup }: { roots: InclusionNode[]; lookup: CatalogLookup }) {
   const [collapsedIds, setCollapsedIds] = useState<ReadonlySet<string>>(new Set())
   const toggle = (productId: string) =>
     setCollapsedIds((current) => {
@@ -121,7 +86,7 @@ export function InclusionTree({ roots, lookup, standaloneProductIds }: { roots: 
   return (
     <ul>
       {roots.map((root) => (
-        <InclusionRow key={root.product.id} node={root} depth={0} lookup={lookup} standaloneProductIds={standaloneProductIds} collapsedIds={collapsedIds} onToggle={toggle} />
+        <InclusionRow key={root.product.id} node={root} depth={0} lookup={lookup} collapsedIds={collapsedIds} onToggle={toggle} />
       ))}
     </ul>
   )

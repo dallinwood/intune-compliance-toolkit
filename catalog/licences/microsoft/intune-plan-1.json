@@ -18,8 +18,25 @@
       "type": "product",
       "target": "microsoft.intune",
       "availability": "included",
-      "note": null,
-      "plan": "plan_1"
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.application-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.device-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.endpoint-analytics",
+      "availability": "included",
+      "note": null
     },
     {
       "type": "product",

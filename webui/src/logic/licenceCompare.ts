@@ -1,5 +1,6 @@
 import type { CatalogLicence, CatalogProduct } from '../types/catalog'
 import { effectiveInclusions, effectiveInclusionTree, type EffectiveInclusion, type InclusionNode } from './catalogTree'
+import { supplyingLicenceIdOf } from './inclusionDisplay'
 
 export interface CompareRow {
   product: CatalogProduct
@@ -8,18 +9,12 @@ export interface CompareRow {
   cells: (EffectiveInclusion | null)[]
 }
 
-// The plan a cell shows, so two cells with the same plan compare equal.
-export function inclusionPlanKey(inclusion: EffectiveInclusion): string {
-  if (inclusion.viaPlanId !== null) return `via:${inclusion.viaPlanId}`
-  if (inclusion.custom_plan !== undefined) return `custom:${inclusion.custom_plan.title}`
-  return `plan:${inclusion.plan ?? ''}`
-}
-
-// A product listed directly and through a plan shows its direct entry, as the
-// licence's own detail does.
-function inclusionsByProduct(licence: CatalogLicence, productsById: Map<string, CatalogProduct>, licencesById: Map<string, CatalogLicence>): Map<string, EffectiveInclusion> {
+// A product reached several ways shows one cell: included beats add-on, then a
+// direct entry beats a nested licence, then the first nested route in the
+// licence's own include order.
+function inclusionsByProduct(licence: CatalogLicence, licencesById: Map<string, CatalogLicence>): Map<string, EffectiveInclusion> {
   const byProduct = new Map<string, EffectiveInclusion>()
-  for (const inclusion of effectiveInclusions(licence, productsById, licencesById)) {
+  for (const inclusion of effectiveInclusions(licence, licencesById)) {
     const existing = byProduct.get(inclusion.target)
     if (
       existing === undefined ||
@@ -34,7 +29,7 @@ function inclusionsByProduct(licence: CatalogLicence, productsById: Map<string, 
 // children by title. Ancestors the licences do not list appear as context rows.
 export function compareRows(licences: CatalogLicence[], productsById: Map<string, CatalogProduct>, allLicences: CatalogLicence[] = licences): CompareRow[] {
   const licencesById = new Map(allLicences.map((licence) => [licence.id, licence]))
-  const perLicence = licences.map((licence) => inclusionsByProduct(licence, productsById, licencesById))
+  const perLicence = licences.map((licence) => inclusionsByProduct(licence, licencesById))
   const unionInclusions = new Map<string, EffectiveInclusion>()
   for (const byProduct of perLicence) {
     for (const [productId, inclusion] of byProduct) {
@@ -71,15 +66,13 @@ export function withoutIdenticalRows(rows: CompareRow[]): CompareRow[] {
   return rows.filter((_, position) => keptPositions.has(position))
 }
 
+// Two cells match when they would read the same: the same availability from
+// the same supplying licence. Tiers are nested licences, so "Included via
+// Entra ID P1" and "Included via Entra ID P2" are a real difference.
 export function isUniform(row: CompareRow): boolean {
   const [first, ...rest] = row.cells
   return rest.every((cell) => {
     if (first === null || cell === null) return first === cell
-    return (
-      cell.availability === first.availability &&
-      cell.viaLicenceIds.join('/') === first.viaLicenceIds.join('/') &&
-      cell.viaProductId === first.viaProductId &&
-      inclusionPlanKey(cell) === inclusionPlanKey(first)
-    )
+    return cell.availability === first.availability && supplyingLicenceIdOf(cell) === supplyingLicenceIdOf(first)
   })
 }

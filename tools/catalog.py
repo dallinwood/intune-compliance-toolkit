@@ -196,24 +196,14 @@ def _requirement_shape_problems(requirement: object, where: str = "requires") ->
     return problems
 
 
-def _split_product_reference(reference: str) -> tuple[str, str | None]:
-    """A product id, or a full plan id `<product id>.<plan id>`, as (product id, plan id or None)."""
-    vendor_id, rest = reference.split(".", 1)
-    slug, _separator, plan_id = rest.partition(".")
-    return f"{vendor_id}.{slug}", plan_id or None
-
-
 def _product_requirement_problems(product_id: str, products: dict[str, Entry]) -> list[str]:
     requirement = products[product_id].document["requires"]
     problems = _requirement_shape_problems(requirement)
-    for where, reference in _requirement_references(requirement):
-        required_product_id, plan_id = _split_product_reference(reference)
+    for where, required_product_id in _requirement_references(requirement):
         if required_product_id == product_id:
-            problems.append(f"{where}: a product cannot require itself or its own plans")
+            problems.append(f"{where}: a product cannot require itself")
         elif required_product_id not in products:
-            problems.append(f"{where}: requires {reference}, which does not exist")
-        elif plan_id is not None and plan_id not in {plan["id"] for plan in products[required_product_id].document["plans"]}:
-            problems.append(f"{where}: requires {reference}, but plan {plan_id} is not defined on {required_product_id}")
+            problems.append(f"{where}: requires {required_product_id}, which does not exist")
     return problems
 
 
@@ -238,50 +228,33 @@ def _requirement_cycle_warnings(entries: dict[str, Entry], target_of) -> list[st
     return warnings
 
 
-def _plan_problems(product_id: str, products: dict[str, Entry]) -> list[str]:
-    problems: list[str] = []
-    seen_plan_ids: set[str] = set()
-    for plan_position, plan in enumerate(products[product_id].document["plans"]):
-        where = f"plans[{plan_position}]"
-        if plan["id"] in seen_plan_ids:
-            problems.append(f"{where}: plan id {plan['id']!r} is used more than once")
-        seen_plan_ids.add(plan["id"])
-        for feature_position, feature_id in enumerate(plan["features"]):
-            feature_where = f"{where}.features[{feature_position}]"
-            if feature_id not in products:
-                problems.append(f"{feature_where}: feature {feature_id} does not exist")
-            elif product_id not in _ancestor_ids(feature_id, products):
-                problems.append(f"{feature_where}: feature {feature_id} is not a descendant of {product_id}")
-    return problems
-
-
-def _inclusion_key(inclusion: dict) -> tuple:
-    if inclusion["type"] == "licence":
-        return "licence", inclusion["target"]
-    custom_plan = inclusion.get("custom_plan")
-    custom_plan_key = tuple(sorted(custom_plan.items())) if custom_plan else None
-    return "product", inclusion["target"], inclusion.get("plan"), custom_plan_key
-
-
-def _inclusion_problems(
-    inclusion: dict, licence_id: str, licences: dict[str, Entry], products: dict[str, Entry]
-) -> list[str]:
-    problems: list[str] = []
+def _inclusion_problems(inclusion: dict, licence_id: str, licences: dict[str, Entry], products: dict[str, Entry]) -> list[str]:
     target_id = inclusion["target"]
     if inclusion["type"] == "licence":
         if target_id == licence_id:
-            problems.append(f"licence {target_id} cannot include itself")
-        elif target_id not in licences:
-            problems.append(f"licence {target_id} does not exist")
-        return problems
+            return [f"licence {target_id} cannot include itself"]
+        if target_id not in licences:
+            return [f"licence {target_id} does not exist"]
+        return []
     if target_id not in products:
         return [f"product {target_id} does not exist"]
-    if "plan" in inclusion and "custom_plan" in inclusion:
-        problems.append("sets both plan and custom_plan; an inclusion can set at most one")
-    defined_plan_ids = {plan["id"] for plan in products[target_id].document["plans"]}
-    if "plan" in inclusion and inclusion["plan"] not in defined_plan_ids:
-        problems.append(f"plan {inclusion['plan']} is not defined on {target_id}")
-    return problems
+    return []
+
+
+def _granted_product_ids(licence_id: str, licences: dict[str, Entry], products: dict[str, Entry], visited_ids: frozenset[str] = frozenset()) -> set[str]:
+    """Existing products a licence grants through included edges, following nested licences."""
+    if licence_id in visited_ids or licence_id not in licences:
+        return set()
+    granted_ids: set[str] = set()
+    for inclusion in licences[licence_id].document["includes"]:
+        if inclusion["availability"] != "included":
+            continue
+        if inclusion["type"] == "product":
+            if inclusion["target"] in products:
+                granted_ids.add(inclusion["target"])
+        else:
+            granted_ids |= _granted_product_ids(inclusion["target"], licences, products, visited_ids | {licence_id})
+    return granted_ids
 
 
 def _licence_problems(licence_id: str, licences: dict[str, Entry], products: dict[str, Entry]) -> list[str]:
@@ -291,10 +264,12 @@ def _licence_problems(licence_id: str, licences: dict[str, Entry], products: dic
     for position, inclusion in enumerate(licence["includes"]):
         inclusion_problems = _inclusion_problems(inclusion, licence_id, licences, products)
         problems.extend(f"includes[{position}]: {problem}" for problem in inclusion_problems)
-        key = _inclusion_key(inclusion)
+        key = (inclusion["type"], inclusion["target"])
         if key in seen_inclusion_keys:
-            problems.append(f"includes[{position}]: lists {key[0]} {key[1]} more than once with the same plan/custom plan selection")
+            problems.append(f"includes[{position}]: lists {key[0]} {key[1]} more than once")
         seen_inclusion_keys.add(key)
+    if not _granted_product_ids(licence_id, licences, products):
+        problems.append("grants no product: list at least one existing product as included, directly or through an included licence")
     problems.extend(_requirement_shape_problems(licence["requires"]))
     for where, required_id in _requirement_references(licence["requires"]):
         if required_id == licence_id:
@@ -370,9 +345,8 @@ def validate_catalog(catalog_dir: Path) -> tuple[list[str], list[str]]:
         problems = _vendor_problems(product_id, entry.document["vendor"], known_vendor_ids)
         problems += _parent_problems(product_id, products)
         problems += _product_requirement_problems(product_id, products)
-        problems += _plan_problems(product_id, products)
         errors.extend(f"{entry.relative_path}: {problem}" for problem in problems)
-    catalog_warnings += _requirement_cycle_warnings(products, lambda reference: _split_product_reference(reference)[0])
+    catalog_warnings += _requirement_cycle_warnings(products, lambda reference: reference)
 
     inclusion_cycle_members = _inclusion_cycle_members(licences)
     for licence_id, entry in licences.items():

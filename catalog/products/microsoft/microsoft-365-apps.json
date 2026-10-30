@@ -13,13 +13,5 @@
       "url": "https://www.microsoft.com/microsoft-365/enterprise/microsoft-365-apps-for-enterprise-product"
     }
   ],
-  "targets": [],
-  "plans": [
-    {
-      "id": "enterprise",
-      "title": "Enterprise",
-      "description": null,
-      "features": []
-    }
-  ]
+  "targets": []
 }

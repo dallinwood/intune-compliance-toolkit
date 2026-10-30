@@ -8,14 +8,5 @@
   "category": "Identity",
   "description": null,
   "links": [],
-  "targets": [],
-  "plans": [
-    { "id": "plan_1", "title": "Plan 1", "description": null, "features": [] },
-    {
-      "id": "plan_2",
-      "title": "Plan 2",
-      "description": null,
-      "features": ["microsoft.entra-id-access-reviews", "microsoft.entra-id-pim"]
-    }
-  ]
+  "targets": []
 }

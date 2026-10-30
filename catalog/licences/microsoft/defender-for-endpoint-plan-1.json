@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-endpoint-plan-1",
+  "title": "Microsoft Defender for Endpoint Plan 1",
+  "vendor": "microsoft",
+  "family": "Microsoft Defender",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Licensing",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/minimum-requirements"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.defender-for-endpoint",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.attack-surface-reduction-enhanced",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.block-at-first-sight",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.centralized-management",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.cross-platform-support",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.manual-response-actions",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.mobile-threat-defence",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.next-gen-protection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.tamper-protection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.web-content-filtering",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": [
+    "Purchase prerequisites not yet verified against an official source."
+  ]
+}

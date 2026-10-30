@@ -22,25 +22,20 @@ export function AvailabilityBadge({ availability }: { availability: Availability
   )
 }
 
-// An add-on route links to its source licence or product when known.
-export function AvailabilityWithSource({ availability, sourceId, lookup }: { availability: Availability; sourceId: string | undefined; lookup: CatalogLookup }) {
-  if (sourceId === undefined) return <AvailabilityBadge availability={availability} />
-  const sourceLicence = lookup.licencesById.get(sourceId)
-  const sourceProduct = lookup.productsById.get(sourceId)
+// A product brought in by a nested licence links to that licence.
+export function AvailabilityWithSource({ availability, sourceLicenceId, lookup }: { availability: Availability; sourceLicenceId: string | null; lookup: CatalogLookup }) {
+  if (sourceLicenceId === null) return <AvailabilityBadge availability={availability} />
+  const sourceLicence = lookup.licencesById.get(sourceLicenceId)
   return (
     <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
       <AvailabilityBadge availability={availability} />{' '}
       <span className="text-xs text-muted-foreground">
         via{' '}
-        {sourceLicence !== undefined ? (
-          <CatalogLink view="licences" id={sourceId} className="break-words">
-            {sourceLicence.title}
-          </CatalogLink>
-        ) : sourceProduct === undefined ? (
-          sourceId
+        {sourceLicence === undefined ? (
+          sourceLicenceId
         ) : (
-          <CatalogLink view="products" id={sourceId} className="break-words">
-            {sourceProduct.title}
+          <CatalogLink view="licences" id={sourceLicenceId} className="break-words">
+            {sourceLicence.title}
           </CatalogLink>
         )}
       </span>

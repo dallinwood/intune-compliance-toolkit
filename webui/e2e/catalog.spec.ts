@@ -7,7 +7,7 @@ function product(id: string, fields: Record<string, unknown>): CatalogSourceFile
   return {
     kind: 'product',
     fileName: `${id}.json`,
-    value: { schema_version: 1, id, vendor: 'acme', parent: null, requires: null, category: null, description: null, links: [], targets: [], plans: [], ...fields },
+    value: { schema_version: 1, id, vendor: 'acme', parent: null, requires: null, category: null, description: null, links: [], targets: [], ...fields },
   }
 }
 
@@ -21,19 +21,39 @@ function licence(id: string, fields: Record<string, unknown>): CatalogSourceFile
 
 const FIXTURE_FILES: CatalogSourceFile[] = [
   { kind: 'vendors', fileName: 'vendors.json', value: { schema_version: 1, vendors: [{ id: 'acme', title: 'Acme', url: null }] } },
-  product('acme.suite', {
-    title: 'Security Suite',
-    category: 'Security',
-    plans: [
-      { id: 'plan_1', title: 'Plan 1', description: null, features: ['acme.feature'] },
-      { id: 'plan_2', title: 'Plan 2', description: null, features: [] },
-    ],
-  }),
+  product('acme.suite', { title: 'Security Suite', category: 'Security' }),
   product('acme.feature', { title: 'Context Feature', parent: 'acme.suite' }),
+  product('acme.advanced', { title: 'Advanced Feature', parent: 'acme.suite' }),
   product('acme.tool', {
     title: 'Other Tool',
     category: 'Productivity',
-    requires: { all_of: ['acme.feature', { any_of: ['acme.suite.plan_1', 'acme.suite.plan_2'] }] },
+    requires: { all_of: ['acme.feature', { any_of: ['acme.suite', 'acme.advanced'] }] },
+  }),
+  licence('acme.suite-plan-1', {
+    title: 'Security Suite Plan 1',
+    family: 'Acme Security',
+    includes: [
+      { type: 'product', target: 'acme.suite', availability: 'included', note: null },
+      { type: 'product', target: 'acme.feature', availability: 'included', note: null },
+    ],
+  }),
+  licence('acme.suite-plan-2', {
+    title: 'Security Suite Plan 2',
+    family: 'Acme Security',
+    includes: [
+      { type: 'licence', target: 'acme.suite-plan-1', availability: 'included', note: null },
+      { type: 'product', target: 'acme.advanced', availability: 'included', note: null },
+    ],
+  }),
+  licence('acme.starter', {
+    title: 'Acme Starter',
+    family: 'Acme Enterprise',
+    includes: [{ type: 'licence', target: 'acme.suite-plan-1', availability: 'included', note: null }],
+  }),
+  licence('acme.enterprise', {
+    title: 'Acme Enterprise',
+    family: 'Acme Enterprise',
+    includes: [{ type: 'licence', target: 'acme.suite-plan-2', availability: 'included', note: null }],
   }),
   licence('acme.basic', {
     title: 'Acme Basic',
@@ -48,8 +68,8 @@ const FIXTURE_FILES: CatalogSourceFile[] = [
     title: 'Acme Pro',
     family: 'Acme Business',
     includes: [
-      { type: 'product', target: 'acme.suite', plan: 'plan_2', availability: 'add_on', note: null },
       { type: 'licence', target: 'acme.pack', availability: 'add_on', note: 'Purchased through the security bundle.' },
+      { type: 'licence', target: 'acme.suite-plan-2', availability: 'add_on', note: null },
       { type: 'product', target: 'acme.tool', availability: 'included', note: null },
     ],
   }),
@@ -59,7 +79,7 @@ const FIXTURE_FILES: CatalogSourceFile[] = [
     kind: 'add_on',
     requires: { any_of: ['acme.pro', 'acme.basic'] },
     includes: [
-      { type: 'product', target: 'acme.suite', plan: 'plan_1', availability: 'included', note: null },
+      { type: 'licence', target: 'acme.suite-plan-1', availability: 'included', note: null },
       { type: 'licence', target: 'acme.optional', availability: 'add_on', note: null },
     ],
   }),
@@ -117,13 +137,12 @@ test('a feature whose parent the licence does not list shows under that parent a
   await expect(securitySection.getByText('Included', { exact: true })).toHaveCount(1)
 })
 
-test('availability and plans are labelled in words', async ({ page }) => {
+test('availability is labelled in words and names the tier licence it comes through', async ({ page }) => {
   await page.goto('/licences?licence=acme.pro')
 
   const securitySection = page.getByRole('region', { name: 'Security' })
-  await expect(securitySection.getByText('Add-on', { exact: true })).toHaveCount(3)
-  await expect(securitySection.getByText('Plan 2', { exact: true })).toBeVisible()
-  await expect(securitySection.getByText('Plan 1', { exact: true })).toBeVisible()
+  await expect(securitySection.getByText('Add-on', { exact: true })).toHaveCount(5)
+  await expect(securitySection.getByText('Add-on via Security Suite Plan 2', { exact: true })).toHaveCount(3)
 })
 
 test('a nested add-on names and links its source licence without inheriting that licence’s optional add-ons', async ({ page }) => {
@@ -228,15 +247,30 @@ test('comparing two licences shows a matrix, and hiding identical rows drops the
   await expect(matrix.getByRole('columnheader', { name: 'Acme Pro' })).toBeVisible()
   const hideIdentical = page.getByRole('checkbox', { name: 'Hide identical rows' })
   await expect(hideIdentical).toBeChecked()
-  await expect(matrix.locator('tbody tr')).toHaveCount(2)
+  await expect(matrix.locator('tbody tr')).toHaveCount(3)
   await expect(matrix.getByText('Other Tool')).toHaveCount(0)
 
   await hideIdentical.click()
-  await expect(matrix.locator('tbody tr')).toHaveCount(3)
+  await expect(matrix.locator('tbody tr')).toHaveCount(4)
   await expect(matrix.getByText('Other Tool')).toBeVisible()
 
   await page.getByRole('button', { name: 'Exit compare' }).click()
   await expect(page.getByRole('button', { name: 'Compare', exact: true })).toHaveAttribute('aria-pressed', 'false')
+})
+
+test('hiding identical rows keeps a row whose cells differ only by the tier licence supplying it', async ({ page }) => {
+  await page.goto('/licences?compare=acme.starter&compare=acme.enterprise')
+
+  const matrix = page.getByRole('table')
+  await expect(page.getByRole('checkbox', { name: 'Hide identical rows' })).toBeChecked()
+  const suiteRow = matrix.getByRole('row', { name: /^Security Suite/ })
+  await expect(suiteRow).toBeVisible()
+  const [starterCell, enterpriseCell] = await suiteRow.getByRole('cell').all()
+  await expect(starterCell).toHaveText('Included via Security Suite Plan 1')
+  await expect(enterpriseCell).toHaveText('Included via Security Suite Plan 2')
+  await expect(starterCell.getByTitle('Included via Security Suite Plan 1')).toBeVisible()
+  await expect(enterpriseCell.getByRole('link', { name: 'Security Suite Plan 2' })).toHaveAttribute('href', /licence=acme\.suite-plan-2/)
+  await expect(matrix.getByRole('row', { name: /^Context Feature/ })).toBeVisible()
 })
 
 test('going back past a comparison leaves compare mode, and forward restores it', async ({ page }) => {
@@ -285,22 +319,23 @@ test('searching the Products tab finds a feature with its breadcrumb, and its de
   await expect(page.getByRole('heading', { level: 2, name: 'Acme Pro' })).toBeVisible()
 })
 
-test('a product detail shows its plans, features and the licences that include it', async ({ page }) => {
+test('a product detail shows its features and the licences that include it, naming the tier each comes through', async ({ page }) => {
   await page.goto('/products?product=acme.suite')
 
-  await expect(page.getByRole('region', { name: 'Plans' }).getByText('Plan 2', { exact: true })).toBeVisible()
   await expect(page.getByRole('region', { name: 'Features' }).getByRole('link', { name: 'Context Feature' })).toBeVisible()
-  await expect(
-    page.getByRole('region', { name: 'Included in' }).getByLabel('Included', { exact: true }).getByRole('link', { name: 'Acme Security Pack' }),
-  ).toBeVisible()
+  const included = page.getByRole('region', { name: 'Included in' }).getByLabel('Included', { exact: true })
+  await expect(included.getByRole('link', { name: 'Acme Security Pack' })).toBeVisible()
+  const enterpriseEntry = included.getByRole('listitem').filter({ has: page.getByRole('link', { name: 'Acme Enterprise' }) })
+  await expect(enterpriseEntry.getByText('via Security Suite Plan 2', { exact: true })).toBeVisible()
+  await expect(enterpriseEntry.getByRole('link', { name: 'Security Suite Plan 2' })).toHaveAttribute('href', /licence=acme\.suite-plan-2/)
 })
 
 test('a product requirement reads as and/or with nested groups in brackets, and links to the products', async ({ page }) => {
   await page.goto('/products?product=acme.tool')
 
   const requirement = page.locator('p', { hasText: 'Requires:' })
-  await expect(requirement).toHaveText('Requires: Context Feature and (Security Suite Plan 1 or Security Suite Plan 2)')
-  await requirement.getByRole('link', { name: 'Security Suite Plan 2' }).click()
+  await expect(requirement).toHaveText('Requires: Context Feature and (Security Suite or Advanced Feature)')
+  await requirement.getByRole('link', { name: 'Security Suite', exact: true }).click()
   await expect(page).toHaveURL(/product=acme\.suite/)
 })
 

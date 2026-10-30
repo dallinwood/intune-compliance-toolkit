@@ -4,12 +4,7 @@
   "title": "Entra Private Access",
   "vendor": "microsoft",
   "parent": null,
-  "requires": {
-    "any_of": [
-      "microsoft.entra-id.plan_1",
-      "microsoft.entra-id.plan_2"
-    ]
-  },
+  "requires": "microsoft.entra-id",
   "category": "Identity and access management",
   "description": "Available separately or through Microsoft Entra Suite. Requires Microsoft Entra ID P1 or P2; the Suite itself is not a prerequisite.",
   "links": [
@@ -22,6 +17,5 @@
       "url": "https://learn.microsoft.com/en-us/entra/global-secure-access/overview-what-is-global-secure-access"
     }
   ],
-  "targets": [],
-  "plans": []
+  "targets": []
 }

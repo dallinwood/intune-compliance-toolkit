@@ -13,19 +13,5 @@
       "url": "https://learn.microsoft.com/office365/servicedescriptions/microsoft-viva-service-description"
     }
   ],
-  "targets": [],
-  "plans": [
-    {
-      "id": "basic",
-      "title": "Basic",
-      "description": null,
-      "features": []
-    },
-    {
-      "id": "premium",
-      "title": "Premium",
-      "description": null,
-      "features": []
-    }
-  ]
+  "targets": []
 }

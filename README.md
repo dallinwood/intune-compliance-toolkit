@@ -352,7 +352,7 @@ works as usual.
 
 ## Product and licence catalog
 
-The catalog records which products, features and plans each licence includes,
+The catalog records which products and features each licence includes,
 independent of the rule library. It lives in `catalog/`, beside `baselines/`:
 
 The Products tab uses the workloads in Microsoft's Enterprise comparison and
@@ -376,31 +376,35 @@ and the folder is the id's vendor, so `microsoft.entra-id` is
   "title", "url" }] }`.
 - **Product** (a feature is a product with a `parent`): `schema_version`, `id`
   (`<vendor>.<slug>`), `title`, `vendor`, `parent` (a product id or `null`),
-  `requires` (a requirement or `null`), `category`, `description`, `links` (`[{ "title", "url" }]`), `targets` (platform
-  names) and `plans`. Each plan is `{ "id", "title", "description", "features" }`;
-  a plan id matches `^[a-z0-9][a-z0-9_]*$` (for example `plan_1`), its full id is
-  `<product id>.<plan id>`, and `features` lists the ids of descendant products
-  the plan includes.
+  `requires` (a requirement or `null`), `category`, `description`, `links` (`[{ "title", "url" }]`)
+  and `targets` (platform names). Products describe capabilities only: licensing
+  tiers such as "Plan 1" and "Plan 2" are licences, not product fields.
 - **Licence**: `schema_version`, `id`, `title`, `vendor`, `family`, `kind`
   (`subscription` or `add_on`), `requires` (licence ids), `description`,
   `links`, `includes` and `review`. Each `includes` entry names a `type`
   (`product` or `licence`), a `target` id, `availability` (`included` or
-  `add_on`) and `note`. Only product entries can specify a `plan`, or a
-  `custom_plan` (`{ "title", "description" }`) for a level unique to the
-  licence. Product and licence ids are separate namespaces; `type` resolves
-  which one an entry names.
+  `add_on`) and `note`. Product and licence ids are separate namespaces; `type`
+  resolves which one an entry names. A tier is a licence that includes the
+  product and the features that tier grants; a higher tier includes the lower
+  tier's licence (Entra ID P2 includes Entra ID P1), and a suite includes the
+  tier licences it comes with (E3 includes Entra ID P1). Every licence must
+  grant at least one product as `included`, directly or through an included
+  licence.
   `review` holds notes for the maintainer; they are reported as warnings and
   never fail validation.
 
 `parent` means "is a built-in part of", not "must buy this first" or "can only
 be obtained through this bundle". It does not automatically grant every child
-in every plan: explicit inclusions and plan features determine entitlements.
+it has: licence inclusions alone determine entitlements.
 Independently available products are not children of the suites that include
 them. Bundles such as suites are licences, not parent products.
 `requires` says what something needs. On a product it
-names what the product needs to work (product ids or full plan ids such as
-`microsoft.entra-id.plan_1`). On a licence it names the licences that must be
-bought first. A requirement is an id, `{ "all_of": [...] }` (every member) or
+names the products it needs to work, a technical dependency (Entra ID
+Governance needs Entra ID). On a licence it names the licences that must be
+bought first, the licensing prerequisite (Entra ID Governance needs Entra ID
+P1). A licence requirement is met by that licence or by any licence that
+includes it as `included`, directly or through nesting, so a requirement names
+the tier (`microsoft.entra-id-p1`), not every suite that contains it. A requirement is an id, `{ "all_of": [...] }` (every member) or
 `{ "any_of": [...] }` (at least one member). A group has two or more members,
 and groups nest:
 
@@ -408,7 +412,7 @@ and groups nest:
 "requires": {
   "all_of": [
     "microsoft.intune",
-    { "any_of": ["microsoft.entra-id.plan_1", "microsoft.entra-id.plan_2"] }
+    { "any_of": ["microsoft.entra-id", "microsoft.entra-external-id"] }
   ]
 }
 ```
@@ -428,16 +432,16 @@ For example, a subscription can offer a bundle separately:
 }
 ```
 
-An included licence contributes its included products and plan features.
+An included licence contributes its included products.
 An add-on licence exposes its included entitlements as add-ons, not included
 benefits. Optional add-ons advertised by that nested licence do not propagate
 into the enclosing subscription. Nested licence routes provide the displayed
 "via" links; the old hand-written `package` field is not supported.
-An inclusion cycle, self-inclusion, missing target, or a plan on a licence
-target is an error. Requirements are prerequisites, not inclusions: requiring
+An inclusion cycle, self-inclusion, missing target, or a licence that grants
+no product is an error. Requirements are prerequisites, not inclusions: requiring
 a licence does not grant its contents.
 
-The generated catalog index uses schema version 2. Source documents still use
+The generated catalog index uses schema version 3. Source documents still use
 schema version 1 and must match the current JSON schemas; old `product` /
 `package` inclusion fields must be migrated to typed `target` entries.
 

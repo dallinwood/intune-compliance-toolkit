@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.defender-for-office-365-plan-2",
+  "title": "Microsoft Defender for Office 365 Plan 2",
+  "vendor": "microsoft",
+  "family": "Microsoft Defender",
+  "kind": "add_on",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/office-365-advanced-threat-protection-service-description"
+    }
+  ],
+  "includes": [
+    {
+      "type": "licence",
+      "target": "microsoft.defender-for-office-365-plan-1",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.attack-simulation-training",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.automated-investigation-response",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.campaign-views",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.compromised-user-detection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.prompt-injection-protection",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.teams-message-entity-panel",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.teams-message-quarantine",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.threat-explorer",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.threat-trackers",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": [
+    "Purchase prerequisites not yet verified against an official source."
+  ]
+}

@@ -9,7 +9,7 @@
   "description": null,
   "links": [],
   "includes": [
-    { "type": "product", "target": "microsoft.entra-id", "plan": "plan_1", "availability": "included", "note": null },
+    { "type": "product", "target": "microsoft.entra-id", "availability": "included", "note": null },
     { "type": "product", "target": "microsoft.entra-id-access-reviews", "availability": "add_on", "note": "Sold separately" }
   ],
   "review": []

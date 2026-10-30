@@ -13,46 +13,5 @@
       "url": "https://learn.microsoft.com/defender-endpoint/microsoft-defender-endpoint"
     }
   ],
-  "targets": [],
-  "plans": [
-    {
-      "id": "plan_1",
-      "title": "Plan 1",
-      "description": null,
-      "features": [
-        "microsoft.attack-surface-reduction-enhanced",
-        "microsoft.block-at-first-sight",
-        "microsoft.centralized-management",
-        "microsoft.cross-platform-support",
-        "microsoft.manual-response-actions",
-        "microsoft.mobile-threat-defence",
-        "microsoft.next-gen-protection",
-        "microsoft.tamper-protection",
-        "microsoft.web-content-filtering"
-      ]
-    },
-    {
-      "id": "plan_2",
-      "title": "Plan 2",
-      "description": null,
-      "features": [
-        "microsoft.advanced-hunting",
-        "microsoft.automated-investigations",
-        "microsoft.defender-for-cloud-apps-integration",
-        "microsoft.endpoint-detection-response",
-        "microsoft.evaluation-lab",
-        "microsoft.threat-analytics",
-        "microsoft.6-months-searchable-data",
-        "microsoft.attack-surface-reduction-enhanced",
-        "microsoft.block-at-first-sight",
-        "microsoft.centralized-management",
-        "microsoft.cross-platform-support",
-        "microsoft.manual-response-actions",
-        "microsoft.mobile-threat-defence",
-        "microsoft.next-gen-protection",
-        "microsoft.tamper-protection",
-        "microsoft.web-content-filtering"
-      ]
-    }
-  ]
+  "targets": []
 }

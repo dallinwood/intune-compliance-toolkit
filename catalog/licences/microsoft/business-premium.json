@@ -82,42 +82,16 @@
       "target": "microsoft.dataverse-for-teams"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.defender-for-office-365-plan-1",
       "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.defender-for-office-365"
+      "note": null
     },
     {
-      "plan": "plan_2",
+      "type": "licence",
+      "target": "microsoft.defender-for-office-365-plan-2",
       "availability": "add_on",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.defender-for-office-365"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.advanced-anti-phishing"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.real-time-reports"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.safe-attachments"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.safe-links"
+      "note": null
     },
     {
       "availability": "included",
@@ -126,11 +100,10 @@
       "target": "microsoft.ediscovery-standard"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.exchange-online-plan-1",
       "availability": "included",
-      "note": "100 GB; Exchange Online Plan 1",
-      "type": "product",
-      "target": "microsoft.exchange-online"
+      "note": "100 GB; Exchange Online Plan 1"
     },
     {
       "availability": "included",
@@ -169,14 +142,10 @@
       "target": "microsoft.message-encryption-basic"
     },
     {
-      "custom_plan": {
-        "title": "Business (With SCA)",
-        "description": null
-      },
+      "type": "licence",
+      "target": "microsoft.microsoft-365-apps-for-business",
       "availability": "included",
-      "note": "Microsoft 365 Apps for Business (with SCA)",
-      "type": "product",
-      "target": "microsoft.microsoft-365-apps"
+      "note": "Microsoft 365 Apps for Business (with SCA)"
     },
     {
       "availability": "included",
@@ -335,11 +304,10 @@
       "target": "microsoft.office-for-the-web"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.onedrive-plan-1",
       "availability": "included",
-      "note": "1 TB; OneDrive Plan 1",
-      "type": "product",
-      "target": "microsoft.onedrive"
+      "note": "1 TB; OneDrive Plan 1"
     },
     {
       "availability": "included",
@@ -390,11 +358,10 @@
       "target": "microsoft.secure-score"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.sharepoint-online-plan-1",
       "availability": "included",
-      "note": "SharePoint Online Plan 1",
-      "type": "product",
-      "target": "microsoft.sharepoint-online"
+      "note": "SharePoint Online Plan 1"
     },
     {
       "availability": "included",
@@ -427,11 +394,10 @@
       "target": "microsoft.viva-engage"
     },
     {
-      "plan": "basic",
-      "availability": "included",
-      "note": "Viva Insights - Personal (basic)",
       "type": "product",
-      "target": "microsoft.viva-insights-personal"
+      "target": "microsoft.viva-insights-personal",
+      "availability": "included",
+      "note": "Viva Insights - Personal (basic)"
     },
     {
       "availability": "included",
@@ -452,18 +418,10 @@
       "target": "microsoft.defender-for-identity"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.entra-id-p1",
       "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.entra-id"
-    },
-    {
-      "plan": "plan_2",
-      "availability": "add_on",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.entra-id"
+      "note": null
     },
     {
       "availability": "add_on",
@@ -511,181 +469,13 @@
       "availability": "included",
       "note": null,
       "type": "product",
-      "target": "microsoft.administrative-units"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.app-proxy-including-pingaccess"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.cloud-app-discovery"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.conditional-access"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.custom-security-attributes"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.entra-id-connect-health"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.entra-internet-access-for-microsoft"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
       "target": "microsoft.entra-external-id"
     },
     {
       "availability": "included",
       "note": null,
       "type": "product",
-      "target": "microsoft.microsoft-identity-manager"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.password-protection"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.self-service-group-management"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.service-level-agreement"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.shared-account-password-roll-over"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.sms-sign-in"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.tenant-restrictions"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.terms-of-use"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.3rd-party-mfa-integration"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.dynamic-groups"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.enterprise-state-roaming"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.self-service-password-reset-in-ad"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
       "target": "microsoft.windows-autopilot"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.entra-id-for-office-365"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.customized-sign-in-page"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.self-service-activity-reports"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.agent-id"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.basic-security-usage-reports"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.multi-factor-auth-mfa"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.passwordless-authentication"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.single-sign-on-to-other-saas"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.temporary-access-pass"
     },
     {
       "availability": "included",
@@ -710,24 +500,6 @@
       "note": null,
       "type": "licence",
       "target": "microsoft.intune-plan-2"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.application-management"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.device-management"
-    },
-    {
-      "availability": "included",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.endpoint-analytics"
     },
     {
       "availability": "add_on",
@@ -832,11 +604,10 @@
       "target": "microsoft.defender-antivirus"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.defender-for-endpoint-plan-1",
       "availability": "add_on",
-      "note": "Business; Defender for Business",
-      "type": "product",
-      "target": "microsoft.defender-for-endpoint"
+      "note": "Business; Defender for Business"
     },
     {
       "availability": "add_on",
@@ -1283,11 +1054,10 @@
       "target": "microsoft.microsoft-tunnel"
     },
     {
-      "plan": "plan_1",
+      "type": "licence",
+      "target": "microsoft.sharepoint-advanced-management",
       "availability": "add_on",
-      "note": null,
-      "type": "product",
-      "target": "microsoft.sharepoint-advanced-management"
+      "note": null
     },
     {
       "availability": "add_on",

@@ -15,11 +15,52 @@
   ],
   "includes": [
     {
-      "type": "product",
-      "target": "microsoft.defender-for-endpoint",
+      "type": "licence",
+      "target": "microsoft.defender-for-endpoint-plan-1",
       "availability": "included",
-      "note": null,
-      "plan": "plan_2"
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.advanced-hunting",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.automated-investigations",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.defender-for-cloud-apps-integration",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.endpoint-detection-response",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.evaluation-lab",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.threat-analytics",
+      "availability": "included",
+      "note": null
+    },
+    {
+      "type": "product",
+      "target": "microsoft.6-months-searchable-data",
+      "availability": "included",
+      "note": null
     },
     {
       "type": "product",

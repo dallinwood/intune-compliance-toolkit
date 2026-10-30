@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.sharepoint-online-plan-1",
+  "title": "SharePoint (Plan 1)",
+  "vendor": "microsoft",
+  "family": "SharePoint and OneDrive",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/sharepoint-online-service-description/sharepoint-online-service-description"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.sharepoint-online",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

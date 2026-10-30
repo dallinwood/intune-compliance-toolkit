@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "microsoft.onedrive-plan-2",
+  "title": "OneDrive for business (Plan 2)",
+  "vendor": "microsoft",
+  "family": "SharePoint and OneDrive",
+  "kind": "subscription",
+  "requires": null,
+  "description": null,
+  "links": [
+    {
+      "title": "Service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/onedrive-for-business-service-description"
+    }
+  ],
+  "includes": [
+    {
+      "type": "product",
+      "target": "microsoft.onedrive",
+      "availability": "included",
+      "note": null
+    }
+  ],
+  "review": []
+}

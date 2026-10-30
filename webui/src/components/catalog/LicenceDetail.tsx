@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { AVAILABILITIES } from '../../logic/catalogIndex'
 import { effectiveInclusions, effectiveInclusionTree, type EffectiveInclusion, type InclusionNode } from '../../logic/catalogTree'
-import { AVAILABILITY_LABELS, planLabelOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AVAILABILITY_LABELS, type CatalogLookup } from '../../logic/inclusionDisplay'
 import type { Availability, CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { CatalogLink } from './CatalogLink'
 import { InclusionTree } from './InclusionTree'
@@ -14,8 +14,7 @@ type AvailabilityFilter = Availability | 'all'
 function matchesText(inclusion: EffectiveInclusion, text: string, lookup: CatalogLookup): boolean {
   if (text === '') return true
   const productTitle = lookup.productsById.get(inclusion.target)?.title ?? inclusion.target
-  const planTitle = planLabelOf(inclusion, lookup)?.title ?? ''
-  return [productTitle, planTitle, inclusion.note ?? ''].some((part) => part.toLowerCase().includes(text))
+  return [productTitle, inclusion.note ?? ''].some((part) => part.toLowerCase().includes(text))
 }
 
 function countInclusions(nodes: InclusionNode[]): number {
@@ -77,15 +76,9 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
   const [textFilter, setTextFilter] = useState('')
   const normalisedText = textFilter.trim().toLowerCase()
   const licencesById = useMemo(() => new Map(catalog.licences.map((entry) => [entry.id, entry])), [catalog.licences])
-  const standaloneProductIds = useMemo(
-    () => new Set(Object.entries(catalog.by_product).flatMap(([productId, entries]) =>
-      entries.some((entry) => entry.via === 'direct' && entry.viaLicenceIds.length === 0) ? [productId] : [],
-    )),
-    [catalog.by_product],
-  )
 
   const textMatches = useMemo(
-    () => effectiveInclusions(licence, lookup.productsById, licencesById).filter((inclusion) => matchesText(inclusion, normalisedText, lookup)),
+    () => effectiveInclusions(licence, licencesById).filter((inclusion) => matchesText(inclusion, normalisedText, lookup)),
     [licence, lookup, licencesById, normalisedText],
   )
   const counts = useMemo(() => {
@@ -108,14 +101,11 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
     for (const inclusion of licence.includes) {
       if (inclusion.type === 'licence') {
         if (!licencesById.has(inclusion.target)) problems.add(`Missing licence: ${inclusion.target}`)
-      } else {
-        if (!lookup.productsById.has(inclusion.target)) problems.add(`Missing product: ${inclusion.target}`)
-        if (inclusion.plan !== undefined && !lookup.productsById.get(inclusion.target)?.plans.some((plan) => plan.id === inclusion.plan)) {
-          problems.add(`Missing plan: ${inclusion.target}.${inclusion.plan}`)
-        }
+      } else if (!lookup.productsById.has(inclusion.target)) {
+        problems.add(`Missing product: ${inclusion.target}`)
       }
     }
-    for (const inclusion of effectiveInclusions(licence, lookup.productsById, licencesById)) {
+    for (const inclusion of effectiveInclusions(licence, licencesById)) {
       if (!lookup.productsById.has(inclusion.target)) problems.add(`Missing product: ${inclusion.target}`)
     }
     return [...problems]
@@ -202,7 +192,7 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
             type="search"
             value={textFilter}
             onChange={(event) => setTextFilter(event.target.value)}
-            placeholder="Filter products, plans, notes…"
+            placeholder="Filter products and notes…"
             aria-label="Filter inclusions"
             className="sm:max-w-xs"
           />
@@ -214,7 +204,7 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
               {category} <span className="font-normal text-muted-foreground">({countInclusions(roots)})</span>
             </h3>
             <div className="px-2 py-1">
-              <InclusionTree roots={roots} lookup={lookup} standaloneProductIds={standaloneProductIds} />
+              <InclusionTree roots={roots} lookup={lookup} />
             </div>
           </section>
         ))}

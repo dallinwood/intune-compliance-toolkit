@@ -83,7 +83,7 @@ the app families used to keep related standalone and base capabilities together.
 All 431 product files were reviewed for grouping: 245 root assignments and 186
 child features inheriting their root's group. The result uses 29 workload/family
 groups. The review changed category metadata only; it did not alter product ids,
-parents, plans, licence eligibility, or entitlements.
+parents, licence eligibility, or entitlements.
 
 The data checks in [test_product_categories.py](../tests/test_product_categories.py)
 prevent reintroducing undocumented category buckets, split Entra/Intune/Copilot/

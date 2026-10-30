@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { AVAILABILITIES } from '../../logic/catalogIndex'
 import { compareRows, withoutIdenticalRows } from '../../logic/licenceCompare'
-import { availabilityText, planLabelOf, viaPlanTitleOf, type CatalogLookup } from '../../logic/inclusionDisplay'
+import { AVAILABILITY_LABELS, availabilityText, supplyingLicenceIdOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import type { EffectiveInclusion } from '../../logic/catalogTree'
 import type { CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { AvailabilityBadgeIcon } from './AvailabilityBadge'
@@ -11,7 +11,7 @@ import { CatalogLink } from './CatalogLink'
 const INDENT_REM_PER_LEVEL = 1
 const STICKY_FIRST_COLUMN = 'sticky left-0 z-10 bg-background'
 
-function Cell({ inclusion, lookup, catalog }: { inclusion: EffectiveInclusion | null; lookup: CatalogLookup; catalog: CatalogIndex }) {
+function Cell({ inclusion, lookup }: { inclusion: EffectiveInclusion | null; lookup: CatalogLookup }) {
   if (inclusion === null) {
     return (
       <span className="text-muted-foreground">
@@ -20,25 +20,19 @@ function Cell({ inclusion, lookup, catalog }: { inclusion: EffectiveInclusion | 
       </span>
     )
   }
-  const planTitle = planLabelOf(inclusion, lookup)?.title ?? viaPlanTitleOf(inclusion, lookup)
-  const hasStandaloneOffer = (catalog.by_product[inclusion.target] ?? []).some((entry) => entry.via === 'direct' && entry.viaLicenceIds.length === 0)
-  const sourceId = inclusion.viaLicenceIds.at(-1) ?? (inclusion.availability === 'add_on' && !hasStandaloneOffer ? inclusion.viaProductId : null)
-  const text = availabilityText(inclusion.availability, sourceId, lookup)
-  const sourceLicence = sourceId === null ? undefined : lookup.licencesById.get(sourceId)
-  const sourceProduct = sourceId === null ? undefined : lookup.productsById.get(sourceId)
+  const sourceLicenceId = supplyingLicenceIdOf(inclusion)
+  const text = availabilityText(inclusion.availability, sourceLicenceId, lookup)
+  const sourceLicence = sourceLicenceId === null ? undefined : lookup.licencesById.get(sourceLicenceId)
+  // Screen readers hear the label, then the visible "via" line, so the whole
+  // cell reads like the hover title without repeating the licence.
   return (
     <span className="inline-flex flex-col items-center gap-0.5">
       <AvailabilityBadgeIcon availability={inclusion.availability} title={text} />
-      <span className="sr-only">{text}</span>
-      {planTitle !== null && <span className="text-xs text-muted-foreground">{planTitle}</span>}
-      {sourceId !== null && (
+      <span className="sr-only">{`${AVAILABILITY_LABELS[inclusion.availability]} `}</span>
+      {sourceLicenceId !== null && (
         <span className="text-xs text-muted-foreground">
-          {inclusion.availability === 'add_on' ? 'Add-on via ' : 'via '}
-          {sourceLicence !== undefined ? (
-            <CatalogLink view="licences" id={sourceId}>{sourceLicence.title}</CatalogLink>
-          ) : sourceProduct !== undefined ? (
-            <CatalogLink view="products" id={sourceId}>{sourceProduct.title}</CatalogLink>
-          ) : sourceId}
+          via{' '}
+          {sourceLicence === undefined ? sourceLicenceId : <CatalogLink view="licences" id={sourceLicenceId}>{sourceLicence.title}</CatalogLink>}
         </span>
       )}
       {inclusion.note !== null && <span className="max-w-40 text-xs text-muted-foreground">{inclusion.note}</span>}
@@ -117,7 +111,7 @@ export function LicenceCompare({
                 </th>
                 {row.cells.map((inclusion, position) => (
                   <td key={licences[position].id} className="relative border-b border-border px-3 py-1.5 text-center align-middle">
-                    <Cell inclusion={inclusion} lookup={lookup} catalog={catalog} />
+                    <Cell inclusion={inclusion} lookup={lookup} />
                   </td>
                 ))}
               </tr>

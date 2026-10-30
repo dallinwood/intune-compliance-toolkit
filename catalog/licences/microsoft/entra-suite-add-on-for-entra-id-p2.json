@@ -5,15 +5,7 @@
   "vendor": "microsoft",
   "family": "Microsoft Entra",
   "kind": "add_on",
-  "requires": {
-    "any_of": [
-      "microsoft.entra-id-p2",
-      "microsoft.m365-e5",
-      "microsoft.m365-e7",
-      "microsoft.defender-suite",
-      "microsoft.defender-purview-business-premium"
-    ]
-  },
+  "requires": "microsoft.entra-id-p2",
   "description": null,
   "links": [
     {

@@ -13,6 +13,5 @@
       "url": "https://learn.microsoft.com/azure/active-directory/active-directory-conditional-access-conditions#sign-in-risk"
     }
   ],
-  "targets": [],
-  "plans": []
+  "targets": []
 }
