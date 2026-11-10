@@ -782,7 +782,7 @@ entry here, not just the session that wrote it.
   unchanged in 27.1. Mapping files were not edited. Vitest 990 passed, `tsc -b`
   and lint clean, full e2e 154 passed, screenshots at 1440px and 375px read.
   The Python tests touched (`test_mappings*.py`) pass; the full 18-minute suite
-  was not re-run. (see the commit that follows)
+  was not re-run. (`04593f5` feat: warn about mappings only when a mapped rule changed)
   - Deviations: the Python tests live in a new `tests/test_mappings_change_aware.py`
     rather than `test_mappings.py`; the note names the rule id (either end can
     be stale, so "this rule" was ambiguous); `KIND_LABELS` was created early in
