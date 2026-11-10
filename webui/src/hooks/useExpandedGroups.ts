@@ -35,13 +35,5 @@ export function useExpandedGroups(initiallyExpandedKeys: readonly string[]) {
     setExpandedKeys(new Set([...expandedKeys].filter((key) => !keys.includes(key))))
   }
 
-  function collapseAll() {
-    if (expandedKeys.size > 0) setExpandedKeys(new Set())
-  }
-
-  function isAnyExpanded(keys: readonly string[]): boolean {
-    return keys.some((key) => expandedKeys.has(key))
-  }
-
-  return { isExpanded, toggle, expand, collapse, collapseAll, isAnyExpanded }
+  return { isExpanded, toggle, expand, collapse }
 }

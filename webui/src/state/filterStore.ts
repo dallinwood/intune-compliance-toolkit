@@ -47,7 +47,8 @@ export interface FilterState {
   compareFrom: string | null
   compareTo: string | null
   compareGroup: CompareGroup | null
-  changeKinds: ChangeKind[]
+  // null: every kind ticked, nothing in the address; empty: nothing ticked (which also shows every kind).
+  changeKinds: ChangeKind[] | null
   compareSearch: string
   compareSections: string[]
   compareBenchmarks: string[]
@@ -58,7 +59,7 @@ export interface FilterState {
   showComparison: (framework: string, from: string | null, to: string | null) => void
   closeComparison: () => void
   setCompareReleases: (from: string | null, to: string | null) => void
-  setChangeKinds: (kinds: ChangeKind[]) => void
+  setChangeKinds: (kinds: ChangeKind[] | null) => void
   setCompareGroup: (group: CompareGroup | null) => void
   setCompareSearch: (value: string) => void
   toggleCompareSection: (value: string) => void
@@ -162,7 +163,7 @@ function filterValuesOf(urlState: UrlState) {
     compareFrom: urlState.compareFrom,
     compareTo: urlState.compareTo,
     compareGroup: urlState.compareGroup,
-    changeKinds: urlState.changeKinds,
+    changeKinds: urlState.changeKinds.length > 0 ? urlState.changeKinds : null,
     compareSearch: urlState.compareSearch,
     compareSections: urlState.compareSections,
     compareBenchmarks: urlState.compareBenchmarks,
@@ -177,7 +178,7 @@ function toggledInList<T extends string>(values: T[], value: T): T[] {
   return values.includes(value) ? values.filter((existing) => existing !== value) : [...values, value]
 }
 
-const NO_COMPARISON_FILTERS = { compareGroup: null, changeKinds: [], compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
+const NO_COMPARISON_FILTERS = { compareGroup: null, changeKinds: null, compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
 
 export const useFilterStore = create<FilterState>((set) => {
   return {
@@ -281,7 +282,7 @@ function urlStateOf(state: FilterState): UrlState {
     compareFrom: state.compareFrom,
     compareTo: state.compareTo,
     compareGroup: state.compareGroup,
-    changeKinds: state.changeKinds,
+    changeKinds: state.changeKinds ?? [],
     compareSearch: state.compareSearch,
     compareSections: state.compareSections,
     compareBenchmarks: state.compareBenchmarks,

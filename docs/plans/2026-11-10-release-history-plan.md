@@ -968,3 +968,26 @@ entry here, not just the session that wrote it.
     in the warning colour with the link at the end of the line, the muted note
     reads as secondary text, and the History view opened from the link lists
     the touched Discussion first; at 375px both wrap cleanly.
+
+### Final review fixes (2026-11-10)
+
+- **2026-11-10** - F1 (`3c0dab7` fix: allow only a fixed shape for the admin
+  group pattern): the denylist is gone. The admin group pattern must be exactly
+  optional `^`, names separated by `|` optionally wrapped in one pair of
+  parentheses, optional `$`, where a name is `[A-Za-z0-9_-]`, `.` or `\.`; no
+  leading hyphen, and the empty-string and sentinel-name checks stay. This closes
+  the POSIX collating symbol bypass (`[^[.a.]]`); tests list every earlier and
+  new rejected form (the new tests were red first against the old function).
+- **2026-11-10** - F2 to F5 in the comparison view: the toolbar's Expand and
+  Collapse buttons act on the group headers only, as the Rules tab's do, so a
+  click cannot fetch hundreds of rules; if the custom changes cannot be loaded
+  the "have my custom changes" option is disabled with a short reason instead
+  of filtering to nothing; "Show more" starts over when the range, tile,
+  filters or search change; and every kind starts ticked (no address
+  parameter), with the "Showing all kinds" note only after the reader unticks
+  everything. The store keeps `null` for the untouched all-ticked state;
+  `toggledKindSelection` (tested first) moves between it, a subset and empty.
+  Vitest 1126 passed, `tsc -b` and lint clean; the frameworks e2e spec (17
+  tests, 3 new) passed; screenshots of the default comparison at 1440px light
+  and 375px dark were read (all four kinds ticked, no note, rows closed after
+  Expand all). (see the commit that follows)

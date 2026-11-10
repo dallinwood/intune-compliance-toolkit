@@ -65,19 +65,20 @@ test('the summary tiles match the number of rules in each group', async ({ page 
   await expect(page.getByTestId('summary-tile-unchanged')).toContainText('unchanged')
 })
 
-test('ticking a kind narrows the Changed group to rules with that kind', async ({ page }) => {
+test('every kind starts ticked, and unticking one narrows the Changed group, with a way back', async ({ page }) => {
   await page.goto(comparisonUrl)
   await expect(page.getByTestId('summary-tile-changed')).toBeVisible({ timeout: 15_000 })
   const before = await tileValue(page, 'changed')
-  await expect(page.getByText('Showing all kinds')).toBeVisible()
+  for (const name of ['Behaviour', 'Scope', 'Wording', 'References']) await expect(page.getByRole('checkbox', { name })).toBeChecked()
+  await expect(page.getByText('Showing all kinds')).toHaveCount(0)
 
-  await page.getByRole('checkbox', { name: 'References' }).click()
+  await page.getByRole('checkbox', { name: 'Wording' }).click()
 
   await expect.poll(() => tileValue(page, 'changed')).toBeLessThan(before)
-  await expect(page).toHaveURL(/kind=references/)
-  await expect(page.getByRole('button', { name: 'Show all' })).toBeVisible()
+  await expect(page).toHaveURL(/kind=behaviour&kind=scope&kind=references/)
   await page.getByRole('button', { name: 'Show all' }).click()
   await expect.poll(() => tileValue(page, 'changed')).toBe(before)
+  expect(new URL(page.url()).searchParams.has('kind')).toBe(false)
 })
 
 test('unticking the last kind shows every kind again', async ({ page }) => {
@@ -89,6 +90,7 @@ test('unticking the last kind shows every kind again', async ({ page }) => {
   await checkbox.click()
 
   await expect(page.getByText('Showing all kinds')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Show all' })).toHaveCount(0)
   await expect.poll(() => tileValue(page, 'changed')).toBeGreaterThanOrEqual(narrowed)
   expect(new URL(page.url()).searchParams.has('kind')).toBe(false)
 })
@@ -148,7 +150,8 @@ test('group headers collapse like the Rules tab sections, and the toolbar expand
 
   await toolbar.getByRole('button', { name: 'Expand all' }).click()
   for (const name of [/^Added \(/, /^Removed \(/, /^Changed \(/]) await expect(page.getByRole('button', { name })).toHaveAttribute('aria-expanded', 'true')
-  await expect(page.locator('[data-testid="comparison-row"] [aria-expanded="true"]').first()).toBeVisible()
+  // As on the Rules tab, the toolbar does not open the rows themselves.
+  await expect(page.locator('[data-testid="comparison-row"] > button[aria-expanded="true"]')).toHaveCount(0)
 })
 
 test('the framework select uses the short source name', async ({ page }) => {
@@ -202,4 +205,25 @@ test('a comparison address survives a reload', async ({ page }) => {
   await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toHaveValue('access')
   await expect(page.getByRole('checkbox', { name: 'Scope' })).not.toBeChecked()
   await expect(page.getByRole('checkbox', { name: 'Wording' })).toBeChecked()
+})
+
+test('Show more starts over when the search changes', async ({ page }) => {
+  await page.goto(`${comparisonUrl}&group=changed`)
+  const rows = page.locator('[data-testid="comparison-row"][data-group="changed"]')
+  await expect(rows).toHaveCount(50, { timeout: 15_000 })
+  await page.getByRole('button', { name: /^Show 50 more/ }).click()
+  await expect(rows).toHaveCount(100)
+
+  await page.getByRole('searchbox', { name: 'Search title or id' }).fill('the')
+
+  await expect(rows).toHaveCount(50)
+})
+
+test('the custom changes option is disabled with a reason when the custom changes could not be loaded', async ({ page }) => {
+  await page.route('**/baselines/_overlays/_index.json', (route) => route.fulfill({ status: 500, body: 'broken' }))
+  await page.goto(comparisonUrl)
+
+  await expect(page.getByRole('checkbox', { name: 'have my custom changes' })).toBeDisabled({ timeout: 15_000 })
+  await expect(page.getByText('Your custom changes could not be loaded.')).toBeVisible()
+  await expect(page.getByRole('checkbox', { name: 'are in my selection' })).toBeEnabled()
 })

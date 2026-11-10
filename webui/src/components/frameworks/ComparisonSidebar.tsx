@@ -2,7 +2,7 @@ import { useId, type ReactNode } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { KIND_LABELS } from '../../logic/changeLabels'
-import type { ComparisonFacetCounts } from '../../logic/comparisonFilters'
+import { toggledKindSelection, type ComparisonFacetCounts } from '../../logic/comparisonFilters'
 import type { HistoryIndex } from '../../logic/historyIndex'
 import { CHANGE_KINDS, type ChangeKind } from '../../logic/ruleChanges'
 import { termLabel } from '../../logic/vocabulary'
@@ -83,6 +83,7 @@ export function ComparisonSidebar({
   fromTag,
   toTag,
   selectedKinds,
+  customisedUnavailable,
   counts,
   sections,
   benchmarks,
@@ -93,7 +94,8 @@ export function ComparisonSidebar({
   history: HistoryIndex
   fromTag: string
   toTag: string
-  selectedKinds: ChangeKind[]
+  selectedKinds: ChangeKind[] | null
+  customisedUnavailable: boolean
   counts: ComparisonFacetCounts
   sections: string[]
   benchmarks: string[]
@@ -122,8 +124,10 @@ export function ComparisonSidebar({
     setCompareReleases(tag, toStillLater ? toTag : history.releases[history.releases.length - 1].tag)
   }
 
+  const tickedKinds = selectedKinds ?? CHANGE_KINDS
+
   function toggleKind(kind: ChangeKind) {
-    setChangeKinds(CHANGE_KINDS.filter((candidate) => (candidate === kind ? !selectedKinds.includes(candidate) : selectedKinds.includes(candidate))))
+    setChangeKinds(toggledKindSelection(selectedKinds, kind))
   }
 
   const sectionOptions = [...new Set([...counts.sections.keys(), ...sections])].sort((left, right) =>
@@ -164,13 +168,14 @@ export function ComparisonSidebar({
 
         <Group title="Kind of change">
           {CHANGE_KINDS.map((kind) => (
-            <Option key={kind} label={KIND_LABELS[kind]} count={counts.kinds[kind]} checked={selectedKinds.includes(kind)} onChange={() => toggleKind(kind)} />
+            <Option key={kind} label={KIND_LABELS[kind]} count={counts.kinds[kind]} checked={tickedKinds.includes(kind)} onChange={() => toggleKind(kind)} />
           ))}
-          <KindsNote selectedCount={selectedKinds.length} onShowAll={() => setChangeKinds([...CHANGE_KINDS])} />
+          <KindsNote selectedCount={tickedKinds.length} onShowAll={() => setChangeKinds(null)} />
         </Group>
 
         <Group title="Only rules that…">
-          <Option label="have my custom changes" checked={only.includes('custom')} onChange={() => toggleOnly('custom')} />
+          <Option label="have my custom changes" checked={only.includes('custom')} disabled={customisedUnavailable} onChange={() => toggleOnly('custom')} />
+          {customisedUnavailable && <p className="text-xs text-muted-foreground">Your custom changes could not be loaded.</p>}
           <Option label="are in my selection" checked={only.includes('selected')} onChange={() => toggleOnly('selected')} />
         </Group>
 

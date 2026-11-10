@@ -10,6 +10,14 @@ export interface ComparisonFilters {
   onlyRuleIds: ReadonlySet<string> | null
 }
 
+// The kinds ticked after one is toggled. null is the untouched state: every
+// kind ticked and no parameter in the address; ticking all four goes back to it.
+export function toggledKindSelection(current: readonly ChangeKind[] | null, kind: ChangeKind): ChangeKind[] | null {
+  const before = current ?? CHANGE_KINDS
+  const next = CHANGE_KINDS.filter((candidate) => (candidate === kind ? !before.includes(candidate) : before.includes(candidate)))
+  return next.length === CHANGE_KINDS.length ? null : next
+}
+
 function matchesSearch(entry: RuleComparison, search: string): boolean {
   const wanted = search.trim().toLowerCase()
   return wanted === '' || entry.id.toLowerCase().includes(wanted) || entry.title.toLowerCase().includes(wanted)

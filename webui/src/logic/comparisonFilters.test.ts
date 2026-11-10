@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { comparisonFacetCounts, filterComparison, type ComparisonFilters } from './comparisonFilters'
+import { comparisonFacetCounts, filterComparison, toggledKindSelection, type ComparisonFilters } from './comparisonFilters'
 import type { ReleaseComparison, RuleComparison } from './historyIndex'
 import type { ChangeKind } from './ruleChanges'
 
@@ -107,5 +107,20 @@ describe('comparisonFacetCounts', () => {
     const counts = comparisonFacetCounts(comparison, { ...everything, benchmarks: ['cis_lvl1'] })
 
     expect(Object.fromEntries(counts.benchmarks)).toEqual({ cis_lvl1: 2, disa_stig: 2 })
+  })
+})
+
+describe('toggledKindSelection', () => {
+  it('starts from every kind ticked when nothing was chosen yet, so toggling one unticks it', () => {
+    expect(toggledKindSelection(null, 'wording')).toEqual(['behaviour', 'scope', 'references'])
+  })
+
+  it('unticking the last kind leaves nothing selected', () => {
+    expect(toggledKindSelection(['scope'], 'scope')).toEqual([])
+  })
+
+  it('ticking a kind adds it in kind order, and ticking every kind goes back to the untouched state', () => {
+    expect(toggledKindSelection(['references'], 'behaviour')).toEqual(['behaviour', 'references'])
+    expect(toggledKindSelection(['behaviour', 'scope', 'references'], 'wording')).toBeNull()
   })
 })

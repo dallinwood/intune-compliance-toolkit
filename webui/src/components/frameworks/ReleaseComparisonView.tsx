@@ -238,20 +238,31 @@ export function ReleaseComparisonView({
   const closeComparison = useFilterStore((store) => store.closeComparison)
   const compareGroup = useFilterStore((store) => store.compareGroup)
   const setCompareGroup = useFilterStore((store) => store.setCompareGroup)
-  const customisedRuleIds = useCustomisedRuleIds()
+  const customised = useCustomisedRuleIds()
+  const customisedUnavailable = customised.status === 'unavailable'
   // Groups start open; rows start closed.
   const groupsOpen = useExpandedGroups(['added', 'removed', 'changed', 'unchanged'].map((group) => groupKey(group as Group)))
   const rowsOpen = useExpandedGroups([])
   const [visibleCounts, setVisibleCounts] = useState<Record<Group, number>>({ added: ROWS_PER_STEP, removed: ROWS_PER_STEP, changed: ROWS_PER_STEP, unchanged: ROWS_PER_STEP })
 
+  // "Show more" starts over whenever the list it extends is a different one.
+  const listKey = JSON.stringify([source.name, compareFrom, compareTo, compareGroup, changeKinds, search, sections, benchmarks, only])
+  const [shownForKey, setShownForKey] = useState(listKey)
+  if (shownForKey !== listKey) {
+    setShownForKey(listKey)
+    setVisibleCounts({ added: ROWS_PER_STEP, removed: ROWS_PER_STEP, changed: ROWS_PER_STEP, unchanged: ROWS_PER_STEP })
+  }
+
   const history = state.status === 'ready' ? state.index : null
   const range = history === null ? null : resolvedRange(history, compareFrom, compareTo)
-  const kinds = useMemo<ReadonlySet<ChangeKind>>(() => effectiveKinds(changeKinds), [changeKinds])
+  const kinds = useMemo<ReadonlySet<ChangeKind>>(() => effectiveKinds(changeKinds ?? []), [changeKinds])
   const onlyRuleIds = useMemo<ReadonlySet<string> | null>(() => {
-    if (only.length === 0) return null
-    const wanted = only.map((choice) => (choice === 'custom' ? (customisedRuleIds ?? new Set<string>()) : enabledRuleIds))
+    // An unavailable custom-changes list cannot narrow anything, so that choice is left out.
+    const choices = only.filter((choice) => choice !== 'custom' || !customisedUnavailable)
+    if (choices.length === 0) return null
+    const wanted = choices.map((choice) => (choice === 'custom' ? (customised.status === 'ready' ? customised.ruleIds : new Set<string>()) : enabledRuleIds))
     return new Set([...wanted[0]].filter((ruleId) => wanted.every((ruleIds) => ruleIds.has(ruleId))))
-  }, [only, customisedRuleIds, enabledRuleIds])
+  }, [only, customised, customisedUnavailable, enabledRuleIds])
   const filters = useMemo<ComparisonFilters>(() => ({ kinds, search, sections, benchmarks, onlyRuleIds }), [kinds, search, sections, benchmarks, onlyRuleIds])
   const rangeFromTag = range === null ? null : range.fromTag
   const rangeToTag = range === null ? null : range.toTag
@@ -271,9 +282,7 @@ export function ReleaseComparisonView({
   const shownGroups = compareGroup === null ? DEFAULT_GROUPS : [compareGroup]
   const groups: [Group, RuleComparison[]][] = shownGroups.map((group) => [group, filtered[group]])
   const shownGroupKeys = groups.filter(([, entries]) => entries.length > 0).map(([group]) => groupKey(group))
-  const shownRowKeys = groups.flatMap(([group, entries]) => entries.slice(0, visibleCounts[group]).map((entry) => rowKey(group, entry.id)))
   const hasRows = groups.some(([, entries]) => entries.length > 0)
-  const allGroupsOpen = shownGroupKeys.every((key) => groupsOpen.isExpanded(key))
 
   function selectTile(group: Group) {
     setCompareGroup(compareGroup === group ? null : group)
@@ -289,6 +298,7 @@ export function ReleaseComparisonView({
           fromTag={range.fromTag}
           toTag={range.toTag}
           selectedKinds={changeKinds}
+          customisedUnavailable={customisedUnavailable}
           counts={counts}
           sections={sections}
           benchmarks={benchmarks}
@@ -326,17 +336,12 @@ export function ReleaseComparisonView({
             className="max-w-sm"
           />
         </div>
+        {/* As on the Rules tab, the toolbar opens and closes the section headers only; a row opens by click. */}
         <SectionToolbar
-          onExpandOneLevel={() => (allGroupsOpen ? rowsOpen.expand(shownRowKeys) : groupsOpen.expand(shownGroupKeys))}
-          onCollapseOneLevel={() => (rowsOpen.isAnyExpanded(shownRowKeys) ? rowsOpen.collapse(shownRowKeys) : groupsOpen.collapse(shownGroupKeys))}
-          onExpandAll={() => {
-            groupsOpen.expand(shownGroupKeys)
-            rowsOpen.expand(shownRowKeys)
-          }}
-          onCollapseAll={() => {
-            groupsOpen.collapseAll()
-            rowsOpen.collapseAll()
-          }}
+          onExpandOneLevel={() => groupsOpen.expand(shownGroupKeys)}
+          onCollapseOneLevel={() => groupsOpen.collapse(shownGroupKeys)}
+          onExpandAll={() => groupsOpen.expand(shownGroupKeys)}
+          onCollapseAll={() => groupsOpen.collapse(shownGroupKeys)}
         />
         {hasRows ? (
           groups.map(([group, entries]) => (
