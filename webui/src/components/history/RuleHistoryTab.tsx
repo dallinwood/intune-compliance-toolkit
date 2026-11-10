@@ -1,5 +1,5 @@
 import { useId, useState } from 'react'
-import { quietRunSummary, timelineStateText } from '../../logic/changeLabels'
+import { KIND_LABELS, quietEntryText, quietRunSummary, startingPointText, timelineStateText } from '../../logic/changeLabels'
 import {
   foldQuietRuns,
   previousTagWithRule,
@@ -7,7 +7,8 @@ import {
   type TimelineEntry,
   type TimelineItem,
 } from '../../logic/historyIndex'
-import type { ChangeKind } from '../../logic/ruleChanges'
+import { CHANGE_KINDS, effectiveKinds, type ChangeKind } from '../../logic/ruleChanges'
+import { ToggleButtons } from '../rules/DisclosureButtons'
 import { ChangesBetween } from './ChangesBetween'
 import { KindTag } from './KindTag'
 
@@ -17,8 +18,7 @@ export interface HistoryCompare {
   focusPaths?: string[][]
 }
 
-type KindsMode = 'all' | 'behaviour'
-const BEHAVIOUR_ONLY: ReadonlySet<ChangeKind> = new Set<ChangeKind>(['behaviour'])
+const KIND_PILLS = CHANGE_KINDS.map((kind) => ({ key: kind, label: KIND_LABELS[kind] }))
 
 const SELECT_CLASS = 'h-8 rounded-md border border-control-border bg-background px-2 text-sm'
 const CARD_BUTTON_CLASS =
@@ -45,7 +45,7 @@ function ReleaseCard({
   ruleId: string
   isOpen: boolean
   onToggle: () => void
-  kinds: ReadonlySet<ChangeKind> | undefined
+  kinds: ReadonlySet<ChangeKind>
 }) {
   const bodyId = useId()
   const stateText = timelineStateText(entry)
@@ -67,19 +67,40 @@ function ReleaseCard({
           )}
           {entry.state === 'added' && <p className="text-sm text-muted-foreground">This rule was added in {entry.label}.</p>}
           {entry.state === 'removed' && <p className="text-sm text-muted-foreground">This rule is no longer in {entry.label}.</p>}
-          {entry.state === 'earliest' && <p className="text-sm text-muted-foreground">This is the earliest release kept for this rule.</p>}
         </div>
       )}
     </li>
   )
 }
 
-function QuietBar({ entries, isExpanded, onToggle }: { entries: TimelineEntry[]; isExpanded: boolean; onToggle: () => void }) {
+// The oldest release kept is where the history starts, not a change, so it is
+// a marker in the quiet bar's style instead of a card.
+function StartingPoint({ entry }: { entry: TimelineEntry }) {
+  return (
+    <li data-testid="history-starting-point" className="flex items-center gap-2 text-xs text-muted-foreground">
+      <span aria-hidden="true" className="h-px flex-1 border-t border-dashed border-border" />
+      <span>{startingPointText(entry)}</span>
+      <span aria-hidden="true" className="h-px flex-1 border-t border-dashed border-border" />
+    </li>
+  )
+}
+
+function QuietBar({
+  entries,
+  kinds,
+  isExpanded,
+  onToggle,
+}: {
+  entries: TimelineEntry[]
+  kinds: ReadonlySet<ChangeKind>
+  isExpanded: boolean
+  onToggle: () => void
+}) {
   return (
     <li data-testid="history-quiet-run">
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <span aria-hidden="true" className="h-px flex-1 border-t border-dashed border-border" />
-        <span>{quietRunSummary(entries)}</span>
+        <span>{quietRunSummary(entries, kinds)}</span>
         <button type="button" aria-expanded={isExpanded} onClick={onToggle} className="rounded-sm text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none">
           {isExpanded ? 'hide' : 'show'}
         </button>
@@ -89,7 +110,7 @@ function QuietBar({ entries, isExpanded, onToggle }: { entries: TimelineEntry[];
         <ul className="mt-1 space-y-1">
           {entries.map((entry) => (
             <li key={entry.tag} className="rounded-md px-3 py-1 text-sm text-muted-foreground">
-              {entry.label} <span className="font-mono text-xs">{entry.tag}</span> - {entry.state === 'absent' ? 'Not in this release' : 'No changes'}
+              {entry.label} <span className="font-mono text-xs">{entry.tag}</span> - {quietEntryText(entry, kinds)}
             </li>
           ))}
         </ul>
@@ -174,15 +195,15 @@ export function RuleHistoryTab({
   timeline: TimelineEntry[]
   initialCompare?: HistoryCompare
 }) {
-  const [kindsMode, setKindsMode] = useState<KindsMode>('all')
+  // All on to start; none on also shows every kind, as the Rules view's filters do.
+  const [selectedKinds, setSelectedKinds] = useState<ReadonlySet<ChangeKind>>(new Set(CHANGE_KINDS))
+  const shownKinds = effectiveKinds([...selectedKinds])
   const [fromTag, setFromTag] = useState(initialCompare?.from ?? '')
   const [toTag, setToTag] = useState(initialCompare?.to ?? '')
   const newestChange = timeline.find(hasChange)
   const [openTags, setOpenTags] = useState<ReadonlySet<string>>(new Set(newestChange === undefined ? [] : [newestChange.tag]))
   const [expandedRuns, setExpandedRuns] = useState<ReadonlySet<string>>(new Set())
-  const kindsName = useId()
-  const kinds = kindsMode === 'behaviour' ? BEHAVIOUR_ONLY : undefined
-  const items = foldQuietRuns(timeline)
+  const items = foldQuietRuns(timeline, shownKinds)
 
   function toggle(current: ReadonlySet<string>, key: string): ReadonlySet<string> {
     const next = new Set(current)
@@ -200,24 +221,24 @@ export function RuleHistoryTab({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-        <fieldset className="flex items-center gap-3 text-sm">
-          <legend className="sr-only">Show</legend>
-          <span aria-hidden="true" className="font-medium">
-            Show:
-          </span>
-          {(
-            [
-              ['all', 'All changes'],
-              ['behaviour', 'Behaviour only'],
-            ] as const
-          ).map(([mode, label]) => (
-            <label key={mode} className="flex items-center gap-1.5">
-              <input type="radio" name={kindsName} checked={kindsMode === mode} onChange={() => setKindsMode(mode)} />
-              {label}
-            </label>
-          ))}
-        </fieldset>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span className="text-sm font-medium">Show</span>
+        <ToggleButtons
+          items={KIND_PILLS}
+          pressedKeys={selectedKinds}
+          ariaLabel="Kinds of change to show"
+          onToggle={(key) => setSelectedKinds((current) => toggle(current, key) as ReadonlySet<ChangeKind>)}
+        />
+        {selectedKinds.size === 0 && <span className="text-xs text-muted-foreground">Showing all kinds</span>}
+        {selectedKinds.size > 0 && selectedKinds.size < CHANGE_KINDS.length && (
+          <button
+            type="button"
+            onClick={() => setSelectedKinds(new Set(CHANGE_KINDS))}
+            className="rounded-sm text-xs text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+          >
+            Show all
+          </button>
+        )}
       </div>
 
       <CompareSection
@@ -227,13 +248,15 @@ export function RuleHistoryTab({
         toTag={toTag}
         onFromChange={changeFrom}
         onToChange={setToTag}
-        kinds={kinds}
+        kinds={shownKinds}
         focusPaths={initialCompare?.focusPaths}
       />
 
       <ol className="space-y-2">
         {items.map((item: TimelineItem) =>
-          item.type === 'entry' ? (
+          item.type === 'entry' && item.entry.state === 'earliest' ? (
+            <StartingPoint key={item.entry.tag} entry={item.entry} />
+          ) : item.type === 'entry' ? (
             <ReleaseCard
               key={item.entry.tag}
               entry={item.entry}
@@ -241,12 +264,13 @@ export function RuleHistoryTab({
               ruleId={ruleId}
               isOpen={openTags.has(item.entry.tag)}
               onToggle={() => setOpenTags((current) => toggle(current, item.entry.tag))}
-              kinds={kinds}
+              kinds={shownKinds}
             />
           ) : (
             <QuietBar
               key={item.entries[0].tag}
               entries={item.entries}
+              kinds={shownKinds}
               isExpanded={expandedRuns.has(item.entries[0].tag)}
               onToggle={() => setExpandedRuns((current) => toggle(current, item.entries[0].tag))}
             />

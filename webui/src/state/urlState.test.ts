@@ -34,6 +34,7 @@ const everyKeySet: UrlState = {
   framework: 'asd_ism',
   compareFrom: 'v2025.12.9',
   compareTo: 'v2026.09.4',
+  compareGroup: 'changed',
   changeKinds: ['behaviour', 'references'],
   compareSearch: 'access control',
   compareSections: ['Guidelines for email'],
@@ -44,7 +45,7 @@ const everyKeySet: UrlState = {
 describe('urlState', () => {
   it('writes the comparison parameters under their own names, in a fixed order', () => {
     expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
-      '?framework=asd_ism&from=v2025.12.9&to=v2026.09.4&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
+      '?framework=asd_ism&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
     )
   })
 
@@ -53,7 +54,8 @@ describe('urlState', () => {
     expect(state.framework).toBeNull()
     expect(state.compareFrom).toBeNull()
     expect(state.compareTo).toBeNull()
-    expect(state.changeKinds).toBeNull()
+    expect(state.compareGroup).toBeNull()
+    expect(state.changeKinds).toEqual([])
     expect(state.compareSearch).toBe('')
     expect(state.compareSections).toEqual([])
     expect(state.compareBenchmarks).toEqual([])
@@ -61,17 +63,30 @@ describe('urlState', () => {
     expect(serializeUrlState(state, defaults)).toBe('')
   })
 
-  it('does not write the kinds when they are the default ones, in any order', () => {
-    const defaultKinds = parseUrlState('?kind=wording&kind=behaviour&kind=scope')
-    expect(serializeUrlState(defaultKinds, defaults)).toBe('')
-    expect(serializeUrlState({ ...defaultKinds, changeKinds: ['behaviour', 'scope', 'wording', 'references'] }, defaults)).toContain('kind=references')
+  it('reads a group it knows and ignores any other', () => {
+    expect(parseUrlState('?group=unchanged').compareGroup).toBe('unchanged')
+    expect(parseUrlState('?group=everything').compareGroup).toBeNull()
   })
 
   it('ignores a kind or an only value it does not know', () => {
     const state = parseUrlState('?kind=colour&kind=scope&only=everything&only=custom')
     expect(state.changeKinds).toEqual(['scope'])
     expect(state.compareOnly).toEqual(['custom'])
-    expect(parseUrlState('?kind=colour').changeKinds).toBeNull()
+    expect(parseUrlState('?kind=colour').changeKinds).toEqual([])
+  })
+
+  describe('the kinds of change in a comparison', () => {
+    it('writes nothing when no kind is selected, which shows every kind, and reads no parameter as none selected', () => {
+      expect(serializeUrlState({ ...parseUrlState(''), changeKinds: [] }, defaults)).toBe('')
+      expect(parseUrlState('').changeKinds).toEqual([])
+    })
+
+    it('writes a subset as repeated kind parameters and reads it back', () => {
+      const subset = serializeUrlState({ ...parseUrlState(''), changeKinds: ['references', 'scope'] }, defaults)
+
+      expect(subset).toBe('?kind=references&kind=scope')
+      expect(parseUrlState(subset).changeKinds).toEqual(['references', 'scope'])
+    })
   })
 
   it('round trips every key, including repeated keys', () => {
@@ -214,6 +229,7 @@ describe('urlState', () => {
     it('is false for refining a comparison: releases, kinds, search, sections and the only-rules filters', () => {
       const comparing = { ...base, framework: 'asd_ism', compareFrom: 'a', compareTo: 'b' }
       expect(startsHistoryEntry(comparing, { ...comparing, compareFrom: 'c', compareTo: 'd' })).toBe(false)
+      expect(startsHistoryEntry(comparing, { ...comparing, compareGroup: 'added' })).toBe(false)
       expect(startsHistoryEntry(comparing, { ...comparing, changeKinds: ['behaviour'], compareSearch: 'x', compareSections: ['s'], compareOnly: ['custom'] })).toBe(false)
       expect(startsHistoryEntry(comparing, { ...comparing, framework: 'mscp' })).toBe(false)
     })

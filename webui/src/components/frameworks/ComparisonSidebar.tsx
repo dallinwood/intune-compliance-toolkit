@@ -49,6 +49,17 @@ function Option({ label, count, checked, disabled, onChange }: { label: string; 
   )
 }
 
+// Nothing ticked shows every kind; a partial selection offers a way back to all of them.
+function KindsNote({ selectedCount, onShowAll }: { selectedCount: number; onShowAll: () => void }) {
+  if (selectedCount === 0) return <p className="mt-1 text-xs text-muted-foreground">Showing all kinds</p>
+  if (selectedCount === CHANGE_KINDS.length) return null
+  return (
+    <button type="button" onClick={onShowAll} className="mt-1 rounded-sm text-xs text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none">
+      Show all
+    </button>
+  )
+}
+
 function LabelledSelect({ label, value, onChange, children, disabled }: { label: string; value: string; onChange: (value: string) => void; children: ReactNode; disabled?: boolean }) {
   const id = useId()
   return (
@@ -71,7 +82,7 @@ export function ComparisonSidebar({
   history,
   fromTag,
   toTag,
-  kinds,
+  selectedKinds,
   counts,
   sections,
   benchmarks,
@@ -82,7 +93,7 @@ export function ComparisonSidebar({
   history: HistoryIndex
   fromTag: string
   toTag: string
-  kinds: ReadonlySet<ChangeKind>
+  selectedKinds: ChangeKind[]
   counts: ComparisonFacetCounts
   sections: string[]
   benchmarks: string[]
@@ -112,8 +123,7 @@ export function ComparisonSidebar({
   }
 
   function toggleKind(kind: ChangeKind) {
-    const next = kinds.has(kind) ? CHANGE_KINDS.filter((candidate) => kinds.has(candidate) && candidate !== kind) : CHANGE_KINDS.filter((candidate) => kinds.has(candidate) || candidate === kind)
-    if (next.length > 0) setChangeKinds(next)
+    setChangeKinds(CHANGE_KINDS.filter((candidate) => (candidate === kind ? !selectedKinds.includes(candidate) : selectedKinds.includes(candidate))))
   }
 
   const sectionOptions = [...new Set([...counts.sections.keys(), ...sections])].sort((left, right) =>
@@ -132,7 +142,7 @@ export function ComparisonSidebar({
               .filter((candidate) => candidate.releases.length > 1)
               .map((candidate) => (
                 <option key={candidate.name} value={candidate.name}>
-                  {candidate.display_name}
+                  {termLabel(vocabularyIndex, 'sources', candidate.name)}
                 </option>
               ))}
           </LabelledSelect>
@@ -154,8 +164,9 @@ export function ComparisonSidebar({
 
         <Group title="Kind of change">
           {CHANGE_KINDS.map((kind) => (
-            <Option key={kind} label={KIND_LABELS[kind]} count={counts.kinds[kind]} checked={kinds.has(kind)} disabled={kinds.has(kind) && kinds.size === 1} onChange={() => toggleKind(kind)} />
+            <Option key={kind} label={KIND_LABELS[kind]} count={counts.kinds[kind]} checked={selectedKinds.includes(kind)} onChange={() => toggleKind(kind)} />
           ))}
+          <KindsNote selectedCount={selectedKinds.length} onShowAll={() => setChangeKinds([...CHANGE_KINDS])} />
         </Group>
 
         <Group title="Only rules that…">

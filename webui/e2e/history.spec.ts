@@ -60,7 +60,8 @@ test('an mSCP rule with no change between releases shows no changes and its earl
 
   await historyTab(page, UNCHANGED_MSCP_RULE).click()
   const panel = historyPanel(page, UNCHANGED_MSCP_RULE)
-  await expect(panel).toContainText('earliest release in history')
+  await expect(panel.getByTestId('history-starting-point')).toContainText('starting point: the oldest release kept here')
+  await expect(cards(panel)).toHaveCount(0)
   await expect(panel.getByTestId('history-quiet-run')).toContainText('1 release with no changes')
 })
 
@@ -80,8 +81,8 @@ test('Compare any two offers only later releases to compare to, then draws the c
   await openRule(page, CHANGED_ISM_RULE)
   await historyTab(page, CHANGED_ISM_RULE).click()
   const panel = historyPanel(page, CHANGED_ISM_RULE)
-  const from = panel.getByLabel('From')
-  const to = panel.getByLabel('To')
+  const from = panel.getByLabel('From', { exact: true })
+  const to = panel.getByLabel('To', { exact: true })
 
   await expect(to).toBeDisabled()
   await from.selectOption({ label: ismHistory.releases[0].label })
@@ -96,14 +97,47 @@ test('Compare any two offers only later releases to compare to, then draws the c
   await expect(panel.getByTestId('history-compare-result')).not.toContainText('Loading changes')
 })
 
-test('Behaviour only hides the changes of the other kinds', async ({ page }) => {
+test('the oldest release is an end marker, not a bordered card', async ({ page }) => {
   await openRule(page, CHANGED_ISM_RULE)
   await historyTab(page, CHANGED_ISM_RULE).click()
   const panel = historyPanel(page, CHANGED_ISM_RULE)
-  await expect(panel.getByTestId('field-change').first()).toBeVisible({ timeout: 10_000 })
+  const oldest = ismHistory.releases[0]
 
-  await panel.getByRole('radio', { name: 'Behaviour only' }).check()
-  // ISM controls only ever change in wording or references, so nothing is left.
+  await expect(panel.getByTestId('history-starting-point')).toHaveText(`${oldest.label} (${oldest.tag}) · starting point: the oldest release kept here`)
+  await expect(cards(panel).filter({ hasText: oldest.tag })).toHaveCount(0)
+})
+
+test('kind pills hide the changes of the other kinds and fold their releases into a quiet bar', async ({ page }) => {
+  await openRule(page, CHANGED_ISM_RULE)
+  await historyTab(page, CHANGED_ISM_RULE).click()
+  const panel = historyPanel(page, CHANGED_ISM_RULE)
+  const pill = (name: string) => panel.getByRole('group', { name: 'Kinds of change to show' }).getByRole('button', { name })
+  await expect(panel.getByTestId('field-change').first()).toBeVisible({ timeout: 10_000 })
+  for (const name of ['Behaviour', 'Scope', 'Wording', 'References']) await expect(pill(name)).toHaveAttribute('aria-pressed', 'true')
+  const countBefore = await historyTab(page, CHANGED_ISM_RULE).textContent()
+
+  await pill('Wording').click()
+  await pill('References').click()
+  await pill('Scope').click()
+
+  // ISM controls only ever change in wording or references, so nothing is left to show.
   await expect(panel.getByTestId('field-change')).toHaveCount(0)
-  await expect(panel.getByText('No changes to show.')).toBeVisible()
+  await expect(cards(panel)).toHaveCount(0)
+  await expect(panel.getByTestId('history-quiet-run').first()).toContainText('no changes shown')
+  await expect(pill('Behaviour')).toBeEnabled()
+  await expect(panel.getByRole('button', { name: 'Show all' })).toBeVisible()
+  await expect(historyTab(page, CHANGED_ISM_RULE)).toHaveText(countBefore ?? '')
+
+  await panel.getByTestId('history-quiet-run').first().getByRole('button', { name: 'show' }).click()
+  await expect(panel.getByTestId('history-quiet-run').first()).toContainText('Changes hidden:')
+
+  // Nothing selected shows every kind again, with a note instead of the Show all button.
+  await pill('Behaviour').click()
+  await expect(panel.getByText('Showing all kinds')).toBeVisible()
+  await expect(panel.getByRole('button', { name: 'Show all' })).toHaveCount(0)
+  await expect(panel.getByTestId('field-change').first()).toBeVisible()
+
+  await pill('Wording').click()
+  await panel.getByRole('button', { name: 'Show all' }).click()
+  for (const name of ['Behaviour', 'Scope', 'Wording', 'References']) await expect(pill(name)).toHaveAttribute('aria-pressed', 'true')
 })

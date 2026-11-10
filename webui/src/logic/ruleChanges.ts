@@ -12,7 +12,12 @@ import { BREADCRUMB_SEPARATOR } from './ruleDisplay'
 export type ChangeKind = 'behaviour' | 'scope' | 'wording' | 'references'
 
 export const CHANGE_KINDS: readonly ChangeKind[] = ['behaviour', 'scope', 'wording', 'references']
-export const DEFAULT_SHOWN_KINDS: readonly ChangeKind[] = ['behaviour', 'scope', 'wording']
+
+// Nothing selected means nothing narrowed: every kind is shown, as with the
+// Rules view's filters.
+export function effectiveKinds(selected: readonly ChangeKind[]): ReadonlySet<ChangeKind> {
+  return new Set(selected.length === 0 ? CHANGE_KINDS : selected)
+}
 
 // Ignoring a field ignores everything under it. The list lives in a JSON file
 // so the Python mapping check reads the very same one.

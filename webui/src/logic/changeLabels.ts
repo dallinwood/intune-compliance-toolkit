@@ -103,14 +103,30 @@ export function historyTabLabel(changeCount: number | null): string {
 // What a release's card says about the rule's presence; null when the card is
 // about a change in the rule's content instead.
 export function timelineStateText(entry: TimelineEntry): string | null {
-  if (entry.state === 'earliest') return 'earliest release in history'
   if (entry.state === 'added') return `Added in ${entry.label}`
   if (entry.state === 'removed') return `Removed in ${entry.label}`
   return null
 }
 
-export function quietRunSummary(entries: TimelineEntry[]): string {
+// The end marker for the oldest release kept: not a change, so not a card.
+export function startingPointText(entry: TimelineEntry): string {
+  return `${entry.label} (${entry.tag}) · starting point: the oldest release kept here`
+}
+
+function isHiddenChange(entry: TimelineEntry, shownKinds: ReadonlySet<ChangeKind>): boolean {
+  return entry.state === 'changed' && !entry.kinds.some((kind) => shownKinds.has(kind))
+}
+
+export function quietRunSummary(entries: TimelineEntry[], shownKinds: ReadonlySet<ChangeKind>): string {
   const noun = entries.length === 1 ? 'release' : 'releases'
-  const what = entries[0].state === 'absent' ? 'without this rule' : 'with no changes'
+  const what =
+    entries[0].state === 'absent' ? 'without this rule' : entries.some((entry) => isHiddenChange(entry, shownKinds)) ? 'with no changes shown' : 'with no changes'
   return `${entries.length} ${noun} ${what} (${entries.map((entry) => entry.label).join(', ')})`
+}
+
+// What a release folded into a quiet bar holds.
+export function quietEntryText(entry: TimelineEntry, shownKinds: ReadonlySet<ChangeKind>): string {
+  if (entry.state === 'absent') return 'Not in this release'
+  if (isHiddenChange(entry, shownKinds)) return `Changes hidden: ${entry.kinds.map((kind) => KIND_LABELS[kind]).join(', ')}`
+  return 'No changes'
 }

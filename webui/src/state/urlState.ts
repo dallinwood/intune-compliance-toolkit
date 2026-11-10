@@ -1,8 +1,11 @@
-import { CHANGE_KINDS, DEFAULT_SHOWN_KINDS, type ChangeKind } from '../logic/ruleChanges'
+import { CHANGE_KINDS, type ChangeKind } from '../logic/ruleChanges'
 
 export type PageSize = number | 'all'
 
 export type CompareOnly = 'custom' | 'selected'
+// The group of a release comparison a summary tile narrowed it to.
+export type CompareGroup = 'added' | 'removed' | 'changed' | 'unchanged'
+export const COMPARE_GROUPS: readonly CompareGroup[] = ['added', 'removed', 'changed', 'unchanged']
 export const COMPARE_ONLY_VALUES: readonly CompareOnly[] = ['custom', 'selected']
 
 export const DEFAULT_VIEW_ID = 'rules'
@@ -29,11 +32,12 @@ export interface UrlState {
   compare: string[]
   // The Frameworks view: the framework whose releases are compared (null shows
   // the list of frameworks), the two releases, and how the comparison is
-  // narrowed. changeKinds null means the default kinds.
+  // narrowed. changeKinds empty means no kind is selected, which shows every kind.
   framework: string | null
   compareFrom: string | null
   compareTo: string | null
-  changeKinds: ChangeKind[] | null
+  compareGroup: CompareGroup | null
+  changeKinds: ChangeKind[]
   compareSearch: string
   compareSections: string[]
   compareBenchmarks: string[]
@@ -63,12 +67,12 @@ function isChangeKind(value: string): value is ChangeKind {
   return (CHANGE_KINDS as readonly string[]).includes(value)
 }
 
-function isCompareOnly(value: string): value is CompareOnly {
-  return (COMPARE_ONLY_VALUES as readonly string[]).includes(value)
+function isCompareGroup(value: string | null): value is CompareGroup {
+  return (COMPARE_GROUPS as readonly (string | null)[]).includes(value)
 }
 
-function sameKinds(kinds: readonly ChangeKind[], other: readonly ChangeKind[]): boolean {
-  return kinds.length === other.length && kinds.every((kind) => other.includes(kind))
+function isCompareOnly(value: string): value is CompareOnly {
+  return (COMPARE_ONLY_VALUES as readonly string[]).includes(value)
 }
 
 function parsePositiveInteger(text: string | null): number | null {
@@ -111,7 +115,8 @@ export function parseUrlState(search: string, pathname = '', basePath = '/'): Ur
     framework: parameters.get('framework') || null,
     compareFrom: parameters.get('from') || null,
     compareTo: parameters.get('to') || null,
-    changeKinds: parsedKinds.length > 0 ? parsedKinds : null,
+    compareGroup: isCompareGroup(parameters.get('group')) ? (parameters.get('group') as CompareGroup) : null,
+    changeKinds: parsedKinds,
     compareSearch: parameters.get('cq') ?? '',
     compareSections: listValues('csection'),
     compareBenchmarks: listValues('cbenchmark'),
@@ -139,9 +144,8 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   if (state.framework !== null) parameters.set('framework', state.framework)
   if (state.compareFrom !== null) parameters.set('from', state.compareFrom)
   if (state.compareTo !== null) parameters.set('to', state.compareTo)
-  if (state.changeKinds !== null && !sameKinds(state.changeKinds, DEFAULT_SHOWN_KINDS)) {
-    for (const kind of state.changeKinds) parameters.append('kind', kind)
-  }
+  if (state.compareGroup !== null) parameters.set('group', state.compareGroup)
+  for (const kind of state.changeKinds) parameters.append('kind', kind)
   if (state.compareSearch !== '') parameters.set('cq', state.compareSearch)
   for (const section of state.compareSections) parameters.append('csection', section)
   for (const benchmark of state.compareBenchmarks) parameters.append('cbenchmark', benchmark)

@@ -15,7 +15,7 @@ const comparison: ReleaseComparison = {
     entry('mscp.behaviour', { title: 'Sudo timeout', kinds: ['behaviour', 'scope'], section: 'auth', benchmarks: ['disa_stig'] }),
     entry('mscp.refs', { title: 'Only references', kinds: ['references'] }),
   ],
-  unchangedCount: 7,
+  unchanged: [entry('mscp.same_one', { section: 'auth', benchmarks: ['cis_lvl1'] }), entry('mscp.same_two', { title: 'Sudo unchanged' })],
 }
 
 const everything: ComparisonFilters = {
@@ -29,7 +29,7 @@ const everything: ComparisonFilters = {
 const ids = (entries: RuleComparison[]) => entries.map((candidate) => candidate.id)
 
 describe('filterComparison', () => {
-  it('keeps everything when nothing is narrowed, and passes the unchanged count through', () => {
+  it('keeps everything when nothing is narrowed', () => {
     expect(filterComparison(comparison, everything)).toEqual(comparison)
   })
 
@@ -71,6 +71,14 @@ describe('filterComparison', () => {
   it('narrows to the given rule ids, and an empty set keeps nothing', () => {
     expect(ids(filterComparison(comparison, { ...everything, onlyRuleIds: new Set(['mscp.behaviour', 'mscp.removed_one']) }).changed)).toEqual(['mscp.behaviour'])
     expect(filterComparison(comparison, { ...everything, onlyRuleIds: new Set() })).toMatchObject({ added: [], removed: [], changed: [] })
+  })
+
+  it('narrows the unchanged rules like the others, and the kind filter leaves them alone', () => {
+    expect(ids(filterComparison(comparison, { ...everything, kinds: new Set<ChangeKind>(['behaviour']) }).unchanged)).toEqual(['mscp.same_one', 'mscp.same_two'])
+    expect(ids(filterComparison(comparison, { ...everything, sections: ['auth'] }).unchanged)).toEqual(['mscp.same_one'])
+    expect(ids(filterComparison(comparison, { ...everything, benchmarks: ['cis_lvl1'] }).unchanged)).toEqual(['mscp.same_one'])
+    expect(ids(filterComparison(comparison, { ...everything, search: 'sudo' }).unchanged)).toEqual(['mscp.same_two'])
+    expect(ids(filterComparison(comparison, { ...everything, onlyRuleIds: new Set(['mscp.same_two']) }).unchanged)).toEqual(['mscp.same_two'])
   })
 
   it('combines every filter', () => {

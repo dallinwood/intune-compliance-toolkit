@@ -47,7 +47,7 @@ const ismHistory = JSON.parse(readFileSync(new URL('../public/baselines/_history
 const REMOVED_ISM_RULE = compareReleases(ismHistory, firstIsmRelease.tag, currentIsmRelease.tag).removed[0]?.id ?? ''
 const comparisonUrl = `/frameworks?framework=asd_ism&from=${firstIsmRelease.tag}&to=${currentIsmRelease.tag}`
 
-const tileValue = async (page: Page, name: string) => Number(await page.getByTestId(`summary-tile-${name}`).locator('p').first().textContent())
+const tileValue = async (page: Page, name: string) => Number(await page.getByTestId(`summary-tile-${name}`).locator('span').first().textContent())
 const groupCount = async (page: Page, title: string) => {
   const heading = page.getByRole('heading').filter({ hasText: `${title} (` })
   if ((await heading.count()) === 0) return 0
@@ -62,23 +62,99 @@ test('the summary tiles match the number of rules in each group', async ({ page 
   expect(await tileValue(page, 'removed')).toBe(await groupCount(page, 'Removed'))
   expect(await tileValue(page, 'changed')).toBe(await groupCount(page, 'Changed'))
   expect(await tileValue(page, 'changed')).toBeGreaterThan(0)
-  await expect(page.getByTestId('summary-tile-unchanged')).toContainText('unchanged (hidden)')
+  await expect(page.getByTestId('summary-tile-unchanged')).toContainText('unchanged')
 })
 
-test('unticking Wording shrinks the Changed group', async ({ page }) => {
+test('ticking a kind narrows the Changed group to rules with that kind', async ({ page }) => {
   await page.goto(comparisonUrl)
   await expect(page.getByTestId('summary-tile-changed')).toBeVisible({ timeout: 15_000 })
   const before = await tileValue(page, 'changed')
+  await expect(page.getByText('Showing all kinds')).toBeVisible()
 
-  await page.getByRole('checkbox', { name: 'Wording' }).click()
+  await page.getByRole('checkbox', { name: 'References' }).click()
 
   await expect.poll(() => tileValue(page, 'changed')).toBeLessThan(before)
-  await expect(page).toHaveURL(/kind=behaviour/)
+  await expect(page).toHaveURL(/kind=references/)
+  await expect(page.getByRole('button', { name: 'Show all' })).toBeVisible()
+  await page.getByRole('button', { name: 'Show all' }).click()
+  await expect.poll(() => tileValue(page, 'changed')).toBe(before)
 })
 
-test('the last kind of change cannot be unticked', async ({ page }) => {
+test('unticking the last kind shows every kind again', async ({ page }) => {
   await page.goto(`${comparisonUrl}&kind=wording`)
-  await expect(page.getByRole('checkbox', { name: 'Wording' })).toBeDisabled({ timeout: 15_000 })
+  const checkbox = page.getByRole('checkbox', { name: 'Wording' })
+  await expect(checkbox).toBeChecked({ timeout: 15_000 })
+  const narrowed = await tileValue(page, 'changed')
+
+  await checkbox.click()
+
+  await expect(page.getByText('Showing all kinds')).toBeVisible()
+  await expect.poll(() => tileValue(page, 'changed')).toBeGreaterThanOrEqual(narrowed)
+  expect(new URL(page.url()).searchParams.has('kind')).toBe(false)
+})
+
+test('a summary tile narrows the comparison to its group, and pressing it again shows every group', async ({ page }) => {
+  await page.goto(comparisonUrl)
+  const changedTile = page.getByTestId('summary-tile-changed')
+  await expect(changedTile).toHaveAttribute('aria-pressed', 'false', { timeout: 15_000 })
+  await expect(page.getByRole('heading', { name: /^Added \(/ })).toBeVisible()
+
+  await changedTile.click()
+  await expect(changedTile).toHaveAttribute('aria-pressed', 'true')
+  await expect(page).toHaveURL(/group=changed/)
+  await expect(page.getByRole('heading', { name: /^Added \(/ })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: /^Changed \(/ })).toBeVisible()
+
+  await page.getByTestId('summary-tile-removed').click()
+  await expect(changedTile).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.getByRole('heading', { name: /^Removed \(/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /^Changed \(/ })).toHaveCount(0)
+
+  await page.getByTestId('summary-tile-removed').click()
+  await expect(page.getByRole('heading', { name: /^Added \(/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /^Changed \(/ })).toBeVisible()
+  expect(new URL(page.url()).searchParams.has('group')).toBe(false)
+})
+
+test('the unchanged tile lists the unchanged rules, whose rows open to the rule at the To release', async ({ page }) => {
+  await page.goto(comparisonUrl)
+  await expect(page.getByTestId('summary-tile-unchanged')).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByRole('heading', { name: /^Unchanged \(/ })).toHaveCount(0)
+  const unchangedCount = await tileValue(page, 'unchanged')
+  expect(unchangedCount).toBeGreaterThan(0)
+
+  await page.getByTestId('summary-tile-unchanged').click()
+
+  await expect(page.getByRole('heading', { name: new RegExp(`^Unchanged \\(${unchangedCount}\\)$`) })).toBeVisible()
+  const row = page.locator('[data-testid="comparison-row"][data-group="unchanged"]').first()
+  await row.getByRole('button').first().click()
+  await expect(row).toContainText('licensed', { timeout: 15_000 })
+  await expect(row).toContainText(currentIsmRelease.tag)
+})
+
+test('group headers collapse like the Rules tab sections, and the toolbar expands and collapses them', async ({ page }) => {
+  await page.goto(comparisonUrl)
+  const addedHeader = page.getByRole('button', { name: /^Added \(/ })
+  await expect(addedHeader).toHaveAttribute('aria-expanded', 'true', { timeout: 15_000 })
+  await expect(page.locator('[data-testid="comparison-row"][data-group="added"]').first()).toBeVisible()
+
+  await addedHeader.click()
+  await expect(addedHeader).toHaveAttribute('aria-expanded', 'false')
+  await expect(page.locator('[data-testid="comparison-row"][data-group="added"]')).toHaveCount(0)
+
+  const toolbar = page.getByRole('group', { name: 'Sections' })
+  await toolbar.getByRole('button', { name: 'Collapse all' }).click()
+  for (const name of [/^Added \(/, /^Removed \(/, /^Changed \(/]) await expect(page.getByRole('button', { name })).toHaveAttribute('aria-expanded', 'false')
+
+  await toolbar.getByRole('button', { name: 'Expand all' }).click()
+  for (const name of [/^Added \(/, /^Removed \(/, /^Changed \(/]) await expect(page.getByRole('button', { name })).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('[data-testid="comparison-row"] [aria-expanded="true"]').first()).toBeVisible()
+})
+
+test('the framework select uses the short source name', async ({ page }) => {
+  await page.goto(comparisonUrl)
+  await expect(page.getByLabel('Framework')).toHaveValue('asd_ism', { timeout: 15_000 })
+  await expect(page.getByLabel('Framework').locator('option:checked')).toHaveText('ASD ISM')
 })
 
 test('expanding a changed rule shows what changed and links to the rule', async ({ page }) => {

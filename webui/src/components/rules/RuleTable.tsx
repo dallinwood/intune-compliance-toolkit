@@ -1,4 +1,4 @@
-import { ChevronRight, Loader2, Settings2 } from 'lucide-react'
+import { Loader2, Settings2 } from 'lucide-react'
 import { Fragment, memo, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -29,6 +29,7 @@ import type { RuleRow } from '../../types/rule-row'
 import { PagingBar } from './PagingBar'
 import { RuleDetailPanel } from './RuleDetailPanel'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
+import { SectionHeader } from './SectionHeader'
 import { SectionToolbar } from './SectionToolbar'
 
 const INFINITE_SCROLL_STEP = 100
@@ -291,7 +292,15 @@ const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onTo
     <div>
       {blocks.map((block) =>
         block.kind === 'section' ? (
-          <SectionHeader key={block.node.id} node={block.node} isOpen={expanded.has(block.node.id)} onToggle={onToggleSection} />
+          <SectionHeader
+            key={block.node.id}
+            id={block.node.id}
+            label={block.node.label}
+            count={block.node.ruleCount}
+            depth={block.node.depth}
+            isOpen={expanded.has(block.node.id)}
+            onToggle={onToggleSection}
+          />
         ) : (
           <RuleRowsTable key={block.key} depth={block.depth} rows={block.rows} expandedRules={expandedRules} onToggleRule={onToggleRule} />
         ),
@@ -299,35 +308,6 @@ const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onTo
     </div>
   )
 })
-
-// Tailwind only sees literal class names, so each level's classes are spelled out.
-const SECTION_LEVEL_STYLES: Record<number, string> = {
-  1: 'bg-section-1 font-semibold',
-  2: 'bg-section-2 font-medium',
-  3: 'bg-section-3 font-medium',
-}
-const SECTION_LEVEL_INDENTS: Record<number, string> = { 1: 'pl-4', 2: 'pl-8', 3: 'pl-12' }
-const HEADING_TAGS = { 1: 'h2', 2: 'h3', 3: 'h4' } as const
-
-function SectionHeader({ node, isOpen, onToggle }: { node: SectionNode; isOpen: boolean; onToggle: (sectionId: string) => void }) {
-  const level = Math.min(node.depth, 3) as 1 | 2 | 3
-  const HeadingTag = HEADING_TAGS[level]
-  return (
-    <HeadingTag className={`border-b border-border text-sm text-section-foreground ${SECTION_LEVEL_STYLES[level]}`}>
-      <button
-        type="button"
-        aria-expanded={isOpen}
-        onClick={() => onToggle(node.id)}
-        className={`flex w-full items-center gap-1.5 py-2 pr-4 text-left hover:bg-foreground/5 ${SECTION_LEVEL_INDENTS[level]}`}
-      >
-        <ChevronRight className={`size-4 shrink-0 text-section-muted-foreground transition-transform ${isOpen ? 'rotate-90' : ''}`} aria-hidden="true" />
-        <span>
-          {node.label} <span className="font-normal text-section-muted-foreground">({node.ruleCount})</span>
-        </span>
-      </button>
-    </HeadingTag>
-  )
-}
 
 // Matches the headers' pl-4 per level, on md and up only so phones keep the
 // title column wide.

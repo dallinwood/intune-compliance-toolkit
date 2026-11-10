@@ -4,7 +4,7 @@ import ruleSchema from '../../../baselines/_rule.schema.json'
 import type { Rule } from '../types/library'
 import {
   CHANGE_KINDS,
-  DEFAULT_SHOWN_KINDS,
+  effectiveKinds,
   FIELD_CHANGE_KIND,
   IGNORED_FIELDS,
   fieldChanges,
@@ -33,9 +33,15 @@ describe('the field lists', () => {
     expect([...IGNORED_FIELDS].sort()).toEqual(['file', 'id', 'schema_version', 'source'])
   })
 
-  it('shows behaviour, scope and wording by default, in kind order', () => {
+  it('lists the four kinds in order', () => {
     expect(CHANGE_KINDS).toEqual(['behaviour', 'scope', 'wording', 'references'])
-    expect(DEFAULT_SHOWN_KINDS).toEqual(['behaviour', 'scope', 'wording'])
+  })
+})
+
+describe('effectiveKinds', () => {
+  it('shows the selected kinds, and every kind when none is selected', () => {
+    expect([...effectiveKinds(['wording', 'scope'])].sort()).toEqual(['scope', 'wording'])
+    expect([...effectiveKinds([])].sort()).toEqual([...CHANGE_KINDS].sort())
   })
 })
 

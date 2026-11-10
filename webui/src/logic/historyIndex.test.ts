@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ManifestSource, Rule } from '../types/library'
+import type { ChangeKind } from './ruleChanges'
 import {
   HISTORY_INDEX_SCHEMA_VERSION,
   buildHistoryIndex,
@@ -122,6 +123,8 @@ describe('buildHistoryIndex file names', () => {
 })
 
 describe('compareReleases', () => {
+  const ids = (entries: { id: string }[]) => entries.map((entry) => entry.id)
+
   it('groups rules into added, removed and changed and counts the unchanged ones', () => {
     const comparison = compareReleases(buildFixture(), 'R1', 'R3')
 
@@ -131,7 +134,7 @@ describe('compareReleases', () => {
       ['mscp.gappy', ['references']],
       ['mscp.retitled', ['wording']],
     ])
-    expect(comparison.unchangedCount).toBe(2)
+    expect(ids(comparison.unchanged)).toEqual(['mscp.reverted', 'mscp.steady'])
   })
 
   it('shows the title of a removed rule from the release it was last in', () => {
@@ -144,7 +147,7 @@ describe('compareReleases', () => {
     const comparison = compareReleases(buildFixture(), 'R1', 'R3')
 
     expect(comparison.changed.map((entry) => entry.id)).not.toContain('mscp.reverted')
-    expect(comparison.unchangedCount).toBe(2)
+    expect(comparison.unchanged.map((entry) => entry.id)).toContain('mscp.reverted')
   })
 
   it('shows the intermediate change when comparing a neighbouring pair', () => {
@@ -156,7 +159,7 @@ describe('compareReleases', () => {
   it('sorts every group by id', () => {
     const comparison = compareReleases(buildFixture(), 'R1', 'R3')
 
-    for (const group of [comparison.added, comparison.removed, comparison.changed]) {
+    for (const group of [comparison.added, comparison.removed, comparison.changed, comparison.unchanged]) {
       expect(group.map((entry) => entry.id)).toEqual([...group.map((entry) => entry.id)].sort())
     }
   })
@@ -231,6 +234,33 @@ describe('foldQuietRuns', () => {
     const items = foldQuietRuns([entry('R4', 'absent'), entry('R3', 'absent'), entry('R2', 'unchanged'), entry('R1', 'earliest')])
 
     expect(items.map((item) => item.type)).toEqual(['quiet', 'quiet', 'entry'])
+  })
+
+  describe('with some kinds of change hidden', () => {
+    const changedIn = (tag: string, kinds: ChangeKind[]): TimelineEntry => ({ tag, label: tag, state: 'changed', kinds })
+    const behaviourAndScope: ReadonlySet<ChangeKind> = new Set<ChangeKind>(['behaviour', 'scope'])
+
+    it('folds a release whose changes are all hidden together with the unchanged releases around it', () => {
+      const items = foldQuietRuns(
+        [changedIn('R5', ['behaviour']), changedIn('R4', ['wording']), entry('R3', 'unchanged'), changedIn('R2', ['references', 'wording']), entry('R1', 'earliest')],
+        behaviourAndScope,
+      )
+
+      expect(items.map((item) => item.type)).toEqual(['entry', 'quiet', 'entry'])
+      expect(items[1]).toMatchObject({ type: 'quiet', entries: [{ tag: 'R4' }, { tag: 'R3' }, { tag: 'R2' }] })
+    })
+
+    it('keeps a release with at least one shown kind', () => {
+      const items = foldQuietRuns([changedIn('R2', ['wording', 'scope']), entry('R1', 'earliest')], behaviourAndScope)
+
+      expect(items.map((item) => item.type)).toEqual(['entry', 'entry'])
+    })
+
+    it('still keeps absent runs apart and never folds added or removed releases', () => {
+      const items = foldQuietRuns([entry('R5', 'added'), entry('R4', 'absent'), changedIn('R3', ['wording']), entry('R2', 'removed'), entry('R1', 'earliest')], behaviourAndScope)
+
+      expect(items.map((item) => item.type)).toEqual(['entry', 'quiet', 'quiet', 'entry', 'entry'])
+    })
   })
 
   it('never folds a change', () => {

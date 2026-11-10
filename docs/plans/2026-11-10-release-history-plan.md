@@ -26,8 +26,8 @@ Tailwind + Base UI (web UI), Vitest (logic), Playwright (e2e and screenshots).
   everything under it.
 - Change kinds: Behaviour = `check`, `remediation`, `odv`, `assessment`, `architecture`. Scope =
   `applicability`. Wording = `title`, `discussion`, `discussion_format`. References =
-  `references`, `tags`, `section_path`. Behaviour, Scope and Wording are shown by default;
-  References is not.
+  `references`, `tags`, `section_path`. Every kind is shown by default, References included
+  (maintainer decision, 2026-11-10); nothing selected also shows every kind.
 - User-facing text never says "overlay". It says "custom changes".
 - Browse, filters, counts, selection, mappings, overlays and Generate use the current release only.
 - Adding or re-importing an older release never changes which release is current. Re-importing
@@ -255,8 +255,8 @@ Tailwind + Base UI (web UI), Vitest (logic), Playwright (e2e and screenshots).
     - `diffLines(before: string, after: string): DiffOperation<string>[]`.
   - `ruleChanges.ts`:
     - `type ChangeKind = 'behaviour' | 'scope' | 'wording' | 'references'`
-    - `CHANGE_KINDS: readonly ChangeKind[]` (in that order), and
-      `DEFAULT_SHOWN_KINDS: readonly ChangeKind[] = ['behaviour', 'scope', 'wording']`
+    - `CHANGE_KINDS: readonly ChangeKind[]` (in that order), and `effectiveKinds(selected)` (an empty
+      selection means every kind; this replaced `DEFAULT_SHOWN_KINDS` on 2026-11-10)
     - `IGNORED_FIELDS: ReadonlySet<string>` and `FIELD_CHANGE_KIND: Readonly<Record<string, ChangeKind>>`
       (exact values in Global Constraints)
     - `type KindFingerprints = Record<ChangeKind, string>`
@@ -521,7 +521,7 @@ the number of releases.
 
 **Interfaces:**
 - Produces: `UrlState` gains the fields below. Each is serialised only when set or non-default.
-  The `changeKinds` default is `DEFAULT_SHOWN_KINDS`.
+  `changeKinds` is a list; empty (no `kind` parameter) shows every kind.
 
   | Field | Type | URL parameter |
   |---|---|---|
@@ -899,3 +899,46 @@ entry here, not just the session that wrote it.
     changes show struck and underlined words; at 375px the sidebar is behind the
     Filters button and opens above the list as on the Rules view, tiles go two by
     two, titles wrap and nothing needs sideways scrolling; both themes read well.
+
+### Maintainer feedback and review fixes (2026-11-10, after Milestone 5)
+
+- **2026-11-10** - Review fixes R1 to R5 (`5c185e8` fix: close review gaps in
+  the admin ODV check, null handling, history index and details panel). R1: the
+  admin group pattern also rejects anything matching the empty string or a
+  sentinel non-account name (`zz-not-an-account-9`), the lazy forms `*?`, `+?`,
+  `??`, and a `]` straight after `[` or `[^`; the requirement text says it must
+  not match every account (the new test inputs were added together with the
+  guard, not red first). R2: the Python mapping check drops nulls like the web
+  UI (test on both sides; still 148 warnings). R3: the history index build fails
+  if a rule's file name differs between releases. R4: `compareReleases` throws
+  unless from is before to. R5: the rule details are keyed by rule id.
+- **2026-11-10** - Maintainer feedback M1 to M5, plus two maintainer decisions
+  on kinds of change (all from the maintainer on 2026-11-10):
+  - M1: the oldest release is an end marker in the quiet bar's style ("Dec 2025
+    (v2025.12.9) · starting point: the oldest release kept here"), not a card.
+  - M2: History kind controls are toggle pills (a new `ToggleButtons` in
+    `DisclosureButtons.tsx`, the same pill look as the check and fix target
+    buttons, `aria-pressed`); releases whose changes are all in hidden kinds
+    fold into the quiet bar with unchanged releases ("3 releases with no changes
+    shown"), and expanded say "No changes" or "Changes hidden: ..."; the tab
+    count stays the unfiltered total.
+  - M3: the comparison's groups use the Rules tab's `SectionHeader` (now its own
+    file), `SectionToolbar` and `useExpandedGroups` (which gained collapse
+    methods); groups start open.
+  - M4: the summary tiles are single-select filters (`aria-pressed`, `group=`
+    in the address); "unchanged (hidden)" became "unchanged" and selecting it
+    lists those rules, opening to the rule at the To release; `compareReleases`
+    now returns the unchanged rules, not just a count.
+  - M5: the framework select shows the short source label.
+  - Decision: nothing selected shows every kind (note "Showing all kinds"), and
+    a subset offers a "Show all" button; this replaced "the last kind cannot be
+    turned off" in both the History pills and the comparison. No `kind`
+    parameter means nothing selected; a subset is repeated `kind` parameters.
+  - Decision: every kind is shown by default, References included.
+    `DEFAULT_SHOWN_KINDS` is gone (`effectiveKinds` replaces it); the design doc
+    (sections 5.2 and 6.3) and the Global Constraints above were updated.
+  - Verification: Vitest 1104 passed, `tsc -b` and lint clean, full e2e 176
+    passed (one paging test timed out once under load and passed alone).
+    Screenshots at 1440px and 375px, light and dark, read: pills and the end
+    marker in History, tiles with a pressed one, the group header and toolbar and
+    the sidebar note and "Show all" in the comparison; nothing overflows at 375px.

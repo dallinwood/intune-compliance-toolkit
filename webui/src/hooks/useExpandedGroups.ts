@@ -10,7 +10,7 @@ export function subgroupKey(vendorId: string, name: string): string {
 }
 
 // Which collapsible groups of a list are open. The list names the groups that
-// start open; expand() opens more without closing any.
+// start open; expand() opens more without closing any, collapse() closes some.
 export function useExpandedGroups(initiallyExpandedKeys: readonly string[]) {
   const [expandedKeys, setExpandedKeys] = useState<ReadonlySet<string>>(() => new Set(initiallyExpandedKeys))
 
@@ -30,5 +30,18 @@ export function useExpandedGroups(initiallyExpandedKeys: readonly string[]) {
     setExpandedKeys(new Set([...expandedKeys, ...keys]))
   }
 
-  return { isExpanded, toggle, expand }
+  function collapse(keys: readonly string[]) {
+    if (keys.every((key) => !expandedKeys.has(key))) return
+    setExpandedKeys(new Set([...expandedKeys].filter((key) => !keys.includes(key))))
+  }
+
+  function collapseAll() {
+    if (expandedKeys.size > 0) setExpandedKeys(new Set())
+  }
+
+  function isAnyExpanded(keys: readonly string[]): boolean {
+    return keys.some((key) => expandedKeys.has(key))
+  }
+
+  return { isExpanded, toggle, expand, collapse, collapseAll, isAnyExpanded }
 }

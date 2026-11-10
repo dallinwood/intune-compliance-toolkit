@@ -9,6 +9,7 @@ import {
   parseUrlState,
   serializeUrlLocation,
   startsHistoryEntry,
+  type CompareGroup,
   type CompareOnly,
   type PageSize,
   type UrlState,
@@ -45,7 +46,8 @@ export interface FilterState {
   framework: string | null
   compareFrom: string | null
   compareTo: string | null
-  changeKinds: ChangeKind[] | null
+  compareGroup: CompareGroup | null
+  changeKinds: ChangeKind[]
   compareSearch: string
   compareSections: string[]
   compareBenchmarks: string[]
@@ -56,7 +58,8 @@ export interface FilterState {
   showComparison: (framework: string, from: string | null, to: string | null) => void
   closeComparison: () => void
   setCompareReleases: (from: string | null, to: string | null) => void
-  setChangeKinds: (kinds: ChangeKind[] | null) => void
+  setChangeKinds: (kinds: ChangeKind[]) => void
+  setCompareGroup: (group: CompareGroup | null) => void
   setCompareSearch: (value: string) => void
   toggleCompareSection: (value: string) => void
   toggleCompareBenchmark: (value: string) => void
@@ -158,6 +161,7 @@ function filterValuesOf(urlState: UrlState) {
     framework: urlState.framework,
     compareFrom: urlState.compareFrom,
     compareTo: urlState.compareTo,
+    compareGroup: urlState.compareGroup,
     changeKinds: urlState.changeKinds,
     compareSearch: urlState.compareSearch,
     compareSections: urlState.compareSections,
@@ -173,7 +177,7 @@ function toggledInList<T extends string>(values: T[], value: T): T[] {
   return values.includes(value) ? values.filter((existing) => existing !== value) : [...values, value]
 }
 
-const NO_COMPARISON_FILTERS = { changeKinds: null, compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
+const NO_COMPARISON_FILTERS = { compareGroup: null, changeKinds: [], compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
 
 export const useFilterStore = create<FilterState>((set) => {
   return {
@@ -185,6 +189,7 @@ export const useFilterStore = create<FilterState>((set) => {
     closeComparison: () => set({ framework: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
     setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
     setChangeKinds: (kinds) => set({ changeKinds: kinds }),
+    setCompareGroup: (group) => set({ compareGroup: group }),
     setCompareSearch: (value) => set({ compareSearch: value }),
     toggleCompareSection: (value) => set((state) => ({ compareSections: toggledInList(state.compareSections, value) })),
     toggleCompareBenchmark: (value) => set((state) => ({ compareBenchmarks: toggledInList(state.compareBenchmarks, value) })),
@@ -275,6 +280,7 @@ function urlStateOf(state: FilterState): UrlState {
     framework: state.framework,
     compareFrom: state.compareFrom,
     compareTo: state.compareTo,
+    compareGroup: state.compareGroup,
     changeKinds: state.changeKinds,
     compareSearch: state.compareSearch,
     compareSections: state.compareSections,

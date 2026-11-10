@@ -46,7 +46,7 @@ function filtered(
     added: comparison.added.filter(keep(false)),
     removed: comparison.removed.filter(keep(false)),
     changed: comparison.changed.filter(keep(true)),
-    unchangedCount: comparison.unchangedCount,
+    unchanged: comparison.unchanged.filter(keep(false)),
   }
 }
 

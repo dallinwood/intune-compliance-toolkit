@@ -162,7 +162,7 @@ Every top-level field not on the ignore list belongs to exactly one kind:
 | Behaviour | `check`, `remediation`, `odv`, `assessment`, `architecture` | yes |
 | Scope | `applicability` (targets, versions, benchmarks, severity) | yes |
 | Wording | `title`, `discussion`, `discussion_format` | yes |
-| References | `references`, `tags`, `section_path` | no (box unticked) |
+| References | `references`, `tags`, `section_path` | yes (maintainer decision, 2026-11-10) |
 
 For ISM, `title` holds the control statement, so a reworded control counts as Wording.
 Putting `section_path` (a rule moving section) under References is a builder's call (see
@@ -250,8 +250,10 @@ highlighted and labelled "current"), and a **Compare releases** button.
   - Framework picker.
   - From and To release pickers. They default to the previous release → current release. To
     must be later than From.
-  - "Kind of change" checkboxes with counts: Behaviour, Scope and Wording ticked; References only
-    unticked, so rules whose only change is renumbering don't bury the real changes.
+  - "Kind of change" checkboxes with counts. Every kind is shown by default: with nothing ticked
+    the view shows all kinds (as the Rules view's filters do) and says "Showing all kinds"; ticking
+    some narrows to those, and a "Show all" button ticks all four. (Maintainer decision,
+    2026-11-10: this replaced "References unticked by default".)
   - "Only rules that…" checkboxes: "have my custom changes" and "are in my selection". These are
     the builder's suggestions, so the maintainer has not specifically approved them; see
     section 9.
@@ -354,3 +356,4 @@ about 375px and desktop width, read before the milestone is called done.
 ## Progress log
 
 - 2026-11-10: Design written, reviewed by a builder check, and approved by the maintainer.
+- 2026-11-10: Maintainer decision during implementation: the comparison shows every kind of change by default, References included; nothing ticked also shows every kind. See the plan's progress log.

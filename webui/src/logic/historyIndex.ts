@@ -121,7 +121,7 @@ export interface ReleaseComparison {
   added: RuleComparison[]
   removed: RuleComparison[]
   changed: RuleComparison[]
-  unchangedCount: number
+  unchanged: RuleComparison[]
 }
 
 function releasePositionOf(index: HistoryIndex, tag: string): number {
@@ -138,7 +138,7 @@ export function compareReleases(index: HistoryIndex, fromTag: string, toTag: str
   const fromPosition = releasePositionOf(index, fromTag)
   const toPosition = releasePositionOf(index, toTag)
   if (fromPosition >= toPosition) throw new Error(`Release ${fromTag} must be before ${toTag} to compare them`)
-  const comparison: ReleaseComparison = { added: [], removed: [], changed: [], unchangedCount: 0 }
+  const comparison: ReleaseComparison = { added: [], removed: [], changed: [], unchanged: [] }
   for (const [id, entry] of Object.entries(index.rules)) {
     const before = entry.versions[fromPosition]
     const after = entry.versions[toPosition]
@@ -148,11 +148,11 @@ export function compareReleases(index: HistoryIndex, fromTag: string, toTag: str
     else if (after === null) comparison.removed.push({ ...summary, kinds: [] })
     else {
       const kinds = differingKinds(before, after)
-      if (kinds.length === 0) comparison.unchangedCount += 1
+      if (kinds.length === 0) comparison.unchanged.push({ ...summary, kinds })
       else comparison.changed.push({ ...summary, kinds })
     }
   }
-  for (const group of [comparison.added, comparison.removed, comparison.changed]) {
+  for (const group of [comparison.added, comparison.removed, comparison.changed, comparison.unchanged]) {
     group.sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))
   }
   return comparison
@@ -187,14 +187,26 @@ export function ruleTimeline(index: HistoryIndex, ruleId: string): TimelineEntry
 
 export type TimelineItem = { type: 'entry'; entry: TimelineEntry } | { type: 'quiet'; entries: TimelineEntry[] }
 
-export function foldQuietRuns(entries: TimelineEntry[]): TimelineItem[] {
+// A release is quiet when nothing in it is worth a card: it did not change,
+// the rule is not in it, or every kind it changed is hidden. Added and removed
+// releases are real changes whatever kinds are shown.
+function isQuiet(entry: TimelineEntry, shownKinds: ReadonlySet<ChangeKind> | undefined): boolean {
+  if (entry.state === 'unchanged' || entry.state === 'absent') return true
+  return entry.state === 'changed' && shownKinds !== undefined && !entry.kinds.some((kind) => shownKinds.has(kind))
+}
+
+// Runs of absent releases stay apart from runs of unchanged ones.
+function quietRunKind(entry: TimelineEntry): 'absent' | 'present' {
+  return entry.state === 'absent' ? 'absent' : 'present'
+}
+
+export function foldQuietRuns(entries: TimelineEntry[], shownKinds?: ReadonlySet<ChangeKind>): TimelineItem[] {
   const items: TimelineItem[] = []
   for (const entry of entries) {
     const last = items[items.length - 1]
-    const isQuiet = entry.state === 'unchanged' || entry.state === 'absent'
-    if (isQuiet && last?.type === 'quiet' && last.entries[0].state === entry.state) last.entries.push(entry)
-    else if (isQuiet) items.push({ type: 'quiet', entries: [entry] })
-    else items.push({ type: 'entry', entry })
+    if (!isQuiet(entry, shownKinds)) items.push({ type: 'entry', entry })
+    else if (last?.type === 'quiet' && quietRunKind(last.entries[0]) === quietRunKind(entry)) last.entries.push(entry)
+    else items.push({ type: 'quiet', entries: [entry] })
   }
   return items
 }

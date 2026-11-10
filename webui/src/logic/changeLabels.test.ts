@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { TimelineEntry } from './historyIndex'
-import { KIND_LABELS, changeLabel, historyTabLabel, quietRunSummary, timelineStateText, visibleChanges } from './changeLabels'
+import { KIND_LABELS, changeLabel, historyTabLabel, quietEntryText, quietRunSummary, startingPointText, timelineStateText, visibleChanges } from './changeLabels'
 import { CHANGE_KINDS, type ChangeKind, type FieldChange } from './ruleChanges'
 import { vocabularyIndexOf } from './testVocabularyFixtures'
 
@@ -72,6 +72,9 @@ describe('visibleChanges', () => {
   })
 })
 
+const ALL_KINDS: ReadonlySet<ChangeKind> = new Set<ChangeKind>(['behaviour', 'scope', 'wording', 'references'])
+const BEHAVIOUR_ONLY: ReadonlySet<ChangeKind> = new Set<ChangeKind>(['behaviour'])
+
 describe('history wording', () => {
   const entry = (state: TimelineEntry['state'], label = 'Sep 2026'): TimelineEntry => ({ tag: 't', label, state, kinds: [] })
 
@@ -82,16 +85,36 @@ describe('history wording', () => {
     expect(historyTabLabel(7)).toBe('History (7 changes)')
   })
 
-  it('words the state of a release where the rule appeared, disappeared or started', () => {
-    expect(timelineStateText(entry('earliest'))).toBe('earliest release in history')
+  it('words the state of a release where the rule appeared or disappeared', () => {
     expect(timelineStateText(entry('added', 'Mar 2026'))).toBe('Added in Mar 2026')
     expect(timelineStateText(entry('removed', 'Jun 2026'))).toBe('Removed in Jun 2026')
     expect(timelineStateText(entry('changed'))).toBeNull()
+    expect(timelineStateText(entry('earliest'))).toBeNull()
+  })
+
+  it('words the end marker for the oldest release kept', () => {
+    expect(startingPointText({ ...entry('earliest', 'Dec 2025'), tag: 'v2025.12.9' })).toBe(
+      'Dec 2025 (v2025.12.9) · starting point: the oldest release kept here',
+    )
   })
 
   it('summarises a run of releases with no changes, or without the rule', () => {
-    expect(quietRunSummary([entry('unchanged', 'Sep 2026')])).toBe('1 release with no changes (Sep 2026)')
-    expect(quietRunSummary([entry('unchanged', 'Sep 2026'), entry('unchanged', 'Jun 2026')])).toBe('2 releases with no changes (Sep 2026, Jun 2026)')
-    expect(quietRunSummary([entry('absent', 'Mar 2026'), entry('absent', 'Dec 2025')])).toBe('2 releases without this rule (Mar 2026, Dec 2025)')
+    expect(quietRunSummary([entry('unchanged', 'Sep 2026')], ALL_KINDS)).toBe('1 release with no changes (Sep 2026)')
+    expect(quietRunSummary([entry('unchanged', 'Sep 2026'), entry('unchanged', 'Jun 2026')], ALL_KINDS)).toBe('2 releases with no changes (Sep 2026, Jun 2026)')
+    expect(quietRunSummary([entry('absent', 'Mar 2026'), entry('absent', 'Dec 2025')], ALL_KINDS)).toBe('2 releases without this rule (Mar 2026, Dec 2025)')
+  })
+
+  it('says "no changes shown" when a run holds a release whose changes are hidden', () => {
+    const hidden: TimelineEntry = { tag: 't', label: 'Jun 2026', state: 'changed', kinds: ['wording'] }
+
+    expect(quietRunSummary([entry('unchanged', 'Sep 2026'), hidden], BEHAVIOUR_ONLY)).toBe('2 releases with no changes shown (Sep 2026, Jun 2026)')
+  })
+
+  it('says what a folded release holds: no changes, or the hidden kinds', () => {
+    const hidden: TimelineEntry = { tag: 't', label: 'Jun 2026', state: 'changed', kinds: ['wording', 'references'] }
+
+    expect(quietEntryText(entry('unchanged'), BEHAVIOUR_ONLY)).toBe('No changes')
+    expect(quietEntryText(hidden, BEHAVIOUR_ONLY)).toBe('Changes hidden: Wording, References')
+    expect(quietEntryText(entry('absent'), BEHAVIOUR_ONLY)).toBe('Not in this release')
   })
 })

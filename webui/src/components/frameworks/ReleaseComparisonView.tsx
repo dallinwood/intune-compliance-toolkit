@@ -2,23 +2,29 @@ import { ArrowUpRight } from 'lucide-react'
 import { useId, useMemo, useState, type MouseEvent } from 'react'
 import { buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
+import { useExpandedGroups } from '../../hooks/useExpandedGroups'
 import { useCustomisedRuleIds } from '../../hooks/useCustomisedRuleIds'
 import { useHistoryIndex } from '../../hooks/useHistoryIndex'
 import { comparisonFacetCounts, filterComparison, type ComparisonFilters } from '../../logic/comparisonFilters'
 import { compareReleases, latestReleaseWithRule, ruleFilePathAtRelease, type HistoryIndex, type RuleComparison } from '../../logic/historyIndex'
-import { DEFAULT_SHOWN_KINDS, type ChangeKind } from '../../logic/ruleChanges'
+import { effectiveKinds, type ChangeKind } from '../../logic/ruleChanges'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { useFilterStore } from '../../state/filterStore'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
+import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation, type CompareGroup } from '../../state/urlState'
 import type { ManifestSource } from '../../types/library'
 import { ChangesBetween } from '../history/ChangesBetween'
 import { KindTag } from '../history/KindTag'
 import { RuleDetailPanel } from '../rules/RuleDetailPanel'
+import { SectionHeader } from '../rules/SectionHeader'
+import { SectionToolbar } from '../rules/SectionToolbar'
 import { ComparisonSidebar } from './ComparisonSidebar'
 
-type Group = 'added' | 'removed' | 'changed'
+type Group = CompareGroup
 
-const GROUP_TITLES: Record<Group, string> = { added: 'Added', removed: 'Removed', changed: 'Changed' }
+const GROUP_TITLES: Record<Group, string> = { added: 'Added', removed: 'Removed', changed: 'Changed', unchanged: 'Unchanged' }
+// The groups listed when no tile has narrowed the comparison; unchanged rules are only listed on request.
+const DEFAULT_GROUPS: readonly Group[] = ['added', 'removed', 'changed']
 const ROWS_PER_STEP = 50
 
 // The range the address names when it names a valid one, otherwise the
@@ -31,6 +37,9 @@ function resolvedRange(history: HistoryIndex, from: string | null, to: string | 
   return { fromTag: tags[tags.length - 2], toTag: tags[tags.length - 1] }
 }
 
+const groupKey = (group: Group) => `group:${group}`
+const rowKey = (group: Group, ruleId: string) => `${group}:${ruleId}`
+
 function hrefShowing(ruleId: string): string {
   const state = { ...parseUrlState(''), view: DEFAULT_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
   return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
@@ -40,12 +49,22 @@ function isPlainClick(event: MouseEvent): boolean {
   return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
 }
 
-function SummaryTile({ name, label, value }: { name: string; label: string; value: number }) {
+// A summary tile is also a filter: pressed, it narrows the comparison to its group.
+function SummaryTile({ group, label, value, isSelected, onSelect }: { group: Group; label: string; value: number; isSelected: boolean; onSelect: () => void }) {
   return (
-    <div data-testid={`summary-tile-${name}`} className="rounded-lg border border-border bg-panel px-3 py-2">
-      <p className="text-2xl font-semibold tabular-nums">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </div>
+    <button
+      type="button"
+      data-testid={`summary-tile-${group}`}
+      aria-pressed={isSelected}
+      onClick={onSelect}
+      className={cn(
+        'rounded-lg border border-border bg-panel px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none',
+        'hover:bg-muted aria-pressed:border-foreground/60 aria-pressed:bg-muted',
+      )}
+    >
+      <span className="block text-2xl font-semibold tabular-nums">{value}</span>
+      <span className="block text-xs text-muted-foreground">{label}</span>
+    </button>
   )
 }
 
@@ -92,8 +111,9 @@ function ComparisonRow({
   onToggle: () => void
 }) {
   const bodyId = useId()
-  // An added or removed rule is shown as the newest release that has it stored it.
-  const storedAt = latestReleaseWithRule(history, entry.id)
+  // An unchanged rule is shown as the To release stored it; an added or
+  // removed one as the newest release that has it stored it.
+  const storedAt = group === 'unchanged' ? { tag: toTag } : latestReleaseWithRule(history, entry.id)
   const storedPath = storedAt === null ? null : ruleFilePathAtRelease(history, entry.id, storedAt.tag)
   return (
     <li data-testid="comparison-row" data-group={group} className="border-b border-border last:border-b-0">
@@ -123,7 +143,7 @@ function ComparisonRow({
               <RuleDetailPanel ruleRef={{ id: entry.id, path: storedPath }} nested />
             </div>
           )}
-          {group === 'added' && <RuleLinks ruleId={entry.id} />}
+          {(group === 'added' || group === 'unchanged') && <RuleLinks ruleId={entry.id} />}
         </div>
       )}
     </li>
@@ -137,8 +157,10 @@ function GroupSection({
   fromTag,
   toTag,
   kinds,
-  openKeys,
-  onToggle,
+  isGroupOpen,
+  onToggleGroup,
+  openRowKeys,
+  onToggleRow,
   visibleCount,
   onShowMore,
 }: {
@@ -148,38 +170,42 @@ function GroupSection({
   fromTag: string
   toTag: string
   kinds: ReadonlySet<ChangeKind>
-  openKeys: ReadonlySet<string>
-  onToggle: (key: string) => void
+  isGroupOpen: boolean
+  onToggleGroup: (key: string) => void
+  openRowKeys: (key: string) => boolean
+  onToggleRow: (key: string) => void
   visibleCount: number
   onShowMore: () => void
 }) {
   if (entries.length === 0) return null
   return (
     <section aria-label={GROUP_TITLES[group]} className="border-b border-border">
-      <h2 className="bg-section-2 px-4 py-2 text-sm font-semibold text-section-foreground">
-        {GROUP_TITLES[group]} ({entries.length})
-      </h2>
-      <ul>
-        {entries.slice(0, visibleCount).map((entry) => (
-          <ComparisonRow
-            key={entry.id}
-            entry={entry}
-            group={group}
-            history={history}
-            fromTag={fromTag}
-            toTag={toTag}
-            kinds={kinds}
-            isOpen={openKeys.has(`${group}:${entry.id}`)}
-            onToggle={() => onToggle(`${group}:${entry.id}`)}
-          />
-        ))}
-      </ul>
-      {entries.length > visibleCount && (
-        <div className="px-4 py-2">
-          <button type="button" onClick={onShowMore} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-            Show {Math.min(ROWS_PER_STEP, entries.length - visibleCount)} more ({entries.length - visibleCount} left)
-          </button>
-        </div>
+      <SectionHeader id={groupKey(group)} label={GROUP_TITLES[group]} count={entries.length} depth={1} isOpen={isGroupOpen} onToggle={onToggleGroup} />
+      {isGroupOpen && (
+        <>
+          <ul>
+            {entries.slice(0, visibleCount).map((entry) => (
+              <ComparisonRow
+                key={entry.id}
+                entry={entry}
+                group={group}
+                history={history}
+                fromTag={fromTag}
+                toTag={toTag}
+                kinds={kinds}
+                isOpen={openRowKeys(rowKey(group, entry.id))}
+                onToggle={() => onToggleRow(rowKey(group, entry.id))}
+              />
+            ))}
+          </ul>
+          {entries.length > visibleCount && (
+            <div className="px-4 py-2">
+              <button type="button" onClick={onShowMore} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+                Show {Math.min(ROWS_PER_STEP, entries.length - visibleCount)} more ({entries.length - visibleCount} left)
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   )
@@ -210,13 +236,17 @@ export function ReleaseComparisonView({
   const only = useFilterStore((store) => store.compareOnly)
   const setSearch = useFilterStore((store) => store.setCompareSearch)
   const closeComparison = useFilterStore((store) => store.closeComparison)
+  const compareGroup = useFilterStore((store) => store.compareGroup)
+  const setCompareGroup = useFilterStore((store) => store.setCompareGroup)
   const customisedRuleIds = useCustomisedRuleIds()
-  const [openKeys, setOpenKeys] = useState<ReadonlySet<string>>(new Set())
-  const [visibleCounts, setVisibleCounts] = useState<Record<Group, number>>({ added: ROWS_PER_STEP, removed: ROWS_PER_STEP, changed: ROWS_PER_STEP })
+  // Groups start open; rows start closed.
+  const groupsOpen = useExpandedGroups(['added', 'removed', 'changed', 'unchanged'].map((group) => groupKey(group as Group)))
+  const rowsOpen = useExpandedGroups([])
+  const [visibleCounts, setVisibleCounts] = useState<Record<Group, number>>({ added: ROWS_PER_STEP, removed: ROWS_PER_STEP, changed: ROWS_PER_STEP, unchanged: ROWS_PER_STEP })
 
   const history = state.status === 'ready' ? state.index : null
   const range = history === null ? null : resolvedRange(history, compareFrom, compareTo)
-  const kinds = useMemo<ReadonlySet<ChangeKind>>(() => new Set(changeKinds ?? DEFAULT_SHOWN_KINDS), [changeKinds])
+  const kinds = useMemo<ReadonlySet<ChangeKind>>(() => effectiveKinds(changeKinds), [changeKinds])
   const onlyRuleIds = useMemo<ReadonlySet<string> | null>(() => {
     if (only.length === 0) return null
     const wanted = only.map((choice) => (choice === 'custom' ? (customisedRuleIds ?? new Set<string>()) : enabledRuleIds))
@@ -238,21 +268,15 @@ export function ReleaseComparisonView({
 
   const fromLabel = history.releases.find((release) => release.tag === range.fromTag)?.label ?? range.fromTag
   const toLabel = history.releases.find((release) => release.tag === range.toTag)?.label ?? range.toTag
-  const groups: [Group, RuleComparison[]][] = [
-    ['added', filtered.added],
-    ['removed', filtered.removed],
-    ['changed', filtered.changed],
-  ]
-  const shownKeys = groups.flatMap(([group, entries]) => entries.slice(0, visibleCounts[group]).map((entry) => `${group}:${entry.id}`))
+  const shownGroups = compareGroup === null ? DEFAULT_GROUPS : [compareGroup]
+  const groups: [Group, RuleComparison[]][] = shownGroups.map((group) => [group, filtered[group]])
+  const shownGroupKeys = groups.filter(([, entries]) => entries.length > 0).map(([group]) => groupKey(group))
+  const shownRowKeys = groups.flatMap(([group, entries]) => entries.slice(0, visibleCounts[group]).map((entry) => rowKey(group, entry.id)))
   const hasRows = groups.some(([, entries]) => entries.length > 0)
+  const allGroupsOpen = shownGroupKeys.every((key) => groupsOpen.isExpanded(key))
 
-  function toggleRow(key: string) {
-    setOpenKeys((current) => {
-      const next = new Set(current)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
+  function selectTile(group: Group) {
+    setCompareGroup(compareGroup === group ? null : group)
   }
 
   return (
@@ -264,7 +288,7 @@ export function ReleaseComparisonView({
           history={history}
           fromTag={range.fromTag}
           toTag={range.toTag}
-          kinds={kinds}
+          selectedKinds={changeKinds}
           counts={counts}
           sections={sections}
           benchmarks={benchmarks}
@@ -282,28 +306,38 @@ export function ReleaseComparisonView({
             </h2>
           </div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-            <SummaryTile name="added" label="added" value={filtered.added.length} />
-            <SummaryTile name="removed" label="removed" value={filtered.removed.length} />
-            <SummaryTile name="changed" label="changed" value={filtered.changed.length} />
-            <SummaryTile name="unchanged" label="unchanged (hidden)" value={comparison.unchangedCount} />
+            {(
+              [
+                ['added', 'added', filtered.added.length],
+                ['removed', 'removed', filtered.removed.length],
+                ['changed', 'changed', filtered.changed.length],
+                ['unchanged', 'unchanged', filtered.unchanged.length],
+              ] as const
+            ).map(([group, label, value]) => (
+              <SummaryTile key={group} group={group} label={label} value={value} isSelected={compareGroup === group} onSelect={() => selectTile(group)} />
+            ))}
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Input
-              type="search"
-              aria-label="Search title or id"
-              placeholder="Search title or id…"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              className="max-w-sm"
-            />
-            <button type="button" onClick={() => setOpenKeys(new Set(shownKeys))} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-              Expand all
-            </button>
-            <button type="button" onClick={() => setOpenKeys(new Set())} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-              Collapse all
-            </button>
-          </div>
+          <Input
+            type="search"
+            aria-label="Search title or id"
+            placeholder="Search title or id…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="max-w-sm"
+          />
         </div>
+        <SectionToolbar
+          onExpandOneLevel={() => (allGroupsOpen ? rowsOpen.expand(shownRowKeys) : groupsOpen.expand(shownGroupKeys))}
+          onCollapseOneLevel={() => (rowsOpen.isAnyExpanded(shownRowKeys) ? rowsOpen.collapse(shownRowKeys) : groupsOpen.collapse(shownGroupKeys))}
+          onExpandAll={() => {
+            groupsOpen.expand(shownGroupKeys)
+            rowsOpen.expand(shownRowKeys)
+          }}
+          onCollapseAll={() => {
+            groupsOpen.collapseAll()
+            rowsOpen.collapseAll()
+          }}
+        />
         {hasRows ? (
           groups.map(([group, entries]) => (
             <GroupSection
@@ -314,8 +348,10 @@ export function ReleaseComparisonView({
               fromTag={range.fromTag}
               toTag={range.toTag}
               kinds={kinds}
-              openKeys={openKeys}
-              onToggle={toggleRow}
+              isGroupOpen={groupsOpen.isExpanded(groupKey(group))}
+              onToggleGroup={groupsOpen.toggle}
+              openRowKeys={rowsOpen.isExpanded}
+              onToggleRow={rowsOpen.toggle}
               visibleCount={visibleCounts[group]}
               onShowMore={() => setVisibleCounts((current) => ({ ...current, [group]: current[group] + ROWS_PER_STEP }))}
             />
