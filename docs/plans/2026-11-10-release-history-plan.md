@@ -883,7 +883,7 @@ entry here, not just the session that wrote it.
   the newest release that has it stored them (Review Focus 2). Logic tests
   first (they failed on the missing module); 11 e2e tests came after the UI.
   Vitest 1077 passed, `tsc -b` and lint clean, full e2e 172 passed.
-  (see the commit that follows)
+  (`85c54ac` feat: compare two releases of a framework)
   - Deviations and decisions: the last ticked kind cannot be unticked (an empty
     selection has no URL form and would show nothing); "Full history" needs the
     History tab open, which the plan's URL has no parameter for, so it is a
