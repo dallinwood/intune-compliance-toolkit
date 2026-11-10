@@ -1,0 +1,4 @@
+{
+  "schema_version": 1,
+  "ignored_fields": ["source", "schema_version", "id", "file"]
+}

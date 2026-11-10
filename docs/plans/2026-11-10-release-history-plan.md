@@ -738,3 +738,16 @@ entry here, not just the session that wrote it.
     passed. The full Python suite (856 passed, `-W error`) ran on this exact
     data before the ODV and e2e changes. It now takes about 18 minutes because
     the committed-library test regenerates every release.
+- **2026-11-10** - Task 4: `sequenceDiff.ts` (LCS diff with word and line
+  helpers) and `ruleChanges.ts` (kinds, fingerprints, field changes), with
+  tests written first. Fingerprints and `fieldChanges` agree by construction:
+  applicability entries and benchmarks are put in a fixed order before either
+  is computed. (commit hash in the next entry)
+  - Design refinements: the size cap applies to the middle of the two
+    sequences after the shared start and end are trimmed, so one changed line
+    in a very large value still gets a real diff; and a field nobody has
+    classified yet is treated as behaviour at runtime (shown by default),
+    while the schema test fails until it is classified.
+  - Done early, from Task 5b: `baselines/_change_ignore.json` holds the ignore
+    list and `ruleChanges.ts` reads it (`resolveJsonModule` turned on in
+    `tsconfig.app.json`), so the list is not changed twice.
