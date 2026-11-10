@@ -760,7 +760,7 @@ entry here, not just the session that wrote it.
   rules). Per pair, the fingerprints agree with the importer's added/removed
   counts (for example ISM Jun to Sep 2026: 44 added, 2 removed, 403 changed;
   mSCP 27.0 to 27.1: 5 added, 3 removed, 153 changed). Vitest 978 passed,
-  `tsc -b` and lint clean. (see the commit that follows)
+  `tsc -b` and lint clean. (`9ac8808` feat: build release history indexes for each framework)
   - Design refinement from the plan: spec 5.3's per-rule history file is not
     generated; the app fetches `releases/<tag>/rules/<file>` directly.
   - Deviation: `buildHistoryIndex` takes `RuleWithFile` (a rule plus the file
