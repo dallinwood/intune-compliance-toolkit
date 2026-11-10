@@ -1,0 +1,621 @@
+# Release History and Framework Comparison Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Keep every imported release of each framework, and show a rule's change history and a
+framework-level comparison between any two releases.
+
+**Architecture:** Importers write each release to `baselines/<source>/releases/<tag>/`, with the
+pinned upstream copy in `sources/<source>/releases/<tag>/`. The manifest keeps its existing
+top-level fields as the *current* (newest) release and adds a `releases` list. Everything that
+reads the manifest today keeps working unchanged. At build time, `scripts/copy-baselines.mjs`
+writes one history index per source: per rule and release, a fingerprint per kind of change. The
+app compares fingerprints to list changes, and fetches a rule's release files only to draw a
+field-level diff.
+
+**Tech Stack:** Python 3 + pytest (importers, validator), Bun + Vite + React 19 + TypeScript +
+Tailwind + Base UI (web UI), Vitest (logic), Playwright (e2e and screenshots).
+
+**Spec:** `docs/plans/2026-11-10-release-history-design.md` (read it alongside this plan).
+
+## Global Constraints
+
+- Comparisons run on our normalised rule format only, never on raw upstream data.
+- One global ignore list for diffs: `source`, `schema_version`, `id`, `file` (the last is loader
+  bookkeeping, see `PROTECTED_FIELDS` in `webui/src/logic/overlays.ts`). Ignoring a field ignores
+  everything under it.
+- Change kinds: Behaviour = `check`, `remediation`, `odv`, `assessment`, `architecture`. Scope =
+  `applicability`. Wording = `title`, `discussion`, `discussion_format`. References =
+  `references`, `tags`, `section_path`. Behaviour, Scope and Wording are shown by default;
+  References is not.
+- User-facing text never says "overlay". It says "custom changes".
+- Browse, filters, counts, selection, mappings, overlays and Generate use the current release only.
+- Adding or re-importing an older release never changes which release is current. Re-importing
+  is idempotent.
+- No em dash characters anywhere (code, copy, docs). Use a hyphen.
+- No new npm or pip dependencies. Text and line diffing is implemented in-repo (Task 4).
+- Commits: `type: summary` subject, no `Co-Authored-By` or other AI attribution. Push after each
+  commit (branch `macos-compliance-framework-rebase`, not `main`).
+- Every task that changes rendering: run `bun run test:e2e` against a running dev server and take
+  Playwright screenshots at about 375px and 1440px width, then look at them with the Read tool
+  before calling the task done (repo `CLAUDE.md`).
+- After each task, add an entry to the `## Progress log` of **this plan** (date, what, commit
+  hash + subject), per repo `CLAUDE.md`.
+
+## Review Focus
+
+1. **A change that is later reverted** (A in Dec, B in Mar, A again in Sep). Comparing Dec with
+   Sep shows no change for that rule, while its history still shows two changes. Covered in
+   Task 5 (`compareReleases` and `ruleTimeline` tests).
+2. **A rule that is missing from some releases** (removed and later re-added, or only present in
+   older releases). The timeline shows "Removed in" / "Added in" correctly. A rule opened from the
+   Removed group of a comparison loads its history from the latest release that has it. Covered in
+   Task 5 (timeline test) and Task 9 (e2e).
+3. **A new top-level rule field added to the schema later and silently left out of every change
+   kind.** A Vitest test fails when any property of `baselines/_rule.schema.json` is neither
+   ignored nor assigned a kind. Covered in Task 4.
+4. **Very large text or code** (a long discussion, a big payload) freezing the browser. The
+   sequence diff falls back to whole-value replace above a size cap. Covered in Task 4.
+5. **Re-importing an older release** or importing out of date order changes the current release
+   or reorders releases wrongly. Covered in Task 1 (`merged_manifest` tests) and Task 2 (CLI test).
+
+---
+
+## Milestone 1: per-release storage (no visible change in the app)
+
+### Task 1: Manifest v6 with a release list, release-aware publishing and validation
+
+**Files:**
+- Modify: `tools/library_output.py`, `tools/validate_library.py`, `tools/source_lock.py`
+- Modify: `baselines/_manifest.schema.json`
+- Test: `tests/test_library_output.py`, `tests/test_library_schema.py`
+
+**Interfaces:**
+- Produces (Python):
+  - `SourceLock` gains `published_date: str` (YYYY-MM-DD) and `importer_format: str`.
+  - `library_output.MANIFEST_SCHEMA_VERSION = 6`. `SCHEMA_VERSION` (rules and indexes) stays 5.
+  - `library_output.release_dir(source_name: str, tag: str) -> str` returns
+    `f"{source_name}/releases/{tag}"`.
+  - `library_output.release_entry(source_name: str, lock: SourceLock, label: str, rule_count: int) -> dict`
+    returns `{tag, label, published_date, commit_sha, retrieved_date, importer_format, index_path, rule_count}`,
+    with `index_path = release_dir(...) + "/_index.json"`.
+  - `library_output.merged_manifest(baselines_dir: Path, source_fields: dict, release: dict) -> dict`.
+    `source_fields` is `{name, display_name, repository_url, license}`. It replaces any release
+    with the same tag and sorts releases by `(published_date, tag)`, oldest first. The source's
+    top-level `release_tag`, `commit_sha`, `retrieved_date`, `index_path`, `rule_count` copy the
+    **last** (newest) release, and `releases` holds the list.
+  - `library_output.publish_release(baselines_dir: Path, source_fields: dict, build_rule_tree: Callable[[Path], int], release_entry_for: Callable[[int], dict]) -> int`
+    replaces `publish_source`. It builds into a temp dir, validates, then swaps in
+    `baselines/<release_dir>` and the merged manifest. Other releases' folders are never touched.
+- Manifest v6 source entry: the existing v5 fields (meaning "current release") plus
+  `releases: [ {tag, label, published_date, commit_sha, retrieved_date, importer_format, index_path, rule_count} ]`.
+
+- [ ] **Step 1: Write failing tests** in `tests/test_library_output.py`:
+  - `test_merged_manifest_adds_release_and_current_is_newest`: existing release `B`
+    (2026-09-03), merging release `A` (2025-12-09) gives releases `[A, B]`, and the top-level
+    `release_tag == "B"`.
+  - `test_merged_manifest_reimport_replaces_same_tag_without_changing_current`: re-merging `A`
+    with a different `rule_count` replaces it in place and the top level is still `B`.
+  - `test_merged_manifest_keeps_other_sources`.
+  - `test_publish_release_leaves_other_release_folders_untouched`: publish `A`, then `B`, and
+    `A`'s files are byte-identical before and after.
+  - In `tests/test_library_schema.py`: a v6 manifest with a `releases` list validates, and a
+    release missing `importer_format` does not.
+- [ ] **Step 2: Run them and see them fail.** `python -m pytest tests/test_library_output.py tests/test_library_schema.py -q`
+  Expected: failures on the missing names.
+- [ ] **Step 3: Implement** the interfaces above. Update `_manifest.schema.json` to v6 (top-level
+  `schema_version` const 6, required `releases`, release item schema with `index_path` using the
+  existing path pattern).
+- [ ] **Step 4: Validator.** In `validate_library.py`, `_validate_source` validates every release's
+  index and rule files (the existing per-index checks, looped). It also adds errors for:
+  - a rule whose `source.release_tag` is not its release's tag;
+  - duplicate tags or labels within a source;
+  - top-level fields that differ from the newest release;
+  - a folder under `baselines/<source>/releases/` with no manifest entry.
+
+  Add tests for each error to `tests/test_library_output.py` (or the existing validator test
+  file, if there is one).
+- [ ] **Step 5: Run tests.** `python -m pytest tests/test_library_output.py tests/test_library_schema.py -q`. Expected: PASS.
+  (`test_committed_library.py` fails until Task 2 migrates the data. That's expected; don't
+  commit yet.)
+- [ ] **Step 6: Continue straight into Task 2.** Tasks 1 and 2 land as one commit, because the
+  committed library is invalid between them.
+
+### Task 2: Shared release importer, per-format registry, data migration
+
+**Files:**
+- Create: `tools/release_import.py`
+- Modify: `tools/import_mscp.py`, `tools/import_asd_ism.py`, `tools/github_fetch.py`,
+  `tools/mscp_fetch.py`, `tools/asd_ism_fetch.py`
+- Move (git mv): `baselines/mscp/{_index.json,rules}` to `baselines/mscp/releases/release_27.0/`,
+  `baselines/asd_ism/{_index.json,rules}` to `baselines/asd_ism/releases/v2026.09.4/`,
+  `sources/mscp/{source.json,upstream}` to `sources/mscp/releases/release_27.0/`, and
+  `sources/asd_ism/{source.json,upstream}` to `sources/asd_ism/releases/v2026.09.4/`
+- Modify: `webui/src/types/library.ts` (`Manifest.schema_version: 6`, `ManifestRelease`,
+  `ManifestSource.releases`), plus any test fixture or e2e path that hard-codes the old folders
+  (`grep -rn "baselines/mscp\|baselines/asd_ism\|sources/mscp\|sources/asd_ism"`, excluding `docs/plans`)
+- Modify: `README.md` (import commands)
+- Test: `tests/test_import_mscp.py`, `tests/test_import_asd_ism.py`, `tests/test_committed_library.py`,
+  new `tests/test_release_import.py`
+
+**Interfaces:**
+- Consumes: Task 1.
+- Produces:
+  - `github_fetch.fetch_release_published_date(repository: str, tag: str, user_agent: str, opener=default_opener) -> str`.
+    It reads `GET /repos/{repository}/releases/tags/{tag}` and returns `published_at[:10]`.
+  - Both `fetch(...)` functions fill in `published_date` and `importer_format` on the lock.
+  - `release_import.SourceImporter` (frozen dataclass): `name: str`, `display_name: str`,
+    `repository_url: str`, `license: dict`,
+    `fetch: Callable[[str, Path, str], SourceLock]` (tag, release sources dir, today),
+    `build_rule_tree_by_format: Mapping[str, Callable[[Path, SourceLock, Path], int]]`
+    (upstream dir, lock, tree dir), `release_label: Callable[[str], str]`.
+  - `release_import.generate_release(importer: SourceImporter, upstream_dir: Path, lock: SourceLock, baselines_dir: Path) -> int`
+    raises `ValueError(f"no importer for format {lock.importer_format!r}")` for an unknown format.
+  - `release_import.import_stored_release(importer, sources_dir: Path, baselines_dir: Path, tag: str) -> tuple[SourceLock, int]`,
+    `import_stored_releases(importer, sources_dir, baselines_dir) -> list[tuple[SourceLock, int]]`,
+    `import_tag(importer, tag, sources_dir, baselines_dir, today) -> tuple[SourceLock, int]`.
+    Here `sources_dir` is `sources/<source>`, and each release lives in `sources_dir / "releases" / tag`.
+  - `release_import.release_change_summary(baselines_dir: Path, source_name: str, tag: str) -> tuple[list[str], list[str]] | None`:
+    the added and removed rule ids of `tag` against the release just before it by date, or
+    `None` for the first release.
+  - `release_import.run_cli(importer: SourceImporter, argv: list[str] | None) -> int` handles
+    `--tag TAG`, `--offline` (all stored releases), and `--offline --release TAG`. It prints the
+    count and the change summary per release.
+  - `import_mscp.IMPORTER` with format `"mscp-2"`, and labels `release_27.1` to `"27.1"`.
+  - `import_asd_ism.IMPORTER` with format `"asd-ism-oscal-1"`, and labels `v2026.09.4` to
+    `"Sep 2026"` (from the year and month in the tag).
+  - Each module keeps its existing `build_rule_tree` as the format-specific function in the
+    registry. Remove `publish_source`, the old `generate_library`, `import_offline`,
+    `read_index_summary` and `print_change_summary` once nothing uses them.
+
+- [ ] **Step 1: Write failing tests** in `tests/test_release_import.py`, using a stub
+  `SourceImporter` whose `build_rule_tree` writes two tiny rules:
+  - `test_unknown_importer_format_is_rejected`
+  - `test_import_stored_releases_is_idempotent`: running it twice gives byte-identical `baselines/`
+  - `test_importing_an_older_release_does_not_change_current` (Review Focus 5)
+  - `test_release_change_summary_lists_added_and_removed_ids`
+  - `test_release_labels`: `import_mscp.IMPORTER.release_label("release_27.1") == "27.1"` and
+    `import_asd_ism.IMPORTER.release_label("v2025.12.9") == "Dec 2025"`
+- [ ] **Step 2: Run them and see them fail.** `python -m pytest tests/test_release_import.py -q`
+- [ ] **Step 3: Implement** `release_import.py`, the published-date fetch, and the two
+  `IMPORTER` definitions, and make both importers' `main` call `run_cli`. Update the existing
+  importer and fetch tests for the new lock fields and folder layout.
+- [ ] **Step 4: Migrate the committed data.** Do the `git mv`s listed above. Add
+  `"published_date"` and `"importer_format"` to both moved `source.json` files: mSCP
+  `release_27.0` is `2026-09-11` / `mscp-2`, and ISM `v2026.09.4` is `2026-09-03` /
+  `asd-ism-oscal-1`. Then run `python tools/import_mscp.py --offline` and
+  `python tools/import_asd_ism.py --offline`.
+  Expected: `git diff --stat -M` shows renames with no content change under `rules/`, and only
+  the manifest changing otherwise.
+- [ ] **Step 5: Committed-library test.** Make `tests/test_committed_library.py` parametrise
+  over every `(source, release)` in the committed manifest and regenerate each one through
+  `generate_release`. `test_every_manifest_source_is_regenerated_by_this_suite` checks every
+  release, not only every source.
+- [ ] **Step 6: Run the full Python suite.** `python -m pytest -q` (expected: PASS). Also run
+  `python tools/validate_library.py` (expected: no errors) and the overlays and mappings checks
+  the README documents (expected: same output as before the change).
+- [ ] **Step 7: The web app still works.** In `webui/`: `bun run test`, `bunx tsc -b`,
+  `bun run lint` (all clean). Start `bun run dev`, then run `bun run test:e2e` (all pass, and the
+  smoke test still counts 1493 rules). Take one desktop screenshot of the Rules view and read it.
+- [ ] **Step 8: Commit and push.** `feat: store each imported release in its own folder`. The
+  body says the manifest's top-level fields stay the current release, which is why overlays,
+  mappings and the app need no changes. Add the progress-log entry to this plan in the same commit.
+
+---
+
+## Milestone 2: import the new releases
+
+### Task 3: Import mSCP 27.1 and three older ISM editions
+
+**Files:** generated files only (`baselines/`, `sources/`), plus this plan's progress log.
+
+- [ ] **Step 1: ISM editions, one at a time, oldest first.** Run
+  `python tools/import_asd_ism.py --tag v2025.12.9`, then `v2026.03.24`, then `v2026.06.18`.
+  After each one, check:
+  - the command succeeds;
+  - `python tools/validate_library.py` is clean;
+  - the manifest's top-level ISM `release_tag` is still `v2026.09.4`;
+  - the printed added/removed summary is believable (tens of rules, not hundreds).
+
+  **If any edition fails or looks wrong, stop and ask the maintainer** (spec section 3). Don't
+  write a second importer and don't drop the edition.
+- [ ] **Step 2: mSCP 27.1.** Run `python tools/import_mscp.py --tag release_27.1`. Expected:
+  validation is clean, and the top-level mSCP `release_tag` is now `release_27.1`.
+- [ ] **Step 3: Downstream checks.** Run the full Python suite. Run the mappings and overlays
+  checks. Mapping endpoints written against `release_27.0` may now warn that "the library is at
+  release_27.1". **Record those warnings in the progress log and do not edit mapping files.**
+  They are the maintainer's to review.
+- [ ] **Step 4: The web app loads the new data.** Run `bun run test` and `bun run test:e2e`.
+  Update the smoke test's total rule count to the new current total, and say so in the commit
+  body.
+- [ ] **Step 5: Commit and push.** `feat: import mSCP 27.1 and ISM editions from Dec 2025 to Jun 2026`.
+  The progress-log entry lists, per release pair, the added/removed counts from the importer
+  output (spec section 3: this is the rename-noise evidence).
+
+---
+
+## Milestone 3: change engine and history index
+
+### Task 4: Sequence diff and rule change classification
+
+**Files:**
+- Create: `webui/src/logic/sequenceDiff.ts`, `webui/src/logic/ruleChanges.ts`
+- Test: `webui/src/logic/sequenceDiff.test.ts`, `webui/src/logic/ruleChanges.test.ts`
+
+**Interfaces:**
+- Produces:
+  - `sequenceDiff.ts`:
+    - `type DiffOperation<T> = { type: 'same' | 'removed' | 'added'; items: T[] }`
+    - `diffSequences<T>(before: T[], after: T[], equals?: (a: T, b: T) => boolean): DiffOperation<T>[]`.
+      This is an LCS diff. When `before.length * after.length > 4_000_000`, it returns one
+      `removed` operation and one `added` operation instead (Review Focus 4).
+    - `diffWords(before: string, after: string): DiffOperation<string>[]` tokenises on
+      whitespace and keeps the whitespace tokens, so joining every item gives back the original
+      text.
+    - `diffLines(before: string, after: string): DiffOperation<string>[]`.
+  - `ruleChanges.ts`:
+    - `type ChangeKind = 'behaviour' | 'scope' | 'wording' | 'references'`
+    - `CHANGE_KINDS: readonly ChangeKind[]` (in that order), and
+      `DEFAULT_SHOWN_KINDS: readonly ChangeKind[] = ['behaviour', 'scope', 'wording']`
+    - `IGNORED_FIELDS: ReadonlySet<string>` and `FIELD_CHANGE_KIND: Readonly<Record<string, ChangeKind>>`
+      (exact values in Global Constraints)
+    - `type KindFingerprints = Record<ChangeKind, string>`
+    - `kindFingerprints(rule: Rule): KindFingerprints`. For each kind, hash the canonical JSON
+      (object keys sorted recursively) of that kind's fields, using cyrb53 (53-bit) written out
+      in this module, as a base-36 string.
+    - `interface FieldChange { kind: ChangeKind; path: string[]; display: 'text' | 'code' | 'list' | 'value'; before: unknown; after: unknown }`.
+      `before` is `undefined` when the value was added, and `after` is `undefined` when it was
+      removed.
+    - `fieldChanges(before: Rule, after: Rule): FieldChange[]`, ordered by `CHANGE_KINDS` and
+      then by path.
+
+- [ ] **Step 1: Write failing tests.**
+  - `sequenceDiff.test.ts`:
+    - `diffWords('a b c', 'a x c')` gives same `a `, removed `b`, added `x`, same ` c`;
+    - `diffLines` on a two-line change;
+    - identical input gives a single `same` operation;
+    - inputs of 3,000 x 3,000 items return the removed+added fallback in under 50 ms.
+  - `ruleChanges.test.ts`:
+    - **every property in `baselines/_rule.schema.json`** (import the JSON) is in exactly one of
+      `IGNORED_FIELDS` or `FIELD_CHANGE_KIND` (Review Focus 3);
+    - two rules differing only in `source.commit_sha` and `source.release_tag` give `fieldChanges` = `[]` and equal fingerprints;
+    - changing `check.macOS.default.shell` gives one change with kind `behaviour`, display `code`, path `['check','macOS','default','shell']`;
+    - changing `discussion` gives display `text`, kind `wording`;
+    - adding a benchmark to one applicability entry gives display `list`, kind `scope`, with a path that names that entry's target and version;
+    - changing only `references` changes only the `references` fingerprint.
+
+    Build the rules with `webui/src/logic/testRuleFixtures.ts`.
+- [ ] **Step 2: Run them and see them fail.** `bun run test -- sequenceDiff ruleChanges`
+- [ ] **Step 3: Implement.** How `fieldChanges` walks a rule:
+  - Plain objects recurse by key.
+  - Arrays of primitives are `list`.
+  - Arrays of objects are matched by an identity key, then recursed. The keys: `applicability`
+    items by `target` + `version`, and `benchmarks` items by `name`. `steps` items and `payloads`
+    items match by position, and their recursion produces `code`/`value` leaves.
+  - A string leaf is `code` when its key is `shell`, `script`, or anything under a `payloads`
+    `data` value (render `data` as pretty JSON and line-diff it), and `text` otherwise.
+  - Anything else is `value`.
+- [ ] **Step 4: Run the tests** (PASS), then `bunx tsc -b` and `bun run lint` (clean).
+- [ ] **Step 5: Commit and push.** `feat: classify and diff rule changes between releases`, with
+  the progress-log entry.
+
+### Task 5: History index, comparison and timeline logic, build step, fetchers
+
+**Files:**
+- Create: `webui/src/logic/historyIndex.ts`, `webui/src/data/history.ts`
+- Modify: `scripts/copy-baselines.mjs`
+- Test: `webui/src/logic/historyIndex.test.ts`, `webui/src/data/history.test.ts`
+
+**Interfaces:**
+- Consumes: `kindFingerprints`, `ChangeKind`, `CHANGE_KINDS` (Task 4), and `ManifestSource.releases` (Task 2).
+- Produces (`historyIndex.ts`):
+  - `HISTORY_INDEX_SCHEMA_VERSION = 1`
+  - `interface HistoryRelease { tag: string; label: string; published_date: string; index_path: string }`
+  - `interface HistoryRuleEntry { title: string; file: string; section: string; benchmarks: string[]; versions: (KindFingerprints | null)[] }`.
+    `versions` is aligned with `releases` (oldest first), and `null` means the rule is absent from
+    that release. `title`, `file`, `section` and `benchmarks` come from the latest release that
+    has the rule.
+  - `interface HistoryIndex { schema_version: 1; source: string; releases: HistoryRelease[]; rules: Record<string, HistoryRuleEntry> }`
+  - `buildHistoryIndex(source: ManifestSource, rulesByTag: ReadonlyMap<string, Rule[]>): HistoryIndex`
+  - `parseHistoryIndex(value: unknown): HistoryIndex | { error: string }`, a structural check in
+    the same style as `parseOverlayIndex` in `overlayIndex.ts`
+  - `interface RuleComparison { id: string; title: string; section: string; benchmarks: string[]; kinds: ChangeKind[] }`
+  - `interface ReleaseComparison { added: RuleComparison[]; removed: RuleComparison[]; changed: RuleComparison[]; unchangedCount: number }`
+  - `compareReleases(index: HistoryIndex, fromTag: string, toTag: string): ReleaseComparison`,
+    with each group sorted by id
+  - `type TimelineState = 'earliest' | 'added' | 'changed' | 'unchanged' | 'removed' | 'absent'`
+  - `interface TimelineEntry { tag: string; label: string; state: TimelineState; kinds: ChangeKind[] }`
+  - `ruleTimeline(index: HistoryIndex, ruleId: string): TimelineEntry[]`, newest first
+  - `type TimelineItem = { type: 'entry'; entry: TimelineEntry } | { type: 'quiet'; entries: TimelineEntry[] }`
+  - `foldQuietRuns(entries: TimelineEntry[]): TimelineItem[]` folds consecutive `unchanged` (and
+    consecutive `absent`) entries into one `quiet` item
+  - `changeCount(entries: TimelineEntry[]): number` counts entries in `added`, `changed` or
+    `removed` state
+- Produces (`data/history.ts`):
+  - `fetchHistoryIndex(sourceName: string): Promise<HistoryIndex>`, cached per source, from
+    `${BASE_URL}baselines/_history/${sourceName}.json`
+  - `fetchRuleAtRelease(index: HistoryIndex, ruleId: string, tag: string): Promise<Rule>`,
+    resolving `file` against the directory of that release's `index_path`
+- **Design refinement (log it in the progress log):** spec 5.3 suggested a generated history
+  file per rule. Every release's rule files are already published (`copy-baselines.mjs` copies
+  all of `baselines/`), so the app fetches a rule's version straight from
+  `releases/<tag>/rules/<file>` instead. That's one less generated artifact, with the same
+  properties: nothing is fetched until a diff is drawn.
+- Build: `copy-baselines.mjs` writes `webui/public/baselines/_history/<source>.json` for every
+  manifest source. It only writes to the published copy, like the other generated indexes, and
+  extends the header comment to say so.
+
+- [ ] **Step 1: Write failing tests** in `historyIndex.test.ts`, on a hand-built three-release
+  fixture:
+  - `compareReleases`: added, removed and changed groups with the right kinds, and
+    `unchangedCount` correct;
+  - **reverted change** (Review Focus 1): fingerprints A, B, A across three releases. Comparing
+    the first and last releases leaves the rule out of `changed`; the timeline shows two
+    `changed` entries;
+  - **gap** (Review Focus 2): present, absent, present gives states `changed`/`added` (newest),
+    `removed`, `earliest` (oldest), with no `unchanged` entry for the gap;
+  - a rule only in the oldest release appears in `removed` with the title from that release;
+  - `foldQuietRuns` folds two consecutive unchanged releases into one quiet item;
+  - `parseHistoryIndex` rejects a wrong `schema_version`, and accepts `buildHistoryIndex`
+    output.
+
+  In `history.test.ts`: `fetchRuleAtRelease` builds
+  `.../baselines/asd_ism/releases/v2025.12.9/rules/ism-0359.json` (stub `fetch`).
+- [ ] **Step 2: Run them and see them fail.** `bun run test -- historyIndex history`
+- [ ] **Step 3: Implement** the logic, the fetchers and the build step.
+- [ ] **Step 4: Verify.** Run `bun run test`, `bunx tsc -b` and `bun run lint` (clean). Run
+  `bun run copy-baselines`, then confirm `webui/public/baselines/_history/asd_ism.json` lists 4
+  releases and `mscp.json` lists 2. Note each file's size in the progress log.
+- [ ] **Step 5: Commit and push.** `feat: build release history indexes for each framework`.
+
+---
+
+## Milestone 4: rule History tab
+
+### Task 6: Kind tags and the field change list
+
+**Files:**
+- Modify: `webui/src/index.css` (tokens)
+- Create: `webui/src/components/history/KindTag.tsx`, `webui/src/components/history/FieldChangeList.tsx`,
+  `webui/src/logic/changeLabels.ts`
+- Test: `webui/src/logic/changeLabels.test.ts`
+
+**Interfaces:**
+- Consumes: `FieldChange`, `ChangeKind`, `diffWords`, `diffLines` (Task 4), and the vocabulary
+  helpers (`termLabel`, `useVocabularyIndex`).
+- Produces:
+  - Tokens `--kind-behaviour(-foreground)`, `--kind-scope(-foreground)`,
+    `--kind-wording(-foreground)`, `--kind-references(-foreground)`, `--diff-added(-foreground)`,
+    `--diff-removed(-foreground)`, each with light and dark values that meet WCAG AA (4.5:1)
+    against their own background and `--panel`. Register them in the `@theme` block like the
+    existing app tokens.
+  - `KIND_LABELS: Record<ChangeKind, string>` = Behaviour, Scope, Wording, References.
+  - `<KindTag kind={ChangeKind} />`.
+  - `changeLabel(path: string[], vocabularyIndex: VocabularyIndex): string` turns a path into
+    plain words joined with ` · `. Examples: `['check','macOS','default','shell']` gives
+    `Check · macOS`, and an applicability entry's benchmarks give `Benchmarks · macOS 27`.
+    Top-level names: Title, Discussion, Discussion format, Check, Fix (remediation), Organization-defined value,
+    Assessment, Architecture, Benchmarks (applicability), References, Tags, Section.
+  - `<FieldChangeList changes={FieldChange[]} kinds?={ReadonlySet<ChangeKind>} focusPaths?={string[][]} />`.
+    It renders one row per change: label on the left, change on the right, stacked below about
+    640px. Display `text` gets an inline word diff (removed: struck through, `--diff-removed`;
+    added: `--diff-added`). `code` gets a line diff inside the existing `CodeBlock` look, with
+    `-`/`+` gutters and tinted lines. `list` gets added `+` pills and removed struck-through pills.
+    `value` gets before and after. Changes under any `focusPaths` come first.
+- [ ] **Step 1: Write failing `changeLabels` tests** for the examples above, then run them.
+- [ ] **Step 2: Implement** the tokens, `KindTag`, `changeLabels` and `FieldChangeList`. Run them.
+- [ ] **Step 3: Commit and push** together with Task 7 (nothing renders `FieldChangeList` until
+  then). Run the screenshots in Task 7.
+
+### Task 7: History tab in the rule detail panel
+
+**Files:**
+- Create: `webui/src/components/history/RuleHistoryTab.tsx`, `webui/src/hooks/useRuleHistory.ts`
+- Modify: `webui/src/components/rules/RuleDetailPanel.tsx`
+- Test: `webui/e2e/history.spec.ts`
+
+**Interfaces:**
+- Consumes: Tasks 5 and 6.
+- Produces:
+  - `useRuleHistory(rule: Rule): { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; index: HistoryIndex; timeline: TimelineEntry[] }`
+  - `<RuleHistoryTab ruleId={string} index={HistoryIndex} timeline={TimelineEntry[]} initialCompare?={{ from: string; to: string; focusPaths?: string[][] }} />`
+  - `RuleDetailPanel`'s tab value becomes controlled (`'details' | 'mapped-rules' | 'history'`).
+    Task 10 opens History in compare mode through it.
+- Behaviour, from spec section 6.2:
+  - The History tab shows when `index.releases.length > 1` and `mappedView` is present (the main
+    panel, not nested mapped-rule details). Its label is `History (N changes)`, with
+    `N = changeCount(timeline)` (`1 change` singular).
+  - Tabs appear when Mapped rules or History applies, and the existing no-tabs layout stays when
+    neither does.
+  - Cards come newest first. A card's header shows label, tag and `KindTag`s. The newest card
+    with changes starts open. Opening a card fetches the rule at that release and at the
+    previous release that has it, then renders `FieldChangeList`.
+  - A `quiet` item renders the dashed bar `── N release(s) with no changes (labels) ── show`.
+    Clicking "show" expands it into muted "No changes" rows.
+  - State texts: `earliest` is "earliest release in history", `added` is "Added in <label>",
+    `removed` is "Removed in <label>".
+  - At the top: the "Compare any two" From/To selects (To options are only releases after From),
+    and the "Show: All changes / Behaviour only" toggle.
+- [ ] **Step 1: Write the failing e2e test** `history.spec.ts`. Open ISM rule `ism-0359` (or
+  another rule with a real change; pick one from the Task 5 index and name it in the test) and
+  check:
+  - the `History (` tab is present;
+  - clicking it shows a card with at least one `KindTag`;
+  - an mSCP rule with no change between 27.0 and 27.1 shows `History (0 changes)` and an
+    "earliest release in history" entry.
+
+  Run it and see it fail.
+- [ ] **Step 2: Implement** `useRuleHistory`, `RuleHistoryTab`, and the panel changes.
+- [ ] **Step 3: Verify.** `bun run test`, `bunx tsc -b`, `bun run lint`, `bun run test:e2e` (all
+  pass).
+- [ ] **Step 4: Screenshots.** Take them at 375px and 1440px of: History open on a rule with
+  changes, a quiet bar expanded, and a code diff. Repeat in dark mode at 1440px. Read every image.
+  Check that labels don't squeeze into single-word wrapping and that tags and diff colours are
+  readable in both themes.
+- [ ] **Step 5: Commit and push** (Tasks 6 and 7). `feat: show a rule's history across releases`.
+
+---
+
+## Milestone 5: Frameworks tab
+
+### Task 8: Frameworks view, URL state and landing cards
+
+**Files:**
+- Create: `webui/src/views/FrameworksView.tsx`, `webui/src/components/frameworks/FrameworkCards.tsx`
+- Modify: `webui/src/views/viewRegistry.tsx` (insert `{ id: 'frameworks', label: 'Frameworks' }`
+  after Rules), `scripts/route-pages.mjs` (`VIEW_IDS`), `webui/src/state/urlState.ts`,
+  `webui/src/state/filterStore.ts`
+- Test: `webui/src/state/urlState.test.ts`, `webui/src/views/viewRegistry.test.tsx`, `webui/e2e/frameworks.spec.ts`
+
+**Interfaces:**
+- Produces: `UrlState` gains the fields below. Each is serialised only when set or non-default.
+  The `changeKinds` default is `DEFAULT_SHOWN_KINDS`.
+
+  | Field | Type | URL parameter |
+  |---|---|---|
+  | `framework` | `string \| null` | `framework` |
+  | `compareFrom` | `string \| null` | `from` |
+  | `compareTo` | `string \| null` | `to` |
+  | `changeKinds` | `ChangeKind[] \| null` | repeated `kind` |
+  | `compareSearch` | `string` | `cq` |
+  | `compareSections` | `string[]` | repeated `csection` |
+  | `compareBenchmarks` | `string[]` | repeated `cbenchmark` |
+  | `compareOnly` | `('custom' \| 'selected')[]` | repeated `only` |
+
+  `startsHistoryEntry` treats a change of `framework` (null vs set) as navigation. Matching
+  setters go on `filterStore`.
+- Landing view (`framework === null`): one card per manifest source showing:
+  - `display_name`;
+  - "Current: <label> (<tag>) · <rule_count> rules";
+  - a pill per release, with the current one highlighted and suffixed "· current";
+  - a **Compare releases** button. It sets `framework`, with `from` = previous release and `to` =
+    current release. When a framework has only one release, the button is disabled with the
+    title "Only one release imported".
+- [ ] **Step 1: Write failing tests.**
+  - `urlState.test.ts`: the new parameters round-trip, and defaults serialise to `''`.
+  - `viewRegistry.test.tsx`: the existing test keeping `VIEW_IDS` in step with `VIEWS` passes
+    with the new id.
+  - `frameworks.spec.ts`: `/frameworks` shows two cards, ISM lists four release pills, and
+    clicking Compare releases on ISM puts `framework=asd_ism&from=v2026.06.18&to=v2026.09.4` in
+    the URL.
+
+  Run them and see them fail.
+- [ ] **Step 2: Implement.**
+- [ ] **Step 3: Verify, then take screenshots at 375px and 1440px and read them.**
+- [ ] **Step 4: Commit and push.** `feat: add a Frameworks tab listing each framework's releases`
+
+### Task 9: Release comparison view
+
+**Files:**
+- Create: `webui/src/components/frameworks/ReleaseComparisonView.tsx`,
+  `webui/src/components/frameworks/ComparisonSidebar.tsx`, `webui/src/logic/comparisonFilters.ts`
+- Test: `webui/src/logic/comparisonFilters.test.ts`, `webui/e2e/frameworks.spec.ts`
+
+**Interfaces:**
+- Consumes: `compareReleases` and `fetchHistoryIndex` (Task 5), `FieldChangeList` and `KindTag`
+  (Task 6), the overlay index `by_rule` (existing), and the selection store (existing).
+- Produces: `filterComparison(comparison: ReleaseComparison, filters: { kinds: ReadonlySet<ChangeKind>; search: string; sections: string[]; benchmarks: string[]; onlyRuleIds: ReadonlySet<string> | null }): ReleaseComparison`.
+  - Changed rules are kept when they have any selected kind. Added and removed rules ignore the
+    kind filter.
+  - Search matches id and title, case-insensitively.
+  - Section and benchmark filters use the entry's `section` and `benchmarks`.
+- Layout, from spec section 6.3. It reuses the Rules view's sidebar-plus-main shell and its
+  section-header styles.
+  - Sidebar:
+    - Framework select, plus From and To selects. To only offers releases after From.
+    - "Kind of change" checkboxes with counts.
+    - "Only rules that…": "have my custom changes" and "are in my selection".
+    - Section and Benchmark checkbox lists with counts. Benchmark labels go through the
+      vocabulary.
+  - Main area:
+    - Four summary tiles: added, removed, changed, and "unchanged (hidden)".
+    - The search box, plus Expand all / Collapse all.
+    - The Added, Removed and Changed groups, with rows showing title, id and `KindTag`s. Removed
+      titles are struck through.
+  - Expanding a changed row fetches both releases' rule files and shows `FieldChangeList`, then
+    the links **Open rule** (to the Rules view with `rule=<id>`) and **Full history** (the same,
+    with the History tab open). Expanding an added or removed row shows that rule's details as of
+    the release it exists in, using the existing read-only detail rendering.
+- [ ] **Step 1: Write failing tests.**
+  - `comparisonFilters.test.ts`: one test per filter rule above.
+  - e2e:
+    - comparing ISM `v2025.12.9` to `v2026.09.4` shows summary tiles whose numbers match the
+      group counts;
+    - unticking Wording reduces the Changed count;
+    - expanding a changed row shows a diff;
+    - opening a Removed rule (if the data has one, otherwise an Added rule) loads without error
+      (Review Focus 2).
+
+  Run them and see them fail.
+- [ ] **Step 2: Implement.**
+- [ ] **Step 3: Verify.** Run all suites. Take screenshots at 375px and 1440px, in light and dark
+  mode, of the compare view with one row expanded, and read them. At 375px, the sidebar must
+  collapse the way the Rules view's sidebar does.
+- [ ] **Step 4: Commit and push.** `feat: compare two releases of a framework`
+
+---
+
+## Milestone 6: custom-changes notice
+
+### Task 10: Notice that a customised rule changed upstream
+
+**Files:**
+- Create: `webui/src/logic/customChangeNotice.ts`
+- Modify: `webui/src/components/rules/RuleDetailPanel.tsx` (replace the stale branch of `OverlayNotes`)
+- Test: `webui/src/logic/customChangeNotice.test.ts`, `webui/e2e/history.spec.ts`
+
+**Interfaces:**
+- Consumes: `fieldChanges` (Task 4), `fetchHistoryIndex` and `fetchRuleAtRelease` (Task 5),
+  `RuleDetailPanel`'s controlled tab and `RuleHistoryTab`'s `initialCompare` (Task 7),
+  `OverlaidRule.applied`, and the overlay's `fields`.
+- Produces:
+  - `overlayFieldPaths(fields: Record<string, unknown>): string[][]` recurses into plain objects
+    and stops at arrays or primitives.
+  - `isTouched(changePath: string[], overlayPaths: string[][]): boolean` is true when either path
+    is a prefix of the other.
+  - `customChangeBaseline(index: HistoryIndex, overlayRelease: string): { fromTag: string; inHistory: boolean }`.
+    It returns the release itself when it's in the index, and otherwise the earliest stored
+    release with `inHistory: false`.
+  - `type CustomChangeStatus = { kind: 'touched'; labels: string[] } | { kind: 'untouched' } | { kind: 'unchanged' }`
+- Copy (exact, from spec section 6.4):
+  - touched (warning style): "**Your custom changes to this rule were written for <label>.** The rule has since been updated in a field your custom changes touch (<labels joined with ', '>). See what changed →"
+  - untouched (muted): "Your custom changes to this rule were written for <label>. The rule has since been updated, but not in any field your custom changes touch. See what changed →"
+  - unchanged (muted): "Your custom changes to this rule were written for <label>. The rule hasn't changed since, so they can be marked as up to date."
+  - not in history: the opening becomes "Your custom changes to this rule were written for <release>, which isn't one of the releases kept here." The rest is computed from the earliest stored release, and the diff states "Compared from <earliest label>, the earliest release kept."
+- **Design refinement (log it in the progress log):** spec 6.4 treats "older than history" and
+  "missing for another reason" separately. Tags from different eras can't be ordered reliably
+  (`tahoe_rev3` vs `release_27.0`), so both cases share the "isn't one of the releases kept here"
+  wording above. It stays honest without guessing which case applies.
+- "See what changed →" switches the panel to History with
+  `initialCompare = { from: fromTag, to: current tag, focusPaths: overlay paths }`.
+- [ ] **Step 1: Write failing unit tests:**
+  - `overlayFieldPaths` on the `asd-blueprint-remove-powershell-v2.json` fields gives
+    `[['applicability'], ['references','asd_blueprint'], ['remediation','Windows','steps'], ['remediation','Windows','payloads']]`;
+  - `isTouched(['remediation','Windows','steps'], [['remediation']])` is true;
+  - `customChangeBaseline` with `tahoe_rev3` returns the earliest release and `inHistory: false`;
+  - the three statuses from fixture changes.
+
+  Add e2e: an overlaid ISM rule written for `v2026.09.4` (current) shows no notice. For a
+  notice e2e, add a test-only overlay fixture if the e2e setup supports one. Otherwise cover it
+  with unit tests and a manual screenshot (say which in the progress log).
+
+  Run them and see them fail.
+- [ ] **Step 2: Implement.**
+- [ ] **Step 3: Verify.** Run all suites and take screenshots (temporarily point an overlay's
+  `release` at `v2026.03.24` in a scratch copy, never committed). Read them.
+- [ ] **Step 4: Commit and push.** `feat: flag custom changes whose rule changed upstream`
+
+### Task 11: Wrap-up
+
+- [ ] **Step 1:** Update `README.md`: the release folder layout, how to import a new release
+  (`--tag`), how to re-import all releases after a schema change (`--offline`), and the Frameworks
+  tab.
+- [ ] **Step 2:** Add a final entry to the design doc's progress log pointing to this plan's log.
+  Set the design's `Status` to `Implemented <date>`.
+- [ ] **Step 3:** Full verification from a clean state:
+  - `python -m pytest -q`;
+  - `python tools/validate_library.py`;
+  - in `webui/`: `bun run build`, `bun run test`, `bun run lint`, `bun run test:e2e`.
+- [ ] **Step 4: Commit and push.** `docs: document release history and framework comparison`
+
+## Progress log
