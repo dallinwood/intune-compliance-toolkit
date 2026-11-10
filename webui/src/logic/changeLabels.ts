@@ -94,7 +94,9 @@ export function visibleChanges(
   return [...wanted.filter(isFocused), ...wanted.filter((change) => !isFocused(change))]
 }
 
-export function historyTabLabel(changeCount: number): string {
+// Plain "History" until the count is known, so the tab does not change width when it arrives.
+export function historyTabLabel(changeCount: number | null): string {
+  if (changeCount === null) return 'History'
   return `History (${changeCount} ${changeCount === 1 ? 'change' : 'changes'})`
 }
 

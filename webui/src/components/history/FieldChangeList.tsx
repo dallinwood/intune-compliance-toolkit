@@ -2,7 +2,6 @@ import { changeLabel, visibleChanges } from '../../logic/changeLabels'
 import type { ChangeKind, FieldChange } from '../../logic/ruleChanges'
 import { diffLines, diffWords } from '../../logic/sequenceDiff'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import { KindTag } from './KindTag'
 
 const REMOVED_CLASSES = 'bg-diff-removed text-diff-removed-foreground'
 const ADDED_CLASSES = 'bg-diff-added text-diff-added-foreground'
@@ -120,7 +119,8 @@ function ChangeBody({ change }: { change: FieldChange }) {
 }
 
 // One row per changed field: what changed on the left, the change on the
-// right (stacked below the sm breakpoint).
+// right (stacked below the sm breakpoint). A row carries no kind tag: it is
+// always drawn under a header that lists the kinds of change.
 export function FieldChangeList({
   changes,
   kinds,
@@ -137,10 +137,7 @@ export function FieldChangeList({
     <ul className="divide-y divide-border">
       {shown.map((change) => (
         <li key={change.path.join('\u0000')} data-testid="field-change" className="flex flex-col gap-1.5 py-2 sm:flex-row sm:gap-4">
-          <div className="flex shrink-0 flex-wrap items-start gap-1.5 sm:w-52 sm:flex-col">
-            <span className="text-sm font-medium break-words">{changeLabel(change.path, vocabularyIndex)}</span>
-            <KindTag kind={change.kind} />
-          </div>
+          <span className="shrink-0 text-sm font-medium break-words sm:w-52">{changeLabel(change.path, vocabularyIndex)}</span>
           <div className="min-w-0 sm:flex-1">
             <ChangeBody change={change} />
           </div>

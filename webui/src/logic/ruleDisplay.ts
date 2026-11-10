@@ -110,3 +110,6 @@ export function benchmarksByScope(applicability: Applicability, index: Vocabular
 export function upstreamRuleId(id: string): string {
   return id.slice(id.indexOf('.') + 1)
 }
+
+// Between the parts of a rule's section path, wherever it is shown as one line.
+export const BREADCRUMB_SEPARATOR = ' › '

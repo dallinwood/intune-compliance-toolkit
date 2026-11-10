@@ -7,6 +7,7 @@
 import changeIgnoreFile from '../../../baselines/_change_ignore.json' with { type: 'json' }
 import type { ApplicabilityEntry, Rule } from '../types/library'
 import { versionKey } from './applicability'
+import { BREADCRUMB_SEPARATOR } from './ruleDisplay'
 
 export type ChangeKind = 'behaviour' | 'scope' | 'wording' | 'references'
 
@@ -78,13 +79,15 @@ function canonicalField(field: string, value: unknown): unknown {
   return entries.sort((left, right) => scopeKeyOf(left).localeCompare(scopeKeyOf(right), 'en'))
 }
 
+// A missing value and a null are the same "no value": a release that starts
+// writing "additional_info": null is not a change.
 function canonicalJson(value: unknown): string {
-  if (value === undefined) return 'undefined'
+  if (value === undefined) return 'null'
   if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`
   if (isPlainObject(value)) {
     const members = Object.keys(value)
       .sort()
-      .filter((key) => value[key] !== undefined)
+      .filter((key) => value[key] !== undefined && value[key] !== null)
       .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
     return `{${members.join(',')}}`
   }
@@ -143,6 +146,12 @@ function prettyJson(value: unknown): string | undefined {
 
 function walk(kind: ChangeKind, path: string[], before: unknown, after: unknown, changes: FieldChange[]): void {
   if (canonicalJson(before) === canonicalJson(after)) return
+
+  // The section is an ordered breadcrumb, not a set of names.
+  if (path.length === 1 && path[0] === 'section_path' && Array.isArray(before) && Array.isArray(after)) {
+    changes.push({ kind, path, display: 'value', before: before.join(BREADCRUMB_SEPARATOR), after: after.join(BREADCRUMB_SEPARATOR) })
+    return
+  }
 
   if (isPayloadData(path)) {
     changes.push({ kind, path, display: 'code', before: prettyJson(before), after: prettyJson(after) })

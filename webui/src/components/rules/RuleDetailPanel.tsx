@@ -2,6 +2,7 @@ import { Tabs } from '@base-ui/react/tabs'
 import { Component, useState, type ReactNode } from 'react'
 import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
 import { useRuleHistory } from '@/hooks/useRuleHistory'
+import { useSourceReleaseCount } from '@/hooks/useSourceReleaseCount'
 import { changeCount } from '../../logic/historyIndex'
 import { historyTabLabel } from '../../logic/changeLabels'
 import { distinctMappedRuleCount } from '../../logic/mappedRuleView'
@@ -9,6 +10,7 @@ import { termLabel } from '../../logic/vocabulary'
 import { displayWithOdv, odvSubstitutionMode, codeOdvValues, usableOdvValue, validateOdvValue } from '../../logic/odv'
 import type { OverlaidRule } from '../../logic/overlays'
 import { macosReferences } from '../../logic/references'
+import { BREADCRUMB_SEPARATOR } from '../../logic/ruleDisplay'
 import type { RuleRef } from '../../logic/selectionEntry'
 import { showsRemediationSection } from '../../logic/targetDisplay'
 import { useRuleMappings } from '../../state/mappingsContext'
@@ -28,7 +30,6 @@ import { RuleReferences } from './RuleReferences'
 import { RuleRemediationSection } from './RuleRemediationSection'
 
 const PANEL_CLASS = 'border-t border-border bg-panel p-4 text-sm'
-const BREADCRUMB_SEPARATOR = ' › '
 
 // Only the parts the source provides: mSCP rules have neither, an ISM control
 // has both.
@@ -165,7 +166,9 @@ function LoadedRuleDetail({
   const [tab, setTab] = useState<PanelTab>('details')
   // Nested panels (a mapped rule's details) show no History tab.
   const history = useRuleHistory(mappedView ? rule : null)
-  const showHistory = history.status === 'ready' && history.index.releases.length > 1
+  // The manifest already says whether there is a history, so the tab is there from the first render.
+  const releaseCount = useSourceReleaseCount(mappedView ? rule.source.name : null)
+  const showHistory = (releaseCount ?? 0) > 1
   const mappedRuleCount = mappedView ? distinctMappedRuleCount(byRule.get(rule.id) ?? [], rowsById) : 0
   const storedValue = useStoredOdvValue(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
@@ -266,7 +269,7 @@ function LoadedRuleDetail({
             )}
             {showHistory && (
               <Tabs.Tab value="history" className={TAB_CLASS}>
-                {historyTabLabel(changeCount(history.timeline))}
+                {historyTabLabel(history.status === 'ready' ? changeCount(history.timeline) : null)}
               </Tabs.Tab>
             )}
           </Tabs.List>
@@ -280,7 +283,9 @@ function LoadedRuleDetail({
           )}
           {showHistory && (
             <Tabs.Panel value="history" className={PANEL_FOCUS_CLASS}>
-              <RuleHistoryTab ruleId={rule.id} index={history.index} timeline={history.timeline} />
+              {history.status === 'loading' && <p className="text-sm text-muted-foreground">Loading history…</p>}
+              {history.status === 'error' && <p className="text-sm text-destructive">Failed to load: {history.message}</p>}
+              {history.status === 'ready' && <RuleHistoryTab ruleId={rule.id} index={history.index} timeline={history.timeline} />}
             </Tabs.Panel>
           )}
         </Tabs.Root>

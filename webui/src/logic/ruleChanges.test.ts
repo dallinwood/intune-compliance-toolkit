@@ -153,6 +153,39 @@ describe('fieldChanges', () => {
     expect(changes).toContainEqual({ kind: 'behaviour', path: ['remediation', 'macOS', 'steps', '0', 'shell'], display: 'code', before: undefined, after: 'echo hi' })
   })
 
+  it('does not report a missing value turning into null, or the other way round', () => {
+    const before = withOverrides({ check: macosCheck(ruleCheck('echo 1', null)) })
+    const withoutAdditionalInfo = structuredClone(before)
+    delete (withoutAdditionalInfo.check!.macOS.default as { additional_info?: unknown }).additional_info
+
+    expect(fieldChanges(withoutAdditionalInfo, before)).toEqual([])
+    expect(fieldChanges(before, withoutAdditionalInfo)).toEqual([])
+    expect(kindFingerprints(withoutAdditionalInfo)).toEqual(kindFingerprints(before))
+  })
+
+  it('still reports a null that became a value', () => {
+    const changes = fieldChanges(withOverrides({ architecture: null }), withOverrides({ architecture: 'arm64' }))
+
+    expect(changes).toEqual([{ kind: 'behaviour', path: ['architecture'], display: 'text', before: null, after: 'arm64' }])
+  })
+
+  it('shows the section as one breadcrumb value, not as a set of names', () => {
+    const changes = fieldChanges(
+      withOverrides({ section_path: ['Guidelines for system hardening', 'Authentication hardening'] }),
+      withOverrides({ section_path: ['Guidelines for system access', 'Credential management'] }),
+    )
+
+    expect(changes).toEqual([
+      {
+        kind: 'references',
+        path: ['section_path'],
+        display: 'value',
+        before: 'Guidelines for system hardening › Authentication hardening',
+        after: 'Guidelines for system access › Credential management',
+      },
+    ])
+  })
+
   it('orders changes by kind and then by path', () => {
     const before = inlineRule()
     const after = withOverrides({ discussion: 'x', tags: ['t'], title: 'New title', architecture: 'arm64' })

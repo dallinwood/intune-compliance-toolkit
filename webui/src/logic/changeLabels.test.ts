@@ -76,6 +76,7 @@ describe('history wording', () => {
   const entry = (state: TimelineEntry['state'], label = 'Sep 2026'): TimelineEntry => ({ tag: 't', label, state, kinds: [] })
 
   it('labels the tab with the number of changes, singular for one', () => {
+    expect(historyTabLabel(null)).toBe('History')
     expect(historyTabLabel(0)).toBe('History (0 changes)')
     expect(historyTabLabel(1)).toBe('History (1 change)')
     expect(historyTabLabel(7)).toBe('History (7 changes)')

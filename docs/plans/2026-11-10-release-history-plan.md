@@ -845,3 +845,13 @@ entry here, not just the session that wrote it.
     kind tag sit above the change, the code lines wrap inside the block and
     nothing needs sideways scrolling; the tinted lines, kind tags and struck
     or underlined words are readable in both themes.
+- **2026-11-10** - History tab polish after the maintainer looked at it. A
+  missing value and a null are now the same "no value" (no change, same
+  fingerprints); the section is shown as one breadcrumb value joined with the
+  shared `BREADCRUMB_SEPARATOR` instead of set-style pills; field rows no
+  longer repeat a kind tag under the label (the card header lists the kinds);
+  and the History tab appears from the first render once the manifest says the
+  source has more than one release, labelled "History" until the index loads,
+  then "History (N changes)". Logic parts tested first; Vitest 1058 passed,
+  `tsc -b` and lint clean, history e2e 7 passed (full e2e runs with
+  Milestone 5). (see the commit that follows)
