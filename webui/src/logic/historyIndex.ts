@@ -210,3 +210,24 @@ export function previousTagWithRule(index: HistoryIndex, ruleId: string, tag: st
   }
   return null
 }
+
+// The newest release that has the rule: for a rule dropped from the current
+// release, the last one it was in.
+export function latestReleaseWithRule(index: HistoryIndex, ruleId: string): HistoryRelease | null {
+  const entry = index.rules[ruleId]
+  if (entry === undefined) return null
+  for (let position = index.releases.length - 1; position >= 0; position -= 1) {
+    if (entry.versions[position] !== null) return index.releases[position]
+  }
+  return null
+}
+
+// Where a release stored the rule, relative to baselines/ (the same form a
+// RuleRef path has); null when that release does not have the rule.
+export function ruleFilePathAtRelease(index: HistoryIndex, ruleId: string, tag: string): string | null {
+  const entry = index.rules[ruleId]
+  const position = index.releases.findIndex((release) => release.tag === tag)
+  if (entry === undefined || position === -1 || entry.versions[position] === null) return null
+  const indexPath = index.releases[position].index_path
+  return `${indexPath.slice(0, indexPath.lastIndexOf('/') + 1)}${entry.file}`
+}

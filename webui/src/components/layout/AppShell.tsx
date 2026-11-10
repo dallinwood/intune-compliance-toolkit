@@ -44,6 +44,9 @@ export function AppShell({
   const setViewId = useFilterStore((state) => state.setView)
   const activeView = resolveView(viewId)
   const isRulesView = activeView.id === DEFAULT_VIEW_ID
+  const comparedFramework = useFilterStore((state) => state.framework)
+  // The Rules view and an open release comparison both have a filter sidebar.
+  const hasFilterSidebar = isRulesView || (activeView.id === 'frameworks' && comparedFramework !== null)
   // A view id from a shared URL that no view has is replaced, which also
   // removes it from the URL.
   useEffect(() => {
@@ -80,7 +83,7 @@ export function AppShell({
         <div className="flex h-screen flex-col">
           <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
             <div className="flex items-center gap-2">
-              {isRulesView && (
+              {hasFilterSidebar && (
                 <button
                   type="button"
                   onClick={() => setFiltersOpen((value) => !value)}

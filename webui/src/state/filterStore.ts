@@ -4,6 +4,7 @@ import type { ChangeKind } from '../logic/ruleChanges'
 import {
   DEFAULT_AUTOMATION,
   DEFAULT_PAGE_SIZE,
+  DEFAULT_VIEW_ID,
   parsePageSize,
   parseUrlState,
   serializeUrlLocation,
@@ -35,6 +36,8 @@ export interface FilterState {
   // Counts link clicks, so a click on a link to the rule already open still
   // reveals it again.
   openRuleRequest: number
+  // The tab a link asked the open rule's details to show; not in the URL.
+  openRuleTab: 'history' | null
   licence: string | null
   product: string | null
   compare: string[]
@@ -80,6 +83,10 @@ export interface FilterState {
   // (see filtersShowingRule), the first page and the open rule.
   showRule: (ruleId: string, filters: FilterValues) => void
   closeOpenRule: () => void
+  // One update, so one history entry: leave the comparison for the Rules
+  // view with every filter cleared, searching for the rule and opening it
+  // (on its History tab when asked).
+  showRuleFromComparison: (ruleId: string, upstreamId: string, tab: 'history' | null) => void
   clear: () => void
 }
 
@@ -172,6 +179,7 @@ export const useFilterStore = create<FilterState>((set) => {
   return {
     ...filterValuesOf(stateFromLocation()),
     openRuleRequest: 0,
+    openRuleTab: null,
     setView: (value) => set({ view: value }),
     showComparison: (framework, from, to) => set({ framework, compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
     closeComparison: () => set({ framework: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
@@ -186,7 +194,7 @@ export const useFilterStore = create<FilterState>((set) => {
     setCompare: (ids) => set({ compare: ids }),
     showCatalogEntry: (view, id) => set(view === 'licences' ? { view, licence: id } : { view, product: id }),
     showLicenceFromComparison: (id) => set({ licence: id, compare: [] }),
-    setSearch: (value) => set({ search: value, openRule: null, ...FIRST_PAGE }),
+    setSearch: (value) => set({ search: value, openRule: null, openRuleTab: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
     toggleSource: (value) => set((state) => ({ sources: toggled(state.sources, value), ...FIRST_PAGE })),
     toggleVersion: (value) => set((state) => ({ versions: toggled(state.versions, value), ...FIRST_PAGE })),
@@ -214,7 +222,23 @@ export const useFilterStore = create<FilterState>((set) => {
       }),
     showRule: (ruleId, filters) =>
       set((state) => ({ ...filters, openRule: ruleId, openRuleRequest: state.openRuleRequest + 1, ...FIRST_PAGE })),
-    closeOpenRule: () => set({ openRule: null }),
+    closeOpenRule: () => set({ openRule: null, openRuleTab: null }),
+    showRuleFromComparison: (ruleId, upstreamId, tab) =>
+      set((state) => ({
+        view: DEFAULT_VIEW_ID,
+        search: upstreamId,
+        targets: new Set(),
+        sources: new Set(),
+        versions: new Set(),
+        benchmarks: new Set(),
+        sections: new Set(),
+        tags: new Set(),
+        automatable: 'all',
+        openRule: ruleId,
+        openRuleTab: tab,
+        openRuleRequest: state.openRuleRequest + 1,
+        ...FIRST_PAGE,
+      })),
     clear: () =>
       set({
         openRule: null,

@@ -1,29 +1,21 @@
+import { useMemo } from 'react'
 import { FrameworkCards } from '../components/frameworks/FrameworkCards'
+import { ReleaseComparisonView } from '../components/frameworks/ReleaseComparisonView'
 import { useFilterStore } from '../state/filterStore'
 import type { ViewContext } from './viewContext'
 
-export function FrameworksView({ sources }: Pick<ViewContext, 'sources'>) {
+export function FrameworksView({ sources, enabledSelections, filtersOpen }: Pick<ViewContext, 'sources' | 'enabledSelections' | 'filtersOpen'>) {
   const framework = useFilterStore((state) => state.framework)
-  const compareFrom = useFilterStore((state) => state.compareFrom)
-  const compareTo = useFilterStore((state) => state.compareTo)
-  const closeComparison = useFilterStore((state) => state.closeComparison)
+  const enabledRuleIds = useMemo(() => new Set(enabledSelections.map((selection) => selection.ref.id)), [enabledSelections])
   const source = sources.find((candidate) => candidate.name === framework)
 
-  if (source === undefined) {
+  // A framework with one release has nothing to compare.
+  if (source === undefined || source.releases.length < 2) {
     return (
       <main className="flex-1 overflow-y-auto">
         <FrameworkCards sources={sources} />
       </main>
     )
   }
-  return (
-    <main className="flex-1 overflow-y-auto p-4">
-      <button type="button" onClick={closeComparison} className="text-sm text-link underline">
-        All frameworks
-      </button>
-      <p className="mt-2 text-sm">
-        {source.display_name}: {compareFrom} to {compareTo}
-      </p>
-    </main>
-  )
+  return <ReleaseComparisonView sources={sources} source={source} enabledRuleIds={enabledRuleIds} filtersOpen={filtersOpen} />
 }

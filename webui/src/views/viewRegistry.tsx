@@ -18,7 +18,7 @@ export interface ViewDefinition {
 // address is written out as /rules.
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
-  { id: 'frameworks', label: 'Frameworks', render: (context) => <FrameworksView sources={context.sources} /> },
+  { id: 'frameworks', label: 'Frameworks', render: (context) => <FrameworksView {...context} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
   { id: 'products', label: 'Products', render: () => <ProductsView /> },
 ]

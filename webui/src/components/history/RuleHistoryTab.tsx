@@ -1,5 +1,4 @@
 import { useId, useState } from 'react'
-import { useRuleChanges } from '../../hooks/useRuleHistory'
 import { quietRunSummary, timelineStateText } from '../../logic/changeLabels'
 import {
   foldQuietRuns,
@@ -9,7 +8,7 @@ import {
   type TimelineItem,
 } from '../../logic/historyIndex'
 import type { ChangeKind } from '../../logic/ruleChanges'
-import { FieldChangeList } from './FieldChangeList'
+import { ChangesBetween } from './ChangesBetween'
 import { KindTag } from './KindTag'
 
 export interface HistoryCompare {
@@ -31,27 +30,6 @@ function hasChange(entry: TimelineEntry): boolean {
 
 function labelOfTag(index: HistoryIndex, tag: string): string {
   return index.releases.find((release) => release.tag === tag)?.label ?? tag
-}
-
-function ChangesBetween({
-  index,
-  ruleId,
-  fromTag,
-  toTag,
-  kinds,
-  focusPaths,
-}: {
-  index: HistoryIndex
-  ruleId: string
-  fromTag: string
-  toTag: string
-  kinds: ReadonlySet<ChangeKind> | undefined
-  focusPaths?: string[][]
-}) {
-  const state = useRuleChanges(index, ruleId, fromTag, toTag)
-  if (state.status === 'loading') return <p className="text-sm text-muted-foreground">Loading changes…</p>
-  if (state.status === 'error') return <p className="text-sm text-destructive">Failed to load: {state.message}</p>
-  return <FieldChangeList changes={state.changes} kinds={kinds} focusPaths={focusPaths} />
 }
 
 function ReleaseCard({

@@ -6,8 +6,10 @@ import {
   changeCount,
   compareReleases,
   foldQuietRuns,
+  latestReleaseWithRule,
   parseHistoryIndex,
   previousTagWithRule,
+  ruleFilePathAtRelease,
   ruleTimeline,
   type HistoryIndex,
   type RuleWithFile,
@@ -259,5 +261,29 @@ describe('previousTagWithRule', () => {
     expect(previousTagWithRule(index, 'mscp.steady', 'R1')).toBeNull()
     expect(previousTagWithRule(index, 'mscp.unknown', 'R3')).toBeNull()
     expect(previousTagWithRule(index, 'mscp.steady', 'R9')).toBeNull()
+  })
+})
+
+describe('latestReleaseWithRule and ruleFilePathAtRelease', () => {
+  it('finds the newest release that has the rule, even when it was dropped later', () => {
+    const index = buildFixture()
+
+    expect(latestReleaseWithRule(index, 'mscp.dropped')?.tag).toBe('R1')
+    expect(latestReleaseWithRule(index, 'mscp.steady')?.tag).toBe('R3')
+    expect(latestReleaseWithRule(index, 'mscp.unknown')).toBeNull()
+  })
+
+  it('names the rule file under baselines/ for a release that has the rule', () => {
+    const index = buildFixture()
+
+    expect(ruleFilePathAtRelease(index, 'mscp.steady', 'R2')).toBe('mscp/releases/R2/rules/steady.json')
+  })
+
+  it('has no path for a release without the rule, or an unknown rule or release', () => {
+    const index = buildFixture()
+
+    expect(ruleFilePathAtRelease(index, 'mscp.fresh', 'R1')).toBeNull()
+    expect(ruleFilePathAtRelease(index, 'mscp.unknown', 'R1')).toBeNull()
+    expect(ruleFilePathAtRelease(index, 'mscp.steady', 'R9')).toBeNull()
   })
 })

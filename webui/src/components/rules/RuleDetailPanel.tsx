@@ -1,5 +1,5 @@
 import { Tabs } from '@base-ui/react/tabs'
-import { Component, useState, type ReactNode } from 'react'
+import { Component, useEffect, useState, type ReactNode } from 'react'
 import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
 import { useRuleHistory } from '@/hooks/useRuleHistory'
 import { useSourceReleaseCount } from '@/hooks/useSourceReleaseCount'
@@ -15,6 +15,7 @@ import type { RuleRef } from '../../logic/selectionEntry'
 import { showsRemediationSection } from '../../logic/targetDisplay'
 import { useRuleMappings } from '../../state/mappingsContext'
 import { useMappedRulesViewState, type MappedRulesViewState } from '../../state/mappedRulesView'
+import { useFilterStore } from '../../state/filterStore'
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
@@ -163,7 +164,12 @@ function LoadedRuleDetail({
   mappedView?: MappedRulesViewState
 }) {
   const { byRule, rowsById } = useRuleMappings()
-  const [tab, setTab] = useState<PanelTab>('details')
+  // A link from a release comparison can ask for the History tab.
+  const requestedTab = useFilterStore((store) => (store.openRule === rule.id ? store.openRuleTab : null))
+  const [tab, setTab] = useState<PanelTab>(requestedTab ?? 'details')
+  useEffect(() => {
+    if (requestedTab !== null) setTab(requestedTab)
+  }, [requestedTab])
   // Nested panels (a mapped rule's details) show no History tab.
   const history = useRuleHistory(mappedView ? rule : null)
   // The manifest already says whether there is a history, so the tab is there from the first render.

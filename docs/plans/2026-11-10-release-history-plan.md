@@ -869,3 +869,33 @@ entry here, not just the session that wrote it.
   instead of no tab strip). Screenshots of the landing at 1440px and 375px,
   light and dark, read: cards sit two across at 1440px and stack at 375px, the
   current pill is clearly highlighted in both themes. (`ec62610` feat: add a Frameworks tab listing each framework's releases)
+- **2026-11-10** - Task 9: the release comparison view. `comparisonFilters.ts`
+  (`filterComparison`, plus `comparisonFacetCounts` so each facet count says
+  how many rules ticking it would leave), two helpers in `historyIndex.ts`
+  (`latestReleaseWithRule`, `ruleFilePathAtRelease`), the sidebar (framework,
+  From, To, kinds with counts, only-rules filters, sections, benchmarks via the
+  vocabulary), the main area (four summary tiles, search, Expand all and
+  Collapse all, Added, Removed and Changed groups of 50 rows with "Show more",
+  removed titles struck through) and the header Filters button for an open
+  comparison, so the sidebar collapses below md like the Rules view's.
+  Expanding a changed row draws its field changes and offers Open rule and
+  Full history; expanding an added or removed row shows the rule's details as
+  the newest release that has it stored them (Review Focus 2). Logic tests
+  first (they failed on the missing module); 11 e2e tests came after the UI.
+  Vitest 1077 passed, `tsc -b` and lint clean, full e2e 172 passed.
+  (see the commit that follows)
+  - Deviations and decisions: the last ticked kind cannot be unticked (an empty
+    selection has no URL form and would show nothing); "Full history" needs the
+    History tab open, which the plan's URL has no parameter for, so it is a
+    transient store field (`openRuleTab`) read by the details panel, not part
+    of the address; Open rule and Full history are offered for changed and added
+    rules only, since a removed rule is not in the Rules view; "Expand all"
+    expands the rows shown (at most 50 per group), because expanding every row
+    would fetch thousands of rule files; benchmark options are the benchmark
+    names (a renamed benchmark appears as two options with the same label).
+  - Screenshots (1440px and 375px, light and dark, ISM Dec 2025 to Sep 2026 and
+    mSCP 27.0 to 27.1, all read): at 1440px the sidebar sits left of the tiles
+    and groups, a code change shows `-`/`+` lines in the dark block, wording
+    changes show struck and underlined words; at 375px the sidebar is behind the
+    Filters button and opens above the list as on the Rules view, tiles go two by
+    two, titles wrap and nothing needs sideways scrolling; both themes read well.
