@@ -63,6 +63,7 @@ def fetch_release_published_date(
     except urllib.error.HTTPError as problem:
         if problem.code != 404:
             raise
+        problem.close()
         raise ValueError(
             f"{repository} has no GitHub Release for tag {tag!r} (HTTP 404). "
             "The tag may exist without a GitHub Release, which this importer needs for the published date."

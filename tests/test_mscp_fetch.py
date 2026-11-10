@@ -224,7 +224,7 @@ def test_fetch_release_published_date_rejects_an_invalid_tag_without_requests():
 
 def test_fetch_release_published_date_explains_a_missing_github_release():
     def opener(request):
-        raise urllib.error.HTTPError(request.full_url, 404, "Not Found", {}, None)
+        raise urllib.error.HTTPError(request.full_url, 404, "Not Found", {}, io.BytesIO(b""))
 
     with pytest.raises(ValueError) as problem:
         fetch_release_published_date(MSCP_REPOSITORY, "release_27.0", "agent", opener)
@@ -236,10 +236,11 @@ def test_fetch_release_published_date_explains_a_missing_github_release():
 
 def test_fetch_release_published_date_does_not_hide_other_http_errors():
     def opener(request):
-        raise urllib.error.HTTPError(request.full_url, 500, "Server Error", {}, None)
+        raise urllib.error.HTTPError(request.full_url, 500, "Server Error", {}, io.BytesIO(b""))
 
-    with pytest.raises(urllib.error.HTTPError):
+    with pytest.raises(urllib.error.HTTPError) as problem:
         fetch_release_published_date(MSCP_REPOSITORY, "release_27.0", "agent", opener)
+    problem.value.close()
 
 
 def test_resolve_lightweight_tag():
