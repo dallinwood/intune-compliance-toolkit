@@ -742,7 +742,7 @@ entry here, not just the session that wrote it.
   helpers) and `ruleChanges.ts` (kinds, fingerprints, field changes), with
   tests written first. Fingerprints and `fieldChanges` agree by construction:
   applicability entries and benchmarks are put in a fixed order before either
-  is computed. (commit hash in the next entry)
+  is computed. (`d55163b` feat: classify and diff rule changes between releases)
   - Design refinements: the size cap applies to the middle of the two
     sequences after the shared start and end are trimmed, so one changed line
     in a very large value still gets a real diff; and a field nobody has
@@ -751,3 +751,18 @@ entry here, not just the session that wrote it.
   - Done early, from Task 5b: `baselines/_change_ignore.json` holds the ignore
     list and `ruleChanges.ts` reads it (`resolveJsonModule` turned on in
     `tsconfig.app.json`), so the list is not changed twice.
+- **2026-11-10** - Task 5: `historyIndex.ts` (build, parse, compare, timeline,
+  folding, change count), `data/history.ts` (cached fetchers) and the
+  `copy-baselines.mjs` step that writes `_history/<source>.json`. Tests first
+  (the modules were missing, so they failed), covering the reverted change,
+  the gap and the removed-only rule. Published sizes: `asd_ism.json` 837,625
+  bytes (4 releases, 1146 rules), `mscp.json` 145,727 bytes (2 releases, 355
+  rules). Per pair, the fingerprints agree with the importer's added/removed
+  counts (for example ISM Jun to Sep 2026: 44 added, 2 removed, 403 changed;
+  mSCP 27.0 to 27.1: 5 added, 3 removed, 153 changed). Vitest 978 passed,
+  `tsc -b` and lint clean. (see the commit that follows)
+  - Design refinement from the plan: spec 5.3's per-rule history file is not
+    generated; the app fetches `releases/<tag>/rules/<file>` directly.
+  - Deviation: `buildHistoryIndex` takes `RuleWithFile` (a rule plus the file
+    it was read from) instead of `Rule`, because a rule has no file name of
+    its own and the index must record it.
