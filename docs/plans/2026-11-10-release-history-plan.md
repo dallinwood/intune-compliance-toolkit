@@ -643,3 +643,19 @@ entry here, not just the session that wrote it.
     `--offline` runs, because the importers (correctly) refuse a manifest
     source that has no `releases` list. The regenerated manifest is the v6
     form of the same data.
+- **2026-11-10** - Task 3 (Milestone 2), part 1: the three older ISM editions
+  imported one at a time, oldest first. Each import succeeded, the library
+  validated, and the current ISM release stayed `v2026.09.4`. Task 3 is split
+  into several commits, by agreement. (`fadf5ef` feat: import ISM editions from
+  Dec 2025 to Jun 2026)
+  - Added and removed rule counts per release pair: Dec 2025 (1073 rules) to
+    Mar 2026 (1081): 9 added, 1 removed; Mar 2026 to Jun 2026 (1101): 20 added,
+    0 removed; Jun 2026 to Sep 2026 (1143): 44 added, 2 removed. Removed ids:
+    `ism-1837` (Mar), `ism-0521` and `ism-1448` (Sep). No rename noise.
+- **2026-11-10** - mSCP `release_27.1` first failed to import: upstream
+  `os_allow_prerelease_disable` nests its fix inside the platform-level
+  default `check`. The normalizer already accepted the same slip inside a
+  version's check, so the default entry now gets the same tolerance (nested
+  plus sibling fix still raises). TDD: the new tests failed first, and
+  `release_27.0` regenerates byte-identically (full Python suite, 856 passed).
+  (`e6d457c` fix: accept a fix misindented inside the default mSCP check)
