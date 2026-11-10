@@ -659,3 +659,30 @@ entry here, not just the session that wrote it.
   plus sibling fix still raises). TDD: the new tests failed first, and
   `release_27.0` regenerates byte-identically (full Python suite, 856 passed).
   (`e6d457c` fix: accept a fix misindented inside the default mSCP check)
+- **2026-11-10** - Task 3 (Milestone 2), part 2: mSCP `release_27.1` imported
+  (352 rules, now the current mSCP release). Against `release_27.0`: 5 added
+  (`os_mcx_disable_disable`, `os_messages_summary_disable`, `os_ssh_pqc_configure`,
+  `os_sshd_pqc_configure`, `system_settings_admin_group_membership_defined`),
+  3 removed (`os_show_filename_extensions_enable`,
+  `system_settings_bluetooth_menu_enable`, `system_settings_wifi_menu_enable`).
+  The new admin group rule has a regex ODV. Text mode would reject the `|` its
+  own example needs, so after a hand review (`$ODV` is only the double-quoted
+  pattern of `grep -vE`) it was added to `ODV_VARIABLE_ALLOWLIST`, with a
+  rule-specific pattern rejecting a leading hyphen (grep would read it as an
+  option). (`3246f95` fix: run the mSCP admin group ODV rule in variable mode;
+  `a4bbf19` feat: import mSCP 27.1)
+  - Mapping warnings (recorded, no mapping file edited): 222 warnings for 148
+    distinct mSCP rules, all of the form "was mapped against mscp release_27.0,
+    but the library is at release_27.1; review the link for accuracy". Per
+    file: system-hardening 86, system-access 42, security-assurance 30,
+    cryptography 23, enterprise-mobility 20, system-management 11, media 10.
+    No ISM-side warnings. They are the maintainer's to review.
+  - Smoke and e2e updates for the new data: totals 1495 (352 mSCP), Operating
+    system 203 (the infinite-scroll test now scrolls a third time), release
+    text `release_27.1`, and the unreachable-facet test uses the ISM
+    Non-classified benchmark because 27.1 lists the NLMAPGOV benchmarks under
+    macOS 27. The pinned ODV mode list gained the new rule as `variable`.
+  - Verification: Vitest 921 passed, `tsc -b` and lint clean, full e2e 152
+    passed. The full Python suite (856 passed, `-W error`) ran on this exact
+    data before the ODV and e2e changes. It now takes about 18 minutes because
+    the committed-library test regenerates every release.
