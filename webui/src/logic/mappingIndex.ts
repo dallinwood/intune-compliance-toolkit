@@ -6,6 +6,8 @@
 // only checks structure, skipping what it cannot use.
 
 import { compareText } from './catalogIndex'
+import type { HistoryIndex } from './historyIndex'
+import { CHANGE_KINDS, type ChangeKind } from './ruleChanges'
 
 export const MAPPING_INDEX_SCHEMA_VERSION = 1
 
@@ -24,6 +26,11 @@ export interface MappingIndexEntry {
   release: string
   // The release this rule was checked against.
   self_release: string
+  // Written at publish time (addChangedKinds), only for an end whose release is
+  // not the current one: the kinds of change since that release, [] when the
+  // rule is unchanged, null when the release is not in the rule's history.
+  changed_kinds?: ChangeKind[] | null
+  self_changed_kinds?: ChangeKind[] | null
 }
 
 export interface MappingIndexFile {
@@ -212,6 +219,13 @@ export interface MappedRule {
   note: string | null
   release: string
   selfRelease: string
+  // See MappingIndexEntry; a missing value is read as "not known".
+  changedKinds?: ChangeKind[] | null
+  selfChangedKinds?: ChangeKind[] | null
+}
+
+function isKindList(value: unknown): value is ChangeKind[] {
+  return Array.isArray(value) && value.every((kind) => (CHANGE_KINDS as readonly unknown[]).includes(kind))
 }
 
 function directionFits(relation: MappingRelation, direction: unknown): direction is MappingDirection {
@@ -227,6 +241,9 @@ function parseEntry(entry: unknown): MappedRule | string {
   if (!isText(entry.mapping)) return 'mapping must be a non-empty string'
   if (entry.note !== null && typeof entry.note !== 'string') return 'note must be a string or null'
   if (!isText(entry.release) || !isText(entry.self_release)) return 'release and self_release must be non-empty strings'
+  for (const key of ['changed_kinds', 'self_changed_kinds'] as const) {
+    if (entry[key] !== undefined && entry[key] !== null && !isKindList(entry[key])) return `${key} must be a list of change kinds or null`
+  }
   return {
     rule: entry.rule,
     relation: entry.relation,
@@ -235,6 +252,8 @@ function parseEntry(entry: unknown): MappedRule | string {
     note: entry.note,
     release: entry.release,
     selfRelease: entry.self_release,
+    ...(entry.changed_kinds === undefined ? {} : { changedKinds: entry.changed_kinds as ChangeKind[] | null }),
+    ...(entry.self_changed_kinds === undefined ? {} : { selfChangedKinds: entry.self_changed_kinds as ChangeKind[] | null }),
   }
 }
 
@@ -296,21 +315,72 @@ export interface StaleEndpoint {
   sourceName: string
   mappedRelease: string
   currentRelease: string
+  // What changed since the mapped release; null when that release is not in the rule's history.
+  changedKinds: ChangeKind[] | null
 }
 
 // Both ends are checked, so a link checked against an older release of
-// either rule shows the same note from both sides.
+// either rule shows the same note from both sides. An end whose rule did not
+// change since its mapped release is not stale: nothing for the maintainer to
+// review.
 export function staleEndpoints(
   link: MappedRule,
   self: { ruleId: string; sourceName: string; releaseTag: string },
   other: { sourceName: string; releaseTag: string },
+  changedKindsFor: (ruleId: string, mappedRelease: string) => ChangeKind[] | null,
 ): StaleEndpoint[] {
+  const candidates = [
+    { ruleId: self.ruleId, sourceName: self.sourceName, mappedRelease: link.selfRelease, currentRelease: self.releaseTag },
+    { ruleId: link.rule, sourceName: other.sourceName, mappedRelease: link.release, currentRelease: other.releaseTag },
+  ]
   const stale: StaleEndpoint[] = []
-  if (link.selfRelease !== self.releaseTag) {
-    stale.push({ ruleId: self.ruleId, sourceName: self.sourceName, mappedRelease: link.selfRelease, currentRelease: self.releaseTag })
-  }
-  if (link.release !== other.releaseTag) {
-    stale.push({ ruleId: link.rule, sourceName: other.sourceName, mappedRelease: link.release, currentRelease: other.releaseTag })
+  for (const candidate of candidates) {
+    if (candidate.mappedRelease === candidate.currentRelease) continue
+    const changedKinds = changedKindsFor(candidate.ruleId, candidate.mappedRelease)
+    if (changedKinds !== null && changedKinds.length === 0) continue
+    stale.push({ ...candidate, changedKinds })
   }
   return stale
+}
+
+// The kinds of change between a rule's release in a mapping and the newest
+// release, from the history fingerprints. null: the release is not in the
+// history, or the rule is missing from it or from the newest release.
+export function changedKindsSince(history: HistoryIndex, ruleId: string, mappedRelease: string): ChangeKind[] | null {
+  const mappedPosition = history.releases.findIndex((release) => release.tag === mappedRelease)
+  const entry = history.rules[ruleId]
+  if (mappedPosition === -1 || entry === undefined) return null
+  const before = entry.versions[mappedPosition]
+  const after = entry.versions[history.releases.length - 1]
+  if (before === null || after === null) return null
+  return CHANGE_KINDS.filter((kind) => before[kind] !== after[kind])
+}
+
+// Publish-time step: notes on each entry what changed in the rule behind each
+// end that is not on its current release, so the app needs no history fetch
+// to draw the review note.
+export function addChangedKinds(index: MappingIndexFile, histories: readonly HistoryIndex[]): MappingIndexFile {
+  const historyByRule = new Map<string, HistoryIndex>()
+  for (const history of histories) {
+    for (const ruleId of Object.keys(history.rules)) historyByRule.set(ruleId, history)
+  }
+  const currentTagOf = (history: HistoryIndex) => history.releases[history.releases.length - 1].tag
+
+  const byRule: Record<string, MappingIndexEntry[]> = {}
+  for (const [ruleId, entries] of Object.entries(index.by_rule)) {
+    byRule[ruleId] = entries.map((entry) => {
+      const selfHistory = historyByRule.get(ruleId)
+      const otherHistory = historyByRule.get(entry.rule)
+      return {
+        ...entry,
+        ...(otherHistory !== undefined && entry.release !== currentTagOf(otherHistory)
+          ? { changed_kinds: changedKindsSince(otherHistory, entry.rule, entry.release) }
+          : {}),
+        ...(selfHistory !== undefined && entry.self_release !== currentTagOf(selfHistory)
+          ? { self_changed_kinds: changedKindsSince(selfHistory, ruleId, entry.self_release) }
+          : {}),
+      }
+    })
+  }
+  return { ...index, by_rule: byRule }
 }

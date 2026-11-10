@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { unzipSync } from 'fflate'
-import { buildMappingIndex } from '../src/logic/mappingIndex'
+import type { HistoryIndex } from '../src/logic/historyIndex'
+import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { buildOverlayIndex } from '../src/logic/overlayIndex'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
@@ -1882,11 +1883,28 @@ test.describe('rule mappings', () => {
     links: [{ relation: 'related', from: [ruleEndpoint(ISM_1621, STALE_ISM_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
   }
 
+  // Written by `bun run dev` (copy-baselines), like the mapping index the app fetches.
+  const historyIndexes = ['mscp', 'asd_ism'].map(
+    (sourceName) => JSON.parse(readFileSync(new URL(`../public/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex,
+  )
+  const mscpHistory = historyIndexes[0]
+  const mscpFirstRelease = mscpHistory.releases[0].tag
+  const mscpKindsChangedSince = (ruleId: string) =>
+    (['behaviour', 'scope', 'wording', 'references'] as const).filter(
+      (kind) => mscpHistory.rules[ruleId].versions[0]![kind] !== mscpHistory.rules[ruleId].versions.at(-1)![kind],
+    )
+  const mscpRuleIdsInBoth = Object.keys(mscpHistory.rules).filter((ruleId) => mscpHistory.rules[ruleId].versions.every((version) => version !== null))
+  const CHANGED_MSCP_RULE = mscpRuleIdsInBoth.find((ruleId) => mscpKindsChangedSince(ruleId).length > 0) ?? ''
+  const UNCHANGED_MSCP_RULE = mscpRuleIdsInBoth.find((ruleId) => mscpKindsChangedSince(ruleId).length === 0) ?? ''
+
   async function serveMappings(page: Page, files: Record<string, unknown>) {
     const fileNames = Object.keys(files).sort()
-    const index = buildMappingIndex(
-      fileNames.map((fileName) => ({ fileName, value: files[fileName] })),
-      () => {},
+    const index = addChangedKinds(
+      buildMappingIndex(
+        fileNames.map((fileName) => ({ fileName, value: files[fileName] })),
+        () => {},
+      ),
+      historyIndexes,
     )
     await page.route('**/baselines/_mappings/_index.json', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(index) }),
@@ -2261,6 +2279,38 @@ test.describe('rule mappings', () => {
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveText(
       `This link was checked against ASD ISM ${STALE_ISM_RELEASE} for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
     )
+  })
+
+  test('a link to a rule that changed since its mapped release names what changed', async ({ page }) => {
+    const mapping = {
+      schema_version: 1,
+      id: 'changed-since',
+      links: [{ relation: 'related', from: [ruleEndpoint(CHANGED_MSCP_RULE, mscpFirstRelease)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
+    }
+    await serveMappings(page, { 'changed.json': mapping })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+
+    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    const labels = mscpKindsChangedSince(CHANGED_MSCP_RULE).map((kind) => kind.charAt(0).toUpperCase() + kind.slice(1))
+    await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveText(
+      `Mapped against ${mscpFirstRelease}; ${CHANGED_MSCP_RULE.replace('mscp.', '')} has changed since (${labels.join(', ')}). Review the link.`,
+    )
+  })
+
+  test('a link to a rule that did not change since its mapped release shows no note', async ({ page }) => {
+    const mapping = {
+      schema_version: 1,
+      id: 'unchanged-since',
+      links: [{ relation: 'related', from: [ruleEndpoint(UNCHANGED_MSCP_RULE, mscpFirstRelease)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
+    }
+    await serveMappings(page, { 'unchanged.json': mapping })
+    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openMappedRules(page, ISM_1622)
+
+    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    await expect(mappedRow(page, ISM_1622, UNCHANGED_MSCP_RULE.replace('mscp.', ''))).toBeVisible()
+    await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveCount(0)
   })
 
   test('the stale note shows from the other side of the link too', async ({ page }) => {

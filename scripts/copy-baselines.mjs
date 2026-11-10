@@ -17,7 +17,10 @@
 // webui/public/baselines/_mappings/_index.json the same way: one by-rule
 // lookup (see webui/src/logic/mappingIndex.ts), so the app needs a single
 // startup fetch to show a rule's mapped rules from either side. With no
-// mapping files the index is still written, empty.
+// mapping files the index is still written, empty. A link whose rule is not
+// on its current release also gets the kinds of change since that release (from
+// the history indexes below), so the app can say whether a review is due
+// without fetching any history.
 //
 // Every release of every source in the manifest is also summarised into
 // webui/public/baselines/_history/<source>.json (see
@@ -51,7 +54,7 @@ import { fileURLToPath } from "node:url";
 // Bun runs this script, so it can import the app's own TypeScript: one
 // structural check for overlay files, shared with the app.
 const { buildOverlayIndex } = await import("../webui/src/logic/overlayIndex.ts");
-const { buildMappingIndex } = await import("../webui/src/logic/mappingIndex.ts");
+const { addChangedKinds, buildMappingIndex } = await import("../webui/src/logic/mappingIndex.ts");
 const { buildCatalogIndex } = await import("../webui/src/logic/catalogIndex.ts");
 const { buildHistoryIndex } = await import("../webui/src/logic/historyIndex.ts");
 
@@ -123,6 +126,32 @@ await writeFile(join(overlaysDestination, OVERLAY_INDEX_NAME), `${JSON.stringify
 `);
 console.log(`Indexed ${overlayIndex.overlays.length} overlay file(s) in ${join(overlaysDestination, OVERLAY_INDEX_NAME)}`);
 
+// Built before the mapping index, which notes what changed in each mapped rule.
+const historyDestination = join(baselinesDestination, "_history");
+await mkdir(historyDestination, { recursive: true });
+const manifest = JSON.parse(await readFile(join(baselinesDestination, "_manifest.json"), "utf8"));
+const historyIndexes = [];
+for (const source of manifest.sources) {
+  const rulesByTag = new Map();
+  for (const release of source.releases) {
+    const releaseDirectory = dirname(join(baselinesDestination, release.index_path));
+    const releaseIndex = JSON.parse(await readFile(join(baselinesDestination, release.index_path), "utf8"));
+    const rules = [];
+    for (const entry of releaseIndex.rules) {
+      const rule = JSON.parse(await readFile(join(releaseDirectory, entry.file), "utf8"));
+      rules.push({ ...rule, file: entry.file });
+    }
+    rulesByTag.set(release.tag, rules);
+  }
+  const historyPath = join(historyDestination, `${source.name}.json`);
+  // Compact for the same reason as the mapping index.
+  const historyIndex = buildHistoryIndex(source, rulesByTag);
+  historyIndexes.push(historyIndex);
+  await writeFile(historyPath, `${JSON.stringify(historyIndex)}
+`);
+  console.log(`Indexed ${source.releases.length} release(s) of ${source.name} in ${historyPath}`);
+}
+
 // Same selection and order as mapping_file_names in tools/mappings.py. The
 // copy above already left out .gitkeep, so a folder holding only that is
 // empty or missing here and gives an empty index.
@@ -162,7 +191,7 @@ for (const fileName of await mappingFileNames()) {
   if ("problem" in file) console.warn(`${fileName}: ${file.problem}. It was skipped.`);
   else mappingFiles.push({ fileName, value: file.value });
 }
-const mappingIndex = buildMappingIndex(mappingFiles, (message) => console.warn(message));
+const mappingIndex = addChangedKinds(buildMappingIndex(mappingFiles, (message) => console.warn(message)), historyIndexes);
 await mkdir(mappingsDestination, { recursive: true });
 // Compact, unlike the overlay index: this one grows with every link (design
 // section 5), and nobody reads it by hand.
@@ -171,28 +200,6 @@ await writeFile(join(mappingsDestination, MAPPING_INDEX_NAME), `${JSON.stringify
 console.log(
   `Indexed ${mappingFiles.length} mapping file(s) for ${Object.keys(mappingIndex.by_rule).length} rule(s) in ${join(mappingsDestination, MAPPING_INDEX_NAME)}`,
 );
-
-const historyDestination = join(baselinesDestination, "_history");
-await mkdir(historyDestination, { recursive: true });
-const manifest = JSON.parse(await readFile(join(baselinesDestination, "_manifest.json"), "utf8"));
-for (const source of manifest.sources) {
-  const rulesByTag = new Map();
-  for (const release of source.releases) {
-    const releaseDirectory = dirname(join(baselinesDestination, release.index_path));
-    const releaseIndex = JSON.parse(await readFile(join(baselinesDestination, release.index_path), "utf8"));
-    const rules = [];
-    for (const entry of releaseIndex.rules) {
-      const rule = JSON.parse(await readFile(join(releaseDirectory, entry.file), "utf8"));
-      rules.push({ ...rule, file: entry.file });
-    }
-    rulesByTag.set(release.tag, rules);
-  }
-  const historyPath = join(historyDestination, `${source.name}.json`);
-  // Compact for the same reason as the mapping index.
-  await writeFile(historyPath, `${JSON.stringify(buildHistoryIndex(source, rulesByTag))}
-`);
-  console.log(`Indexed ${source.releases.length} release(s) of ${source.name} in ${historyPath}`);
-}
 
 await rm(catalogDestination, { recursive: true, force: true });
 await cp(catalogSource, catalogDestination, {

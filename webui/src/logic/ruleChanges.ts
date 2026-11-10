@@ -4,7 +4,7 @@
 // across a whole framework) and fieldChanges (every changed field, for
 // drawing a diff). A kind's fingerprints differ exactly when fieldChanges has
 // a change of that kind.
-import changeIgnoreFile from '../../../baselines/_change_ignore.json'
+import changeIgnoreFile from '../../../baselines/_change_ignore.json' with { type: 'json' }
 import type { ApplicabilityEntry, Rule } from '../types/library'
 import { versionKey } from './applicability'
 

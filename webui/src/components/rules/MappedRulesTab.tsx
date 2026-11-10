@@ -14,6 +14,7 @@ import {
   type MappedRuleItem,
   type MappedSourceGroup,
 } from '../../logic/mappedRuleView'
+import { KIND_LABELS } from '../../logic/changeLabels'
 import { staleEndpoints } from '../../logic/mappingIndex'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { filtersShowingRule } from '../../logic/ruleNavigation'
@@ -198,6 +199,7 @@ export function MappedRuleRow({
     link,
     { ruleId: self.ref.id, sourceName: self.sourceName, releaseTag: self.releaseTag },
     { sourceName: row.sourceName, releaseTag: row.releaseTag },
+    (ruleId) => (ruleId === link.rule ? link.changedKinds : link.selfChangedKinds) ?? null,
   )
 
   function navigate(event: MouseEvent<HTMLAnchorElement>) {
@@ -235,8 +237,17 @@ export function MappedRuleRow({
           {link.note && <p className="text-muted-foreground">{link.note}</p>}
           {stale.map((endpoint) => (
             <p key={endpoint.ruleId} data-testid="stale-mapping-note" className="text-warning-foreground">
-              This link was checked against {termLabel(vocabularyIndex, 'sources', endpoint.sourceName)} {endpoint.mappedRelease} for{' '}
-              {upstreamRuleId(endpoint.ruleId)}, which is now from {endpoint.currentRelease}. Review it for accuracy.
+              {endpoint.changedKinds === null ? (
+                <>
+                  This link was checked against {termLabel(vocabularyIndex, 'sources', endpoint.sourceName)} {endpoint.mappedRelease} for{' '}
+                  {upstreamRuleId(endpoint.ruleId)}, which is now from {endpoint.currentRelease}. Review it for accuracy.
+                </>
+              ) : (
+                <>
+                  Mapped against {endpoint.mappedRelease}; {upstreamRuleId(endpoint.ruleId)} has changed since (
+                  {endpoint.changedKinds.map((kind) => KIND_LABELS[kind]).join(', ')}). Review the link.
+                </>
+              )}
             </p>
           ))}
         </div>

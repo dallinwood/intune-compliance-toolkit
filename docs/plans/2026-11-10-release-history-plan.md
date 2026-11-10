@@ -766,3 +766,25 @@ entry here, not just the session that wrote it.
   - Deviation: `buildHistoryIndex` takes `RuleWithFile` (a rule plus the file
     it was read from) instead of `Rule`, because a rule has no file name of
     its own and the index must record it.
+- **2026-11-10** - Task 5b: mapping warnings only for rules that really
+  changed. `tools/mappings.py` gained `changed_since` (compares a rule's
+  release files directly, skipping the ignore list in
+  `baselines/_change_ignore.json`) and `_check_pairs` warns only when it is
+  `None` (release not stored, old wording) or non-empty (new wording naming the
+  changed fields). `copy-baselines.mjs` now builds the history indexes first
+  and `addChangedKinds` notes `changed_kinds` and `self_changed_kinds` on each
+  mapping index entry whose end is not on its current release; the Mapped
+  rules note reads "Mapped against <release>; <rule> has changed since
+  (<kind labels>). Review the link.", and an unchanged end shows no note.
+  Tests first for the Python and Vitest sides (the e2e tests came after the
+  implementation). Result: `python tools/mappings.py` now gives 148 warnings
+  (97 distinct mSCP rules), down from 222; the rest were links to rules
+  unchanged in 27.1. Mapping files were not edited. Vitest 990 passed, `tsc -b`
+  and lint clean, full e2e 154 passed, screenshots at 1440px and 375px read.
+  The Python tests touched (`test_mappings*.py`) pass; the full 18-minute suite
+  was not re-run. (see the commit that follows)
+  - Deviations: the Python tests live in a new `tests/test_mappings_change_aware.py`
+    rather than `test_mappings.py`; the note names the rule id (either end can
+    be stale, so "this rule" was ambiguous); `KIND_LABELS` was created early in
+    `changeLabels.ts` (Task 6 adds the rest); and `ruleChanges.ts` imports the
+    JSON with `with { type: 'json' }`, which Playwright's Node needs.

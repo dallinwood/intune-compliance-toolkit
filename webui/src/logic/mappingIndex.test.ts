@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import type { HistoryIndex } from './historyIndex'
 import {
+  addChangedKinds,
   buildMappingIndex,
+  changedKindsSince,
   linksWithinLibrary,
   mappingGroupLabel,
   parseMappingIndex,
@@ -189,19 +192,143 @@ describe('wording', () => {
 
 describe('staleEndpoints', () => {
   const link = { ...mapped('ism.x', 'supports', 'outgoing'), release: 'v1', selfRelease: 'release_26.0' }
+  const self = { ruleId: 'mscp.a', sourceName: 'mscp', releaseTag: 'release_27.0' }
+  const other = { sourceName: 'asd_ism', releaseTag: 'v2' }
+  const everythingChanged = () => ['wording' as const]
 
-  it('names each end checked against another release than the loaded one', () => {
-    expect(
-      staleEndpoints(link, { ruleId: 'mscp.a', sourceName: 'mscp', releaseTag: 'release_27.0' }, { sourceName: 'asd_ism', releaseTag: 'v2' }),
-    ).toEqual([
-      { ruleId: 'mscp.a', sourceName: 'mscp', mappedRelease: 'release_26.0', currentRelease: 'release_27.0' },
-      { ruleId: 'ism.x', sourceName: 'asd_ism', mappedRelease: 'v1', currentRelease: 'v2' },
+  it('names each end checked against another release than the loaded one, with what changed', () => {
+    const changedKindsFor = (ruleId: string) => (ruleId === 'mscp.a' ? ['behaviour' as const] : ['scope' as const, 'wording' as const])
+
+    expect(staleEndpoints(link, self, other, changedKindsFor)).toEqual([
+      { ruleId: 'mscp.a', sourceName: 'mscp', mappedRelease: 'release_26.0', currentRelease: 'release_27.0', changedKinds: ['behaviour'] },
+      { ruleId: 'ism.x', sourceName: 'asd_ism', mappedRelease: 'v1', currentRelease: 'v2', changedKinds: ['scope', 'wording'] },
     ])
   })
 
   it('is empty when both ends match', () => {
-    expect(
-      staleEndpoints(link, { ruleId: 'mscp.a', sourceName: 'mscp', releaseTag: 'release_26.0' }, { sourceName: 'asd_ism', releaseTag: 'v1' }),
-    ).toEqual([])
+    expect(staleEndpoints(link, { ...self, releaseTag: 'release_26.0' }, { ...other, releaseTag: 'v1' }, everythingChanged)).toEqual([])
+  })
+
+  it('drops an end whose rule did not change since the mapped release', () => {
+    const changedKindsFor = (ruleId: string) => (ruleId === 'mscp.a' ? [] : ['wording' as const])
+
+    expect(staleEndpoints(link, self, other, changedKindsFor).map((endpoint) => endpoint.ruleId)).toEqual(['ism.x'])
+  })
+
+  it('keeps an end whose mapped release is not in the history, with null kinds', () => {
+    expect(staleEndpoints(link, self, other, () => null).map((endpoint) => endpoint.changedKinds)).toEqual([null, null])
+  })
+
+  it('passes the rule and the mapped release to the lookup', () => {
+    const asked: [string, string][] = []
+    staleEndpoints(link, self, other, (ruleId, mappedRelease) => {
+      asked.push([ruleId, mappedRelease])
+      return null
+    })
+
+    expect(asked).toEqual([
+      ['mscp.a', 'release_26.0'],
+      ['ism.x', 'v1'],
+    ])
+  })
+})
+
+describe('changedKindsSince', () => {
+  const fingerprints = (wording: string, behaviour = 'b') => ({ behaviour, scope: 's', wording, references: 'r' })
+  const history: HistoryIndex = {
+    schema_version: 1,
+    source: 'mscp',
+    releases: ['R1', 'R2', 'R3'].map((tag) => ({ tag, label: tag, published_date: '2026-01-01', index_path: `mscp/releases/${tag}/_index.json` })),
+    rules: {
+      'mscp.same': { title: 't', file: 'f', section: 's', benchmarks: [], versions: [fingerprints('w'), fingerprints('w'), fingerprints('w')] },
+      'mscp.reworded': { title: 't', file: 'f', section: 's', benchmarks: [], versions: [fingerprints('w1'), fingerprints('w2'), fingerprints('w3')] },
+      'mscp.reverted': { title: 't', file: 'f', section: 's', benchmarks: [], versions: [fingerprints('w'), fingerprints('x'), fingerprints('w')] },
+      'mscp.late': { title: 't', file: 'f', section: 's', benchmarks: [], versions: [null, null, fingerprints('w')] },
+    },
+  }
+
+  it('lists the kinds that differ between the mapped release and the newest one', () => {
+    expect(changedKindsSince(history, 'mscp.reworded', 'R1')).toEqual(['wording'])
+  })
+
+  it('is empty for a rule that is the same, including one whose change was reverted', () => {
+    expect(changedKindsSince(history, 'mscp.same', 'R1')).toEqual([])
+    expect(changedKindsSince(history, 'mscp.reverted', 'R1')).toEqual([])
+  })
+
+  it('is null when the mapped release is not in the history or the rule was not in it', () => {
+    expect(changedKindsSince(history, 'mscp.same', 'R0')).toBeNull()
+    expect(changedKindsSince(history, 'mscp.late', 'R1')).toBeNull()
+    expect(changedKindsSince(history, 'mscp.unknown', 'R1')).toBeNull()
+  })
+})
+
+describe('addChangedKinds', () => {
+  const fingerprints = (wording: string) => ({ behaviour: 'b', scope: 's', wording, references: 'r' })
+  const historyOf = (source: string, ruleId: string, versions: (ReturnType<typeof fingerprints> | null)[]): HistoryIndex => ({
+    schema_version: 1,
+    source,
+    releases: versions.map((_, position) => ({ tag: `${source}-${position + 1}`, label: 'l', published_date: '2026-01-01', index_path: `${source}/i.json` })),
+    rules: { [ruleId]: { title: 't', file: 'f', section: 's', benchmarks: [], versions } },
+  })
+  const entry = (rule: string, release: string, selfRelease: string): MappingIndexEntry => ({
+    rule,
+    relation: 'related',
+    direction: 'related',
+    mapping: 'm',
+    note: null,
+    release,
+    self_release: selfRelease,
+  })
+
+  it('adds the kinds changed since each end that is not on its current release, and only for those ends', () => {
+    const histories = [
+      historyOf('mscp', 'mscp.a', [fingerprints('old'), fingerprints('new')]),
+      historyOf('asd_ism', 'asd_ism.x', [fingerprints('same'), fingerprints('same')]),
+    ]
+    const index = {
+      schema_version: 1 as const,
+      by_rule: { 'mscp.a': [entry('asd_ism.x', 'asd_ism-1', 'mscp-2')], 'asd_ism.x': [entry('mscp.a', 'mscp-1', 'asd_ism-2')] },
+    }
+
+    const result = addChangedKinds(index, histories)
+
+    expect(result.by_rule['mscp.a'][0]).toEqual({ ...entry('asd_ism.x', 'asd_ism-1', 'mscp-2'), changed_kinds: [] })
+    expect(result.by_rule['asd_ism.x'][0]).toEqual({ ...entry('mscp.a', 'mscp-1', 'asd_ism-2'), changed_kinds: ['wording'] })
+  })
+
+  it('writes null for a mapped release the history does not hold', () => {
+    const histories = [historyOf('mscp', 'mscp.a', [fingerprints('old'), fingerprints('new')])]
+    const index = { schema_version: 1 as const, by_rule: { 'asd_ism.x': [entry('mscp.a', 'release_0.0', 'v9')] } }
+
+    expect(addChangedKinds(index, histories).by_rule['asd_ism.x'][0].changed_kinds).toBeNull()
+  })
+
+  it('leaves entries alone when no history knows the rule', () => {
+    const index = { schema_version: 1 as const, by_rule: { 'x.a': [entry('x.b', 'r1', 'r1')] } }
+
+    expect(addChangedKinds(index, [])).toEqual(index)
+  })
+})
+
+describe('parseMappingIndex with changed kinds', () => {
+  const base = { rule: 'b', relation: 'related', direction: 'related', mapping: 'm', note: null, release: 'r1', self_release: 'r2' }
+
+  it('reads changed_kinds and self_changed_kinds, keeping null and ignoring a missing key', () => {
+    const parsed = parseMappingIndex({
+      schema_version: 1,
+      by_rule: { a: [{ ...base, changed_kinds: ['wording'], self_changed_kinds: null }, base] },
+    })
+
+    expect(typeof parsed).not.toBe('string')
+    const entries = (parsed as { byRule: Map<string, MappedRule[]> }).byRule.get('a') ?? []
+    expect(entries[0]).toMatchObject({ changedKinds: ['wording'], selfChangedKinds: null })
+    expect(entries[1].changedKinds).toBeUndefined()
+  })
+
+  it('drops an entry whose changed_kinds names an unknown kind', () => {
+    const parsed = parseMappingIndex({ schema_version: 1, by_rule: { a: [{ ...base, changed_kinds: ['colour'] }] } })
+
+    expect(typeof parsed === 'string' ? parsed : parsed.warnings).toEqual([expect.stringContaining('changed_kinds')])
   })
 })

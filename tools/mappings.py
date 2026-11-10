@@ -179,6 +179,64 @@ def expanded_pairs(mapping: dict) -> list[dict]:
     return pairs
 
 
+CHANGE_IGNORE_FILE_NAME = "_change_ignore.json"
+
+
+def _ignored_fields(baselines_dir: Path) -> frozenset[str]:
+    """The top-level rule fields a change comparison skips; the web UI reads the same file."""
+    ignore_file = json.loads((baselines_dir / CHANGE_IGNORE_FILE_NAME).read_text(encoding="utf-8"))
+    return frozenset(ignore_file["ignored_fields"])
+
+
+def _rule_files_of_release(baselines_dir: Path, release: dict) -> dict[str, Path]:
+    index_path = baselines_dir / release["index_path"]
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    return {entry["id"]: index_path.parent / entry["file"] for entry in index["rules"]}
+
+
+def _in_fixed_order(rule: dict) -> dict:
+    """The order of applicability entries and of their benchmarks carries no meaning."""
+    if not isinstance(rule.get("applicability"), list):
+        return rule
+    entries = [
+        {**entry, "benchmarks": sorted(entry["benchmarks"], key=lambda benchmark: (benchmark["name"], benchmark["severity"] or ""))}
+        for entry in rule["applicability"]
+    ]
+    entries.sort(key=lambda entry: (entry["target"] or "", entry["version"] or ""))
+    return {**rule, "applicability": entries}
+
+
+def changed_since(baselines_dir: Path, rule_id: str, mapped_release: str) -> list[str] | None:
+    """The top-level fields of a rule that differ between a release and the current one.
+
+    None: the release is not a stored release of the rule's source. []: the
+    rule is the same, apart from the ignored fields. A rule that the mapped
+    release lacks counts as changed (["added"]).
+    """
+    manifest = json.loads((baselines_dir / "_manifest.json").read_text(encoding="utf-8"))
+    source = next((source for source in manifest["sources"] if source["name"] == rule_id.split(".", 1)[0]), None)
+    if source is None:
+        return None
+    mapped = next((release for release in source["releases"] if release["tag"] == mapped_release), None)
+    if mapped is None:
+        return None
+    current = source["releases"][-1]
+    if mapped["tag"] == current["tag"]:
+        return []
+    mapped_file = _rule_files_of_release(baselines_dir, mapped).get(rule_id)
+    current_file = _rule_files_of_release(baselines_dir, current).get(rule_id)
+    if mapped_file is None:
+        return ["added"]
+    if current_file is None:
+        return ["removed"]
+    ignored = _ignored_fields(baselines_dir)
+    before = _in_fixed_order(json.loads(mapped_file.read_text(encoding="utf-8")))
+    after = _in_fixed_order(json.loads(current_file.read_text(encoding="utf-8")))
+    return sorted(
+        field for field in (before.keys() | after.keys()) - ignored if before.get(field) != after.get(field)
+    )
+
+
 def _load_library(baselines_dir: Path) -> dict[str, dict]:
     """Every committed rule id -> its source name and that source's current release tag."""
     manifest = json.loads((baselines_dir / "_manifest.json").read_text(encoding="utf-8"))
@@ -227,8 +285,28 @@ def _pair_conflict(earlier: dict, pair: dict) -> str:
     return f"is already defined by {earlier['where']}"
 
 
+def _stale_release_warning(baselines_dir: Path, file_name: str, where: str, rule_id: str, endpoint: dict, library_rule: dict) -> str | None:
+    source_name, mapped_release = library_rule["source_name"], endpoint["release"]
+    changed_fields = changed_since(baselines_dir, rule_id, mapped_release)
+    if changed_fields == []:
+        return None
+    if changed_fields is None:
+        return (
+            f"{file_name}: {where}: rule {rule_id} was mapped against {source_name} "
+            f"{mapped_release}, but the library is at {library_rule['release_tag']}; review the link for accuracy"
+        )
+    return (
+        f"{file_name}: {where}: rule {rule_id} was mapped against {source_name} "
+        f"{mapped_release}, and has changed since ({', '.join(changed_fields)}); review the link for accuracy"
+    )
+
+
 def _check_pairs(
-    valid_mappings: list[tuple[str, dict]], library: dict[str, dict], errors: list[str], mapping_warnings: list[str]
+    valid_mappings: list[tuple[str, dict]],
+    library: dict[str, dict],
+    baselines_dir: Path,
+    errors: list[str],
+    mapping_warnings: list[str],
 ) -> None:
     pair_by_rules: dict[frozenset[str], dict] = {}
     for file_name, mapping in valid_mappings:
@@ -240,10 +318,9 @@ def _check_pairs(
                 errors.append(f"{file_name}: {where}: rule {rule_id} does not exist in the committed library")
                 continue
             if endpoint["release"] != library_rule["release_tag"]:
-                mapping_warnings.append(
-                    f"{file_name}: {where}: rule {rule_id} was mapped against {library_rule['source_name']} "
-                    f"{endpoint['release']}, but the library is at {library_rule['release_tag']}; review the link for accuracy"
-                )
+                warning = _stale_release_warning(baselines_dir, file_name, where, rule_id, endpoint, library_rule)
+                if warning is not None:
+                    mapping_warnings.append(warning)
 
         for pair in expanded_pairs(mapping):
             from_id, to_id = pair["from"]["id"], pair["to"]["id"]
@@ -267,7 +344,7 @@ def validate_mappings(directory: Path, baselines_dir: Path) -> tuple[list[str], 
     mapping_warnings: list[str] = []
     valid_mappings = _structurally_valid_mappings(directory, errors)
     if valid_mappings:
-        _check_pairs(valid_mappings, _load_library(baselines_dir), errors, mapping_warnings)
+        _check_pairs(valid_mappings, _load_library(baselines_dir), baselines_dir, errors, mapping_warnings)
     return errors, list(dict.fromkeys(mapping_warnings))
 
 
