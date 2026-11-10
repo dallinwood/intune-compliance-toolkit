@@ -107,7 +107,8 @@ function RuleDetailFor({
   if (ruleState.status === 'error') {
     return <p className={`${PANEL_CLASS} text-destructive`}>Failed to load: {ruleState.message}</p>
   }
-  return <LoadedRuleDetail ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} notice={notice} mappedView={mappedView} />
+  // Keyed by the rule, so the open tab and the loaded history never carry over to another rule.
+  return <LoadedRuleDetail key={ruleState.rule.id} ruleRef={ruleRef} rule={ruleState.rule} overlaid={ruleState.overlaid} notice={notice} mappedView={mappedView} />
 }
 
 // Overlaid top-level fields shown with a Custom tag on their own section;

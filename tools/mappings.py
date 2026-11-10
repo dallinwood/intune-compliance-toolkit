@@ -194,15 +194,24 @@ def _rule_files_of_release(baselines_dir: Path, release: dict) -> dict[str, Path
     return {entry["id"]: index_path.parent / entry["file"] for entry in index["rules"]}
 
 
+def _without_nulls(value):
+    """A missing value and a null are the same "no value", as in the web UI's comparison."""
+    if isinstance(value, dict):
+        return {key: _without_nulls(member) for key, member in value.items() if member is not None}
+    if isinstance(value, list):
+        return [_without_nulls(item) for item in value]
+    return value
+
+
 def _in_fixed_order(rule: dict) -> dict:
     """The order of applicability entries and of their benchmarks carries no meaning."""
     if not isinstance(rule.get("applicability"), list):
         return rule
     entries = [
-        {**entry, "benchmarks": sorted(entry["benchmarks"], key=lambda benchmark: (benchmark["name"], benchmark["severity"] or ""))}
+        {**entry, "benchmarks": sorted(entry["benchmarks"], key=lambda benchmark: (benchmark["name"], benchmark.get("severity") or ""))}
         for entry in rule["applicability"]
     ]
-    entries.sort(key=lambda entry: (entry["target"] or "", entry["version"] or ""))
+    entries.sort(key=lambda entry: (entry.get("target") or "", entry.get("version") or ""))
     return {**rule, "applicability": entries}
 
 
@@ -230,8 +239,8 @@ def changed_since(baselines_dir: Path, rule_id: str, mapped_release: str) -> lis
     if current_file is None:
         return ["removed"]
     ignored = _ignored_fields(baselines_dir)
-    before = _in_fixed_order(json.loads(mapped_file.read_text(encoding="utf-8")))
-    after = _in_fixed_order(json.loads(current_file.read_text(encoding="utf-8")))
+    before = _in_fixed_order(_without_nulls(json.loads(mapped_file.read_text(encoding="utf-8"))))
+    after = _in_fixed_order(_without_nulls(json.loads(current_file.read_text(encoding="utf-8"))))
     return sorted(
         field for field in (before.keys() | after.keys()) - ignored if before.get(field) != after.get(field)
     )

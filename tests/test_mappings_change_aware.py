@@ -156,3 +156,21 @@ def test_a_release_that_is_current_is_unchanged(tmp_path):
 
     assert changed_since(baselines_dir, MSCP_RULE, "R2") == []
     assert validate_mappings(tmp_path / "mappings", baselines_dir) == ([], [])
+
+
+def test_a_missing_value_and_a_null_are_the_same_so_this_agrees_with_the_web_ui(tmp_path):
+    older = make_rule(MSCP_RULE, "R1")
+    newer = make_rule(MSCP_RULE, "R2")
+    del older["check"]["macOS"]["default"]["additional_info"]
+    baselines_dir = two_release_library(tmp_path, older, newer)
+
+    assert changed_since(baselines_dir, MSCP_RULE, "R1") == []
+
+
+def test_a_top_level_null_and_a_missing_field_are_the_same(tmp_path):
+    older = make_rule(MSCP_RULE, "R1")
+    newer = make_rule(MSCP_RULE, "R2")
+    del older["odv"]
+    baselines_dir = two_release_library(tmp_path, older, newer)
+
+    assert changed_since(baselines_dir, MSCP_RULE, "R1") == []

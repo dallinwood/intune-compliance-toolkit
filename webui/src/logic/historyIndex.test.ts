@@ -109,6 +109,18 @@ describe('buildHistoryIndex', () => {
   })
 })
 
+describe('buildHistoryIndex file names', () => {
+  it('fails with a clear error when a rule is stored under another file name in another release', () => {
+    const renamed = { ...rule('steady', 'R2'), file: 'rules/steady-renamed.json' }
+    const rulesByTag = new Map([
+      ['R1', [rule('steady', 'R1')]],
+      ['R2', [renamed]],
+    ])
+
+    expect(() => buildHistoryIndex(SOURCE, rulesByTag)).toThrow(/mscp\.steady.*rules\/steady\.json.*rules\/steady-renamed\.json/)
+  })
+})
+
 describe('compareReleases', () => {
   it('groups rules into added, removed and changed and counts the unchanged ones', () => {
     const comparison = compareReleases(buildFixture(), 'R1', 'R3')
@@ -147,6 +159,11 @@ describe('compareReleases', () => {
     for (const group of [comparison.added, comparison.removed, comparison.changed]) {
       expect(group.map((entry) => entry.id)).toEqual([...group.map((entry) => entry.id)].sort())
     }
+  })
+
+  it('throws unless the from release is before the to release', () => {
+    expect(() => compareReleases(buildFixture(), 'R3', 'R1')).toThrow(/before/)
+    expect(() => compareReleases(buildFixture(), 'R2', 'R2')).toThrow(/before/)
   })
 
   it('throws for a release the index does not list', () => {

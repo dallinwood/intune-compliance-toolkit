@@ -52,9 +52,12 @@ export function buildHistoryIndex(source: ManifestSource, rulesByTag: ReadonlyMa
         benchmarks: [],
         versions: releases.map(() => null),
       })
+      // fetchRuleAtRelease builds every release's path from this one file name.
+      if (entry.file !== rule.file) {
+        throw new Error(`Rule ${rule.id} is stored as ${entry.file} in an earlier release and as ${rule.file} in ${release.tag}; the release history needs one file name`)
+      }
       // Later releases overwrite, so the entry ends up describing the latest release that has the rule.
       entry.title = rule.title
-      entry.file = rule.file
       entry.section = rule.section_path[0]
       entry.benchmarks = benchmarkNamesOf(rule)
       entry.versions[releasePosition] = kindFingerprints(rule)
@@ -134,6 +137,7 @@ function differingKinds(before: KindFingerprints, after: KindFingerprints): Chan
 export function compareReleases(index: HistoryIndex, fromTag: string, toTag: string): ReleaseComparison {
   const fromPosition = releasePositionOf(index, fromTag)
   const toPosition = releasePositionOf(index, toTag)
+  if (fromPosition >= toPosition) throw new Error(`Release ${fromTag} must be before ${toTag} to compare them`)
   const comparison: ReleaseComparison = { added: [], removed: [], changed: [], unchangedCount: 0 }
   for (const [id, entry] of Object.entries(index.rules)) {
     const before = entry.versions[fromPosition]

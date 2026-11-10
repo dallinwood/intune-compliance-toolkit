@@ -285,6 +285,21 @@ describe('validateOdvValue for the admin group membership rule', () => {
     ['a pattern that is only anchors', '^$'],
     ['curly-brace repetition', 'a{2}'],
     ['a space', 'a b'],
+    ['a dot alone', '.'],
+    ['any text', '.*'],
+    ['any text between anchors', '^.*$'],
+    ['an optional dot', '.?'],
+    ['a starred letter', 'a*'],
+    ['an optional group', '(admin)?'],
+    ['a starred group', '^(admin)*$'],
+    ['a starred alternation', '(a|b)*'],
+    ['a starred class', '[a-z]*'],
+    ['a starred negated class', '[^x]*'],
+    ['a lazy star', 'a*?'],
+    ['a lazy plus', 'a+?'],
+    ['a doubled question mark', 'a??'],
+    ['a bracket closing straight away', '[]a]'],
+    ['a negated bracket closing straight away', '[^]a]'],
   ])('rejects %s (%j) with the requirement text', (_description, value) => {
     expect(validateOdvValue(adminGroupOdv, value, 'variable', adminGroupRuleId)).toBe(requirement)
   })
@@ -295,7 +310,7 @@ describe('validateOdvValue for the admin group membership rule', () => {
 
   it('explains the limits in plain words', () => {
     expect(requirement).toBe(
-      'Use a plain regular expression of account names, such as ^(admin|jdoe)$. Lookarounds, (?:...), backslash classes like \\d, empty alternatives such as admin|, and a leading hyphen are not allowed, because the check would silently pass.',
+      'Use a plain regular expression of account names, such as ^(admin|jdoe)$. Lookarounds, (?:...), backslash classes like \\d, empty alternatives such as admin|, a leading hyphen, and anything that would match every account are not allowed, because the check would silently pass.',
     )
   })
 })
