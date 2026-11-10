@@ -1,0 +1,121 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "false"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.MobileSMS')\\\n.objectForKey('messageSummarizationEnabled').js\nEOS"
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "Apple Intelligence features such as Apple Messages Summary that use off device AI _MUST_ be disabled. Apple will not give a guarantee that the Apple Intelligence feature will stay on device, so it _MUST_ be disabled.",
+  "discussion_format": "asciidoc",
+  "id": "mscp.os_messages_summary_disable",
+  "odv": null,
+  "references": {
+    "disa": {
+      "cmmc": [
+        "AC.L1-3.1.20",
+        "CM.L2-3.4.6",
+        "CM.L2-3.4.7"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "1.L.B",
+        "2.L.A",
+        "4.L.A",
+        "4.L.B"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.20",
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "AC-20",
+        "AC-20(1)",
+        "CM-7",
+        "CM-7(1)",
+        "SC-7(10)"
+      ],
+      "cce": {
+        "macos_27": [
+          "CCE-97270-3"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "messageSummarizationEnabled": false
+                }
+              ],
+              "PayloadType": "com.apple.MobileSMS"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
+  },
+  "schema_version": 5,
+  "section_path": [
+    "os"
+  ],
+  "source": {
+    "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.1",
+    "upstream_path": "rules/os/os_messages_summary_disable.yaml",
+    "upstream_revision": null,
+    "upstream_rule_id": "os_messages_summary_disable",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/ed2c210123db4fa9a195c0e4b065c7832051d328/src/mscp/data/rules/os/os_messages_summary_disable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Disable Apple Intelligence Summarize Messages"
+}

@@ -1,0 +1,160 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "disa_stig",
+          "severity": "medium"
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
+  "architecture": "arm64",
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 1
+        },
+        "shell": "/usr/libexec/mdmclient QuerySecurityInfo 2>/dev/null | /usr/bin/grep -c \"IsRecoveryLockEnabled = 1\""
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "A recovery lock password _MUST_ be enabled and set.\n\nSingle user mode, recovery mode, the Startup Manager, and several other tools are available on macOS by holding down specific key combinations during startup. Setting a recovery lock restricts access to these tools.\n\nIMPORTANT: Recovery lock passwords are not supported on Intel devices. This rule is only applicable to Apple Silicon devices.\n",
+  "discussion_format": "asciidoc",
+  "id": "mscp.os_recovery_lock_enable",
+  "odv": null,
+  "references": {
+    "disa": {
+      "cci": [
+        "CCI-000366"
+      ],
+      "cmmc": [
+        "AC.L1-3.1.1",
+        "AC.L2-3.1.5"
+      ],
+      "disa_stig": {
+        "macos_14": [
+          "APPL-14-005120"
+        ],
+        "macos_15": [
+          "APPL-15-005120"
+        ],
+        "macos_26": [
+          "APPL-26-005120"
+        ],
+        "macos_27": [
+          "APPL-27-005120"
+        ]
+      },
+      "srg": [
+        "SRG-OS-000480-GPOS-00227"
+      ]
+    },
+    "hhs": {
+      "hicp": [
+        "2.L.A",
+        "3.L.C"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.05"
+      ],
+      "800-53r5": [
+        "AC-6"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92870-5"
+        ],
+        "macos_15": [
+          "CCE-94274-8"
+        ],
+        "macos_26": [
+          "CCE-95277-0"
+        ],
+        "macos_27": [
+          "CCE-97063-2"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "NOTE: The SetRecoveryLock command can be used to set a Recovery Lock password and must be from your MDM.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 5,
+  "section_path": [
+    "os"
+  ],
+  "source": {
+    "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.1",
+    "upstream_path": "rules/os/os_recovery_lock_enable.yaml",
+    "upstream_revision": null,
+    "upstream_rule_id": "os_recovery_lock_enable",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/ed2c210123db4fa9a195c0e4b065c7832051d328/src/mscp/data/rules/os/os_recovery_lock_enable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "arm64",
+    "cmmc_lvl1",
+    "cmmc_lvl2",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate",
+    "hicp_lp"
+  ],
+  "title": "Enable Recovery Lock"
+}

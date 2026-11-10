@@ -1,0 +1,119 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "PASS"
+        },
+        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess.new\"); (ObjC.unwrap(s.objectForKey(\"familyControlsEnabled\")) == true && s.objectIsForcedForKey(\"familyControlsEnabled\")) ? \"PASS\" : \"FAIL\"'"
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "Parental Controls _MUST_ be enabled.\n\nControl of program execution is a mechanism used to prevent program execution of unauthorized programs, which is critical to maintaining a secure system baseline.\n\nParental Controls on the macOS consist of many different payloads, which are set individually depending on the type of control required. Enabling parental controls allows for further configuration of these restrictions.\n",
+  "discussion_format": "asciidoc",
+  "id": "mscp.os_parental_controls_enable",
+  "odv": null,
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "4.8"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.06"
+      ],
+      "800-53r5": [
+        "CM-7(2)"
+      ],
+      "cce": {
+        "macos_14": [
+          "CCE-92842-4"
+        ],
+        "macos_15": [
+          "CCE-94246-6"
+        ],
+        "macos_26": [
+          "CCE-95248-1"
+        ],
+        "macos_27": [
+          "CCE-97053-3"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "macOS": {
+      "payloads": [
+        {
+          "data": [
+            {
+              "PayloadContent": [
+                {
+                  "familyControlsEnabled": true
+                }
+              ],
+              "PayloadType": "com.apple.applicationaccess.new"
+            }
+          ],
+          "kind": "mobileconfig",
+          "versions": null
+        }
+      ],
+      "steps": []
+    }
+  },
+  "schema_version": 5,
+  "section_path": [
+    "os"
+  ],
+  "source": {
+    "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.1",
+    "upstream_path": "rules/os/os_parental_controls_enable.yaml",
+    "upstream_revision": null,
+    "upstream_rule_id": "os_parental_controls_enable",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/ed2c210123db4fa9a195c0e4b065c7832051d328/src/mscp/data/rules/os/os_parental_controls_enable.yaml"
+  },
+  "tags": [
+    "800-171",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Enable Parental Controls"
+}

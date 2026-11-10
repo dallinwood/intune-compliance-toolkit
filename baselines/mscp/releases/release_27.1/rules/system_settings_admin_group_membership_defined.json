@@ -1,0 +1,107 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "found=$(for u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n  /usr/bin/dsmemberutil checkmembership -U \"$u\" -G admin 2> /dev/null | /usr/bin/grep -q \"is a member\" && echo \"$u\"\ndone | /usr/bin/grep -vE \"$ODV\")\n\nif [[ -z \"$found\" ]]; then\n  echo \"0\"\nelse\n  echo \"Undocumented admin accounts found: $found\"\nfi"
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "Membership in the admin group _MUST_ be restricted to only those accounts that have been documented and explicitly authorized to receive privileged access.\n\nEvery account granted membership in the admin group increases the attack surface available to an adversary who compromises that account, and undocumented or unauthorized admin accounts complicate the organization's ability to audit who holds elevated privileges on the system. Any account discovered in the admin group that is not on the organization's documented list of authorized administrators _MUST_ be removed or formally documented and approved.\n\nThis check evaluates effective (computed) group membership rather than only the admin group's direct membership list, so an account that inherits admin privilege through a nested group, or through a directory service such as Active Directory, is also evaluated against the documented list.",
+  "discussion_format": "asciidoc",
+  "id": "mscp.system_settings_admin_group_membership_defined",
+  "odv": {
+    "by_benchmark": {},
+    "datatype": "regex",
+    "description": "A regular expression matching the short names of every account documented and authorized to be a member of the admin group, e.g. ^(admin|jdoe|asmith)$",
+    "recommended": "^(admin)$",
+    "validation": null
+  },
+  "references": {
+    "nist": {
+      "800-53r5": [
+        "AC-6(5)"
+      ],
+      "cce": {
+        "macos_15": [
+          "CCE-94592-3"
+        ],
+        "macos_26": [
+          "CCE-96742-2"
+        ],
+        "macos_27": [
+          "CCE-97272-9"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "Remove any account that is not on the organization's documented list of authorized administrators from the admin group.\n\nIf the account is a direct member, run:\n  /usr/sbin/dseditgroup -o edit -d UNDOCUMENTED_USERNAME -t user admin\n\n`dsmemberutil checkmembership` resolves effective membership, including membership granted through a nested group. If an undocumented account is admin only through a nested group, remove it from that nested group (or remove the nested group from admin) rather than running the command above, which only removes direct membership.",
+          "language": "bash",
+          "name": null,
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 5,
+  "section_path": [
+    "system_settings"
+  ],
+  "source": {
+    "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.1",
+    "upstream_path": "rules/system_settings/system_settings_admin_group_membership_defined.yaml",
+    "upstream_revision": null,
+    "upstream_rule_id": "system_settings_admin_group_membership_defined",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/ed2c210123db4fa9a195c0e4b065c7832051d328/src/mscp/data/rules/system_settings/system_settings_admin_group_membership_defined.yaml"
+  },
+  "tags": [
+    "800-53r5_high",
+    "800-53r5_moderate",
+    "cnssi-1253_high",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Restrict Membership in the Admin Group to Documented and Authorized Accounts"
+}

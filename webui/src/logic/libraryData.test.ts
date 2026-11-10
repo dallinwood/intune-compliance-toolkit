@@ -41,6 +41,7 @@ const EXPECTED_ODV_SUBSTITUTION_MODES: Record<string, OdvSubstitutionMode> = {
   pwpolicy_minimum_lifetime_enforce: 'text',
   pwpolicy_special_character_enforce: 'text',
   pwpolicy_upper_case_character_enforce: 'text',
+  system_settings_admin_group_membership_defined: 'variable',
   system_settings_automatic_logout_enforce: 'none',
   system_settings_loginwindow_loginwindowtext_enable: 'none',
   system_settings_screensaver_ask_for_password_delay_enforce: 'text',

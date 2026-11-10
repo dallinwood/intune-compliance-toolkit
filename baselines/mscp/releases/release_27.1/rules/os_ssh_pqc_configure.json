@@ -1,0 +1,111 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "macOS": {
+      "by_version": {},
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "string",
+          "value": "pass"
+        },
+        "shell": "ret=\"pass\"\n  for u in $(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}'); do\n    sshCheck=$(/usr/bin/sudo -u $u /usr/bin/ssh -tt -G . | /usr/bin/grep -i -c '^[[:space:]]*KexAlgorithms[[:space:]]*.*mlkem768x25519-sha256')\n    if [[ \"$sshCheck\" == \"0\" ]]; then\n      ret=\"fail\"\n      break\n    fi\ndone\necho $ret"
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "If SSH is used then it _MUST_ be configured for a hybrid Post Quantum Cryptographic (PQC) key exchange.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
+  "discussion_format": "asciidoc",
+  "id": "mscp.os_ssh_pqc_configure",
+  "odv": null,
+  "references": {
+    "cis": {
+      "controls_v8": [
+        "3.10",
+        "4.1"
+      ]
+    },
+    "disa": {
+      "cmmc": [
+        "SC.L2-3.13.10",
+        "SC.L2-3.13.11",
+        "SC.L2-3.13.1"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.13.08",
+        "03.13.10",
+        "03.13.11"
+      ],
+      "800-53r5": [
+        "SC-13",
+        "SC-8",
+        "SC-8(1)",
+        "SC-12"
+      ],
+      "cce": {
+        "macos_27": [
+          "CCE-97271-1"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "if [ -f /etc/ssh/crypto.conf ] && /usr/bin/grep -q \"Include /etc/ssh/crypto.conf\" /etc/ssh/ssh_config.d/100-macos.conf 2>/dev/null; then\n  /bin/ln -fs /etc/ssh/crypto/fips.conf /etc/ssh/crypto.conf\nfi\ninclude_dir=$(/usr/bin/awk '/^Include/ {print $2}' /etc/ssh/ssh_config | /usr/bin/tr -d '*')\n\nfor u in $(/usr/bin/dscl . list /users shell | /usr/bin/egrep -v '(^_)|(root)|(/usr/bin/false)' | /usr/bin/awk '{print $1}'); do\n  config=$(/usr/bin/sudo -u $u /usr/bin/ssh -tt -Gv . 2>&1)\n  currentkex=$(echo \"$config\" | /usr/bin/awk 'tolower($0) ~ /kexalgorithms/{print $2}')\n  configfiles=$(echo \"$config\" | /usr/bin/awk '/Reading configuration data/ {print $NF}'| /usr/bin/tr -d '\\r')\n  configarray=( ${(f)configfiles} )\n  if ! echo $config | /usr/bin/grep -q -i \"mlkem768x25519-sha256\" ; then\n    for c in $configarray; do\n      if [[ \"$c\" == \"/etc/ssh/crypto.conf\" ]]; then\n        continue\n      fi\n\n      if /usr/bin/grep -qEi '^[[:space:]]*KexAlgorithms[[:space:]]' \"$c\"; then\n        /usr/bin/sed -i '' '/^[[:space:]]*KexAlgorithms[[:space:]]/I s/$/,mlkem768x25519-sha256/' \"$c\"\n        break\n      fi\n      if [[ \"$c\" =~ \".ssh/config\" ]]; then\n        if /usr/bin/grep -qEi '^[[:space:]]*KexAlgorithms[[:space:]]*mlkem768x25519-sha256' \"$c\" 2> /dev/null; then\n          old_file=$(cat ~$u/.ssh/config)\n          echo \"kexalgorithms $currentkex,mlkem768x25519-sha256\" > ~$u/.ssh/config\n          echo \"$old_file\" >> ~$u/.ssh/config\n        fi\n      fi\n    done\n  fi\ndone",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 5,
+  "section_path": [
+    "os"
+  ],
+  "source": {
+    "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.1",
+    "upstream_path": "rules/os/os_ssh_pqc_configure.yaml",
+    "upstream_revision": null,
+    "upstream_rule_id": "os_ssh_pqc_configure",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/ed2c210123db4fa9a195c0e4b065c7832051d328/src/mscp/data/rules/os/os_ssh_pqc_configure.yaml"
+  },
+  "tags": [
+    "800-171",
+    "800-53r5_high",
+    "800-53r5_low",
+    "800-53r5_moderate",
+    "cmmc_lvl2",
+    "cmmc_lvl3",
+    "cnssi-1253_high",
+    "cnssi-1253_low",
+    "cnssi-1253_moderate"
+  ],
+  "title": "Configure SSH for Post Quantum Cryptographic Connections."
+}

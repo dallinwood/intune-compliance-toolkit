@@ -1,0 +1,142 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "15.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "26.0"
+    },
+    {
+      "benchmarks": [
+        {
+          "name": "cis_lvl2",
+          "severity": null
+        }
+      ],
+      "target": "macOS",
+      "version": "27.0"
+    }
+  ],
+  "architecture": "arm64",
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "macOS": {
+      "by_version": {
+        "15.0": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "error_count=0\nif /usr/sbin/system_profiler SPHardwareDataType | /usr/bin/grep -q \"MacBook\"; then\n  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)\n  if echo \"$cpuType\" | grep -q \"Apple\"; then\n    sleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep '^\\s*sleep' 2>&1 | /usr/bin/awk '{print $2}')\n    displaysleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep displaysleep 2>&1 | /usr/bin/awk '{print $2}')\n    if [[ \"$sleepMode\" == \"\" ]] || [[ \"$sleepMode\" -gt 15 ]]; then\n      ((error_count++))\n    fi\n    if [[ \"$displaysleepMode\" == \"\" ]] || [[ \"$displaysleepMode\" -gt 10 ]] || [[ \"$displaysleepMode\" -gt \"$sleepMode\" ]]; then\n      ((error_count++))\n    fi\n  fi\nfi\necho \"$error_count\""
+        }
+      },
+      "default": {
+        "additional_info": null,
+        "result": {
+          "type": "integer",
+          "value": 0
+        },
+        "shell": "error_count=0\nif /usr/sbin/system_profiler SPHardwareDataType 2>/dev/null  | /usr/bin/grep -Ei \"MacBook|Mac[0-9]\" > /dev/null ; then\n  cpuType=$(/usr/sbin/sysctl -n machdep.cpu.brand_string)\n  if echo \"$cpuType\" | grep -q \"Apple\"; then\n    sleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep '^\\s*sleep' 2>&1 | /usr/bin/awk '{print $2}')\n    displaysleepMode=$(/usr/bin/pmset -b -g | /usr/bin/grep displaysleep 2>&1 | /usr/bin/awk '{print $2}')\n    if [[ \"$sleepMode\" == \"\" ]] || [[ \"$sleepMode\" -gt 15 ]]; then\n      ((error_count++))\n    fi\n    if [[ \"$displaysleepMode\" == \"\" ]] || [[ \"$displaysleepMode\" -gt 10 ]] || [[ \"$displaysleepMode\" -gt \"$sleepMode\" ]]; then\n      ((error_count++))\n    fi\n  fi\nfi\necho \"$error_count\""
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "Apple Silicon MacBooks should set sleep timeout to 15 minutes (900 seconds) or less and the display sleep timeout should be 10 minutes (600 seconds) or less but less than the sleep setting.\n",
+  "discussion_format": "asciidoc",
+  "id": "mscp.os_sleep_and_display_sleep_apple_silicon_enable",
+  "odv": null,
+  "references": {
+    "cis": {
+      "benchmark": {
+        "macos_14": [
+          "2.9.1.2 (level 2)"
+        ],
+        "macos_15": [
+          "2.10.1.2 (level 2)"
+        ],
+        "macos_26": [
+          "2.10.1.2 (level 2)"
+        ],
+        "macos_27": [
+          "2.10.1 (level 2)"
+        ]
+      },
+      "controls_v8": [
+        "4.1"
+      ]
+    },
+    "nist": {
+      "cce": {
+        "macos_14": [
+          "CCE-92800-2"
+        ],
+        "macos_15": [
+          "CCE-94200-3"
+        ],
+        "macos_26": [
+          "CCE-95302-6"
+        ],
+        "macos_27": [
+          "CCE-97084-8"
+        ]
+      }
+    }
+  },
+  "remediation": {
+    "macOS": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "bash",
+          "name": null,
+          "shell": "/usr/bin/pmset -a sleep 15\n/usr/bin/pmset -a displaysleep 10",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 5,
+  "section_path": [
+    "os"
+  ],
+  "source": {
+    "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "NIST macOS Security Compliance Project contributors",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "mscp",
+    "release_tag": "release_27.1",
+    "upstream_path": "rules/os/os_sleep_and_display_sleep_apple_silicon_enable.yaml",
+    "upstream_revision": null,
+    "upstream_rule_id": "os_sleep_and_display_sleep_apple_silicon_enable",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/macos_security/blob/ed2c210123db4fa9a195c0e4b065c7832051d328/src/mscp/data/rules/os/os_sleep_and_display_sleep_apple_silicon_enable.yaml"
+  },
+  "tags": [
+    "arm64",
+    "cisv8"
+  ],
+  "title": "Ensure Sleep and Display Sleep Is Enabled on Apple Silicon Devices"
+}
