@@ -854,4 +854,4 @@ entry here, not just the session that wrote it.
   source has more than one release, labelled "History" until the index loads,
   then "History (N changes)". Logic parts tested first; Vitest 1058 passed,
   `tsc -b` and lint clean, history e2e 7 passed (full e2e runs with
-  Milestone 5). (see the commit that follows)
+  Milestone 5). (`5879acd` fix: tidy the History tab after review)
