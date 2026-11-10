@@ -37,21 +37,45 @@ const UNSAFE_REGEX_CHARACTER_PATTERN = /[\s;|&<>]/
 const UNSAFE_REGEX_DOLLAR_PATTERN = /\$[A-Za-z_{(]/
 const ODV_PLACEHOLDER = '$ODV'
 
-export interface OdvRuleValuePattern {
-  pattern: RegExp
+export interface OdvRuleValueCheck {
+  isValid: (value: string) => boolean
   requirement: string
 }
 
-export const ODV_RULE_VALUE_PATTERNS: Readonly<Record<string, OdvRuleValuePattern>> = {
+// The only characters the admin group rule's pattern may use: plain account
+// name characters, the ERE operators below, and an escaped dot.
+const ADMIN_GROUP_PATTERN_CHARACTER = /^(?:[A-Za-z0-9_.-]|[\^$|()[\]*+?]|\\\.)*$/
+// An alternative (between the start, "(" or "|" and the next "|", ")" or the
+// end) with nothing in it but anchors matches every account.
+const EMPTY_ALTERNATIVE = /(?:^|[(|])[\^$]*(?:[|)]|$)/
+// ERE has no operand for a repetition here; BSD grep rejects it.
+const REPETITION_WITHOUT_OPERAND = /(?:^|[(|^])[*+?]/
+
+// The check runs `grep -vE "$ODV"` inside found=$(...), so a pattern that grep
+// rejects prints nothing, and one that matches every account is removed
+// entirely; either way the check reports 0 (compliant). Only a plain POSIX
+// extended regular expression of account names is accepted.
+export function isPlainAccountPattern(value: string): boolean {
+  if (value.startsWith('-') || !ADMIN_GROUP_PATTERN_CHARACTER.test(value)) return false
+  if (value.includes('(?') || EMPTY_ALTERNATIVE.test(value) || REPETITION_WITHOUT_OPERAND.test(value)) return false
+  try {
+    new RegExp(value)
+  } catch {
+    return false
+  }
+  return true
+}
+
+export const ODV_RULE_VALUE_CHECKS: Readonly<Record<string, OdvRuleValueCheck>> = {
   // `date -v -$ODV` needs BSD date's number-plus-unit form; on anything else it prints nothing and the check passes.
   'mscp.system_settings_softwareupdate_current': {
-    pattern: /^[0-9]+[ymwdHMS]$/,
+    isValid: (value) => /^[0-9]+[ymwdHMS]$/.test(value),
     requirement: 'Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
   },
-  // `grep -vE "$ODV"` would read a leading hyphen as an option, e.g. "-e ." matches every account and the check always passes.
   'mscp.system_settings_admin_group_membership_defined': {
-    pattern: /^[^-]/,
-    requirement: 'Value must not start with a hyphen, because the check passes it to grep as a pattern.',
+    isValid: isPlainAccountPattern,
+    requirement:
+      'Use a plain regular expression of account names, such as ^(admin|jdoe)$. Lookarounds, (?:...), backslash classes like \\d, empty alternatives such as admin|, and a leading hyphen are not allowed, because the check would silently pass.',
   },
 }
 
@@ -145,8 +169,8 @@ export function validateOdvValue(
   const datatypeProblem = validateAgainstDatatype(odv, text)
   if (datatypeProblem) return datatypeProblem
 
-  const ruleValuePattern = ODV_RULE_VALUE_PATTERNS[ruleId]
-  if (ruleValuePattern && !ruleValuePattern.pattern.test(text)) return ruleValuePattern.requirement
+  const ruleValueCheck = ODV_RULE_VALUE_CHECKS[ruleId]
+  if (ruleValueCheck && !ruleValueCheck.isValid(text)) return ruleValueCheck.requirement
 
   for (const { sequence, description } of ALWAYS_DENIED) {
     if (text.includes(sequence)) return `Value must not contain ${description}.`

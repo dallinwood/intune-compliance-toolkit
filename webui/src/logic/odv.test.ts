@@ -9,7 +9,7 @@ import {
   odvQuickPicks,
   odvSubstitutionMode,
   codeOdvValues,
-  ODV_RULE_VALUE_PATTERNS,
+  ODV_RULE_VALUE_CHECKS,
   ODV_VARIABLE_ALLOWLIST,
   prepareOdvValue,
   substituteOdv,
@@ -254,21 +254,56 @@ describe('validateOdvValue hardening', () => {
 describe('validateOdvValue for the admin group membership rule', () => {
   const adminGroupRuleId = 'mscp.system_settings_admin_group_membership_defined'
   const adminGroupOdv = odv({ datatype: 'regex', recommended: '^(admin)$' })
-  const leadingHyphenRequirement = 'Value must not start with a hyphen, because the check passes it to grep as a pattern.'
+  const requirement = ODV_RULE_VALUE_CHECKS[adminGroupRuleId].requirement
 
-  it('allows an alternation pattern in variable mode', () => {
-    expect(validateOdvValue(adminGroupOdv, '^(admin|jdoe|asmith)$', 'variable', adminGroupRuleId)).toBeNull()
+  // grep -vE "$ODV" runs inside found=$(...), so a pattern grep rejects (no
+  // output) or one matching every account makes the check pass for the wrong
+  // reason.
+  it.each(['^(admin)$', '^(admin|jdoe|asmith)$', '^(adm.n|j\\.doe)$', 'admin', '^[a-z]+$', '^svc-[a-z0-9_]+$'])('accepts %j', (value) => {
+    expect(validateOdvValue(adminGroupOdv, value, 'variable', adminGroupRuleId)).toBeNull()
   })
 
-  it('rejects a value grep would read as an option', () => {
-    expect(validateOdvValue(adminGroupOdv, '-e .', 'variable', adminGroupRuleId)).toBe(leadingHyphenRequirement)
+  it.each([
+    ['a leading hyphen', '-e .'],
+    ['a non-capturing group', '(?:admin)'],
+    ['a lookahead', '(?=admin)'],
+    ['a negative lookahead', '(?!admin)'],
+    ['a named group', '(?<name>admin)'],
+    ['a digit class', '\\d+'],
+    ['a word class', '^\\w+$'],
+    ['a space class', 'a\\sb'],
+    ['a word boundary', '\\badmin\\b'],
+    ['an upper-case class', '\\D'],
+    ['an escaped parenthesis', 'a\\(b'],
+    ['an empty alternative at the end', 'admin|'],
+    ['an empty alternative at the start', '|admin'],
+    ['an empty first alternative in a group', '(|admin)'],
+    ['an empty last alternative in a group', '(admin|)'],
+    ['an empty alternative between two', 'a||b'],
+    ['an empty group', '^()$'],
+    ['an alternative of only an anchor', '^admin$|^'],
+    ['a pattern that is only anchors', '^$'],
+    ['curly-brace repetition', 'a{2}'],
+    ['a space', 'a b'],
+  ])('rejects %s (%j) with the requirement text', (_description, value) => {
+    expect(validateOdvValue(adminGroupOdv, value, 'variable', adminGroupRuleId)).toBe(requirement)
+  })
+
+  it.each(['^(admin$', '^admin)$', '^[abc$', '*admin', 'a|*b'])('rejects %j, which is not a regular expression at all', (value) => {
+    expect(validateOdvValue(adminGroupOdv, value, 'variable', adminGroupRuleId)).toBe('Value must be a valid regular expression.')
+  })
+
+  it('explains the limits in plain words', () => {
+    expect(requirement).toBe(
+      'Use a plain regular expression of account names, such as ^(admin|jdoe)$. Lookarounds, (?:...), backslash classes like \\d, empty alternatives such as admin|, and a leading hyphen are not allowed, because the check would silently pass.',
+    )
   })
 })
 
 describe('validateOdvValue rule-specific value patterns', () => {
   const softwareUpdateRuleId = 'mscp.system_settings_softwareupdate_current'
   const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
-  const deferralRequirement = ODV_RULE_VALUE_PATTERNS[softwareUpdateRuleId].requirement
+  const deferralRequirement = ODV_RULE_VALUE_CHECKS[softwareUpdateRuleId].requirement
 
   it.each(['30d', '7d', '2w', '1m', '12H'])('accepts the BSD date -v offset %j', (value) => {
     expect(validateOdvValue(deferralOdv, value, 'text', softwareUpdateRuleId)).toBeNull()
