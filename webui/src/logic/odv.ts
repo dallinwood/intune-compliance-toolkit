@@ -42,37 +42,32 @@ export interface OdvRuleValueCheck {
   requirement: string
 }
 
-// The only characters the admin group rule's pattern may use: plain account
-// name characters, the ERE operators below, and an escaped dot.
-const ADMIN_GROUP_PATTERN_CHARACTER = /^(?:[A-Za-z0-9_.-]|[\^$|()[\]*+?]|\\\.)*$/
-// An alternative (between the start, "(" or "|" and the next "|", ")" or the
-// end) with nothing in it but anchors matches every account.
-const EMPTY_ALTERNATIVE = /(?:^|[(|])[\^$]*(?:[|)]|$)/
-// ERE has no operand for a repetition here; BSD grep rejects it.
-const REPETITION_WITHOUT_OPERAND = /(?:^|[(|^])[*+?]/
-
-const AMBIGUOUS_QUANTIFIER = /[*+?]\?/
-const BRACKET_CLOSING_FIRST = /\[\^?\]/
+// The admin group rule's pattern may have exactly this shape and nothing else:
+// optional ^, one or more names separated by |, optionally wrapped in one pair
+// of parentheses, optional $. A name is made of plain account name characters,
+// "." (any one character) and "\." (a literal dot). Allowing only this keeps
+// out everything grep -E reads in a way JavaScript does not (brackets with
+// collating symbols, repetition, lazy forms, other escapes).
+const ACCOUNT_NAME = String.raw`(?:[A-Za-z0-9_-]|\\\.|\.)+`
+const ACCOUNT_NAMES = `${ACCOUNT_NAME}(?:\\|${ACCOUNT_NAME})*`
+const ACCOUNT_PATTERN_SHAPE = new RegExp(`^\\^?(?:\\(${ACCOUNT_NAMES}\\)|${ACCOUNT_NAMES})\\$?$`)
 // macOS account names are short and plain; this one is deliberately not a name anyone would give.
 const SENTINEL_NON_ACCOUNT_NAME = 'zz-not-an-account-9'
 
 // The check runs `grep -vE "$ODV"` inside found=$(...), so a pattern that grep
-// rejects prints nothing, and one that matches every account is removed
-// entirely; either way the check reports 0 (compliant). Only a plain POSIX
-// extended regular expression of account names is accepted.
+// rejects prints nothing, and one that matches every account removes them all;
+// either way the check reports 0 (compliant).
 export function isPlainAccountPattern(value: string): boolean {
-  if (value.startsWith('-') || !ADMIN_GROUP_PATTERN_CHARACTER.test(value)) return false
-  if (value.includes('(?') || EMPTY_ALTERNATIVE.test(value) || REPETITION_WITHOUT_OPERAND.test(value)) return false
-  // Forms JavaScript and POSIX read differently (a lazy quantifier, a "]" as the first bracket character).
-  if (AMBIGUOUS_QUANTIFIER.test(value) || BRACKET_CLOSING_FIRST.test(value)) return false
+  // A leading hyphen would be read by grep as an option.
+  if (value.startsWith('-') || !ACCOUNT_PATTERN_SHAPE.test(value)) return false
   let pattern: RegExp
   try {
     pattern = new RegExp(value)
   } catch {
     return false
   }
-  // Not a full analysis: a pattern that matches nothing at all, or a name no
-  // real account can have, would remove every account from the check's output.
+  // The shape cannot match nothing, but dots can match everything: a pattern
+  // such as "..." matches every name of three characters or more.
   return !pattern.test('') && !pattern.test(SENTINEL_NON_ACCOUNT_NAME)
 }
 
@@ -85,7 +80,7 @@ export const ODV_RULE_VALUE_CHECKS: Readonly<Record<string, OdvRuleValueCheck>> 
   'mscp.system_settings_admin_group_membership_defined': {
     isValid: isPlainAccountPattern,
     requirement:
-      'Use a plain regular expression of account names, such as ^(admin|jdoe)$. Lookarounds, (?:...), backslash classes like \\d, empty alternatives such as admin|, a leading hyphen, and anything that would match every account are not allowed, because the check would silently pass.',
+      'Use account names separated by |, optionally wrapped as ^(...)$, for example ^(admin|jdoe)$. A dot matches any one character. Brackets, repetition symbols such as * and ?, and other backslash escapes are not allowed, so the check can never silently pass.',
   },
 }
 

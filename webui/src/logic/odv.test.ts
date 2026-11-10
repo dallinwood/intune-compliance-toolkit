@@ -259,7 +259,7 @@ describe('validateOdvValue for the admin group membership rule', () => {
   // grep -vE "$ODV" runs inside found=$(...), so a pattern grep rejects (no
   // output) or one matching every account makes the check pass for the wrong
   // reason.
-  it.each(['^(admin)$', '^(admin|jdoe|asmith)$', '^(adm.n|j\\.doe)$', 'admin', '^[a-z]+$', '^svc-[a-z0-9_]+$'])('accepts %j', (value) => {
+  it.each(['^(admin)$', '^(admin|jdoe|asmith)$', 'admin|jdoe', '^(adm.n|j\\.doe)$', '^(svc-admin)$', 'admin'])('accepts %j', (value) => {
     expect(validateOdvValue(adminGroupOdv, value, 'variable', adminGroupRuleId)).toBeNull()
   })
 
@@ -286,6 +286,12 @@ describe('validateOdvValue for the admin group membership rule', () => {
     ['curly-brace repetition', 'a{2}'],
     ['a space', 'a b'],
     ['a dot alone', '.'],
+    ['a POSIX collating symbol that means any character but one', '[^[.a.]]'],
+    ['a POSIX collating symbol', '[[.a.]]'],
+    ['a collating symbol for a hyphen', '[[.-.]]'],
+    ['a plain bracket class', '[a-z]'],
+    ['a bracket class in a group', '^([a-z]|admin)$'],
+    ['dots with no anchors, which match every long name', '...'],
     ['any text', '.*'],
     ['any text between anchors', '^.*$'],
     ['an optional dot', '.?'],
@@ -310,7 +316,7 @@ describe('validateOdvValue for the admin group membership rule', () => {
 
   it('explains the limits in plain words', () => {
     expect(requirement).toBe(
-      'Use a plain regular expression of account names, such as ^(admin|jdoe)$. Lookarounds, (?:...), backslash classes like \\d, empty alternatives such as admin|, a leading hyphen, and anything that would match every account are not allowed, because the check would silently pass.',
+      'Use account names separated by |, optionally wrapped as ^(...)$, for example ^(admin|jdoe)$. A dot matches any one character. Brackets, repetition symbols such as * and ?, and other backslash escapes are not allowed, so the check can never silently pass.',
     )
   })
 })
