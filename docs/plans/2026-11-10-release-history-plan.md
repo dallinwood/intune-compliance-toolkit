@@ -368,6 +368,58 @@ Tailwind + Base UI (web UI), Vitest (logic), Playwright (e2e and screenshots).
   releases and `mscp.json` lists 2. Note each file's size in the progress log.
 - [ ] **Step 5: Commit and push.** `feat: build release history indexes for each framework`.
 
+### Task 5b: Warn about a mapping only when a mapped rule really changed
+
+Added 2026-11-10 at the maintainer's request. The mSCP 27.1 import produced 222 "mapped against
+release_27.0" warnings, for links whose rules mostly did not change. The decision was made at
+build time (not at runtime), so the app does no extra fetching and the cost doesn't grow with
+the number of releases.
+
+**Files:**
+- Create: `baselines/_change_ignore.json`, holding `{ "schema_version": 1, "ignored_fields": ["source", "schema_version", "id", "file"] }`.
+  This is the single source of truth for the ignore list.
+- Modify: `webui/src/logic/ruleChanges.ts` (read `IGNORED_FIELDS` from that file), `tools/mappings.py`,
+  `webui/src/logic/mappingIndex.ts`, `scripts/copy-baselines.mjs`, `webui/src/components/rules/MappedRulesTab.tsx`
+- Test: `tests/test_mappings.py`, `webui/src/logic/mappingIndex.test.ts`, `webui/src/logic/ruleChanges.test.ts`
+
+**Interfaces:**
+- Consumes: `kindFingerprints`, `CHANGE_KINDS` (Task 4), and `HistoryIndex` (Task 5).
+- Produces:
+  - Python: `mappings.changed_since(baselines_dir: Path, rule_id: str, mapped_release: str) -> list[str] | None`.
+    It returns `None` when `mapped_release` is not a stored release of the rule's source (keep
+    warning, as before). It returns `[]` when the rule's content, minus the ignored fields, is
+    equal in the mapped release and the current release. Otherwise it returns the changed
+    top-level field names. It compares the two releases' rule JSON directly, so no fingerprints
+    are needed in Python. A rule absent from the mapped release counts as changed (`["added"]`).
+  - In `_check_pairs`, a release mismatch warns only when `changed_since` is `None` or non-empty.
+    The warning names what changed: `... was mapped against <source> <mapped release>, and has
+    changed since (<fields>); review the link for accuracy`. An unchanged rule produces no
+    warning.
+  - TS: `StaleEndpoint` gains `changedKinds: ChangeKind[] | null` (`null` means the mapped release
+    is not in history). `staleEndpoints(...)` takes an extra
+    `changedKindsFor: (ruleId: string, mappedRelease: string) => ChangeKind[] | null`, and drops
+    endpoints whose result is `[]`. `copy-baselines.mjs` precomputes this from the history
+    fingerprints into the mapping index. Each link endpoint whose release is not current gets
+    `changed_kinds`, so the app needs no history fetch to draw the note.
+  - The note in `MappedRulesTab` reads "Mapped against <release>; this rule has changed since
+    (<kind labels>). Review the link." When `changedKinds` is `null`, it keeps the existing wording.
+- [ ] **Step 1: Write failing tests.**
+  - Python: an unchanged rule across two releases gives no warning; a changed `check` gives one
+    warning naming `check`; an unknown mapped release still warns; a rule differing only in
+    `source.*` gives no warning.
+  - Vitest: `staleEndpoints` drops `[]` endpoints and keeps `null` ones; the ignore list loaded
+    from `_change_ignore.json` equals the Global Constraints list.
+
+  Run them and see them fail.
+- [ ] **Step 2: Implement.**
+- [ ] **Step 3: Verify.**
+  - `python tools/mappings.py`: record the new warning count against the previous 222 in the
+    progress log.
+  - Run the Python tests touched (not the whole 18-minute suite unless the shared library code
+    changed), plus Vitest, tsc, lint and e2e.
+  - Take a screenshot of a mapped rule with a changed-since note and read it.
+- [ ] **Step 4: Commit and push.** `feat: warn about mappings only when a mapped rule changed`
+
 ---
 
 ## Milestone 4: rule History tab
