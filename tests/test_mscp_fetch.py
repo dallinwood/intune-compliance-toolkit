@@ -1,6 +1,7 @@
 import io
 import json
 import tarfile
+import urllib.error
 from pathlib import Path
 
 import pytest
@@ -219,6 +220,26 @@ def test_fetch_release_published_date_rejects_an_invalid_tag_without_requests():
     with pytest.raises(ValueError, match="Invalid tag"):
         fetch_release_published_date(MSCP_REPOSITORY, "../x", "agent", opener)
     assert opener.requests == []
+
+
+def test_fetch_release_published_date_explains_a_missing_github_release():
+    def opener(request):
+        raise urllib.error.HTTPError(request.full_url, 404, "Not Found", {}, None)
+
+    with pytest.raises(ValueError) as problem:
+        fetch_release_published_date(MSCP_REPOSITORY, "release_27.0", "agent", opener)
+
+    message = str(problem.value)
+    assert "release_27.0" in message and MSCP_REPOSITORY in message
+    assert "no GitHub Release" in message and "tag" in message
+
+
+def test_fetch_release_published_date_does_not_hide_other_http_errors():
+    def opener(request):
+        raise urllib.error.HTTPError(request.full_url, 500, "Server Error", {}, None)
+
+    with pytest.raises(urllib.error.HTTPError):
+        fetch_release_published_date(MSCP_REPOSITORY, "release_27.0", "agent", opener)
 
 
 def test_resolve_lightweight_tag():

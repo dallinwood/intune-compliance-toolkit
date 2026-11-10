@@ -29,7 +29,11 @@ CASES = json.loads((FIXTURES_DIR / "cases.json").read_text(encoding="utf-8"))
 INVALID_SAMPLES = sorted((FIXTURES_DIR / "invalid").glob("*.json"))
 
 ISM_1622 = "asd_ism.ism-1622"
-ISM_1622_RELEASE = "v2026.09.4"
+ISM_1622_RELEASE = next(
+    source["release_tag"]
+    for source in json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))["sources"]
+    if source["name"] == "asd_ism"
+)
 
 
 def write_overlay(directory: Path, file_name: str, overlay: dict) -> None:

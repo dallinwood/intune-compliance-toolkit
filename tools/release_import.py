@@ -201,14 +201,14 @@ def run_cli(importer: SourceImporter, argv: list[str] | None) -> int:
                     importer, arguments.tag, arguments.sources_dir, arguments.baselines_dir, today
                 )
             ]
-        summaries = [
-            release_change_summary(arguments.baselines_dir, importer.name, lock.tag)
-            for lock, _ in imported
-        ]
     except (UnsupportedUpstreamData, ValueError, OSError, urllib.error.URLError) as problem:
         print(f"Import failed: {problem}", file=sys.stderr)
         return 1
-    for (lock, rule_count), summary in zip(imported, summaries):
+    for lock, rule_count in imported:
         print(f"Imported {rule_count} {importer.display_name} rules from {lock.tag} ({lock.commit_sha[:7]})")
-        print_change_summary(summary)
+        # The releases are already published, so a summary that cannot be made is a warning, not a failed import.
+        try:
+            print_change_summary(release_change_summary(arguments.baselines_dir, importer.name, lock.tag))
+        except (ValueError, OSError, KeyError, StopIteration) as problem:
+            print(f"Could not summarise the changes in {lock.tag}: {problem!r}", file=sys.stderr)
     return 0

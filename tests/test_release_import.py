@@ -278,6 +278,22 @@ def test_cli_offline_release_imports_only_that_release(workspace, capsys):
     assert capsys.readouterr().out.splitlines() == ["Imported 2 Stub source rules from A (aaaaaaa)"]
 
 
+def test_cli_a_failing_change_summary_does_not_fail_a_successful_import(workspace, capsys, monkeypatch):
+    sources_dir, baselines_dir = workspace
+
+    def broken_summary(baselines_dir, source_name, tag):
+        raise ValueError("summary unavailable")
+
+    monkeypatch.setattr("tools.release_import.release_change_summary", broken_summary)
+
+    assert run_stub_cli(sources_dir, baselines_dir, "--offline") == 0
+
+    captured = capsys.readouterr()
+    assert "Imported 2 Stub source rules from A" in captured.out
+    assert "summary unavailable" in captured.err
+    assert (baselines_dir / "stub" / "releases" / "B" / "_index.json").is_file()
+
+
 def test_cli_release_requires_offline(workspace):
     sources_dir, baselines_dir = workspace
     with pytest.raises(SystemExit):

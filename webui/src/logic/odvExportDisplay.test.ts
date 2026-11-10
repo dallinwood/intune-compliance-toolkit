@@ -4,9 +4,10 @@ import type { Rule } from '../types/library'
 import { codeOdvValues, odvSubstitutionMode } from './odv'
 import { expandsOdvOnlyAsQuotedVariable, shellWithExportedOdv } from './odvExportDisplay'
 import { bashSingleQuote } from './scriptGen/bash'
+import { currentRulesDirectory } from './testCurrentRelease'
 
 const BANNER_RULE_ID = 'mscp.os_policy_banner_ssh_configure'
-const bannerRule = JSON.parse(readFileSync('../baselines/mscp/releases/release_27.0/rules/os_policy_banner_ssh_configure.json', 'utf8')) as Rule
+const bannerRule = JSON.parse(readFileSync(new URL('os_policy_banner_ssh_configure.json', currentRulesDirectory('mscp')), 'utf8')) as Rule
 const bannerCheckShell = bannerRule.check!.macOS.default!.shell!
 const bannerOdv = bannerRule.odv!
 

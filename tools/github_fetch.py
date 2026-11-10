@@ -1,5 +1,6 @@
 import json
 import re
+import urllib.error
 import urllib.request
 
 NETWORK_TIMEOUT_SECONDS = 60
@@ -55,9 +56,17 @@ def fetch_release_published_date(
     repository: str, tag: str, user_agent: str, opener=default_opener
 ) -> str:
     validate_tag(tag)
-    release = get_json(
-        f"https://api.github.com/repos/{repository}/releases/tags/{tag}", user_agent, opener
-    )
+    try:
+        release = get_json(
+            f"https://api.github.com/repos/{repository}/releases/tags/{tag}", user_agent, opener
+        )
+    except urllib.error.HTTPError as problem:
+        if problem.code != 404:
+            raise
+        raise ValueError(
+            f"{repository} has no GitHub Release for tag {tag!r} (HTTP 404). "
+            "The tag may exist without a GitHub Release, which this importer needs for the published date."
+        ) from problem
     published_at = release.get("published_at")
     if not isinstance(published_at, str) or not DATE_PREFIX_PATTERN.match(published_at):
         raise ValueError(f"Release {tag!r} has no usable published_at date")

@@ -6,11 +6,12 @@ import { classifyRule, packChunks, type ClassificationResult, type GeneratableRu
 import { generateBashScript } from './scriptGen/bash'
 import { createSelectionEntry, type OrgDefinedValue, type SelectionEntry } from './selectionEntry'
 import { inlineRule, macosCheck, numberOdv, ruleCheck, type InlineRuleOptions } from './testRuleFixtures'
+import { currentRulesDirectory } from './testCurrentRelease'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
 const COVERED_VERSIONS = ['27.0', '26.0', '15.0']
 const vocabularyIndex = committedVocabularyIndex()
-const RULES_DIRECTORY = new URL('../../../baselines/mscp/releases/release_27.0/rules/', import.meta.url)
+const RULES_DIRECTORY = currentRulesDirectory('mscp')
 
 function realRule(upstreamId: string): Rule {
   return JSON.parse(readFileSync(new URL(`${upstreamId}.json`, RULES_DIRECTORY), 'utf8')) as Rule
