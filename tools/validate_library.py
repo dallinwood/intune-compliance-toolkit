@@ -1,6 +1,7 @@
 """Validate the normalized rule library under baselines/ against the schemas,
 plus the hand-edited display-name vocabulary when one is present."""
 
+import datetime
 import json
 import sys
 from pathlib import Path
@@ -99,6 +100,17 @@ def manifest_consistency_errors(manifest: dict) -> list[str]:
     errors: list[str] = []
     for source in manifest["sources"]:
         releases = source["releases"]
+        for release in releases:
+            for date_field in ("published_date", "retrieved_date"):
+                try:
+                    datetime.date.fromisoformat(release[date_field])
+                except ValueError:
+                    errors.append(
+                        f"{source['name']}: release {release['tag']} has {date_field} {release[date_field]!r}, which is not a real date"
+                    )
+        # The same order merged_manifest writes: oldest first, a tie on the day broken by tag.
+        if releases != sorted(releases, key=lambda release: (release["published_date"], release["tag"])):
+            errors.append(f"{source['name']}: releases are not sorted oldest first by (published_date, tag)")
         for field_name in ("tag", "label"):
             values = [release[field_name] for release in releases]
             for value in sorted({value for value in values if values.count(value) > 1}):

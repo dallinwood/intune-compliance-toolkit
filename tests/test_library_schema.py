@@ -495,6 +495,54 @@ def test_validate_library_reports_top_level_fields_that_differ_from_the_newest_r
     assert any("newest release" in error for error in validate_library(tmp_path))
 
 
+def release_with(tag: str, published_date: str, label: str, **overrides) -> dict:
+    return {**MSCP_RELEASE, "tag": tag, "label": label, "published_date": published_date,
+            "index_path": f"mscp/releases/{tag}/_index.json", **overrides}
+
+
+def manifest_errors_for(releases: list[dict]) -> list[str]:
+    from tools.validate_library import manifest_consistency_errors
+
+    return manifest_consistency_errors(make_manifest(releases))
+
+
+def test_releases_must_be_listed_oldest_first_by_published_date():
+    newer_first = [release_with("b", "2026-02-01", "B"), release_with("a", "2026-01-01", "A")]
+
+    assert any("sorted" in error for error in manifest_errors_for(newer_first))
+    assert manifest_errors_for(list(reversed(newer_first))) == []
+
+
+def test_releases_published_on_the_same_day_are_ordered_by_tag():
+    # Documented tie-break: the same (published_date, tag) order merged_manifest sorts by.
+    first_tag = release_with("a", "2026-01-01", "A")
+    second_tag = release_with("b", "2026-01-01", "B")
+
+    assert manifest_errors_for([first_tag, second_tag]) == []
+    assert any("sorted" in error for error in manifest_errors_for([second_tag, first_tag]))
+
+
+@pytest.mark.parametrize("field", ["published_date", "retrieved_date"])
+@pytest.mark.parametrize("not_a_date", ["2026-02-30", "2026-13-01", "0000-00-00"])
+def test_a_release_date_must_be_a_real_calendar_date(field, not_a_date):
+    release = {**release_with("a", "2026-01-01", "A"), field: not_a_date}
+
+    assert any(field in error and not_a_date in error for error in manifest_errors_for([release]))
+
+
+def test_validate_library_reports_unsorted_releases_and_bad_dates(tmp_path):
+    write_two_release_library(tmp_path)
+    manifest = read_manifest(tmp_path)
+    manifest["sources"][0]["releases"].reverse()
+    manifest["sources"][0]["releases"][0]["published_date"] = "2026-02-30"
+    write_json(tmp_path / "_manifest.json", manifest)
+
+    errors = validate_library(tmp_path)
+
+    assert any("sorted" in error for error in errors)
+    assert any("2026-02-30" in error for error in errors)
+
+
 def test_validate_library_reports_a_release_folder_missing_from_the_manifest(tmp_path):
     write_library(tmp_path)
     write_json(tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", make_rule())
