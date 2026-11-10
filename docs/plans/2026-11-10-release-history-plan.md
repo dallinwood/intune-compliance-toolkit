@@ -831,7 +831,7 @@ entry here, not just the session that wrote it.
   `history.spec.ts` (7 tests) came after the component. Vitest 1055 passed,
   `tsc -b` and lint clean, full e2e 161 passed (the smoke test "with no
   mappings" now expects a History tab and no Mapped rules tab).
-  (see the commit that follows)
+  (`afb6c8a` feat: show a rule's history across releases)
   - Design refinements found while looking at the screenshots: a whole object
     that appears or disappears (a new check, a new payload) is spelled out
     part by part, so its shell is drawn as a code diff instead of one block of
