@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "To perform their contracted duties, service providers may need to access their customers’ systems. However, without proper controls in place, this could leave systems vulnerable – especially when access occurs from outside of Australian borders. As such, an organisation should ensure that their systems are not accessed or administered by service providers unless such requirements, and associated measures to control such requirements, are documented in contractual arrangements with service providers. In doing so, it is important that sufficient measures are also in place to detect and record any unauthorised access, such as customer support representatives or platform engineers accessing encryption keys. In such cases, the service provider should immediately report the cyber security incident to their customer and make available all logs pertaining to the unauthorised access.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1576",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for procurement and outsourcing",
+    "Managed services and cloud services",
+    "Access to systems by service providers"
+  ],
+  "source": {
+    "commit_sha": "d14dcbb0d448c3e0ba99bdecc7de5c713bcb080f",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2025.12.9",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-1576",
+    "upstream_updated": "Jun-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/d14dcbb0d448c3e0ba99bdecc7de5c713bcb080f/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "If an organisation’s systems are accessed or administered by a service provider in an unauthorised manner, the organisation is immediately notified."
+}

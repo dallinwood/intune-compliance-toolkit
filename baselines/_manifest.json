@@ -15,6 +15,36 @@
       "release_tag": "v2026.09.4",
       "releases": [
         {
+          "commit_sha": "d14dcbb0d448c3e0ba99bdecc7de5c713bcb080f",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2025.12.9/_index.json",
+          "label": "Dec 2025",
+          "published_date": "2025-12-09",
+          "retrieved_date": "2026-11-10",
+          "rule_count": 1073,
+          "tag": "v2025.12.9"
+        },
+        {
+          "commit_sha": "d10f14f6523b9533e883e632adc7904b59e04a0c",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2026.03.24/_index.json",
+          "label": "Mar 2026",
+          "published_date": "2026-03-24",
+          "retrieved_date": "2026-11-10",
+          "rule_count": 1081,
+          "tag": "v2026.03.24"
+        },
+        {
+          "commit_sha": "d3bd1735a992a988d3e4e337b3e41f856a76368e",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2026.06.18/_index.json",
+          "label": "Jun 2026",
+          "published_date": "2026-06-18",
+          "retrieved_date": "2026-11-10",
+          "rule_count": 1101,
+          "tag": "v2026.06.18"
+        },
+        {
           "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
           "importer_format": "asd-ism-oscal-1",
           "index_path": "asd_ism/releases/v2026.09.4/_index.json",
