@@ -43,6 +43,56 @@ Requires [Bun](https://bun.sh).
 - `bun run test` runs the unit tests. `bun run test:e2e` runs the Playwright
   tests against a running `bun run dev`.
 
+## Releases, history and comparing frameworks
+
+Every imported release of a framework is kept, so you can see how a rule
+changed and compare two releases. The newest release is the current one, and
+browsing, filters, selection, mappings, custom changes and Generate use the
+current release only.
+
+Folder layout (one folder per release, never overwritten by a later import):
+
+- `sources/<source>/releases/<tag>/` holds the pinned upstream copy and its
+  `source.json` (tag, commit, retrieval and publication dates, and the importer
+  format that built it).
+- `baselines/<source>/releases/<tag>/` holds that release's `_index.json` and
+  `rules/`.
+- `baselines/_manifest.json` (schema v6) lists each source's releases, oldest
+  first. Its top-level `release_tag`, `commit_sha`, `index_path` and so on always
+  describe the current (newest) release, so nothing that reads one release
+  needs to know about the others.
+
+Importing: `python tools/import_mscp.py --tag <tag>` or
+`python tools/import_asd_ism.py --tag <tag>` adds a release (the importer needs
+a GitHub Release for the tag, which gives its published date). Importing an
+older tag never changes which release is current, and re-importing is
+idempotent. After a change to the normalizer, `--offline` rebuilds every stored
+release from the pinned copies, and `--offline --release <tag>` rebuilds one.
+The importer prints the rules added and removed against the release before it.
+
+In the web UI:
+
+- A rule's **History** tab lists its changes release by release, newest first,
+  with a field-level diff (word diffs for text, line diffs for scripts and
+  payloads), toggles for the kind of change (Behaviour, Scope, Wording,
+  References), and **Compare any two** releases. Quiet releases fold into one
+  bar, and the oldest release kept is the starting point.
+- The **Frameworks** tab lists each framework's releases and opens a
+  comparison of two: counts of rules added, removed, changed and unchanged
+  (each count is also a filter), a diff for any changed rule, and filters for
+  kind of change, section, benchmark and the rules you customised or selected.
+  The comparison is part of the address, so it can be shared.
+- A rule whose custom changes were written for an older release says whether
+  the rule changed since in a field those custom changes touch.
+
+Publishing generates `_history/<source>.json` in the site's `baselines/` copy
+(a fingerprint per kind of change for every rule and release) so comparing
+needs no rule files; a rule's release files are fetched only to draw a diff.
+What counts as a change is defined on our normalised rule format only, never
+raw upstream data; `baselines/_change_ignore.json` lists the top-level fields
+a comparison skips (`source`, `schema_version`, `id`, `file`), and the Python
+mapping check reads the same list.
+
 ## Publishing to GitHub Pages
 
 `.github/workflows/deploy-pages.yml` builds and deploys the web UI on every
@@ -335,7 +385,10 @@ and a file name of letters, digits, `.`, `_` and `-`):
 - Each endpoint is `{ "kind": "rule", "id": "<source>.<upstream id>",
   "release": "<release_tag>" }`. `release` is the source release you checked
   the link against; when the library moves to another release, the details
-  show a note on that link asking you to review it.
+  show a note on that link asking you to review it, but only if that rule really
+  changed between the two releases (ignoring `source`, `schema_version`, `id`
+  and `file`). The note names the kinds of change; a release that is not kept
+  here still gets the plain note.
 - A rule cannot link to itself, and a pair of rules is linked once: the same
   pair twice, with two relations, or in both directions of `supports`,
   anywhere across the files, is an error.
@@ -345,7 +398,7 @@ Check mappings with `python -m pytest -W error tests/test_mappings.py` (or
 bad or reused `id`, an empty `from` or `to`, an unknown `relation` or `kind`,
 a rule missing from `baselines/`, a self-link, a pair defined twice or with
 conflicting relations or directions, or a file that is not UTF-8 or LF fails;
-a `release` other than the library's current one is a warning. The deploy
+a `release` other than the library's current one is a warning, but only when the rule differs from the current release (or that release is not stored). The deploy
 workflow runs these tests.
 
 Publishing is automatic: `bun run dev` and `bun run build` generate

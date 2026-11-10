@@ -991,3 +991,20 @@ entry here, not just the session that wrote it.
   tests, 3 new) passed; screenshots of the default comparison at 1440px light
   and 375px dark were read (all four kinds ticked, no note, rows closed after
   Expand all). (`61c1d7f` fix: keep the comparison toolbar to groups, report unavailable custom changes, reset Show more, start with every kind ticked)
+
+### Wrap-up (2026-11-10)
+
+- **2026-11-10** - Task 11: the README gained "Releases, history and comparing
+  frameworks" (folder layout, manifest v6, `--tag`, `--offline [--release]`, the
+  History and Frameworks tabs, the history index and the shared ignore list),
+  and its mapping notes now say a warning appears only when a rule really
+  changed; the design's status is `Implemented 2026-11-10` with a final log
+  line pointing here. Full verification from a clean state, on the final tree:
+  `python -m pytest -q -W error` 879 passed in 8:15 (run alongside the web
+  build), `python tools/validate_library.py` clean in 16 s, in `webui/`
+  `bun run build` succeeded (221 s, same load), `bun run test` 1126 passed in
+  42 s, `bun run lint` and `bunx tsc -b` clean (two existing
+  only-export-components warnings), `bun run test:e2e` 184 passed in 5.5 min.
+  `python tools/mappings.py` gives 148 warnings (222 before the change-aware
+  check). The F2 and F5 screenshots (1440px light, 375px dark) were read. No
+  dev server was left running. (see the commit that follows)

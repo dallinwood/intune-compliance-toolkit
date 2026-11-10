@@ -1,7 +1,7 @@
 # Design: release history and framework comparison
 
 Date: 2026-11-10
-Status: Approved 2026-11-10
+Status: Implemented 2026-11-10
 
 ## 1. Intent
 
@@ -357,3 +357,4 @@ about 375px and desktop width, read before the milestone is called done.
 
 - 2026-11-10: Design written, reviewed by a builder check, and approved by the maintainer.
 - 2026-11-10: Maintainer decision during implementation: the comparison shows every kind of change by default, References included; nothing ticked also shows every kind. See the plan's progress log.
+- 2026-11-10: Implemented. The implementation log, including the maintainer's decisions made along the way, is the progress log of `2026-11-10-release-history-plan.md`.
