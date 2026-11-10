@@ -13,6 +13,7 @@ from tools.mscp_fetch import (
     fetch,
     resolve_tag_commit,
 )
+from tools.github_fetch import fetch_release_published_date
 from tools.source_lock import read_source_lock
 
 TOP_FOLDER = "macos_security-release_27.0"
@@ -181,6 +182,8 @@ class FakeOpener:
 
 REF_URL = f"https://api.github.com/repos/{MSCP_REPOSITORY}/git/ref/tags/release_27.0"
 TAG_OBJECT_URL = f"https://api.github.com/repos/{MSCP_REPOSITORY}/git/tags/abc"
+RELEASE_URL = f"https://api.github.com/repos/{MSCP_REPOSITORY}/releases/tags/release_27.0"
+RELEASE_BODY = json.dumps({"published_at": "2026-09-11T14:30:00Z"}).encode()
 
 
 def test_resolve_annotated_tag():
@@ -196,6 +199,26 @@ def test_resolve_annotated_tag():
     for request in opener.requests:
         assert request.get_header("User-agent") == "intune-compliance-toolkit-mscp-import"
         assert request.get_header("Accept") == "application/vnd.github+json"
+
+
+def test_fetch_release_published_date_reads_the_release_for_the_tag():
+    opener = FakeOpener({RELEASE_URL: RELEASE_BODY})
+    assert fetch_release_published_date(MSCP_REPOSITORY, "release_27.0", "agent", opener) == "2026-09-11"
+    assert opener.requests[0].get_header("User-agent") == "agent"
+
+
+@pytest.mark.parametrize("release_body", [{}, {"published_at": None}, {"published_at": "yesterday"}])
+def test_fetch_release_published_date_rejects_a_release_without_a_date(release_body):
+    opener = FakeOpener({RELEASE_URL: json.dumps(release_body).encode()})
+    with pytest.raises(ValueError, match="published_at"):
+        fetch_release_published_date(MSCP_REPOSITORY, "release_27.0", "agent", opener)
+
+
+def test_fetch_release_published_date_rejects_an_invalid_tag_without_requests():
+    opener = FakeOpener({})
+    with pytest.raises(ValueError, match="Invalid tag"):
+        fetch_release_published_date(MSCP_REPOSITORY, "../x", "agent", opener)
+    assert opener.requests == []
 
 
 def test_resolve_lightweight_tag():
@@ -220,6 +243,7 @@ def test_fetch_writes_upstream_and_source_lock(tmp_path, tarball):
     opener = FakeOpener(
         {
             REF_URL: json.dumps({"object": {"type": "commit", "sha": COMMIT_SHA}}).encode(),
+            RELEASE_URL: RELEASE_BODY,
             TARBALL_URL: tarball.read_bytes(),
         }
     )
@@ -231,6 +255,8 @@ def test_fetch_writes_upstream_and_source_lock(tmp_path, tarball):
     assert lock.repository_url == "https://github.com/usnistgov/macos_security"
     assert read_source_lock(sources_dir / "source.json") == lock
     assert lock.retrieved_date == "2026-10-20"
+    assert lock.published_date == "2026-09-11"
+    assert lock.importer_format == "mscp-2"
     assert (sources_dir / "upstream/LICENSE.md").read_bytes() == b"CC BY 4.0"
 
 

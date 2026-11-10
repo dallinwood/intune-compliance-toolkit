@@ -7,25 +7,25 @@ This repository's own code is licensed under AGPL-3.0 (see `LICENSE`).
 The macOS rule content in `sources/mscp/` and `baselines/mscp/` comes from
 the [NIST macOS Security Compliance Project](https://github.com/usnistgov/macos_security),
 licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-`sources/mscp/upstream/` is an unmodified copy of parts of it. This project
+`sources/mscp/releases/<tag>/upstream/` is an unmodified copy of parts of each imported release. This project
 has modified the content in `baselines/mscp/` and in the discovery scripts
 the web UI generates: the rules were converted to a normalized format, ODV
 values are substituted, and checks are assembled into scripts. That content
 remains licensed under CC BY 4.0 and is provided as-is, with the disclaimer
 of warranties in section 5 of that licence. NIST does not endorse this
 project. The upstream licence text is vendored in
-`sources/mscp/upstream/LICENSE.md`.
+`sources/mscp/releases/<tag>/upstream/LICENSE.md`.
 
 The ASD rule content in `sources/asd_ism/` and `baselines/asd_ism/` comes from
 the [Australian Signals Directorate (ASD) Information Security Manual](https://www.cyber.gov.au/ism/oscal),
-published as OSCAL, licensed under CC BY 4.0. `sources/asd_ism/upstream/` is an
+published as OSCAL, licensed under CC BY 4.0. `sources/asd_ism/releases/<tag>/upstream/` is an
 unmodified copy of it, taken from the [ism-oscal mirror](https://github.com/AustralianCyberSecurityCentre/ism-oscal).
 This project has modified the content in `baselines/asd_ism/`: it was converted
 to a normalized rule format, links were rewritten, and each statement was split
 into a title and a discussion. That content remains licensed under CC BY 4.0
 and is provided as-is, with the disclaimer of warranties in section 5 of that
 licence. ASD does not endorse this project. ASD's copyright notice and
-disclaimer are in `sources/asd_ism/upstream/README.md`. See `NOTICE` for the
+disclaimer are in `sources/asd_ism/releases/<tag>/upstream/README.md`. See `NOTICE` for the
 full attribution of both sources.
 
 ## Web UI
@@ -109,7 +109,7 @@ Requires Python 3.10 or newer.
 
 1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
 2. `python tools/import_mscp.py --tag <release tag>`
-3. Review `git diff sources/mscp/` and `git diff baselines/`.
+3. Review `git diff sources/mscp/` and `git diff baselines/`. Each release is kept in its own folder (`sources/mscp/releases/<tag>/`, `baselines/mscp/releases/<tag>/`), so importing a new tag adds a release and never replaces an older one. To regenerate every stored release without fetching (after a schema change), use `--offline`; add `--release <tag>` for just one.
 4. `python -m pytest`
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
@@ -121,8 +121,11 @@ Requires Python 3.10 or newer.
 
 1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
 2. `python tools/import_asd_ism.py --tag <release tag>`, for example
-   `--tag v2026.09.4`. To regenerate `baselines/asd_ism/` from the vendored
-   copy in `sources/asd_ism/upstream/` without fetching, use `--offline`.
+   `--tag v2026.09.4`. Each release is kept in its own folder
+   (`sources/asd_ism/releases/<tag>/`, `baselines/asd_ism/releases/<tag>/`),
+   so importing a new tag adds a release and never replaces an older one. To
+   regenerate every stored release from the vendored copies without fetching,
+   use `--offline`; add `--release <tag>` for just one.
 3. Review `git diff sources/asd_ism/` and `git diff baselines/asd_ism/`.
 4. `python -m pytest -W error`
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`

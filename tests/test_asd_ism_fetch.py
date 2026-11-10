@@ -7,6 +7,8 @@ from tools.source_lock import read_source_lock
 
 COMMIT_SHA = "0123456789abcdef0123456789abcdef01234567"
 REFERENCE_URL = f"https://api.github.com/repos/{REPOSITORY}/git/ref/tags/v2026.09.4"
+RELEASE_URL = f"https://api.github.com/repos/{REPOSITORY}/releases/tags/v2026.09.4"
+RELEASE_BODY = json.dumps({"published_at": "2026-09-03T01:02:03Z"}).encode()
 RAW_URL_PREFIX = f"https://raw.githubusercontent.com/{REPOSITORY}/{COMMIT_SHA}"
 CATALOG_BYTES = b'{"catalog": {"title": "caf\xc3\xa9"}}\r\n\xe2\x80\x93 trailing\r\n'
 README_BYTES = b"# ISM OSCAL\r\nCreative Commons Attribution 4.0\r\n"
@@ -46,6 +48,7 @@ def test_fetch_downloads_both_files_pinned_to_the_commit(tmp_path):
     opener = FakeOpener(
         {
             REFERENCE_URL: json.dumps({"object": {"type": "commit", "sha": COMMIT_SHA}}).encode(),
+            RELEASE_URL: RELEASE_BODY,
             f"{RAW_URL_PREFIX}/ISM_catalog.json": CATALOG_BYTES,
             f"{RAW_URL_PREFIX}/README.md": README_BYTES,
         }
@@ -58,6 +61,7 @@ def test_fetch_downloads_both_files_pinned_to_the_commit(tmp_path):
     requested_urls = [request.full_url for request in opener.requests]
     assert requested_urls == [
         REFERENCE_URL,
+        RELEASE_URL,
         f"{RAW_URL_PREFIX}/ISM_catalog.json",
         f"{RAW_URL_PREFIX}/README.md",
     ]
@@ -68,6 +72,8 @@ def test_fetch_downloads_both_files_pinned_to_the_commit(tmp_path):
     assert lock.commit_sha == COMMIT_SHA
     assert lock.tag == "v2026.09.4"
     assert lock.retrieved_date == "2026-10-23"
+    assert lock.published_date == "2026-09-03"
+    assert lock.importer_format == "asd-ism-oscal-1"
     assert lock.repository_url == "https://github.com/AustralianCyberSecurityCentre/ism-oscal"
     assert read_source_lock(sources_dir / "source.json") == lock
 
@@ -80,6 +86,7 @@ def test_fetch_resolves_an_annotated_tag(tmp_path):
                 {"object": {"type": "tag", "sha": "abc", "url": tag_object_url}}
             ).encode(),
             tag_object_url: json.dumps({"object": {"type": "commit", "sha": COMMIT_SHA}}).encode(),
+            RELEASE_URL: RELEASE_BODY,
             f"{RAW_URL_PREFIX}/ISM_catalog.json": CATALOG_BYTES,
             f"{RAW_URL_PREFIX}/README.md": README_BYTES,
         }
@@ -103,6 +110,7 @@ def test_failed_download_leaves_existing_upstream_untouched(tmp_path):
     opener = FakeOpener(
         {
             REFERENCE_URL: json.dumps({"object": {"type": "commit", "sha": COMMIT_SHA}}).encode(),
+            RELEASE_URL: RELEASE_BODY,
             f"{RAW_URL_PREFIX}/ISM_catalog.json": CATALOG_BYTES,
         }
     )

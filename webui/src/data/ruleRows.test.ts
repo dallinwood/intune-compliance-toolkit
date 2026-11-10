@@ -14,6 +14,7 @@ const SOURCE: ManifestSource = {
   license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'NIST', modified: true },
   index_path: 'mscp/_index.json',
   rule_count: 2,
+  releases: [],
 }
 
 const INDEX: RuleIndex = {

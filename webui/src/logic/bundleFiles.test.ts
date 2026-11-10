@@ -79,6 +79,7 @@ describe('buildBundleFiles', () => {
       license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'Someone', modified: true as const },
       index_path: `${name}/_index.json`,
       rule_count: 1,
+      releases: [],
     })
     const sources = [
       sourceNamed('mscp', 'NIST macOS Security Compliance Project', 'https://github.com/usnistgov/macos_security'),

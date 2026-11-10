@@ -11,6 +11,8 @@ class SourceLock:
     commit_sha: str
     retrieved_date: str
     repository_url: str
+    published_date: str
+    importer_format: str
 
 
 def read_source_lock(path: Path) -> SourceLock:

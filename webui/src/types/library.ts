@@ -149,6 +149,20 @@ export interface RuleIndex {
   rules: IndexEntry[]
 }
 
+export interface ManifestRelease {
+  tag: string
+  label: string
+  published_date: string
+  commit_sha: string
+  retrieved_date: string
+  importer_format: string
+  index_path: string
+  rule_count: number
+}
+
+// The top-level release fields (release_tag, commit_sha, retrieved_date,
+// index_path, rule_count) always describe the current (newest) release, so
+// everything that browses the library keeps reading just those.
 export interface ManifestSource {
   name: string
   display_name: string
@@ -159,9 +173,10 @@ export interface ManifestSource {
   license: License
   index_path: string
   rule_count: number
+  releases: ManifestRelease[]
 }
 
 export interface Manifest {
-  schema_version: 5
+  schema_version: 6
   sources: ManifestSource[]
 }

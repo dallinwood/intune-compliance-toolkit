@@ -4,6 +4,7 @@ import urllib.request
 
 NETWORK_TIMEOUT_SECONDS = 60
 COMMIT_SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
+DATE_PREFIX_PATTERN = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}")
 
 
 def default_opener(request: urllib.request.Request):
@@ -48,3 +49,16 @@ def resolve_tag_commit(
     if target.get("type") != "commit" or "sha" not in target:
         raise ValueError(f"Tag {tag!r} does not resolve to a commit")
     return target["sha"]
+
+
+def fetch_release_published_date(
+    repository: str, tag: str, user_agent: str, opener=default_opener
+) -> str:
+    validate_tag(tag)
+    release = get_json(
+        f"https://api.github.com/repos/{repository}/releases/tags/{tag}", user_agent, opener
+    )
+    published_at = release.get("published_at")
+    if not isinstance(published_at, str) or not DATE_PREFIX_PATTERN.match(published_at):
+        raise ValueError(f"Release {tag!r} has no usable published_at date")
+    return published_at[:10]

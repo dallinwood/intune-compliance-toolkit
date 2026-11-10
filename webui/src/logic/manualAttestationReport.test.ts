@@ -16,6 +16,7 @@ function manifestSource(name: string, displayName: string, repositoryUrl: string
     repository_url: repositoryUrl,
     retrieved_date: '2026-10-23',
     rule_count: 1,
+    releases: [],
     license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'Someone', modified: true },
   }
 }

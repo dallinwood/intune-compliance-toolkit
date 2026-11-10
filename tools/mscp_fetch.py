@@ -14,6 +14,7 @@ REPOSITORY_URL = f"https://github.com/{MSCP_REPOSITORY}"
 USER_AGENT = "intune-compliance-toolkit-mscp-import"
 DATA_PREFIX = ("src", "mscp", "data")
 ROOT_FILES = ("LICENSE.md", "CHANGELOG.md")
+IMPORTER_FORMAT = "mscp-2"
 
 SUBSET_DIRECTORIES = (("rules",), ("baselines", "macos"))
 SUBSET_DATA_FILES = (
@@ -25,6 +26,10 @@ SUBSET_DATA_FILES = (
 
 def resolve_tag_commit(tag: str, opener=default_opener) -> str:
     return github_fetch.resolve_tag_commit(MSCP_REPOSITORY, tag, USER_AGENT, opener)
+
+
+def fetch_published_date(tag: str, opener=default_opener) -> str:
+    return github_fetch.fetch_release_published_date(MSCP_REPOSITORY, tag, USER_AGENT, opener)
 
 
 def download_tarball(commit_sha: str, destination_dir: Path, opener=default_opener) -> Path:
@@ -113,6 +118,7 @@ def extract_upstream_subset(tarball_path: Path, upstream_dir: Path) -> list[str]
 def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> SourceLock:
     validate_tag(tag)
     commit_sha = resolve_tag_commit(tag, opener)
+    published_date = fetch_published_date(tag, opener)
     with tempfile.TemporaryDirectory() as download_dir:
         tarball_path = download_tarball(commit_sha, Path(download_dir), opener)
         extract_upstream_subset(tarball_path, sources_dir / "upstream")
@@ -121,6 +127,8 @@ def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> Sou
         commit_sha=commit_sha,
         retrieved_date=today,
         repository_url=REPOSITORY_URL,
+        published_date=published_date,
+        importer_format=IMPORTER_FORMAT,
     )
     write_source_lock(sources_dir / "source.json", lock)
     return lock

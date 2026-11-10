@@ -4,7 +4,7 @@
 
 export interface RuleRef {
   id: string
-  // Relative to baselines/, e.g. mscp/rules/os_gatekeeper_enable.json
+  // Relative to baselines/, e.g. mscp/releases/release_27.0/rules/os_gatekeeper_enable.json
   path: string
 }
 

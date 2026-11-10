@@ -113,29 +113,46 @@ def write_json(path: Path, value):
     path.write_text(json.dumps(value, indent=2), encoding="utf-8")
 
 
+MSCP_RELEASE_DIR = "mscp/releases/release_27.0"
+MSCP_RELEASE = {
+    "tag": "release_27.0",
+    "label": "27.0",
+    "published_date": "2026-09-11",
+    "commit_sha": COMMIT_SHA,
+    "retrieved_date": "2026-10-20",
+    "importer_format": "mscp-2",
+    "index_path": f"{MSCP_RELEASE_DIR}/_index.json",
+    "rule_count": 1,
+}
+
+
+def make_manifest(releases=None):
+    releases = copy.deepcopy(releases or [MSCP_RELEASE])
+    newest = releases[-1]
+    return {
+        "schema_version": 6,
+        "sources": [
+            {
+                "name": "mscp",
+                "display_name": "NIST macOS Security Compliance Project",
+                "release_tag": newest["tag"],
+                "commit_sha": newest["commit_sha"],
+                "retrieved_date": newest["retrieved_date"],
+                "repository_url": "https://github.com/usnistgov/macos_security",
+                "license": LICENSE,
+                "index_path": newest["index_path"],
+                "rule_count": newest["rule_count"],
+                "releases": releases,
+            }
+        ],
+    }
+
+
 def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeeper_enable.json"):
     rule = rule or make_rule()
+    write_json(baselines_dir / "_manifest.json", make_manifest())
     write_json(
-        baselines_dir / "_manifest.json",
-        {
-            "schema_version": 5,
-            "sources": [
-                {
-                    "name": "mscp",
-                    "display_name": "NIST macOS Security Compliance Project",
-                    "release_tag": "release_27.0",
-                    "commit_sha": COMMIT_SHA,
-                    "retrieved_date": "2026-10-20",
-                    "repository_url": "https://github.com/usnistgov/macos_security",
-                    "license": LICENSE,
-                    "index_path": "mscp/_index.json",
-                    "rule_count": 1,
-                }
-            ],
-        },
-    )
-    write_json(
-        baselines_dir / "mscp" / "_index.json",
+        baselines_dir / MSCP_RELEASE_DIR / "_index.json",
         {
             "schema_version": 5,
             "source": "mscp",
@@ -262,7 +279,7 @@ def test_validate_library_reports_duplicate_applicability(tmp_path):
         ]
     )
     write_library(tmp_path, duplicated)
-    write_json(tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json", duplicated)
+    write_json(tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", duplicated)
     errors = validate_library(tmp_path)
     assert len(errors) == 1
     assert "mscp.os_gatekeeper_enable" in errors[0]
@@ -280,7 +297,7 @@ def test_rejects_unknown_top_level_key():
 
 def test_validate_library_clean_library(tmp_path):
     write_library(tmp_path)
-    write_json(tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json", make_rule())
+    write_json(tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", make_rule())
     assert validate_library(tmp_path) == []
 
 
@@ -293,7 +310,7 @@ def test_validate_library_reports_missing_rule_file(tmp_path):
 def test_validate_library_reports_id_mismatch(tmp_path):
     write_library(tmp_path)
     write_json(
-        tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json",
+        tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json",
         make_rule(id="mscp.something_else"),
     )
     errors = validate_library(tmp_path)
@@ -312,7 +329,7 @@ def test_validate_library_rejects_null_manifest(tmp_path):
 
 def test_validate_library_rejects_null_rule_file(tmp_path):
     write_library(tmp_path)
-    rule_path = tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json"
+    rule_path = tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json"
     rule_path.parent.mkdir(parents=True, exist_ok=True)
     rule_path.write_text("null", encoding="utf-8")
     assert validate_library(tmp_path)
@@ -402,9 +419,93 @@ def test_manifest_valid_after_write_library(tmp_path):
     assert schema_errors(read_manifest(tmp_path), "manifest") == []
 
 
+def older_mscp_release():
+    return {
+        **MSCP_RELEASE,
+        "tag": "release_26.0",
+        "label": "26.0",
+        "published_date": "2025-09-11",
+        "index_path": "mscp/releases/release_26.0/_index.json",
+    }
+
+
+def write_older_release(baselines_dir: Path, tag: str = "release_26.0") -> None:
+    older_rule = make_rule()
+    older_rule["source"]["release_tag"] = tag
+    write_json(
+        baselines_dir / "mscp" / "releases" / tag / "_index.json",
+        {"schema_version": 5, "source": "mscp", "rules": [index_entry_for(older_rule, "rules/os_gatekeeper_enable.json")]},
+    )
+    write_json(baselines_dir / "mscp" / "releases" / tag / "rules" / "os_gatekeeper_enable.json", older_rule)
+
+
+def write_two_release_library(baselines_dir: Path) -> None:
+    write_library(baselines_dir)
+    write_json(baselines_dir / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", make_rule())
+    write_older_release(baselines_dir)
+    write_json(baselines_dir / "_manifest.json", make_manifest([older_mscp_release(), MSCP_RELEASE]))
+
+
+def test_manifest_with_a_release_list_is_valid():
+    assert schema_errors(make_manifest([older_mscp_release(), MSCP_RELEASE]), "manifest") == []
+
+
+def test_manifest_rejects_a_release_missing_importer_format():
+    manifest = make_manifest()
+    del manifest["sources"][0]["releases"][0]["importer_format"]
+    assert schema_errors(manifest, "manifest")
+
+
+def test_manifest_rejects_a_source_without_releases():
+    manifest = make_manifest()
+    del manifest["sources"][0]["releases"]
+    assert schema_errors(manifest, "manifest")
+
+
+def test_validate_library_accepts_two_releases(tmp_path):
+    write_two_release_library(tmp_path)
+    assert validate_library(tmp_path) == []
+
+
+def test_validate_library_reports_a_rule_with_the_wrong_release_tag(tmp_path):
+    write_two_release_library(tmp_path)
+    write_older_release(tmp_path, tag="release_26.0")
+    mislabelled_rule = make_rule()
+    mislabelled_rule["source"]["release_tag"] = "release_99.0"
+    write_json(tmp_path / "mscp/releases/release_26.0/rules/os_gatekeeper_enable.json", mislabelled_rule)
+    errors = validate_library(tmp_path)
+    assert any("release_99.0" in error and "release_26.0" in error for error in errors)
+
+
+@pytest.mark.parametrize("duplicated_field", ["tag", "label"])
+def test_validate_library_reports_duplicate_release_tags_and_labels(tmp_path, duplicated_field):
+    write_two_release_library(tmp_path)
+    manifest = read_manifest(tmp_path)
+    releases = manifest["sources"][0]["releases"]
+    releases[0][duplicated_field] = releases[1][duplicated_field]
+    write_json(tmp_path / "_manifest.json", manifest)
+    assert any(f"release {duplicated_field}" in error for error in validate_library(tmp_path))
+
+
+def test_validate_library_reports_top_level_fields_that_differ_from_the_newest_release(tmp_path):
+    write_two_release_library(tmp_path)
+    manifest = read_manifest(tmp_path)
+    manifest["sources"][0]["release_tag"] = "release_26.0"
+    write_json(tmp_path / "_manifest.json", manifest)
+    assert any("newest release" in error for error in validate_library(tmp_path))
+
+
+def test_validate_library_reports_a_release_folder_missing_from_the_manifest(tmp_path):
+    write_library(tmp_path)
+    write_json(tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", make_rule())
+    write_older_release(tmp_path, tag="release_25.0")
+    errors = validate_library(tmp_path)
+    assert any("release_25.0" in error and "no entry in the manifest" in error for error in errors)
+
+
 def test_validate_library_reports_rule_count_mismatch(tmp_path):
     write_library(tmp_path)
-    write_json(tmp_path / "mscp" / "rules" / "os_gatekeeper_enable.json", make_rule())
+    write_json(tmp_path / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", make_rule())
     manifest = read_manifest(tmp_path)
     manifest["sources"][0]["rule_count"] = 5
     write_json(tmp_path / "_manifest.json", manifest)
@@ -447,7 +548,7 @@ def make_vocabulary(**vocabularies):
 
 def write_clean_library_with_vocabulary(baselines_dir: Path, vocabulary) -> None:
     write_library(baselines_dir)
-    write_json(baselines_dir / "mscp" / "rules" / "os_gatekeeper_enable.json", make_rule())
+    write_json(baselines_dir / MSCP_RELEASE_DIR / "rules" / "os_gatekeeper_enable.json", make_rule())
     write_json(baselines_dir / "_vocabulary.json", vocabulary)
 
 

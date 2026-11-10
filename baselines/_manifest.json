@@ -1,10 +1,10 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "sources": [
     {
       "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
       "display_name": "ASD Information Security Manual",
-      "index_path": "asd_ism/_index.json",
+      "index_path": "asd_ism/releases/v2026.09.4/_index.json",
       "license": {
         "modified": true,
         "name": "CC BY 4.0",
@@ -13,6 +13,18 @@
       },
       "name": "asd_ism",
       "release_tag": "v2026.09.4",
+      "releases": [
+        {
+          "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2026.09.4/_index.json",
+          "label": "Sep 2026",
+          "published_date": "2026-09-03",
+          "retrieved_date": "2026-10-23",
+          "rule_count": 1143,
+          "tag": "v2026.09.4"
+        }
+      ],
       "repository_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal",
       "retrieved_date": "2026-10-23",
       "rule_count": 1143
@@ -20,7 +32,7 @@
     {
       "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
       "display_name": "NIST macOS Security Compliance Project",
-      "index_path": "mscp/_index.json",
+      "index_path": "mscp/releases/release_27.0/_index.json",
       "license": {
         "modified": true,
         "name": "CC BY 4.0",
@@ -29,6 +41,18 @@
       },
       "name": "mscp",
       "release_tag": "release_27.0",
+      "releases": [
+        {
+          "commit_sha": "c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715",
+          "importer_format": "mscp-2",
+          "index_path": "mscp/releases/release_27.0/_index.json",
+          "label": "27.0",
+          "published_date": "2026-09-11",
+          "retrieved_date": "2026-10-20",
+          "rule_count": 350,
+          "tag": "release_27.0"
+        }
+      ],
       "repository_url": "https://github.com/usnistgov/macos_security",
       "retrieved_date": "2026-10-20",
       "rule_count": 350

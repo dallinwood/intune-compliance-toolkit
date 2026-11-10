@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Library manifest (v5)",
+  "title": "Library manifest (v6)",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "sources"],
   "properties": {
-    "schema_version": { "const": 5 },
+    "schema_version": { "const": 6 },
     "sources": {
       "type": "array",
       "items": {
@@ -13,7 +13,7 @@
         "additionalProperties": false,
         "required": [
           "name", "display_name", "release_tag", "commit_sha", "retrieved_date",
-          "repository_url", "license", "index_path", "rule_count"
+          "repository_url", "license", "index_path", "rule_count", "releases"
         ],
         "properties": {
           "name": { "type": "string" },
@@ -37,7 +37,32 @@
             "type": "string",
             "pattern": "^(?!/)(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+(?![\\s\\S])"
           },
-          "rule_count": { "type": "integer", "minimum": 0 }
+          "rule_count": { "type": "integer", "minimum": 0 },
+          "releases": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "tag", "label", "published_date", "commit_sha", "retrieved_date",
+                "importer_format", "index_path", "rule_count"
+              ],
+              "properties": {
+                "tag": { "type": "string", "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(?![\\s\\S])" },
+                "label": { "type": "string", "minLength": 1 },
+                "published_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?![\\s\\S])" },
+                "commit_sha": { "type": "string", "pattern": "^[0-9a-f]{40}(?![\\s\\S])" },
+                "retrieved_date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?![\\s\\S])" },
+                "importer_format": { "type": "string", "minLength": 1 },
+                "index_path": {
+                  "type": "string",
+                  "pattern": "^(?!/)(?!(?:.*/)?\\.\\.(?:/|(?![\\s\\S])))[^\\\\:\\n]+(?![\\s\\S])"
+                },
+                "rule_count": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
         }
       }
     }

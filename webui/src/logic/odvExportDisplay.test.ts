@@ -6,7 +6,7 @@ import { expandsOdvOnlyAsQuotedVariable, shellWithExportedOdv } from './odvExpor
 import { bashSingleQuote } from './scriptGen/bash'
 
 const BANNER_RULE_ID = 'mscp.os_policy_banner_ssh_configure'
-const bannerRule = JSON.parse(readFileSync('../baselines/mscp/rules/os_policy_banner_ssh_configure.json', 'utf8')) as Rule
+const bannerRule = JSON.parse(readFileSync('../baselines/mscp/releases/release_27.0/rules/os_policy_banner_ssh_configure.json', 'utf8')) as Rule
 const bannerCheckShell = bannerRule.check!.macOS.default!.shell!
 const bannerOdv = bannerRule.odv!
 

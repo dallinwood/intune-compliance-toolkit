@@ -108,7 +108,9 @@ interface IndexBenchmark {
 }
 
 async function committedIndexRules(): Promise<{ id: string; applicability: { target: string | null; version: string | null; benchmarks: IndexBenchmark[] }[] }[]> {
-  const indexJson = await readFile(new URL('../../baselines/mscp/_index.json', import.meta.url), 'utf8')
+  const manifest = JSON.parse(await readFile(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8'))
+  const mscpSource = manifest.sources.find((source: { name: string }) => source.name === 'mscp')
+  const indexJson = await readFile(new URL(`../../baselines/${mscpSource.index_path}`, import.meta.url), 'utf8')
   return JSON.parse(indexJson).rules
 }
 
@@ -2175,7 +2177,7 @@ test.describe('rule mappings', () => {
   })
 
   test('a mapped rule whose file fails to load still shows its summary facts', async ({ page }) => {
-    await page.route('**/mscp/rules/os_gatekeeper_enable.json', (route) => route.fulfill({ status: 404, body: 'not found' }))
+    await page.route('**/mscp/releases/*/rules/os_gatekeeper_enable.json', (route) => route.fulfill({ status: 404, body: 'not found' }))
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)

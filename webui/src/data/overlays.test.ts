@@ -95,6 +95,7 @@ const ISM_SOURCE: ManifestSource = {
   license: { name: 'CC BY 4.0', url: 'https://creativecommons.org/licenses/by/4.0/', rights_holder: 'ASD', modified: true },
   index_path: 'asd_ism/_index.json',
   rule_count: 1,
+  releases: [],
 }
 const ENTRY: IndexEntry = {
   id: ISM_1622,
@@ -138,7 +139,7 @@ function serveLibrary(overlays: Record<string, Record<string, unknown>>) {
     'fetch',
     vi.fn(async (url: string) => {
       fetched.push(url)
-      if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 5, sources: [ISM_SOURCE] })
+      if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 6, sources: [ISM_SOURCE] })
       if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 5, source: 'asd_ism', rules: [ENTRY] })
       if (url.endsWith('/baselines/asd_ism/rules/ism-1622.json')) return jsonResponse(rule)
       if (url.endsWith('/baselines/_overlays/_index.json')) return jsonResponse(index)

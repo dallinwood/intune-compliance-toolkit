@@ -4,7 +4,7 @@ import type { CheckResult, Odv, Rule, RuleCheck } from '../types/library'
 import { planRuleCheck, settingNameFor, type RuleCheckPlan } from './checkPlan'
 import { applicabilityOfVersions, macosCheck } from './testRuleFixtures'
 
-const RULES_DIRECTORY = new URL('../../../baselines/mscp/rules/', import.meta.url)
+const RULES_DIRECTORY = new URL('../../../baselines/mscp/releases/release_27.0/rules/', import.meta.url)
 const COVERED_VERSIONS = ['27.0', '26.0', '15.0']
 
 function realRule(upstreamId: string): Rule {

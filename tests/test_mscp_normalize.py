@@ -19,6 +19,8 @@ LOCK = SourceLock(
     commit_sha=COMMIT_SHA,
     retrieved_date="2026-10-20",
     repository_url="https://github.com/usnistgov/macos_security",
+    published_date="2026-09-11",
+    importer_format="mscp-2",
 )
 
 GATEKEEPER_YAML = """

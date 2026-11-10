@@ -6,6 +6,7 @@ import pytest
 
 from tools import import_asd_ism, import_mscp
 from tools.file_references import is_binary_payload
+from tools.release_import import generate_release
 from tools.source_lock import read_source_lock
 from tools.validate_library import validate_library
 
@@ -19,10 +20,24 @@ OVERLAYS_DIR_NAME = "_overlays"
 MAPPINGS_DIR_NAME = "_mappings"
 MAINTAINER_DIR_NAMES = (OVERLAYS_DIR_NAME, MAPPINGS_DIR_NAME)
 
-SOURCES = (
-    pytest.param("mscp", MSCP_SOURCES_DIR, import_mscp.generate_library, id="mscp"),
-    pytest.param("asd_ism", ASD_ISM_SOURCES_DIR, import_asd_ism.generate_library, id="asd_ism"),
-)
+IMPORTERS_BY_NAME = {
+    importer.name: importer for importer in (import_mscp.IMPORTER, import_asd_ism.IMPORTER)
+}
+CURRENT_MSCP_RELEASE_DIR = MSCP_SOURCES_DIR / "releases" / "release_27.0"
+CURRENT_ASD_ISM_RELEASE_DIR = ASD_ISM_SOURCES_DIR / "releases" / "v2026.09.4"
+
+
+def committed_releases() -> list[tuple[str, str]]:
+    manifest = json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))
+    return [
+        (source["name"], release["tag"])
+        for source in manifest["sources"]
+        for release in source["releases"]
+    ]
+
+
+COMMITTED_RELEASES = committed_releases()
+COMMITTED_RELEASE_IDS = [f"{source_name}-{tag}" for source_name, tag in COMMITTED_RELEASES]
 
 
 def generated_files(baselines_dir: Path) -> dict[str, bytes]:
@@ -38,7 +53,7 @@ def generated_files(baselines_dir: Path) -> dict[str, bytes]:
 
 
 def committed_asd_ism_rules() -> list[dict]:
-    rule_paths = sorted((BASELINES_DIR / "asd_ism" / "rules").glob("*.json"))
+    rule_paths = sorted((BASELINES_DIR / "asd_ism" / "releases" / "v2026.09.4" / "rules").glob("*.json"))
     return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
 
 
@@ -46,16 +61,16 @@ def test_committed_library_is_valid():
     assert validate_library(BASELINES_DIR) == []
 
 
-@pytest.mark.parametrize(("source_name", "sources_dir", "generate_library"), SOURCES)
-def test_committed_library_matches_regeneration(
-    tmp_path, source_name, sources_dir, generate_library
-):
+@pytest.mark.parametrize(("source_name", "tag"), COMMITTED_RELEASES, ids=COMMITTED_RELEASE_IDS)
+def test_committed_library_matches_regeneration(tmp_path, source_name, tag):
     regenerated_dir = tmp_path / "baselines"
     shutil.copytree(BASELINES_DIR, regenerated_dir)
+    release_sources_dir = REPO_ROOT / "sources" / source_name / "releases" / tag
 
-    generate_library(
-        sources_dir / "upstream",
-        read_source_lock(sources_dir / "source.json"),
+    generate_release(
+        IMPORTERS_BY_NAME[source_name],
+        release_sources_dir / "upstream",
+        read_source_lock(release_sources_dir / "source.json"),
         regenerated_dir,
     )
 
@@ -70,11 +85,20 @@ def test_committed_library_matches_regeneration(
         assert kept_files == committed_files
 
 
-def test_every_manifest_source_is_regenerated_by_this_suite():
+def test_every_manifest_source_has_an_importer():
     manifest = json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))
-    assert sorted(source["name"] for source in manifest["sources"]) == sorted(
-        parameter.values[0] for parameter in SOURCES
+    assert sorted(source["name"] for source in manifest["sources"]) == sorted(IMPORTERS_BY_NAME)
+
+
+def test_every_manifest_release_is_regenerated_by_this_suite():
+    stored_releases = sorted(
+        (source_dir.name, release_dir.name)
+        for source_dir in (REPO_ROOT / "sources").iterdir()
+        if source_dir.is_dir()
+        for release_dir in (source_dir / "releases").iterdir()
+        if release_dir.is_dir()
     )
+    assert sorted(COMMITTED_RELEASES) == stored_releases
 
 
 def test_committed_library_has_lf_line_endings_only():
@@ -95,12 +119,12 @@ def test_binary_payload_types_are_marked_binary_for_git():
 
 
 def test_vendored_license_present():
-    license_text = (MSCP_SOURCES_DIR / "upstream" / "LICENSE.md").read_text(encoding="utf-8")
+    license_text = (CURRENT_MSCP_RELEASE_DIR / "upstream" / "LICENSE.md").read_text(encoding="utf-8")
     assert "CC BY 4.0" in license_text
 
 
 def test_asd_ism_vendored_license_present():
-    readme_text = (ASD_ISM_SOURCES_DIR / "upstream" / "README.md").read_text(encoding="utf-8")
+    readme_text = (CURRENT_ASD_ISM_RELEASE_DIR / "upstream" / "README.md").read_text(encoding="utf-8")
     assert "Creative Commons Attribution 4.0" in readme_text
 
 
@@ -122,7 +146,7 @@ def test_asd_ism_titles_are_single_paragraphs():
 
 def test_asd_ism_multi_paragraph_statement_keeps_its_full_text_before_the_overview():
     incident_register = json.loads(
-        (BASELINES_DIR / "asd_ism" / "rules" / "ism-1803.json").read_text(encoding="utf-8")
+        (BASELINES_DIR / "asd_ism" / "releases" / "v2026.09.4" / "rules" / "ism-1803.json").read_text(encoding="utf-8")
     )
     discussion = incident_register["discussion"]
 

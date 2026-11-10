@@ -1,32 +1,26 @@
-"""Import an ASD ISM OSCAL release into the normalized rule library under baselines/asd_ism/."""
+"""Import an ASD ISM OSCAL release into the normalized rule library under baselines/asd_ism/releases/."""
 
-import argparse
-import datetime
 import json
-import shutil
+import re
 import sys
-import tempfile
-import urllib.error
 from pathlib import Path
 
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.asd_ism_fetch import fetch
-from tools.asd_ism_normalize import CATALOG_FILE_NAME, LICENSE, SOURCE_NAME, normalize_catalog
-from tools.directory_swap import replace_directory
-from tools.json_output import write_json
-from tools.library_output import (
-    SCHEMA_VERSION,
-    UnsupportedUpstreamData,
-    index_entry,
-    publish_source,
+from tools.asd_ism_fetch import IMPORTER_FORMAT, fetch
+from tools.asd_ism_normalize import (
+    CATALOG_FILE_NAME,
+    LICENSE,
+    REPOSITORY_URL,
+    SOURCE_NAME,
+    normalize_catalog,
 )
-from tools.source_lock import SourceLock, read_source_lock
-from tools.validate_library import REPOSITORY_ROOT
+from tools.json_output import write_json
+from tools.library_output import SCHEMA_VERSION, index_entry
+from tools.release_import import SourceImporter, run_cli
+from tools.source_lock import SourceLock
 
-DEFAULT_SOURCES_DIR = REPOSITORY_ROOT / "sources" / SOURCE_NAME
-DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 SOURCE_DISPLAY_NAME = "ASD Information Security Manual"
 
 
@@ -64,113 +58,33 @@ def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int
     return len(entries)
 
 
-def manifest_entry(lock: SourceLock, rule_count: int) -> dict:
-    return {
-        "name": SOURCE_NAME,
-        "display_name": SOURCE_DISPLAY_NAME,
-        "release_tag": lock.tag,
-        "commit_sha": lock.commit_sha,
-        "retrieved_date": lock.retrieved_date,
-        "repository_url": lock.repository_url,
-        "license": LICENSE,
-        "index_path": f"{SOURCE_NAME}/_index.json",
-        "rule_count": rule_count,
-    }
+MONTH_ABBREVIATIONS = (
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+)
+TAG_YEAR_AND_MONTH_PATTERN = re.compile(r"^v(\d{4})\.(0[1-9]|1[0-2])\.")
 
 
-def generate_library(upstream_dir: Path, lock: SourceLock, baselines_dir: Path) -> int:
-    return publish_source(
-        baselines_dir,
-        SOURCE_NAME,
-        lambda tree_dir: build_rule_tree(upstream_dir, lock, tree_dir),
-        lambda rule_count: manifest_entry(lock, rule_count),
-    )
+def release_label(tag: str) -> str:
+    match = TAG_YEAR_AND_MONTH_PATTERN.match(tag)
+    if match is None:
+        raise ValueError(f"cannot derive a release label from tag {tag!r}")
+    year, month = match.groups()
+    return f"{MONTH_ABBREVIATIONS[int(month) - 1]} {year}"
 
 
-def import_offline(sources_dir: Path, baselines_dir: Path) -> tuple[SourceLock, int]:
-    lock_path = sources_dir / "source.json"
-    upstream_dir = sources_dir / "upstream"
-    if not lock_path.is_file():
-        raise ValueError(f"{lock_path}: source lock not found; run with --tag first")
-    if not upstream_dir.is_dir():
-        raise ValueError(f"{upstream_dir}: upstream copy not found; run with --tag first")
-    try:
-        lock = read_source_lock(lock_path)
-    except (ValueError, TypeError) as problem:
-        raise ValueError(f"{lock_path}: source lock is unusable ({problem!r})") from problem
-    return lock, generate_library(upstream_dir, lock, baselines_dir)
-
-
-def import_tag(
-    tag: str, sources_dir: Path, baselines_dir: Path, today: str
-) -> tuple[SourceLock, int]:
-    sources_dir.parent.mkdir(parents=True, exist_ok=True)
-    staging_sources_dir = Path(
-        tempfile.mkdtemp(prefix=f".{SOURCE_NAME}-sources-staging-", dir=sources_dir.parent)
-    )
-    try:
-        lock = fetch(tag, staging_sources_dir, today)
-        rule_count = generate_library(staging_sources_dir / "upstream", lock, baselines_dir)
-        replace_directory(staging_sources_dir, sources_dir)
-    finally:
-        shutil.rmtree(staging_sources_dir, ignore_errors=True)
-    return lock, rule_count
-
-
-def build_argument_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description=__doc__)
-    mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--tag", help="ism-oscal release tag to fetch, for example v2026.09.4")
-    mode.add_argument(
-        "--offline",
-        action="store_true",
-        help=f"regenerate from the existing sources/{SOURCE_NAME} copy",
-    )
-    parser.add_argument("--sources-dir", type=Path, default=DEFAULT_SOURCES_DIR)
-    parser.add_argument("--baselines-dir", type=Path, default=DEFAULT_BASELINES_DIR)
-    return parser
-
-
-def read_rule_ids(index_path: Path) -> set[str] | None:
-    if not index_path.is_file():
-        return None
-    try:
-        rules = json.loads(index_path.read_text(encoding="utf-8"))["rules"]
-        return {rule["id"] for rule in rules}
-    except (ValueError, KeyError, TypeError):
-        return None
-
-
-def print_change_summary(previous_ids: set[str] | None, current_ids: set[str] | None) -> None:
-    if previous_ids is None or current_ids is None:
-        return
-    changes = (
-        ("Added rules", current_ids - previous_ids),
-        ("Removed rules", previous_ids - current_ids),
-    )
-    for label, values in changes:
-        if values:
-            print(f"{label}: {', '.join(sorted(values))}")
+IMPORTER = SourceImporter(
+    name=SOURCE_NAME,
+    display_name=SOURCE_DISPLAY_NAME,
+    repository_url=REPOSITORY_URL,
+    license=LICENSE,
+    fetch=fetch,
+    build_rule_tree_by_format={IMPORTER_FORMAT: build_rule_tree},
+    release_label=release_label,
+)
 
 
 def main(argv: list[str] | None = None) -> int:
-    arguments = build_argument_parser().parse_args(argv)
-    index_path = arguments.baselines_dir / SOURCE_NAME / "_index.json"
-    previous_ids = read_rule_ids(index_path)
-    try:
-        if arguments.offline:
-            lock, rule_count = import_offline(arguments.sources_dir, arguments.baselines_dir)
-        else:
-            today = datetime.date.today().isoformat()
-            lock, rule_count = import_tag(
-                arguments.tag, arguments.sources_dir, arguments.baselines_dir, today
-            )
-    except (UnsupportedUpstreamData, ValueError, OSError, urllib.error.URLError) as problem:
-        print(f"Import failed: {problem}", file=sys.stderr)
-        return 1
-    print(f"Imported {rule_count} ASD ISM controls from {lock.tag} ({lock.commit_sha[:7]})")
-    print_change_summary(previous_ids, read_rule_ids(index_path))
-    return 0
+    return run_cli(IMPORTER, argv)
 
 
 if __name__ == "__main__":

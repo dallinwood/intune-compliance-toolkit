@@ -1,4 +1,4 @@
-"""Validate the normalized rule library under baselines/ against the v5 schemas,
+"""Validate the normalized rule library under baselines/ against the schemas,
 plus the hand-edited display-name vocabulary when one is present."""
 
 import json
@@ -56,15 +56,24 @@ def applicability_errors(rule: dict) -> list[str]:
     return errors
 
 
-def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> None:
-    index_path = baselines_dir / source["index_path"]
+CURRENT_RELEASE_FIELDS = (
+    ("release_tag", "tag"),
+    ("commit_sha", "commit_sha"),
+    ("retrieved_date", "retrieved_date"),
+    ("index_path", "index_path"),
+    ("rule_count", "rule_count"),
+)
+
+
+def _validate_release(baselines_dir: Path, release: dict, errors: list[str]) -> None:
+    index_path = baselines_dir / release["index_path"]
     index = _validate_document(index_path, "index", errors)
     if index is None:
         return
 
-    if len(index["rules"]) != source["rule_count"]:
+    if len(index["rules"]) != release["rule_count"]:
         errors.append(
-            f"{index_path}: manifest rule_count {source['rule_count']} "
+            f"{index_path}: manifest rule_count {release['rule_count']} "
             f"does not match {len(index['rules'])} index entries"
         )
 
@@ -77,8 +86,49 @@ def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> No
             errors.append(
                 f"{rule_path}: rule id {rule['id']} does not match index id {entry['id']}"
             )
+        if rule["source"]["release_tag"] != release["tag"]:
+            errors.append(
+                f"{rule_path}: source release_tag {rule['source']['release_tag']!r} "
+                f"does not match release {release['tag']!r}"
+            )
         errors.extend(f"{rule_path}: {problem}" for problem in applicability_errors(rule))
         errors.extend(f"{rule_path}: {problem}" for problem in file_reference_errors(rule, baselines_dir.resolve().parent))
+
+
+def manifest_consistency_errors(manifest: dict) -> list[str]:
+    errors: list[str] = []
+    for source in manifest["sources"]:
+        releases = source["releases"]
+        for field_name in ("tag", "label"):
+            values = [release[field_name] for release in releases]
+            for value in sorted({value for value in values if values.count(value) > 1}):
+                errors.append(f"{source['name']}: release {field_name} {value!r} is listed more than once")
+        newest = releases[-1]
+        for source_field, release_field in CURRENT_RELEASE_FIELDS:
+            if source[source_field] != newest[release_field]:
+                errors.append(
+                    f"{source['name']}: {source_field} {source[source_field]!r} does not match "
+                    f"the newest release's {release_field} {newest[release_field]!r}"
+                )
+    return errors
+
+
+def _unlisted_release_folder_errors(baselines_dir: Path, source: dict) -> list[str]:
+    releases_dir = baselines_dir / source["name"] / "releases"
+    if not releases_dir.is_dir():
+        return []
+    listed_tags = {release["tag"] for release in source["releases"]}
+    return [
+        f"{folder}: release folder has no entry in the manifest"
+        for folder in sorted(releases_dir.iterdir())
+        if folder.is_dir() and not folder.name.startswith(".") and folder.name not in listed_tags
+    ]
+
+
+def _validate_source(baselines_dir: Path, source: dict, errors: list[str]) -> None:
+    for release in source["releases"]:
+        _validate_release(baselines_dir, release, errors)
+    errors.extend(_unlisted_release_folder_errors(baselines_dir, source))
 
 
 def duplicate_term_errors(vocabulary_file: dict) -> list[str]:
@@ -112,6 +162,7 @@ def validate_library(baselines_dir: Path) -> list[str]:
     manifest = _validate_document(baselines_dir / "_manifest.json", "manifest", errors)
     if manifest is None:
         return errors
+    errors.extend(manifest_consistency_errors(manifest))
     for source in manifest["sources"]:
         _validate_source(baselines_dir, source, errors)
     return errors

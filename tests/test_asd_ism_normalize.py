@@ -24,6 +24,8 @@ LOCK = SourceLock(
     commit_sha=COMMIT_SHA,
     retrieved_date="2026-10-23",
     repository_url=REPOSITORY_URL,
+    published_date="2026-09-03",
+    importer_format="asd-ism-oscal-1",
 )
 EXPECTED_FIXTURE_RULE_IDS = ["asd_ism.ism-0001", "asd_ism.ism-0859", "asd_ism.ism-1667"]
 PROCUREMENT_RESOURCE_UUID = "f37a4848-0791-4870-b316-5536c2681c28"
