@@ -868,4 +868,4 @@ entry here, not just the session that wrote it.
   clean, full e2e 164 passed (one existing smoke test now expects a History tab
   instead of no tab strip). Screenshots of the landing at 1440px and 375px,
   light and dark, read: cards sit two across at 1440px and stack at 375px, the
-  current pill is clearly highlighted in both themes. (see the commit that follows)
+  current pill is clearly highlighted in both themes. (`ec62610` feat: add a Frameworks tab listing each framework's releases)
