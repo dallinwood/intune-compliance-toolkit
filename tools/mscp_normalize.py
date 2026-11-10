@@ -319,15 +319,18 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
 
     default_info = _enforcement_info(macos, "platforms.macOS", rule_id)
     default_check = (
-        _normalize_check(default_info["check"], "platforms.macOS check", rule_id)
+        _normalize_check(default_info["check"], "platforms.macOS check", rule_id, VERSION_CHECK_KEYS)
         if "check" in default_info
         else None
     )
-    default_fix = (
-        _normalize_fix(default_info["fix"], "platforms.macOS fix", rule_id)
-        if "fix" in default_info
-        else {"shell": None, "additional_info": None}
-    )
+    default_fix = {"shell": None, "additional_info": None}
+    # Same upstream misindentation as for a version's fix above.
+    if default_check is not None and "fix" in default_info["check"]:
+        if "fix" in default_info:
+            raise UnsupportedUpstreamData(f"{rule_id}: platforms.macOS has both a nested and a sibling fix")
+        default_fix = _normalize_fix(default_info["check"]["fix"], "platforms.macOS check fix", rule_id)
+    if "fix" in default_info:
+        default_fix = _normalize_fix(default_info["fix"], "platforms.macOS fix", rule_id)
     check = (
         {
             MACOS_TARGET: {

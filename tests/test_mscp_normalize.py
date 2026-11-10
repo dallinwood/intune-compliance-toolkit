@@ -537,9 +537,23 @@ def test_nested_and_sibling_version_fix_raise():
         normalize(rule_with(platform))
 
 
-def test_fix_nested_in_default_check_raises():
-    platform = "enforcement_info:\n  check:\n    shell: x\n    result:\n      integer: 1\n    fix:\n      shell: y\n"
-    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+NESTED_DEFAULT_FIX_PLATFORM = (
+    "'27.0':\n  benchmarks: []\n"
+    "enforcement_info:\n  check:\n    shell: x\n    result:\n      integer: 1\n"
+    "    fix:\n      shell: fix_nested\n"
+)
+
+
+def test_fix_nested_in_default_check_becomes_default_fix():
+    result = normalize(rule_with(NESTED_DEFAULT_FIX_PLATFORM))
+    assert result["remediation"]["macOS"]["steps"] == [bash_step("fix_nested")]
+    assert result["check"]["macOS"]["default"]["shell"] == "x"
+    assert schema_errors(result) == []
+
+
+def test_nested_and_sibling_default_fix_raise():
+    platform = NESTED_DEFAULT_FIX_PLATFORM + "  fix:\n    shell: fix_sibling\n"
+    with pytest.raises(UnsupportedUpstreamData, match="nested and a sibling"):
         normalize(rule_with(platform))
 
 
