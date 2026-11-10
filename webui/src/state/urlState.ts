@@ -1,4 +1,9 @@
+import { CHANGE_KINDS, DEFAULT_SHOWN_KINDS, type ChangeKind } from '../logic/ruleChanges'
+
 export type PageSize = number | 'all'
+
+export type CompareOnly = 'custom' | 'selected'
+export const COMPARE_ONLY_VALUES: readonly CompareOnly[] = ['custom', 'selected']
 
 export const DEFAULT_VIEW_ID = 'rules'
 
@@ -22,6 +27,17 @@ export interface UrlState {
   licence: string | null
   product: string | null
   compare: string[]
+  // The Frameworks view: the framework whose releases are compared (null shows
+  // the list of frameworks), the two releases, and how the comparison is
+  // narrowed. changeKinds null means the default kinds.
+  framework: string | null
+  compareFrom: string | null
+  compareTo: string | null
+  changeKinds: ChangeKind[] | null
+  compareSearch: string
+  compareSections: string[]
+  compareBenchmarks: string[]
+  compareOnly: CompareOnly[]
 }
 
 export interface UrlDefaults {
@@ -43,6 +59,18 @@ const LIST_PARAMETER_NAMES = {
   tags: 'tag',
 } as const
 
+function isChangeKind(value: string): value is ChangeKind {
+  return (CHANGE_KINDS as readonly string[]).includes(value)
+}
+
+function isCompareOnly(value: string): value is CompareOnly {
+  return (COMPARE_ONLY_VALUES as readonly string[]).includes(value)
+}
+
+function sameKinds(kinds: readonly ChangeKind[], other: readonly ChangeKind[]): boolean {
+  return kinds.length === other.length && kinds.every((kind) => other.includes(kind))
+}
+
 function parsePositiveInteger(text: string | null): number | null {
   if (text === null || !/^\d+$/.test(text)) return null
   const parsed = Number(text)
@@ -62,6 +90,7 @@ function viewIdFromPath(pathname: string, basePath: string): string {
 export function parseUrlState(search: string, pathname = '', basePath = '/'): UrlState {
   const parameters = new URLSearchParams(search)
   const listValues = (name: string) => parameters.getAll(name).filter((value) => value !== '')
+  const parsedKinds = listValues('kind').filter(isChangeKind)
 
   return {
     view: viewIdFromPath(pathname, basePath),
@@ -79,6 +108,14 @@ export function parseUrlState(search: string, pathname = '', basePath = '/'): Ur
     licence: parameters.get('licence') || null,
     product: parameters.get('product') || null,
     compare: listValues('compare'),
+    framework: parameters.get('framework') || null,
+    compareFrom: parameters.get('from') || null,
+    compareTo: parameters.get('to') || null,
+    changeKinds: parsedKinds.length > 0 ? parsedKinds : null,
+    compareSearch: parameters.get('cq') ?? '',
+    compareSections: listValues('csection'),
+    compareBenchmarks: listValues('cbenchmark'),
+    compareOnly: listValues('only').filter(isCompareOnly),
   }
 }
 
@@ -99,6 +136,16 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   if (state.licence !== null) parameters.set('licence', state.licence)
   if (state.product !== null) parameters.set('product', state.product)
   for (const licenceId of state.compare) parameters.append('compare', licenceId)
+  if (state.framework !== null) parameters.set('framework', state.framework)
+  if (state.compareFrom !== null) parameters.set('from', state.compareFrom)
+  if (state.compareTo !== null) parameters.set('to', state.compareTo)
+  if (state.changeKinds !== null && !sameKinds(state.changeKinds, DEFAULT_SHOWN_KINDS)) {
+    for (const kind of state.changeKinds) parameters.append('kind', kind)
+  }
+  if (state.compareSearch !== '') parameters.set('cq', state.compareSearch)
+  for (const section of state.compareSections) parameters.append('csection', section)
+  for (const benchmark of state.compareBenchmarks) parameters.append('cbenchmark', benchmark)
+  for (const only of state.compareOnly) parameters.append('only', only)
 
   const queryString = parameters.toString()
   return queryString === '' ? '' : `?${queryString}`
@@ -114,6 +161,7 @@ export function serializeUrlLocation(state: UrlState, defaults: UrlDefaults, bas
 export function startsHistoryEntry(previous: UrlState, next: UrlState): boolean {
   return (
     next.view !== previous.view ||
+    (next.framework === null) !== (previous.framework === null) ||
     next.licence !== previous.licence ||
     next.product !== previous.product ||
     (next.openRule !== previous.openRule && next.openRule !== null) ||

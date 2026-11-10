@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { DEFAULT_VIEW_ID } from '../state/urlState'
+import { FrameworksView } from './FrameworksView'
 import { LicencesView } from './LicencesView'
 import { ProductsView } from './ProductsView'
 import { RulesView } from './RulesView'
@@ -17,6 +18,7 @@ export interface ViewDefinition {
 // address is written out as /rules.
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
+  { id: 'frameworks', label: 'Frameworks', render: (context) => <FrameworksView sources={context.sources} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
   { id: 'products', label: 'Products', render: () => <ProductsView /> },
 ]

@@ -855,3 +855,17 @@ entry here, not just the session that wrote it.
   then "History (N changes)". Logic parts tested first; Vitest 1058 passed,
   `tsc -b` and lint clean, history e2e 7 passed (full e2e runs with
   Milestone 5). (`5879acd` fix: tidy the History tab after review)
+- **2026-11-10** - Task 8: the Frameworks tab. Eight new URL state fields
+  (`framework`, `from`, `to`, repeated `kind`, `cq`, repeated `csection`,
+  `cbenchmark`, `only`), their store setters (`showComparison` is one update, so
+  one history entry), the Frameworks view in the registry and
+  `route-pages.mjs`, and the landing cards (current release, a pill per
+  release oldest first with the current one highlighted, Compare releases
+  from the previous to the current release, disabled with "Only one release
+  imported" when there is one). Selecting a framework currently shows a
+  placeholder line; Task 9 replaces it. URL tests first (they failed), the
+  e2e spec `frameworks.spec.ts` after. Vitest 1063 passed, `tsc -b` and lint
+  clean, full e2e 164 passed (one existing smoke test now expects a History tab
+  instead of no tab strip). Screenshots of the landing at 1440px and 375px,
+  light and dark, read: cards sit two across at 1440px and stack at 375px, the
+  current pill is clearly highlighted in both themes. (see the commit that follows)

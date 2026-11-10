@@ -31,9 +31,49 @@ const everyKeySet: UrlState = {
   licence: 'microsoft.m365-e5',
   product: 'microsoft.entra-id',
   compare: ['microsoft.m365-e3', 'microsoft.m365-e5'],
+  framework: 'asd_ism',
+  compareFrom: 'v2025.12.9',
+  compareTo: 'v2026.09.4',
+  changeKinds: ['behaviour', 'references'],
+  compareSearch: 'access control',
+  compareSections: ['Guidelines for email'],
+  compareBenchmarks: [benchmarkFacetValue('cis_lvl1', null)],
+  compareOnly: ['custom', 'selected'],
 }
 
 describe('urlState', () => {
+  it('writes the comparison parameters under their own names, in a fixed order', () => {
+    expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
+      '?framework=asd_ism&from=v2025.12.9&to=v2026.09.4&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
+    )
+  })
+
+  it('leaves every comparison parameter out when nothing is set', () => {
+    const state = parseUrlState('')
+    expect(state.framework).toBeNull()
+    expect(state.compareFrom).toBeNull()
+    expect(state.compareTo).toBeNull()
+    expect(state.changeKinds).toBeNull()
+    expect(state.compareSearch).toBe('')
+    expect(state.compareSections).toEqual([])
+    expect(state.compareBenchmarks).toEqual([])
+    expect(state.compareOnly).toEqual([])
+    expect(serializeUrlState(state, defaults)).toBe('')
+  })
+
+  it('does not write the kinds when they are the default ones, in any order', () => {
+    const defaultKinds = parseUrlState('?kind=wording&kind=behaviour&kind=scope')
+    expect(serializeUrlState(defaultKinds, defaults)).toBe('')
+    expect(serializeUrlState({ ...defaultKinds, changeKinds: ['behaviour', 'scope', 'wording', 'references'] }, defaults)).toContain('kind=references')
+  })
+
+  it('ignores a kind or an only value it does not know', () => {
+    const state = parseUrlState('?kind=colour&kind=scope&only=everything&only=custom')
+    expect(state.changeKinds).toEqual(['scope'])
+    expect(state.compareOnly).toEqual(['custom'])
+    expect(parseUrlState('?kind=colour').changeKinds).toBeNull()
+  })
+
   it('round trips every key, including repeated keys', () => {
     expect(parseUrlState(serializeUrlState(everyKeySet, defaults))).toEqual({ ...everyKeySet, view: DEFAULT_VIEW_ID })
   })
@@ -167,6 +207,15 @@ describe('urlState', () => {
       expect(startsHistoryEntry(base, { ...base, openRule: 'a.b' })).toBe(true)
       expect(startsHistoryEntry(base, { ...base, compare: ['a.one'] })).toBe(true)
       expect(startsHistoryEntry({ ...base, compare: ['a.one', 'a.two'] }, { ...base, compare: [] })).toBe(true)
+      expect(startsHistoryEntry(base, { ...base, framework: 'asd_ism' })).toBe(true)
+      expect(startsHistoryEntry({ ...base, framework: 'asd_ism' }, { ...base, framework: null })).toBe(true)
+    })
+
+    it('is false for refining a comparison: releases, kinds, search, sections and the only-rules filters', () => {
+      const comparing = { ...base, framework: 'asd_ism', compareFrom: 'a', compareTo: 'b' }
+      expect(startsHistoryEntry(comparing, { ...comparing, compareFrom: 'c', compareTo: 'd' })).toBe(false)
+      expect(startsHistoryEntry(comparing, { ...comparing, changeKinds: ['behaviour'], compareSearch: 'x', compareSections: ['s'], compareOnly: ['custom'] })).toBe(false)
+      expect(startsHistoryEntry(comparing, { ...comparing, framework: 'mscp' })).toBe(false)
     })
 
     it('is false for search, filters, paging, closing a rule and ticking more licences inside compare', () => {

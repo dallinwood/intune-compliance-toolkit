@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { FilterDimension, FilterValues } from '../logic/ruleFilters'
+import type { ChangeKind } from '../logic/ruleChanges'
 import {
   DEFAULT_AUTOMATION,
   DEFAULT_PAGE_SIZE,
@@ -7,6 +8,7 @@ import {
   parseUrlState,
   serializeUrlLocation,
   startsHistoryEntry,
+  type CompareOnly,
   type PageSize,
   type UrlState,
 } from './urlState'
@@ -36,7 +38,26 @@ export interface FilterState {
   licence: string | null
   product: string | null
   compare: string[]
+  // The Frameworks view (see UrlState).
+  framework: string | null
+  compareFrom: string | null
+  compareTo: string | null
+  changeKinds: ChangeKind[] | null
+  compareSearch: string
+  compareSections: string[]
+  compareBenchmarks: string[]
+  compareOnly: CompareOnly[]
   setView: (value: string) => void
+  // One update, so one history entry: open a framework's comparison with the
+  // narrowing filters cleared.
+  showComparison: (framework: string, from: string | null, to: string | null) => void
+  closeComparison: () => void
+  setCompareReleases: (from: string | null, to: string | null) => void
+  setChangeKinds: (kinds: ChangeKind[] | null) => void
+  setCompareSearch: (value: string) => void
+  toggleCompareSection: (value: string) => void
+  toggleCompareBenchmark: (value: string) => void
+  toggleCompareOnly: (value: CompareOnly) => void
   setLicence: (id: string | null) => void
   setProduct: (id: string | null) => void
   setCompare: (ids: string[]) => void
@@ -127,17 +148,39 @@ function filterValuesOf(urlState: UrlState) {
     licence: urlState.licence,
     product: urlState.product,
     compare: urlState.compare,
+    framework: urlState.framework,
+    compareFrom: urlState.compareFrom,
+    compareTo: urlState.compareTo,
+    changeKinds: urlState.changeKinds,
+    compareSearch: urlState.compareSearch,
+    compareSections: urlState.compareSections,
+    compareBenchmarks: urlState.compareBenchmarks,
+    compareOnly: urlState.compareOnly,
   }
 }
 
 // Any filter or search change goes back to the first page.
 const FIRST_PAGE = { page: 1 }
 
+function toggledInList<T extends string>(values: T[], value: T): T[] {
+  return values.includes(value) ? values.filter((existing) => existing !== value) : [...values, value]
+}
+
+const NO_COMPARISON_FILTERS = { changeKinds: null, compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
+
 export const useFilterStore = create<FilterState>((set) => {
   return {
     ...filterValuesOf(stateFromLocation()),
     openRuleRequest: 0,
     setView: (value) => set({ view: value }),
+    showComparison: (framework, from, to) => set({ framework, compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
+    closeComparison: () => set({ framework: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
+    setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
+    setChangeKinds: (kinds) => set({ changeKinds: kinds }),
+    setCompareSearch: (value) => set({ compareSearch: value }),
+    toggleCompareSection: (value) => set((state) => ({ compareSections: toggledInList(state.compareSections, value) })),
+    toggleCompareBenchmark: (value) => set((state) => ({ compareBenchmarks: toggledInList(state.compareBenchmarks, value) })),
+    toggleCompareOnly: (value) => set((state) => ({ compareOnly: toggledInList(state.compareOnly, value) })),
     setLicence: (id) => set({ licence: id }),
     setProduct: (id) => set({ product: id }),
     setCompare: (ids) => set({ compare: ids }),
@@ -205,6 +248,14 @@ function urlStateOf(state: FilterState): UrlState {
     licence: state.licence,
     product: state.product,
     compare: state.compare,
+    framework: state.framework,
+    compareFrom: state.compareFrom,
+    compareTo: state.compareTo,
+    changeKinds: state.changeKinds,
+    compareSearch: state.compareSearch,
+    compareSections: state.compareSections,
+    compareBenchmarks: state.compareBenchmarks,
+    compareOnly: state.compareOnly,
   }
 }
 
