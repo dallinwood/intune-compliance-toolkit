@@ -1007,4 +1007,4 @@ entry here, not just the session that wrote it.
   only-export-components warnings), `bun run test:e2e` 184 passed in 5.5 min.
   `python tools/mappings.py` gives 148 warnings (222 before the change-aware
   check). The F2 and F5 screenshots (1440px light, 375px dark) were read. No
-  dev server was left running. (see the commit that follows)
+  dev server was left running. (`9d25dca` docs: document release history and framework comparison)
