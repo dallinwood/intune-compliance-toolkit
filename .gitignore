@@ -266,3 +266,6 @@ Thumbs.db
 .mscp-sources-staging-*/
 .mscp-old-*/
 .manifest-*.tmp
+
+# Brainstorming companion mockups (local only)
+.superpowers/
