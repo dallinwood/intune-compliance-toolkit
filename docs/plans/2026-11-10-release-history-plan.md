@@ -990,4 +990,4 @@ entry here, not just the session that wrote it.
   Vitest 1126 passed, `tsc -b` and lint clean; the frameworks e2e spec (17
   tests, 3 new) passed; screenshots of the default comparison at 1440px light
   and 375px dark were read (all four kinds ticked, no note, rows closed after
-  Expand all). (see the commit that follows)
+  Expand all). (`61c1d7f` fix: keep the comparison toolbar to groups, report unavailable custom changes, reset Show more, start with every kind ticked)
