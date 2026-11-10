@@ -1,6 +1,9 @@
 import { Tabs } from '@base-ui/react/tabs'
-import { Component, type ReactNode } from 'react'
+import { Component, useState, type ReactNode } from 'react'
 import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
+import { useRuleHistory } from '@/hooks/useRuleHistory'
+import { changeCount } from '../../logic/historyIndex'
+import { historyTabLabel } from '../../logic/changeLabels'
 import { distinctMappedRuleCount } from '../../logic/mappedRuleView'
 import { termLabel } from '../../logic/vocabulary'
 import { displayWithOdv, odvSubstitutionMode, codeOdvValues, usableOdvValue, validateOdvValue } from '../../logic/odv'
@@ -13,6 +16,7 @@ import { useMappedRulesViewState, type MappedRulesViewState } from '../../state/
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
+import { RuleHistoryTab } from '../history/RuleHistoryTab'
 import { SectionHeading } from './CodeBlock'
 import { CustomTag } from './CustomTag'
 import { DiscussionText } from './DiscussionText'
@@ -142,6 +146,8 @@ const TAB_CLASS =
 
 const PANEL_FOCUS_CLASS = 'outline-none focus-visible:ring-2 focus-visible:ring-focus-ring'
 
+type PanelTab = 'details' | 'mapped-rules' | 'history'
+
 function LoadedRuleDetail({
   ruleRef,
   rule,
@@ -156,6 +162,10 @@ function LoadedRuleDetail({
   mappedView?: MappedRulesViewState
 }) {
   const { byRule, rowsById } = useRuleMappings()
+  const [tab, setTab] = useState<PanelTab>('details')
+  // Nested panels (a mapped rule's details) show no History tab.
+  const history = useRuleHistory(mappedView ? rule : null)
+  const showHistory = history.status === 'ready' && history.index.releases.length > 1
   const mappedRuleCount = mappedView ? distinctMappedRuleCount(byRule.get(rule.id) ?? [], rowsById) : 0
   const storedValue = useStoredOdvValue(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
@@ -243,22 +253,36 @@ function LoadedRuleDetail({
 
   return (
     <div className={`space-y-4 ${PANEL_CLASS}`}>
-      {mappedView && mappedRuleCount > 0 ? (
-        <Tabs.Root defaultValue="details" className="space-y-4">
+      {mappedView && (mappedRuleCount > 0 || showHistory) ? (
+        <Tabs.Root value={tab} onValueChange={(value) => setTab(value as PanelTab)} className="space-y-4">
           <Tabs.List className="flex flex-wrap border-b border-border">
             <Tabs.Tab value="details" className={TAB_CLASS}>
               Details
             </Tabs.Tab>
-            <Tabs.Tab value="mapped-rules" className={TAB_CLASS}>
-              Mapped rules ({mappedRuleCount})
-            </Tabs.Tab>
+            {mappedRuleCount > 0 && (
+              <Tabs.Tab value="mapped-rules" className={TAB_CLASS}>
+                Mapped rules ({mappedRuleCount})
+              </Tabs.Tab>
+            )}
+            {showHistory && (
+              <Tabs.Tab value="history" className={TAB_CLASS}>
+                {historyTabLabel(changeCount(history.timeline))}
+              </Tabs.Tab>
+            )}
           </Tabs.List>
           <Tabs.Panel value="details" keepMounted className={`space-y-4 ${PANEL_FOCUS_CLASS}`}>
             {detailContent}
           </Tabs.Panel>
-          <Tabs.Panel value="mapped-rules" className={PANEL_FOCUS_CLASS}>
-            <MappedRulesTab ruleId={rule.id} view={mappedView} />
-          </Tabs.Panel>
+          {mappedRuleCount > 0 && (
+            <Tabs.Panel value="mapped-rules" className={PANEL_FOCUS_CLASS}>
+              <MappedRulesTab ruleId={rule.id} view={mappedView} />
+            </Tabs.Panel>
+          )}
+          {showHistory && (
+            <Tabs.Panel value="history" className={PANEL_FOCUS_CLASS}>
+              <RuleHistoryTab ruleId={rule.id} index={history.index} timeline={history.timeline} />
+            </Tabs.Panel>
+          )}
         </Tabs.Root>
       ) : (
         detailContent

@@ -198,3 +198,15 @@ export function foldQuietRuns(entries: TimelineEntry[]): TimelineItem[] {
 export function changeCount(entries: TimelineEntry[]): number {
   return entries.filter((entry) => entry.state === 'added' || entry.state === 'changed' || entry.state === 'removed').length
 }
+
+// The closest earlier release that has the rule, skipping a gap; null for the
+// first release of the rule, or an unknown rule or release.
+export function previousTagWithRule(index: HistoryIndex, ruleId: string, tag: string): string | null {
+  const entry = index.rules[ruleId]
+  const position = index.releases.findIndex((release) => release.tag === tag)
+  if (entry === undefined || position === -1) return null
+  for (let earlier = position - 1; earlier >= 0; earlier -= 1) {
+    if (entry.versions[earlier] !== null) return index.releases[earlier].tag
+  }
+  return null
+}

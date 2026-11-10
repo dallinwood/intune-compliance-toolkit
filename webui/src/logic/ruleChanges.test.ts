@@ -129,11 +129,28 @@ describe('fieldChanges', () => {
     expect(changes).toEqual([{ kind: 'behaviour', path: ['odv', 'recommended'], display: 'value', before: 6, after: 8 }])
   })
 
-  it('shows a field that gained a value with the old side null', () => {
-    const changes = fieldChanges(withOverrides({ odv: null }), withOverrides({ odv: numberOdv() }))
+  it('spells out a whole object that appeared, so each part is drawn as its own kind of change', () => {
+    const changes = fieldChanges(withOverrides({ check: null }), withOverrides({ check: macosCheck(ruleCheck('echo new', { type: 'string', value: 'PASS' })) }))
 
-    expect(changes).toHaveLength(1)
-    expect(changes[0]).toMatchObject({ kind: 'behaviour', path: ['odv'], display: 'value', before: null })
+    expect(changes).toContainEqual({ kind: 'behaviour', path: ['check', 'macOS', 'default', 'shell'], display: 'code', before: undefined, after: 'echo new' })
+    expect(changes.every((change) => change.path[0] === 'check' && change.before === undefined)).toBe(true)
+  })
+
+  it('spells out a whole object that disappeared, with the new side undefined', () => {
+    const changes = fieldChanges(withOverrides({ odv: numberOdv() }), withOverrides({ odv: null }))
+
+    expect(changes).toContainEqual({ kind: 'behaviour', path: ['odv', 'recommended'], display: 'value', before: 6, after: undefined })
+    expect(changes.every((change) => change.path[0] === 'odv' && change.after === undefined)).toBe(true)
+  })
+
+  it('draws a whole remediation step that was added as its parts', () => {
+    const step = { name: null, language: 'bash' as const, shell: 'echo hi', additional_info: null, versions: null }
+    const changes = fieldChanges(
+      withOverrides({ remediation: { macOS: { steps: [], payloads: [] } } }),
+      withOverrides({ remediation: { macOS: { steps: [step], payloads: [] } } }),
+    )
+
+    expect(changes).toContainEqual({ kind: 'behaviour', path: ['remediation', 'macOS', 'steps', '0', 'shell'], display: 'code', before: undefined, after: 'echo hi' })
   })
 
   it('orders changes by kind and then by path', () => {

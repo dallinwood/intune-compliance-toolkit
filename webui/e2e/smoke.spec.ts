@@ -2422,14 +2422,16 @@ test.describe('rule mappings', () => {
     await expect(detailOf(page, ISM_1622).getByRole('tablist')).toHaveCount(0)
   })
 
-  test('with no mappings the details show no tab strip', async ({ page }) => {
+  test('with no mappings the details show a History tab but no Mapped rules tab', async ({ page }) => {
     await serveMappings(page, {})
     await openLibrary(page)
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
 
     await expect(detailOf(page, ISM_1622).getByRole('heading', { name: 'Benchmarks' })).toBeVisible()
-    await expect(detailOf(page, ISM_1622).getByRole('tablist')).toHaveCount(0)
+    await expect(detailOf(page, ISM_1622).getByRole('tab', { name: /^History/ })).toBeVisible({ timeout: 15_000 })
+    await expect(detailOf(page, ISM_1622).getByRole('tab')).toHaveCount(2)
+    await expect(mappedRulesTab(page, ISM_1622)).toHaveCount(0)
     await expect(page.getByRole('status', { name: 'Mapping problems' })).toHaveCount(0)
   })
 })

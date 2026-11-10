@@ -7,6 +7,7 @@ import {
   compareReleases,
   foldQuietRuns,
   parseHistoryIndex,
+  previousTagWithRule,
   ruleTimeline,
   type HistoryIndex,
   type RuleWithFile,
@@ -240,5 +241,23 @@ describe('parseHistoryIndex', () => {
 
   it('rejects something that is not an object', () => {
     expect(parseHistoryIndex(null)).toEqual({ error: expect.any(String) })
+  })
+})
+
+describe('previousTagWithRule', () => {
+  it('finds the closest earlier release that has the rule, skipping a gap', () => {
+    const index = buildFixture()
+
+    expect(previousTagWithRule(index, 'mscp.gappy', 'R3')).toBe('R1')
+    expect(previousTagWithRule(index, 'mscp.steady', 'R3')).toBe('R2')
+  })
+
+  it('is null for the first release of a rule and for an unknown rule or release', () => {
+    const index = buildFixture()
+
+    expect(previousTagWithRule(index, 'mscp.fresh', 'R2')).toBeNull()
+    expect(previousTagWithRule(index, 'mscp.steady', 'R1')).toBeNull()
+    expect(previousTagWithRule(index, 'mscp.unknown', 'R3')).toBeNull()
+    expect(previousTagWithRule(index, 'mscp.steady', 'R9')).toBeNull()
   })
 })

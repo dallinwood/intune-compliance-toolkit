@@ -817,3 +817,31 @@ entry here, not just the session that wrote it.
     and repository and says the tag may have no GitHub Release; the change
     summary is printed after a successful import, so a summary failure is a
     warning, not exit 1. (`214356c` fix: clearer missing-release error, safer import summary, tests follow the manifest; `49bf48a` fix: close the HTTP error response before raising a clearer one)
+- **2026-11-10** - Tasks 6 and 7 (Milestone 4), one commit as the plan says:
+  the six colour tokens pairs in `index.css` (light and dark; every foreground
+  is 8:1 or better on its own background and on `--panel`, checked with a
+  small OKLCH contrast script), `KindTag`, `FieldChangeList` (word diff for
+  text, line diff with -/+ gutters inside the dark code-block look, + pills for
+  lists, before and after for values), `changeLabels.ts` (kind labels, path
+  labels, which changes to show, tab and card wording), `useRuleHistory`, the
+  `RuleHistoryTab` (cards newest first, quiet bars, Compare any two, All
+  changes or Behaviour only) and the controlled tabs in `RuleDetailPanel`
+  (History appears once the history index has loaded and the source has more
+  than one release). Unit tests first for every pure function; the e2e spec
+  `history.spec.ts` (7 tests) came after the component. Vitest 1055 passed,
+  `tsc -b` and lint clean, full e2e 161 passed (the smoke test "with no
+  mappings" now expects a History tab and no Mapped rules tab).
+  (see the commit that follows)
+  - Design refinements found while looking at the screenshots: a whole object
+    that appears or disappears (a new check, a new payload) is spelled out
+    part by part, so its shell is drawn as a code diff instead of one block of
+    JSON; and a path label ends in the part when it is not the script
+    ("Check · macOS · Result value", "Assessment · Status"), so rows are not
+    all called "Check · macOS". "All changes" shows every kind, References
+    included; "Behaviour only" shows just behaviour.
+  - Screenshots (1440px and 375px, light and dark, all read): a rule with
+    wording changes and an expanded quiet bar (ISM), and a rule with check,
+    fix and payload changes drawn as code diffs (mSCP). At 375px the label and
+    kind tag sit above the change, the code lines wrap inside the block and
+    nothing needs sideways scrolling; the tinted lines, kind tags and struck
+    or underlined words are readable in both themes.

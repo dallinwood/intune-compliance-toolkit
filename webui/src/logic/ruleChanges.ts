@@ -129,6 +129,10 @@ function leafDisplay(path: string[], before: unknown, after: unknown): FieldChan
   return 'value'
 }
 
+function isAbsent(value: unknown): boolean {
+  return value === undefined || value === null
+}
+
 function isPayloadData(path: string[]): boolean {
   return path[path.length - 1] === 'data' && path.includes('payloads')
 }
@@ -145,9 +149,14 @@ function walk(kind: ChangeKind, path: string[], before: unknown, after: unknown,
     return
   }
 
-  if (isPlainObject(before) && isPlainObject(after)) {
-    for (const key of [...new Set([...Object.keys(before), ...Object.keys(after)])].sort()) {
-      walk(kind, [...path, key], before[key], after[key], changes)
+  // An object that appeared or disappeared is spelled out part by part (a new
+  // check becomes its shell, its result, ...), so each part is drawn as the
+  // kind of value it is instead of one block of JSON.
+  const beforeParts = isPlainObject(before) ? before : isAbsent(before) && isPlainObject(after) ? {} : null
+  const afterParts = isPlainObject(after) ? after : isAbsent(after) && isPlainObject(before) ? {} : null
+  if (beforeParts !== null && afterParts !== null) {
+    for (const key of [...new Set([...Object.keys(beforeParts), ...Object.keys(afterParts)])].sort()) {
+      walk(kind, [...path, key], beforeParts[key], afterParts[key], changes)
     }
     return
   }
@@ -181,7 +190,14 @@ function walkApplicability(kind: ChangeKind, path: string[], before: Applicabili
   const beforeByScope = new Map(before.map((entry) => [scopeKeyOf(entry), entry]))
   const afterByScope = new Map(after.map((entry) => [scopeKeyOf(entry), entry]))
   for (const scope of [...new Set([...beforeByScope.keys(), ...afterByScope.keys()])].sort()) {
-    walk(kind, [...path, scope], beforeByScope.get(scope), afterByScope.get(scope), changes)
+    const beforeEntry = beforeByScope.get(scope)
+    const afterEntry = afterByScope.get(scope)
+    // A scope that appeared or disappeared is one change, not its parts.
+    if (beforeEntry === undefined || afterEntry === undefined) {
+      changes.push({ kind, path: [...path, scope], display: 'value', before: beforeEntry, after: afterEntry })
+    } else {
+      walk(kind, [...path, scope], beforeEntry, afterEntry, changes)
+    }
   }
 }
 
