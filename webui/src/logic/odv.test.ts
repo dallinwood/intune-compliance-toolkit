@@ -52,6 +52,11 @@ describe('odvSubstitutionMode', () => {
     } as unknown as Rule
   }
 
+  it('is variable for the admin group membership rule with its reviewed shell', () => {
+    const adminGroupRuleId = 'mscp.system_settings_admin_group_membership_defined'
+    expect(odvSubstitutionMode(ruleWithChecks(adminGroupRuleId, ODV_VARIABLE_ALLOWLIST[adminGroupRuleId]))).toBe('variable')
+  })
+
   it('is none when no check shell mentions $ODV', () => {
     expect(odvSubstitutionMode(ruleWithChecks('mscp.x', '/usr/bin/defaults read com.apple.foo'))).toBe('none')
   })
@@ -243,6 +248,20 @@ describe('validateOdvValue hardening', () => {
     it('does not apply the extra restrictions in none or variable mode', () => {
       expect(validateOdvValue(regexOdv, 'a b;c', 'none', GENERIC_RULE_ID)).toBeNull()
     })
+  })
+})
+
+describe('validateOdvValue for the admin group membership rule', () => {
+  const adminGroupRuleId = 'mscp.system_settings_admin_group_membership_defined'
+  const adminGroupOdv = odv({ datatype: 'regex', recommended: '^(admin)$' })
+  const leadingHyphenRequirement = 'Value must not start with a hyphen, because the check passes it to grep as a pattern.'
+
+  it('allows an alternation pattern in variable mode', () => {
+    expect(validateOdvValue(adminGroupOdv, '^(admin|jdoe|asmith)$', 'variable', adminGroupRuleId)).toBeNull()
+  })
+
+  it('rejects a value grep would read as an option', () => {
+    expect(validateOdvValue(adminGroupOdv, '-e .', 'variable', adminGroupRuleId)).toBe(leadingHyphenRequirement)
   })
 })
 

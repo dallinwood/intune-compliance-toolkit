@@ -48,11 +48,25 @@ export const ODV_RULE_VALUE_PATTERNS: Readonly<Record<string, OdvRuleValuePatter
     pattern: /^[0-9]+[ymwdHMS]$/,
     requirement: 'Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
   },
+  // `grep -vE "$ODV"` would read a leading hyphen as an option, e.g. "-e ." matches every account and the check always passes.
+  'mscp.system_settings_admin_group_membership_defined': {
+    pattern: /^[^-]/,
+    requirement: 'Value must not start with a hyphen, because the check passes it to grep as a pattern.',
+  },
 }
 
 // Entries are hand-reviewed check shells where `$ODV` is only ever expanded as a double-quoted variable, so the generator can define ODV as a variable instead of text-replacing.
 export const ODV_VARIABLE_ALLOWLIST: Readonly<Record<string, string>> = {
   'mscp.os_policy_banner_ssh_configure': 'bannerText="$ODV"\ntest "$(cat /etc/banner)" = "$bannerText" && echo "1" || echo "0"',
+  'mscp.system_settings_admin_group_membership_defined': `found=$(for u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do
+  /usr/bin/dsmemberutil checkmembership -U "$u" -G admin 2> /dev/null | /usr/bin/grep -q "is a member" && echo "$u"
+done | /usr/bin/grep -vE "$ODV")
+
+if [[ -z "$found" ]]; then
+  echo "0"
+else
+  echo "Undocumented admin accounts found: $found"
+fi`,
 }
 
 export function odvSubstitutionMode(rule: Rule): OdvSubstitutionMode {
