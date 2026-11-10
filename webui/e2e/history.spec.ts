@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { changeCount, ruleTimeline, type HistoryIndex } from '../src/logic/historyIndex'
+import { buildOverlayIndex } from '../src/logic/overlayIndex'
+import { fieldChanges } from '../src/logic/ruleChanges'
+import type { Rule } from '../src/types/library'
 
 // Written by `bun run dev` (copy-baselines) next to the other published indexes.
 function readHistory(sourceName: string): HistoryIndex {
@@ -140,4 +143,83 @@ test('kind pills hide the changes of the other kinds and fold their releases int
   await pill('Wording').click()
   await panel.getByRole('button', { name: 'Show all' }).click()
   for (const name of ['Behaviour', 'Scope', 'Wording', 'References']) await expect(pill(name)).toHaveAttribute('aria-pressed', 'true')
+})
+
+// Custom changes written for an older release: whether the rule changed since in a field they touch.
+const oldestIsmRelease = ismHistory.releases[0]
+const currentIsmRelease = ismHistory.releases.at(-1)!
+
+function ismRuleAt(tag: string, ruleId: string): Rule {
+  const release = ismHistory.releases.find((candidate) => candidate.tag === tag)!
+  const directory = release.index_path.slice(0, release.index_path.lastIndexOf('/') + 1)
+  return JSON.parse(readFileSync(new URL(`../../baselines/${directory}${ismHistory.rules[ruleId].file}`, import.meta.url), 'utf8')) as Rule
+}
+
+function changedPathsBetweenOldestAndCurrent(ruleId: string): string[] {
+  return fieldChanges(ismRuleAt(oldestIsmRelease.tag, ruleId), ismRuleAt(currentIsmRelease.tag, ruleId)).map((change) => change.path[0])
+}
+
+const ismRuleIds = Object.keys(ismHistory.rules).filter((ruleId) => ismHistory.rules[ruleId].versions[0] !== null && ismHistory.rules[ruleId].versions.at(-1) !== null)
+const DISCUSSION_CHANGED_RULE = ismRuleIds.find((ruleId) => changedPathsBetweenOldestAndCurrent(ruleId).includes('discussion') && !changedPathsBetweenOldestAndCurrent(ruleId).includes('tags')) ?? ''
+const UNCHANGED_ISM_RULE = ismRuleIds.find((ruleId) => changedPathsBetweenOldestAndCurrent(ruleId).length === 0) ?? ''
+
+async function serveOverlayFor(page: Page, ruleId: string, release: string, fields: Record<string, unknown>) {
+  const overlay = { schema_version: 1, id: 'written-for-an-older-release', targets: [{ rule: ruleId, release }], fields }
+  const index = buildOverlayIndex([{ fileName: 'older.json', value: overlay }], () => {})
+  await page.route('**/baselines/_overlays/{_index.json,rules/*.json}', (route) => {
+    const fileName = new URL(route.request().url()).pathname.split('/').pop() ?? ''
+    if (fileName !== '_index.json' && fileName !== 'older.json') return route.fulfill({ status: 404, body: 'Not found' })
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(fileName === '_index.json' ? index : overlay) })
+  })
+}
+
+const staleNote = (page: Page, ruleId: string) => detailOf(page, ruleId).getByTestId('stale-overlay-note')
+
+test('a rule that changed in a field the custom changes set warns, names the field and opens History on those changes', async ({ page }) => {
+  expect(DISCUSSION_CHANGED_RULE).not.toBe('')
+  await serveOverlayFor(page, DISCUSSION_CHANGED_RULE, oldestIsmRelease.tag, { discussion: 'My own discussion.' })
+  await openRule(page, DISCUSSION_CHANGED_RULE)
+
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE)).toContainText(`Your custom changes to this rule were written for ${oldestIsmRelease.label}.`, { timeout: 15_000 })
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE)).toContainText('has since been updated in a field your custom changes touch (Discussion)')
+
+  await staleNote(page, DISCUSSION_CHANGED_RULE).getByRole('button', { name: 'See what changed →' }).click()
+
+  await expect(historyTab(page, DISCUSSION_CHANGED_RULE)).toHaveAttribute('aria-selected', 'true')
+  const result = historyPanel(page, DISCUSSION_CHANGED_RULE).getByTestId('history-compare-result')
+  await expect(result.getByTestId('field-change').first()).toBeVisible({ timeout: 15_000 })
+  await expect(result.getByTestId('field-change').first()).toContainText('Discussion')
+})
+
+test('a rule that changed only elsewhere says so, in muted words', async ({ page }) => {
+  await serveOverlayFor(page, DISCUSSION_CHANGED_RULE, oldestIsmRelease.tag, { tags: ['my-tag'] })
+  await openRule(page, DISCUSSION_CHANGED_RULE)
+
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE)).toContainText('but not in any field your custom changes touch', { timeout: 15_000 })
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE).getByRole('button', { name: 'See what changed →' })).toBeVisible()
+})
+
+test('a rule that has not changed since says the custom changes can be marked as up to date', async ({ page }) => {
+  expect(UNCHANGED_ISM_RULE).not.toBe('')
+  await serveOverlayFor(page, UNCHANGED_ISM_RULE, oldestIsmRelease.tag, { tags: ['my-tag'] })
+  await openRule(page, UNCHANGED_ISM_RULE)
+
+  await expect(staleNote(page, UNCHANGED_ISM_RULE)).toContainText("The rule hasn't changed since, so they can be marked as up to date.", { timeout: 15_000 })
+  await expect(staleNote(page, UNCHANGED_ISM_RULE).getByRole('button')).toHaveCount(0)
+})
+
+test('custom changes written for a release the history does not keep say so and compare from the earliest release', async ({ page }) => {
+  await serveOverlayFor(page, DISCUSSION_CHANGED_RULE, 'v2000.01.1', { discussion: 'My own discussion.' })
+  await openRule(page, DISCUSSION_CHANGED_RULE)
+
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE)).toContainText("written for v2000.01.1, which isn't one of the releases kept here.", { timeout: 15_000 })
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE)).toContainText(`Compared from ${oldestIsmRelease.label}, the earliest release kept.`)
+})
+
+test('custom changes written for the current release show no notice', async ({ page }) => {
+  await serveOverlayFor(page, DISCUSSION_CHANGED_RULE, currentIsmRelease.tag, { tags: ['my-tag'] })
+  await openRule(page, DISCUSSION_CHANGED_RULE)
+
+  await expect(detailOf(page, DISCUSSION_CHANGED_RULE).getByTestId('custom-fields')).toBeVisible({ timeout: 15_000 })
+  await expect(staleNote(page, DISCUSSION_CHANGED_RULE)).toHaveCount(0)
 })

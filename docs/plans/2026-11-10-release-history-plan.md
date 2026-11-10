@@ -942,3 +942,29 @@ entry here, not just the session that wrote it.
     Screenshots at 1440px and 375px, light and dark, read: pills and the end
     marker in History, tiles with a pressed one, the group header and toolbar and
     the sidebar note and "Show all" in the comparison; nothing overflows at 375px.
+- **2026-11-10** - Task 10: the custom changes notice. `customChangeNotice.ts`
+  (`overlayFieldPaths`, `isTouched`, `customChangeBaseline`,
+  `customChangeStatus`, and `customChangeNotice` with the exact copy from the
+  spec), `useCustomChangeNotice` (fetches the history, the overlay and the
+  rule at the written-for and current releases), `fetchOverlayById`, and the
+  `StaleOverlayNote` that replaces the stale branch of `OverlayNotes`. "See
+  what changed →" switches the details to History with the written-for
+  release to the current one and the fields the custom changes set listed
+  first. While the check runs the note says it is checking; if the history
+  cannot say, the old plain review note stays. The unit tests failed first on
+  the missing module; five e2e tests in `history.spec.ts` (touched,
+  untouched, unchanged, not in history, current release shows nothing) came
+  after the UI, and the older smoke test's expected text was updated. Vitest
+  1117 passed, `tsc -b` and lint clean, full e2e 182 passed. (see the commit
+  that follows)
+  - Design refinement (as the plan asked): a release the history does not keep,
+    whether older than it or missing for another reason, gets one wording ("isn't
+    one of the releases kept here") and is compared from the earliest release
+    kept, since tags from different eras cannot be ordered reliably.
+  - The e2e uses test-only overlays served through `page.route`, as the
+    existing overlay tests do; the committed overlays all target the current
+    ISM release, so none shows a notice.
+  - Screenshots (1440px and 375px, light and dark, read): the warning is bold
+    in the warning colour with the link at the end of the line, the muted note
+    reads as secondary text, and the History view opened from the link lists
+    the touched Discussion first; at 375px both wrap cleanly.

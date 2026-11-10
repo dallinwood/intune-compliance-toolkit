@@ -2,13 +2,14 @@ import { Tabs } from '@base-ui/react/tabs'
 import { Component, useEffect, useState, type ReactNode } from 'react'
 import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
 import { useRuleHistory } from '@/hooks/useRuleHistory'
+import { useCustomChangeNotice } from '@/hooks/useCustomChangeNotice'
 import { useSourceReleaseCount } from '@/hooks/useSourceReleaseCount'
 import { changeCount } from '../../logic/historyIndex'
 import { historyTabLabel } from '../../logic/changeLabels'
 import { distinctMappedRuleCount } from '../../logic/mappedRuleView'
 import { termLabel } from '../../logic/vocabulary'
 import { displayWithOdv, odvSubstitutionMode, codeOdvValues, usableOdvValue, validateOdvValue } from '../../logic/odv'
-import type { OverlaidRule } from '../../logic/overlays'
+import type { OverlaidRule, OverlayApplication } from '../../logic/overlays'
 import { macosReferences } from '../../logic/references'
 import { BREADCRUMB_SEPARATOR } from '../../logic/ruleDisplay'
 import type { RuleRef } from '../../logic/selectionEntry'
@@ -19,7 +20,7 @@ import { useFilterStore } from '../../state/filterStore'
 import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
-import { RuleHistoryTab } from '../history/RuleHistoryTab'
+import { RuleHistoryTab, type HistoryCompare } from '../history/RuleHistoryTab'
 import { SectionHeading } from './CodeBlock'
 import { CustomTag } from './CustomTag'
 import { DiscussionText } from './DiscussionText'
@@ -121,9 +122,58 @@ function fieldsWithOwnSection(rule: Rule): Set<string> {
   return fields
 }
 
-function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }) {
+// The notice that a rule's custom changes were written for an older release: whether
+// the rule changed since in a field they touch, with a way to see the changes.
+// Falls back to the plain review note when the history cannot say.
+function StaleOverlayNote({
+  application,
+  rule,
+  onSeeWhatChanged,
+}: {
+  application: OverlayApplication
+  rule: Rule
+  onSeeWhatChanged?: (compare: HistoryCompare) => void
+}) {
   const vocabularyIndex = useVocabularyIndex()
   const sourceLabel = termLabel(vocabularyIndex, 'sources', rule.source.name)
+  const state = useCustomChangeNotice(rule, application)
+  if (state.status === 'loading') {
+    return (
+      <p data-testid="stale-overlay-note" className="break-words text-muted-foreground">
+        Checking whether this rule changed since your custom changes were written…
+      </p>
+    )
+  }
+  if (state.status === 'unknown') {
+    return (
+      <p data-testid="stale-overlay-note" className="break-words">
+        Custom content ({application.overlayId}) was written for {sourceLabel} {application.release}; this rule is from {rule.source.release_tag}. Review it
+        for accuracy.
+      </p>
+    )
+  }
+  const { notice, fromTag, toTag, focusPaths } = state
+  return (
+    <p data-testid="stale-overlay-note" className={`break-words ${notice.tone === 'warning' ? '' : 'text-muted-foreground'}`}>
+      {notice.lead !== null && <strong>{notice.lead} </strong>}
+      {notice.text}
+      {notice.linksToChanges && onSeeWhatChanged !== undefined && (
+        <>
+          {' '}
+          <button
+            type="button"
+            onClick={() => onSeeWhatChanged({ from: fromTag, to: toTag, focusPaths })}
+            className="rounded-sm text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+          >
+            See what changed →
+          </button>
+        </>
+      )}
+    </p>
+  )
+}
+
+function OverlayNotes({ overlaid, rule, onSeeWhatChanged }: { overlaid: OverlaidRule; rule: Rule; onSeeWhatChanged?: (compare: HistoryCompare) => void }) {
   const staleOverlays = overlaid.applied.filter((application) => application.stale)
   if (staleOverlays.length === 0 && overlaid.skipped.length === 0) return null
 
@@ -135,10 +185,7 @@ function OverlayNotes({ overlaid, rule }: { overlaid: OverlaidRule; rule: Rule }
         </p>
       ))}
       {staleOverlays.map((application) => (
-        <p key={application.overlayId} data-testid="stale-overlay-note" className="break-words">
-          Custom content ({application.overlayId}) was written for {sourceLabel} {application.release}; this rule is from{' '}
-          {rule.source.release_tag}. Review it for accuracy.
-        </p>
+        <StaleOverlayNote key={application.overlayId} application={application} rule={rule} onSeeWhatChanged={onSeeWhatChanged} />
       ))}
     </div>
   )
@@ -168,6 +215,8 @@ function LoadedRuleDetail({
   // A link from a release comparison can ask for the History tab.
   const requestedTab = useFilterStore((store) => (store.openRule === rule.id ? store.openRuleTab : null))
   const [tab, setTab] = useState<PanelTab>(requestedTab ?? 'details')
+  // Set by "See what changed" in a custom changes notice: the releases and fields to open History on.
+  const [historyCompare, setHistoryCompare] = useState<HistoryCompare | undefined>(undefined)
   useEffect(() => {
     if (requestedTab !== null) setTab(requestedTab)
   }, [requestedTab])
@@ -201,7 +250,18 @@ function LoadedRuleDetail({
   const detailContent = (
     <>
       {notice && <p className="text-xs break-words text-warning-foreground">{notice}</p>}
-      <OverlayNotes overlaid={overlaid} rule={rule} />
+      <OverlayNotes
+        overlaid={overlaid}
+        rule={rule}
+        onSeeWhatChanged={
+          mappedView && showHistory
+            ? (compare) => {
+                setHistoryCompare(compare)
+                setTab('history')
+              }
+            : undefined
+        }
+      />
 
       {isCustom('title') && (
         <p data-testid="custom-title" className="font-medium break-words text-foreground">
@@ -292,7 +352,15 @@ function LoadedRuleDetail({
             <Tabs.Panel value="history" className={PANEL_FOCUS_CLASS}>
               {history.status === 'loading' && <p className="text-sm text-muted-foreground">Loading history…</p>}
               {history.status === 'error' && <p className="text-sm text-destructive">Failed to load: {history.message}</p>}
-              {history.status === 'ready' && <RuleHistoryTab ruleId={rule.id} index={history.index} timeline={history.timeline} />}
+              {history.status === 'ready' && (
+                <RuleHistoryTab
+                  key={historyCompare === undefined ? 'no-compare' : `${historyCompare.from}>${historyCompare.to}`}
+                  ruleId={rule.id}
+                  index={history.index}
+                  timeline={history.timeline}
+                  initialCompare={historyCompare}
+                />
+              )}
             </Tabs.Panel>
           )}
         </Tabs.Root>

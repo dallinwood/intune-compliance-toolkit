@@ -106,6 +106,12 @@ export function fetchOverlaidRule(ref: RuleRef): Promise<OverlaidRule> {
   return pending
 }
 
+// An overlay by id, from the same cache the rule details use, for the notice
+// that compares what an overlay sets with what a rule changed.
+export function fetchOverlayById(overlayId: string): Promise<Overlay> {
+  return overlaySource.loadOverlay(overlayId)
+}
+
 export function fetchRule(ref: RuleRef): Promise<Rule> {
   return fetchOverlaidRule(ref).then((overlaid) => overlaid.rule)
 }

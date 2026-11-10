@@ -1350,9 +1350,7 @@ test.describe('custom overlays', () => {
 
     const detail = await openIsm1622(page)
     await expect(detail.getByTestId('stale-overlay-note')).toHaveCount(1)
-    await expect(detail.getByTestId('stale-overlay-note')).toHaveText(
-      `Custom content (powershell-old-guidance) was written for ASD ISM v2025.03.1; this rule is from ${CURRENT_RELEASE}. Review it for accuracy.`,
-    )
+    await expect(detail.getByTestId('stale-overlay-note')).toContainText("Your custom changes to this rule were written for v2025.03.1, which isn't one of the releases kept here.", { timeout: 15_000 })
     const referencesHeading = detail.getByRole('heading', { name: 'References' })
     await expect(referencesHeading.locator('..').getByText('Custom', { exact: true })).toBeVisible()
     await expect(detail.getByText('ps101/01-getting-started', { exact: false })).toBeVisible()
