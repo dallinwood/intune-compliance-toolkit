@@ -788,3 +788,32 @@ entry here, not just the session that wrote it.
     be stale, so "this rule" was ambiguous); `KIND_LABELS` was created early in
     `changeLabels.ts` (Task 6 adds the rest); and `ruleChanges.ts` imports the
     JSON with `with { type: 'json' }`, which Playwright's Node needs.
+
+### Review fixes (milestones 1-2)
+
+- **2026-11-10** - Fixes from the code review of milestones 1 and 2.
+  - A. The admin group ODV could silently disable its check: the shell runs
+    `grep -vE "$ODV"` inside `found=$(...)`, so a pattern grep rejects, or an
+    empty alternative, makes it report compliant. The rule's value check is now
+    a function that accepts only a plain POSIX extended expression of account
+    names (name characters, `^ $ | ( ) [ ] * + ?` and an escaped dot; no
+    `(?`, no other backslash, no empty alternative, no leading hyphen, no
+    unbalanced or operand-less repetition). Rule-specific checks became
+    functions (`ODV_RULE_VALUE_CHECKS`). Tests first: every rejected example
+    from the review plus the accepted ones. (`055659f` fix: accept only plain account patterns for the admin group ODV)
+  - B. The validator now errors when a source's releases are not sorted by
+    (published_date, tag), or a published_date or retrieved_date is not a real
+    date; a test pins the same-day tie-break as ordering by tag.
+    (`a9121f0` fix: validate release order and calendar dates in the manifest)
+  - C. The committed-library test regenerates each release into an empty
+    library and compares only that release's folder (byte for byte) and its
+    manifest entry; the maintainer folders are one separate test. Full Python
+    suite with `-W error`: 18:00 before, 5:27 after (877 tests). What remains
+    is mostly Windows opening freshly written files (about 16 ms each under
+    the virus scanner), not our code. (`260e7fb` test: regenerate each committed release into an empty library)
+  - D. Tests that mean "the current release" read it from the manifest (the
+    checkPlan tests stay pinned to release_27.0 on purpose, because 27.1
+    changed rules they describe); a 404 from the Releases API names the tag
+    and repository and says the tag may have no GitHub Release; the change
+    summary is printed after a successful import, so a summary failure is a
+    warning, not exit 1. (`214356c` fix: clearer missing-release error, safer import summary, tests follow the manifest; `49bf48a` fix: close the HTTP error response before raising a clearer one)
