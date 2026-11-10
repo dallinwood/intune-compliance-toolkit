@@ -619,3 +619,27 @@ Tailwind + Base UI (web UI), Vitest (logic), Playwright (e2e and screenshots).
 - [ ] **Step 4: Commit and push.** `docs: document release history and framework comparison`
 
 ## Progress log
+
+Kept up to date per `CLAUDE.md` - every session touching this plan adds an
+entry here, not just the session that wrote it.
+
+- **2026-11-10** - Tasks 1 and 2 (Milestone 1). Manifest v6 with a `releases`
+  list, `publish_release`, release-aware validation, the shared
+  `tools/release_import.py` with a per-format registry, the published-date
+  fetch, and the data migration (`git mv` of mSCP `release_27.0` and ISM
+  `v2026.09.4` into `releases/<tag>/`, rules unchanged). Python suite 851
+  passed, `validate_library.py`, `overlays.py` and `mappings.py` clean,
+  Vitest 914 passed, `tsc -b` and lint clean, e2e 152 passed (smoke test still
+  counts 1493 rules), desktop Rules screenshot read. (`66251f0` feat: store
+  each imported release in its own folder)
+  - Deviation: `.gitattributes` patterns, `NOTICE` and `README.md` paths were
+    updated for the new folders, and `webui/e2e/smoke.spec.ts` (index lookup
+    and one route glob) and `overlayShape.test.ts` (now covers every release)
+    were adapted; the plan did not list these explicitly.
+  - Deviation: the importer's printed change summary now lists only added and
+    removed rule ids (with counts), as the plan's `release_change_summary`
+    returns; the old mSCP tag added/removed lines were dropped.
+  - Deviation: the migration deleted the v5 `_manifest.json` before the two
+    `--offline` runs, because the importers (correctly) refuse a manifest
+    source that has no `releases` list. The regenerated manifest is the v6
+    form of the same data.
