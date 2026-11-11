@@ -370,8 +370,9 @@ updated to name the one generated file.)
 - `tools/generate_mscp_nist_800_53_mapping.py` holds the logic and a CLI (`python
   tools/generate_mscp_nist_800_53_mapping.py`). It reads only the normalized library: the
   manifest, the current mSCP release's rules, and the current 800-53 release's index.
-- `SourceImporter` gains an optional `after_import: Callable[[Path], None] | None` (default
-  `None`), called once by `run_cli` with the baselines directory after every requested release
+- `SourceImporter` gains an optional `after_import: Callable[[Path, Path], None] | None` (default
+  `None`; widened from one argument in the final review so a later generator can read the vendored
+  sources), called once by `run_cli` with the sources and baselines directories after every requested release
   imported successfully. `import_mscp` and `import_nist_800_53` set it to the generator, so both
   `--tag` and `--offline` imports keep the mapping current. ISM does not set it.
 - If either source is missing from the manifest, the generator does nothing and says so.
@@ -515,4 +516,7 @@ Each was my call; the alternative is listed for review.
   UI", 88e1c98 "fix: show the 800-53 release tag once and credit CC0 with \"under\""); the
   generated mSCP mapping (cf98c77 "feat: generate the mSCP to NIST SP 800-53 mapping from mSCP's
   own citations", 1dc9a77 "fix: keep the generated 800-53 unresolved report on LF line endings");
-  and end-to-end coverage of the mapped rules tab (see the plan's log for its commit).
+  and end-to-end coverage of the mapped rules tab
+  (285577c "test: cover the generated mSCP to NIST SP 800-53 mappings end to end"); the closing
+  docs commit 34143d6 "docs: close the NIST SP 800-53 plan and mark the design implemented";
+  and the final-review fix (see the next entry).

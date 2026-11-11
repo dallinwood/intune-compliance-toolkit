@@ -375,20 +375,20 @@ def run_offline_cli(importer: SourceImporter, sources_dir: Path, baselines_dir: 
     )
 
 
-def test_after_import_runs_once_with_the_baselines_dir_after_success(workspace):
+def test_after_import_runs_once_with_the_sources_and_baselines_dirs_after_success(workspace):
     sources_dir, baselines_dir = workspace
     calls = []
-    importer = replace(STUB_IMPORTER, after_import=calls.append)
+    importer = replace(STUB_IMPORTER, after_import=lambda *directories: calls.append(directories))
 
     assert run_offline_cli(importer, sources_dir, baselines_dir) == 0
 
-    assert calls == [baselines_dir]
+    assert calls == [(sources_dir, baselines_dir)]
 
 
 def test_after_import_does_not_run_after_a_failed_import(workspace):
     sources_dir, baselines_dir = workspace
     calls = []
-    importer = replace(STUB_IMPORTER, after_import=calls.append)
+    importer = replace(STUB_IMPORTER, after_import=lambda *directories: calls.append(directories))
     (sources_dir / "releases" / "A" / "upstream" / "ids.txt").unlink()
 
     assert run_offline_cli(importer, sources_dir, baselines_dir) == 1
@@ -399,7 +399,7 @@ def test_after_import_does_not_run_after_a_failed_import(workspace):
 def test_a_failing_after_import_exits_one_but_keeps_the_releases(workspace, capsys):
     sources_dir, baselines_dir = workspace
 
-    def failing_hook(directory: Path) -> None:
+    def failing_hook(sources_directory: Path, baselines_directory: Path) -> None:
         raise ValueError("generator broke")
 
     importer = replace(STUB_IMPORTER, after_import=failing_hook)

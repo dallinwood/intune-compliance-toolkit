@@ -178,9 +178,10 @@ All verified on 2026-11-11 against the GitHub release `v2026.10.15`:
   `source.upstream_rule_id` keeps the verbatim `IT.PRO-13.1`, which the detail panel's
   credit line already shows.
   - Today's rule id pattern (`^[a-z0-9_]+\.[a-z0-9_-]+$` in `_rule.schema.json` and
-    `_index.schema.json`) allows no dot after the source prefix. It is widened to
-    `^[a-z0-9_]+\.[a-z0-9_-]+(\.[a-z0-9_-]+)*$`: dots allowed between non-empty segments, the
-    first dot still separating the source. Every existing file stays valid and no output
+    `_index.schema.json`) allowed no dot after the source prefix. The NIST SP 800-53 plan
+    already widened it (final-review fix) to `^[a-z0-9_]+\.[a-z0-9_-]+(\.[a-z0-9_-]+)*$`
+    (written with the files' `(?![\s\S])` end anchor): dots allowed between non-empty
+    segments, the first dot still separating the source. Every existing file stays valid and no output
     changes, so `schema_version` stays 5 and no release has to be re-imported. All code that
     reads a source from an id already splits on the **first** dot (`upstreamRuleId` in
     `webui/src/logic/ruleDisplay.ts`); the table's open-row lookup already uses
@@ -389,9 +390,12 @@ written from an older release. It lives beside the hand-written mapping files, s
 existing validator (`tools/mappings.py`), publish step and UI pick it up unchanged. A
 committed-data test regenerates it and compares bytes, which is what stops hand edits.
 
-`tools/release_import.SourceImporter` gains an optional `after_publish(sources_dir,
-baselines_dir)` callback that `run_cli` calls once after all requested releases are
-published. Only E4EIT sets it.
+`tools/release_import.SourceImporter` already has an optional `after_import(sources_dir,
+baselines_dir)` callback (added by the NIST SP 800-53 plan, widened to take `sources_dir`
+in its final-review fix) that `run_cli` calls once after all requested releases are
+imported. E4EIT sets it to its mapping writer; the mSCP and NIST importers set theirs to the
+mSCP to 800-53 generator. An importer that needs several generators passes one function
+that calls them in turn.
 
 Known consequence: the mapping validator requires every endpoint rule to exist in the
 committed library. If a later ISM release removes one of the 222 mapped controls and becomes
@@ -503,9 +507,9 @@ implementation starts.
   per fail-loudly case in section 6.4.
 - **Shared-code refactor:** the existing ISM and mSCP regeneration tests
   (`test_committed_release_matches_regeneration`) prove byte-identical output; new unit
-  tests for the moved helpers and the `after_publish` hook.
-- **Schema:** `tests/test_library_schema.py` accepts `asd_e4eit.it.pro-13.1` and rejects
-  `asd_e4eit.it..pro`, `asd_e4eit.` and `asd_e4eit.it.pro-13.`.
+  tests for the moved helpers (the `after_import` hook is already tested).
+- **Schema:** `tests/test_library_schema.py` already accepts `asd_e4eit.it.pro-13.1` and
+  rejects `asd_e4eit.it..pro` and a trailing dot.
 - **Fetcher and CLI** tests with a fake opener, as for ISM.
 - **Committed data:** E4EIT joins `IMPORTERS_BY_NAME` so every stored release is
   regenerated and compared; the vendored README contains `Creative Commons Attribution 4.0`;

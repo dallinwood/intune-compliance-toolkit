@@ -48,32 +48,32 @@
 
 **Files:**
 - Create: `tools/asd_oscal.py`, `tests/test_asd_oscal.py`
-- Modify: `tools/asd_ism_normalize.py`, `tools/import_asd_ism.py`, `tools/asd_ism_fetch.py`, `tools/github_fetch.py`, `tools/release_import.py`, `baselines/_rule.schema.json`, `baselines/_index.schema.json`, `tests/test_release_import.py`, `tests/test_library_schema.py`
+- Modify: `tools/asd_ism_normalize.py`, `tools/import_asd_ism.py`, `tools/asd_ism_fetch.py`, `tools/nist_800_53_fetch.py`, `tools/github_fetch.py`
 
 **Behaviour:**
 - `tools/asd_oscal.py` holds what the ISM and E4EIT importers share, moved (not copied) from the ISM modules, which then import from it:
   - `ASD_LICENSE` (today's `asd_ism_normalize.LICENSE`; keep `LICENSE` as an alias there so existing imports work);
-  - `reject_duplicate_keys` and a `read_json_document(path: Path) -> dict` built from today's `import_asd_ism.read_catalog` (duplicate keys and invalid JSON raise `ValueError` naming the path);
+  - no JSON reader: the duplicate-key-rejecting reader already lives in `tools/json_output.py` (`read_json_rejecting_duplicates`, used by the ISM and NIST importers); the E4EIT importer reuses it and nothing is created or moved for it;
   - `release_label(tag: str) -> str` (today's ISM function: `v2026.10.15` gives `Oct 2026`);
   - `resource_hrefs(catalog: dict) -> dict[str, str]` and `rewrite_resource_links(prose, hrefs, where)` (today's `_resource_hrefs` and `rewrite_resource_links`; keep the ISM names importable from `asd_ism_normalize`).
 - `tools/github_fetch.py` gains:
-  - `download_pinned_files(repository: str, commit_sha: str, file_names: Iterable[str], destination_dir: Path, user_agent: str, opener=default_opener) -> None`, the loop in today's `asd_ism_fetch.fetch`; `asd_ism_fetch.download_file` and `fetch` delegate to it;
+  - `download_pinned_files(repository: str, commit_sha: str, file_names: Iterable[str], destination_dir: Path, user_agent: str, opener=default_opener) -> None`, the download loop that now exists in two copies, `asd_ism_fetch.fetch` and `nist_800_53_fetch.fetch` (`nist_800_53_fetch.py` lines 31-49); both delegate to it, and the E4EIT fetcher in Task 4 is the third user rather than a third copy;
   - `list_root_file_names(repository: str, commit_sha: str, user_agent: str, opener=default_opener) -> list[str]`, from `GET https://api.github.com/repos/<repository>/contents?ref=<sha>`, returning the `name` of each `type: file` entry, sorted. Raise `ValueError` on a response that is not a list of objects.
-- `tools/release_import.SourceImporter` gains `after_publish: Callable[[Path, Path], None] | None = None`, called by `run_cli` as `after_publish(arguments.sources_dir, arguments.baselines_dir)` once, after every requested release was imported and before the change summaries print. An exception from it is reported like an import failure (exit 1). `generate_release` and `import_stored_release` do not call it, so `tests/test_committed_library.py` regeneration is unaffected.
-- Rule id pattern in `baselines/_rule.schema.json` and `baselines/_index.schema.json` becomes `^[a-z0-9_]+\.[a-z0-9_-]+(\.[a-z0-9_-]+)*(?![\s\S])` (keep the file's existing end-anchor style). `schema_version` stays 5. Grep `tools/`, `tests/`, `scripts/` and `webui/src/` for other rule id patterns or code that takes the text after the **last** dot as the upstream id; fix any found and list them in the commit body.
+- Post-import hook: no new hook field. `tools/release_import.SourceImporter.after_import: Callable[[Path, Path], None] | None` already exists, is called by `run_cli` as `after_import(arguments.sources_dir, arguments.baselines_dir)` once after every requested release was imported and its change summary printed, and a failure there prints and exits 1 while the releases stay published. The E4EIT importer sets `after_import=write_ism_mapping` (it needs `sources_dir`, which the widened signature passes). The mSCP and NIST importers keep `regenerate_after_import`; ISM keeps `None`. If one importer ever needs two generators, set `after_import` to a plain function that calls them in turn; do not add a list field. `generate_release` and `import_stored_release` do not call the hook, so `tests/test_committed_library.py` regeneration is unaffected.
+- Rule id pattern: already landed with the NIST plan's final-review fix, in `baselines/_rule.schema.json` and `baselines/_index.schema.json`, as `^[a-z0-9_]+\.[a-z0-9_-]+(?:\.[a-z0-9_-]+)*(?![\s\S])`. It accepts `asd_e4eit.it.pro-13.1`, `nist_800_53.ac-2.1`, mSCP and ISM ids, and rejects empty dot segments (`..`, a trailing dot). Nothing to change here; the schema tests for it are in `tests/test_library_schema.py` already. The grep for code that takes the text after the **last** dot as the upstream id was also done in that review and found none.
 
 **Tests:**
-- `tests/test_asd_oscal.py`: `release_label` for `v2026.10.15` and a bad tag; duplicate keys rejected; `rewrite_resource_links` rewrites and rejects an unknown uuid; `resource_hrefs` rejects a resource with no `rlinks`.
-- `tests/test_release_import.py`: `run_cli` calls `after_publish` once with the CLI's directories after `--offline`; not called when the import fails; a raising hook makes `run_cli` return 1.
+- `tests/test_asd_oscal.py`: `release_label` for `v2026.10.15` and a bad tag; `rewrite_resource_links` rewrites and rejects an unknown uuid; `resource_hrefs` rejects a resource with no `rlinks`.
+- No new hook tests: `tests/test_release_import.py` already covers `after_import` (called once with `(sources_dir, baselines_dir)` after success, not after a failed import, a raising hook exits 1 with the releases kept). Only extend `test_importers_register_their_formats` style assertions if useful; the E4EIT importer's own hook is tested in Task 4.
 - A `github_fetch` test with a fake opener for `list_root_file_names` (filters out `type: dir`, sorts) and `download_pinned_files` (URLs contain the sha; bytes written unchanged).
-- `tests/test_library_schema.py`: a rule and an index entry with id `asd_e4eit.it.pro-13.1` validate; `asd_e4eit.it..pro`, `asd_e4eit.` and `asd_e4eit.it.pro-13.` are rejected.
+- No schema test changes: `tests/test_library_schema.py` already accepts `asd_e4eit.it.pro-13.1` and rejects `asd_e4eit.it..pro` and a trailing dot.
 - Existing ISM tests pass unchanged apart from import paths.
 
 **Verification:**
 - `python -m pytest -W error`
 - `python tools/import_mscp.py --offline`, `python tools/import_asd_ism.py --offline`, then `git status --short baselines sources` is empty.
 
-**Commit:** `refactor: share ASD OSCAL helpers and allow dotted rule ids`
+**Commit:** `refactor: share ASD OSCAL helpers and the pinned-file download loop`
 
 ### Task 2: E4EIT normalizer
 
@@ -109,8 +109,8 @@
 
 **Behaviour:**
 - `asd_e4eit_fetch.fetch(tag, sources_dir, today, opener=default_opener) -> SourceLock`, shaped like `asd_ism_fetch.fetch`: resolve the tag, read the release's published date, list the root files, download `README.md`, the catalog, the mapping collection and every profile matching the pattern via `download_pinned_files`, swap the staging folder into place, write the lock with `importer_format: "asd-e4eit-oscal-1"`. No profiles found fails.
-- `import_asd_e4eit.build_rule_tree(upstream_dir, lock, tree_dir) -> int` reads every vendored JSON with `asd_oscal.read_json_document` and calls `normalize_release`; writes `rules/<lowercased id>.json` and `_index.json` like the ISM importer.
-- `IMPORTER = SourceImporter(...)` with `release_label=asd_oscal.release_label` and `after_publish=write_ism_mapping`.
+- `import_asd_e4eit.build_rule_tree(upstream_dir, lock, tree_dir) -> int` reads every vendored JSON with `json_output.read_json_rejecting_duplicates` and calls `normalize_release`; writes `rules/<lowercased id>.json` and `_index.json` like the ISM importer.
+- `IMPORTER = SourceImporter(...)` with `release_label=asd_oscal.release_label` and `after_import=write_ism_mapping`.
 - `write_ism_mapping(sources_dir, baselines_dir) -> None`: reads the manifest, takes the **current** `asd_e4eit` release, reads that release's vendored mapping collection and catalog, calls `ism_mapping`, then checks that the named ISM release is in the manifest's `asd_ism` releases and that every ISM target id is in that release's index (fail with the missing ids listed). Writes the file with `tools/json_output.write_json`. Does nothing to any other mapping file.
 - `NOTICE` gains an E4EIT entry mirroring the ISM entry (design section 9.1); `README.md` gains the attribution paragraph and an "Updating the ASD E4EIT rules" section (design section 10), and mentions the generated mapping file in the mappings section.
 

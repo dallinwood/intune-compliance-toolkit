@@ -568,6 +568,39 @@ def test_hyphenated_rule_id_is_valid():
     assert schema_errors(make_rule(id="mscp.os_mfa_network_non-priv")) == []
 
 
+ACCEPTED_RULE_IDS = [
+    "mscp.os_gatekeeper_enable",
+    "asd_ism.ism-1803",
+    "nist_800_53.ac-2",
+    "nist_800_53.ac-2.1",
+    "asd_e4eit.it.pro-13.1",
+]
+REJECTED_RULE_IDS = [
+    "nist_800_53.ac-2..1",
+    "asd_e4eit.it..pro",
+    "nist_800_53.ac-2.",
+    "nist_800_53..ac-2",
+    "nist_800_53.",
+    "nist_800_53.ac-2.1\n",
+]
+
+
+@pytest.mark.parametrize("rule_id", ACCEPTED_RULE_IDS)
+def test_rule_and_index_schemas_accept_dotted_rule_ids(rule_id):
+    assert schema_errors(make_rule(id=rule_id)) == []
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    entry["id"] = rule_id
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index") == []
+
+
+@pytest.mark.parametrize("rule_id", REJECTED_RULE_IDS)
+def test_rule_and_index_schemas_reject_empty_dot_segments_in_rule_ids(rule_id):
+    assert schema_errors(make_rule(id=rule_id))
+    entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
+    entry["id"] = rule_id
+    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+
+
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 COMMITTED_VOCABULARY = REPOSITORY_ROOT / "baselines" / "_vocabulary.json"
 

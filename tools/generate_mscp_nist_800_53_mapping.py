@@ -177,7 +177,7 @@ def generate_and_report(baselines_dir: Path, report_path: Path) -> bool:
     return True
 
 
-def regenerate_after_import(baselines_dir: Path) -> None:
+def regenerate_after_import(sources_dir: Path, baselines_dir: Path) -> None:
     """The after_import hook: keeps the generated mapping current after any import."""
     generate_and_report(baselines_dir, report_path_for(baselines_dir))
 
