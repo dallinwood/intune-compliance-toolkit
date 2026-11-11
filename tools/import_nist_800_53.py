@@ -55,7 +55,7 @@ def release_label(tag: str, upstream_dir: Path) -> str:
     version = metadata.get("version") if isinstance(metadata, dict) else None
     if not isinstance(version, str) or not version:
         raise ValueError(f"{upstream_dir / CATALOG_PATH}: catalog has no metadata.version")
-    return f"{version} ({tag})"
+    return version
 
 
 IMPORTER = SourceImporter(

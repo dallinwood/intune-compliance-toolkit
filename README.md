@@ -205,7 +205,7 @@ Requires Python 3.10 or newer.
 2. `python tools/import_nist_800_53.py --tag <release tag>`, for example
    `--tag v1.6.0`. The tag is a release of the
    [oscal-content](https://github.com/usnistgov/oscal-content) repository, not
-   an 800-53 version; the release label shows both (`5.2.0 (v1.6.0)`). Each
+   an 800-53 version; the release label is the 800-53 version (`5.2.0`), and the web UI shows the tag beside it. Each
    release is kept in its own folder (`sources/nist_800_53/releases/<tag>/`,
    `baselines/nist_800_53/releases/<tag>/`), so importing a new tag adds a
    release and never replaces an older one. To regenerate every stored release

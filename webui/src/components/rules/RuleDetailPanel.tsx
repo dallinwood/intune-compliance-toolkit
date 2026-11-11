@@ -27,6 +27,7 @@ import { DiscussionText } from './DiscussionText'
 import { MappedRulesTab } from './MappedRulesTab'
 import { OrgDefinedValueInput } from './OrgDefinedValueInput'
 import { RuleBenchmarks } from './RuleBenchmarks'
+import { licenceLeadIn } from '../../logic/licenceWording'
 import { RuleCheckSection } from './RuleCheckSection'
 import { RuleReferences } from './RuleReferences'
 import { RuleRemediationSection } from './RuleRemediationSection'
@@ -312,7 +313,7 @@ function LoadedRuleDetail({
         <a className="text-link underline" href={source.upstream_url} target="_blank" rel="noreferrer">
           {termLabel(vocabularyIndex, 'sources', source.name)} {source.release_tag}
         </a>{' '}
-        ({source.upstream_rule_id}), licensed{' '}
+        ({source.upstream_rule_id}), {licenceLeadIn(source.license.name)}{' '}
         <a className="text-link underline" href={source.license.url} target="_blank" rel="noreferrer">
           {source.license.name}
         </a>

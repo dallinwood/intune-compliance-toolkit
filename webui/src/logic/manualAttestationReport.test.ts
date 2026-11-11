@@ -134,6 +134,23 @@ ${MSCP_ATTRIBUTION}
 `)).toBe(true)
   })
 
+  it('credits a public-domain source "under" its licence and leaves the other sources "licensed"', () => {
+    const nistSource = {
+      ...manifestSource('nist_800_53', 'NIST SP 800-53 Rev. 5', 'https://github.com/usnistgov/oscal-content'),
+      license: { name: 'CC0 1.0 (public domain)', url: 'https://creativecommons.org/publicdomain/zero/1.0/', rights_holder: 'NIST', modified: true as const },
+    }
+    const markdown = buildManualAttestationMarkdown(
+      [MSCP_ENTRY, { id: 'nist_800_53.ac-7', title: 'W', reason: 'Y', additionalInfo: null }],
+      [MSCP_SOURCE, nistSource],
+    )
+
+    expect(markdown.endsWith(`---
+
+${MSCP_ATTRIBUTION}
+Rule content from the NIST SP 800-53 Rev. 5 (https://github.com/usnistgov/oscal-content), under CC0 1.0 (public domain) (https://creativecommons.org/publicdomain/zero/1.0/). Content modified by this project.
+`)).toBe(true)
+  })
+
   it('credits only the sources that have an entry', () => {
     const markdown = buildManualAttestationMarkdown([ISM_ENTRY], SOURCES)
 

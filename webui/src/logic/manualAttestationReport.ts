@@ -3,6 +3,7 @@ import { generatedTargetCheck } from './checkPlan'
 import type { ManualAttestationEntry } from './chunking'
 import { displayWithOdv } from './odv'
 import { upstreamRuleId } from './ruleDisplay'
+import { licenceLeadIn } from './licenceWording'
 import type { OrgDefinedValue } from './selectionEntry'
 import { termDescription, type VocabularyIndex } from './vocabulary'
 
@@ -21,7 +22,7 @@ export function additionalInfoFor(rule: Rule, odvValue: OrgDefinedValue | null):
 function attributionLine(source: ManifestSource): string {
   return (
     `Rule content from the ${source.display_name} (${source.repository_url}), ` +
-    `licensed ${source.license.name} (${source.license.url}). Content modified by this project.`
+    `${licenceLeadIn(source.license.name)} ${source.license.name} (${source.license.url}). Content modified by this project.`
   )
 }
 

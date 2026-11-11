@@ -272,12 +272,14 @@ user agent `intune-compliance-toolkit-nist-800-53-import`, importer format
 
 ### 6.3 Release label
 
-Release labels are "Sep 2026" for ISM and "27.1" for mSCP. For 800-53 the tag (`v1.6.0`) is the
-content repository's version, not the 800-53 version, and two content releases can carry the
-same 800-53 version. The label is therefore `"<catalog metadata.version> (<tag>)"`, for example
-`5.2.0 (v1.6.0)`. That needs the catalog, so `SourceImporter.release_label` changes from
-`Callable[[str], str]` to `Callable[[str, Path], str]` (tag, upstream directory). The mSCP and ISM
-labels ignore the directory and stay byte-identical.
+Release labels are "Sep 2026" for ISM and "27.1" for mSCP: the tag is not part of the label, because
+the UI always shows the tag beside it ("Current: Sep 2026 (v2026.09.4)"). For 800-53 the tag
+(`v1.6.0`) is the content repository's version, not the 800-53 version, so the label is the
+catalog's `metadata.version`, for example `5.2.0`. That needs the catalog, so
+`SourceImporter.release_label` changes from `Callable[[str], str]` to `Callable[[str, Path], str]`
+(tag, upstream directory). The mSCP and ISM labels ignore the directory and stay byte-identical.
+Two content releases can carry the same 800-53 version and so the same label; the tag beside it
+in the UI tells them apart. (An earlier draft used `5.2.0 (v1.6.0)`, which showed the tag twice.)
 
 ### 6.4 Updating to a new release
 
@@ -481,8 +483,9 @@ Each was my call; the alternative is listed for review.
 12. **Second-level sections use the zero-padded label** (`AC-02 Account Management`) so the
     existing alphabetical section sort orders them correctly. Alternative: the plain label with a
     numeric-aware sort in `webui/src/logic/sectionTree.ts`.
-13. **Release label `5.2.0 (v1.6.0)`**, which needs the `release_label` signature change.
-    Alternative: the tag alone (`v1.6.0`), with no framework change.
+13. **Release label `5.2.0`** (the catalog version; the UI adds the tag), which needs the
+    `release_label` signature change. Alternative: the tag alone (`v1.6.0`), with no framework change,
+    which the UI would show twice.
 14. **Only `v1.6.0` is imported.** Alternative: earlier oscal-content tags for history now.
 15. **Licence block name "CC0 1.0 (public domain)"**, rights holder NIST, and the footer wording
     changes from "licensed" to "under" for all sources. Alternative: keep the wording and accept

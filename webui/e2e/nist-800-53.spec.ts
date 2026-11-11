@@ -60,6 +60,7 @@ test('a control opens with Control and Discussion headings, a nested list and it
   await expect(detail.getByRole('listitem').filter({ hasText: /^a\. Enforce a limit/ })).toBeVisible()
   await expect(detail.getByText('[Assignment: organization-defined number]').first()).toBeVisible()
   await expect(detail.locator('p').filter({ hasText: /^From / })).toContainText('From NIST SP 800-53 v1.6.0 (ac-7)')
+  await expect(detail.locator('p').filter({ hasText: /^From / })).toContainText('under CC0 1.0 (public domain), modified for this tool.')
 })
 
 test('a control with sub-items renders them as a nested list', async ({ page }) => {
@@ -76,4 +77,10 @@ test('the Sources & licences dialog lists NIST SP 800-53 Rev. 5 under CC0 1.0', 
   const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
   await expect(dialog).toContainText('Rules from the NIST SP 800-53 Rev. 5')
   await expect(dialog).toContainText('under CC0 1.0 (public domain)')
+})
+
+test('the Frameworks card shows the release tag once beside the 800-53 version', async ({ page }) => {
+  await page.goto('/frameworks')
+  const card = page.getByTestId('framework-card').filter({ hasText: 'NIST SP 800-53 Rev. 5' })
+  await expect(card).toContainText('Current: 5.2.0 (v1.6.0) · 1014 rules')
 })

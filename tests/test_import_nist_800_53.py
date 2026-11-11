@@ -120,7 +120,7 @@ def test_generate_release_writes_rules_index_and_manifest(workspace):
         "releases": [
             {
                 "tag": "v1.6.0",
-                "label": "5.2.0 (v1.6.0)",
+                "label": "5.2.0",
                 "published_date": "2026-10-22",
                 "commit_sha": COMMIT_SHA,
                 "retrieved_date": "2026-11-11",
@@ -132,7 +132,7 @@ def test_generate_release_writes_rules_index_and_manifest(workspace):
     }
 
 
-def test_release_label_comes_from_the_catalog_version_and_the_tag(workspace):
+def test_release_label_is_the_catalog_version_without_the_tag(workspace):
     sources_dir, _ = workspace
     catalog_path = upstream_file(sources_dir, CATALOG_PATH)
     catalog_path.write_text(
@@ -142,7 +142,7 @@ def test_release_label_comes_from_the_catalog_version_and_the_tag(workspace):
 
     upstream_dir = stored_release_dir(sources_dir) / "upstream"
 
-    assert import_nist_800_53.IMPORTER.release_label("v1.7.0", upstream_dir) == "5.3.1 (v1.7.0)"
+    assert import_nist_800_53.IMPORTER.release_label("v1.7.0", upstream_dir) == "5.3.1"
 
 
 def test_release_label_without_a_catalog_version_is_refused(workspace):
