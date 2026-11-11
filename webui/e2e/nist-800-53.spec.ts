@@ -1,4 +1,7 @@
+import { readdirSync, readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
+import type { HistoryIndex } from '../src/logic/historyIndex'
+import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
@@ -83,4 +86,93 @@ test('the Frameworks card shows the release tag once beside the 800-53 version',
   await page.goto('/frameworks')
   const card = page.getByTestId('framework-card').filter({ hasText: 'NIST SP 800-53 Rev. 5' })
   await expect(card).toContainText('Current: 5.2.0 (v1.6.0) · 1014 rules')
+})
+
+// These tests serve the committed baselines/_mappings/rules/ folder through the
+// same index code as the publish step, so they read the generated mSCP to
+// 800-53 links (the file above routes an empty index for every other test).
+test.describe('generated mSCP to 800-53 mappings', () => {
+  test.use({ viewport: { width: 1280, height: 900 } })
+
+  const GATEKEEPER = 'mscp.os_gatekeeper_enable'
+  const CM_7 = 'nist_800_53.cm-7'
+  const GENERATED_NOTE = "Generated from mSCP's own references: mSCP lists this 800-53 control for this rule. Not reviewed by this project."
+
+  const mappingsFolder = new URL('../../baselines/_mappings/rules/', import.meta.url)
+  const committedMappingFiles = readdirSync(mappingsFolder)
+    .filter((fileName) => fileName.endsWith('.json'))
+    .sort()
+    .map((fileName) => ({ fileName, value: JSON.parse(readFileSync(new URL(fileName, mappingsFolder), 'utf8')) as unknown }))
+  const historyIndexes = ['mscp', 'asd_ism', 'nist_800_53'].map(
+    (sourceName) => JSON.parse(readFileSync(new URL(`../public/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex,
+  )
+  const committedMappingIndex = addChangedKinds(
+    buildMappingIndex(committedMappingFiles, () => {}),
+    historyIndexes,
+  )
+
+  const detailOf = (page: Page, ruleId: string) => page.locator(`[id="rule-detail-${ruleId}"]`)
+  const mappedRulesPanel = (page: Page, ruleId: string) => detailOf(page, ruleId).getByRole('tabpanel', { name: /^Mapped rules/ })
+
+  async function openRuleWithCommittedMappings(page: Page, ruleId: string, search: string) {
+    await page.route('**/baselines/_mappings/_index.json', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(committedMappingIndex) }),
+    )
+    await page.goto(`/?q=${search}&rule=${ruleId}`)
+    await expect(ruleCount(page)).toHaveText(/^\d+ of 2509 rules$/, { timeout: 10_000 })
+    await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
+    await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
+  }
+
+  test('an mSCP rule lists the 800-53 controls mSCP cites for it, each with the generated note', async ({ page }) => {
+    await openRuleWithCommittedMappings(page, GATEKEEPER, 'os_gatekeeper_enable')
+    const panel = mappedRulesPanel(page, GATEKEEPER)
+
+    await panel.getByRole('button', { name: 'NIST SP 800-53 Supports (5)', exact: true }).click()
+    const items = panel.getByRole('list', { name: 'NIST SP 800-53 Supports' }).getByRole('listitem')
+    await expect(items).toHaveCount(5)
+    for (const controlId of ['cm-14', 'cm-5', 'si-7.1', 'si-7.15', 'si-3']) {
+      const item = items.filter({ has: page.getByRole('button', { name: new RegExp(`^[^:]*${controlId.replaceAll('.', '[.]')}:`) }) })
+      await expect(item).toHaveCount(1)
+      await expect(item).toContainText(GENERATED_NOTE)
+    }
+  })
+
+  test('an 800-53 control lists the mSCP rules that support it and the filter narrows them', async ({ page }) => {
+    await openRuleWithCommittedMappings(page, CM_7, 'cm-7')
+    const panel = mappedRulesPanel(page, CM_7)
+
+    const group = panel.getByRole('button', { name: 'NIST mSCP Supported by (77)', exact: true })
+    await expect(group).toHaveAttribute('aria-expanded', 'false')
+    await group.click()
+    const items = panel.getByRole('list', { name: 'NIST mSCP Supported by' }).getByRole('listitem')
+    await expect(items).toHaveCount(77)
+
+    await panel.getByRole('textbox', { name: 'Filter mapped rules' }).fill('os_airdrop_disable')
+    await expect(panel.getByRole('button', { name: 'NIST mSCP Supported by (1 of 77)', exact: true })).toHaveAttribute('aria-expanded', 'true')
+    await expect(items).toHaveCount(1)
+    await expect(items.first()).toContainText('os_airdrop_disable')
+  })
+
+  test('Go to this rule moves between an mSCP rule and an 800-53 control, in both directions', async ({ page }) => {
+    await openRuleWithCommittedMappings(page, GATEKEEPER, 'os_gatekeeper_enable')
+    const mscpPanel = mappedRulesPanel(page, GATEKEEPER)
+    await mscpPanel.getByRole('button', { name: 'NIST SP 800-53 Supports (5)', exact: true }).click()
+    const cm5Row = mscpPanel.getByTestId('mapped-rule').filter({ hasText: 'cm-5' })
+    await cm5Row.getByRole('button', { name: /^[^:]*cm-5:/ }).click()
+    await cm5Row.getByRole('link', { name: 'Go to this rule' }).click()
+
+    const cm5 = 'nist_800_53.cm-5'
+    await expect(detailOf(page, cm5)).toBeVisible()
+    expect(new URL(page.url()).searchParams.get('rule')).toBe(cm5)
+    await detailOf(page, cm5).getByRole('tab', { name: /^Mapped rules/ }).click()
+    const controlPanel = mappedRulesPanel(page, cm5)
+    await controlPanel.getByRole('button', { name: /^NIST mSCP Supported by \(\d+\)$/ }).click()
+    const gatekeeperRow = controlPanel.getByTestId('mapped-rule').filter({ hasText: 'os_gatekeeper_enable' })
+    await gatekeeperRow.getByRole('button', { name: /^[^:]*os_gatekeeper_enable:/ }).click()
+    await gatekeeperRow.getByRole('link', { name: 'Go to this rule' }).click()
+
+    await expect(detailOf(page, GATEKEEPER)).toBeVisible()
+    expect(new URL(page.url()).searchParams.get('rule')).toBe(GATEKEEPER)
+  })
 })
