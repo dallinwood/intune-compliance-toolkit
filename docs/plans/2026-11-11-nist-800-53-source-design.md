@@ -520,3 +520,4 @@ Each was my call; the alternative is listed for review.
   (285577c "test: cover the generated mSCP to NIST SP 800-53 mappings end to end"); the closing
   docs commit 34143d6 "docs: close the NIST SP 800-53 plan and mark the design implemented";
   and the final-review fix (see the next entry).
+- 2026-11-11: Final review fix: the `after_import` hook now takes `(sources_dir, baselines_dir)` and the rule id pattern rejects empty dot segments, in 13d8416 "refactor: pass sources_dir to after_import and tighten the rule id pattern".
