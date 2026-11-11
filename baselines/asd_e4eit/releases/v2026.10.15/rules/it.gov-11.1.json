@@ -1,0 +1,90 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are delivered and supported by trustworthy suppliers whose cyber security practices are regularly verified or otherwise risk-assessed.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented or approved governance process exists for evaluating the cyber security trustworthiness of suppliers.\n- No cyber security evaluation is performed before suppliers are onboarded.\n- Evaluation outcomes are not documented.\n- Findings from supplier evaluation outcomes are not used to inform supplier approval, contractual requirements or risk treatment decisions where concerns are identified.\n\nPartially effective:\n- An evaluation process exists but is not consistently applied to all suppliers within scope.\n- Evaluation is performed for some suppliers, but criteria are not documented or are inconsistently applied.\n- Outcomes are documented but contractual arrangements do not reflect identified risks or required controls.\n\nFully effective:\n- A documented and approved governance process is in place and consistently applied.\n- Cyber security trustworthiness evaluations are performed for all suppliers within scope prior to onboarding.\n- Evaluation criteria are documented, approved and proportionate to the criticality of what the supplier delivers.\n- Evaluation outcomes are documented, reflected in contractual arrangements and recorded in the organisation’s risk register where residual risk remains.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.gov-11.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "THIRD-PARTIES-2a",
+        "THIRD-PARTIES-2b",
+        "THIRD-PARTIES-2d",
+        "THIRD-PARTIES-2j"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1195"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.16.03",
+        "03.17.01",
+        "03.17.02",
+        "03.17.03"
+      ],
+      "csf_2.0": [
+        "GV.SC-01",
+        "GV.SC-03",
+        "GV.SC-05",
+        "GV.SC-06",
+        "GV.SC-07"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Govern principles",
+    "GOV-11 - Supplier cyber security assurance"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.GOV-11.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Select and engage suppliers of software, hardware and services on the basis of a cyber supply chain risk assessment proportionate to the risk the supplier introduces, and retain appropriate assurance evidence to support the decision."
+}

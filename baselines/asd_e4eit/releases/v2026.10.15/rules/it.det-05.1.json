@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_visibility_and_response",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nCyber security event detection capabilities are regularly evaluated for effectiveness and continuously refined, including by using current strategic and sector-specific cyber threat intelligence, to improve the detection of cyber security events.\n\n# Indicators of Good Practice\n\nNot effective:\n- No review of detection coverage has been conducted within the period defined by the organisation.\n- No process exists to assess new assets and services for log coverage or detection applicability.\n\nPartially effective:\n- A review of detection coverage has been conducted but does not cover all recently deployed assets or services.\n- Detection gaps have been identified and remediation is planned, but remediation has not been executed within timeframes defined by the organisation.\n\nFully effective:\n- A detection coverage review has been completed within the cycle defined by the organisation.\n- New assets and services are assessed for log coverage and detection rule applicability.\n- Identified detection gaps are remediated within risk-based timeframes defined by the organisation.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.det-05.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "RESPONSE-1e",
+        "SITUATION-2c",
+        "SITUATION-2i"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.01",
+        "03.12.03",
+        "03.14.06"
+      ],
+      "csf_2.0": [
+        "DE.CM-09",
+        "GV.OV-03",
+        "ID.IM-02",
+        "ID.IM-03"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Detect principles",
+    "DET-05 - Detection capability efficacy"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.DET-05.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Review detection coverage periodically to identify gaps arising from new assets, services or architectural changes."
+}

@@ -1,0 +1,98 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are administered in a secure, accountable and auditable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Administrative or management actions that modify systems, configurations or controls are not logged.\n- Logs do not capture sufficient detail to identify who made a change, when and to what target.\n\nPartially effective:\n- Logging is enabled and provides useful coverage, but does not cover all applicable administrative or management platforms.\n- Logs capture the administrator identity and action but lack detail on the target or change nature.\n\nFully effective:\n- Comprehensive audit logging to capture all administrative or management actions is enabled on all platforms in scope.\n- Logs capture administrator identity, timestamp, target object and nature of change.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-05.3",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-2i",
+        "ASSET-4i",
+        "SITUATION-1a"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1112",
+        "T1136",
+        "T1543",
+        "T1685"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.07",
+        "03.03.01",
+        "03.03.02",
+        "03.03.03"
+      ],
+      "csf_2.0": [
+        "DE.AE-03",
+        "DE.CM-03",
+        "PR.PS-04"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-05 - Secure administration"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-05.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Record all administrative or management actions that modify systems, configurations or controls, including the details of the associated user, timestamp and target."
+}

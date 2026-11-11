@@ -1,0 +1,102 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications, identities, credentials and data) are continually and centrally identified and documented.\n\n# Indicators of Good Practice\n\nNot effective:\n- A maintained record of infrastructure, operating systems, applications, identities, credentials and data assets has not been established.\n- There is no defined process for identifying, recording, reviewing and updating asset records.\n\nPartially effective:\n- Asset records are maintained, but identified omissions, inaccuracies or newly discovered assets are not triaged and addressed within the timeframes or tolerances defined by the organisation.\n- A process to update the asset inventory runs on a schedule but the results are not reconciled or updated within a period defined by the organisation.\n\nFully effective:\n- At each scheduled review or update, records of infrastructure, operating systems, applications, identities, credentials and data assets are complete and accurate within the tolerances defined by the organisation.\n- A defined process identifies changes and newly discovered assets between scheduled reviews, and ensures that records are reviewed, reconciled and updated within timeframes commensurate with the associated cyber security risk.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.ide-01.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ASSET-1a",
+        "ASSET-1e",
+        "ASSET-2a"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.10",
+        "03.04.11"
+      ],
+      "csf_2.0": [
+        "ID.AM-01",
+        "ID.AM-02",
+        "ID.AM-03",
+        "ID.AM-07",
+        "ID.AM-08"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Identify principles",
+    "IDE-01 - Asset identification"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.IDE-01.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Maintain current records of infrastructure, operating systems, applications, identities, credentials and data assets."
+}

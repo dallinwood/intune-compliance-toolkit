@@ -2,6 +2,34 @@
   "schema_version": 6,
   "sources": [
     {
+      "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+      "display_name": "ASD Essentials for enterprise IT",
+      "index_path": "asd_e4eit/releases/v2026.10.15/_index.json",
+      "license": {
+        "modified": true,
+        "name": "CC BY 4.0",
+        "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "name": "asd_e4eit",
+      "release_tag": "v2026.10.15",
+      "releases": [
+        {
+          "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+          "importer_format": "asd-e4eit-oscal-1",
+          "index_path": "asd_e4eit/releases/v2026.10.15/_index.json",
+          "label": "Oct 2026",
+          "published_date": "2026-10-15",
+          "retrieved_date": "2026-11-11",
+          "rule_count": 58,
+          "tag": "v2026.10.15"
+        }
+      ],
+      "repository_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal",
+      "retrieved_date": "2026-11-11",
+      "rule_count": 58
+    },
+    {
       "commit_sha": "9f77120a7f8671c73da02431cdc299fac264edab",
       "display_name": "ASD Information Security Manual",
       "index_path": "asd_ism/releases/v2026.09.4/_index.json",

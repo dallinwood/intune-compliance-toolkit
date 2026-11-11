@@ -1,0 +1,112 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (operating systems and applications) only permit the execution of software that is supported, verified and authorised.\n\n# Indicators of Good Practice\n\nNot effective:\n- Unsupported, unverified or unauthorised software can execute without restriction.\n- The list of approved software does not exist.\n\nPartially effective:\n- Execution restriction controls are deployed but do not cover all applicable assets.\n- The organisation maintains a list of approved software, but it has not been reviewed within timeframes defined by the organisation.\n- Execution restrictions are in place but integrity verification of approved software is not performed.\n- Exceptions to execution restrictions are granted without formal approval or time-bounding.\n\nFully effective:\n- Controls restrict execution to supported, organisation-authorised and integrity-verified software on all applicable assets.\n- The organisation maintains a list of approved software and reviews it within the timeframes defined by the organisation.\n- Integrity of permitted software is verified using trusted mechanisms appropriate to the software and its source.\n- Exceptions are formally approved, documented, time-bound and reviewed on a regular cycle defined by the organisation.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-07.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-3b",
+        "ARCHITECTURE-3m",
+        "ARCHITECTURE-4g"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1047",
+        "T1055",
+        "T1059",
+        "T1204",
+        "T1218",
+        "T1685"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.06",
+        "03.04.08",
+        "03.14.02",
+        "03.16.01"
+      ],
+      "csf_2.0": [
+        "DE.CM-09",
+        "PR.PS-01",
+        "PR.PS-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-07 - Trustworthy software"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-07.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Permit only supported, verified and organisation-authorised software to execute on systems, with exceptions minimised, formally risk accepted, time-bound, monitored and regularly reviewed."
+}

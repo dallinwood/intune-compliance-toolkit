@@ -1,0 +1,83 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are delivered and supported by trustworthy suppliers whose cyber security practices are regularly verified or otherwise risk-assessed.\n\n# Indicators of Good Practice\n\nNot effective:\n- No process exists to obtain and risk-assess current supplier assurance evidence proportionate to supplier criticality and risk.\n- No documented and approved governance process exists for maintaining assurance that suppliers meet their cyber security commitments.\n- No actions are taken when supplier cyber security assurance lapses or supplier risk changes.\n\nPartially effective:\n- Supplier assurance evidence is obtained for some suppliers, but coverage is incomplete or the evidence is not reviewed and actioned.\n- Some findings are actioned but the response process is informal or inconsistent.\n- A process exists but acceptable forms and currency of assurance evidence are not defined or applied consistently.\n\nFully effective:\n- Current assurance evidence is obtained from suppliers in proportion to their criticality and risk, and is reviewed for findings that affect the organisation.\n- Material concerns are addressed through contractual remediation, compensating controls or supplier substitution within defined timeframes.\n- A documented and approved governance process specifies the acceptable forms, scope and currency of supplier assurance evidence.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.gov-11.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "THIRD-PARTIES-2f",
+        "THIRD-PARTIES-2g"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1195"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.16.03",
+        "03.17.03"
+      ],
+      "csf_2.0": [
+        "GV.SC-07",
+        "GV.SC-09"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Govern principles",
+    "GOV-11 - Supplier cyber security assurance"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.GOV-11.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Maintain current assurance that suppliers continue to meet their cyber security commitments, and act when that assurance lapses or the supplier’s risk changes."
+}

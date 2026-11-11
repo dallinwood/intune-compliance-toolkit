@@ -1,0 +1,80 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nPersonnel are provided with ongoing cyber security awareness training, including operational security considerations, tailored to their duties, access levels and current cyber threats.\n\n# Indicators of Good Practice\n\nNot effective:\n- No cyber security awareness training program exists.\n- Cyber security awareness training is not reviewed or updated after initial deployment.\n- Lessons learnt from cyber security incidents are not incorporated into training content.\n- The cadence of review is not defined.\n\nPartially effective:\n- Training is reviewed but updates do not reflect current threat intelligence, sector relevant adversary techniques or organisational changes.\n- Some lessons are incorporated but the process is informal, or coverage is limited to a small number of incidents.\n- Some changes are reflected, but training is not updated to address recently introduced systems or significant changes to working arrangements.\n- A review cadence exists, but is not consistently met, or is not proportionate to the rate of change.\n\nFully effective:\n- Training content is reviewed and updated on a defined cycle, with updates reflecting current threat intelligence, adversary techniques relevant to the workforce and organisation’s operating context.\n- Lessons learnt from cyber security incidents within the organisation or its sector are systematically incorporated into training content.\n- Training reflects the systems, platforms and working arrangements that personnel currently interact with, including newly introduced platforms and changes to ways of working.\n- The cadence of review is defined, proportionate to the rate of change in the threat environment, and consistently met.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-14.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "WORKFORCE-2c",
+        "WORKFORCE-2d",
+        "WORKFORCE-2g"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.02.01",
+        "03.02.02"
+      ],
+      "csf_2.0": [
+        "GV.OC-03",
+        "ID.RA-02",
+        "PR.AT-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-14 - Cyber security awareness training"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-14.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Update and provide cyber security awareness training on a regular basis to reflect current threats and operational considerations."
+}

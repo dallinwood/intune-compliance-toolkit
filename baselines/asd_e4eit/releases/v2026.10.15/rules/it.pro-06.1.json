@@ -1,0 +1,109 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nVulnerabilities in systems (infrastructure, operating systems, applications and data) are identified, documented, validated and prioritised for remediation or mitigation in a timely manner, with all remediation and mitigation actions verified for effectiveness.\n\n# Indicators of Good Practice\n\nNot effective:\n- Vulnerability scanning activities are not undertaken.\n- No routine vulnerability assessment activity has been conducted within a period defined by the organisation.\n- Advisories for relevant software and configuration weaknesses for organisational assets are not reviewed and assessed for impact.\n\nPartially effective:\n- Vulnerability scanning is deployed but does not cover all applicable assets.\n- Vulnerability scans are conducted but results are not reviewed and prioritised within timeframes defined by the organisation.\n- Vulnerability scans are conducted but frequency is not regular enough to enable timely response.\n- Scanning covers software vulnerabilities but not configuration weaknesses.\n- Advisories for relevant software and configuration weaknesses for organisational assets are reviewed on an ad hoc basis, or only for some assets.\n\nFully effective:\n- All applicable assets are included in routine vulnerability scanning, and scanning frequency enables timely response.\n- Scanning covers both software vulnerabilities and configuration weaknesses.\n- Results are reviewed and prioritised within timeframes defined by the organisation.\n- Advisories for relevant software and configuration weaknesses in all organisational assets are regularly reviewed and assessed for impact.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-06.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "THREAT-1b",
+        "THREAT-1c",
+        "THREAT-1f"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1068",
+        "T1190",
+        "T1203",
+        "T1210"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.11.02",
+        "03.12.03",
+        "03.14.01"
+      ],
+      "csf_2.0": [
+        "DE.CM-09",
+        "ID.RA-01",
+        "ID.RA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-06 - Vulnerability management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-06.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Identify known software and configuration weaknesses of assets through continuous and repeatable assessment activities, including vulnerability scanning activities."
+}

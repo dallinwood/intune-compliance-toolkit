@@ -1,0 +1,106 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nRobust and secure identity, credential and access management is used to establish, maintain and control access to systems (infrastructure, operating systems, applications and data) and to support effective detection of identity and credential misuse.\n\n# Indicators of Good Practice\n\nNot effective:\n- Legacy authentication protocols that cannot enforce modern authentication controls remain enabled and in active use without restriction.\n- No assessment has been conducted to identify which legacy authentication protocols are in use within the environment.\n- Authentication mechanisms transmitting credentials in cleartext or using weak cryptographic primitives remain enabled and no action has been taken to disable them.\n- Where legacy protocols are retained, no compensating controls, no monitoring and no decommissioning timelines are in place.\n\nPartially effective:\n- Legacy authentication protocols have been identified and are partially restricted but some remain enabled across systems within scope without justification.\n- An assessment has been conducted but does not cover all in-scope systems, or the inventory of legacy protocols in use is not maintained.\n- Some weak authentication mechanisms have been disabled but others remain enabled without documented justification or remediation plan.\n- Compensating controls exist for some retained legacy protocols but monitoring is inconsistent or decommissioning timelines are not defined.\n\nFully effective:\n- Legacy authentication protocols that cannot enforce modern authentication controls have been identified and disabled across systems within scope, excluding documented and risk accepted exceptions.\n- An assessment of legacy authentication protocol use has been conducted across in-scope systems and the inventory is maintained.\n- Where retention is necessary, compensating controls are applied and decommissioning timelines are recorded and tracked.\n- Ongoing use of legacy authentication protocols is regularly risk reviewed, accepted and recorded in the organisation’s risk register.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-13.5",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-3d",
+        "ASSET-3a"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1078",
+        "T1110",
+        "T1557"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.06",
+        "03.05.04"
+      ],
+      "csf_2.0": [
+        "PR.AA-03",
+        "PR.IR-01",
+        "PR.PS-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-13 - Identity, credential and access management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-13.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Disable legacy authentication protocols or, where this is not feasible, restrict and monitor their use, apply compensating controls and establish a time-bound decommissioning plan."
+}

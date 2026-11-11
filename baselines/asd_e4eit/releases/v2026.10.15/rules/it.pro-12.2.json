@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nUsers are granted the minimum access to systems (infrastructure, operating systems, applications and data) required to undertake their duties or functions.\n\n# Indicators of Good Practice\n\nNot effective:\n- Non-administrative users can create, modify or delete accounts or roles.\n- Delegated permissions are broad and have not been audited.\n\nPartially effective:\n- Permissions are restricted to administrative roles but some delegated permissions are broader than required.\n- Approval workflows exist for some high-impact changes but not all.\n\nFully effective:\n- Only designated administrative roles can create, modify or delete accounts and roles.\n- Delegated permissions are audited and scoped to the minimum required.\n- Approval workflows are enforced for high-impact identity and access changes.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-12.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-1g",
+        "ACCESS-2d",
+        "ARCHITECTURE-3c"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1098",
+        "T1136"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.01",
+        "03.01.06",
+        "03.01.07",
+        "03.04.05"
+      ],
+      "csf_2.0": [
+        "PR.AA-01",
+        "PR.AA-04",
+        "PR.AA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-12 - Least privilege access"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-12.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Grant only authorised administrative roles permissions to create, modify or delete accounts and roles, and access privileged functions or applications."
+}

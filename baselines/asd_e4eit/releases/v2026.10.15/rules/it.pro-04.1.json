@@ -1,0 +1,112 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are securely configured to approved and maintained baselines, including by reducing attack surfaces and attack paths, with configurations continually monitored and consistently enforced.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented configuration baseline exists for assets.\n- Systems are deployed with vendor defaults and no documented hardening has been applied.\n\nPartially effective:\n- A baseline exists but does not address all applicable asset types.\n- The baseline is documented but has not been reviewed or updated within the cycle defined by the organisation.\n- The baseline exists but rationale for configuration decisions is not documented.\n\nFully effective:\n- A documented and approved baseline exists for all applicable asset types.\n- The baseline disables or removes unnecessary services, insecure settings, and unsupported or weak communication protocols.\n- Configuration decisions are documented with rationale to support drift assessment.\n- The baseline is reviewed and updated on a cycle defined by the organisation.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-04.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-3d",
+        "ARCHITECTURE-3e",
+        "ASSET-3a",
+        "ASSET-3c"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1003",
+        "T1046",
+        "T1047",
+        "T1505"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.01",
+        "03.04.02",
+        "03.04.06",
+        "03.16.02"
+      ],
+      "csf_2.0": [
+        "PR.IR-01",
+        "PR.PS-01",
+        "PR.PS-02",
+        "PR.PS-03"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-04 - Secure configuration management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-04.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Define approved configuration baselines, informed by vendor and industry hardening guidance, that disable or remove unnecessary services, insecure settings, and unsupported or weak communication protocols."
+}

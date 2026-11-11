@@ -1,0 +1,83 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nThe board of directors or executive committee is accountable for ensuring that artificial intelligence is secure, controllable, human-supervised and used in an ethical and accountable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- No named executive is accountable for the use, governance or risk management of artificial intelligence.\n- Artificial intelligence is used within the organisation with no approval, risk assessment or oversight.\n- Artificial intelligence related risks are not reflected in the organisation’s risk register.\n- Artificial intelligence use and governance arrangements have not been reviewed within the schedule defined by the organisation.\n\nPartially effective:\n- A named executive is accountable for artificial intelligence but the governance process is informal or undocumented.\n- Approval and risk assessment occur for some artificial intelligence use cases but coverage is inconsistent across internally developed, third-party and embedded artificial intelligence.\n- Some artificial intelligence related risks are recorded but the organisation’s risk register does not capture all known artificial intelligence use cases.\n- Reviews occur within the schedule defined by the organisation, but do not consistently address changes in artificial intelligence capability, threat environment or organisational use.\n\nFully effective:\n- A named executive has accountability for artificial intelligence, supported by an approved governance process that has evidence of being followed.\n- The governance process addresses approval, risk assessment and oversight for internally developed, third-party and embedded artificial intelligence use cases.\n- Artificial intelligence related risks are reflected in the organisation’s risk register and reported through standard governance channels.\n- Reviews of artificial intelligence use and governance arrangements are conducted on a schedule defined by the organisation and consistently address changes in artificial intelligence capability, threat environment or organisational use.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.gov-08.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "PROGRAM-2a",
+        "PROGRAM-2c",
+        "RISK-1c",
+        "RISK-2a"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.08",
+        "03.11.01",
+        "03.15.01"
+      ],
+      "csf_2.0": [
+        "GV.OC-01",
+        "GV.RM-06",
+        "GV.RR-01",
+        "GV.RR-02"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Govern principles",
+    "GOV-08 - Executive artificial intelligence accountability"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.GOV-08.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Establish and maintain executive accountability for the use, governance and risk management of artificial intelligence within the organisation."
+}

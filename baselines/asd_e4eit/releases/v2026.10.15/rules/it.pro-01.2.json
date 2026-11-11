@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are planned, designed, developed, tested, deployed, maintained and decommissioned according to their business criticality ratings and security and resilience requirements using Secure by Design and Secure by Default principles and practices.\n\n# Indicators of Good Practice\n\nNot effective:\n- No controlled build or deployment process exists for applicable assets.\n- Changes to systems are applied ad hoc, without any version control, testing or approval.\n\nPartially effective:\n- A controlled deployment process exists but is not consistently followed for all changes.\n- Version control is in place but pre-deployment security verification is not performed.\n\nFully effective:\n- A controlled build and deployment process is in place and consistently followed.\n- Configuration changes are subject to version control, testing and approval before deployment.\n- Security controls are confirmed to be implemented consistently across systems following deployment processes.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-01.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-3e",
+        "ASSET-3b",
+        "ASSET-3c",
+        "ASSET-4e"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.01",
+        "03.04.02",
+        "03.04.03",
+        "03.16.01"
+      ],
+      "csf_2.0": [
+        "DE.CM-09",
+        "PR.PS-01",
+        "PR.PS-02",
+        "PR.PS-03"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-01 - Secure system lifecycle"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-01.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Secure build and deployment processes to enforce controls consistently across systems."
+}

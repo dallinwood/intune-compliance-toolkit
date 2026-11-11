@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nUsers are granted the minimum access to systems (infrastructure, operating systems, applications and data) required to undertake their duties or functions.\n\n# Indicators of Good Practice\n\nNot effective:\n- Accounts are provisioned with broad default permissions that exceed operational requirements.\n- Administrative and day-to-day user functions share the same account, with no separate privileged accounts.\n\nPartially effective:\n- Minimum privilege provisioning is defined but not consistently applied to all account types.\n- Administrative accounts are separated from user accounts but some exceptions exist without documented justification.\n\nFully effective:\n- All accounts are provisioned with documented minimum permissions aligned to defined operational functions.\n- Separate accounts are allocated for privileged and day-to-day functions, and controls prevent privileged use from day-to-day context.\n- Non-person and service accounts are scoped to their specific integration requirements.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-12.3",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-1g",
+        "ACCESS-2c",
+        "ACCESS-2d"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1098",
+        "T1136"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.01",
+        "03.01.02",
+        "03.01.05",
+        "03.01.06"
+      ],
+      "csf_2.0": [
+        "PR.AA-01",
+        "PR.AA-03",
+        "PR.AA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-12 - Least privilege access"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-12.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Provision user, administrative and non-person accounts with only the minimum access and privileges required to perform defined operational functions."
+}

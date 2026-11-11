@@ -1,0 +1,106 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nUsers are granted the minimum access to systems (infrastructure, operating systems, applications and data) required to undertake their duties or functions.\n\n# Indicators of Good Practice\n\nNot effective:\n- Access privileges are not reviewed against current roles, duties and business requirements.\n- Access reviews do not identify privileges that are no longer required.\n- Access privileges are not updated when personnel roles, duties or business requirements change.\n- Access privileges are not mapped to roles, duties and business requirements.\n\nPartially effective:\n- Access reviews are conducted for some accounts or systems, but coverage is incomplete.\n- Reviews identify excessive or obsolete privileges, but updates are incomplete or not completed within timeframes defined by the organisation.\n- A process to review access privileges exists but only occurs on an ad hoc basis.\n- Some access privileges are mapped to roles, duties and business requirements, but not all.\n\nFully effective:\n- Access privileges for all applicable accounts and systems are reviewed within a cycle defined by the organisation and aligned with current roles, duties and business requirements.\n- Privileges identified as excessive or obsolete are removed or updated within timeframes defined by the organisation.\n- Review outcomes and resulting access changes are documented and available as evidence.\n- Access privileges are mapped to current roles, duties and business requirements.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-12.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-1e",
+        "ACCESS-2f",
+        "ACCESS-2h"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1098"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.01",
+        "03.01.04",
+        "03.01.05"
+      ],
+      "csf_2.0": [
+        "GV.RM-02",
+        "PR.AA-01",
+        "PR.AA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-12 - Least privilege access"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-12.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Periodically review and update access privileges in alignment with current roles, duties and business requirements."
+}

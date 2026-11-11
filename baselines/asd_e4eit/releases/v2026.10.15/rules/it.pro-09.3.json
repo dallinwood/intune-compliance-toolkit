@@ -1,0 +1,88 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nData communicated between different security domains for systems (infrastructure and applications) is controlled and subject to inspection and verification.\n\n# Indicators of Good Practice\n\nNot effective:\n- No inbound content inspection is deployed.\n\nPartially effective:\n- Inbound inspection is deployed but does not cover all applicable content channels.\n- Inspection is in place but detection signatures or rules are not maintained or updated.\n\nFully effective:\n- Inbound content inspection covers all applicable content channels.\n- Detection signatures and rules are maintained and updated on a regular cycle defined by the organisation.\n- Blocked content is logged and available for review.\n- Current cyber threat intelligence is considered when implementing controls to prevent the delivery of malicious or unsafe content.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-09.3",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-2e",
+        "ARCHITECTURE-3b",
+        "THREAT-2d"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1021",
+        "T1105",
+        "T1566"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.13.01",
+        "03.13.13",
+        "03.14.02"
+      ],
+      "csf_2.0": [
+        "DE.CM-01",
+        "PR.DS-02",
+        "PR.IR-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-09 - Content filtering"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-09.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Inspect inbound content from external or untrusted sources to prevent delivery of malicious or unsafe content."
+}

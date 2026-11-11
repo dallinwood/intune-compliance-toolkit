@@ -1,0 +1,109 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSecurity-relevant event logs and configuration changes for systems (infrastructure, operating systems, applications and data) are centrally collected, protected against unauthorised modification or deletion, and retained to support effective cyber security event detection and investigation.\n\n# Indicators of Good Practice\n\nNot effective:\n- Security-relevant logs from assets are not forwarded to a central logging capability.\n- High-value, security-relevant event logs or configuration changes from infrastructure, operating systems or applications are not forwarded.\n\nPartially effective:\n- High-value, security-relevant event logs are forwarded, but coverage gaps are identified or completeness has not been validated.\n- Configuration change logs are forwarded inconsistently.\n- The utility of security log sources is reviewed, but on an ad hoc basis rather than according to a defined schedule.\n- Log forwarding is in place but latency is excessive for effective detection.\n\nFully effective:\n- High-value security-relevant event logs and configuration changes from all relevant infrastructure, operating systems and application sources are forwarded to the central logging capability.\n- Security log sources are reviewed at regular intervals to ensure their continued utility in detecting and responding to changing adversary techniques.\n- Log completeness has been validated against the expected log sources.\n- Logs are forwarded at a frequency that enables timely detection.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.det-01.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "SITUATION-1a",
+        "SITUATION-1c",
+        "SITUATION-1e"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1070",
+        "T1685"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.07",
+        "03.03.01",
+        "03.03.03",
+        "03.03.05"
+      ],
+      "csf_2.0": [
+        "DE.AE-03",
+        "DE.CM-03",
+        "DE.CM-09",
+        "PR.PS-04"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Detect principles",
+    "DET-01 - Centralised event logging"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.DET-01.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Forward high-value, security-relevant event logs and configuration changes from infrastructure, operating systems and applications to a central log storage capability."
+}

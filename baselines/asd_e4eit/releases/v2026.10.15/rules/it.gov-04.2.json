@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSuitable and sufficient personnel and resources are identified, acquired and maintained in support of cyber security activities.\n\n# Indicators of Good Practice\n\nNot effective:\n- No review of cyber security resourcing has been conducted.\n- Resourcing has not been reassessed following significant organisational or threat landscape changes.\n\nPartially effective:\n- A review has been conducted but did not reference current threat trends, cyber security incident outcomes, or organisational changes.\n- Review outcomes have identified required adjustments, but those adjustments have not been made.\n\nFully effective:\n- A resourcing review has been completed within the review period defined by the organisation.\n- The review references current threat trends, cyber security incident outcomes and organisational changes.\n- Documented review outcomes include resourcing adjustments that are implemented within timeframes defined by the organisation, or formally risk accepted by an appropriate authority.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.gov-04.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "PROGRAM-2g",
+        "RISK-2g",
+        "WORKFORCE-3e",
+        "WORKFORCE-4c"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.11.01",
+        "03.12.03",
+        "03.14.03"
+      ],
+      "csf_2.0": [
+        "GV.OC-05",
+        "GV.OV-03",
+        "GV.RR-03"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Govern principles",
+    "GOV-04 - Cyber security resourcing"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.GOV-04.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Periodically review cyber security resourcing against cyber threat trends, cyber security incident outcomes and organisational changes."
+}

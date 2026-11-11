@@ -1,0 +1,97 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are administered in a secure, accountable and auditable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Administrative access to systems is routinely performed from standard user devices without additional controls to protect the administrative session.\n- No dedicated or hardened administrative environment exists.\n- Exceptions to the use of dedicated administrative environments are neither identified nor assessed.\n\nPartially effective:\n- A dedicated administrative environment has been established, but administrative access is not consistently routed through it.\n- Administrative endpoints have been hardened, but unprivileged user workloads or unnecessary functions remain accessible.\n- Exceptions are documented, but their justification, risk acceptance, compensating controls or review arrangements are incomplete or inconsistently applied.\n\nFully effective:\n- Administrative sessions originate from dedicated and hardened administrative environments that are isolated from unprivileged user workloads. Where this cannot be technically enforced, exceptions are documented, risk-assessed, formally accepted and protected by compensating controls.\n- Administrative environments are hardened and restricted to the functions required for authorised administration.\n- Exceptions are limited to systems or services that cannot support administration through a dedicated environment, are periodically reviewed and are removed when the technical limitation no longer applies.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-05.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-2d",
+        "ARCHITECTURE-2e",
+        "ARCHITECTURE-3c"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1003",
+        "T1068"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.06",
+        "03.01.12",
+        "03.04.06",
+        "03.13.01"
+      ],
+      "csf_2.0": [
+        "PR.AA-05",
+        "PR.IR-01",
+        "PR.IR-02",
+        "PR.PS-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-05 - Secure administration"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-05.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Ensure administrative activities can only be performed from dedicated and hardened environments that are isolated from unprivileged user workloads."
+}

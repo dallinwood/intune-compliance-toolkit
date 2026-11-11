@@ -1,15 +1,18 @@
 sources/mscp/releases/*/upstream/** -text
 sources/asd_ism/releases/*/upstream/** -text
+sources/asd_e4eit/releases/*/upstream/** -text
 sources/nist_800_53/releases/*/upstream/** -text
 baselines/** text eol=lf
 baselines/**/*.pol binary
 baselines/**/*.intunewin binary
 sources/mscp/releases/*/source.json text eol=lf
 sources/asd_ism/releases/*/source.json text eol=lf
+sources/asd_e4eit/releases/*/source.json text eol=lf
 sources/nist_800_53/releases/*/source.json text eol=lf
 docs/mappings/mscp-to-nist-800-53-unresolved.json text eol=lf
 tests/fixtures/mscp_upstream/** -text
 tests/fixtures/asd_ism/** -text
+tests/fixtures/asd_e4eit/** -text
 tests/fixtures/nist_800_53/** -text
 tests/fixtures/mappings/** text eol=lf
 catalog/** text eol=lf

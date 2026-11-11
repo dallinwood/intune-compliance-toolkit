@@ -1,0 +1,94 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nBaseline patterns of identity and credential access activities, privileged access activities, and remote access activities are established and maintained for systems (infrastructure, operating systems, applications and data) to enable the detection of anomalous or unexpected behaviour.\n\n# Indicators of Good Practice\n\nNot effective:\n- No monitoring or equivalent analysis is used to identify anomalous or unexpected use of legitimate tools and utilities on applicable systems.\n- Existing controls do not provide a reasonable capability to detect security-relevant patterns of legitimate software being used for malicious purposes.\n\nPartially effective:\n- Monitoring or equivalent analysis covers some priority tools, execution behaviours or applicable systems, but risk-significant coverage gaps exist.\n- Security-relevant execution telemetry is collected, but detection rules, behavioural analytics or equivalent analysis are incomplete or not consistently operational.\n- Alerts relating to anomalous or unexpected software execution are generated, but they are not consistently triaged and investigated within organisationally defined timeframes.\n\nFully effective:\n- The organisation identifies the legitimate tools, utilities and execution behaviours that present heightened risk of malicious use within applicable systems.\n- Security-relevant telemetry and contextual information are analysed using detection rules, behavioural analytics or equivalent methods to identify anomalous or unexpected use of priority tools and utilities.\n- Detection coverage is periodically reviewed and adjusted in response to changes in applicable systems, threat intelligence, observed activity and the organisation’s risk profile.\n- Alerts are prioritised, triaged and investigated within timeframes defined according to their assessed security risk.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.det-04.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "SITUATION-2d",
+        "SITUATION-2e"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1059",
+        "T1078",
+        "T1218"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.03.05",
+        "03.14.06"
+      ],
+      "csf_2.0": [
+        "DE.AE-02",
+        "DE.CM-03",
+        "DE.CM-09"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Detect principles",
+    "DET-04 - Baseline high-risk access activities"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.DET-04.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Continuously monitor and analyse software execution behaviour on systems to detect where legitimate tools and utilities are being used for malicious purposes."
+}

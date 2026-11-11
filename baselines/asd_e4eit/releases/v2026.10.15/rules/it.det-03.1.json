@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_visibility_and_response",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nCyber security events are analysed in a timely manner to identify cyber security incidents.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented triage process exists.\n- Alerts are routinely ignored or left unreviewed.\n- No incident severity thresholds are defined.\n\nPartially effective:\n- A triage process exists but response times are not defined or consistently met.\n- Severity thresholds are defined but escalation procedures are informal.\n\nFully effective:\n- A documented triage process with defined severity thresholds and response timeframes is in place.\n- Alerts are triaged within the timeframes defined by the organisation and escalated where cyber security incident thresholds are met.\n- Triage performance is tracked and reported.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.det-03.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "RESPONSE-1b",
+        "RESPONSE-2a",
+        "RESPONSE-2d"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.06.01",
+        "03.06.02",
+        "03.14.06"
+      ],
+      "csf_2.0": [
+        "DE.AE-02",
+        "DE.AE-04",
+        "DE.AE-08",
+        "RS.MA-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Detect principles",
+    "DET-03 - Cyber security incident identification"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.DET-03.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Triage alerts and events in a timely manner to determine whether cyber security incident thresholds have been met."
+}

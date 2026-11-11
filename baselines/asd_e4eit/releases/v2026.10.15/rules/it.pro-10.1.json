@@ -1,0 +1,102 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are regularly backed up in a secure and proven manner, including through the validation of restoration capabilities.\n\n# Indicators of Good Practice\n\nNot effective:\n- No managed backup process exists for important data, applications and settings.\n- Backup storage is neither encrypted nor protected by immutable, offline, logically isolated or equivalent controls.\n\nPartially effective:\n- Important data, applications and settings are backed up, but backup schedules are not defined, do not cover all important assets, or are not consistently met.\n- Backups are encrypted but no immutable, offline, logically isolated or equivalent resilience controls are consistently applied.\n- Backups use immutable, offline, logically isolated or equivalent controls, but encryption is not consistently enforced.\n\nFully effective:\n- All important data, applications and settings are backed up according to schedules defined by the organisation and aligned with their recovery requirements.\n- Backup schedules are monitored, and missed or unsuccessful backups are identified, investigated and remediated within timeframes defined by the organisation.\n- Backup storage is encrypted and protected by immutable, offline, logically isolated or equivalent controls.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-10.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-5b",
+        "RESPONSE-4b",
+        "RESPONSE-4j"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1486",
+        "T1490"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.08.09",
+        "03.13.11"
+      ],
+      "csf_2.0": [
+        "PR.DS-01",
+        "PR.DS-11",
+        "RC.RP-03"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-10 - Regular and proven backups"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-10.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Back up important data, applications and settings on a defined schedule to secure, resilient storage protected by encryption and immutable, offline, logically isolated or equivalent controls."
+}

@@ -1,0 +1,105 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are regularly backed up in a secure and proven manner, including through the validation of restoration capabilities.\n\n# Indicators of Good Practice\n\nNot effective:\n- Backup repositories are accessible from the production environment or by production administrators.\n- Compromise of a system would provide a direct path to access, modify or delete its own backups.\n\nPartially effective:\n- Backup repositories are logically separated but use credentials managed by the same identity platform as production.\n- Isolation is implemented but has not been tested or validated.\n\nFully effective:\n- Backup repositories are isolated from production environments and general user access.\n- Access is controlled through credentials and administrative paths isolated from compromise of the primary identity environment.\n- Isolation has been validated to confirm that compromise of a system does not provide access to backups.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-10.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-2d",
+        "RESPONSE-4j",
+        "RESPONSE-4k"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1005",
+        "T1486",
+        "T1490"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.02",
+        "03.08.02",
+        "03.08.09"
+      ],
+      "csf_2.0": [
+        "PR.AA-05",
+        "PR.DS-01",
+        "PR.DS-11",
+        "PR.IR-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-10 - Regular and proven backups"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-10.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Isolate backup repositories from general user environments and production workloads, ensuring they are separated from primary systems to prevent unauthorised access, modification or deletion."
+}

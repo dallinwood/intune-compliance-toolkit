@@ -1,0 +1,113 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (operating systems and applications) only permit the execution of software that is supported, verified and authorised.\n\n# Indicators of Good Practice\n\nNot effective:\n- No approved administrative toolset is defined.\n- No restrictions are placed on the location administrative tooling can be executed from.\n- No controls prevent unapproved administrative tools, including tools commonly used in post-compromise activity, from executing on managed assets.\n\nPartially effective:\n- An approved toolset is defined but not consistently enforced across all assets.\n- Administrative tooling is configured to execute from known locations, but privileged users can still run tooling from unapproved locations.\n- Some unapproved administrative tools are blocked but enforcement gaps exist.\n\nFully effective:\n- A defined and enforced approved toolset exists for administrative and management activities, and execution is limited to authorised, known locations.\n- Administrative and management tooling outside the approved set is blocked from execution, including from unauthorised locations.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-07.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-1g",
+        "ARCHITECTURE-3c",
+        "ARCHITECTURE-3m"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1047",
+        "T1055",
+        "T1059",
+        "T1204",
+        "T1218",
+        "T1685"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.06",
+        "03.04.05",
+        "03.04.08",
+        "03.07.04"
+      ],
+      "csf_2.0": [
+        "DE.CM-09",
+        "PR.AA-05",
+        "PR.PS-01",
+        "PR.PS-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-07 - Trustworthy software"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-07.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Restrict administrative and management tooling to approved software sets and executed from only authorised, known locations."
+}

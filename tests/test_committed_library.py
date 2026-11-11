@@ -5,8 +5,10 @@ from pathlib import Path
 
 import pytest
 
-from tools import import_asd_ism, import_mscp, import_nist_800_53
+from tools import import_asd_e4eit, import_asd_ism, import_mscp, import_nist_800_53
+from tools.asd_e4eit_normalize import MAPPING_FILE_ID
 from tools.file_references import is_binary_payload
+from tools.mappings import validate_mappings
 from tools.nist_800_53_normalize import control_id_for_label, label_for_control_id
 from tools.release_import import generate_release
 from tools.source_lock import read_source_lock
@@ -23,7 +25,12 @@ MAINTAINER_DIR_NAMES = (OVERLAYS_DIR_NAME, MAPPINGS_DIR_NAME)
 
 IMPORTERS_BY_NAME = {
     importer.name: importer
-    for importer in (import_mscp.IMPORTER, import_asd_ism.IMPORTER, import_nist_800_53.IMPORTER)
+    for importer in (
+        import_mscp.IMPORTER,
+        import_asd_ism.IMPORTER,
+        import_nist_800_53.IMPORTER,
+        import_asd_e4eit.IMPORTER,
+    )
 }
 
 NIST_800_53_CATALOG_SHA256 = "64ca6b4161de51ab6af098a7d101d326f14c95e1abf721396cd8a049e8115eeb"
@@ -84,6 +91,11 @@ def committed_asd_ism_rules() -> list[dict]:
 
 def committed_nist_800_53_rules() -> list[dict]:
     rule_paths = sorted((current_release_dir("nist_800_53") / "rules").glob("*.json"))
+    return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
+
+
+def committed_asd_e4eit_rules() -> list[dict]:
+    rule_paths = sorted((current_release_dir("asd_e4eit") / "rules").glob("*.json"))
     return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
 
 
@@ -271,3 +283,46 @@ def test_nist_800_53_every_control_id_round_trips_through_its_label():
         for control_id in control_ids
         if control_id_for_label(label_for_control_id(control_id)) != control_id
     ] == []
+
+
+def test_asd_e4eit_vendored_license_present():
+    readme_text = (
+        REPO_ROOT / "sources" / "asd_e4eit" / "releases" / current_release_tag("asd_e4eit") / "upstream" / "README.md"
+    ).read_text(encoding="utf-8")
+    assert "Creative Commons Attribution 4.0" in readme_text
+
+
+def test_asd_e4eit_rules_are_the_fifty_eight_actions_with_a_phase_and_a_domain():
+    rules = committed_asd_e4eit_rules()
+    assert len(rules) == 58
+    benchmark_names_by_rule = {
+        rule["id"]: {benchmark["name"] for benchmark in rule["applicability"][0]["benchmarks"]}
+        for rule in rules
+    }
+    without_phase = [
+        rule_id for rule_id, names in benchmark_names_by_rule.items()
+        if not any(name.startswith("e4eit_phase_") for name in names)
+    ]
+    without_domain = [
+        rule_id for rule_id, names in benchmark_names_by_rule.items()
+        if not any(name.startswith("e4eit_") and not name.startswith("e4eit_phase_") for name in names)
+    ]
+    assert without_phase == []
+    assert without_domain == []
+
+
+def test_committed_asd_e4eit_to_ism_mapping_is_what_the_importer_generates(tmp_path):
+    sources_dir = REPO_ROOT / "sources" / "asd_e4eit"
+    regenerated_baselines_dir = tmp_path / "baselines"
+    shutil.copytree(BASELINES_DIR, regenerated_baselines_dir)
+    mapping_path = Path("_mappings") / "rules" / f"{MAPPING_FILE_ID}.json"
+    (regenerated_baselines_dir / mapping_path).unlink()
+
+    import_asd_e4eit.write_ism_mapping(sources_dir, regenerated_baselines_dir)
+
+    assert (regenerated_baselines_dir / mapping_path).read_bytes() == (BASELINES_DIR / mapping_path).read_bytes()
+
+
+def test_committed_mappings_have_no_errors():
+    errors, _warnings = validate_mappings(BASELINES_DIR / MAPPINGS_DIR_NAME / "rules", BASELINES_DIR)
+    assert errors == []

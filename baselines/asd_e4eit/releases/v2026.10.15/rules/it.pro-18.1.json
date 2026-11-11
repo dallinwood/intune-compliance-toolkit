@@ -1,0 +1,103 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are segmented into network zones based on business criticality and trust levels, with only authorised, controlled and monitored inbound and outbound communication paths between network zones permitted.\n\n# Indicators of Good Practice\n\nNot effective:\n- Systems are deployed on shared or flat network segments with no segregation between functions or trust levels.\n- No access controls restrict network access from external or general user networks to in-scope systems.\n- Segmentation is documented or administratively defined but not enforced by technical controls.\n- Segmentation has not been validated through technical assessment.\n\nPartially effective:\n- Network segmentation has been implemented but does not cover all in-scope systems, or segments are defined inconsistently.\n- Access controls exist between segments, but deny-by-default is not enforced, or some pathways are permitted without documented approval.\n- Technical enforcement is in place for some segments but relies on a single mechanism that does not provide meaningful isolation.\n- Validation has been performed for some segments but not consistently across in-scope systems, or validation is out of date.\n- Pathways are reviewed, but findings are not actioned, or the review cycle is not defined by the organisation.\n\nFully effective:\n- Systems within scope are deployed in network segments defined according to function, criticality and trust level, with segmentation applied consistently.\n- Deny-by-default access controls are enforced between segments, with access from external and general user networks limited to documented and approved pathways.\n- Segmentation is enforced through network-layer technical controls that provide meaningful isolation.\n- Segmentation has been validated through technical assessment with results documented and gaps remediated.\n- Approved pathways are reviewed on a regular cycle defined by the organisation, with unjustified pathways removed and changes reflected in the access control configuration.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-18.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-2b",
+        "ARCHITECTURE-2d",
+        "ARCHITECTURE-2h"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1133",
+        "T1190"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.03",
+        "03.13.01",
+        "03.13.06"
+      ],
+      "csf_2.0": [
+        "PR.AA-05",
+        "PR.IR-01",
+        "PR.PS-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-18 - Network segmentation and segregation"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-18.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Isolate systems within network zones based on business criticality and trust level, and restrict and monitor inbound and outbound access to explicitly approved pathways and services."
+}

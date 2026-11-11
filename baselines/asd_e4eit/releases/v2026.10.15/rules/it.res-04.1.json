@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_visibility_and_response",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nLessons learnt from cyber security incidents are captured, and areas for improvement are identified, prioritised and actioned in a timely manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Post-incident reviews are not conducted.\n\nPartially effective:\n- Post-incident reviews are conducted for some incidents but not all that meet the severity threshold defined by the organisation.\n- Reviews are conducted but findings are not documented or actioned.\n\nFully effective:\n- Post-incident reviews are conducted for all incidents meeting the severity threshold defined by the organisation.\n- Findings identify the specific gaps that enabled each stage of the incident.\n- Remediation actions arising from findings are implemented and tracked to closure.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.res-04.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "RESPONSE-3h",
+        "RESPONSE-3i",
+        "RISK-2a"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.06.01",
+        "03.06.02",
+        "03.11.01"
+      ],
+      "csf_2.0": [
+        "ID.IM-01",
+        "ID.IM-02",
+        "RS.AN-03",
+        "RS.AN-08"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Respond principles",
+    "RES-04 - Cyber security incident insights"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.RES-04.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Perform post-cyber security incident reviews to identify the security gaps that enabled each stage of the cyber security incident."
+}

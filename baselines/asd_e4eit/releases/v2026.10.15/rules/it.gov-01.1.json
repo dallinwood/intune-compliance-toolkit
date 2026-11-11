@@ -1,0 +1,85 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nThe board of directors or executive committee is accountable for cyber security.\n\n# Indicators of Good Practice\n\nNot effective:\n- No named executive or board member is accountable for cyber security.\n- Cyber security accountability exists only informally, or is assumed rather than documented.\n- No evidence of cyber security reporting to the executive board.\n- Organisational risk appetite is not set.\n\nPartially effective:\n- A named executive or board member is accountable for cyber security, but reporting obligations are not formally defined.\n- Board-level reporting on cyber security occurs but is ad hoc rather than on a defined schedule.\n- Accountability is documented but has not been reviewed within the organisationally defined cadence or following relevant organisational restructuring or leadership changes.\n- Organisational risk appetite is set but is not monitored or adjusted over time.\n\nFully effective:\n- A named executive or board member has documented accountability for cyber security with defined reporting obligations.\n- Regular reporting to the board or executives occurs on a defined cadence with evidence of reporting artefacts.\n- Accountability arrangements are reviewed when organisational structures or leadership changes occur.\n- Organisational risk appetite is set and is monitored and adjusted over time as required.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.gov-01.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "PROGRAM-1d",
+        "PROGRAM-2a",
+        "PROGRAM-2c",
+        "RISK-1e",
+        "RISK-1f"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.11.01",
+        "03.11.04",
+        "03.15.01"
+      ],
+      "csf_2.0": [
+        "GV.OC-01",
+        "GV.RM-01",
+        "GV.RM-02",
+        "GV.RR-01",
+        "GV.RR-02"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Govern principles",
+    "GOV-01 - Executive cyber security accountability"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.GOV-01.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Formally define and establish executive and board-level accountabilities for cyber security, including setting, monitoring and adjusting organisational risk appetite, and review these accountabilities at a defined cadence."
+}

@@ -427,6 +427,14 @@ def _ism_release_tag(mapping_collection: dict) -> str:
     return release_tags.pop()
 
 
+def catalog_action_ids(catalog: dict) -> set[str]:
+    """Return the upstream OSCAL id (such as IT.PRO-13.1) of every action in the catalog."""
+    catalog_body = catalog.get("catalog") if isinstance(catalog, dict) else None
+    if not isinstance(catalog_body, dict) or not isinstance(catalog_body.get("groups"), list):
+        raise UnsupportedUpstreamData("document has no catalog.groups list")
+    return {_entry_id(entry) for entry, _titles, _group in _walk_groups(catalog_body["groups"], [])}
+
+
 def ism_mapping(
     mapping_collection: dict, action_ids: set[str], e4eit_tag: str
 ) -> tuple[dict, str]:

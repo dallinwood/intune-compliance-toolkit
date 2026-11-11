@@ -1,0 +1,81 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_governance_and_culture",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSuitable and sufficient personnel and resources are identified, acquired and maintained in support of cyber security activities.\n\n# Indicators of Good Practice\n\nNot effective:\n- Cyber security functions are staffed on an ad hoc basis without reference to required skills or capacity.\n- Critical cyber security roles are unfilled with no approved recruitment plan.\n- No resourcing plan for cyber security personnel exists.\n\nPartially effective:\n- Some critical roles are filled but identified skills gaps have no plan for remediation.\n- While assigned personnel provide some capability, there are gaps in capacity, resources, or expertise that hinder the operation, monitoring, maintenance, and lifecycle management of controls.\n- A resourcing plan exists but does not cover all required cyber security functions.\n- Outstanding cyber security positions are being actively recruited, but capacity or skills gaps remain.\n\nFully effective:\n- Sufficient cyber security personnel are assigned to operate, monitor, maintain and manage the lifecycle of controls across the organisation.\n- Skills gaps are identified and addressed through recruitment, training or contracted services.\n- A resourcing plan identifies all required cyber security personnel, roles, skills, resources and capacity.\n- Cyber security responsibilities are defined within applicable role descriptions.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.gov-04.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "PROGRAM-2e",
+        "WORKFORCE-3a",
+        "WORKFORCE-3b",
+        "WORKFORCE-4b"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.02.02",
+        "03.15.01"
+      ],
+      "csf_2.0": [
+        "GV.RR-02",
+        "GV.RR-03",
+        "GV.RR-04"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Govern principles",
+    "GOV-04 - Cyber security resourcing"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.GOV-04.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Assign sufficient cyber security personnel and resources with the required skills to operate, monitor, maintain and manage the lifecycle of security controls and define cyber security responsibilities within role descriptions."
+}

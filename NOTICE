@@ -52,6 +52,37 @@ nature, is not legal advice, and that the Commonwealth accepts no
 responsibility or liability for any damage, loss or expense incurred as a
 result of reliance on it.
 
+sources/asd_e4eit/releases/<tag>/upstream/ is an unmodified copy of the Essentials for
+enterprise IT (E4EIT) published by the Australian Signals Directorate (ASD), in OSCAL
+format: the catalog, the domain profiles and the mapping collection.
+
+  Project:  https://github.com/AustralianCyberSecurityCentre/e4eit-oscal
+            (a mirror; the authoritative copy is
+            https://www.cyber.gov.au/e4eit/oscal)
+  Release:  v2026.10.15 (October 2026 E4EIT)
+  Licence:  Creative Commons Attribution 4.0 International (CC BY 4.0)
+            https://creativecommons.org/licenses/by/4.0/
+
+ASD's copyright notice and disclaimer for the material are in
+sources/asd_e4eit/releases/<tag>/upstream/README.md. The copyright notice reads: (c)
+Commonwealth of Australia 2026. With the exception of the Coat of Arms, the
+Australian Signals Directorate logo and where otherwise stated, all material
+presented in this publication is provided under a Creative Commons Attribution
+4.0 International licence. The Coat of Arms and the ASD logo are not licensed
+under CC BY 4.0.
+
+baselines/asd_e4eit/ and baselines/_mappings/rules/asd-e4eit-to-asd-ism.json are adapted
+from that material: the E4EIT content was converted to a normalized rule format,
+each action's discussion was composed from its principle and indicators of good
+practice, priority phases were derived from the domain profiles, and ASD's
+mapping to the ISM was converted to rule links. This content was modified by
+this project. It remains licensed under CC BY 4.0 and is provided as-is, with
+the disclaimer of warranties and limitation of liability in section 5 of that
+licence, and with ASD's disclaimer that the material is of a general nature, is
+not legal advice, and that the Commonwealth accepts no responsibility or
+liability for any damage, loss or expense incurred as a result of reliance on
+it.
+
 sources/nist_800_53/releases/<tag>/upstream/ is an unmodified copy of the NIST SP 800-53
 Rev. 5 control catalog and its four baseline profiles (Low, Moderate, High, Privacy),
 published by the National Institute of Standards and Technology (NIST) in OSCAL

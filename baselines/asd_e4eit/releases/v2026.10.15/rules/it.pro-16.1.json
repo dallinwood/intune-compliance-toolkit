@@ -1,0 +1,106 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nCyber supply chains supporting systems (infrastructure, operating systems, applications and data) are secure, resilient and support effective and coordinated cyber security incident response.\n\n# Indicators of Good Practice\n\nNot effective:\n- No verification of software, component or update integrity or authenticity is performed before introduction into systems.\n- Verification outcomes are not recorded or available for review.\n- Where verification cannot be performed, no compensating control or remediation paths are documented.\n\nPartially effective:\n- Verification is performed for some categories of software but not consistently across operating systems, applications, firmware and dependencies.\n- Integrity or provenance checks are performed, but they do not provide sufficient assurance for all software, components or updates.\n- Verification outcomes are recorded for some software, components or updates prior to being introduced into systems, but not consistently.\n- Compensating controls exist for some unverifiable components but are not formally approved or time-bound.\n\nFully effective:\n- Verification of integrity and provenance is performed for software, components and updates across all relevant categories, and provenance is verified where suitable supplier evidence is available.\n- Verification uses one or more mechanisms appropriate to the software, component, update and source to provide reliable assurance of integrity and provenance.\n- Verification outcomes are recorded and available for review.\n- Where verification cannot be performed, compensating controls are applied, exceptions are time-bound and remediation paths are documented.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-16.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ARCHITECTURE-4e",
+        "ARCHITECTURE-4g",
+        "ASSET-4e",
+        "THIRD-PARTIES-2j"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1195",
+        "T1505"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.08",
+        "03.17.03"
+      ],
+      "csf_2.0": [
+        "GV.SC-06",
+        "PR.PS-02"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-16 - Cyber supply chain security"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-16.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Assess the integrity and authenticity of software, components and updates before use, and verify provenance where suitable supplier evidence is available."
+}

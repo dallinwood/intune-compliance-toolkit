@@ -1,0 +1,112 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nRobust and secure identity, credential and access management is used to establish, maintain and control access to systems (infrastructure, operating systems, applications and data) and to support effective detection of identity and credential misuse.\n\n# Indicators of Good Practice\n\nNot effective:\n- Phishing-resistant MFA is not enforced for interactive user authentication to systems.\n- MFA is deployed but uses non-phishing-resistant methods, such as SMS, voice, or push-only authentication instead of phishing-resistant MFA.\n- No access policies differentiate between trusted and untrusted, external or high-risk locations.\n- Access from untrusted, external or high-risk locations is permitted without MFA, or with non-phishing-resistant MFA.\n\nPartially effective:\n- Phishing-resistant MFA is deployed for some but not all systems within scope.\n- Access policies exist but do not cover all organisationally defined high-risk location categories.\n- Exceptions or alternative authentication pathways allow routine or recurring authentication without phishing-resistant MFA, or emergency access arrangements are not adequately restricted, monitored, tested or reviewed.\n\nFully effective:\n- Phishing-resistant MFA is enforced for all routine interactive user authentication to systems within scope.\n- Phishing-resistant MFA is enforced for routine authentication attempts from untrusted, external or high-risk locations.\n- Customer-facing services provide a phishing-resistant MFA option for authentication.\n- Emergency access arrangements are periodically tested and reviewed to confirm that they remain operational, appropriately protected and limited to their intended purpose. Credentials or authentication factors used for emergency access are securely managed and are not used for routine administration.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-13.4",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-1h",
+        "ACCESS-1i",
+        "ACCESS-2g"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1021",
+        "T1078",
+        "T1098",
+        "T1110",
+        "T1557",
+        "T1621"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.12",
+        "03.05.03",
+        "03.05.04"
+      ],
+      "csf_2.0": [
+        "PR.AA-01",
+        "PR.AA-02",
+        "PR.AA-03",
+        "PR.AA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-13 - Identity, credential and access management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-13.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Use phishing-resistant MFA for users authenticating to systems, including from untrusted, external or high-risk locations."
+}

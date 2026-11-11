@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are administered in a secure, accountable and auditable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Privileged access is standing and does not require explicit activation or time-bound grants, excluding approved break-glass and emergency access accounts.\n- No re-authentication or step-up authentication is required before privileged sessions.\n\nPartially effective:\n- Time-bound access is implemented for some privileged roles but standing access remains for others.\n- Session duration limits exist but are not consistently enforced or are set excessively long.\n\nFully effective:\n- Time-bound privilege grants are enforced for applicable privileged roles, with defined maximum session durations and approved emergency access arrangements.\n- Re-authentication or step-up authentication is required before privilege activation.\n- All privilege activations are logged with activating user, role and timeframes.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-05.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-1g",
+        "ACCESS-1h",
+        "ACCESS-2g"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1003",
+        "T1550",
+        "T1558"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.11",
+        "03.01.12",
+        "03.05.03"
+      ],
+      "csf_2.0": [
+        "PR.AA-03",
+        "PR.AA-04",
+        "PR.AA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-05 - Secure administration"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-05.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Enforce explicit session establishment controls before privileged actions are permitted, including the use of time-bound privilege grants."
+}

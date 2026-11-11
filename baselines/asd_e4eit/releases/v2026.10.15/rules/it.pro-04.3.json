@@ -1,0 +1,107 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are securely configured to approved and maintained baselines, including by reducing attack surfaces and attack paths, with configurations continually monitored and consistently enforced.\n\n# Indicators of Good Practice\n\nNot effective:\n- No mechanism exists to detect configuration drift from approved baselines.\n- Assessments to detect configuration drift have not been conducted within the review period defined by the organisation.\n- Assessments do not systematically identify instances of configuration drift for assets.\n\nPartially effective:\n- Drift detection is in place but does not cover all applicable assets.\n- Drift is detected but the remediation process is informal or response timeframes are not defined.\n\nFully effective:\n- Automated configuration monitoring or regular technical assessments detect drift across the applicable assets, occurring at a frequency based on system criticality and change rate.\n- A documented remediation process exists with defined response timeframes aligned to severity.\n- Drift events are tracked to closure with evidence of remediation.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-04.3",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ASSET-3e",
+        "ASSET-4i"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1112",
+        "T1685"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.03",
+        "03.04.04",
+        "03.12.03",
+        "03.14.06"
+      ],
+      "csf_2.0": [
+        "DE.AE-02",
+        "DE.CM-09",
+        "PR.PS-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-04 - Secure configuration management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-04.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Detect and respond to configuration drift using scheduled technical assessments and, where supported, automated monitoring, based on system criticality and change rate."
+}

@@ -1,0 +1,91 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nCyber supply chains supporting systems (infrastructure, operating systems, applications and data) are secure, resilient and support effective and coordinated cyber security incident response.\n\n# Indicators of Good Practice\n\nNot effective:\n- No monitoring is performed for indicators of supply chain compromise affecting software, components or services in use.\n- Vendor security notifications and threat advisories are not reviewed or actioned.\n- When supply chain compromise is identified, neither containment nor investigation is performed.\n- Supply chain compromise events are integrated into neither incident response nor risk management.\n\nPartially effective:\n- Monitoring occurs but does not draw on relevant threat intelligence sources or does not cover all in-scope systems.\n- Notifications and advisories are reviewed but exposure assessment and response are not conducted in a timely manner.\n- Containment occurs but investigation for evidence of exploitation is not consistently undertaken.\n- Some integration exists but findings are not reflected in the risk register or incident response procedures.\n\nFully effective:\n- Monitoring covers software, components and services in use, drawing on relevant threat intelligence sources.\n- Vendor security notifications and threat advisories are reviewed, exposure is assessed and response actions are initiated within defined timeframes.\n- Identified supply chain compromises are responded to in timeframes defined by the organisation.\n- Supply chain compromise events are integrated with incident response and reflected in the risk register.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-16.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "THIRD-PARTIES-2f"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1195",
+        "T1505"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.17.03"
+      ],
+      "csf_2.0": [
+        "DE.CM-06",
+        "DE.CM-09",
+        "ID.RA-02"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-16 - Cyber supply chain security"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-16.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Use vendor advisories and threat intelligence to maintain awareness of supplier, product and component exposure to compromise, and act within timeframes proportionate to the risk."
+}

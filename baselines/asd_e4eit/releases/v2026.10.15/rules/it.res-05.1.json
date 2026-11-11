@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_visibility_and_response",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nCyber security incident roles and responsibilities are defined, documented and exercised to support the internal and external coordination and management of cyber security incidents, including responsibilities for declaring cyber security incidents and undertaking pre-approved response and recovery activities.\n\n# Indicators of Good Practice\n\nNot effective:\n- External coordination requirements for Cyber security incident response activities are neither identified nor documented.\n- No defined triggers, contacts or timeframes exist for external reporting.\n\nPartially effective:\n- External coordination requirements are documented but are not integrated into operational response procedures.\n- Contacts and triggers are defined for some but not all required external parties.\n\nFully effective:\n- Cyber security incident response procedures include documented external coordination requirements with defined triggers, contacts and timeframes.\n- Requirements cover all relevant external parties identified by applicable legal, regulatory, contractual and organisational obligations.\n- Coordination procedures have been exercised or invoked and lessons learnt have been incorporated.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.res-05.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "RESPONSE-3c",
+        "RESPONSE-3f",
+        "RESPONSE-3j"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.06.02",
+        "03.06.05",
+        "03.12.05"
+      ],
+      "csf_2.0": [
+        "GV.OC-03",
+        "RS.CO-02",
+        "RS.CO-03",
+        "RS.MA-01"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Respond principles",
+    "RES-05 - Cyber security incident coordination"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.RES-05.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Integrate external coordination obligations into cyber security incident response activities where required."
+}

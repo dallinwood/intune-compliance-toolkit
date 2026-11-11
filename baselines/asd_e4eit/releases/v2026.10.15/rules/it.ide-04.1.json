@@ -1,0 +1,84 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_visibility_and_response",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nSecurity risks for an organisation and their systems (infrastructure, operating systems, applications and data) are identified, including by using current strategic and sector-specific cyber threat intelligence and threat modelling, and are documented along with any associated risk management decisions.\n\n# Indicators of Good Practice\n\nNot effective:\n- Risk assessments do not reference relevant weaknesses, malicious actor techniques and cyber threat behaviours.\n- No process exists to incorporate threat information into risk assessment activities.\n- Current weaknesses, malicious actor techniques and cyber threat behaviours that are relevant to the organisation are not reviewed or updated.\n\nPartially effective:\n- Risk assessments reference threat intelligence but coverage is limited to well-known or generic threats.\n- Threat information is considered but not systematically mapped to organisational assets or detection gaps.\n- Current weaknesses, malicious actor techniques and cyber threat behaviours that are relevant to the organisation are reviewed or updated, but are not used to inform risk assessments or are reviewed only on an ad hoc basis.\n\nFully effective:\n- Risk assessments incorporate and reference relevant weaknesses, malicious actor techniques relevant to the sector, and cyber threat behaviours.\n- Relevant weaknesses, malicious actor techniques and cyber threat behaviours are systematically related to applicable assets and used to inform risk treatment decisions.\n- Current weaknesses, malicious actor techniques and cyber threat behaviours relevant to the organisation are reviewed or updated on a continuous basis at a frequency that enables noted changes to inform risk assessments.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.ide-04.1",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "RISK-2a",
+        "THREAT-1a",
+        "THREAT-2a",
+        "THREAT-2b"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.11.01",
+        "03.11.02",
+        "03.12.03",
+        "03.14.03"
+      ],
+      "csf_2.0": [
+        "ID.RA-01",
+        "ID.RA-02",
+        "ID.RA-03",
+        "ID.RA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Identify principles",
+    "IDE-04 - Security risk identification"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.IDE-04.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Identify relevant weaknesses, malicious actor techniques and cyber threat behaviours when undertaking risk assessments and review these inputs on a continuous basis."
+}

@@ -1,0 +1,111 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nVulnerabilities in systems (infrastructure, operating systems, applications and data) are identified, documented, validated and prioritised for remediation or mitigation in a timely manner, with all remediation and mitigation actions verified for effectiveness.\n\n# Indicators of Good Practice\n\nNot effective:\n- No risk thresholds are defined for vulnerability remediation.\n- Vulnerabilities exceeding acceptable risk levels are not tracked or remediated.\n\nPartially effective:\n- Risk thresholds are defined but vulnerabilities exceeding them are not consistently remediated within defined timeframes.\n- Compensating controls are applied in some cases but are not formally documented or approved.\n\nFully effective:\n- Risk thresholds defined by the organisation exist, and vulnerabilities exceeding them are remediated or have approved compensating controls within organisationally defined timeframes.\n- Remediation and mitigation actions are tracked to closure with verification that actions reduced the risk as intended.\n- The process is sustained, with historical data demonstrating consistent performance across organisationally defined reporting periods.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-06.3",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "RISK-2i",
+        "THREAT-1d",
+        "THREAT-1g",
+        "THREAT-1l"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1068",
+        "T1190",
+        "T1203",
+        "T1210"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.11.02",
+        "03.11.04",
+        "03.12.02",
+        "03.14.01"
+      ],
+      "csf_2.0": [
+        "GV.RM-06",
+        "ID.RA-01",
+        "ID.RA-05"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-06 - Vulnerability management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-06.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Remediate or mitigate vulnerabilities exceeding defined risk thresholds within defined timeframes based on exploitation, exposure, criticality, impact and compensating controls, and verify treatment effectiveness."
+}

@@ -1,0 +1,83 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_visibility_and_response",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nAnomalous or unexpected events and behaviours for systems (infrastructure, operating systems, applications and data) are analysed in a timely manner to detect cyber security events.\n\n# Indicators of Good Practice\n\nNot effective:\n- No detection logic is deployed to identify unauthorised changes, anomalous authentication activity or suspicious software execution events originating from assets.\n- Detection relies entirely on manual log review with no automated rules or alerting.\n\nPartially effective:\n- Detection logic exists but does not cover all three categories (unauthorised changes, anomalous authentication, suspicious execution).\n- Rules are deployed but are not tested or tuned on a regular cycle defined by the organisation.\n\nFully effective:\n- Detection logic is deployed, and unauthorised configuration changes, anomalous authentication patterns and suspicious process execution events are captured and produce alerts.\n- Detection logic is tested and tuned on a regular cycle defined by the organisation to maintain effectiveness.\n- Detection coverage is reviewed following cyber security incidents or significant environmental changes.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.det-02.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ACCESS-2i",
+        "SITUATION-2d",
+        "SITUATION-2e"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.01.07",
+        "03.03.05",
+        "03.14.06"
+      ],
+      "csf_2.0": [
+        "DE.AE-02",
+        "DE.AE-07",
+        "DE.CM-01",
+        "DE.CM-03",
+        "DE.CM-09"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Detect principles",
+    "DET-02 - Cyber security event detection"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.DET-02.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Ensure detection logic identifies unauthorised changes, anomalous authentication activity and suspicious software execution."
+}

@@ -1,0 +1,110 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "e4eit_phase_1",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_2",
+          "severity": null
+        },
+        {
+          "name": "e4eit_phase_3",
+          "severity": null
+        },
+        {
+          "name": "e4eit_boundary_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_identity_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_critical_processes_and_services",
+          "severity": null
+        },
+        {
+          "name": "e4eit_privileged_environments",
+          "severity": null
+        },
+        {
+          "name": "e4eit_business_systems",
+          "severity": null
+        },
+        {
+          "name": "e4eit_user_devices",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "# Principle\n\nVulnerabilities in systems (infrastructure, operating systems, applications and data) are identified, documented, validated and prioritised for remediation or mitigation in a timely manner, with all remediation and mitigation actions verified for effectiveness.\n\n# Indicators of Good Practice\n\nNot effective:\n- No defined patching timeframes exist for applicable assets.\n- Patches are not applied or are applied on an ad hoc basis with no tracking.\n\nPartially effective:\n- Expected patching timeframes are defined by the organisation but are not consistently met.\n- Patches are applied but compensating controls are not documented where operational constraints prevent timely patching.\n- Patching coverage metrics exist but show significant gaps.\n\nFully effective:\n- Risk-based patching timeframes defined by the organisation are in place and consistently met.\n- Patching is prioritised based on vulnerability severity, exposure and exploit availability.\n- Where operational constraints prevent timely patching, compensating controls are documented and approved.\n- Patching coverage metrics account for all applicable assets, with any exclusions identified and formally risk accepted.\n- Automatic patching of assets is applied where available and the organisation has determined operational impact is low.",
+  "discussion_format": "markdown",
+  "id": "asd_e4eit.it.pro-06.2",
+  "odv": null,
+  "references": {
+    "aemo": {
+      "aescsf_v2": [
+        "ASSET-4e",
+        "THREAT-1d",
+        "THREAT-1h"
+      ]
+    },
+    "mitre": {
+      "attack_v19": [
+        "T1068",
+        "T1190",
+        "T1203",
+        "T1210"
+      ]
+    },
+    "nist": {
+      "800-171r3": [
+        "03.04.03",
+        "03.14.01",
+        "03.14.03"
+      ],
+      "csf_2.0": [
+        "ID.RA-01",
+        "PR.PS-02",
+        "PR.PS-03",
+        "RS.MA-04"
+      ]
+    }
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Protect principles",
+    "PRO-06 - Vulnerability management"
+  ],
+  "source": {
+    "commit_sha": "1cd32b96310e2dd166b5d51ce64f414a4613025d",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_e4eit",
+    "release_tag": "v2026.10.15",
+    "upstream_path": "E4EIT_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "IT.PRO-06.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/e4eit-oscal/blob/1cd32b96310e2dd166b5d51ce64f414a4613025d/E4EIT_catalog.json"
+  },
+  "tags": [],
+  "title": "Apply security patches or updates within defined risk-based timeframes or automatically where operational impact is low."
+}

@@ -28,6 +28,20 @@ licence. ASD does not endorse this project. ASD's copyright notice and
 disclaimer are in `sources/asd_ism/releases/<tag>/upstream/README.md`. See `NOTICE` for the
 full attribution of the sources.
 
+The ASD rule content in `sources/asd_e4eit/` and `baselines/asd_e4eit/`, and the
+generated mapping `baselines/_mappings/rules/asd-e4eit-to-asd-ism.json`, comes from
+ASD's [Essentials for enterprise IT](https://www.cyber.gov.au/e4eit/oscal),
+published as OSCAL, licensed under CC BY 4.0. `sources/asd_e4eit/releases/<tag>/upstream/` is an
+unmodified copy of it, taken from the [e4eit-oscal mirror](https://github.com/AustralianCyberSecurityCentre/e4eit-oscal).
+This project has modified the content in `baselines/asd_e4eit/`: it was converted
+to a normalized rule format, each action's discussion was composed from its
+principle and indicators of good practice, and priority phases were derived
+from the domain profiles. That content remains licensed under CC BY 4.0
+and is provided as-is, with the disclaimer of warranties in section 5 of that
+licence. ASD does not endorse this project. ASD's copyright notice and
+disclaimer are in `sources/asd_e4eit/releases/<tag>/upstream/README.md`. See `NOTICE` for the
+full attribution of the sources.
+
 The NIST SP 800-53 Rev. 5 rule content in `sources/nist_800_53/` and
 `baselines/nist_800_53/` comes from the [OSCAL content published by NIST](https://github.com/usnistgov/oscal-content).
 It is a work of the United States government, so it is in the public domain in
@@ -200,6 +214,29 @@ Requires Python 3.10 or newer.
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
+
+## Updating the ASD E4EIT rules
+
+Requires Python 3.10 or newer.
+
+1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
+2. `python tools/import_asd_e4eit.py --tag <release tag>`, for example
+   `--tag v2026.10.15`. Each release is kept in its own folder
+   (`sources/asd_e4eit/releases/<tag>/`, `baselines/asd_e4eit/releases/<tag>/`),
+   so importing a new tag adds a release and never replaces an older one. To
+   regenerate every stored release from the vendored copies without fetching,
+   use `--offline`; add `--release <tag>` for just one.
+3. Review `git diff sources/asd_e4eit/` and `git diff baselines/asd_e4eit/`.
+4. `python -m pytest -W error`
+5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
+   running.
+6. Commit the result.
+
+The import stops with an error on any part of the OSCAL it does not
+understand. It also regenerates `baselines/_mappings/rules/asd-e4eit-to-asd-ism.json`
+from the current E4EIT release (see "Mapping rules"), and fails if the ISM
+release that mapping names has not been imported or lacks one of its controls.
+Review the mapping's diff with the rest.
 
 ## Updating the NIST SP 800-53 rules
 
@@ -470,6 +507,14 @@ current 800-53 release, or a repeat) are printed as warnings and listed in
 a citation shows up as a diff there. Hand-written links between mSCP and
 800-53 are only for pairs mSCP does not cite, because the validator rejects a
 hand-written link that repeats a generated pair.
+
+`baselines/_mappings/rules/asd-e4eit-to-asd-ism.json` is also generated, not
+written by hand. It carries ASD's own published mapping from each Essentials
+for enterprise IT action to ISM controls (the "E4EIT to ISM (excl. E8)" and
+"E4EIT to E8" maps), as `related` links, because ASD's relationship is
+"intersects-with". It records ASD's claim, not this project's review. The
+E4EIT import regenerates it from the current E4EIT release, and a test fails if
+the committed file differs from the generator's output.
 
 Candidates that are still uncertain wait in
 `docs/mappings/mscp-to-asd-ism-review.json`, each with the first pass's
