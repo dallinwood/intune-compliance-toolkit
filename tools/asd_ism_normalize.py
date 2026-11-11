@@ -2,6 +2,7 @@
 
 import re
 
+from tools.asd_oscal import ASD_LICENSE, resource_hrefs as _resource_hrefs, rewrite_resource_links
 from tools.library_output import SCHEMA_VERSION, UnsupportedUpstreamData
 from tools.source_lock import SourceLock
 
@@ -9,18 +10,12 @@ SOURCE_NAME = "asd_ism"
 REPOSITORY_URL = "https://github.com/AustralianCyberSecurityCentre/ism-oscal"
 CATALOG_FILE_NAME = "ISM_catalog.json"
 
-LICENSE = {
-    "name": "CC BY 4.0",
-    "url": "https://creativecommons.org/licenses/by/4.0/",
-    "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
-    "modified": True,
-}
+LICENSE = ASD_LICENSE
 
 CONTROL_CLASS = "ISM-control"
 PRINCIPLE_CLASS = "ISM-principle"
 EXPECTED_GROUP_DEPTH = 3
 SAFE_CONTROL_ID_PATTERN = re.compile(r"^[a-z0-9_-]+(?![\s\S])")
-RESOURCE_LINK_PATTERN = re.compile(r"\]\(#([^)\s]+)\)")
 PARAGRAPH_SEPARATOR = "\n\n"
 
 KNOWN_CONTROL_KEYS = {"id", "class", "title", "props", "parts"}
@@ -59,34 +54,6 @@ BENCHMARK_ORDER = (
 def split_statement(statement: str) -> tuple[str, bool]:
     first_paragraph, separator, _ = statement.partition(PARAGRAPH_SEPARATOR)
     return first_paragraph, bool(separator)
-
-
-def rewrite_resource_links(prose: str, resource_hrefs: dict[str, str], where: str) -> str:
-    def resolve(match: re.Match) -> str:
-        uuid = match.group(1)
-        if uuid not in resource_hrefs:
-            raise UnsupportedUpstreamData(f"{where}: link to unknown back-matter resource {uuid!r}")
-        return f"]({resource_hrefs[uuid]})"
-
-    return RESOURCE_LINK_PATTERN.sub(resolve, prose)
-
-
-def _resource_hrefs(catalog: dict) -> dict[str, str]:
-    back_matter = catalog.get("back-matter")
-    if not isinstance(back_matter, dict) or not isinstance(back_matter.get("resources"), list):
-        raise UnsupportedUpstreamData("catalog has no back-matter resources list")
-    hrefs = {}
-    for resource in back_matter["resources"]:
-        uuid = resource.get("uuid") if isinstance(resource, dict) else None
-        if not isinstance(uuid, str):
-            raise UnsupportedUpstreamData("back-matter resource without a uuid")
-        rlinks = resource.get("rlinks")
-        first_link = rlinks[0] if isinstance(rlinks, list) and rlinks else None
-        first_href = first_link.get("href") if isinstance(first_link, dict) else None
-        if not isinstance(first_href, str) or not first_href:
-            raise UnsupportedUpstreamData(f"back-matter resource {uuid!r} has no rlinks href")
-        hrefs[uuid] = first_href
-    return hrefs
 
 
 def _topic_overview(topic: dict, control_id: str) -> str:

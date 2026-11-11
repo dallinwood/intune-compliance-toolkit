@@ -4,7 +4,7 @@ from pathlib import Path
 
 from tools import github_fetch
 from tools.directory_swap import replace_directory
-from tools.github_fetch import build_request, default_opener, validate_commit_sha, validate_tag
+from tools.github_fetch import default_opener, validate_tag
 from tools.nist_800_53_normalize import (
     CATALOG_PATH,
     LICENSE_FILE_PATH,
@@ -28,15 +28,6 @@ def fetch_published_date(tag: str, opener=default_opener) -> str:
     return github_fetch.fetch_release_published_date(REPOSITORY, tag, USER_AGENT, opener)
 
 
-def download_file(commit_sha: str, repository_path: str, destination_path: Path, opener=default_opener) -> None:
-    validate_commit_sha(commit_sha)
-    url = f"https://raw.githubusercontent.com/{REPOSITORY}/{commit_sha}/{repository_path}"
-    with opener(build_request(url, USER_AGENT)) as response:
-        body = response.read()
-    destination_path.parent.mkdir(parents=True, exist_ok=True)
-    destination_path.write_bytes(body)
-
-
 def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> SourceLock:
     validate_tag(tag)
     commit_sha = resolve_tag_commit(tag, opener)
@@ -45,8 +36,7 @@ def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> Sou
     sources_dir.mkdir(parents=True, exist_ok=True)
     staging_dir = Path(tempfile.mkdtemp(prefix=f".{upstream_dir.name}-new-", dir=sources_dir))
     try:
-        for repository_path in FILE_PATHS:
-            download_file(commit_sha, repository_path, staging_dir / repository_path, opener)
+        github_fetch.download_pinned_files(REPOSITORY, commit_sha, FILE_PATHS, staging_dir, USER_AGENT, opener)
         replace_directory(staging_dir, upstream_dir)
     except BaseException:
         shutil.rmtree(staging_dir, ignore_errors=True)

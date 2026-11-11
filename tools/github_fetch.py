@@ -2,6 +2,8 @@ import json
 import re
 import urllib.error
 import urllib.request
+from collections.abc import Iterable
+from pathlib import Path
 
 NETWORK_TIMEOUT_SECONDS = 60
 COMMIT_SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
@@ -72,3 +74,37 @@ def fetch_release_published_date(
     if not isinstance(published_at, str) or not DATE_PREFIX_PATTERN.match(published_at):
         raise ValueError(f"Release {tag!r} has no usable published_at date")
     return published_at[:10]
+
+
+def list_root_file_names(
+    repository: str, commit_sha: str, user_agent: str, opener=default_opener
+) -> list[str]:
+    validate_commit_sha(commit_sha)
+    request = build_request(
+        f"https://api.github.com/repos/{repository}/contents?ref={commit_sha}",
+        user_agent,
+        accept="application/vnd.github+json",
+    )
+    with opener(request) as response:
+        entries = json.loads(response.read())
+    if not isinstance(entries, list) or not all(isinstance(entry, dict) for entry in entries):
+        raise ValueError(f"{repository} root listing is not a list of objects")
+    return sorted(entry["name"] for entry in entries if entry.get("type") == "file")
+
+
+def download_pinned_files(
+    repository: str,
+    commit_sha: str,
+    file_names: Iterable[str],
+    destination_dir: Path,
+    user_agent: str,
+    opener=default_opener,
+) -> None:
+    validate_commit_sha(commit_sha)
+    for file_name in file_names:
+        url = f"https://raw.githubusercontent.com/{repository}/{commit_sha}/{file_name}"
+        with opener(build_request(url, user_agent)) as response:
+            body = response.read()
+        destination_path = destination_dir / file_name
+        destination_path.parent.mkdir(parents=True, exist_ok=True)
+        destination_path.write_bytes(body)

@@ -1,12 +1,12 @@
 """Import an ASD ISM OSCAL release into the normalized rule library under baselines/asd_ism/releases/."""
 
-import re
 import sys
 from pathlib import Path
 
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from tools.asd_oscal import release_label as release_label_from_tag
 from tools.asd_ism_fetch import IMPORTER_FORMAT, fetch
 from tools.asd_ism_normalize import (
     CATALOG_FILE_NAME,
@@ -43,18 +43,8 @@ def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int
     return len(entries)
 
 
-MONTH_ABBREVIATIONS = (
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-)
-TAG_YEAR_AND_MONTH_PATTERN = re.compile(r"^v(\d{4})\.(0[1-9]|1[0-2])\.")
-
-
 def release_label(tag: str, upstream_dir: Path) -> str:
-    match = TAG_YEAR_AND_MONTH_PATTERN.match(tag)
-    if match is None:
-        raise ValueError(f"cannot derive a release label from tag {tag!r}")
-    year, month = match.groups()
-    return f"{MONTH_ABBREVIATIONS[int(month) - 1]} {year}"
+    return release_label_from_tag(tag)
 
 
 IMPORTER = SourceImporter(
