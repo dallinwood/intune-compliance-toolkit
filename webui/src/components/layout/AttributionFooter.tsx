@@ -44,7 +44,7 @@ export function AttributionFooter({ sources }: { sources: ManifestSource[] }) {
                 {sources.map((source) => (
                   <li key={source.name}>
                     Rules from the <ExternalLink href={source.repository_url}>{source.display_name}</ExternalLink> (
-                    {source.release_tag}), licensed <ExternalLink href={source.license.url}>{source.license.name}</ExternalLink>
+                    {source.release_tag}), under <ExternalLink href={source.license.url}>{source.license.name}</ExternalLink>
                     , modified for this tool.
                   </li>
                 ))}

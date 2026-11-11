@@ -1,5 +1,6 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { parseDiscussion, parseInline, parseMarkdownDiscussion } from './discussionMarkup'
+import { nestListItems, parseDiscussion, parseInline, parseMarkdownDiscussion } from './discussionMarkup'
 
 describe('parseDiscussion', () => {
   it('splits paragraphs on blank lines and keeps line breaks within one', () => {
@@ -100,6 +101,10 @@ const ISM_1803_DISCUSSION = [
   'Developing, implementing and maintaining a register can assist remediation.',
 ].join('\n')
 
+function topLevel(text: string) {
+  return { text, depth: 0 }
+}
+
 describe('parseMarkdownDiscussion', () => {
   it('reads a lead-in, a bullet list and a closing paragraph as three blocks', () => {
     expect(parseMarkdownDiscussion(ISM_1803_DISCUSSION)).toEqual([
@@ -112,7 +117,7 @@ describe('parseMarkdownDiscussion', () => {
           'a description of the cyber security incident',
           'any actions taken in response to the cyber security incident',
           'to whom the cyber security incident was reported.',
-        ],
+        ].map(topLevel),
       },
       { kind: 'paragraph', text: 'Developing, implementing and maintaining a register can assist remediation.' },
     ])
@@ -121,8 +126,35 @@ describe('parseMarkdownDiscussion', () => {
   it('starts a list directly after a paragraph line and ends it at the next plain line', () => {
     expect(parseMarkdownDiscussion('Intro\n- one\n- two\nOutro')).toEqual([
       { kind: 'paragraph', text: 'Intro' },
-      { kind: 'list', items: ['one', 'two'] },
+      { kind: 'list', items: ['one', 'two'].map(topLevel) },
       { kind: 'paragraph', text: 'Outro' },
+    ])
+  })
+
+  it('reads a ## line as a heading block and ends the paragraph or list before it', () => {
+    expect(parseMarkdownDiscussion(['Intro', '## Control', '- one', '## Discussion', 'Body'].join('\n'))).toEqual([
+      { kind: 'paragraph', text: 'Intro' },
+      { kind: 'heading', text: 'Control' },
+      { kind: 'list', items: [topLevel('one')] },
+      { kind: 'heading', text: 'Discussion' },
+      { kind: 'paragraph', text: 'Body' },
+    ])
+  })
+
+  it('reads two spaces of indentation per list depth, and fails safe to depth 2 beyond that', () => {
+    const text = ['- top', '  - middle', '    - deepest', '      - too deep', '        - far too deep', '- top again'].join('\n')
+    expect(parseMarkdownDiscussion(text)).toEqual([
+      {
+        kind: 'list',
+        items: [
+          { text: 'top', depth: 0 },
+          { text: 'middle', depth: 1 },
+          { text: 'deepest', depth: 2 },
+          { text: 'too deep', depth: 2 },
+          { text: 'far too deep', depth: 2 },
+          { text: 'top again', depth: 0 },
+        ],
+      },
     ])
   })
 
@@ -154,5 +186,65 @@ describe('parseInline for markdown', () => {
 describe('parseDiscussion on a hyphen-led list', () => {
   it('keeps the lines as AsciiDoc paragraph text', () => {
     expect(parseDiscussion('Steps:\n- first\n- second')).toEqual([{ kind: 'paragraph', text: 'Steps:\n- first\n- second' }])
+  })
+})
+
+describe('nestListItems', () => {
+  it('nests each item under the closest earlier item one level up', () => {
+    const items = [
+      { text: 'a', depth: 0 },
+      { text: 'a1', depth: 1 },
+      { text: 'a1x', depth: 2 },
+      { text: 'a2', depth: 1 },
+      { text: 'b', depth: 0 },
+    ]
+    expect(nestListItems(items)).toEqual([
+      {
+        text: 'a',
+        children: [
+          { text: 'a1', children: [{ text: 'a1x', children: [] }] },
+          { text: 'a2', children: [] },
+        ],
+      },
+      { text: 'b', children: [] },
+    ])
+  })
+
+  it('attaches an item indented more than one level below its predecessor one level down instead', () => {
+    expect(nestListItems([{ text: 'top', depth: 0 }, { text: 'skipped', depth: 2 }])).toEqual([
+      { text: 'top', children: [{ text: 'skipped', children: [] }] },
+    ])
+  })
+})
+
+describe('Markdown discussions in the committed libraries', () => {
+  function committedDiscussion(relativePath: string): string {
+    const rulePath = new URL(`../../../baselines/${relativePath}`, import.meta.url)
+    return (JSON.parse(readFileSync(rulePath, 'utf8')) as { discussion: string }).discussion
+  }
+
+  it('parses a real ISM discussion to the paragraphs and flat list it always did', () => {
+    const blocks = parseMarkdownDiscussion(committedDiscussion('asd_ism/releases/v2026.09.4/rules/ism-1803.json'))
+    expect(blocks.map((block) => block.kind)).toEqual(['paragraph', 'list', 'paragraph'])
+    const list = blocks[1]
+    if (list.kind !== 'list') throw new Error('expected a list block')
+    expect(list.items.map((item) => item.depth)).toEqual([0, 0, 0, 0, 0])
+    expect(list.items[0].text).toBe('the date the cyber security incident occurred')
+  })
+
+  it('reads nist_800_53.ac-2 as Control and Discussion headings with three-item lists nested under item d', () => {
+    const blocks = parseMarkdownDiscussion(committedDiscussion('nist_800_53/releases/v1.6.0/rules/ac-2.json'))
+    expect(blocks.filter((block) => block.kind === 'heading')).toEqual([
+      { kind: 'heading', text: 'Control' },
+      { kind: 'heading', text: 'Discussion' },
+    ])
+    const controlList = blocks.find((block) => block.kind === 'list')
+    if (controlList?.kind !== 'list') throw new Error('expected a list block')
+    expect(controlList.items.slice(3, 7)).toEqual([
+      { text: 'd. Specify:', depth: 0 },
+      { text: '1. Authorized users of the system;', depth: 1 },
+      { text: '2. Group and role membership; and', depth: 1 },
+      { text: '3. Access authorizations (i.e., privileges) and [Assignment: organization-defined attributes (as required)] for each account;', depth: 1 },
+    ])
   })
 })

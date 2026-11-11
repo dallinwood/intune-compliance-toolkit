@@ -1,4 +1,4 @@
-import { parseDiscussionIn, parseInline, type DiscussionFormat, type InlineSegment } from '../../logic/discussionMarkup'
+import { nestListItems, parseDiscussionIn, parseInline, type DiscussionFormat, type InlineSegment, type ListNode } from '../../logic/discussionMarkup'
 import { sourceAttributeHighlightLanguage } from '../../logic/codeLanguage'
 import { displayWithOdv, type CodeOdvValues } from '../../logic/odv'
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
@@ -31,6 +31,29 @@ function InlineText({ text, format }: { text: string; format: DiscussionFormat }
   })
 }
 
+function NestedList({
+  nodes,
+  format,
+  odvValue,
+  isNested = false,
+}: {
+  nodes: ListNode[]
+  format: DiscussionFormat
+  odvValue: OrgDefinedValue | null
+  isNested?: boolean
+}) {
+  return (
+    <ul className={`${isNested ? 'mt-1 list-[circle]' : 'list-disc'} space-y-1 pl-5 break-words`}>
+      {nodes.map((node, nodeIndex) => (
+        <li key={nodeIndex}>
+          <InlineText text={displayWithOdv(node.text, odvValue)} format={format} />
+          {node.children.length > 0 && <NestedList nodes={node.children} format={format} odvValue={odvValue} isNested />}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 // $ODV is substituted per block, after parsing, so a value can never be
 // read as markup delimiters such as ---- or [source].
 export function DiscussionText({
@@ -48,15 +71,7 @@ export function DiscussionText({
     <div className="space-y-2 text-foreground/90">
       {parseDiscussionIn(format, text).map((block, blockIndex) => {
         if (block.kind === 'list') {
-          return (
-            <ul key={blockIndex} className="list-disc space-y-1 pl-5 break-words">
-              {block.items.map((item, itemIndex) => (
-                <li key={itemIndex}>
-                  <InlineText text={displayWithOdv(item, odvValue)} format={format} />
-                </li>
-              ))}
-            </ul>
-          )
+          return <NestedList key={blockIndex} nodes={nestListItems(block.items)} format={format} odvValue={odvValue} />
         }
         if (block.kind === 'code') {
           return (

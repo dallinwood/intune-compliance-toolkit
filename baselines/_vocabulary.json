@@ -4,7 +4,8 @@
     "targets": [],
     "sources": [
       { "label": "ASD ISM", "terms": ["asd_ism"] },
-      { "label": "NIST mSCP", "terms": ["mscp"] }
+      { "label": "NIST mSCP", "terms": ["mscp"] },
+      { "label": "NIST SP 800-53", "terms": ["nist_800_53"] }
     ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
@@ -19,7 +20,11 @@
       { "label": "ISM TOP SECRET", "terms": ["ism_top_secret"], "metadata": ["benchmark"] },
       { "label": "Essential Eight ML1", "terms": ["e8_ml1"], "metadata": ["benchmark"] },
       { "label": "Essential Eight ML2", "terms": ["e8_ml2"], "metadata": ["benchmark"] },
-      { "label": "Essential Eight ML3", "terms": ["e8_ml3"], "metadata": ["benchmark"] }
+      { "label": "Essential Eight ML3", "terms": ["e8_ml3"], "metadata": ["benchmark"] },
+      { "label": "800-53 Low", "terms": ["nist_800_53_low"], "metadata": ["benchmark"] },
+      { "label": "800-53 Moderate", "terms": ["nist_800_53_moderate"], "metadata": ["benchmark"] },
+      { "label": "800-53 High", "terms": ["nist_800_53_high"], "metadata": ["benchmark"] },
+      { "label": "800-53 Privacy", "terms": ["nist_800_53_privacy"], "metadata": ["benchmark"] }
     ],
     "severities": [
       { "label": "low", "terms": ["low"], "metadata": ["severity"] },

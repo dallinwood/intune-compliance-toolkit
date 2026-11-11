@@ -1,18 +1,21 @@
 // A deliberately small reading of the AsciiDoc mSCP uses in rule
 // discussions: enough to show paragraphs, code and emphasis legibly, not a
 // full AsciiDoc renderer. Anything unrecognised is shown as plain text.
-// ASD ISM discussions are Markdown, but only `- ` lists and [text](url)
+// ASD ISM and NIST SP 800-53 discussions are Markdown, but only `## `
+// headings, `- ` lists (nested by two-space indentation) and [text](url)
 // links appear in them, so that is all the Markdown reader understands.
 
 import { BARE_URL_PATTERN_SOURCE } from './links'
 
 export type DiscussionFormat = 'asciidoc' | 'markdown'
 
+export type ListItem = { text: string; depth: number }
+
 export type DiscussionBlock =
   | { kind: 'paragraph'; text: string }
   | { kind: 'code'; text: string; sourceLanguage?: string }
   | { kind: 'heading'; text: string }
-  | { kind: 'list'; items: string[] }
+  | { kind: 'list'; items: ListItem[] }
 
 export type InlineSegment =
   | { kind: 'text'; text: string }
@@ -109,11 +112,38 @@ export function parseDiscussion(text: string): DiscussionBlock[] {
 }
 
 const MARKDOWN_BULLET_PREFIX = '- '
+const MARKDOWN_HEADING_PREFIX = '## '
+const SPACES_PER_LIST_LEVEL = 2
+const DEEPEST_LIST_DEPTH = 2
+
+// Indentation deeper than the deepest supported level fails safe to it.
+function listDepthOf(line: string): number {
+  const leadingSpaces = line.length - line.trimStart().length
+  return Math.min(Math.floor(leadingSpaces / SPACES_PER_LIST_LEVEL), DEEPEST_LIST_DEPTH)
+}
+
+export type ListNode = { text: string; children: ListNode[] }
+
+// A list item can sit at most one level below the item before it, so an
+// item indented further than that is attached one level down instead.
+export function nestListItems(items: ListItem[]): ListNode[] {
+  const roots: ListNode[] = []
+  const openAncestors: ListNode[] = []
+  for (const item of items) {
+    const depth = Math.min(item.depth, openAncestors.length)
+    const node: ListNode = { text: item.text, children: [] }
+    if (depth === 0) roots.push(node)
+    else openAncestors[depth - 1].children.push(node)
+    openAncestors.length = depth
+    openAncestors.push(node)
+  }
+  return roots
+}
 
 export function parseMarkdownDiscussion(text: string): DiscussionBlock[] {
   const blocks: DiscussionBlock[] = []
   let paragraphLines: string[] = []
-  let listItems: string[] = []
+  let listItems: ListItem[] = []
 
   function flushParagraph() {
     if (paragraphLines.length > 0) blocks.push({ kind: 'paragraph', text: paragraphLines.join('\n') })
@@ -129,9 +159,13 @@ export function parseMarkdownDiscussion(text: string): DiscussionBlock[] {
     if (trimmed === '') {
       flushParagraph()
       flushList()
+    } else if (line.startsWith(MARKDOWN_HEADING_PREFIX)) {
+      flushParagraph()
+      flushList()
+      blocks.push({ kind: 'heading', text: line.slice(MARKDOWN_HEADING_PREFIX.length).trim() })
     } else if (trimmed.startsWith(MARKDOWN_BULLET_PREFIX)) {
       flushParagraph()
-      listItems.push(trimmed.slice(MARKDOWN_BULLET_PREFIX.length).trim())
+      listItems.push({ text: trimmed.slice(MARKDOWN_BULLET_PREFIX.length).trim(), depth: listDepthOf(line) })
     } else {
       flushList()
       paragraphLines.push(line.trimEnd())
