@@ -124,12 +124,15 @@ All verified on 2026-11-11 against the GitHub release `v2026.10.15`:
   | `critical-processes-and-services` | `phase-2` | 37 |
   | `privileged-environments` | `phase-2` | 35 |
   | `business-systems` | `phase-3` | 27 |
-  | `governance-and-culture` | `phase-3` | 9 |
+  | `governance-and-culture` | `phase-1`, `phase-2` and `phase-3` | 9 |
   | `user-devices` | `phase-3` | 20 |
-  | `visibility-and-response` | `phase-3` | 12 |
+  | `visibility-and-response` | `phase-1`, `phase-2` and `phase-3` | 12 |
 
-  Taking each action's phases as the phases of its domains, 37 actions fall in phase 1, 37
-  in phase 2 and 48 in phase 3. The profiles use `merge: as-is` and no `modify`, so the
+  Two domains (`governance-and-culture`, `visibility-and-response`) carry three
+  `domain-priority-phase` props, one per phase; the profiles attach phase only at profile
+  level, never per action. Taking each action's phases as all the phases of its domains,
+  58 actions fall in phase 1, 58 in phase 2 and 48 in phase 3 (21 actions reach phase 1 and
+  phase 2 only through those two domains). The profiles use `merge: as-is` and no `modify`, so the
   resolved catalogs add nothing the catalog plus profiles don't already say.
 - **Mapping collection** (`E4EIT_mapping-collection.json`). Title "Assessment evidence
   guide for enterprise IT - Potential Evidence Sources OSCAL Control Mapping". Provenance:
@@ -482,6 +485,7 @@ implementation starts.
 |---|---|
 | Source name `asd_e4eit`, display name "ASD Essentials for enterprise IT", label "ASD E4EIT". | `asd_essentials` (broader, but ASD may publish other "Essentials" sets, for example for OT). |
 | One rule per action (58), domains as benchmarks (section 6.2). | One rule per action and domain (212), as CISO Assistant does, with invented per-domain ids. |
+| Multi-phase domains: actions in a domain that ASD declares in several priority phases get all of them (faithful to upstream). | Give those 21 actions no phase benchmark, or a separate 'every phase' benchmark, so the phase filters narrow the list. |
 | Priority phases as derived benchmarks: an action is in every phase of its domains. | Phase only in the domain labels (static, would go stale if ASD moves a domain), or only the earliest phase. |
 | Rule ids keep the upstream dots (`asd_e4eit.it.pro-13.1`) by widening the id pattern without a schema version bump. | Replace dots with hyphens (`it-pro-13-1`) and leave the schema alone; ids would no longer read like ASD's and searching `PRO-13.1` would fail. |
 | `section_path` is function > principle, as the catalog nests it. | Domain first, as CISO Assistant does; impossible without one rule per domain. |
@@ -517,7 +521,7 @@ implementation starts.
   mapping file equals its regeneration from the current release; `tools/mappings.py` reports
   no errors.
 - **Web:** Vitest for the Markdown heading; e2e for the new count, searching `IT.PRO-13.1`,
-  the phase 1 benchmark filter (37 rules), the Mapped rules tab from both sides, and an
+  the phase 1 benchmark filter (58 rules), the Mapped rules tab from both sides, and an
   E4EIT rule in the manual attestation report with ASD credit; screenshots per section 8.
 
 ## 13. Later (not in this work)
