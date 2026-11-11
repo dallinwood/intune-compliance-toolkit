@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from tools import import_asd_ism, import_mscp
+from tools import import_asd_ism, import_mscp, import_nist_800_53
 from tools.library_output import SCHEMA_VERSION, UnsupportedUpstreamData, index_entry
 from tools.json_output import write_json
 from tools.release_import import (
@@ -366,3 +366,52 @@ def test_release_label_receives_the_tag_and_the_upstream_directory(workspace):
 def test_importers_register_their_formats():
     assert list(import_mscp.IMPORTER.build_rule_tree_by_format) == ["mscp-2"]
     assert list(import_asd_ism.IMPORTER.build_rule_tree_by_format) == ["asd-ism-oscal-1"]
+
+
+def run_offline_cli(importer: SourceImporter, sources_dir: Path, baselines_dir: Path) -> int:
+    return run_cli(
+        importer,
+        ["--offline", "--sources-dir", str(sources_dir), "--baselines-dir", str(baselines_dir)],
+    )
+
+
+def test_after_import_runs_once_with_the_baselines_dir_after_success(workspace):
+    sources_dir, baselines_dir = workspace
+    calls = []
+    importer = replace(STUB_IMPORTER, after_import=calls.append)
+
+    assert run_offline_cli(importer, sources_dir, baselines_dir) == 0
+
+    assert calls == [baselines_dir]
+
+
+def test_after_import_does_not_run_after_a_failed_import(workspace):
+    sources_dir, baselines_dir = workspace
+    calls = []
+    importer = replace(STUB_IMPORTER, after_import=calls.append)
+    (sources_dir / "releases" / "A" / "upstream" / "ids.txt").unlink()
+
+    assert run_offline_cli(importer, sources_dir, baselines_dir) == 1
+
+    assert calls == []
+
+
+def test_a_failing_after_import_exits_one_but_keeps_the_releases(workspace, capsys):
+    sources_dir, baselines_dir = workspace
+
+    def failing_hook(directory: Path) -> None:
+        raise ValueError("generator broke")
+
+    importer = replace(STUB_IMPORTER, after_import=failing_hook)
+
+    assert run_offline_cli(importer, sources_dir, baselines_dir) == 1
+
+    assert "generator broke" in capsys.readouterr().err
+    (source,) = read_manifest(baselines_dir)["sources"]
+    assert [release["tag"] for release in source["releases"]] == ["A", "B"]
+
+
+def test_mscp_and_nist_importers_regenerate_the_mapping_and_asd_ism_does_not():
+    assert import_mscp.IMPORTER.after_import is not None
+    assert import_mscp.IMPORTER.after_import is import_nist_800_53.IMPORTER.after_import
+    assert import_asd_ism.IMPORTER.after_import is None

@@ -17,6 +17,7 @@ from tools.nist_800_53_normalize import (
     SOURCE_NAME,
     normalize_catalog,
 )
+from tools.generate_mscp_nist_800_53_mapping import regenerate_after_import
 from tools.release_import import SourceImporter, run_cli
 from tools.source_lock import SourceLock
 
@@ -66,6 +67,7 @@ IMPORTER = SourceImporter(
     fetch=fetch,
     build_rule_tree_by_format={IMPORTER_FORMAT: build_rule_tree},
     release_label=release_label,
+    after_import=regenerate_after_import,
 )
 
 

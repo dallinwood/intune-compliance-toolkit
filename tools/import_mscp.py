@@ -13,6 +13,7 @@ from tools.json_output import write_json
 from tools.library_output import SCHEMA_VERSION, index_entry
 from tools.mscp_fetch import IMPORTER_FORMAT, REPOSITORY_URL, fetch
 from tools.mscp_normalize import LICENSE, load_mscp_yaml, normalize_rule
+from tools.generate_mscp_nist_800_53_mapping import regenerate_after_import
 from tools.release_import import SourceImporter, run_cli
 from tools.source_lock import SourceLock
 
@@ -76,6 +77,7 @@ IMPORTER = SourceImporter(
     fetch=fetch,
     build_rule_tree_by_format={IMPORTER_FORMAT: build_rule_tree},
     release_label=lambda tag, upstream_dir: tag.removeprefix("release_"),
+    after_import=regenerate_after_import,
 )
 
 

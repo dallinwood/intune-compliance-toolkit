@@ -180,6 +180,10 @@ Requires Python 3.10 or newer.
    running.
 6. Commit the result.
 
+The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
+and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
+Review their diff with the rest.
+
 ## Updating the ASD ISM rules
 
 Requires Python 3.10 or newer.
@@ -219,6 +223,10 @@ Requires Python 3.10 or newer.
 
 Withdrawn controls are not imported, and the import stops with an error on any
 part of the catalog it does not understand.
+
+The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
+and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
+Review their diff with the rest.
 
 ## Writing overlays
 
@@ -448,7 +456,22 @@ if it cannot, the "Mapping problems" notice says so and the rest of the app
 works as usual.
 
 Only mappings that a reviewer can agree with without debate go into
-`baselines/_mappings/rules/`. Candidates that are still uncertain wait in
+`baselines/_mappings/rules/`, with one exception: `mscp-to-nist-800-53.json`
+is generated, not written by hand. It has one `supports` link per mSCP rule,
+listing the NIST SP 800-53 controls that mSCP itself cites for that rule
+(`references.nist["800-53r5"]`). It records mSCP's claim, not this project's
+review, and its note says so on every link. The mSCP and NIST SP 800-53
+imports regenerate it (so does
+`python tools/generate_mscp_nist_800_53_mapping.py`), and a test fails if the
+committed file differs from the generator's output, so never edit it by hand.
+Citations that cannot be linked (a malformed label, a control missing from the
+current 800-53 release, or a repeat) are printed as warnings and listed in
+`docs/mappings/mscp-to-nist-800-53-unresolved.json`; a new release that breaks
+a citation shows up as a diff there. Hand-written links between mSCP and
+800-53 are only for pairs mSCP does not cite, because the validator rejects a
+hand-written link that repeats a generated pair.
+
+Candidates that are still uncertain wait in
 `docs/mappings/mscp-to-asd-ism-review.json`, each with the first pass's
 reasoning and open question. A later research pass adds a comment and sets
 its status (`mapped`, `rejected` or `needs_maintainer`); the maintainer

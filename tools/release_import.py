@@ -41,6 +41,7 @@ class SourceImporter:
     fetch: Callable[[str, Path, str], SourceLock]
     build_rule_tree_by_format: Mapping[str, Callable[[Path, SourceLock, Path], int]]
     release_label: Callable[[str, Path], str]
+    after_import: Callable[[Path], None] | None = None
 
 
 def generate_release(
@@ -211,4 +212,11 @@ def run_cli(importer: SourceImporter, argv: list[str] | None) -> int:
             print_change_summary(release_change_summary(arguments.baselines_dir, importer.name, lock.tag))
         except (ValueError, OSError, KeyError, StopIteration) as problem:
             print(f"Could not summarise the changes in {lock.tag}: {problem!r}", file=sys.stderr)
+    if importer.after_import is not None:
+        # The releases stay published when this fails; the exit code still says the follow-up work did not finish.
+        try:
+            importer.after_import(arguments.baselines_dir)
+        except Exception as problem:
+            print(f"Post-import step failed: {problem!r}", file=sys.stderr)
+            return 1
     return 0
