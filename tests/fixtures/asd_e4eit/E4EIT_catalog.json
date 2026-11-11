@@ -1,0 +1,442 @@
+{
+  "catalog": {
+    "uuid": "00000000-0000-4000-8000-000000000001",
+    "metadata": {
+      "title": "Fixture: Assessment evidence guide for enterprise IT",
+      "version": "2026.10.15"
+    },
+    "groups": [
+      {
+        "id": "GOV",
+        "title": "Govern principles",
+        "groups": [
+          {
+            "id": "GOV-01",
+            "class": "essentials-principle",
+            "title": "GOV-01 - Cyber security governance",
+            "parts": [
+              {
+                "id": "GOV-01.overview",
+                "name": "overview",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "Principle"
+                  }
+                ],
+                "prose": "Accountability for cyber security is assigned and exercised."
+              }
+            ],
+            "controls": [
+              {
+                "id": "IT.GOV-01.1",
+                "title": "IT.GOV-01.1",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "1"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "governance-and-culture"
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "IT.GOV-01.1.action",
+                    "name": "statement",
+                    "class": "essentials-action",
+                    "props": [
+                      {
+                        "name": "label",
+                        "value": "Action"
+                      }
+                    ],
+                    "prose": "Assign an accountable executive for cyber security."
+                  },
+                  {
+                    "id": "IT.GOV-01.1.indicators-of-good-practice",
+                    "name": "statement",
+                    "class": "indicators-of-good-practice",
+                    "title": "Indicators of Good Practice",
+                    "parts": [
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Not effective",
+                        "parts": [
+                          {
+                            "id": "IT.GOV-01.1.NO-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Nothing is documented."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Partially effective",
+                        "parts": [
+                          {
+                            "id": "IT.GOV-01.1.PA-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Some systems are covered."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Fully effective",
+                        "parts": [
+                          {
+                            "id": "IT.GOV-01.1.FU-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "All systems are covered."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "PRO",
+        "title": "Protect principles",
+        "groups": [
+          {
+            "id": "PRO-01",
+            "class": "essentials-principle",
+            "title": "PRO-01 - Secure system lifecycle",
+            "parts": [
+              {
+                "id": "PRO-01.overview",
+                "name": "overview",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "Principle"
+                  }
+                ],
+                "prose": "Systems are designed securely and maintained."
+              }
+            ],
+            "controls": [
+              {
+                "id": "IT.PRO-01.1",
+                "title": "IT.PRO-01.1",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "1"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "user-devices"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "boundary-services"
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "IT.PRO-01.1.action",
+                    "name": "statement",
+                    "class": "essentials-action",
+                    "props": [
+                      {
+                        "name": "label",
+                        "value": "Action"
+                      }
+                    ],
+                    "prose": "Design systems securely."
+                  },
+                  {
+                    "id": "IT.PRO-01.1.indicators-of-good-practice",
+                    "name": "statement",
+                    "class": "indicators-of-good-practice",
+                    "title": "Indicators of Good Practice",
+                    "parts": [
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Not effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-01.1.NO-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Nothing is documented."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Partially effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-01.1.PA-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Some systems are covered."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Fully effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-01.1.FU-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "All systems are covered."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "PRO-13",
+            "class": "essentials-principle",
+            "title": "PRO-13 - Identity, credential and access management",
+            "parts": [
+              {
+                "id": "PRO-13.overview",
+                "name": "overview",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "Principle"
+                  }
+                ],
+                "prose": "Identities and credentials are managed and access is authorised."
+              }
+            ],
+            "controls": [
+              {
+                "id": "IT.PRO-13.1",
+                "title": "IT.PRO-13.1",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "1"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "user-devices"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "governance-and-culture"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "boundary-services"
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "IT.PRO-13.1.action",
+                    "name": "statement",
+                    "class": "essentials-action",
+                    "props": [
+                      {
+                        "name": "label",
+                        "value": "Action"
+                      }
+                    ],
+                    "prose": "Require multi-factor authentication for all remote access."
+                  },
+                  {
+                    "id": "IT.PRO-13.1.indicators-of-good-practice",
+                    "name": "statement",
+                    "class": "indicators-of-good-practice",
+                    "title": "Indicators of Good Practice",
+                    "parts": [
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Not effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-13.1.NO-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Passwords alone protect remote access."
+                          },
+                          {
+                            "id": "IT.PRO-13.1.NO-2",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "MFA is optional for staff."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Partially effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-13.1.PA-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "MFA covers some remote access paths."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Fully effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-13.1.FU-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "MFA is enforced on every remote access path."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "links": [
+                  {
+                    "href": "#11111111-2222-5333-8444-555555555555",
+                    "rel": "mitigated-technique",
+                    "text": "Mitigated technique"
+                  },
+                  {
+                    "href": "#77ba96d0-f819-580a-9622-c823aba0d750",
+                    "rel": "mitigated-technique",
+                    "text": "Mitigated technique"
+                  }
+                ]
+              },
+              {
+                "id": "IT.PRO-13.2",
+                "title": "IT.PRO-13.2",
+                "props": [
+                  {
+                    "name": "sort-id",
+                    "value": "1"
+                  },
+                  {
+                    "name": "domain",
+                    "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+                    "value": "user-devices"
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "IT.PRO-13.2.action",
+                    "name": "statement",
+                    "class": "essentials-action",
+                    "props": [
+                      {
+                        "name": "label",
+                        "value": "Action"
+                      }
+                    ],
+                    "prose": "Review privileged access regularly."
+                  },
+                  {
+                    "id": "IT.PRO-13.2.indicators-of-good-practice",
+                    "name": "statement",
+                    "class": "indicators-of-good-practice",
+                    "title": "Indicators of Good Practice",
+                    "parts": [
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Not effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-13.2.NO-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Nothing is documented."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Partially effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-13.2.PA-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "Some systems are covered."
+                          }
+                        ]
+                      },
+                      {
+                        "name": "item",
+                        "class": "indicator-group",
+                        "title": "Fully effective",
+                        "parts": [
+                          {
+                            "id": "IT.PRO-13.2.FU-1",
+                            "name": "item",
+                            "class": "indicator-statement",
+                            "prose": "All systems are covered."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "77ba96d0-f819-580a-9622-c823aba0d750",
+          "title": "Valid Accounts",
+          "rlinks": [
+            {
+              "href": "https://attack.mitre.org/versions/v19/techniques/T1078/"
+            }
+          ]
+        },
+        {
+          "uuid": "11111111-2222-5333-8444-555555555555",
+          "title": "Brute Force",
+          "rlinks": [
+            {
+              "href": "https://attack.mitre.org/versions/v19/techniques/T1110/"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

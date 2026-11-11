@@ -1,0 +1,41 @@
+{
+  "profile": {
+    "uuid": "00000000-0000-4000-8000-0000000000aa",
+    "metadata": {
+      "title": "Fixture: governance-and-culture OSCAL Profile",
+      "props": [
+        {
+          "name": "domain",
+          "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+          "value": "governance-and-culture"
+        },
+        {
+          "name": "domain-description",
+          "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+          "value": "Fixture description of governance-and-culture."
+        },
+        {
+          "name": "domain-priority-phase",
+          "ns": "https://www.cyber.gov.au/ns/essentials/oscal/1.0",
+          "value": "phase-3"
+        }
+      ]
+    },
+    "imports": [
+      {
+        "href": "#7f378fe9-e4fa-58d2-9b7b-c5d237a511c7",
+        "include-controls": [
+          {
+            "with-ids": [
+              "IT.GOV-01.1",
+              "IT.PRO-13.1"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "as-is": true
+    }
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "mapping-collection": {
+    "uuid": "00000000-0000-4000-8000-000000000002",
+    "metadata": {
+      "title": "Fixture: Potential Evidence Sources",
+      "version": "2026.10.15"
+    },
+    "provenance": {
+      "method": "human",
+      "matching-rationale": "functional",
+      "status": "complete"
+    },
+    "mappings": [
+      {
+        "uuid": "00000000-0000-4000-8000-0000000000cc",
+        "source-resource": {
+          "type": "catalog",
+          "href": "#7f378fe9-e4fa-58d2-9b7b-c5d237a511c7"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "#ba65d2ff-04ad-5dc4-bc96-9434d0d6606e"
+        },
+        "mapping-description": "E4EIT to ISM (excl. E8)",
+        "maps": [
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.GOV-01.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ism-1998"
+              }
+            ]
+          },
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.GOV-01.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ism-1997"
+              }
+            ]
+          },
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ism-0974"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "00000000-0000-4000-8000-0000000000cc",
+        "source-resource": {
+          "type": "catalog",
+          "href": "#7f378fe9-e4fa-58d2-9b7b-c5d237a511c7"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "#37446879-18f3-5df1-bb6b-b517fa3ee8d3"
+        },
+        "mapping-description": "E4EIT to E8",
+        "maps": [
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ism-1504"
+              }
+            ]
+          },
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ism-1173"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "00000000-0000-4000-8000-0000000000cc",
+        "source-resource": {
+          "type": "catalog",
+          "href": "#7f378fe9-e4fa-58d2-9b7b-c5d237a511c7"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "#ece7f821-0580-5877-a1ca-f9db28e8cea1"
+        },
+        "mapping-description": "E4EIT to CSF",
+        "maps": [
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "PR.AA-03"
+              }
+            ]
+          },
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "PR.AA-01"
+              }
+            ]
+          },
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.2"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "PR.AA-05"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "00000000-0000-4000-8000-0000000000cc",
+        "source-resource": {
+          "type": "catalog",
+          "href": "#7f378fe9-e4fa-58d2-9b7b-c5d237a511c7"
+        },
+        "target-resource": {
+          "type": "catalog",
+          "href": "#91d98ca7-6715-5afb-a39b-493fef3cb886"
+        },
+        "mapping-description": "E4EIT to 800-171r3",
+        "maps": [
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "03.05.03"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "uuid": "00000000-0000-4000-8000-0000000000cc",
+        "source-resource": {
+          "type": "catalog",
+          "href": "#7f378fe9-e4fa-58d2-9b7b-c5d237a511c7"
+        },
+        "target-resource": {
+          "type": "non-oscal-catalog",
+          "href": "#b735bf82-45ef-59e6-a184-c3101ee5774b"
+        },
+        "mapping-description": "E4EIT to AESCSF",
+        "maps": [
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ACCESS-1c"
+              }
+            ]
+          },
+          {
+            "uuid": "00000000-0000-4000-8000-0000000000bb",
+            "relationship": "intersects-with",
+            "sources": [
+              {
+                "type": "control",
+                "id-ref": "IT.PRO-13.1"
+              }
+            ],
+            "targets": [
+              {
+                "type": "control",
+                "id-ref": "ACCESS-1b"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "7f378fe9-e4fa-58d2-9b7b-c5d237a511c7",
+          "title": "E4EIT catalog",
+          "rlinks": [
+            {
+              "href": "E4EIT_catalog.json"
+            }
+          ]
+        },
+        {
+          "uuid": "ba65d2ff-04ad-5dc4-bc96-9434d0d6606e",
+          "title": "ASD Information Security Manual v2026.09.4",
+          "rlinks": [
+            {
+              "href": "https://www.cyber.gov.au/ism/oscal/v2026.09.4/artifacts/ISM_catalog.xml"
+            }
+          ]
+        },
+        {
+          "uuid": "37446879-18f3-5df1-bb6b-b517fa3ee8d3",
+          "title": "ASD Essential Eight",
+          "rlinks": [
+            {
+              "href": "https://www.cyber.gov.au/ism/oscal/v2026.09.4/artifacts/ISM_catalog.xml"
+            }
+          ]
+        },
+        {
+          "uuid": "ece7f821-0580-5877-a1ca-f9db28e8cea1",
+          "title": "NIST Cybersecurity Framework 2.0",
+          "rlinks": [
+            {
+              "href": "https://example.invalid/csf.json"
+            }
+          ]
+        },
+        {
+          "uuid": "91d98ca7-6715-5afb-a39b-493fef3cb886",
+          "title": "NIST SP 800-171r3",
+          "rlinks": [
+            {
+              "href": "https://example.invalid/800-171.json"
+            }
+          ]
+        },
+        {
+          "uuid": "b735bf82-45ef-59e6-a184-c3101ee5774b",
+          "title": "AESCSF v2",
+          "rlinks": [
+            {
+              "href": "https://example.invalid/aescsf.xlsx"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
