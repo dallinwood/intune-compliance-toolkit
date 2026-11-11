@@ -1,0 +1,71 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nMaintain a separate execution domain for each executing system process.\n\n## Discussion\n\nSystems can maintain separate execution domains for each executing process by assigning each process a separate address space. Each system process has a distinct address space so that communication between processes is performed in a manner controlled through the security functions, and one process cannot modify the executing code of another process. Maintaining separate execution domains for executing processes can be achieved, for example, by implementing separate address spaces. Process isolation technologies, including sandboxing or virtualization, logically separate software and firmware from other software, firmware, and data. Process isolation helps limit the access of potentially untrusted software to other system resources. The capability to maintain separate execution domains is available in commercial operating systems that employ multi-state processor technologies.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sc-39",
+  "odv": null,
+  "references": {
+    "publications": [
+      "SP 800-160-1"
+    ],
+    "related_controls": [
+      "AC-3",
+      "AC-4",
+      "AC-6",
+      "AC-25",
+      "SA-8",
+      "SC-2",
+      "SC-3",
+      "SI-16"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Communications Protection",
+    "SC-39 Process Isolation"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sc-39",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Process Isolation"
+}

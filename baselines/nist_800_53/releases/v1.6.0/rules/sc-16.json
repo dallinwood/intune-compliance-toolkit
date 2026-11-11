@@ -1,0 +1,53 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nAssociate [Assignment: organization-defined security and privacy attributes] with information exchanged between systems and between system components.\n\n## Discussion\n\nSecurity and privacy attributes can be explicitly or implicitly associated with the information contained in organizational systems or system components. Attributes are abstractions that represent the basic properties or characteristics of an entity with respect to protecting information or the management of personally identifiable information. Attributes are typically associated with internal data structures, including records, buffers, and files within the system. Security and privacy attributes are used to implement access control and information flow control policies; reflect special dissemination, management, or distribution instructions, including permitted uses of personally identifiable information; or support other aspects of the information security and privacy policies. Privacy attributes may be used independently or in conjunction with security attributes.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sc-16",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130"
+    ],
+    "related_controls": [
+      "AC-3",
+      "AC-4",
+      "AC-16"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Communications Protection",
+    "SC-16 Transmission of Security and Privacy Attributes"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sc-16",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Transmission of Security and Privacy Attributes"
+}

@@ -1,0 +1,58 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nEstablish a security and privacy workforce development and improvement program.\n\n## Discussion\n\nSecurity and privacy workforce development and improvement programs include defining the knowledge, skills, and abilities needed to perform security and privacy duties and tasks; developing role-based training programs for individuals assigned security and privacy roles and responsibilities; and providing standards and guidelines for measuring and building individual qualifications for incumbents and applicants for security- and privacy-related positions. Such workforce development and improvement programs can also include security and privacy career paths to encourage security and privacy professionals to advance in the field and fill positions with greater responsibility. The programs encourage organizations to fill security- and privacy-related positions with qualified personnel. Security and privacy workforce development and improvement programs are complementary to organizational security awareness and training programs and focus on developing and institutionalizing the core security and privacy capabilities of personnel needed to protect organizational operations, assets, and individuals.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pm-13",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130",
+      "SP 800-181"
+    ],
+    "related_controls": [
+      "AT-2",
+      "AT-3"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Program Management",
+    "PM-13 Security and Privacy Workforce"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pm-13",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Security and Privacy Workforce"
+}

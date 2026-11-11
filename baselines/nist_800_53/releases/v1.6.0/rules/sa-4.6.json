@@ -1,0 +1,50 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- (a) Employ only government off-the-shelf or commercial off-the-shelf information assurance and information assurance-enabled information technology products that compose an NSA-approved solution to protect classified information when the networks used to transmit the information are at a lower classification level than the information being transmitted; and\n- (b) Ensure that these products have been evaluated and/or validated by NSA or in accordance with NSA-approved procedures.\n\n## Discussion\n\nCommercial off-the-shelf IA or IA-enabled information technology products used to protect classified information by cryptographic means may be required to use NSA-approved key management. See [NSA CSFC](https://www.nsa.gov/resources/everyone/csfc).",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sa-4.6",
+  "odv": null,
+  "references": {
+    "related_controls": [
+      "SC-8",
+      "SC-12",
+      "SC-13"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Services Acquisition",
+    "SA-04 Acquisition Process"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sa-4.6",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Acquisition Process | Use of Information Assurance Products"
+}

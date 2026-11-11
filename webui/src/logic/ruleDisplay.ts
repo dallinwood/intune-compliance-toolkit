@@ -106,7 +106,7 @@ export function benchmarksByScope(applicability: Applicability, index: Vocabular
   return scopes
 }
 
-// Rule ids are "<source>.<upstream id>"; upstream ids never contain a dot.
+// Rule ids are "<source>.<upstream id>"; source names never contain a dot, but upstream ids can (nist_800_53.ac-20.1).
 export function upstreamRuleId(id: string): string {
   return id.slice(id.indexOf('.') + 1)
 }

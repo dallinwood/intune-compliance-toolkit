@@ -1,0 +1,62 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nApply [Assignment: organization-defined processing conditions] for specific categories of personally identifiable information.\n\n## Discussion\n\nOrganizations apply any conditions or protections that may be necessary for specific categories of personally identifiable information. These conditions may be required by laws, executive orders, directives, regulations, policies, standards, or guidelines. The requirements may also come from the results of privacy risk assessments that factor in contextual changes that may result in an organizational determination that a particular category of personally identifiable information is particularly sensitive or raises particular privacy risks. Organizations consult with the senior agency official for privacy and legal counsel regarding any protections that may be necessary.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pt-7",
+  "odv": null,
+  "references": {
+    "publications": [
+      "PRIVACT",
+      "OMB A-130",
+      "OMB A-108",
+      "NARA CUI"
+    ],
+    "related_controls": [
+      "IR-9",
+      "PT-2",
+      "PT-3",
+      "RA-3"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Personally Identifiable Information Processing and Transparency",
+    "PT-07 Specific Categories of Personally Identifiable Information"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pt-7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Specific Categories of Personally Identifiable Information"
+}

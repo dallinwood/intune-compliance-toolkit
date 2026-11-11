@@ -1,0 +1,71 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Require the developer of the system, system component, or system service to follow a documented development process that:\n  - 1. Explicitly addresses security and privacy requirements;\n  - 2. Identifies the standards and tools used in the development process;\n  - 3. Documents the specific tool options and tool configurations used in the development process; and\n  - 4. Documents, manages, and ensures the integrity of changes to the process and/or tools used in development; and\n- b. Review the development process, standards, tools, tool options, and tool configurations [Assignment: organization-defined frequency] to determine if the process, standards, tools, tool options and tool configurations selected and employed can satisfy the following security and privacy requirements: [Assignment: organization-defined security and privacy requirements].\n\n## Discussion\n\nDevelopment tools include programming languages and computer-aided design systems. Reviews of development processes include the use of maturity models to determine the potential effectiveness of such processes. Maintaining the integrity of changes to tools and processes facilitates effective supply chain risk assessment and mitigation. Such integrity requires configuration control throughout the system development life cycle to track authorized changes and prevent unauthorized changes.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sa-15",
+  "odv": null,
+  "references": {
+    "publications": [
+      "SP 800-160-1",
+      "IR 8179"
+    ],
+    "related_controls": [
+      "MA-6",
+      "SA-3",
+      "SA-4",
+      "SA-8",
+      "SA-10",
+      "SA-11",
+      "SR-3",
+      "SR-4",
+      "SR-5",
+      "SR-6",
+      "SR-9"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Services Acquisition",
+    "SA-15 Development Process, Standards, and Tools"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sa-15",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Development Process, Standards, and Tools"
+}

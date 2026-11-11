@@ -1,0 +1,72 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Authorize internal connections of [Assignment: organization-defined system components] to the system;\n- b. Document, for each internal connection, the interface characteristics, security and privacy requirements, and the nature of the information communicated;\n- c. Terminate internal system connections after [Assignment: organization-defined conditions] ; and\n- d. Review [Assignment: organization-defined frequency] the continued need for each internal connection.\n\n## Discussion\n\nInternal system connections are connections between organizational systems and separate constituent system components (i.e., connections between components that are part of the same system) including components used for system development. Intra-system connections include connections with mobile devices, notebook and desktop computers, tablets, printers, copiers, facsimile machines, scanners, sensors, and servers. Instead of authorizing each internal system connection individually, organizations can authorize internal connections for a class of system components with common characteristics and/or configurations, including printers, scanners, and copiers with a specified processing, transmission, and storage capability or smart phones and tablets with a specific baseline configuration. The continued need for an internal system connection is reviewed from the perspective of whether it provides support for organizational missions or business functions.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.ca-9",
+  "odv": null,
+  "references": {
+    "publications": [
+      "SP 800-124",
+      "IR 8023"
+    ],
+    "related_controls": [
+      "AC-3",
+      "AC-4",
+      "AC-18",
+      "AC-19",
+      "CM-2",
+      "IA-3",
+      "SC-7",
+      "SI-12"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Assessment, Authorization, and Monitoring",
+    "CA-09 Internal System Connections"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "ca-9",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Internal System Connections"
+}

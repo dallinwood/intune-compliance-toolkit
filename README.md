@@ -26,7 +26,22 @@ into a title and a discussion. That content remains licensed under CC BY 4.0
 and is provided as-is, with the disclaimer of warranties in section 5 of that
 licence. ASD does not endorse this project. ASD's copyright notice and
 disclaimer are in `sources/asd_ism/releases/<tag>/upstream/README.md`. See `NOTICE` for the
-full attribution of both sources.
+full attribution of the sources.
+
+The NIST SP 800-53 Rev. 5 rule content in `sources/nist_800_53/` and
+`baselines/nist_800_53/` comes from the [OSCAL content published by NIST](https://github.com/usnistgov/oscal-content).
+It is a work of the United States government, so it is in the public domain in
+the United States, and NIST dedicates it worldwide under
+[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). No attribution
+is required; it is given here anyway.
+`sources/nist_800_53/releases/<tag>/upstream/` is an unmodified copy of the
+catalog and the baseline profiles. This project has modified the content in
+`baselines/nist_800_53/`: it was converted to a normalized rule format, control
+statements and parameters were rendered as Markdown, guidance links were
+rewritten, and rule ids, titles and sections were derived from the catalog.
+That content stays in the public domain and under CC0 1.0. The upstream licence
+text is vendored in `sources/nist_800_53/releases/<tag>/upstream/LICENSE.md`.
+NIST does not endorse this project.
 
 ## Web UI
 
@@ -181,6 +196,29 @@ Requires Python 3.10 or newer.
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
+
+## Updating the NIST SP 800-53 rules
+
+Requires Python 3.10 or newer.
+
+1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
+2. `python tools/import_nist_800_53.py --tag <release tag>`, for example
+   `--tag v1.6.0`. The tag is a release of the
+   [oscal-content](https://github.com/usnistgov/oscal-content) repository, not
+   an 800-53 version; the release label shows both (`5.2.0 (v1.6.0)`). Each
+   release is kept in its own folder (`sources/nist_800_53/releases/<tag>/`,
+   `baselines/nist_800_53/releases/<tag>/`), so importing a new tag adds a
+   release and never replaces an older one. To regenerate every stored release
+   from the vendored copies without fetching, use `--offline`; add
+   `--release <tag>` for just one.
+3. Review `git diff sources/nist_800_53/` and `git diff baselines/nist_800_53/`.
+4. `python -m pytest -W error`
+5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
+   running.
+6. Commit the result.
+
+Withdrawn controls are not imported, and the import stops with an error on any
+part of the catalog it does not understand.
 
 ## Writing overlays
 

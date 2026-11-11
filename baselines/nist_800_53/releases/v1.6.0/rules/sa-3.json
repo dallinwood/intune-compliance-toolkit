@@ -1,0 +1,86 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Acquire, develop, and manage the system using [Assignment: organization-defined system-development life cycle] that incorporates information security and privacy considerations;\n- b. Define and document information security and privacy roles and responsibilities throughout the system development life cycle;\n- c. Identify individuals having information security and privacy roles and responsibilities; and\n- d. Integrate the organizational information security and privacy risk management process into system development life cycle activities.\n\n## Discussion\n\nA system development life cycle process provides the foundation for the successful development, implementation, and operation of organizational systems. The integration of security and privacy considerations early in the system development life cycle is a foundational principle of systems security engineering and privacy engineering. To apply the required controls within the system development life cycle requires a basic understanding of information security and privacy, threats, vulnerabilities, adverse impacts, and risk to critical mission and business functions. The security engineering principles in SA-8 help individuals properly design, code, and test systems and system components. Organizations include qualified personnel (e.g., senior agency information security officers, senior agency officials for privacy, security and privacy architects, and security and privacy engineers) in system development life cycle processes to ensure that established security and privacy requirements are incorporated into organizational systems. Role-based security and privacy training programs can ensure that individuals with key security and privacy roles and responsibilities have the experience, skills, and expertise to conduct assigned system development life cycle activities.\n\nThe effective integration of security and privacy requirements into enterprise architecture also helps to ensure that important security and privacy considerations are addressed throughout the system life cycle and that those considerations are directly related to organizational mission and business processes. This process also facilitates the integration of the information security and privacy architectures into the enterprise architecture, consistent with the risk management strategy of the organization. Because the system development life cycle involves multiple organizations, (e.g., external suppliers, developers, integrators, service providers), acquisition and supply chain risk management functions and controls play significant roles in the effective management of the system during the life cycle.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sa-3",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130",
+      "SP 800-30",
+      "SP 800-37",
+      "SP 800-160-1",
+      "SP 800-171",
+      "SP 800-172"
+    ],
+    "related_controls": [
+      "AT-3",
+      "PL-8",
+      "PM-7",
+      "SA-4",
+      "SA-5",
+      "SA-8",
+      "SA-11",
+      "SA-15",
+      "SA-17",
+      "SA-22",
+      "SR-3",
+      "SR-4",
+      "SR-5",
+      "SR-9"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Services Acquisition",
+    "SA-03 System Development Life Cycle"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sa-3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "System Development Life Cycle"
+}

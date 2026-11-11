@@ -1,11 +1,13 @@
+import hashlib
 import json
 import shutil
 from pathlib import Path
 
 import pytest
 
-from tools import import_asd_ism, import_mscp
+from tools import import_asd_ism, import_mscp, import_nist_800_53
 from tools.file_references import is_binary_payload
+from tools.nist_800_53_normalize import control_id_for_label, label_for_control_id
 from tools.release_import import generate_release
 from tools.source_lock import read_source_lock
 from tools.validate_library import validate_library
@@ -19,7 +21,16 @@ MAPPINGS_DIR_NAME = "_mappings"
 MAINTAINER_DIR_NAMES = (OVERLAYS_DIR_NAME, MAPPINGS_DIR_NAME)
 
 IMPORTERS_BY_NAME = {
-    importer.name: importer for importer in (import_mscp.IMPORTER, import_asd_ism.IMPORTER)
+    importer.name: importer
+    for importer in (import_mscp.IMPORTER, import_asd_ism.IMPORTER, import_nist_800_53.IMPORTER)
+}
+
+NIST_800_53_CATALOG_SHA256 = "64ca6b4161de51ab6af098a7d101d326f14c95e1abf721396cd8a049e8115eeb"
+NIST_800_53_BENCHMARK_COUNTS = {
+    "nist_800_53_low": 149,
+    "nist_800_53_moderate": 287,
+    "nist_800_53_high": 370,
+    "nist_800_53_privacy": 96,
 }
 
 
@@ -67,6 +78,11 @@ def regenerate_release(source_name: str, tag: str, baselines_dir: Path) -> None:
 
 def committed_asd_ism_rules() -> list[dict]:
     rule_paths = sorted((current_release_dir("asd_ism") / "rules").glob("*.json"))
+    return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
+
+
+def committed_nist_800_53_rules() -> list[dict]:
+    rule_paths = sorted((current_release_dir("nist_800_53") / "rules").glob("*.json"))
     return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
 
 
@@ -207,3 +223,50 @@ def test_mappings_folder_is_not_a_source_and_keeps_lf_endings():
     assert mappings_rules_dir.is_dir()
     mapping_paths = sorted(mappings_rules_dir.glob("*.json"))
     assert [path.name for path in mapping_paths if b"\r" in path.read_bytes()] == []
+
+
+def test_nist_800_53_vendored_catalog_hash():
+    catalog_path = (
+        REPO_ROOT / "sources" / "nist_800_53" / "releases" / current_release_tag("nist_800_53")
+        / "upstream" / "nist.gov" / "SP800-53" / "rev5" / "json" / "NIST_SP-800-53_rev5_catalog.json"
+    )
+    assert hashlib.sha256(catalog_path.read_bytes()).hexdigest() == NIST_800_53_CATALOG_SHA256
+
+
+def test_nist_800_53_rule_and_benchmark_counts():
+    rules = committed_nist_800_53_rules()
+    benchmark_counts = {name: 0 for name in NIST_800_53_BENCHMARK_COUNTS}
+    for rule in rules:
+        for benchmark in rule["applicability"][0]["benchmarks"]:
+            benchmark_counts[benchmark["name"]] += 1
+
+    assert len(rules) == 1014
+    assert sum("." not in rule["source"]["upstream_rule_id"] for rule in rules) == 300
+    assert sum("." in rule["source"]["upstream_rule_id"] for rule in rules) == 714
+    assert benchmark_counts == NIST_800_53_BENCHMARK_COUNTS
+
+
+def test_nist_800_53_discussions_have_no_raw_links_or_inserts():
+    rules = committed_nist_800_53_rules()
+    assert rules
+    with_raw_link = [rule["id"] for rule in rules if "](#" in rule["discussion"]]
+    with_insert = [rule["id"] for rule in rules if "{{" in rule["discussion"]]
+    assert with_raw_link == []
+    assert with_insert == []
+
+
+def test_nist_800_53_vendored_license_mentions_cc0():
+    license_text = (
+        REPO_ROOT / "sources" / "nist_800_53" / "releases" / current_release_tag("nist_800_53") / "upstream" / "LICENSE.md"
+    ).read_text(encoding="utf-8")
+    assert "CC0" in license_text
+
+
+def test_nist_800_53_every_control_id_round_trips_through_its_label():
+    control_ids = [rule["source"]["upstream_rule_id"] for rule in committed_nist_800_53_rules()]
+    assert control_ids
+    assert [
+        control_id
+        for control_id in control_ids
+        if control_id_for_label(label_for_control_id(control_id)) != control_id
+    ] == []

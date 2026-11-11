@@ -1,0 +1,88 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nManage system authenticators by:\n\n- a. Verifying, as part of the initial authenticator distribution, the identity of the individual, group, role, service, or device receiving the authenticator;\n- b. Establishing initial authenticator content for any authenticators issued by the organization;\n- c. Ensuring that authenticators have sufficient strength of mechanism for their intended use;\n- d. Establishing and implementing administrative procedures for initial authenticator distribution, for lost or compromised or damaged authenticators, and for revoking authenticators;\n- e. Changing default authenticators prior to first use;\n- f. Changing or refreshing authenticators [Assignment: organization-defined time period by authenticator type] or when [Assignment: organization-defined events] occur;\n- g. Protecting authenticator content from unauthorized disclosure and modification;\n- h. Requiring individuals to take, and having devices implement, specific controls to protect authenticators; and\n- i. Changing authenticators for group or role accounts when membership to those accounts changes.\n\n## Discussion\n\nAuthenticators include passwords, cryptographic devices, biometrics, certificates, one-time password devices, and ID badges. Device authenticators include certificates and passwords. Initial authenticator content is the actual content of the authenticator (e.g., the initial password). In contrast, the requirements for authenticator content contain specific criteria or characteristics (e.g., minimum password length). Developers may deliver system components with factory default authentication credentials (i.e., passwords) to allow for initial installation and configuration. Default authentication credentials are often well known, easily discoverable, and present a significant risk. The requirement to protect individual authenticators may be implemented via control PL-4 or PS-6 for authenticators in the possession of individuals and by controls AC-3, AC-6 , and SC-28 for authenticators stored in organizational systems, including passwords stored in hashed or encrypted formats or files containing encrypted or hashed passwords accessible with administrator privileges.\n\nSystems support authenticator management by organization-defined settings and restrictions for various authenticator characteristics (e.g., minimum password length, validation time window for time synchronous one-time tokens, and number of allowed rejections during the verification stage of biometric authentication). Actions can be taken to safeguard individual authenticators, including maintaining possession of authenticators, not sharing authenticators with others, and immediately reporting lost, stolen, or compromised authenticators. Authenticator management includes issuing and revoking authenticators for temporary access when no longer needed.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.ia-5",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 140-3",
+      "FIPS 180-4",
+      "FIPS 201-2",
+      "FIPS 202",
+      "SP 800-63-3",
+      "SP 800-73-4",
+      "SP 800-76-2",
+      "SP 800-78-4",
+      "IR 7539",
+      "IR 7817",
+      "IR 7849",
+      "IR 7870",
+      "IR 8040"
+    ],
+    "related_controls": [
+      "AC-3",
+      "AC-6",
+      "CM-6",
+      "IA-2",
+      "IA-4",
+      "IA-7",
+      "IA-8",
+      "IA-9",
+      "MA-4",
+      "PE-2",
+      "PL-4",
+      "SC-12",
+      "SC-13"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Identification and Authentication",
+    "IA-05 Authenticator Management"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "ia-5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Authenticator Management"
+}

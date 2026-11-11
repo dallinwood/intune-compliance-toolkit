@@ -1,0 +1,60 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Identify and document:\n  - 1. Assumptions affecting risk assessments, risk responses, and risk monitoring;\n  - 2. Constraints affecting risk assessments, risk responses, and risk monitoring;\n  - 3. Priorities and trade-offs considered by the organization for managing risk; and\n  - 4. Organizational risk tolerance;\n- b. Distribute the results of risk framing activities to [Assignment: organization-defined personnel] ; and\n- c. Review and update risk framing considerations [Assignment: organization-defined frequency].\n\n## Discussion\n\nRisk framing is most effective when conducted at the organization level and in consultation with stakeholders throughout the organization including mission, business, and system owners. The assumptions, constraints, risk tolerance, priorities, and trade-offs identified as part of the risk framing process inform the risk management strategy, which in turn informs the conduct of risk assessment, risk response, and risk monitoring activities. Risk framing results are shared with organizational personnel, including mission and business owners, information owners or stewards, system owners, authorizing officials, senior agency information security officer, senior agency official for privacy, and senior accountable official for risk management.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pm-28",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130",
+      "SP 800-39"
+    ],
+    "related_controls": [
+      "CA-7",
+      "PM-9",
+      "RA-3",
+      "RA-7"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Program Management",
+    "PM-28 Risk Framing"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pm-28",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Risk Framing"
+}

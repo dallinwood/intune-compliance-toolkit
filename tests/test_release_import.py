@@ -118,7 +118,7 @@ STUB_IMPORTER = SourceImporter(
     license=LICENSE,
     fetch=stub_fetch,
     build_rule_tree_by_format={STUB_FORMAT: build_stub_rule_tree},
-    release_label=lambda tag: f"Release {tag}",
+    release_label=lambda tag, upstream_dir: f"Release {tag}",
 )
 
 
@@ -335,15 +335,32 @@ def test_cli_reports_an_unsupported_upstream_failure_and_exits_one(workspace, ca
     assert snapshot(baselines_dir) == {}
 
 
-def test_release_labels():
-    assert import_mscp.IMPORTER.release_label("release_27.1") == "27.1"
-    assert import_asd_ism.IMPORTER.release_label("v2025.12.9") == "Dec 2025"
-    assert import_asd_ism.IMPORTER.release_label("v2026.09.4") == "Sep 2026"
+def test_release_labels(tmp_path):
+    assert import_mscp.IMPORTER.release_label("release_27.1", tmp_path) == "27.1"
+    assert import_asd_ism.IMPORTER.release_label("v2025.12.9", tmp_path) == "Dec 2025"
+    assert import_asd_ism.IMPORTER.release_label("v2026.09.4", tmp_path) == "Sep 2026"
 
 
-def test_asd_ism_release_label_rejects_a_tag_without_a_year_and_month():
+def test_asd_ism_release_label_rejects_a_tag_without_a_year_and_month(tmp_path):
     with pytest.raises(ValueError, match="release label"):
-        import_asd_ism.IMPORTER.release_label("latest")
+        import_asd_ism.IMPORTER.release_label("latest", tmp_path)
+
+
+def test_release_label_receives_the_tag_and_the_upstream_directory(workspace):
+    sources_dir, baselines_dir = workspace
+    labelled_arguments = []
+
+    def recording_label(tag: str, upstream_dir: Path) -> str:
+        labelled_arguments.append((tag, upstream_dir))
+        return "recorded"
+
+    importer = replace(STUB_IMPORTER, release_label=recording_label)
+    upstream_dir = sources_dir / "releases" / "A" / "upstream"
+
+    generate_release(importer, upstream_dir, OLDER_LOCK, baselines_dir)
+
+    assert labelled_arguments == [("A", upstream_dir)]
+    assert read_manifest(baselines_dir)["sources"][0]["releases"][0]["label"] == "recorded"
 
 
 def test_importers_register_their_formats():

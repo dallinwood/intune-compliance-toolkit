@@ -1,0 +1,91 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nEstablish and manage cryptographic keys when cryptography is employed within the system in accordance with the following key management requirements: [Assignment: organization-defined requirements].\n\n## Discussion\n\nCryptographic key management and establishment can be performed using manual procedures or automated mechanisms with supporting manual procedures. Organizations define key management requirements in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and specify appropriate options, parameters, and levels. Organizations manage trust stores to ensure that only approved trust anchors are part of such trust stores. This includes certificates with visibility external to organizational systems and certificates related to the internal operations of systems. [NIST CMVP](https://csrc.nist.gov/projects/cryptographic-module-validation-program) and [NIST CAVP](https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program) provide additional information on validated cryptographic modules and algorithms that can be used in cryptographic key management and establishment.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sc-12",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 140-3",
+      "SP 800-56A",
+      "SP 800-56B",
+      "SP 800-56C",
+      "SP 800-57-1",
+      "SP 800-57-2",
+      "SP 800-57-3",
+      "SP 800-63-3",
+      "IR 7956",
+      "IR 7966"
+    ],
+    "related_controls": [
+      "AC-17",
+      "AU-9",
+      "AU-10",
+      "CM-3",
+      "IA-3",
+      "IA-7",
+      "IA-13",
+      "SA-4",
+      "SA-8",
+      "SA-9",
+      "SC-8",
+      "SC-11",
+      "SC-13",
+      "SC-17",
+      "SC-20",
+      "SC-37",
+      "SC-40",
+      "SI-3",
+      "SI-7"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Communications Protection",
+    "SC-12 Cryptographic Key Establishment and Management"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sc-12",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Cryptographic Key Establishment and Management"
+}

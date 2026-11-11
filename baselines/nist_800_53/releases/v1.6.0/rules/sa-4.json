@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nInclude the following requirements, descriptions, and criteria, explicitly or by reference, using [Selection (one or more): standardized contract language; [Assignment: organization-defined contract language]] in the acquisition contract for the system, system component, or system service:\n\n- a. Security and privacy functional requirements;\n- b. Strength of mechanism requirements;\n- c. Security and privacy assurance requirements;\n- d. Controls needed to satisfy the security and privacy requirements.\n- e. Security and privacy documentation requirements;\n- f. Requirements for protecting security and privacy documentation;\n- g. Description of the system development environment and environment in which the system is intended to operate;\n- h. Allocation of responsibility or identification of parties responsible for information security, privacy, and supply chain risk management; and\n- i. Acceptance criteria.\n\n## Discussion\n\nSecurity and privacy functional requirements are typically derived from the high-level security and privacy requirements described in SA-2 . The derived requirements include security and privacy capabilities, functions, and mechanisms. Strength requirements associated with such capabilities, functions, and mechanisms include degree of correctness, completeness, resistance to tampering or bypass, and resistance to direct attack. Assurance requirements include development processes, procedures, and methodologies as well as the evidence from development and assessment activities that provide grounds for confidence that the required functionality is implemented and possesses the required strength of mechanism. [SP 800-160-1](https://doi.org/10.6028/NIST.SP.800-160v1) describes the process of requirements engineering as part of the system development life cycle.\n\nControls can be viewed as descriptions of the safeguards and protection capabilities appropriate for achieving the particular security and privacy objectives of the organization and for reflecting the security and privacy requirements of stakeholders. Controls are selected and implemented in order to satisfy system requirements and include developer and organizational responsibilities. Controls can include technical, administrative, and physical aspects. In some cases, the selection and implementation of a control may necessitate additional specification by the organization in the form of derived requirements or instantiated control parameter values. The derived requirements and control parameter values may be necessary to provide the appropriate level of implementation detail for controls within the system development life cycle.\n\nSecurity and privacy documentation requirements address all stages of the system development life cycle. Documentation provides user and administrator guidance for the implementation and operation of controls. The level of detail required in such documentation is based on the security categorization or classification level of the system and the degree to which organizations depend on the capabilities, functions, or mechanisms to meet risk response expectations. Requirements can include mandated configuration settings that specify allowed functions, ports, protocols, and services. Acceptance criteria for systems, system components, and system services are defined in the same manner as the criteria for any organizational acquisition or procurement.\n\nOrganizations can determine other requirements that support security and operations, to include responsibilities for the organization and developer, and notification and timing requirements for support, maintenance and updates.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sa-4",
+  "odv": null,
+  "references": {
+    "publications": [
+      "PRIVACT",
+      "OMB A-130",
+      "ISO 15408-1",
+      "ISO 15408-2",
+      "ISO 15408-3",
+      "ISO 29148",
+      "FIPS 140-3",
+      "FIPS 201-2",
+      "SP 800-35",
+      "SP 800-37",
+      "SP 800-70",
+      "SP 800-73-4",
+      "SP 800-137",
+      "SP 800-160-1",
+      "SP 800-161",
+      "IR 7539",
+      "IR 7622",
+      "IR 7676",
+      "IR 7870",
+      "IR 8062",
+      "NIAP CCEVS",
+      "NSA CSFC"
+    ],
+    "related_controls": [
+      "CM-6",
+      "CM-8",
+      "PS-7",
+      "SA-3",
+      "SA-5",
+      "SA-8",
+      "SA-11",
+      "SA-15",
+      "SA-16",
+      "SA-17",
+      "SA-21",
+      "SR-3",
+      "SR-5"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Services Acquisition",
+    "SA-04 Acquisition Process"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sa-4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Acquisition Process"
+}

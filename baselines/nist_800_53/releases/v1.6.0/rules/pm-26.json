@@ -1,0 +1,59 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nImplement a process for receiving and responding to complaints, concerns, or questions from individuals about the organizational security and privacy practices that includes:\n\n- a. Mechanisms that are easy to use and readily accessible by the public;\n- b. All information necessary for successfully filing complaints;\n- c. Tracking mechanisms to ensure all complaints received are reviewed and addressed within [Assignment: organization-defined time period];\n- d. Acknowledgement of receipt of complaints, concerns, or questions from individuals within [Assignment: organization-defined time period] ; and\n- e. Response to complaints, concerns, or questions from individuals within [Assignment: organization-defined time period].\n\n## Discussion\n\nComplaints, concerns, and questions from individuals can serve as valuable sources of input to organizations and ultimately improve operational models, uses of technology, data collection practices, and controls. Mechanisms that can be used by the public include telephone hotline, email, or web-based forms. The information necessary for successfully filing complaints includes contact information for the senior agency official for privacy or other official designated to receive complaints. Privacy complaints may also include personally identifiable information which is handled in accordance with relevant policies and processes.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pm-26",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130"
+    ],
+    "related_controls": [
+      "IR-7",
+      "IR-9",
+      "PM-22",
+      "SI-18"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Program Management",
+    "PM-26 Complaint Management"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pm-26",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Complaint Management"
+}

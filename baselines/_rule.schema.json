@@ -10,7 +10,7 @@
   ],
   "properties": {
     "schema_version": { "const": 5 },
-    "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?![\\s\\S])" },
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-][a-z0-9_.-]*(?![\\s\\S])" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
     "discussion_format": { "enum": ["asciidoc", "markdown"] },

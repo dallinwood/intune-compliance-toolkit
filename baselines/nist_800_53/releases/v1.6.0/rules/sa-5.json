@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Obtain or develop administrator documentation for the system, system component, or system service that describes:\n  - 1. Secure configuration, installation, and operation of the system, component, or service;\n  - 2. Effective use and maintenance of security and privacy functions and mechanisms; and\n  - 3. Known vulnerabilities regarding configuration and use of administrative or privileged functions;\n- b. Obtain or develop user documentation for the system, system component, or system service that describes:\n  - 1. User-accessible security and privacy functions and mechanisms and how to effectively use those functions and mechanisms;\n  - 2. Methods for user interaction, which enables individuals to use the system, component, or service in a more secure manner and protect individual privacy; and\n  - 3. User responsibilities in maintaining the security of the system, component, or service and privacy of individuals;\n- c. Document attempts to obtain system, system component, or system service documentation when such documentation is either unavailable or nonexistent and take [Assignment: organization-defined actions] in response; and\n- d. Distribute documentation to [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nSystem artifacts and documentation created by the developer helps organizational personnel understand the implementation and operation of controls. Organizations consider establishing specific measures to determine the quality and completeness of the content provided. System documentation may be used to delineate roles, responsibilities and expectations of the developer and organization, support the management of supply chain risk, incident response, flaw remediation, and other functions. Personnel or roles that require documentation include system owners, system security officers, and system administrators. Attempts to obtain documentation include contacting manufacturers or suppliers and conducting web-based searches. The inability to obtain documentation may occur due to the age of the system or component or the lack of support from developers and contractors. When documentation cannot be obtained, organizations may need to recreate the documentation if it is essential to the implementation or operation of the controls. The protection provided for the documentation is commensurate with the security category or classification of the system. Documentation that addresses system vulnerabilities may require an increased level of protection. Secure operation of the system includes initially starting the system and resuming secure system operation after a lapse in system operation. An example of least privilege in software development is minimizing the functions that operate with elevated privileges (e.g., limiting the tools and functionality that operate in kernel mode)",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sa-5",
+  "odv": null,
+  "references": {
+    "publications": [
+      "SP 800-160-1"
+    ],
+    "related_controls": [
+      "CM-4",
+      "CM-6",
+      "CM-7",
+      "CM-8",
+      "PL-2",
+      "PL-4",
+      "PL-8",
+      "PS-2",
+      "SA-3",
+      "SA-4",
+      "SA-8",
+      "SA-9",
+      "SA-10",
+      "SA-11",
+      "SA-15",
+      "SA-16",
+      "SA-17",
+      "SI-12",
+      "SR-3"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Services Acquisition",
+    "SA-05 System Documentation"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sa-5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "System Documentation"
+}

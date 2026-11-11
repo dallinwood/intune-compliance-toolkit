@@ -1,0 +1,369 @@
+{
+  "catalog": {
+    "uuid": "33333333-3333-3333-3333-333333333333",
+    "metadata": {
+      "title": "Fixture catalog",
+      "last-modified": "2026-10-22T00:00:00Z",
+      "version": "5.2.0",
+      "oscal-version": "1.2.3"
+    },
+    "groups": [
+      {
+        "id": "ac",
+        "class": "family",
+        "title": "Access Control",
+        "props": [
+          {
+            "name": "label",
+            "value": "AC"
+          }
+        ],
+        "controls": [
+          {
+            "id": "ac-2",
+            "class": "SP800-53",
+            "title": "Account Management",
+            "params": [
+              {
+                "id": "ac-02_odp.01",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "AC-02_ODP[01]",
+                    "class": "sp800-53a"
+                  }
+                ],
+                "label": "frequency"
+              },
+              {
+                "id": "ac-02_odp.02",
+                "select": {
+                  "how-many": "one-or-more",
+                  "choice": [
+                    " individual accounts ",
+                    "accounts reviewed {{ insert: param, ac-02_odp.01 }}"
+                  ]
+                }
+              },
+              {
+                "id": "ac-02_odp.03",
+                "label": "organization-defined personnel or roles"
+              },
+              {
+                "id": "ac-02_odp.04",
+                "select": {
+                  "choice": [
+                    "remove",
+                    "disable"
+                  ]
+                }
+              }
+            ],
+            "props": [
+              {
+                "name": "label",
+                "value": "AC-2"
+              },
+              {
+                "name": "label",
+                "value": "AC-02",
+                "class": "zero-padded"
+              },
+              {
+                "name": "label",
+                "value": "AC-02",
+                "class": "sp800-53a"
+              },
+              {
+                "name": "sort-id",
+                "value": "ac-02"
+              },
+              {
+                "name": "implementation-level",
+                "ns": "http://csrc.nist.gov/ns/rmf",
+                "value": "organization"
+              }
+            ],
+            "links": [
+              {
+                "href": "#11111111-1111-1111-1111-111111111111",
+                "rel": "reference"
+              },
+              {
+                "href": "#22222222-2222-2222-2222-222222222222",
+                "rel": "reference"
+              },
+              {
+                "href": "#pm-1",
+                "rel": "related"
+              },
+              {
+                "href": "#ac-2.1",
+                "rel": "related"
+              }
+            ],
+            "parts": [
+              {
+                "id": "ac-2_smt",
+                "name": "statement",
+                "parts": [
+                  {
+                    "id": "ac-2_smt.a",
+                    "name": "item",
+                    "props": [
+                      {
+                        "name": "label",
+                        "value": "a."
+                      }
+                    ],
+                    "prose": "Define account types {{ insert: param, ac-02_odp.01 }}",
+                    "parts": [
+                      {
+                        "id": "ac-2_smt.a.1",
+                        "name": "item",
+                        "props": [
+                          {
+                            "name": "label",
+                            "value": "1."
+                          }
+                        ],
+                        "prose": "Notify {{ insert: param, ac-02_odp.03 }}",
+                        "parts": [
+                          {
+                            "id": "ac-2_smt.a.1.a",
+                            "name": "item",
+                            "props": [
+                              {
+                                "name": "label",
+                                "value": "(a)"
+                              }
+                            ],
+                            "prose": "Use one of {{ insert: param, ac-02_odp.02 }}"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "ac-2_smt.b",
+                    "name": "item",
+                    "props": [
+                      {
+                        "name": "label",
+                        "value": "b."
+                      }
+                    ],
+                    "prose": "Review accounts {{ insert: param, ac-02_odp.04 }}."
+                  }
+                ]
+              },
+              {
+                "id": "ac-2_gdn",
+                "name": "guidance",
+                "prose": "Accounts are described in [NIST SP 800-12](#11111111-1111-1111-1111-111111111111) and relate to [PM-1](#pm-1), item [AC-2a](#ac-2_smt.a) and the [PM family](#pm).\n\nSecond paragraph about accounts.\n"
+              },
+              {
+                "id": "ac-2_obj",
+                "name": "assessment-objective",
+                "prose": "Ignored assessment text."
+              }
+            ],
+            "controls": [
+              {
+                "id": "ac-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated System Account Management",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "AC-2(1)"
+                  },
+                  {
+                    "name": "label",
+                    "value": "AC-02(01)",
+                    "class": "zero-padded"
+                  },
+                  {
+                    "name": "label",
+                    "value": "AC-02(01)",
+                    "class": "sp800-53a"
+                  },
+                  {
+                    "name": "sort-id",
+                    "value": "ac-02.01"
+                  },
+                  {
+                    "name": "implementation-level",
+                    "ns": "http://csrc.nist.gov/ns/rmf",
+                    "value": "organization"
+                  }
+                ],
+                "links": [
+                  {
+                    "href": "#ac-2",
+                    "rel": "required"
+                  },
+                  {
+                    "href": "#ac-2",
+                    "rel": "related"
+                  }
+                ],
+                "parts": [
+                  {
+                    "id": "ac-2.1_smt",
+                    "name": "statement",
+                    "prose": "Support the management of system accounts using {{ insert: param, ac-02.01_odp }} reviewed {{ insert: param, ac-02_odp.01 }}."
+                  },
+                  {
+                    "id": "ac-2.1_gdn",
+                    "name": "guidance",
+                    "prose": "Automated mechanisms include email notifications."
+                  },
+                  {
+                    "id": "ac-2.1_obj",
+                    "name": "assessment-objective",
+                    "prose": "Ignored assessment text."
+                  }
+                ],
+                "params": [
+                  {
+                    "id": "ac-02.01_odp",
+                    "label": "automated mechanisms"
+                  }
+                ]
+              },
+              {
+                "id": "ac-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Removal of Temporary Accounts",
+                "props": [
+                  {
+                    "name": "label",
+                    "value": "AC-2(2)"
+                  },
+                  {
+                    "name": "label",
+                    "value": "AC-02(02)",
+                    "class": "zero-padded"
+                  },
+                  {
+                    "name": "label",
+                    "value": "AC-02(02)",
+                    "class": "sp800-53a"
+                  },
+                  {
+                    "name": "sort-id",
+                    "value": "ac-02.02"
+                  },
+                  {
+                    "name": "status",
+                    "value": "withdrawn"
+                  }
+                ],
+                "links": [
+                  {
+                    "href": "#ac-2",
+                    "rel": "incorporated-into"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "pm",
+        "class": "family",
+        "title": "Program Management",
+        "props": [
+          {
+            "name": "label",
+            "value": "PM"
+          }
+        ],
+        "parts": [
+          {
+            "id": "pm_smt",
+            "name": "overview",
+            "prose": "Program overview."
+          }
+        ],
+        "controls": [
+          {
+            "id": "pm-1",
+            "class": "SP800-53",
+            "title": "Policy and Procedures",
+            "props": [
+              {
+                "name": "label",
+                "value": "PM-1"
+              },
+              {
+                "name": "label",
+                "value": "PM-01",
+                "class": "zero-padded"
+              },
+              {
+                "name": "label",
+                "value": "PM-01",
+                "class": "sp800-53a"
+              },
+              {
+                "name": "sort-id",
+                "value": "pm-01"
+              },
+              {
+                "name": "implementation-level",
+                "ns": "http://csrc.nist.gov/ns/rmf",
+                "value": "organization"
+              }
+            ],
+            "links": [
+              {
+                "href": "#ac-2.1",
+                "rel": "related"
+              }
+            ],
+            "parts": [
+              {
+                "id": "pm-1_smt",
+                "name": "statement",
+                "prose": "Develop a program plan."
+              },
+              {
+                "id": "pm-1_gdn",
+                "name": "guidance",
+                "prose": "Program plans are reviewed."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "back-matter": {
+      "resources": [
+        {
+          "uuid": "11111111-1111-1111-1111-111111111111",
+          "title": "NIST Special Publication 800-12",
+          "rlinks": [
+            {
+              "href": "https://doi.org/10.6028/NIST.SP.800-12r1"
+            },
+            {
+              "href": "https://example.invalid/second"
+            }
+          ]
+        },
+        {
+          "uuid": "22222222-2222-2222-2222-222222222222",
+          "title": "OMB Circular A-130",
+          "rlinks": [
+            {
+              "href": "https://www.whitehouse.gov/omb/circulars_a130/"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

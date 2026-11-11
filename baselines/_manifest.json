@@ -96,6 +96,34 @@
       "repository_url": "https://github.com/usnistgov/macos_security",
       "retrieved_date": "2026-11-10",
       "rule_count": 352
+    },
+    {
+      "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+      "display_name": "NIST SP 800-53 Rev. 5",
+      "index_path": "nist_800_53/releases/v1.6.0/_index.json",
+      "license": {
+        "modified": true,
+        "name": "CC0 1.0 (public domain)",
+        "rights_holder": "National Institute of Standards and Technology",
+        "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "name": "nist_800_53",
+      "release_tag": "v1.6.0",
+      "releases": [
+        {
+          "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+          "importer_format": "nist-800-53-rev5-oscal-1",
+          "index_path": "nist_800_53/releases/v1.6.0/_index.json",
+          "label": "5.2.0 (v1.6.0)",
+          "published_date": "2026-10-22",
+          "retrieved_date": "2026-11-11",
+          "rule_count": 1014,
+          "tag": "v1.6.0"
+        }
+      ],
+      "repository_url": "https://github.com/usnistgov/oscal-content",
+      "retrieved_date": "2026-11-11",
+      "rule_count": 1014
     }
   ]
 }

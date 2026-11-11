@@ -1,0 +1,60 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Develop, document, and implement policies and procedures that address the use of personally identifiable information for internal testing, training, and research;\n- b. Limit or minimize the amount of personally identifiable information used for internal testing, training, and research purposes;\n- c. Authorize the use of personally identifiable information when such information is required for internal testing, training, and research; and\n- d. Review and update policies and procedures [Assignment: organization-defined frequency].\n\n## Discussion\n\nThe use of personally identifiable information in testing, research, and training increases the risk of unauthorized disclosure or misuse of such information. Organizations consult with the senior agency official for privacy and/or legal counsel to ensure that the use of personally identifiable information in testing, training, and research is compatible with the original purpose for which it was collected. When possible, organizations use placeholder data to avoid exposure of personally identifiable information when conducting testing, training, and research.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pm-25",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130"
+    ],
+    "related_controls": [
+      "PM-23",
+      "PT-3",
+      "SA-3",
+      "SA-8",
+      "SI-12"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Program Management",
+    "PM-25 Minimization of Personally Identifiable Information Used in Testing, Training, and Research"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pm-25",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Minimization of Personally Identifiable Information Used in Testing, Training, and Research"
+}

@@ -52,6 +52,28 @@ nature, is not legal advice, and that the Commonwealth accepts no
 responsibility or liability for any damage, loss or expense incurred as a
 result of reliance on it.
 
+sources/nist_800_53/releases/<tag>/upstream/ is an unmodified copy of the NIST SP 800-53
+Rev. 5 control catalog and its four baseline profiles (Low, Moderate, High, Privacy),
+published by the National Institute of Standards and Technology (NIST) in OSCAL
+format:
+
+  Project:  https://github.com/usnistgov/oscal-content
+  Release:  v1.6.0 (commit f0de6d8d8c059d374f15e0ae07508d82e370fc1d),
+            SP 800-53 Rev. 5.2.0
+  Licence:  a work of the United States government, in the public domain in
+            the United States and dedicated worldwide under CC0 1.0 Universal
+            https://creativecommons.org/publicdomain/zero/1.0/
+
+No attribution is required; it is given here anyway. The licence text is
+vendored in sources/nist_800_53/releases/<tag>/upstream/LICENSE.md.
+
+baselines/nist_800_53/ is adapted from that material: the catalog was converted to a
+normalized rule format, control statements and parameters were rendered as
+Markdown, guidance links were rewritten, and rule ids, titles and sections were
+derived from the catalog. This content was modified by this project. It stays in
+the public domain in the United States and under CC0 1.0 elsewhere, and is
+provided as-is.
+
 baselines/_overlays/scripts/*.ps1 (referenced by baselines/_overlays/rules/asd-blueprint-*.json)
 are PowerShell scripts from ASD's Blueprint for Secure Cloud:
 
@@ -115,3 +137,6 @@ NIST and the other mSCP contributors do not endorse or sponsor this project,
 and no endorsement is implied.
 
 ASD does not endorse or sponsor this project, and no endorsement is implied.
+
+NIST does not endorse or sponsor this project's use of the SP 800-53 content, and no
+endorsement is implied.

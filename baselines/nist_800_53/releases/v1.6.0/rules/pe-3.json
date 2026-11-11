@@ -1,0 +1,90 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Enforce physical access authorizations at [Assignment: organization-defined entry and exit points] by:\n  - 1. Verifying individual access authorizations before granting access to the facility; and\n  - 2. Controlling ingress and egress to the facility using [Selection (one or more): [Assignment: organization-defined systems or devices]; guards];\n- b. Maintain physical access audit logs for [Assignment: organization-defined entry or exit points];\n- c. Control access to areas within the facility designated as publicly accessible by implementing the following controls: [Assignment: organization-defined physical access controls];\n- d. Escort visitors and control visitor activity [Assignment: organization-defined circumstances];\n- e. Secure keys, combinations, and other physical access devices;\n- f. Inventory [Assignment: organization-defined physical access devices] every [Assignment: organization-defined frequency] ; and\n- g. Change combinations and keys [Assignment: organization-defined frequency] and/or when keys are lost, combinations are compromised, or when individuals possessing the keys or combinations are transferred or terminated.\n\n## Discussion\n\nPhysical access control applies to employees and visitors. Individuals with permanent physical access authorizations are not considered visitors. Physical access controls for publicly accessible areas may include physical access control logs/records, guards, or physical access devices and barriers to prevent movement from publicly accessible areas to non-public areas. Organizations determine the types of guards needed, including professional security staff, system users, or administrative staff. Physical access devices include keys, locks, combinations, biometric readers, and card readers. Physical access control systems comply with applicable laws, executive orders, directives, policies, regulations, standards, and guidelines. Organizations have flexibility in the types of audit logs employed. Audit logs can be procedural, automated, or some combination thereof. Physical access points can include facility access points, interior access points to systems that require supplemental access controls, or both. Components of systems may be in areas designated as publicly accessible with organizations controlling access to the components.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pe-3",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 201-2",
+      "SP 800-73-4",
+      "SP 800-76-2",
+      "SP 800-78-4",
+      "SP 800-116"
+    ],
+    "related_controls": [
+      "AT-3",
+      "AU-2",
+      "AU-6",
+      "AU-9",
+      "AU-13",
+      "CP-10",
+      "IA-3",
+      "IA-8",
+      "MA-5",
+      "MP-2",
+      "MP-4",
+      "PE-2",
+      "PE-4",
+      "PE-5",
+      "PE-8",
+      "PS-2",
+      "PS-3",
+      "PS-6",
+      "PS-7",
+      "RA-3",
+      "SC-28",
+      "SI-4",
+      "SR-3"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Physical and Environmental Protection",
+    "PE-03 Physical Access Control"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pe-3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Physical Access Control"
+}

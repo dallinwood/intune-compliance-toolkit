@@ -75,7 +75,7 @@ IMPORTER = SourceImporter(
     license=LICENSE,
     fetch=fetch,
     build_rule_tree_by_format={IMPORTER_FORMAT: build_rule_tree},
-    release_label=lambda tag: tag.removeprefix("release_"),
+    release_label=lambda tag, upstream_dir: tag.removeprefix("release_"),
 )
 
 

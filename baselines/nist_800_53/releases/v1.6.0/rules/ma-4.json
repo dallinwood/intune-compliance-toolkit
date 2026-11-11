@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Approve and monitor nonlocal maintenance and diagnostic activities;\n- b. Allow the use of nonlocal maintenance and diagnostic tools only as consistent with organizational policy and documented in the security plan for the system;\n- c. Employ strong authentication in the establishment of nonlocal maintenance and diagnostic sessions;\n- d. Maintain records for nonlocal maintenance and diagnostic activities; and\n- e. Terminate session and network connections when nonlocal maintenance is completed.\n\n## Discussion\n\nNonlocal maintenance and diagnostic activities are conducted by individuals who communicate through either an external or internal network. Local maintenance and diagnostic activities are carried out by individuals who are physically present at the system location and not communicating across a network connection. Authentication techniques used to establish nonlocal maintenance and diagnostic sessions reflect the network access requirements in IA-2 . Strong authentication requires authenticators that are resistant to replay attacks and employ multi-factor authentication. Strong authenticators include PKI where certificates are stored on a token protected by a password, passphrase, or biometric. Enforcing requirements in MA-4 is accomplished, in part, by other controls. [SP 800-63B](https://doi.org/10.6028/NIST.SP.800-63b) provides additional guidance on strong authentication and authenticators.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.ma-4",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 140-3",
+      "FIPS 197",
+      "FIPS 201-2",
+      "SP 800-63-3",
+      "SP 800-88"
+    ],
+    "related_controls": [
+      "AC-2",
+      "AC-3",
+      "AC-6",
+      "AC-17",
+      "AU-2",
+      "AU-3",
+      "IA-2",
+      "IA-4",
+      "IA-5",
+      "IA-8",
+      "MA-2",
+      "MA-5",
+      "PL-2",
+      "SC-7",
+      "SC-10"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Maintenance",
+    "MA-04 Nonlocal Maintenance"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "ma-4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Nonlocal Maintenance"
+}

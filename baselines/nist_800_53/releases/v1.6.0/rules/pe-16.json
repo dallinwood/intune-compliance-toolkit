@@ -1,0 +1,70 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Authorize and control [Assignment: organization-defined types of system components] entering and exiting the facility; and\n- b. Maintain records of the system components.\n\n## Discussion\n\nEnforcing authorizations for entry and exit of system components may require restricting access to delivery areas and isolating the areas from the system and media libraries.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pe-16",
+  "odv": null,
+  "references": {
+    "related_controls": [
+      "CM-3",
+      "CM-8",
+      "MA-2",
+      "MA-3",
+      "MP-5",
+      "PE-20",
+      "SR-2",
+      "SR-3",
+      "SR-4",
+      "SR-6"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Physical and Environmental Protection",
+    "PE-16 Delivery and Removal"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pe-16",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Delivery and Removal"
+}

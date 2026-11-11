@@ -1,0 +1,88 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Employ integrity verification tools to detect unauthorized changes to the following software, firmware, and information: [Assignment: organization-defined software, firmware, and information] ; and\n- b. Take the following actions when unauthorized changes to the software, firmware, and information are detected: [Assignment: organization-defined actions].\n\n## Discussion\n\nUnauthorized changes to software, firmware, and information can occur due to errors or malicious activity. Software includes operating systems (with key internal components, such as kernels or drivers), middleware, and applications. Firmware interfaces include Unified Extensible Firmware Interface (UEFI) and Basic Input/Output System (BIOS). Information includes personally identifiable information and metadata that contains security and privacy attributes associated with information. Integrity-checking mechanisms—including parity checks, cyclical redundancy checks, cryptographic hashes, and associated tools—can automatically monitor the integrity of systems and hosted applications.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.si-7",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130",
+      "FIPS 140-3",
+      "FIPS 180-4",
+      "FIPS 186-4",
+      "FIPS 202",
+      "SP 800-70",
+      "SP 800-147"
+    ],
+    "related_controls": [
+      "AC-4",
+      "CM-3",
+      "CM-7",
+      "CM-8",
+      "MA-3",
+      "MA-4",
+      "RA-5",
+      "SA-8",
+      "SA-9",
+      "SA-10",
+      "SC-8",
+      "SC-12",
+      "SC-13",
+      "SC-28",
+      "SC-37",
+      "SI-3",
+      "SR-3",
+      "SR-4",
+      "SR-5",
+      "SR-6",
+      "SR-9",
+      "SR-10",
+      "SR-11"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Information Integrity",
+    "SI-07 Software, Firmware, and Information Integrity"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "si-7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Software, Firmware, and Information Integrity"
+}

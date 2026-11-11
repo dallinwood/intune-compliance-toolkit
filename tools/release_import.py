@@ -40,7 +40,7 @@ class SourceImporter:
     license: dict
     fetch: Callable[[str, Path, str], SourceLock]
     build_rule_tree_by_format: Mapping[str, Callable[[Path, SourceLock, Path], int]]
-    release_label: Callable[[str], str]
+    release_label: Callable[[str, Path], str]
 
 
 def generate_release(
@@ -60,7 +60,7 @@ def generate_release(
         source_fields,
         lambda tree_dir: build_rule_tree(upstream_dir, lock, tree_dir),
         lambda rule_count: release_entry(
-            importer.name, lock, importer.release_label(lock.tag), rule_count
+            importer.name, lock, importer.release_label(lock.tag, upstream_dir), rule_count
         ),
     )
 

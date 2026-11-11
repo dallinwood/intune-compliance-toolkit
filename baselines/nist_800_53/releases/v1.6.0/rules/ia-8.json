@@ -1,0 +1,85 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nUniquely identify and authenticate non-organizational users or processes acting on behalf of non-organizational users.\n\n## Discussion\n\nNon-organizational users include system users other than organizational users explicitly covered by IA-2 . Non-organizational users are uniquely identified and authenticated for accesses other than those explicitly identified and documented in AC-14 . Identification and authentication of non-organizational users accessing federal systems may be required to protect federal, proprietary, or privacy-related information (with exceptions noted for national security systems). Organizations consider many factors—including security, privacy, scalability, and practicality—when balancing the need to ensure ease of use for access to federal information and systems with the need to protect and adequately mitigate risk.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.ia-8",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130",
+      "FED PKI",
+      "FIPS 201-2",
+      "SP 800-63-3",
+      "SP 800-79-2",
+      "SP 800-116",
+      "IR 8062"
+    ],
+    "related_controls": [
+      "AC-2",
+      "AC-6",
+      "AC-14",
+      "AC-17",
+      "AC-18",
+      "AU-6",
+      "IA-2",
+      "IA-4",
+      "IA-5",
+      "IA-10",
+      "IA-11",
+      "IA-13",
+      "MA-4",
+      "RA-3",
+      "SA-4",
+      "SC-8"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Identification and Authentication",
+    "IA-08 Identification and Authentication (Non-organizational Users)"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "ia-8",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Identification and Authentication (Non-organizational Users)"
+}

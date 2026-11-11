@@ -1,0 +1,92 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Determine the [Assignment: organization-defined cryptographic uses] ; and\n- b. Implement the following types of cryptography required for each specified cryptographic use: [Assignment: organization-defined types of cryptography].\n\n## Discussion\n\nCryptography can be employed to support a variety of security solutions, including the protection of classified information and controlled unclassified information, the provision and implementation of digital signatures, and the enforcement of information separation when authorized individuals have the necessary clearances but lack the necessary formal access approvals. Cryptography can also be used to support random number and hash generation. Generally applicable cryptographic standards include FIPS-validated cryptography and NSA-approved cryptography. For example, organizations that need to protect classified information may specify the use of NSA-approved cryptography. Organizations that need to provision and implement digital signatures may specify the use of FIPS-validated cryptography. Cryptography is implemented in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sc-13",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 140-3"
+    ],
+    "related_controls": [
+      "AC-2",
+      "AC-3",
+      "AC-7",
+      "AC-17",
+      "AC-18",
+      "AC-19",
+      "AU-9",
+      "AU-10",
+      "CM-11",
+      "CP-9",
+      "IA-3",
+      "IA-5",
+      "IA-7",
+      "IA-13",
+      "MA-4",
+      "MP-2",
+      "MP-4",
+      "MP-5",
+      "SA-4",
+      "SA-8",
+      "SA-9",
+      "SC-8",
+      "SC-12",
+      "SC-20",
+      "SC-23",
+      "SC-28",
+      "SC-40",
+      "SI-3",
+      "SI-7"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Communications Protection",
+    "SC-13 Cryptographic Protection"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sc-13",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Cryptographic Protection"
+}

@@ -1,0 +1,64 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to produce a design specification and security and privacy architecture that:\n\n- a. Is consistent with the organization’s security and privacy architecture that is an integral part the organization’s enterprise architecture;\n- b. Accurately and completely describes the required security and privacy functionality, and the allocation of controls among physical and logical components; and\n- c. Expresses how individual security and privacy functions, mechanisms, and services work together to provide required security and privacy capabilities and a unified approach to protection.\n\n## Discussion\n\nDeveloper security and privacy architecture and design are directed at external developers, although they could also be applied to internal (in-house) development. In contrast, PL-8 is directed at internal developers to ensure that organizations develop a security and privacy architecture that is integrated with the enterprise architecture. The distinction between SA-17 and PL-8 is especially important when organizations outsource the development of systems, system components, or system services and when there is a requirement to demonstrate consistency with the enterprise architecture and security and privacy architecture of the organization. [ISO 15408-2](https://www.commoncriteriaportal.org/files/ccfiles/CCPART2V3.1R5.pdf), [ISO 15408-3](https://www.commoncriteriaportal.org/files/ccfiles/CCPART3V3.1R5.pdf) , and [SP 800-160-1](https://doi.org/10.6028/NIST.SP.800-160v1) provide information on security architecture and design, including formal policy models, security-relevant components, formal and informal correspondence, conceptually simple design, and structuring for least privilege and testing.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sa-17",
+  "odv": null,
+  "references": {
+    "publications": [
+      "ISO 15408-2",
+      "ISO 15408-3",
+      "SP 800-160-1"
+    ],
+    "related_controls": [
+      "PL-2",
+      "PL-8",
+      "PM-7",
+      "SA-3",
+      "SA-4",
+      "SA-8",
+      "SC-7"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Services Acquisition",
+    "SA-17 Developer Security and Privacy Architecture and Design"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sa-17",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Developer Security and Privacy Architecture and Design"
+}

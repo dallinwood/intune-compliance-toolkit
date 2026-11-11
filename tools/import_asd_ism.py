@@ -64,7 +64,7 @@ MONTH_ABBREVIATIONS = (
 TAG_YEAR_AND_MONTH_PATTERN = re.compile(r"^v(\d{4})\.(0[1-9]|1[0-2])\.")
 
 
-def release_label(tag: str) -> str:
+def release_label(tag: str, upstream_dir: Path) -> str:
     match = TAG_YEAR_AND_MONTH_PATTERN.match(tag)
     if match is None:
         raise ValueError(f"cannot derive a release label from tag {tag!r}")

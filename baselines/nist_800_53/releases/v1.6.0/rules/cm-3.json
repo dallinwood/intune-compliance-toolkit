@@ -1,0 +1,84 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Determine and document the types of changes to the system that are configuration-controlled;\n- b. Review proposed configuration-controlled changes to the system and approve or disapprove such changes with explicit consideration for security and privacy impact analyses;\n- c. Document configuration change decisions associated with the system;\n- d. Implement approved configuration-controlled changes to the system;\n- e. Retain records of configuration-controlled changes to the system for [Assignment: organization-defined time period];\n- f. Monitor and review activities associated with configuration-controlled changes to the system; and\n- g. Coordinate and provide oversight for configuration change control activities through [Assignment: organization-defined configuration change control element] that convenes [Selection (one or more): [Assignment: organization-defined frequency]; when [Assignment: organization-defined configuration change conditions]].\n\n## Discussion\n\nConfiguration change control for organizational systems involves the systematic proposal, justification, implementation, testing, review, and disposition of system changes, including system upgrades and modifications. Configuration change control includes changes to baseline configurations, configuration items of systems, operational procedures, configuration settings for system components, remediate vulnerabilities, and unscheduled or unauthorized changes. Processes for managing configuration changes to systems include Configuration Control Boards or Change Advisory Boards that review and approve proposed changes. For changes that impact privacy risk, the senior agency official for privacy updates privacy impact assessments and system of records notices. For new systems or major upgrades, organizations consider including representatives from the development organizations on the Configuration Control Boards or Change Advisory Boards. Auditing of changes includes activities before and after changes are made to systems and the auditing activities required to implement such changes. See also SA-10.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.cm-3",
+  "odv": null,
+  "references": {
+    "publications": [
+      "SP 800-124",
+      "SP 800-128",
+      "IR 8062"
+    ],
+    "related_controls": [
+      "CA-7",
+      "CM-2",
+      "CM-4",
+      "CM-5",
+      "CM-6",
+      "CM-9",
+      "CM-11",
+      "IA-3",
+      "MA-2",
+      "PE-16",
+      "PT-6",
+      "RA-8",
+      "SA-8",
+      "SA-10",
+      "SC-28",
+      "SC-34",
+      "SC-37",
+      "SI-2",
+      "SI-3",
+      "SI-4",
+      "SI-7",
+      "SI-10",
+      "SR-11"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Configuration Management",
+    "CM-03 Configuration Change Control"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "cm-3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Configuration Change Control"
+}

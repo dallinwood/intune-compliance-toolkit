@@ -1,0 +1,44 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nProduce, control, and distribute asymmetric cryptographic keys using [Selection: NSA-approved key management technology and processes; prepositioned keying material; DoD-approved or DoD-issued Medium Assurance PKI certificates; DoD-approved or DoD-issued Medium Hardware Assurance PKI certificates and hardware security tokens that protect the user’s private key; certificates issued in accordance with organization-defined requirements].\n\n## Discussion\n\n[SP 800-56A](https://doi.org/10.6028/NIST.SP.800-56Ar3), [SP 800-56B](https://doi.org/10.6028/NIST.SP.800-56Br2) , and [SP 800-56C](https://doi.org/10.6028/NIST.SP.800-56Cr2) provide guidance on cryptographic key establishment schemes and key derivation methods. [SP 800-57-1](https://doi.org/10.6028/NIST.SP.800-57pt1r5), [SP 800-57-2](https://doi.org/10.6028/NIST.SP.800-57pt2r1) , and [SP 800-57-3](https://doi.org/10.6028/NIST.SP.800-57pt3r1) provide guidance on cryptographic key management.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sc-12.3",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Communications Protection",
+    "SC-12 Cryptographic Key Establishment and Management"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sc-12.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Cryptographic Key Establishment and Management | Asymmetric Keys"
+}

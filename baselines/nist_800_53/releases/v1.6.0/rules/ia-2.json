@@ -1,0 +1,97 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nUniquely identify and authenticate organizational users and associate that unique identification with processes acting on behalf of those users.\n\n## Discussion\n\nOrganizations can satisfy the identification and authentication requirements by complying with the requirements in [HSPD 12](https://www.dhs.gov/homeland-security-presidential-directive-12) . Organizational users include employees or individuals who organizations consider to have an equivalent status to employees (e.g., contractors and guest researchers). Unique identification and authentication of users applies to all accesses other than those that are explicitly identified in AC-14 and that occur through the authorized use of group authenticators without individual authentication. Since processes execute on behalf of groups and roles, organizations may require unique identification of individuals in group accounts or for detailed accountability of individual activity.\n\nOrganizations employ passwords, physical authenticators, or biometrics to authenticate user identities or, in the case of multi-factor authentication, some combination thereof. Access to organizational systems is defined as either local access or network access. Local access is any access to organizational systems by users or processes acting on behalf of users, where access is obtained through direct connections without the use of networks. Network access is access to organizational systems by users (or processes acting on behalf of users) where access is obtained through network connections (i.e., nonlocal accesses). Remote access is a type of network access that involves communication through external networks. Internal networks include local area networks and wide area networks.\n\nThe use of encrypted virtual private networks for network connections between organization-controlled endpoints and non-organization-controlled endpoints may be treated as internal networks with respect to protecting the confidentiality and integrity of information traversing the network. Identification and authentication requirements for non-organizational users are described in IA-8.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.ia-2",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 140-3",
+      "FIPS 201-2",
+      "FIPS 202",
+      "SP 800-63-3",
+      "SP 800-73-4",
+      "SP 800-76-2",
+      "SP 800-78-4",
+      "SP 800-79-2",
+      "SP 800-156",
+      "SP 800-166",
+      "IR 7539",
+      "IR 7676",
+      "IR 7817",
+      "IR 7849",
+      "IR 7870",
+      "IR 7874",
+      "IR 7966"
+    ],
+    "related_controls": [
+      "AC-2",
+      "AC-3",
+      "AC-4",
+      "AC-14",
+      "AC-17",
+      "AC-18",
+      "AU-1",
+      "AU-6",
+      "IA-4",
+      "IA-5",
+      "IA-8",
+      "IA-13",
+      "MA-4",
+      "MA-5",
+      "PE-2",
+      "PL-4",
+      "SA-4",
+      "SA-8"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Identification and Authentication",
+    "IA-02 Identification and Authentication (Organizational Users)"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "ia-2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Identification and Authentication (Organizational Users)"
+}

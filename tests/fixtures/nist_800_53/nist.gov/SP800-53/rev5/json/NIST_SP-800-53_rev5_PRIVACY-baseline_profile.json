@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "uuid": "44444444-4444-4444-4444-444444444444",
+    "metadata": {
+      "title": "Fixture profile",
+      "version": "5.2.0"
+    },
+    "imports": [
+      {
+        "href": "#55555555-5555-5555-5555-555555555555",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-2.1"
+            ]
+          }
+        ]
+      }
+    ],
+    "merge": {
+      "as-is": true
+    }
+  }
+}

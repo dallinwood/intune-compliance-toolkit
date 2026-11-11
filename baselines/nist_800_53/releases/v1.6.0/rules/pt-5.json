@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_privacy",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\nProvide notice to individuals about the processing of personally identifiable information that:\n\n- a. Is available to individuals upon first interacting with an organization, and subsequently at [Assignment: organization-defined frequency];\n- b. Is clear and easy-to-understand, expressing information about personally identifiable information processing in plain language;\n- c. Identifies the authority that authorizes the processing of personally identifiable information;\n- d. Identifies the purposes for which personally identifiable information is to be processed; and\n- e. Includes [Assignment: organization-defined information].\n\n## Discussion\n\nPrivacy notices help inform individuals about how their personally identifiable information is being processed by the system or organization. Organizations use privacy notices to inform individuals about how, under what authority, and for what purpose their personally identifiable information is processed, as well as other information such as choices individuals might have with respect to that processing and other parties with whom information is shared. Laws, executive orders, directives, regulations, or policies may require that privacy notices include specific elements or be provided in specific formats. Federal agency personnel consult with the senior agency official for privacy and legal counsel regarding when and where to provide privacy notices, as well as elements to include in privacy notices and required formats. In circumstances where laws or government-wide policies do not require privacy notices, organizational policies and determinations may require privacy notices and may serve as a source of the elements to include in privacy notices.\n\nPrivacy risk assessments identify the privacy risks associated with the processing of personally identifiable information and may help organizations determine appropriate elements to include in a privacy notice to manage such risks. To help individuals understand how their information is being processed, organizations write materials in plain language and avoid technical jargon.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.pt-5",
+  "odv": null,
+  "references": {
+    "publications": [
+      "PRIVACT",
+      "OMB A-130",
+      "OMB A-108"
+    ],
+    "related_controls": [
+      "PM-20",
+      "PM-22",
+      "PT-2",
+      "PT-3",
+      "PT-4",
+      "PT-7",
+      "RA-3",
+      "SC-42",
+      "SI-18"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Personally Identifiable Information Processing and Transparency",
+    "PT-05 Privacy Notice"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "pt-5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Privacy Notice"
+}

@@ -1,0 +1,77 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Identify and document the location of [Assignment: organization-defined information] and the specific system components on which the information is processed and stored;\n- b. Identify and document the users who have access to the system and system components where the information is processed and stored; and\n- c. Document changes to the location (i.e., system or system components) where the information is processed and stored.\n\n## Discussion\n\nInformation location addresses the need to understand where information is being processed and stored. Information location includes identifying where specific information types and information reside in system components and how information is being processed so that information flow can be understood and adequate protection and policy management provided for such information and system components. The security category of the information is also a factor in determining the controls necessary to protect the information and the system component where the information resides (see [FIPS 199](https://doi.org/10.6028/NIST.FIPS.199) ). The location of the information and system components is also a factor in the architecture and design of the system (see SA-4, SA-8, SA-17).",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.cm-12",
+  "odv": null,
+  "references": {
+    "publications": [
+      "FIPS 199",
+      "SP 800-60-1",
+      "SP 800-60-2"
+    ],
+    "related_controls": [
+      "AC-2",
+      "AC-3",
+      "AC-4",
+      "AC-6",
+      "AC-23",
+      "CM-8",
+      "PM-5",
+      "RA-2",
+      "SA-4",
+      "SA-8",
+      "SA-17",
+      "SC-4",
+      "SC-16",
+      "SC-28",
+      "SI-4",
+      "SI-7"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Configuration Management",
+    "CM-12 Information Location"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "cm-12",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Information Location"
+}

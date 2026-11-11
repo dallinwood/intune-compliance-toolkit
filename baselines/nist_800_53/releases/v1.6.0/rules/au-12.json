@@ -1,0 +1,79 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Provide audit record generation capability for the event types the system is capable of auditing as defined in AU-2a on [Assignment: organization-defined system components];\n- b. Allow [Assignment: organization-defined personnel or roles] to select the event types that are to be logged by specific components of the system; and\n- c. Generate audit records for the event types defined in AU-2c that include the audit record content defined in AU-3.\n\n## Discussion\n\nAudit records can be generated from many different system components. The event types specified in AU-2d are the event types for which audit logs are to be generated and are a subset of all event types for which the system can generate audit records.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.au-12",
+  "odv": null,
+  "references": {
+    "related_controls": [
+      "AC-6",
+      "AC-17",
+      "AU-2",
+      "AU-3",
+      "AU-4",
+      "AU-5",
+      "AU-6",
+      "AU-7",
+      "AU-14",
+      "CM-5",
+      "MA-4",
+      "MP-4",
+      "PM-12",
+      "SA-8",
+      "SC-18",
+      "SI-3",
+      "SI-4",
+      "SI-7",
+      "SI-10"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Audit and Accountability",
+    "AU-12 Audit Record Generation"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "au-12",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Audit Record Generation"
+}

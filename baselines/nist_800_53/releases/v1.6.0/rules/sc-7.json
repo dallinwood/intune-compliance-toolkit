@@ -1,0 +1,93 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "nist_800_53_low",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_moderate",
+          "severity": null
+        },
+        {
+          "name": "nist_800_53_high",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Monitor and control communications at the external managed interfaces to the system and at key internal managed interfaces within the system;\n- b. Implement subnetworks for publicly accessible system components that are [Selection: physically; logically] separated from internal organizational networks; and\n- c. Connect to external networks or systems only through managed interfaces consisting of boundary protection devices arranged in accordance with an organizational security and privacy architecture.\n\n## Discussion\n\nManaged interfaces include gateways, routers, firewalls, guards, network-based malicious code analysis, virtualization systems, or encrypted tunnels implemented within a security architecture. Subnetworks that are physically or logically separated from internal networks are referred to as demilitarized zones or DMZs. Restricting or prohibiting interfaces within organizational systems includes restricting external web traffic to designated web servers within managed interfaces, prohibiting external traffic that appears to be spoofing internal addresses, and prohibiting internal traffic that appears to be spoofing external addresses. [SP 800-189](https://doi.org/10.6028/NIST.SP.800-189) provides additional information on source address validation techniques to prevent ingress and egress of traffic with spoofed addresses. Commercial telecommunications services are provided by network components and consolidated management systems shared by customers. These services may also include third party-provided access lines and other service elements. Such services may represent sources of increased risk despite contract security provisions. Boundary protection may be implemented as a common control for all or part of an organizational network such that the boundary to be protected is greater than a system-specific boundary (i.e., an authorization boundary).",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.sc-7",
+  "odv": null,
+  "references": {
+    "publications": [
+      "OMB A-130",
+      "FIPS 199",
+      "SP 800-37",
+      "SP 800-41",
+      "SP 800-77",
+      "SP 800-189"
+    ],
+    "related_controls": [
+      "AC-4",
+      "AC-17",
+      "AC-18",
+      "AC-19",
+      "AC-20",
+      "AU-13",
+      "CA-3",
+      "CM-2",
+      "CM-4",
+      "CM-7",
+      "CM-10",
+      "CP-8",
+      "CP-10",
+      "IR-4",
+      "MA-4",
+      "PE-3",
+      "PL-8",
+      "PM-12",
+      "SA-8",
+      "SA-17",
+      "SC-5",
+      "SC-26",
+      "SC-32",
+      "SC-35",
+      "SC-43"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Communications Protection",
+    "SC-07 Boundary Protection"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "sc-7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Boundary Protection"
+}

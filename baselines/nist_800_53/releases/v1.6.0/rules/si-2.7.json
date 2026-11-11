@@ -1,0 +1,76 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Control\n\n- a. Conduct root cause analysis to identify underlying causes of issues or failures.\n- b. Develop actions to address the root cause of the issue or failure.\n- c. Implement the actions and monitor the implementation for effectiveness.\n\n## Discussion\n\nRoot cause analysis includes a wide range of approaches, tools, and techniques to systematically identify the underlying cause of issues or failures to systems and systems components (hardware, software, and firmware). Organizations consider the severity of the incident to determine what root cause analysis method is used and how quickly implementation of the remediation actions. The root cause analysis includes a timeline, missed warning signs, key decisions, gaps, mitigations, and verification of effectiveness. The actions identified to address the source of the issue are implemented and integrated into applicable organizational policy, procedures, and control implementation.",
+  "discussion_format": "markdown",
+  "id": "nist_800_53.si-2.7",
+  "odv": null,
+  "references": {
+    "related_controls": [
+      "AC-1",
+      "AT-1",
+      "AU-1",
+      "CA-1",
+      "CM-1",
+      "CP-1",
+      "IA-1",
+      "IR-1",
+      "MA-1",
+      "MP-1",
+      "PE-1",
+      "PL-1",
+      "PM-1",
+      "PS-1",
+      "PT-1",
+      "RA-1",
+      "SA-1",
+      "SC-1",
+      "SI-1",
+      "SR-1",
+      "AU-2",
+      "CA-7",
+      "IR-6",
+      "IR-8",
+      "MA-3",
+      "RA-5",
+      "SA-11",
+      "SA-15",
+      "SR-8"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "System and Information Integrity",
+    "SI-02 Flaw Remediation"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_53",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "si-2.7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json"
+  },
+  "tags": [],
+  "title": "Flaw Remediation | Root Cause Analysis"
+}
