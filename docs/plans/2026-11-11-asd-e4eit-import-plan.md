@@ -153,3 +153,5 @@
 **Commit:** `feat: show ASD E4EIT rules in the web UI`
 
 ## Progress log
+
+- 2026-11-11 - Task 1: moved the ISM/E4EIT shared helpers into `tools/asd_oscal.py` and the pinned-file download loop (plus `list_root_file_names`) into `tools/github_fetch.py`; no output change. The post-import hook and dotted rule id pattern already existed from the NIST work, so nothing was added for them. Commit: e36737b refactor: share ASD OSCAL helpers and the pinned-file download loop
