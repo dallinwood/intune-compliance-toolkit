@@ -1,7 +1,7 @@
 # Design: NIST SP 800-53 Rev. 5 as a third rule source, and a generated mSCP mapping
 
 Date: 2026-11-11
-Status: Draft, written without the maintainer (see section 13 for the calls made)
+Status: Implemented 2026-11-11 (the calls in section 13 were made without the maintainer and still await review)
 
 ## 1. Intent
 
@@ -508,3 +508,11 @@ Each was my call; the alternative is listed for review.
 
 - 2026-11-11: Design drafted from upstream checks of oscal-content `v1.6.0` (no code yet), with
   the decisions in section 13 made without the maintainer for later review.
+- 2026-11-11: Implemented in four tasks, per `2026-11-11-nist-800-53-import-plan.md`: the
+  importer and `v1.6.0` import (7100ecb "feat: import NIST SP 800-53 Rev. 5 (oscal-content
+  v1.6.0) as a rule source", review fix 59250ea "refactor: share the duplicate-rejecting JSON
+  reader between importers"); the web UI (8db0acc "feat: show NIST SP 800-53 controls in the web
+  UI", 88e1c98 "fix: show the 800-53 release tag once and credit CC0 with \"under\""); the
+  generated mSCP mapping (cf98c77 "feat: generate the mSCP to NIST SP 800-53 mapping from mSCP's
+  own citations", 1dc9a77 "fix: keep the generated 800-53 unresolved report on LF line endings");
+  and end-to-end coverage of the mapped rules tab (see the plan's log for its commit).
