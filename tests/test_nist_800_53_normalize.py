@@ -263,13 +263,13 @@ def test_label_round_trip():
 
 
 @pytest.mark.parametrize(
-    "malformed_label", ["", "ac-2", "AC-2(", "AC-2()", "AC-2(1)(2)", "AC2", "A-2", "AC-2 ", " AC-2", "AC-2(a)", "AC-2(1)\n"]
+    "malformed_label", ["", "ac-2", "AC-2(", "AC-2()", "AC-2(1)(2)", "AC2", "A-2", "AC-2 ", " AC-2", "AC-2(a)", "AC-2(1)\n", "AC-\u0662"]
 )
 def test_malformed_labels_give_none(malformed_label):
     assert control_id_for_label(malformed_label) is None
 
 
-@pytest.mark.parametrize("malformed_id", ["", "AC-2", "ac-2.", "ac-2.1.1", "a-2", "../x", "ac-2\n"])
+@pytest.mark.parametrize("malformed_id", ["", "AC-2", "ac-2.", "ac-2.1.1", "a-2", "../x", "ac-2\n", "ac-\u0662"])
 def test_label_for_malformed_id_is_refused(malformed_id):
     with pytest.raises(UnsupportedUpstreamData, match="not a control id"):
         label_for_control_id(malformed_id)

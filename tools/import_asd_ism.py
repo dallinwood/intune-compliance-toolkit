@@ -1,6 +1,5 @@
 """Import an ASD ISM OSCAL release into the normalized rule library under baselines/asd_ism/releases/."""
 
-import json
 import re
 import sys
 from pathlib import Path
@@ -16,7 +15,7 @@ from tools.asd_ism_normalize import (
     SOURCE_NAME,
     normalize_catalog,
 )
-from tools.json_output import write_json
+from tools.json_output import read_json_rejecting_duplicates, write_json
 from tools.library_output import SCHEMA_VERSION, index_entry
 from tools.release_import import SourceImporter, run_cli
 from tools.source_lock import SourceLock
@@ -24,22 +23,8 @@ from tools.source_lock import SourceLock
 SOURCE_DISPLAY_NAME = "ASD Information Security Manual"
 
 
-def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
-    keys = [key for key, _ in pairs]
-    duplicates = sorted({key for key in keys if keys.count(key) > 1})
-    if duplicates:
-        raise ValueError(f"duplicate key {duplicates[0]!r}")
-    return dict(pairs)
-
-
 def read_catalog(upstream_dir: Path) -> dict:
-    catalog_path = upstream_dir / CATALOG_FILE_NAME
-    if not catalog_path.is_file():
-        raise ValueError(f"{catalog_path}: upstream catalog not found")
-    try:
-        return json.loads(catalog_path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_keys)
-    except ValueError as problem:
-        raise ValueError(f"{catalog_path}: invalid JSON ({problem})") from problem
+    return read_json_rejecting_duplicates(upstream_dir / CATALOG_FILE_NAME, "upstream catalog")
 
 
 def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int:

@@ -24,8 +24,8 @@ LICENSE = {
     "modified": True,
 }
 
-CONTROL_ID_PATTERN = re.compile(r"^([a-z]{2})-(\d+)(?:\.(\d+))?(?![\s\S])")
-CONTROL_LABEL_PATTERN = re.compile(r"^([A-Z]{2})-(\d+)(?:\((\d+)\))?(?![\s\S])")
+CONTROL_ID_PATTERN = re.compile(r"^([a-z]{2})-([0-9]+)(?:\.([0-9]+))?(?![\s\S])")
+CONTROL_LABEL_PATTERN = re.compile(r"^([A-Z]{2})-([0-9]+)(?:\(([0-9]+)\))?(?![\s\S])")
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(#([^)\s]+)\)")
 INSERT_PATTERN = re.compile(r"\{\{\s*insert:\s*param,\s*([^\s}]+)\s*\}\}")
 
@@ -286,7 +286,7 @@ def _render_statement(statement: dict, catalog: _Catalog, where: str) -> str:
         blocks.append("\n".join(item_lines))
     if not blocks:
         raise UnsupportedUpstreamData(f"{where}: statement has neither prose nor items")
-    return catalog.rewrite_links(PARAGRAPH_SEPARATOR.join(blocks), where)
+    return catalog.rewrite_links(PARAGRAPH_SEPARATOR.join(blocks), where).strip()
 
 
 def _render_guidance(guidance: dict, catalog: _Catalog, where: str) -> str:

@@ -190,3 +190,4 @@
 ## Progress log
 
 - 2026-11-11: Task 1 done. Added the NIST SP 800-53 Rev. 5 normalizer, fetcher and importer, widened the rule id pattern to allow dots, changed `release_label` to receive the upstream directory, and imported oscal-content `v1.6.0` (1,014 rules; manifest now lists three sources). Statement text is link-rewritten as well as guidance, because 4 statements link to statement parts. Landed in 7100ecb "feat: import NIST SP 800-53 Rev. 5 (oscal-content v1.6.0) as a rule source".
+- 2026-11-11: Task 1 review fix. Moved the duplicate-key-rejecting JSON reader into `tools/json_output.py` for the ISM and NIST importers (and the coming ASD E4EIT one), restricted id and label patterns to ASCII digits, and stripped statement text like guidance. Landed in the commit below this entry's hash (see `git log` for "refactor: share the duplicate-rejecting JSON reader between importers").

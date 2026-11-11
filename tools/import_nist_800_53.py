@@ -1,13 +1,12 @@
 """Import a NIST SP 800-53 Rev. 5 OSCAL release into the normalized rule library under baselines/nist_800_53/releases/."""
 
-import json
 import sys
 from pathlib import Path
 
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.json_output import write_json
+from tools.json_output import read_json_rejecting_duplicates, write_json
 from tools.library_output import SCHEMA_VERSION, index_entry
 from tools.nist_800_53_fetch import IMPORTER_FORMAT, fetch
 from tools.nist_800_53_normalize import (
@@ -24,22 +23,8 @@ from tools.source_lock import SourceLock
 SOURCE_DISPLAY_NAME = "NIST SP 800-53 Rev. 5"
 
 
-def reject_duplicate_keys(pairs: list[tuple[str, object]]) -> dict:
-    keys = [key for key, _ in pairs]
-    duplicates = sorted({key for key in keys if keys.count(key) > 1})
-    if duplicates:
-        raise ValueError(f"duplicate key {duplicates[0]!r}")
-    return dict(pairs)
-
-
 def read_upstream_json(upstream_dir: Path, repository_path: str) -> dict:
-    file_path = upstream_dir / repository_path
-    if not file_path.is_file():
-        raise ValueError(f"{file_path}: upstream file not found")
-    try:
-        return json.loads(file_path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicate_keys)
-    except ValueError as problem:
-        raise ValueError(f"{file_path}: invalid JSON ({problem})") from problem
+    return read_json_rejecting_duplicates(upstream_dir / repository_path, "upstream file")
 
 
 def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int:
