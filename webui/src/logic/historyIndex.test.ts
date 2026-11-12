@@ -16,6 +16,7 @@ import {
   type RuleWithFile,
   type TimelineEntry,
 } from './historyIndex'
+import { EMPTY_RELEASE_TAG } from './releaseRange'
 import { applicabilityOfVersions, inlineRule, macosCheck, ruleCheck } from './testRuleFixtures'
 
 const SOURCE: ManifestSource = {
@@ -154,6 +155,26 @@ describe('compareReleases', () => {
     const comparison = compareReleases(buildFixture(), 'R1', 'R2')
 
     expect(comparison.changed.map((entry) => [entry.id, entry.kinds])).toEqual([['mscp.reverted', ['behaviour']]])
+  })
+
+  it('from the empty release lists every rule in To as added and nothing else', () => {
+    const comparison = compareReleases(buildFixture(), EMPTY_RELEASE_TAG, 'R3')
+
+    expect(ids(comparison.added)).toEqual(['mscp.fresh', 'mscp.gappy', 'mscp.retitled', 'mscp.reverted', 'mscp.steady'])
+    expect(comparison.removed).toEqual([])
+    expect(comparison.changed).toEqual([])
+    expect(comparison.unchanged).toEqual([])
+  })
+
+  it('from the empty release leaves out rules absent from To', () => {
+    const comparison = compareReleases(buildFixture(), EMPTY_RELEASE_TAG, 'R1')
+
+    expect(ids(comparison.added)).not.toContain('mscp.fresh')
+    expect(ids(comparison.added)).toContain('mscp.dropped')
+  })
+
+  it('from the empty release still rejects an unknown To', () => {
+    expect(() => compareReleases(buildFixture(), EMPTY_RELEASE_TAG, 'R9')).toThrow(/R9/)
   })
 
   it('sorts every group by id', () => {

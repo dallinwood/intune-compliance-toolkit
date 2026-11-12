@@ -4,6 +4,7 @@
 // then needs no rule file at all; a rule's release files are fetched only to
 // draw a field-level diff.
 import type { ManifestSource, Rule } from '../types/library'
+import { isEmptyRelease } from './releaseRange'
 import { CHANGE_KINDS, kindFingerprints, type ChangeKind, type KindFingerprints } from './ruleChanges'
 
 export const HISTORY_INDEX_SCHEMA_VERSION = 1
@@ -135,12 +136,13 @@ function differingKinds(before: KindFingerprints, after: KindFingerprints): Chan
 }
 
 export function compareReleases(index: HistoryIndex, fromTag: string, toTag: string): ReleaseComparison {
-  const fromPosition = releasePositionOf(index, fromTag)
+  const comparesWithEmptyRelease = isEmptyRelease(index.releases.map((release) => release.tag), fromTag)
+  const fromPosition = comparesWithEmptyRelease ? -1 : releasePositionOf(index, fromTag)
   const toPosition = releasePositionOf(index, toTag)
   if (fromPosition >= toPosition) throw new Error(`Release ${fromTag} must be before ${toTag} to compare them`)
   const comparison: ReleaseComparison = { added: [], removed: [], changed: [], unchanged: [] }
   for (const [id, entry] of Object.entries(index.rules)) {
-    const before = entry.versions[fromPosition]
+    const before = comparesWithEmptyRelease ? null : entry.versions[fromPosition]
     const after = entry.versions[toPosition]
     if (before === null && after === null) continue
     const summary = { id, title: entry.title, section: entry.section, benchmarks: entry.benchmarks }
