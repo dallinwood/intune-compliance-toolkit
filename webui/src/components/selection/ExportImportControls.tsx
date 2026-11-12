@@ -9,7 +9,9 @@ import {
   validateSettingsFile,
   type ImportSanitization,
 } from '../../logic/exportImport'
+import { DEFAULT_SUPPORTING_CHECK_CHOICES } from '../../logic/supportingChecks'
 import { useSelectionStore } from '../../state/selectionStore'
+import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import type { ManifestSource, Rule } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 
@@ -19,9 +21,9 @@ interface ImportMessage {
   isError: boolean
 }
 
-function describeImport(result: ImportSanitization): ImportMessage {
+function describeImport(result: ImportSanitization, fileWarnings: readonly string[]): ImportMessage {
   const importedCount = Object.keys(result.selections).length
-  const details: string[] = []
+  const details: string[] = [...fileWarnings]
   if (result.unknownIds.length > 0) {
     details.push(`Skipped ${result.unknownIds.length} rule(s) not in this library: ${result.unknownIds.join(', ')}.`)
   }
@@ -52,12 +54,15 @@ async function fetchRulesById(ids: string[], rowsById: ReadonlyMap<string, RuleR
 export function ExportImportControls({ rows, sources }: { rows: RuleRow[]; sources: ManifestSource[] }) {
   const selections = useSelectionStore((store) => store.selections)
   const setAllSelections = useSelectionStore((store) => store.setAllSelections)
+  const includeSupporting = useSupportingChecksStore((store) => store.includeSupporting)
+  const supportingCheckOverrides = useSupportingChecksStore((store) => store.overrides)
+  const replaceSupportingChecks = useSupportingChecksStore((store) => store.replaceAll)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [message, setMessage] = useState<ImportMessage | null>(null)
 
   function handleExport() {
     const libraryReleases = Object.fromEntries(sources.map((source) => [source.name, source.release_tag]))
-    const file = buildSettingsFile(selections, new Date().toISOString(), libraryReleases)
+    const file = buildSettingsFile(selections, new Date().toISOString(), libraryReleases, { includeSupporting, overrides: supportingCheckOverrides })
     const blob = new Blob([serializeSettingsFile(file)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -100,7 +105,8 @@ export function ExportImportControls({ rows, sources }: { rows: RuleRow[]; sourc
     const rulesById = await fetchRulesById(importedIdsWithOdvValues(entries, rowsById), rowsById)
     const result = sanitizeImportedSelections(entries, rowsById, rulesById)
     setAllSelections(result.selections)
-    setMessage(describeImport(result))
+    replaceSupportingChecks(validation.file.supportingChecks ?? DEFAULT_SUPPORTING_CHECK_CHOICES)
+    setMessage(describeImport(result, validation.warnings))
   }
 
   return (

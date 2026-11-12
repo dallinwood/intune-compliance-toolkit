@@ -4,12 +4,14 @@ import type { RuleRow } from '../types/rule-row'
 import {
   buildSettingsFile,
   importedIdsWithOdvValues,
+  parseSupportingCheckChoices,
   resolveImportedSelections,
   sanitizeImportedSelections,
   validateSettingsFile,
 } from './exportImport'
 import { ODV_VARIABLE_ALLOWLIST } from './odv'
 import { createSelectionEntry, refKey, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
+import type { SupportingCheckChoices } from './supportingChecks'
 import { macosCheck } from './testRuleFixtures'
 
 const REF_A: RuleRef = { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' }
@@ -43,7 +45,7 @@ describe('validateSettingsFile', () => {
       RELEASES,
     )
 
-    expect(validateSettingsFile(JSON.parse(JSON.stringify(file)))).toEqual({ valid: true, file })
+    expect(validateSettingsFile(JSON.parse(JSON.stringify(file)))).toEqual({ valid: true, file, warnings: [] })
   })
 
   it('rejects a non-object payload', () => {
@@ -88,6 +90,103 @@ describe('validateSettingsFile', () => {
       selections: [{ ref: REF_A, enabled: true, odvValue: true }],
     })
     expect(result.valid).toBe(false)
+  })
+})
+
+const SUPPORTING_CHOICES: SupportingCheckChoices = {
+  includeSupporting: true,
+  overrides: { 'mscp.os_firewall_enable': 'exclude', 'mscp.os_gatekeeper_enable': 'include' },
+}
+const UNREADABLE_WARNING = 'Supporting check choices in this file were not readable and were ignored.'
+
+describe('supporting check choices in a settings file', () => {
+  it('omits the field when no choices are given', () => {
+    expect(buildSettingsFile({}, GENERATED_AT, RELEASES)).not.toHaveProperty('supportingChecks')
+  })
+
+  it('round-trips the choices through JSON', () => {
+    const file = buildSettingsFile({}, GENERATED_AT, RELEASES, SUPPORTING_CHOICES)
+    expect(validateSettingsFile(JSON.parse(JSON.stringify(file)))).toEqual({ valid: true, file, warnings: [] })
+  })
+
+  it('imports a file exported before supporting checks existed, without the field or a warning', () => {
+    const oldFormatFile = {
+      schemaVersion: 2,
+      generatedAt: '2026-10-20T00:00:00.000Z',
+      libraryReleases: { mscp: 'release_27.0' },
+      selections: [{ ref: REF_A, enabled: true, odvValue: 15 }],
+    }
+    expect(validateSettingsFile(oldFormatFile)).toEqual({ valid: true, file: oldFormatFile, warnings: [] })
+  })
+
+  it('drops malformed choices with a warning and still accepts the file', () => {
+    const result = validateSettingsFile({
+      schemaVersion: 2,
+      generatedAt: GENERATED_AT,
+      libraryReleases: RELEASES,
+      selections: [],
+      supportingChecks: { includeSupporting: 'yes', overrides: {} },
+    })
+    expect(result).toEqual({
+      valid: true,
+      file: { schemaVersion: 2, generatedAt: GENERATED_AT, libraryReleases: RELEASES, selections: [] },
+      warnings: [UNREADABLE_WARNING],
+    })
+  })
+
+  it('keeps a disabled entry with an organization-defined value through export, validate and sanitize', () => {
+    const passwordRef: RuleRef = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
+    const numberOdv: Odv = { datatype: 'number', description: 'Length', validation: { min: 1 }, recommended: 6, by_benchmark: {} }
+    const rule = {
+      id: passwordRef.id,
+      odv: numberOdv,
+      check: macosCheck({ shell: 'test $ODV -gt 0', result: null, additional_info: null }),
+    } as unknown as Rule
+    const exported = buildSettingsFile(
+      { [refKey(passwordRef)]: { ref: passwordRef, enabled: false, odvValue: 12 } },
+      GENERATED_AT,
+      RELEASES,
+      SUPPORTING_CHOICES,
+    )
+
+    const validation = validateSettingsFile(JSON.parse(JSON.stringify(exported)))
+    if (!validation.valid) throw new Error(validation.error)
+    const result = sanitizeImportedSelections(
+      validation.file.selections,
+      new Map([[passwordRef.id, { ref: passwordRef } as RuleRow]]),
+      new Map([[passwordRef.id, rule]]),
+    )
+
+    expect(result.selections[refKey(passwordRef)]).toEqual({ ref: passwordRef, enabled: false, odvValue: 12 })
+    expect(result.droppedValues).toEqual([])
+  })
+})
+
+describe('parseSupportingCheckChoices', () => {
+  it('accepts well-formed choices', () => {
+    expect(parseSupportingCheckChoices(SUPPORTING_CHOICES)).toEqual(SUPPORTING_CHOICES)
+  })
+
+  it('rejects a non-boolean includeSupporting', () => {
+    expect(parseSupportingCheckChoices({ includeSupporting: 1, overrides: {} })).toBeNull()
+  })
+
+  it('rejects an unknown override value', () => {
+    expect(parseSupportingCheckChoices({ includeSupporting: true, overrides: { 'mscp.a': 'maybe' } })).toBeNull()
+  })
+
+  it('rejects missing or non-object overrides and non-object input', () => {
+    expect(parseSupportingCheckChoices({ includeSupporting: true })).toBeNull()
+    expect(parseSupportingCheckChoices({ includeSupporting: true, overrides: [] })).toBeNull()
+    expect(parseSupportingCheckChoices(null)).toBeNull()
+    expect(parseSupportingCheckChoices('text')).toBeNull()
+  })
+
+  it('copies only known keys', () => {
+    expect(parseSupportingCheckChoices({ includeSupporting: false, overrides: {}, extra: 1 })).toEqual({
+      includeSupporting: false,
+      overrides: {},
+    })
   })
 })
 

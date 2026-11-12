@@ -1,6 +1,7 @@
 import type { Rule } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { odvSubstitutionMode, prepareOdvValue } from './odv'
+import type { SupportingCheckChoices } from './supportingChecks'
 import { refKey, type OrgDefinedValue, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
 
 export const SETTINGS_SCHEMA_VERSION = 2
@@ -13,19 +14,24 @@ export interface SettingsFileV2 {
   generatedAt: string
   libraryReleases: Record<string, string>
   selections: SelectionEntry[]
+  // Absent in files exported before supporting checks existed.
+  supportingChecks?: SupportingCheckChoices
 }
 
 export function buildSettingsFile(
   selections: SelectionMap,
   generatedAt: string,
   libraryReleases: Record<string, string>,
+  supportingChecks?: SupportingCheckChoices,
 ): SettingsFileV2 {
-  return {
+  const file: SettingsFileV2 = {
     schemaVersion: SETTINGS_SCHEMA_VERSION,
     generatedAt,
     libraryReleases,
     selections: Object.values(selections),
   }
+  if (supportingChecks) file.supportingChecks = supportingChecks
+  return file
 }
 
 export function serializeSettingsFile(file: SettingsFileV2): string {
@@ -55,7 +61,28 @@ function isStringRecord(value: unknown): value is Record<string, string> {
   return Object.values(value).every((entry) => typeof entry === 'string')
 }
 
-export type SettingsFileValidation = { valid: true; file: SettingsFileV2 } | { valid: false; error: string }
+// Returns null when the value is not well-formed, so the caller can drop it
+// and carry on: the selections matter more than the supporting check choices.
+export function parseSupportingCheckChoices(raw: unknown): SupportingCheckChoices | null {
+  if (typeof raw !== 'object' || raw === null) return null
+  const candidate = raw as Record<string, unknown>
+  if (typeof candidate.includeSupporting !== 'boolean') return null
+  const rawOverrides = candidate.overrides
+  if (typeof rawOverrides !== 'object' || rawOverrides === null || Array.isArray(rawOverrides)) return null
+
+  const overrides: SupportingCheckChoices['overrides'] = {}
+  for (const [ruleId, choice] of Object.entries(rawOverrides)) {
+    if (choice !== 'include' && choice !== 'exclude') return null
+    overrides[ruleId] = choice
+  }
+  return { includeSupporting: candidate.includeSupporting, overrides }
+}
+
+const UNREADABLE_SUPPORTING_CHECKS_WARNING = 'Supporting check choices in this file were not readable and were ignored.'
+
+export type SettingsFileValidation =
+  | { valid: true; file: SettingsFileV2; warnings: string[] }
+  | { valid: false; error: string }
 
 // Validates untrusted, user-uploaded JSON before it ever touches the
 // selection store - a malformed or hand-edited file must be rejected with
@@ -79,15 +106,20 @@ export function validateSettingsFile(raw: unknown): SettingsFileValidation {
     return { valid: false, error: "Settings file's selections list is missing or malformed." }
   }
 
-  return {
-    valid: true,
-    file: {
-      schemaVersion: SETTINGS_SCHEMA_VERSION,
-      generatedAt: candidate.generatedAt,
-      libraryReleases: candidate.libraryReleases,
-      selections: candidate.selections,
-    },
+  const file: SettingsFileV2 = {
+    schemaVersion: SETTINGS_SCHEMA_VERSION,
+    generatedAt: candidate.generatedAt,
+    libraryReleases: candidate.libraryReleases,
+    selections: candidate.selections,
   }
+  const warnings: string[] = []
+  if (candidate.supportingChecks !== undefined) {
+    const supportingChecks = parseSupportingCheckChoices(candidate.supportingChecks)
+    if (supportingChecks) file.supportingChecks = supportingChecks
+    else warnings.push(UNREADABLE_SUPPORTING_CHECKS_WARNING)
+  }
+
+  return { valid: true, file, warnings }
 }
 
 export interface ImportResolution {

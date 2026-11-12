@@ -254,3 +254,4 @@ export function coverageHeadline(coverage: FrameworkCoverage, scopeLabel: string
 ## Progress log
 
 - 2026-11-12: Task 1 done. Added `supportingChecks.ts` (offers, choices, chain text) with Vitest tests including the real-data check of the design numbers (144 direct, 0 through, 56 controls, 16 with an ODV; numbers unchanged, design section 4 still correct). Commit: ab60763 feat: find automated checks that support selected controls
+- 2026-11-12: Task 2 done (logic and state; the e2e step of the task is left for the e2e pass). Added `supportingChecksStore.ts` (persisted choices, storage access wrapped), the optional `supportingChecks` field in the settings file with `parseSupportingCheckChoices`, an import warning when the field is unreadable, and wired Export/Import. Old-format files import unchanged. Commit: see git log, subject "feat: persist supporting check choices and carry them in settings export"
