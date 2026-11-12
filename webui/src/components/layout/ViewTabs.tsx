@@ -1,3 +1,4 @@
+import { isPlainLeftClick } from '@/lib/utils'
 import { VIEWS } from '../../views/viewRegistry'
 import { hrefForView, useFilterStore } from '../../state/filterStore'
 
@@ -17,8 +18,7 @@ export function ViewTabs({ activeViewId }: { activeViewId: string }) {
                   href={hrefForView(filterState, view.id)}
                   aria-current={isActive ? 'page' : undefined}
                   onClick={(event) => {
-                    const isPlainLeftClick = event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
-                    if (!isPlainLeftClick) return
+                    if (!isPlainLeftClick(event)) return
                     event.preventDefault()
                     if (!isActive) filterState.setView(view.id)
                   }}

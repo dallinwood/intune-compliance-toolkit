@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label'
 import { KIND_LABELS } from '../../logic/changeLabels'
 import { toggledKindSelection, type ComparisonFacetCounts } from '../../logic/comparisonFilters'
 import type { HistoryIndex } from '../../logic/historyIndex'
+import { EMPTY_RELEASE_LABEL, EMPTY_RELEASE_TAG, isEmptyRelease, resolveComparisonRange } from '../../logic/releaseRange'
 import { CHANGE_KINDS, type ChangeKind } from '../../logic/ruleChanges'
 import { termLabel } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
@@ -109,18 +110,24 @@ export function ComparisonSidebar({
   const toggleBenchmark = useFilterStore((state) => state.toggleCompareBenchmark)
   const toggleOnly = useFilterStore((state) => state.toggleCompareOnly)
 
-  const fromPosition = history.releases.findIndex((release) => release.tag === fromTag)
+  const releaseTags = history.releases.map((release) => release.tag)
+  const fromPosition = isEmptyRelease(releaseTags, fromTag) ? -1 : releaseTags.indexOf(fromTag)
   const laterReleases = history.releases.filter((_, position) => position > fromPosition)
 
   function changeFramework(name: string) {
     const next = sources.find((candidate) => candidate.name === name)
-    if (next === undefined || next.releases.length < 2) return
-    showComparison(name, next.releases[next.releases.length - 2].tag, next.releases[next.releases.length - 1].tag)
+    if (next === undefined) return
+    const range = resolveComparisonRange(
+      next.releases.map((release) => release.tag),
+      null,
+      null,
+    )
+    showComparison(name, range.fromTag, range.toTag)
   }
 
   function changeFrom(tag: string) {
-    const position = history.releases.findIndex((release) => release.tag === tag)
-    const toStillLater = history.releases.findIndex((release) => release.tag === toTag) > position
+    const position = isEmptyRelease(releaseTags, tag) ? -1 : releaseTags.indexOf(tag)
+    const toStillLater = releaseTags.indexOf(toTag) > position
     setCompareReleases(tag, toStillLater ? toTag : history.releases[history.releases.length - 1].tag)
   }
 
@@ -142,15 +149,14 @@ export function ComparisonSidebar({
       <div data-testid="comparison-sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto p-4">
         <Group title="Releases">
           <LabelledSelect label="Framework" value={source.name} onChange={changeFramework}>
-            {sources
-              .filter((candidate) => candidate.releases.length > 1)
-              .map((candidate) => (
-                <option key={candidate.name} value={candidate.name}>
-                  {termLabel(vocabularyIndex, 'sources', candidate.name)}
-                </option>
-              ))}
+            {sources.map((candidate) => (
+              <option key={candidate.name} value={candidate.name}>
+                {termLabel(vocabularyIndex, 'sources', candidate.name)}
+              </option>
+            ))}
           </LabelledSelect>
           <LabelledSelect label="From" value={fromTag} onChange={changeFrom}>
+            <option value={EMPTY_RELEASE_TAG}>{EMPTY_RELEASE_LABEL}</option>
             {history.releases.slice(0, -1).map((release) => (
               <option key={release.tag} value={release.tag}>
                 {release.label}

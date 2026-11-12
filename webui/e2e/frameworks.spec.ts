@@ -8,6 +8,8 @@ const sourceNamed = (name: string): ManifestSource => manifest.sources.find((sou
 const ism = sourceNamed('asd_ism')
 const previousIsmRelease = ism.releases.at(-2)!
 const currentIsmRelease = ism.releases.at(-1)!
+const middleIsmRelease = ism.releases.at(-2)!
+const releaseBeforeMiddleIsmRelease = ism.releases.at(-3)!
 
 const card = (page: Page, displayName: string) => page.getByTestId('framework-card').filter({ has: page.getByRole('heading', { name: displayName }) })
 
@@ -23,15 +25,35 @@ test('the Frameworks tab lists a card per framework with its current release and
   await expect(ismCard.getByText('· current')).toHaveCount(1)
 })
 
-test('Compare releases opens the comparison from the previous release to the current one', async ({ page }) => {
+const pill = (page: Page, displayName: string, labelStart: string) =>
+  card(page, displayName).getByRole('list', { name: 'Releases' }).getByRole('link', { name: new RegExp(`^${labelStart}`) })
+
+test('pressing the current release opens its comparison with the release before it', async ({ page }) => {
   await page.goto('/frameworks')
 
-  await card(page, ism.display_name).getByRole('button', { name: 'Compare releases' }).click()
+  await pill(page, ism.display_name, currentIsmRelease.label).click()
 
   await expect(page).toHaveURL(new RegExp(`framework=asd_ism&from=${previousIsmRelease.tag}&to=${currentIsmRelease.tag}$`))
   await page.goBack()
   await expect(page).toHaveURL(/\/frameworks$/)
   await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+})
+
+test('pressing a middle release compares it with the release before it', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await pill(page, ism.display_name, middleIsmRelease.label).click()
+
+  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&from=${releaseBeforeMiddleIsmRelease.tag}&to=${middleIsmRelease.tag}$`))
+  await expect(page.getByRole('heading', { name: `${ism.display_name}: ${releaseBeforeMiddleIsmRelease.label} to ${middleIsmRelease.label}` })).toBeVisible({ timeout: 15_000 })
+})
+
+test('the cards have no Compare releases button', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+  await expect(page.getByRole('button', { name: 'Compare releases' })).toHaveCount(0)
+  await expect(page.getByText('Choose a release to see what changed in it.')).toHaveCount(manifest.sources.length)
 })
 
 test('the Frameworks tab sits after Rules in the navigation', async ({ page }) => {
@@ -226,4 +248,64 @@ test('the custom changes option is disabled with a reason when the custom change
   await expect(page.getByRole('checkbox', { name: 'have my custom changes' })).toBeDisabled({ timeout: 15_000 })
   await expect(page.getByText('Your custom changes could not be loaded.')).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'are in my selection' })).toBeEnabled()
+})
+
+const ruleCountFirstAddedInIsm = Object.values(ismHistory.rules).filter((rule) => rule.versions[0] !== null).length
+const emptyIsmUrl = `/frameworks?framework=asd_ism&from=empty&to=${firstIsmRelease.tag}`
+
+test('pressing the first release compares it with an empty release, so every rule is added', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await pill(page, ism.display_name, firstIsmRelease.label).click()
+
+  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&from=empty&to=${firstIsmRelease.tag}$`))
+  await expect(page.getByRole('heading', { name: /Empty release to/ })).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByText(`Compared with an empty release, so every rule in ${firstIsmRelease.label} is listed as added.`)).toBeVisible()
+  await expect.poll(() => tileValue(page, 'added')).toBe(ruleCountFirstAddedInIsm)
+  for (const name of ['removed', 'changed', 'unchanged']) expect(await tileValue(page, name)).toBe(0)
+})
+
+test("a single-release framework's release opens its comparison", async ({ page }) => {
+  const nist = sourceNamed('nist_800_53')
+  expect(nist.releases).toHaveLength(1)
+  await page.goto('/frameworks')
+
+  await pill(page, nist.display_name, nist.releases[0].label).click()
+
+  await expect(page).toHaveURL(new RegExp(`framework=nist_800_53&from=empty&to=${nist.releases[0].tag}$`))
+  await expect.poll(() => tileValue(page, 'added'), { timeout: 15_000 }).toBe(nist.rule_count)
+})
+
+test('the From select offers Empty release and choosing it lists every rule in To as added', async ({ page }) => {
+  await page.goto(comparisonUrl)
+  const from = page.getByLabel('From')
+  await expect(from).toHaveValue(firstIsmRelease.tag, { timeout: 15_000 })
+  await expect(from.locator('option').first()).toHaveText('Empty release')
+
+  await from.selectOption('empty')
+
+  await expect(page).toHaveURL(new RegExp(`from=empty&to=${currentIsmRelease.tag}$`))
+  await expect.poll(() => tileValue(page, 'added')).toBe(ism.rule_count)
+  expect(await tileValue(page, 'removed')).toBe(0)
+})
+
+test('the Framework select lists every framework', async ({ page }) => {
+  await page.goto(comparisonUrl)
+  await expect(page.getByLabel('Framework')).toHaveValue('asd_ism', { timeout: 15_000 })
+
+  await expect(page.getByLabel('Framework').locator('option')).toHaveCount(manifest.sources.length)
+
+  await page.getByLabel('Framework').selectOption('nist_800_53')
+  await expect(page).toHaveURL(/framework=nist_800_53&from=empty&to=/)
+})
+
+test('an empty-release address survives a reload', async ({ page }) => {
+  await page.goto(emptyIsmUrl)
+  await expect(page.getByText('Compared with an empty release', { exact: false })).toBeVisible({ timeout: 15_000 })
+
+  await page.reload()
+
+  await expect(page).toHaveURL(new RegExp(`from=empty&to=${firstIsmRelease.tag}$`))
+  await expect(page.getByLabel('From')).toHaveValue('empty', { timeout: 15_000 })
+  await expect(page.getByRole('heading', { name: /Empty release to/ })).toBeVisible()
 })

@@ -2,12 +2,13 @@ import { ArrowUpRight } from 'lucide-react'
 import { useId, useMemo, useState, type MouseEvent } from 'react'
 import { buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+import { cn, isPlainLeftClick } from '@/lib/utils'
 import { useExpandedGroups } from '../../hooks/useExpandedGroups'
 import { useCustomisedRuleIds } from '../../hooks/useCustomisedRuleIds'
 import { useHistoryIndex } from '../../hooks/useHistoryIndex'
 import { comparisonFacetCounts, filterComparison, type ComparisonFilters } from '../../logic/comparisonFilters'
 import { compareReleases, latestReleaseWithRule, ruleFilePathAtRelease, type HistoryIndex, type RuleComparison } from '../../logic/historyIndex'
+import { isEmptyRelease, releaseLabel, resolveComparisonRange } from '../../logic/releaseRange'
 import { effectiveKinds, type ChangeKind } from '../../logic/ruleChanges'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { useFilterStore } from '../../state/filterStore'
@@ -27,26 +28,12 @@ const GROUP_TITLES: Record<Group, string> = { added: 'Added', removed: 'Removed'
 const DEFAULT_GROUPS: readonly Group[] = ['added', 'removed', 'changed']
 const ROWS_PER_STEP = 50
 
-// The range the address names when it names a valid one, otherwise the
-// previous release to the current one.
-function resolvedRange(history: HistoryIndex, from: string | null, to: string | null): { fromTag: string; toTag: string } {
-  const tags = history.releases.map((release) => release.tag)
-  const fromPosition = from === null ? -1 : tags.indexOf(from)
-  const toPosition = to === null ? -1 : tags.indexOf(to)
-  if (fromPosition !== -1 && toPosition > fromPosition) return { fromTag: tags[fromPosition], toTag: tags[toPosition] }
-  return { fromTag: tags[tags.length - 2], toTag: tags[tags.length - 1] }
-}
-
 const groupKey = (group: Group) => `group:${group}`
 const rowKey = (group: Group, ruleId: string) => `${group}:${ruleId}`
 
 function hrefShowing(ruleId: string): string {
   const state = { ...parseUrlState(''), view: DEFAULT_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
   return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
-}
-
-function isPlainClick(event: MouseEvent): boolean {
-  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
 }
 
 // A summary tile is also a filter: pressed, it narrows the comparison to its group.
@@ -72,7 +59,7 @@ function RuleLinks({ ruleId }: { ruleId: string }) {
   const showRuleFromComparison = useFilterStore((state) => state.showRuleFromComparison)
   function open(tab: 'history' | null) {
     return (event: MouseEvent<HTMLAnchorElement>) => {
-      if (!isPlainClick(event)) return
+      if (!isPlainLeftClick(event)) return
       event.preventDefault()
       showRuleFromComparison(ruleId, upstreamRuleId(ruleId), tab)
     }
@@ -254,7 +241,11 @@ export function ReleaseComparisonView({
   }
 
   const history = state.status === 'ready' ? state.index : null
-  const range = history === null ? null : resolvedRange(history, compareFrom, compareTo)
+  const range = history === null ? null : resolveComparisonRange(
+          history.releases.map((release) => release.tag),
+          compareFrom,
+          compareTo,
+        )
   const kinds = useMemo<ReadonlySet<ChangeKind>>(() => effectiveKinds(changeKinds ?? []), [changeKinds])
   const onlyRuleIds = useMemo<ReadonlySet<string> | null>(() => {
     // An unavailable custom-changes list cannot narrow anything, so that choice is left out.
@@ -277,8 +268,12 @@ export function ReleaseComparisonView({
   if (state.status === 'error') return <main className="flex-1 overflow-y-auto"><Message>{`The release history could not be loaded: ${state.message}`}</Message></main>
   if (history === null || range === null || comparison === null || filtered === null || counts === null) return null
 
-  const fromLabel = history.releases.find((release) => release.tag === range.fromTag)?.label ?? range.fromTag
-  const toLabel = history.releases.find((release) => release.tag === range.toTag)?.label ?? range.toTag
+  const fromLabel = releaseLabel(history.releases, range.fromTag)
+  const toLabel = releaseLabel(history.releases, range.toTag)
+  const comparesWithEmptyRelease = isEmptyRelease(
+    history.releases.map((release) => release.tag),
+    range.fromTag,
+  )
   const shownGroups = compareGroup === null ? DEFAULT_GROUPS : [compareGroup]
   const groups: [Group, RuleComparison[]][] = shownGroups.map((group) => [group, filtered[group]])
   const shownGroupKeys = groups.filter(([, entries]) => entries.length > 0).map(([group]) => groupKey(group))
@@ -314,6 +309,9 @@ export function ReleaseComparisonView({
             <h2 className="text-lg font-semibold">
               {source.display_name}: {fromLabel} to {toLabel}
             </h2>
+            {comparesWithEmptyRelease && (
+              <p className="text-sm text-muted-foreground">Compared with an empty release, so every rule in {toLabel} is listed as added.</p>
+            )}
           </div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {(

@@ -9,8 +9,7 @@ export function FrameworksView({ sources, enabledSelections, filtersOpen }: Pick
   const enabledRuleIds = useMemo(() => new Set(enabledSelections.map((selection) => selection.ref.id)), [enabledSelections])
   const source = sources.find((candidate) => candidate.name === framework)
 
-  // A framework with one release has nothing to compare.
-  if (source === undefined || source.releases.length < 2) {
+  if (source === undefined) {
     return (
       <main className="flex-1 overflow-y-auto">
         <FrameworkCards sources={sources} />
