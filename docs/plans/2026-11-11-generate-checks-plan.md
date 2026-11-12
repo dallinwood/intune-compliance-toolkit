@@ -119,3 +119,5 @@
 - [ ] **Step 3: Commit**: `docs: describe the Generate screen checks`
 
 ## Progress log
+
+- 2026-11-12: Task 1 done. Added the pure check logic (`buildGenerateChecks`, `newestReleaseChange`, `hasBlockingCheck`, `severityCounts`) with Vitest coverage; no UI yet. Commit: ba8e53b feat: add structured pre-generation check logic
