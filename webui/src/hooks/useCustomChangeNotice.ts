@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react'
-import { fetchHistoryIndex, fetchRuleAtRelease } from '../data/history'
-import { fetchOverlayById } from '../data/ruleDetail'
-import {
-  customChangeBaseline,
-  customChangeNotice,
-  customChangeStatus,
-  overlayFieldPaths,
-  type CustomChangeNotice,
-} from '../logic/customChangeNotice'
-import { fieldChanges } from '../logic/ruleChanges'
+import { loadCustomChangeStatus } from '../data/customChanges'
+import type { CustomChangeNotice } from '../logic/customChangeNotice'
 import type { OverlayApplication } from '../logic/overlays'
 import { useVocabularyIndex } from '../state/vocabularyContext'
 import type { Rule } from '../types/library'
@@ -28,22 +20,14 @@ export function useCustomChangeNotice(rule: Rule, application: OverlayApplicatio
 
   useEffect(() => {
     let cancelled = false
-    async function work(): Promise<CustomChangeNoticeState> {
-      const [history, overlay] = await Promise.all([fetchHistoryIndex(rule.source.name), fetchOverlayById(application.overlayId)])
-      const baseline = customChangeBaseline(history, application.release)
-      const toTag = rule.source.release_tag
-      const [before, after] = await Promise.all([fetchRuleAtRelease(history, rule.id, baseline.fromTag), fetchRuleAtRelease(history, rule.id, toTag)])
-      const focusPaths = overlayFieldPaths(overlay.fields)
-      const status = customChangeStatus(fieldChanges(before, after), focusPaths, vocabularyIndex)
-      const labelOf = (tag: string) => history.releases.find((release) => release.tag === tag)?.label ?? tag
-      const notice = customChangeNotice(status, {
-        releaseLabel: baseline.inHistory ? labelOf(application.release) : application.release,
-        earliestLabel: labelOf(baseline.fromTag),
-        inHistory: baseline.inHistory,
-      })
-      return { status: 'ready', notice, fromTag: baseline.fromTag, toTag, focusPaths }
-    }
-    work()
+    loadCustomChangeStatus(rule, application, vocabularyIndex)
+      .then((comparison): CustomChangeNoticeState => ({
+        status: 'ready',
+        notice: comparison.notice,
+        fromTag: comparison.fromTag,
+        toTag: comparison.toTag,
+        focusPaths: comparison.focusPaths,
+      }))
       .catch((): CustomChangeNoticeState => ({ status: 'unknown' }))
       .then((state) => {
         if (!cancelled) setLoaded({ key, state })
@@ -51,6 +35,9 @@ export function useCustomChangeNotice(rule: Rule, application: OverlayApplicatio
     return () => {
       cancelled = true
     }
+  // The key identifies the rule and its custom changes; depending on the objects themselves would
+  // refetch whenever a parent rebuilt them.
+  // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [key, rule.id, rule.source.name, rule.source.release_tag, application.overlayId, application.release, vocabularyIndex])
 
   return loaded !== null && loaded.key === key ? loaded.state : { status: 'loading' }

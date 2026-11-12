@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { loadCustomChangeStatus } from '../../data/customChanges'
+import { fetchHistoryIndex } from '../../data/history'
 import { fetchReferencedText } from '../../data/referencedFiles'
 import { fetchOverlaidRule } from '../../data/ruleDetail'
 import { buildBundleFiles } from '../../logic/bundleFiles'
@@ -12,12 +14,22 @@ import {
   type ManualAttestationEntry,
 } from '../../logic/chunking'
 import { resolveGeneratedCheckFiles } from '../../logic/fileReferences'
-import { upstreamRuleId } from '../../logic/ruleDisplay'
+import {
+  buildGenerateChecks,
+  hasBlockingCheck,
+  newestReleaseChange,
+  type CustomChangeResult,
+  type GenerateCheckInput,
+} from '../../logic/generateChecks'
+import type { HistoryIndex } from '../../logic/historyIndex'
+import type { OverlayApplication } from '../../logic/overlays'
 import type { SelectionEntry } from '../../logic/selectionEntry'
 import { buildZip } from '../../logic/zipBundle'
+import { termLabel, type VocabularyIndex } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import type { ManifestSource } from '../../types/library'
+import type { ManifestSource, Rule } from '../../types/library'
 import { BundleGroupCard } from './BundleGroupCard'
+import { GenerateChecksPanel } from './GenerateChecksPanel'
 import { ManualAttestationReport } from './ManualAttestationReport'
 
 type ReviewState =
@@ -29,9 +41,24 @@ type ReviewState =
       chunks: Chunk[]
       manual: ManualAttestationEntry[]
       blocked: BlockedEntry[]
+      // Every selected rule, for the release checks.
+      selectedRules: Rule[]
       // Rules whose custom content could not be applied, shown as imported.
-      overlayIssueRuleIds: string[]
+      skippedCustomChanges: GenerateCheckInput['skippedCustomChanges'][number][]
+      // Custom changes written for a release other than the rule's current one.
+      staleApplications: { rule: Rule; application: OverlayApplication }[]
     }
+
+type ReadyReviewState = Extract<ReviewState, { status: 'ready' }>
+
+type ReleaseChecksResult = Pick<GenerateCheckInput, 'customChanges' | 'newestReleaseChanges' | 'historyUnavailableSourceLabels'>
+
+// Held with the review it was computed for, so a result for a previous
+// selection is never shown as current.
+interface LoadedReleaseChecks {
+  forState: ReviewState
+  result: ReleaseChecksResult
+}
 
 function byId(left: { id: string }, right: { id: string }): number {
   return left.id.localeCompare(right.id)
@@ -79,7 +106,7 @@ export function GenerateReviewScreen({
         return {
           entry,
           rule: await resolveGeneratedCheckFiles(overlaid.rule, fetchReferencedText),
-          hasOverlayIssue: overlaid.skipped.length > 0,
+          overlaid,
         }
       }),
     )
@@ -88,9 +115,15 @@ export function GenerateReviewScreen({
         const generatable: GeneratableRule[] = []
         const manual: ManualAttestationEntry[] = []
         const blocked: BlockedEntry[] = []
-        const overlayIssueRuleIds: string[] = []
-        for (const { entry, rule, hasOverlayIssue } of loaded) {
-          if (hasOverlayIssue) overlayIssueRuleIds.push(entry.ref.id)
+        const skippedCustomChanges: ReadyReviewState['skippedCustomChanges'] = []
+        const staleApplications: ReadyReviewState['staleApplications'] = []
+        for (const { entry, rule, overlaid } of loaded) {
+          if (overlaid.skipped.length > 0) {
+            skippedCustomChanges.push({ ruleId: entry.ref.id, title: rule.title, skipped: overlaid.skipped })
+          }
+          for (const application of overlaid.applied) {
+            if (application.stale) staleApplications.push({ rule, application })
+          }
           const result = classifyRule(rule, entry, coveredVersions, vocabularyIndex)
           if (result.kind === 'generatable') generatable.push(result.rule)
           else if (result.kind === 'manual') manual.push(result.entry)
@@ -105,7 +138,9 @@ export function GenerateReviewScreen({
           chunks,
           manual: manual.sort(byId),
           blocked: blocked.sort(byId),
-          overlayIssueRuleIds: overlayIssueRuleIds.sort(),
+          selectedRules: loaded.map(({ rule }) => rule),
+          skippedCustomChanges,
+          staleApplications,
         })
       })
       .catch((error: unknown) => {
@@ -117,6 +152,22 @@ export function GenerateReviewScreen({
     }
   }, [enabledEntries, coveredVersions, vocabularyIndex])
 
+  const [loadedReleaseChecks, setLoadedReleaseChecks] = useState<LoadedReleaseChecks | null>(null)
+
+  useEffect(() => {
+    if (state.status !== 'ready') return
+    let cancelled = false
+    loadReleaseChecks(state, sources, vocabularyIndex).then((result) => {
+      if (!cancelled) setLoadedReleaseChecks({ forState: state, result })
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [state, sources, vocabularyIndex])
+
+  const releaseChecks =
+    loadedReleaseChecks !== null && loadedReleaseChecks.forState === state ? loadedReleaseChecks.result : null
+
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
@@ -125,19 +176,74 @@ export function GenerateReviewScreen({
           Back to browse
         </button>
       </div>
-      <ReviewBody enabledCount={enabledEntries.length} state={state} sources={sources} onBack={onBack} />
+      <ReviewBody
+        enabledCount={enabledEntries.length}
+        state={state}
+        releaseChecks={releaseChecks}
+        sources={sources}
+        onBack={onBack}
+      />
     </div>
   )
+}
+
+// Never rejects: a failed history or comparison load becomes a check result,
+// so it can neither fail the review nor block the download.
+async function loadReleaseChecks(
+  state: ReadyReviewState,
+  sources: ManifestSource[],
+  vocabularyIndex: VocabularyIndex,
+): Promise<ReleaseChecksResult> {
+  const sourceNamesWithHistory = [...new Set(state.selectedRules.map((rule) => rule.source.name))].filter(
+    (sourceName) => (sources.find((source) => source.name === sourceName)?.releases.length ?? 0) >= 2,
+  )
+
+  const [historySettlements, comparisonSettlements] = await Promise.all([
+    Promise.allSettled(sourceNamesWithHistory.map((sourceName) => fetchHistoryIndex(sourceName))),
+    Promise.allSettled(
+      state.staleApplications.map(({ rule, application }) => loadCustomChangeStatus(rule, application, vocabularyIndex)),
+    ),
+  ])
+
+  const historyUnavailableSourceLabels: string[] = []
+  const historyBySource = new Map<string, HistoryIndex>()
+  historySettlements.forEach((settlement, position) => {
+    const sourceName = sourceNamesWithHistory[position]
+    if (settlement.status === 'fulfilled') historyBySource.set(sourceName, settlement.value)
+    else historyUnavailableSourceLabels.push(termLabel(vocabularyIndex, 'sources', sourceName))
+  })
+
+  const newestReleaseChanges: GenerateCheckInput['newestReleaseChanges'][number][] = []
+  for (const rule of state.selectedRules) {
+    const history = historyBySource.get(rule.source.name)
+    if (history === undefined) continue
+    // The history index is keyed by the full rule id, the same as rule.id.
+    const change = newestReleaseChange(history, rule.id)
+    if (change !== null) newestReleaseChanges.push({ ruleId: rule.id, title: rule.title, change })
+  }
+
+  const customChanges: ReleaseChecksResult['customChanges'] = state.staleApplications.map(({ rule, application }, position) => {
+    const settlement = comparisonSettlements[position]
+    const result: CustomChangeResult =
+      settlement.status === 'fulfilled'
+        ? { kind: 'compared', status: settlement.value.status, releaseLabel: settlement.value.releaseLabel }
+        : { kind: 'unknown', release: application.release }
+    return { ruleId: rule.id, title: rule.title, result }
+  })
+
+  return { customChanges, newestReleaseChanges, historyUnavailableSourceLabels: historyUnavailableSourceLabels.sort() }
 }
 
 function ReviewBody({
   enabledCount,
   state,
+  releaseChecks,
   sources,
   onBack,
 }: {
   enabledCount: number
   state: ReviewState
+  releaseChecks: ReleaseChecksResult | null
   sources: ManifestSource[]
   onBack: () => void
 }) {
@@ -155,32 +261,21 @@ function ReviewBody({
   if (state.status === 'loading') return <p className="text-muted-foreground">Loading selected rules…</p>
   if (state.status === 'error') return <p className="text-destructive">Could not prepare the bundle: {state.message}</p>
 
-  const { scriptedCount, chunks, manual, blocked, overlayIssueRuleIds } = state
+  const { scriptedCount, chunks, manual, skippedCustomChanges, blocked } = state
+  const checks = buildGenerateChecks({
+    blocked,
+    skippedCustomChanges,
+    customChanges: releaseChecks?.customChanges ?? [],
+    newestReleaseChanges: releaseChecks?.newestReleaseChanges ?? [],
+    historyUnavailableSourceLabels: releaseChecks?.historyUnavailableSourceLabels ?? [],
+  })
 
   return (
     <>
-      {overlayIssueRuleIds.length > 0 && (
-        <p data-testid="overlay-issues-note" className="mb-4 text-xs break-words text-warning-foreground">
-          Custom content for {overlayIssueRuleIds.length} rule(s) could not be applied; they are shown as imported:{' '}
-          {overlayIssueRuleIds.map(upstreamRuleId).join(', ')}.
-        </p>
-      )}
-      {blocked.length > 0 && (
-        <div role="alert" className="mb-4 rounded border border-warning-border bg-warning p-3 text-warning-foreground">
-          <p className="mb-1 font-medium">Fix these before generating:</p>
-          <ul className="list-disc space-y-1 pl-5 text-xs">
-            {blocked.map((entry) => (
-              <li key={entry.id} className="break-words">
-                <span className="font-mono break-all">{upstreamRuleId(entry.id)}</span> - {entry.title}: {entry.reason}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-2 text-xs">Set a valid organization value in each rule's details on the browse screen.</p>
-        </div>
-      )}
+      <GenerateChecksPanel checks={checks} pending={releaseChecks === null} />
 
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-foreground/80">
-        <span>{blocked.length > 0 ? 'Bundles are packed once nothing is blocked' : `${chunks.length} bundle(s)`}</span>
+        <span>{hasBlockingCheck(checks) ? 'Bundles are packed once nothing is blocked' : `${chunks.length} bundle(s)`}</span>
         <span>{scriptedCount} scripted rule(s)</span>
         <span>{manual.length} rule(s) need manual attestation</span>
         <Button
@@ -189,7 +284,7 @@ function ReviewBody({
           className="sm:ml-auto"
           onClick={() => downloadZip(chunks, manual, sources)}
           // A manual-only selection still downloads, as a zip holding just manual-attestation.md.
-          disabled={blocked.length > 0 || (chunks.length === 0 && manual.length === 0)}
+          disabled={hasBlockingCheck(checks) || (chunks.length === 0 && manual.length === 0)}
         >
           Download bundle (.zip)
         </Button>
