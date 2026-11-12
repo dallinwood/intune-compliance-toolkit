@@ -1,7 +1,7 @@
 # Design: selection coverage roll-up
 
 Date: 2026-11-11
-Status: Draft, written without the maintainer (see section 9 for the calls made)
+Status: Implemented 2026-11-12 (the calls in section 9 were made without the maintainer and still await review)
 
 ## 1. Intent
 
@@ -281,3 +281,5 @@ Plan: `docs/plans/2026-11-11-selection-coverage-plan.md`. It does not depend on 
 | "Selected rules that support no control" lives here, not as a Generate check. | A `no-mapping` info check on the Generate screen (see the generate checks design). |
 
 ## Progress log
+
+- 2026-11-12: Implemented in three tasks, per `2026-11-11-selection-coverage-plan.md`: the pure logic (85a6cdf "feat: add selection coverage logic over the mapping index"), the Coverage view (f752130 "feat: add a Coverage view rolling the selection up against mapped frameworks") with review fixes 153dd1b "fix: align a coverage section's count and bar to its title's first line" and c4eac9f "test: run *.test.tsx files and resolve the @ alias in Vitest", and the docs ("docs: describe the Coverage view and close the selection coverage plan").

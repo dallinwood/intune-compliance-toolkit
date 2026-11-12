@@ -369,5 +369,6 @@ there is nothing to add there.
    references generating the mappings. If yes, write a design doc under
    `docs/plans/` first, and confirm NIST's OSCAL as the upstream.
 2. Decide whether to add ASD Essentials for enterprise IT (OSCAL).
-3. Build the coverage roll-up (UI rank 1). It is useful now with the 62
-   existing mSCP-to-ISM links, and more so after step 1.
+3. Build the coverage roll-up (UI rank 1). Built as the Coverage view in f752130
+   ("feat: add a Coverage view rolling the selection up against mapped frameworks").
+   It was useful with the 62 existing mSCP-to-ISM links, and more so after step 1.

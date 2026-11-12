@@ -69,6 +69,13 @@ Requires [Bun](https://bun.sh).
 - `bun run build` produces a static site in `webui/dist`.
 - The site's "Sources & licences" dialog lists the rule sources and every npm
   package bundled into the site, with each package's licence text.
+- The Coverage view rolls your current selection up against each control framework in the
+  library (ASD ISM, ASD E4EIT, NIST SP 800-53). For each framework it shows how many controls
+  your selected rules support through the mapping files, as "Supports N of M controls", with a
+  scope picker for the denominator, a per-section breakdown, and for every control the selected
+  rules, mapping file and note behind it. Only `supports` links count; `related` links are shown
+  separately and never raise the count. The figures describe mappings, not compliance: a control
+  counted as supported still needs its own assessment.
 - `bun run test` runs the unit tests. `bun run test:e2e` runs the Playwright
   tests against a running `bun run dev`.
 
