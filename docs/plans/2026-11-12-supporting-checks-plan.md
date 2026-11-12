@@ -252,3 +252,5 @@ export function coverageHeadline(coverage: FrameworkCoverage, scopeLabel: string
 - [ ] Update README and the design's Status; verify, commit `feat: show coverage through supporting rules in a second tone`, log, push.
 
 ## Progress log
+
+- 2026-11-12: Task 1 done. Added `supportingChecks.ts` (offers, choices, chain text) with Vitest tests including the real-data check of the design numbers (144 direct, 0 through, 56 controls, 16 with an ODV; numbers unchanged, design section 4 still correct). Commit: ab60763 feat: find automated checks that support selected controls
