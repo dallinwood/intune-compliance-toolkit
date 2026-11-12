@@ -141,6 +141,17 @@ describe('parseMarkdownDiscussion', () => {
     ])
   })
 
+  it('reads one or more # followed by a space as a heading, and a # with no space as text', () => {
+    const text = ['# Principle', 'Prose', '## Sub', '- one', '#hashtag', '#'].join('\n')
+    expect(parseMarkdownDiscussion(text)).toEqual([
+      { kind: 'heading', text: 'Principle' },
+      { kind: 'paragraph', text: 'Prose' },
+      { kind: 'heading', text: 'Sub' },
+      { kind: 'list', items: [topLevel('one')] },
+      { kind: 'paragraph', text: '#hashtag\n#' },
+    ])
+  })
+
   it('reads two spaces of indentation per list depth, and fails safe to depth 2 beyond that', () => {
     const text = ['- top', '  - middle', '    - deepest', '      - too deep', '        - far too deep', '- top again'].join('\n')
     expect(parseMarkdownDiscussion(text)).toEqual([
@@ -246,5 +257,14 @@ describe('Markdown discussions in the committed libraries', () => {
       { text: '2. Group and role membership; and', depth: 1 },
       { text: '3. Access authorizations (i.e., privileges) and [Assignment: organization-defined attributes (as required)] for each account;', depth: 1 },
     ])
+  })
+
+  it('reads asd_e4eit.it.pro-13.1 as Principle and Indicators headings with three effectiveness lists', () => {
+    const blocks = parseMarkdownDiscussion(committedDiscussion('asd_e4eit/releases/v2026.10.15/rules/it.pro-13.1.json'))
+    expect(blocks.filter((block) => block.kind === 'heading')).toEqual([
+      { kind: 'heading', text: 'Principle' },
+      { kind: 'heading', text: 'Indicators of Good Practice' },
+    ])
+    expect(blocks.filter((block) => block.kind === 'list')).toHaveLength(3)
   })
 })

@@ -5,7 +5,8 @@
     "sources": [
       { "label": "ASD ISM", "terms": ["asd_ism"] },
       { "label": "NIST mSCP", "terms": ["mscp"] },
-      { "label": "NIST SP 800-53", "terms": ["nist_800_53"] }
+      { "label": "NIST SP 800-53", "terms": ["nist_800_53"] },
+      { "label": "ASD E4EIT", "terms": ["asd_e4eit"] }
     ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
@@ -24,7 +25,18 @@
       { "label": "800-53 Low", "terms": ["nist_800_53_low"], "metadata": ["benchmark"] },
       { "label": "800-53 Moderate", "terms": ["nist_800_53_moderate"], "metadata": ["benchmark"] },
       { "label": "800-53 High", "terms": ["nist_800_53_high"], "metadata": ["benchmark"] },
-      { "label": "800-53 Privacy", "terms": ["nist_800_53_privacy"], "metadata": ["benchmark"] }
+      { "label": "800-53 Privacy", "terms": ["nist_800_53_privacy"], "metadata": ["benchmark"] },
+      { "label": "E4EIT priority phase 1", "terms": ["e4eit_phase_1"], "metadata": ["benchmark"] },
+      { "label": "E4EIT priority phase 2", "terms": ["e4eit_phase_2"], "metadata": ["benchmark"] },
+      { "label": "E4EIT priority phase 3", "terms": ["e4eit_phase_3"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Boundary services", "terms": ["e4eit_boundary_services"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Identity services", "terms": ["e4eit_identity_services"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Critical processes and services", "terms": ["e4eit_critical_processes_and_services"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Privileged environments", "terms": ["e4eit_privileged_environments"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Business systems", "terms": ["e4eit_business_systems"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Governance and culture", "terms": ["e4eit_governance_and_culture"], "metadata": ["benchmark"] },
+      { "label": "E4EIT User devices", "terms": ["e4eit_user_devices"], "metadata": ["benchmark"] },
+      { "label": "E4EIT Visibility and response", "terms": ["e4eit_visibility_and_response"], "metadata": ["benchmark"] }
     ],
     "severities": [
       { "label": "low", "terms": ["low"], "metadata": ["severity"] },

@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_CATALOG_INDEX) }),
   )
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('2509 of 2509 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 })
 
 async function tickFacetOption(page: Page, name: string) {
@@ -37,17 +37,17 @@ async function searchForControlRow(page: Page, controlId: string) {
 
 test('ticking the NIST SP 800-53 source keeps its 1014 rules', async ({ page }) => {
   await tickFacetOption(page, 'NIST SP 800-53')
-  await expect(ruleCount(page)).toHaveText('1014 of 2509 rules')
+  await expect(ruleCount(page)).toHaveText('1014 of 2567 rules')
 })
 
 test('ticking the 800-53 Moderate benchmark keeps its 287 rules', async ({ page }) => {
   await tickFacetOption(page, '800-53 Moderate')
-  await expect(ruleCount(page)).toHaveText('287 of 2509 rules')
+  await expect(ruleCount(page)).toHaveText('287 of 2567 rules')
 })
 
 test('searching an enhancement id finds exactly that enhancement, titled with its parent control', async ({ page }) => {
   await page.getByPlaceholder('Search title or id…').fill('ac-20.1')
-  await expect(ruleCount(page)).toHaveText('1 of 2509 rules')
+  await expect(ruleCount(page)).toHaveText('1 of 2567 rules')
   const row = page.locator('table tbody tr')
   await expect(row).toHaveCount(1)
   await expect(row).toContainText('Use of External Systems | Limits on Authorized Use')
@@ -119,7 +119,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(committedMappingIndex) }),
     )
     await page.goto(`/?q=${search}&rule=${ruleId}`)
-    await expect(ruleCount(page)).toHaveText(/^\d+ of 2509 rules$/, { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText(/^\d+ of 2567 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
   }

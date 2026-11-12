@@ -1,8 +1,8 @@
 // A deliberately small reading of the AsciiDoc mSCP uses in rule
 // discussions: enough to show paragraphs, code and emphasis legibly, not a
 // full AsciiDoc renderer. Anything unrecognised is shown as plain text.
-// ASD ISM and NIST SP 800-53 discussions are Markdown, but only `## `
-// headings, `- ` lists (nested by two-space indentation) and [text](url)
+// ASD ISM, ASD E4EIT and NIST SP 800-53 discussions are Markdown, but only
+// `# ` to `###### ` headings, `- ` lists (nested by two-space indentation) and [text](url)
 // links appear in them, so that is all the Markdown reader understands.
 
 import { BARE_URL_PATTERN_SOURCE } from './links'
@@ -112,7 +112,7 @@ export function parseDiscussion(text: string): DiscussionBlock[] {
 }
 
 const MARKDOWN_BULLET_PREFIX = '- '
-const MARKDOWN_HEADING_PREFIX = '## '
+const MARKDOWN_HEADING_PATTERN = /^#+ (.*)$/
 const SPACES_PER_LIST_LEVEL = 2
 const DEEPEST_LIST_DEPTH = 2
 
@@ -159,10 +159,10 @@ export function parseMarkdownDiscussion(text: string): DiscussionBlock[] {
     if (trimmed === '') {
       flushParagraph()
       flushList()
-    } else if (line.startsWith(MARKDOWN_HEADING_PREFIX)) {
+    } else if (MARKDOWN_HEADING_PATTERN.test(line)) {
       flushParagraph()
       flushList()
-      blocks.push({ kind: 'heading', text: line.slice(MARKDOWN_HEADING_PREFIX.length).trim() })
+      blocks.push({ kind: 'heading', text: (MARKDOWN_HEADING_PATTERN.exec(line)?.[1] ?? '').trim() })
     } else if (trimmed.startsWith(MARKDOWN_BULLET_PREFIX)) {
       flushParagraph()
       listItems.push({ text: trimmed.slice(MARKDOWN_BULLET_PREFIX.length).trim(), depth: listDepthOf(line) })
