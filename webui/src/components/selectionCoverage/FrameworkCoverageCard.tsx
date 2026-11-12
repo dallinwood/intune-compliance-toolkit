@@ -87,7 +87,7 @@ function SectionRow({ section }: { section: SectionCoverage }) {
         type="button"
         aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex w-full flex-wrap items-center gap-x-3 gap-y-1 py-2 text-sm ${ROW_BUTTON_CLASS}`}
+        className={`flex w-full flex-wrap items-baseline gap-x-3 gap-y-1 py-2 text-sm ${ROW_BUTTON_CLASS}`}
       >
         <span className="min-w-0 basis-full break-words sm:basis-0 sm:flex-1">{section.section}</span>
         <span className="shrink-0 text-xs text-muted-foreground">
