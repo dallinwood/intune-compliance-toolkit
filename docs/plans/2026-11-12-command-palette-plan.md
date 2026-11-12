@@ -108,3 +108,5 @@
 - [ ] **Step 3: Commit**: `docs: describe the command palette`
 
 ## Progress log
+
+- 2026-11-12: Task 1 done: palette logic (entries, ranking, status, shortcut and platform predicates) with Vitest coverage, and showComparison now also sets the Frameworks view. Commit 4a52109 feat: add command palette search logic.
