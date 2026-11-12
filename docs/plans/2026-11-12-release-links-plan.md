@@ -107,3 +107,5 @@
 
 - 2026-11-12: Task 1 done: empty-release logic (releaseRange.ts, compareReleases from the empty baseline) with Vitest coverage. Commit 5cda032 feat: add an empty-release baseline for release comparisons.
 - 2026-11-12: Task 2 done: release pills are links to their comparison (empty release for the first), Compare releases button removed, comparison view and sidebar support the empty release, with e2e coverage. Commit ce6db6f feat: open a release's changes from its pill on the Frameworks tab.
+- 2026-11-12: Log entries for tasks 1 and 2 recorded. Commits: 8f102fe docs: log the empty-release logic commit in the release links plan; f38f30b docs: log the release pills commit in the release links plan
+- 2026-11-12: Task 3 done, the README now describes release pills as links, the empty release for the first release, and the From select's "Empty release" option; the design is marked implemented and the plan closed. Landed in the commit logged below.

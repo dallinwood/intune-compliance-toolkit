@@ -1,7 +1,7 @@
 # Design: open a release's changes straight from the Frameworks tab
 
 Date: 2026-11-12
-Status: Proposed (the calls in section 8 were made without the maintainer and await review)
+Status: Implemented 2026-11-12 (the calls in section 8 were made without the maintainer and still await review)
 
 ## 1. Intent
 

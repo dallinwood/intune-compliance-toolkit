@@ -132,11 +132,16 @@ In the web UI:
   payloads), toggles for the kind of change (Behaviour, Scope, Wording,
   References), and **Compare any two** releases. Quiet releases fold into one
   bar, and the oldest release kept is the starting point.
-- The **Frameworks** tab lists each framework's releases and opens a
-  comparison of two: counts of rules added, removed, changed and unchanged
-  (each count is also a filter), a diff for any changed rule, and filters for
-  kind of change, section, benchmark and the rules you customised or selected.
-  The comparison is part of the address, so it can be shared.
+- The **Frameworks** tab lists each framework's releases as links. Pressing a
+  release opens what changed in it against the release before it: counts of
+  rules added, removed, changed and unchanged (each count is also a filter), a
+  diff for any changed rule, and filters for kind of change, section,
+  benchmark and the rules you customised or selected. The first release of a
+  framework (or a framework with only one release) is compared with an
+  "Empty release", so every rule in it is listed as added. In the comparison
+  you can still change the framework, From and To; the From select offers
+  "Empty release" as well as the earlier releases. The comparison is part of
+  the address (`from=empty` for the empty release), so it can be shared.
 - A rule whose custom changes were written for an older release says whether
   the rule changed since in a field those custom changes touch.
 
