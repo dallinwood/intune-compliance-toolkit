@@ -1,14 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import type { RuleRow } from '../types/rule-row'
+import type { IndirectMappedRule, IndirectMappings, MappingHop, MappingStep } from './indirectMappings'
 import type { MappedRule } from './mappingIndex'
 import {
   discussionExcerpt,
   distinctMappedRuleCount,
+  filterIndirectPathBlocks,
   filterMappedRuleGroups,
   groupCaption,
+  groupIndirectMappedRules,
   groupMappedRulesBySource,
   isFilterActive,
   relationBadgeLabel,
+  throughDescription,
 } from './mappedRuleView'
 
 function rowFor(ruleId: string, overrides: Partial<RuleRow> = {}): RuleRow {
@@ -182,5 +186,181 @@ describe('discussionExcerpt', () => {
 
   it('returns a short input unchanged, without an ellipsis', () => {
     expect(discussionExcerpt('Short text.', 100)).toBe('Short text.')
+  })
+})
+
+function hop(fromRuleId: string, toRuleId: string, step: MappingStep): MappingHop {
+  const direction = step === 'supports' ? 'outgoing' : step === 'supported-by' ? 'incoming' : 'related'
+  return { fromRuleId, toRuleId, step, link: linkTo(toRuleId, direction) }
+}
+
+function indirectRule(hops: MappingHop[], alsoThroughRuleIds: string[] = []): IndirectMappedRule {
+  const steps = hops.map((each) => each.step)
+  const effectiveRelation = steps.includes('related') ? 'related' : steps[0]
+  return { ruleId: hops[hops.length - 1].toRuleId, path: hops, effectiveRelation, alsoThroughRuleIds }
+}
+
+function indirectOf(...rules: IndirectMappedRule[]): IndirectMappings {
+  return { rules, truncated: false }
+}
+
+describe('groupIndirectMappedRules', () => {
+  const rows = rowsMap(
+    rowFor('mscp.start'),
+    rowFor('asd_ism.ism-1584'),
+    rowFor('asd_ism.ism-0864'),
+    rowFor('asd_ism.ism-0001'),
+    rowFor('asd_e4eit.pro-12.2'),
+    rowFor('asd_e4eit.pro-03.1'),
+    rowFor('asd_e4eit.pro-01.1'),
+    rowFor('mscp.os_b'),
+    rowFor('mscp.os_a'),
+  )
+
+  it('makes one block per through path, with groups keyed by relation and source and items sorted by upstream id', () => {
+    const through1584 = hop('mscp.start', 'asd_ism.ism-1584', 'supports')
+    const blocks = groupIndirectMappedRules(
+      indirectOf(
+        indirectRule([through1584, hop('asd_ism.ism-1584', 'asd_e4eit.pro-12.2', 'related')], ['asd_ism.ism-0864']),
+        indirectRule([through1584, hop('asd_ism.ism-1584', 'asd_e4eit.pro-03.1', 'related')]),
+      ),
+      rows,
+      sourceLabel,
+    )
+    expect(blocks).toHaveLength(1)
+    const [block] = blocks
+    expect(block.throughRuleIds).toEqual(['asd_ism.ism-1584'])
+    expect(block.throughSteps).toEqual(['supports'])
+    expect(block.total).toBe(2)
+    expect(block.groups).toHaveLength(1)
+    const [group] = block.groups
+    expect(group).toMatchObject({ sourceName: 'asd_e4eit', relation: 'related', indirect: true, relationLabel: 'Related, indirectly', total: 2 })
+    expect(group.items.map((item) => item.row.ref.id)).toEqual(['asd_e4eit.pro-03.1', 'asd_e4eit.pro-12.2'])
+    expect(group.items[1].indirect?.alsoThroughRuleIds).toEqual(['asd_ism.ism-0864'])
+    expect(group.items[1].indirect?.path).toHaveLength(2)
+    expect(group.items[1].link.rule).toBe('asd_e4eit.pro-12.2')
+  })
+
+  it('splits blocks by through path and orders them by depth, then through rule source label and upstream id', () => {
+    const toIsm1584 = hop('mscp.start', 'asd_ism.ism-1584', 'supports')
+    const toIsm0864 = hop('mscp.start', 'asd_ism.ism-0864', 'supports')
+    const toMscpB = hop('mscp.start', 'mscp.os_b', 'supported-by')
+    const blocks = groupIndirectMappedRules(
+      indirectOf(
+        indirectRule([toIsm1584, hop('asd_ism.ism-1584', 'asd_e4eit.pro-12.2', 'related'), hop('asd_e4eit.pro-12.2', 'mscp.os_a', 'supported-by')]),
+        indirectRule([toMscpB, hop('mscp.os_b', 'asd_e4eit.pro-01.1', 'related')]),
+        indirectRule([toIsm1584, hop('asd_ism.ism-1584', 'asd_e4eit.pro-03.1', 'related')]),
+        indirectRule([toIsm0864, hop('asd_ism.ism-0864', 'asd_e4eit.pro-03.1', 'related')]),
+      ),
+      rows,
+      sourceLabel,
+    )
+    expect(blocks.map((block) => block.throughRuleIds.join(' > '))).toEqual([
+      'asd_ism.ism-0864',
+      'asd_ism.ism-1584',
+      'mscp.os_b',
+      'asd_ism.ism-1584 > asd_e4eit.pro-12.2',
+    ])
+    expect(blocks[3].throughSteps).toEqual(['supports', 'related'])
+  })
+
+  it('orders through rules by their source label, not their source name', () => {
+    const blocks = groupIndirectMappedRules(
+      indirectOf(
+        indirectRule([hop('mscp.start', 'asd_ism.ism-1584', 'supports'), hop('asd_ism.ism-1584', 'asd_e4eit.pro-12.2', 'related')]),
+        indirectRule([hop('mscp.start', 'mscp.os_b', 'supported-by'), hop('mscp.os_b', 'asd_e4eit.pro-01.1', 'related')]),
+      ),
+      rows,
+      (name) => (name === 'asd_ism' ? 'Zed' : 'Aardvark'),
+    )
+    expect(blocks.map((block) => block.throughRuleIds[0])).toEqual(['mscp.os_b', 'asd_ism.ism-1584'])
+  })
+
+  it('skips rules missing from the rows, and drops a block left empty', () => {
+    const blocks = groupIndirectMappedRules(
+      indirectOf(
+        indirectRule([hop('mscp.start', 'asd_ism.ism-1584', 'supports'), hop('asd_ism.ism-1584', 'asd_e4eit.missing', 'related')]),
+        indirectRule([hop('mscp.start', 'asd_ism.ism-0864', 'supports'), hop('asd_ism.ism-0864', 'asd_e4eit.pro-03.1', 'related')]),
+      ),
+      rows,
+      sourceLabel,
+    )
+    expect(blocks.map((block) => block.throughRuleIds)).toEqual([['asd_ism.ism-0864']])
+  })
+
+  it('keeps supports and related groups apart inside a block, supports first', () => {
+    const blocks = groupIndirectMappedRules(
+      indirectOf(
+        indirectRule([hop('mscp.start', 'asd_ism.ism-1584', 'supports'), hop('asd_ism.ism-1584', 'asd_e4eit.pro-12.2', 'related')]),
+        indirectRule([hop('mscp.start', 'asd_ism.ism-1584', 'supports'), hop('asd_ism.ism-1584', 'asd_ism.ism-0001', 'supports')]),
+      ),
+      rows,
+      sourceLabel,
+    )
+    expect(blocks).toHaveLength(1)
+    expect(blocks[0].groups.map((group) => group.relationLabel)).toEqual(['Supports, indirectly', 'Related, indirectly'])
+  })
+})
+
+describe('filterIndirectPathBlocks', () => {
+  const rows = rowsMap(
+    rowFor('mscp.start'),
+    rowFor('asd_ism.ism-1584'),
+    rowFor('asd_ism.ism-0864'),
+    rowFor('asd_e4eit.pro-12.2', { title: 'Patch operating systems' }),
+    rowFor('asd_e4eit.pro-03.1', { assessment: { status: 'manual', manual_reason: 'manual' } }),
+    rowFor('asd_e4eit.pro-01.1'),
+  )
+  const blocks = groupIndirectMappedRules(
+    indirectOf(
+      indirectRule([hop('mscp.start', 'asd_ism.ism-1584', 'supports'), hop('asd_ism.ism-1584', 'asd_e4eit.pro-12.2', 'related')]),
+      indirectRule([hop('mscp.start', 'asd_ism.ism-1584', 'supports'), hop('asd_ism.ism-1584', 'asd_e4eit.pro-03.1', 'related')]),
+      indirectRule([hop('mscp.start', 'asd_ism.ism-0864', 'supports'), hop('asd_ism.ism-0864', 'asd_e4eit.pro-01.1', 'related')]),
+    ),
+    rows,
+    sourceLabel,
+  )
+
+  it('keeps everything when no filter is active', () => {
+    expect(filterIndirectPathBlocks(blocks, { text: '', assessment: 'all' })).toEqual(blocks)
+  })
+
+  it('filters by text across blocks, dropping empty groups and blocks, and keeps the unfiltered totals', () => {
+    const filtered = filterIndirectPathBlocks(blocks, { text: 'patch', assessment: 'all' })
+    expect(filtered).toHaveLength(1)
+    expect(filtered[0].throughRuleIds).toEqual(['asd_ism.ism-1584'])
+    expect(filtered[0].groups[0].items.map((item) => item.row.ref.id)).toEqual(['asd_e4eit.pro-12.2'])
+    expect(filtered[0].groups[0].total).toBe(2)
+  })
+
+  it('filters by assessment across blocks', () => {
+    const filtered = filterIndirectPathBlocks(blocks, { text: '', assessment: 'manual' })
+    expect(filtered.map((block) => block.groups[0].items.map((item) => item.row.ref.id))).toEqual([['asd_e4eit.pro-03.1']])
+  })
+
+  it('returns nothing when no row matches', () => {
+    expect(filterIndirectPathBlocks(blocks, { text: 'zzz', assessment: 'all' })).toEqual([])
+  })
+})
+
+describe('throughDescription', () => {
+  const ruleLabel = (ruleId: string) => `LABEL ${ruleId}`
+  function blockThrough(throughRuleIds: string[], throughSteps: MappingStep[]) {
+    return { key: throughRuleIds.join('\n'), throughRuleIds, throughSteps, groups: [], total: 0 }
+  }
+
+  it('words a one-rule path from the open rule', () => {
+    expect(throughDescription(blockThrough(['a'], ['supports']), ruleLabel)).toBe('Through LABEL a (this rule supports it)')
+    expect(throughDescription(blockThrough(['a'], ['supported-by']), ruleLabel)).toBe('Through LABEL a (this rule is supported by it)')
+    expect(throughDescription(blockThrough(['a'], ['related']), ruleLabel)).toBe('Through LABEL a (this rule is related to it)')
+  })
+
+  it('words each later step from the previous rule, joined with ", then "', () => {
+    expect(throughDescription(blockThrough(['a', 'b', 'c'], ['supports', 'related', 'supported-by']), ruleLabel)).toBe(
+      'Through LABEL a (this rule supports it), then LABEL b (related to it), then LABEL c (is supported by it)',
+    )
+    expect(throughDescription(blockThrough(['a', 'b'], ['supported-by', 'supports']), ruleLabel)).toBe(
+      'Through LABEL a (this rule is supported by it), then LABEL b (supports it)',
+    )
   })
 })

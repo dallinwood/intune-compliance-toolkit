@@ -2,7 +2,7 @@
 
 Date: 2026-11-12
 Status: Proposed. Section 9 lists the calls made without the maintainer; the traversal rule
-(section 5.1) needs the maintainer's confirmation before Task 3 starts.
+(section 5.1) was confirmed by the maintainer on 2026-11-12.
 
 ## 1. Intent
 
@@ -114,7 +114,7 @@ the rule in section 5.1.
 
 ## 5. Behaviour
 
-### 5.1 Which chains count (maintainer to confirm)
+### 5.1 Which chains count (confirmed by the maintainer, 2026-11-12)
 
 Links are viewable from both sides, so every hop has a step as seen from the rule it leaves:
 **up** (this rule `supports` the next, an `outgoing` entry), **down** (this rule is supported
@@ -401,7 +401,7 @@ and 2 can ship before the traversal rule is confirmed.
 
 | Decision | Alternatives |
 |---|---|
-| **Traversal rule (confirm before Task 3):** follow `supports` hops only in one direction per chain, and at most one `related` hop; peers ("also supports the same control") are left out. | Every link in every direction (494 of 764 rules from the gatekeeper rule by depth 10); one level of every link, non-recursive (12 for the gatekeeper rule, 57 for ISM-0380); a separate closed "Also supports the same controls" group. |
+| **Traversal rule.** Confirmed by the maintainer on 2026-11-12 (they want the support chain, not nested peers or an exponential field, and direct mappings matter more than indirect): follow `supports` hops only in one direction per chain, and at most one `related` hop; peers ("also supports the same control") are left out. | Every link in every direction (494 of 764 rules from the gatekeeper rule by depth 10); one level of every link, non-recursive (12 for the gatekeeper rule, 57 for ISM-0380); a separate closed "Also supports the same controls" group. |
 | Depth cap 4 hops, with a visible note when it cuts a chain. Termination comes from the visited-state set, not the cap. | 10, as the maintainer suggested; 2, matching today's data exactly. |
 | Weakest-hop wording: any `related` hop makes the chain "Related, indirectly". | Show each hop's relation only, with no summary relation. |
 | A rule reachable by several paths is listed once (shortest, then strongest, then by id) with an "Also through" line. | List it under every path (12 rules twice for IT.DET-01.1). |

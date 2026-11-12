@@ -1,5 +1,6 @@
 import type { RuleRow } from '../types/rule-row'
 import { compareText } from './catalogIndex'
+import type { IndirectMappings, MappingHop, MappingStep } from './indirectMappings'
 import { mappingGroupLabel, type MappedRule } from './mappingIndex'
 import { upstreamRuleId } from './ruleDisplay'
 
@@ -13,6 +14,8 @@ export interface MappedRuleFilter {
 export interface MappedRuleItem {
   link: MappedRule
   row: RuleRow
+  // Present on indirect items only; link is then the last hop's entry.
+  indirect?: { path: MappingHop[]; alsoThroughRuleIds: string[] }
 }
 
 export type MappingGroupRelation = 'supports' | 'supported-by' | 'related'
@@ -77,12 +80,102 @@ export function groupMappedRulesBySource(
   for (const group of groups) {
     group.items.sort((left, right) => compareText(upstreamRuleId(left.row.ref.id), upstreamRuleId(right.row.ref.id)))
   }
+  return sortGroups(groups, sourceLabel)
+}
+
+export interface IndirectPathBlock {
+  // The through rule ids joined.
+  key: string
+  throughRuleIds: string[]
+  // The step into each through rule.
+  throughSteps: MappingStep[]
+  groups: MappedSourceGroup[]
+  // The block's size before any filter.
+  total: number
+}
+
+function sortGroups(groups: MappedSourceGroup[], sourceLabel: (sourceName: string) => string): MappedSourceGroup[] {
   return groups.sort(
     (left, right) =>
       RELATION_ORDER.indexOf(left.relation) - RELATION_ORDER.indexOf(right.relation) ||
       compareText(sourceLabel(left.sourceName), sourceLabel(right.sourceName)) ||
       compareText(left.relationLabel, right.relationLabel),
   )
+}
+
+export function groupIndirectMappedRules(
+  indirect: IndirectMappings,
+  rowsById: ReadonlyMap<string, RuleRow>,
+  sourceLabel: (sourceName: string) => string,
+): IndirectPathBlock[] {
+  const blocksByKey = new Map<string, IndirectPathBlock>()
+  for (const rule of indirect.rules) {
+    const row = rowsById.get(rule.ruleId)
+    if (row === undefined) continue
+    const throughHops = rule.path.slice(0, -1)
+    const throughRuleIds = throughHops.map((hop) => hop.toRuleId)
+    const key = throughRuleIds.join('\n')
+    const block = blocksByKey.get(key) ?? { key, throughRuleIds, throughSteps: throughHops.map((hop) => hop.step), groups: [], total: 0 }
+    const relationLabel = relationBadgeLabel(rule.effectiveRelation, true)
+    const groupKey = `${row.sourceName}:${relationLabel}`
+    let group = block.groups.find((candidate) => candidate.key === groupKey)
+    if (group === undefined) {
+      group = { key: groupKey, sourceName: row.sourceName, relationLabel, relation: rule.effectiveRelation, indirect: true, items: [], total: 0 }
+      block.groups.push(group)
+    }
+    group.items.push({
+      link: rule.path[rule.path.length - 1].link,
+      row,
+      indirect: { path: rule.path, alsoThroughRuleIds: rule.alsoThroughRuleIds },
+    })
+    group.total = group.items.length
+    block.total += 1
+    blocksByKey.set(key, block)
+  }
+
+  const sourceLabelOfRule = (ruleId: string) => {
+    const row = rowsById.get(ruleId)
+    return row === undefined ? ruleId : sourceLabel(row.sourceName)
+  }
+  const blocks = [...blocksByKey.values()]
+  for (const block of blocks) {
+    for (const group of block.groups) {
+      group.items.sort((left, right) => compareText(upstreamRuleId(left.row.ref.id), upstreamRuleId(right.row.ref.id)))
+    }
+    sortGroups(block.groups, sourceLabel)
+  }
+  return blocks.sort((left, right) => {
+    const byDepth = left.throughRuleIds.length - right.throughRuleIds.length
+    if (byDepth !== 0) return byDepth
+    for (const [position, leftRuleId] of left.throughRuleIds.entries()) {
+      const rightRuleId = right.throughRuleIds[position]
+      const byThroughRule =
+        compareText(sourceLabelOfRule(leftRuleId), sourceLabelOfRule(rightRuleId)) ||
+        compareText(upstreamRuleId(leftRuleId), upstreamRuleId(rightRuleId))
+      if (byThroughRule !== 0) return byThroughRule
+    }
+    return compareText(left.key, right.key)
+  })
+}
+
+const STEP_INTO_FIRST_RULE: Record<MappingStep, string> = {
+  supports: 'this rule supports it',
+  'supported-by': 'this rule is supported by it',
+  related: 'this rule is related to it',
+}
+
+const STEP_INTO_LATER_RULE: Record<MappingStep, string> = {
+  supports: 'supports it',
+  'supported-by': 'is supported by it',
+  related: 'related to it',
+}
+
+export function throughDescription(block: IndirectPathBlock, ruleLabel: (ruleId: string) => string): string {
+  const parts = block.throughRuleIds.map((ruleId, position) => {
+    const wording = position === 0 ? STEP_INTO_FIRST_RULE : STEP_INTO_LATER_RULE
+    return `${ruleLabel(ruleId)} (${wording[block.throughSteps[position]]})`
+  })
+  return `Through ${parts.join(', then ')}`
 }
 
 function itemMatches(item: MappedRuleItem, filter: MappedRuleFilter): boolean {
@@ -96,6 +189,12 @@ export function filterMappedRuleGroups(groups: readonly MappedSourceGroup[], fil
   return groups
     .map((group) => ({ ...group, items: group.items.filter((item) => itemMatches(item, filter)) }))
     .filter((group) => group.items.length > 0)
+}
+
+export function filterIndirectPathBlocks(blocks: readonly IndirectPathBlock[], filter: MappedRuleFilter): IndirectPathBlock[] {
+  return blocks
+    .map((block) => ({ ...block, groups: filterMappedRuleGroups(block.groups, filter) }))
+    .filter((block) => block.groups.length > 0)
 }
 
 export function isFilterActive(filter: MappedRuleFilter): boolean {
