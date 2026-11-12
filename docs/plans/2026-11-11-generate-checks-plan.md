@@ -124,3 +124,4 @@
 - 2026-11-12: Task 2 done. Extracted `loadCustomChangeStatus` into `webui/src/data/customChanges.ts`, added `GenerateChecksPanel`, and replaced the overlay-issue note and blocked alert on the Generate screen with it; new `generate-checks.spec.ts` covers error, newest-release note, history-unavailable and clean cases. Commit: c56f07b feat: show structured checks on the Generate screen
 - 2026-11-12: Log entries for tasks 1 and 2 recorded. Commits: 5315dcc docs: log the generate checks logic commit in the plan; e03ca14 docs: log the Generate checks panel commit in the plan
 - 2026-11-12: Task 3 done, the README now describes the Generate screen's Checks list (six checks with ids and severities, only errors block the download) and the analysis doc marks idea 2 built. Plan closed and design marked implemented. Landed in the commit logged below.
+- 2026-11-12: Task 3 commit hash. Commit: c807a8a docs: describe the Generate screen checks and close the plan
