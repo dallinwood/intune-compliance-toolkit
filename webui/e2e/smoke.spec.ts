@@ -1940,13 +1940,13 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
-    const group = groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')
+    const group = groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')
     await expect(group).toHaveAttribute('aria-expanded', 'false')
     await expect(mappedRulesPanel(page, ISM_1622).getByRole('listitem')).toHaveCount(0)
     await group.click()
     await expect(group).toHaveAttribute('aria-expanded', 'true')
 
-    const items = mappedRulesPanel(page, ISM_1622).getByRole('list', { name: 'NIST mSCP Supported by' }).getByRole('listitem')
+    const items = mappedRulesPanel(page, ISM_1622).getByRole('list', { name: 'Supported by: NIST mSCP' }).getByRole('listitem')
     await expect(items).toHaveCount(2)
     await expect(items.nth(0)).toContainText(/os_dictation_disable/)
     await expect(items.nth(1)).toContainText(/os_gatekeeper_enable/)
@@ -1960,9 +1960,9 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=os_gatekeeper_enable&rule=${GATEKEEPER}`)
     await openMappedRules(page, GATEKEEPER)
 
-    const group = groupButton(page, GATEKEEPER, 'ASD ISM Supports (1)')
+    const group = groupButton(page, GATEKEEPER, 'Supports ASD ISM (1)')
     await group.click()
-    const items = mappedRulesPanel(page, GATEKEEPER).getByRole('list', { name: 'ASD ISM Supports' }).getByRole('listitem')
+    const items = mappedRulesPanel(page, GATEKEEPER).getByRole('list', { name: 'Supports: ASD ISM' }).getByRole('listitem')
     await expect(items).toHaveCount(1)
     await expect(items.first()).toContainText(/ism-1622/)
     await expect(items.first()).toContainText(ISM_1622_TITLE)
@@ -1974,12 +1974,12 @@ test.describe('rule mappings', () => {
     await openMappedRules(page, ISM_1622)
 
     await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('gatekeeper')
-    const filtered = groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 2)')
+    const filtered = groupButton(page, ISM_1622, 'Supported by NIST mSCP (1 of 2)')
     await expect(filtered).toHaveAttribute('aria-expanded', 'true')
     await expect(mappedRulesPanel(page, ISM_1622).getByRole('listitem')).toHaveCount(1)
 
     await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('')
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')).toHaveAttribute('aria-expanded', 'false')
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')).toHaveAttribute('aria-expanded', 'false')
   })
 
   test('the assessment choice filters rows and the filter survives a tab switch', async ({ page }) => {
@@ -2001,19 +2001,19 @@ test.describe('rule mappings', () => {
     for (const name of ['All', 'Automated', 'Manual']) {
       await expect(assessment.getByRole('radio', { name, exact: true })).toBeVisible()
     }
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (3)')).toHaveAttribute('aria-expanded', 'false')
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (3)')).toHaveAttribute('aria-expanded', 'false')
 
     await assessment.getByRole('radio', { name: 'Manual', exact: true }).click()
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 3)')).toHaveAttribute('aria-expanded', 'true')
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (1 of 3)')).toHaveAttribute('aria-expanded', 'true')
     await expect(panel.getByRole('listitem')).toHaveCount(1)
     await expect(panel.getByRole('listitem').first()).toContainText(/audit_alert_processing_fail/)
 
     await assessment.getByRole('radio', { name: 'Automated', exact: true }).click()
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (2 of 3)')).toBeVisible()
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (2 of 3)')).toBeVisible()
     await expect(panel.getByRole('listitem')).toHaveCount(2)
 
     await panel.getByRole('textbox', { name: 'Filter mapped rules' }).fill('gatekeeper')
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 3)')).toBeVisible()
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (1 of 3)')).toBeVisible()
     await detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' }).click()
     await mappedRulesTab(page, ISM_1622).click()
     await expect(panel.getByRole('textbox', { name: 'Filter mapped rules' })).toHaveValue('gatekeeper')
@@ -2025,7 +2025,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
     await titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable').hover()
     const summary = summaryTooltip(page, 'Check: yes')
@@ -2042,7 +2042,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
     await page.keyboard.press('Tab')
     await expect(titleButton(mappedRow(page, ISM_1622, 'os_dictation_disable'), 'os_dictation_disable')).toBeFocused()
@@ -2056,7 +2056,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
     const row = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
     const title = titleButton(row, 'os_gatekeeper_enable')
@@ -2078,7 +2078,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
     const row = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
     const title = titleButton(row, 'os_gatekeeper_enable')
@@ -2101,7 +2101,7 @@ test.describe('rule mappings', () => {
     })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
 
     await titleButton(mappedRow(page, ISM_1622, 'os_software_update_deferral'), 'os_software_update_deferral').hover()
     const summary = summaryTooltip(page, 'Check: ')
@@ -2116,7 +2116,7 @@ test.describe('rule mappings', () => {
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveCount(0)
 
     const gatekeeperRow = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
@@ -2126,7 +2126,7 @@ test.describe('rule mappings', () => {
     expect(new URL(page.url()).searchParams.get('rule')).toBe(GATEKEEPER)
     await expect(mappedRulesTab(page, GATEKEEPER)).toHaveAccessibleName('Mapped rules (1)')
     await openMappedRules(page, GATEKEEPER)
-    await groupButton(page, GATEKEEPER, 'ASD ISM Supports (1)').click()
+    await groupButton(page, GATEKEEPER, 'Supports ASD ISM (1)').click()
     await expect(mappedRulesPanel(page, GATEKEEPER).getByTestId('mapped-rule')).toContainText(ISM_1622_TITLE)
 
     // A filter that would hide the target is cleared on the way back; the
@@ -2148,7 +2148,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     const gatekeeperRow = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
     await titleButton(gatekeeperRow, 'os_gatekeeper_enable').click()
 
@@ -2174,7 +2174,7 @@ test.describe('rule mappings', () => {
     })
     await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
     await openMappedRules(page, calendar)
-    await groupButton(page, calendar, 'NIST mSCP Related (1)').click()
+    await groupButton(page, calendar, 'Related NIST mSCP (1)').click()
     const familyControlsRow = mappedRulesPanel(page, calendar).getByTestId('mapped-rule')
     await titleButton(familyControlsRow, 'os_calendar_app_disable_familycontrols').click()
     await expect(familyControlsRow.getByRole('heading', { name: 'Check' })).toBeVisible()
@@ -2199,7 +2199,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
     await titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable').hover()
     const summary = summaryTooltip(page, 'Details could not be loaded.')
@@ -2212,12 +2212,12 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    const group = groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')
+    const group = groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')
     await group.click()
 
     const filterBox = mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' })
     await filterBox.fill('gatekeeper')
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (1 of 2)')).toHaveAttribute('aria-expanded', 'true')
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (1 of 2)')).toHaveAttribute('aria-expanded', 'true')
     await filterBox.fill('')
     await expect(group).toHaveAttribute('aria-expanded', 'true')
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('mapped-rule')).toHaveCount(2)
@@ -2227,14 +2227,14 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     const title = titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')
     await title.click()
     await expect(title).toHaveAttribute('aria-expanded', 'true')
 
     await detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' }).click()
     await openMappedRules(page, ISM_1622)
-    await expect(groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')).toHaveAttribute('aria-expanded', 'true')
+    await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')).toHaveAttribute('aria-expanded', 'true')
     await expect(title).toHaveAttribute('aria-expanded', 'true')
     await expect(mappedRow(page, ISM_1622, 'os_gatekeeper_enable').getByRole('heading', { name: 'Check' })).toBeVisible()
     await expect(titleButton(mappedRow(page, ISM_1622, 'os_dictation_disable'), 'os_dictation_disable')).toHaveAttribute('aria-expanded', 'false')
@@ -2244,7 +2244,7 @@ test.describe('rule mappings', () => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)').click()
+    await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     await titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable').click()
 
     await page.getByRole('button', { name: 'Collapse ism-1622' }).click()
@@ -2253,7 +2253,7 @@ test.describe('rule mappings', () => {
     await expect(detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' })).toHaveAttribute('aria-selected', 'true')
 
     await openMappedRules(page, ISM_1622)
-    const group = groupButton(page, ISM_1622, 'NIST mSCP Supported by (2)')
+    const group = groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')
     await expect(group).toHaveAttribute('aria-expanded', 'false')
     await group.click()
     await expect(titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')).toHaveAttribute('aria-expanded', 'false')
@@ -2273,7 +2273,7 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
-    await groupButton(page, ISM_1622, 'ASD ISM Related (1)').click()
+    await groupButton(page, ISM_1622, 'Related ASD ISM (1)').click()
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveText(
       `This link was checked against ASD ISM ${STALE_ISM_RELEASE} for ism-1621, which is now from ${ISM_RELEASE}. Review it for accuracy.`,
     )
@@ -2289,7 +2289,7 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
-    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
     const labels = mscpKindsChangedSince(CHANGED_MSCP_RULE).map((kind) => kind.charAt(0).toUpperCase() + kind.slice(1))
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveText(
       `Mapped against ${mscpFirstRelease}; ${CHANGED_MSCP_RULE.replace('mscp.', '')} has changed since (${labels.join(', ')}). Review the link.`,
@@ -2306,7 +2306,7 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
-    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
     await expect(mappedRow(page, ISM_1622, UNCHANGED_MSCP_RULE.replace('mscp.', ''))).toBeVisible()
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveCount(0)
   })
@@ -2316,7 +2316,7 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=ism-1621&rule=${ISM_1621}`)
     await openMappedRules(page, ISM_1621)
 
-    await groupButton(page, ISM_1621, 'ASD ISM Related (1)').click()
+    await groupButton(page, ISM_1621, 'Related ASD ISM (1)').click()
     await expect(mappedRulesPanel(page, ISM_1621).getByTestId('stale-mapping-note')).toHaveCount(1)
   })
 
@@ -2342,7 +2342,7 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
 
     await openMappedRules(page, ISM_1622)
-    await groupButton(page, ISM_1622, 'NIST mSCP Related (1)').click()
+    await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
     const passwordLink = mappedRulesPanel(page, ISM_1622).getByRole('button', { name: /pwpolicy_minimum_length_enforce/ })
     await expect(passwordLink).toContainText(/Require a Minimum Password Length of \d+ Characters/)
     await expect(passwordLink).toHaveAccessibleName(/Require a Minimum Password Length of \d+ Characters/)
@@ -2368,7 +2368,7 @@ test.describe('rule mappings', () => {
     await page.locator(`[data-rule-id="${familyControls}"]`).getByRole('button', { name: 'Expand os_calendar_app_disable_familycontrols' }).click()
 
     await openMappedRules(page, familyControls)
-    await groupButton(page, familyControls, 'NIST mSCP Related (1)').click()
+    await groupButton(page, familyControls, 'Related NIST mSCP (1)').click()
     const calendarMappedRow = mappedRulesPanel(page, familyControls).getByTestId('mapped-rule')
     await calendarMappedRow.getByRole('button', { name: /os_calendar_app_disable(?!_)/ }).click()
     const linkBack = calendarMappedRow.getByRole('link', { name: 'Go to this rule' })
@@ -2395,7 +2395,7 @@ test.describe('rule mappings', () => {
     await expect(detailOf(page, calendar)).toBeVisible()
 
     await openMappedRules(page, calendar)
-    await groupButton(page, calendar, 'NIST mSCP Related (1)').click()
+    await groupButton(page, calendar, 'Related NIST mSCP (1)').click()
     const familyControlsMappedRow = mappedRulesPanel(page, calendar).getByTestId('mapped-rule')
     await familyControlsMappedRow.getByRole('button', { name: /os_calendar_app_disable_familycontrols/ }).click()
     await familyControlsMappedRow.getByRole('link', { name: 'Go to this rule' }).click()

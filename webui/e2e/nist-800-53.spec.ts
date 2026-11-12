@@ -128,8 +128,8 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     await openRuleWithCommittedMappings(page, GATEKEEPER, 'os_gatekeeper_enable')
     const panel = mappedRulesPanel(page, GATEKEEPER)
 
-    await panel.getByRole('button', { name: 'NIST SP 800-53 Supports (5)', exact: true }).click()
-    const items = panel.getByRole('list', { name: 'NIST SP 800-53 Supports' }).getByRole('listitem')
+    await panel.getByRole('button', { name: 'Supports NIST SP 800-53 (5)', exact: true }).click()
+    const items = panel.getByRole('list', { name: 'Supports: NIST SP 800-53' }).getByRole('listitem')
     await expect(items).toHaveCount(5)
     for (const controlId of ['cm-14', 'cm-5', 'si-7.1', 'si-7.15', 'si-3']) {
       const item = items.filter({ has: page.getByRole('button', { name: new RegExp(`^[^:]*${controlId.replaceAll('.', '[.]')}:`) }) })
@@ -142,14 +142,14 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     await openRuleWithCommittedMappings(page, CM_7, 'cm-7')
     const panel = mappedRulesPanel(page, CM_7)
 
-    const group = panel.getByRole('button', { name: 'NIST mSCP Supported by (77)', exact: true })
+    const group = panel.getByRole('button', { name: 'Supported by NIST mSCP (77)', exact: true })
     await expect(group).toHaveAttribute('aria-expanded', 'false')
     await group.click()
-    const items = panel.getByRole('list', { name: 'NIST mSCP Supported by' }).getByRole('listitem')
+    const items = panel.getByRole('list', { name: 'Supported by: NIST mSCP' }).getByRole('listitem')
     await expect(items).toHaveCount(77)
 
     await panel.getByRole('textbox', { name: 'Filter mapped rules' }).fill('os_airdrop_disable')
-    await expect(panel.getByRole('button', { name: 'NIST mSCP Supported by (1 of 77)', exact: true })).toHaveAttribute('aria-expanded', 'true')
+    await expect(panel.getByRole('button', { name: 'Supported by NIST mSCP (1 of 77)', exact: true })).toHaveAttribute('aria-expanded', 'true')
     await expect(items).toHaveCount(1)
     await expect(items.first()).toContainText('os_airdrop_disable')
   })
@@ -157,7 +157,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
   test('Go to this rule moves between an mSCP rule and an 800-53 control, in both directions', async ({ page }) => {
     await openRuleWithCommittedMappings(page, GATEKEEPER, 'os_gatekeeper_enable')
     const mscpPanel = mappedRulesPanel(page, GATEKEEPER)
-    await mscpPanel.getByRole('button', { name: 'NIST SP 800-53 Supports (5)', exact: true }).click()
+    await mscpPanel.getByRole('button', { name: 'Supports NIST SP 800-53 (5)', exact: true }).click()
     const cm5Row = mscpPanel.getByTestId('mapped-rule').filter({ hasText: 'cm-5' })
     await cm5Row.getByRole('button', { name: /^[^:]*cm-5:/ }).click()
     await cm5Row.getByRole('link', { name: 'Go to this rule' }).click()
@@ -167,7 +167,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     expect(new URL(page.url()).searchParams.get('rule')).toBe(cm5)
     await detailOf(page, cm5).getByRole('tab', { name: /^Mapped rules/ }).click()
     const controlPanel = mappedRulesPanel(page, cm5)
-    await controlPanel.getByRole('button', { name: /^NIST mSCP Supported by \(\d+\)$/ }).click()
+    await controlPanel.getByRole('button', { name: /^Supported by NIST mSCP \(\d+\)$/ }).click()
     const gatekeeperRow = controlPanel.getByTestId('mapped-rule').filter({ hasText: 'os_gatekeeper_enable' })
     await gatekeeperRow.getByRole('button', { name: /^[^:]*os_gatekeeper_enable:/ }).click()
     await gatekeeperRow.getByRole('link', { name: 'Go to this rule' }).click()

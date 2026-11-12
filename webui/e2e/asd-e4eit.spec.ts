@@ -120,7 +120,7 @@ test.describe('ASD E4EIT rules with no mappings loaded', () => {
 test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () => {
   test.use({ viewport: { width: 1280, height: 900 } })
 
-  async function openMappedRules(page: Page, ruleId: string, search: string) {
+  async function openCommittedMappedRules(page: Page, ruleId: string, search: string) {
     await page.route('**/baselines/_mappings/_index.json', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(committedMappingIndex) }),
     )
@@ -129,7 +129,11 @@ test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () =
     await expect(ruleCount(page)).toHaveText(/^\d+ of 2567 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
-    await mappedRulesPanel(page, ruleId).getByRole('button', { name: /Related \(\d+\)$/ }).click()
+  }
+
+  async function openMappedRules(page: Page, ruleId: string, search: string) {
+    await openCommittedMappedRules(page, ruleId, search)
+    await mappedRulesPanel(page, ruleId).getByRole('button', { name: /^Related ASD (ISM|E4EIT) \(\d+\)$/ }).click()
   }
 
   test('an E4EIT action lists ism-1997 and the ISM control lists it.gov-01.1', async ({ page }) => {
@@ -138,5 +142,21 @@ test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () =
 
     await openMappedRules(page, 'asd_ism.ism-1997', 'ism-1997')
     await expect(mappedRulesPanel(page, 'asd_ism.ism-1997')).toContainText('it.gov-01.1')
+  })
+  test('each group names the relation first and its caption says who supports whom', async ({ page }) => {
+    const gatekeeper = 'mscp.system_settings_gatekeeper_override_disallow'
+    await openCommittedMappedRules(page, gatekeeper, 'system_settings_gatekeeper_override_disallow')
+    const gatekeeperPanel = mappedRulesPanel(page, gatekeeper)
+    const supportsGroup = gatekeeperPanel.getByRole('button', { name: /^Supports ASD ISM \(\d+\)$/ })
+    await supportsGroup.click()
+    await expect(gatekeeperPanel.getByText('This rule supports each rule below.')).toBeVisible()
+    await expect(gatekeeperPanel.getByRole('list', { name: 'Supports: ASD ISM' })).toBeVisible()
+
+    const control = 'asd_ism.ism-1584'
+    await openCommittedMappedRules(page, control, 'ism-1584')
+    const controlPanel = mappedRulesPanel(page, control)
+    await controlPanel.getByRole('button', { name: /^Supported by NIST mSCP \(\d+\)$/ }).click()
+    await expect(controlPanel.getByText('Each rule below supports this rule.')).toBeVisible()
+    await expect(controlPanel.getByRole('list', { name: 'Supported by: NIST mSCP' })).toBeVisible()
   })
 })

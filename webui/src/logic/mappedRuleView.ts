@@ -15,10 +15,43 @@ export interface MappedRuleItem {
   row: RuleRow
 }
 
+export type MappingGroupRelation = 'supports' | 'supported-by' | 'related'
+
+const RELATION_ORDER: readonly MappingGroupRelation[] = ['supports', 'supported-by', 'related']
+
+const RELATION_BADGE_LABELS: Record<MappingGroupRelation, string> = {
+  supports: 'Supports',
+  'supported-by': 'Supported by',
+  related: 'Related',
+}
+
+export function relationBadgeLabel(relation: MappingGroupRelation, indirect: boolean): string {
+  return indirect ? `${RELATION_BADGE_LABELS[relation]}, indirectly` : RELATION_BADGE_LABELS[relation]
+}
+
+export function groupCaption(relation: MappingGroupRelation, indirect: boolean): string {
+  const adverb = indirect ? 'indirectly ' : ''
+  switch (relation) {
+    case 'supports':
+      return `This rule ${adverb}supports each rule below.`
+    case 'supported-by':
+      return `Each rule below ${adverb}supports this rule.`
+    case 'related':
+      return `This rule is ${adverb}related to each rule below.`
+  }
+}
+
+function relationOf(link: MappedRule): MappingGroupRelation {
+  if (link.relation === 'related') return 'related'
+  return link.direction === 'outgoing' ? 'supports' : 'supported-by'
+}
+
 export interface MappedSourceGroup {
   key: string
   sourceName: string
   relationLabel: string
+  relation: MappingGroupRelation
+  indirect: boolean
   items: MappedRuleItem[]
   // The group's size before any filter.
   total: number
@@ -35,7 +68,7 @@ export function groupMappedRulesBySource(
     if (row === undefined) continue
     const relationLabel = mappingGroupLabel(link.relation, link.direction)
     const key = `${row.sourceName}:${relationLabel}`
-    const group = groupsByKey.get(key) ?? { key, sourceName: row.sourceName, relationLabel, items: [], total: 0 }
+    const group = groupsByKey.get(key) ?? { key, sourceName: row.sourceName, relationLabel, relation: relationOf(link), indirect: false, items: [], total: 0 }
     group.items.push({ link, row })
     group.total = group.items.length
     groupsByKey.set(key, group)
@@ -45,7 +78,10 @@ export function groupMappedRulesBySource(
     group.items.sort((left, right) => compareText(upstreamRuleId(left.row.ref.id), upstreamRuleId(right.row.ref.id)))
   }
   return groups.sort(
-    (left, right) => compareText(sourceLabel(left.sourceName), sourceLabel(right.sourceName)) || compareText(left.relationLabel, right.relationLabel),
+    (left, right) =>
+      RELATION_ORDER.indexOf(left.relation) - RELATION_ORDER.indexOf(right.relation) ||
+      compareText(sourceLabel(left.sourceName), sourceLabel(right.sourceName)) ||
+      compareText(left.relationLabel, right.relationLabel),
   )
 }
 

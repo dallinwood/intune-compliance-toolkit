@@ -1,5 +1,6 @@
 import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react'
 import { useId, useMemo, type MouseEvent } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,11 +9,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useDisplayTitle } from '../../hooks/useDisplayTitle'
 import {
   filterMappedRuleGroups,
+  groupCaption,
   groupMappedRulesBySource,
   isFilterActive,
+  relationBadgeLabel,
   type AssessmentChoice,
   type MappedRuleItem,
   type MappedSourceGroup,
+  type MappingGroupRelation,
 } from '../../logic/mappedRuleView'
 import { KIND_LABELS } from '../../logic/changeLabels'
 import { staleEndpoints } from '../../logic/mappingIndex'
@@ -45,6 +49,12 @@ const ASSESSMENT_OPTIONS: { value: AssessmentChoice; label: string }[] = [
   { value: 'automated', label: 'Automated' },
   { value: 'manual', label: 'Manual' },
 ]
+
+const RELATION_BADGE_VARIANTS: Record<MappingGroupRelation, 'default' | 'secondary' | 'outline'> = {
+  supports: 'default',
+  'supported-by': 'secondary',
+  related: 'outline',
+}
 
 function isAssessmentChoice(value: unknown): value is AssessmentChoice {
   return ASSESSMENT_OPTIONS.some((option) => option.value === value)
@@ -139,7 +149,8 @@ function MappedSourceGroupSection({
 }) {
   const vocabularyIndex = useVocabularyIndex()
   const listId = useId()
-  const heading = `${termLabel(vocabularyIndex, 'sources', group.sourceName)} ${group.relationLabel}`
+  const sourceLabel = termLabel(vocabularyIndex, 'sources', group.sourceName)
+  const relationLabel = relationBadgeLabel(group.relation, group.indirect)
   const count = filtering ? `${group.items.length} of ${group.total}` : `${group.total}`
   const Chevron = isOpen ? ChevronDown : ChevronRight
 
@@ -156,22 +167,26 @@ function MappedSourceGroupSection({
           className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left font-medium hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           <Chevron className="size-4 shrink-0" aria-hidden="true" />
-          <span className="min-w-0 break-words">{heading}</span>
+          <Badge variant={RELATION_BADGE_VARIANTS[group.relation]}>{relationLabel}</Badge>
+          <span className="min-w-0 break-words">{sourceLabel}</span>
           <span className="shrink-0 text-muted-foreground">({count})</span>
         </button>
       </h4>
       {isOpen && (
-        <ul id={listId} aria-label={heading} className="divide-y divide-border border-t border-border px-3">
-          {group.items.map((item) => (
-            <MappedRuleRow
-              key={item.link.rule}
-              item={item}
-              self={self}
-              isExpanded={view.expandedRuleIds.has(item.row.ref.id)}
-              onToggle={() => view.toggleRule(item.row.ref.id)}
-            />
-          ))}
-        </ul>
+        <div className="border-t border-border">
+          <p className="px-3 pt-2 text-xs text-muted-foreground">{groupCaption(group.relation, group.indirect)}</p>
+          <ul id={listId} aria-label={`${relationLabel}: ${sourceLabel}`} className="divide-y divide-border px-3">
+            {group.items.map((item) => (
+              <MappedRuleRow
+                key={item.link.rule}
+                item={item}
+                self={self}
+                isExpanded={view.expandedRuleIds.has(item.row.ref.id)}
+                onToggle={() => view.toggleRule(item.row.ref.id)}
+              />
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   )

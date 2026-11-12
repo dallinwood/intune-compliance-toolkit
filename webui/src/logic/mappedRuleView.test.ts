@@ -5,8 +5,10 @@ import {
   discussionExcerpt,
   distinctMappedRuleCount,
   filterMappedRuleGroups,
+  groupCaption,
   groupMappedRulesBySource,
   isFilterActive,
+  relationBadgeLabel,
 } from './mappedRuleView'
 
 function rowFor(ruleId: string, overrides: Partial<RuleRow> = {}): RuleRow {
@@ -64,6 +66,45 @@ describe('groupMappedRulesBySource', () => {
     expect(groups).toHaveLength(1)
     expect(groups[0].items.map((item) => item.row.ref.id)).toEqual(['mscp.os_a'])
     expect(groups[0].total).toBe(1)
+  })
+})
+
+describe('group order and relation', () => {
+  it('orders groups by relation (supports, supported by, related) before source label', () => {
+    const rows = rowsMap(rowFor('aaa.one'), rowFor('bbb.two'), rowFor('ccc.three'), rowFor('ddd.four'))
+    const groups = groupMappedRulesBySource(
+      [linkTo('aaa.one', 'related'), linkTo('bbb.two', 'incoming'), linkTo('ccc.three', 'outgoing'), linkTo('ddd.four', 'outgoing')],
+      rows,
+      sourceLabel,
+    )
+    expect(groups.map((group) => [group.relation, group.sourceName])).toEqual([
+      ['supports', 'ccc'],
+      ['supports', 'ddd'],
+      ['supported-by', 'bbb'],
+      ['related', 'aaa'],
+    ])
+    expect(groups.every((group) => group.indirect === false)).toBe(true)
+  })
+})
+
+describe('relationBadgeLabel', () => {
+  it('names each relation and appends "indirectly" when indirect', () => {
+    expect(relationBadgeLabel('supports', false)).toBe('Supports')
+    expect(relationBadgeLabel('supported-by', false)).toBe('Supported by')
+    expect(relationBadgeLabel('related', false)).toBe('Related')
+    expect(relationBadgeLabel('supports', true)).toBe('Supports, indirectly')
+    expect(relationBadgeLabel('related', true)).toBe('Related, indirectly')
+  })
+})
+
+describe('groupCaption', () => {
+  it('says who supports whom in a sentence', () => {
+    expect(groupCaption('supports', false)).toBe('This rule supports each rule below.')
+    expect(groupCaption('supported-by', false)).toBe('Each rule below supports this rule.')
+    expect(groupCaption('related', false)).toBe('This rule is related to each rule below.')
+    expect(groupCaption('supports', true)).toBe('This rule indirectly supports each rule below.')
+    expect(groupCaption('supported-by', true)).toBe('Each rule below indirectly supports this rule.')
+    expect(groupCaption('related', true)).toBe('This rule is indirectly related to each rule below.')
   })
 })
 

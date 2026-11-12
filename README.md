@@ -453,7 +453,9 @@ A mapping links rules that overlap, across any sources: for example the mSCP
 rules that together support a broad ISM control. Mappings are kept apart
 from the imported data, so every re-import keeps them. A rule with links
 shows a "Mapped rules" tab next to "Details", listing each link from both
-sides, grouped by source and relation with the groups closed at first. A
+sides, grouped by relation and source with the groups closed at first. Each
+group heading puts the relation first, as a badge (for example "Supports ASD
+ISM"), and an open group says in a sentence who supports whom. A
 filter finds a rule by id or title, or by automated or manual. Hovering a
 title shows a summary, clicking a row shows that rule's details in place, and
 "Go to this rule" opens it in the main table (the URL holds the opened rule,
