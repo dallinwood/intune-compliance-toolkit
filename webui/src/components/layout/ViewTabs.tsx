@@ -7,8 +7,8 @@ export function ViewTabs({ activeViewId }: { activeViewId: string }) {
   return (
     <div className="border-b border-border px-4">
       {/* Overlapping the border by 1px lets the active underline sit on it; a negative margin on the links instead made the nav scroll vertically. */}
-      <nav aria-label="Views" className="-mb-px overflow-x-auto">
-        <ul className="flex min-w-max gap-1">
+      <nav aria-label="Views" className="-mb-px">
+        <ul className="flex flex-wrap gap-x-1">
           {VIEWS.map((view) => {
             const isActive = view.id === activeViewId
             return (

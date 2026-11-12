@@ -81,7 +81,7 @@
 ### Task 2: Coverage view
 
 **Files:**
-- Create: `webui/src/views/CoverageView.tsx`, `webui/src/components/coverage/FrameworkCoverageCard.tsx`, `webui/src/components/coverage/CoverageBar.tsx`, `webui/e2e/coverage.spec.ts`
+- Create: `webui/src/views/CoverageView.tsx`, `webui/src/components/selectionCoverage/FrameworkCoverageCard.tsx`, `webui/src/components/selectionCoverage/CoverageBar.tsx`, `webui/e2e/coverage.spec.ts`
 - Modify: `webui/src/views/viewRegistry.tsx` (add `{ id: 'coverage', label: 'Coverage', render: (context) => <CoverageView {...context} /> }` after Frameworks), `scripts/route-pages.mjs` (add `'coverage'` to `VIEW_IDS` in the same position), and `webui/src/views/viewRegistry.test.tsx` if it lists ids.
 
 **Interfaces:**
@@ -130,3 +130,4 @@
 ## Progress log
 
 - 2026-11-12: Task 1 done, the pure coverage logic (`selectionCoverage.ts`) with 18 Vitest tests. Landed in 85a6cdf feat: add selection coverage logic over the mapping index.
+- 2026-11-12: Task 2 done, the Coverage view (registry entry, `coverage` route id, framework cards, section bars, provenance lists, related-only lines, unsupported-rules list) with 7 Playwright tests. The components live in `webui/src/components/selectionCoverage/` because the repo's `.gitignore` ignores any `coverage/` directory (and Tailwind skips ignored paths). The tab bar now wraps below `sm` since a fifth tab no longer fit at 375px. Landed in the commit below.

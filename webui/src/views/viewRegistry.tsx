@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { DEFAULT_VIEW_ID } from '../state/urlState'
+import { CoverageView } from './CoverageView'
 import { FrameworksView } from './FrameworksView'
 import { LicencesView } from './LicencesView'
 import { ProductsView } from './ProductsView'
@@ -19,6 +20,7 @@ export interface ViewDefinition {
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
   { id: 'frameworks', label: 'Frameworks', render: (context) => <FrameworksView {...context} /> },
+  { id: 'coverage', label: 'Coverage', render: (context) => <CoverageView {...context} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
   { id: 'products', label: 'Products', render: () => <ProductsView /> },
 ]

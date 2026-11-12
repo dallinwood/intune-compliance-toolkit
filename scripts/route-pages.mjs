@@ -7,7 +7,7 @@ import { copyFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const VIEW_IDS = ['rules', 'frameworks', 'licences', 'products']
+const VIEW_IDS = ['rules', 'frameworks', 'coverage', 'licences', 'products']
 const distDirectory = join(dirname(fileURLToPath(import.meta.url)), '..', 'webui', 'dist')
 
 for (const viewId of VIEW_IDS) {
