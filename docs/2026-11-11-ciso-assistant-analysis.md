@@ -372,3 +372,7 @@ there is nothing to add there.
 3. Build the coverage roll-up (UI rank 1). Built as the Coverage view in f752130
    ("feat: add a Coverage view rolling the selection up against mapped frameworks").
    It was useful with the 62 existing mSCP-to-ISM links, and more so after step 1.
+4. Build the structured pre-generation checks (UI idea 2). Built as the Checks list on the
+   Generate screen in c56f07b ("feat: show structured checks on the Generate screen"), on the
+   logic in ba8e53b. The shipped catalogue is narrower than the examples above: "no check" and
+   "no mapping" were left out because the manual report and the Coverage view already say so.

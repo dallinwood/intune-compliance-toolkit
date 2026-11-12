@@ -78,6 +78,23 @@ Requires [Bun](https://bun.sh).
   rules, mapping file and note behind it. Only `supports` links count; `related` links are shown
   separately and never raise the count. The figures describe mappings, not compliance: a control
   counted as supported still needs its own assessment.
+- The Review & generate screen opens with a Checks list that tells you what to look at before
+  you deploy. Each check has a fixed id and a severity: an error, a warning or a note. Only
+  errors block the download, and today the only error is a missing or invalid organization
+  value. Warnings and notes never block it. Errors and warnings start expanded and notes start
+  collapsed, and each check lists the affected rules with the detail for each. If the release
+  history cannot be loaded, the release checks are skipped for that source and the download still
+  works. A check with nothing to report is not shown, and when nothing applies the screen says
+  "No issues found with this selection."
+
+  | Id | Severity | Raised when |
+  |---|---|---|
+  | `organization-value` | Error | A selected rule needs an organization value that is missing or invalid. Blocks the download. |
+  | `custom-changes-not-applied` | Warning | Custom changes could not be applied to a rule, so it is shown and generated as imported. |
+  | `custom-changes-outdated` | Warning | Custom changes were written for an older release and the rule has since changed in a field they touch, or the comparison could not be made. |
+  | `custom-changes-older-release` | Note | Custom changes were written for an older release, but the rule has not changed in any field they touch. |
+  | `changed-in-newest-release` | Note | The rule's behaviour or scope changed between the last two releases of its framework, or the rule is new in the newest release. Wording or reference changes alone do not count. |
+  | `history-unavailable` | Note | The release history for a source could not be loaded, so release checks were skipped for its rules. |
 - `bun run test` runs the unit tests. `bun run test:e2e` runs the Playwright
   tests against a running `bun run dev`.
 

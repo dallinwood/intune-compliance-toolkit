@@ -1,7 +1,7 @@
 # Design: structured pre-generation checks on the Generate screen
 
 Date: 2026-11-11
-Status: Draft, written without the maintainer (see section 9 for the calls made)
+Status: Implemented 2026-11-12 (the calls in section 9 were made without the maintainer and still await review)
 
 ## 1. Intent
 
