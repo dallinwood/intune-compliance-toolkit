@@ -70,8 +70,10 @@ Requires [Bun](https://bun.sh).
 - The site's "Sources & licences" dialog lists the rule sources and every npm
   package bundled into the site, with each package's licence text.
 - The Coverage view rolls your current selection up against each control framework in the
-  library (ASD ISM, ASD E4EIT, NIST SP 800-53). For each framework it shows how many controls
-  your selected rules support through the mapping files, as "Supports N of M controls", with a
+  library. For each framework that selected rules can `support` (today ASD ISM and NIST SP
+  800-53) it shows how many controls they support through the mapping files, as "Supports N of
+  M controls". A framework reached only through `related` links (today ASD E4EIT) gets a
+  related-only note instead of a figure. Each figure comes with a
   scope picker for the denominator, a per-section breakdown, and for every control the selected
   rules, mapping file and note behind it. Only `supports` links count; `related` links are shown
   separately and never raise the count. The figures describe mappings, not compliance: a control

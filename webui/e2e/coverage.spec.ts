@@ -118,6 +118,23 @@ test('a section expands to controls and a control to its provenance', async ({ p
   await expect(page.getByText(SUPPORTS_MAPPING_ID).first()).toBeVisible()
 })
 
+test('the uncovered controls toggle keeps focus, reports aria-expanded and hides the list again', async ({ page }) => {
+  const section = mediaSection(page)
+  await section.getByRole('button', { name: /Guidelines for media/ }).click()
+  const toggle = section.getByRole('button', { name: /^Show \d+ uncovered$/ })
+  const uncoveredRows = section.getByTestId('coverage-control')
+  const reachedRowCount = await uncoveredRows.count()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await toggle.click()
+  const hideToggle = section.getByRole('button', { name: 'Hide uncovered' })
+  await expect(hideToggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(hideToggle).toBeFocused()
+  expect(await uncoveredRows.count()).toBeGreaterThan(reachedRowCount)
+  await hideToggle.click()
+  await expect(section.getByRole('button', { name: /^Show \d+ uncovered$/ })).toHaveAttribute('aria-expanded', 'false')
+  await expect(uncoveredRows).toHaveCount(reachedRowCount)
+})
+
 test('related links show as related only and are not counted', async ({ page }) => {
   await expect(ismCard(page)).toContainText('+ 1 related only')
   const hardeningSection = page.getByTestId('coverage-section').filter({ hasText: 'Guidelines for system hardening' })

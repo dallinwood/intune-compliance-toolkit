@@ -108,9 +108,14 @@ function SectionRow({ section }: { section: SectionCoverage }) {
               <ControlRow key={coverage.control.ref.id} coverage={coverage} />
             ))}
           </ul>
-          {uncoveredControls.length > 0 && !showUncovered && (
-            <button type="button" onClick={() => setShowUncovered(true)} className={`${TOGGLE_CLASS} mt-2`}>
-              Show {uncoveredControls.length} uncovered
+          {uncoveredControls.length > 0 && (
+            <button
+              type="button"
+              aria-expanded={showUncovered}
+              onClick={() => setShowUncovered(!showUncovered)}
+              className={`${TOGGLE_CLASS} mt-2`}
+            >
+              {showUncovered ? 'Hide uncovered' : `Show ${uncoveredControls.length} uncovered`}
             </button>
           )}
           {showUncovered && (
