@@ -54,8 +54,8 @@ export interface FilterState {
   compareBenchmarks: string[]
   compareOnly: CompareOnly[]
   setView: (value: string) => void
-  // One update, so one history entry: open a framework's comparison with the
-  // narrowing filters cleared.
+  // One update, so one history entry: open a framework's comparison on the
+  // Frameworks view with the narrowing filters cleared.
   showComparison: (framework: string, from: string | null, to: string | null) => void
   closeComparison: () => void
   setCompareReleases: (from: string | null, to: string | null) => void
@@ -186,7 +186,8 @@ export const useFilterStore = create<FilterState>((set) => {
     openRuleRequest: 0,
     openRuleTab: null,
     setView: (value) => set({ view: value }),
-    showComparison: (framework, from, to) => set({ framework, compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
+    showComparison: (framework, from, to) =>
+      set({ view: 'frameworks', framework, compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
     closeComparison: () => set({ framework: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
     setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
     setChangeKinds: (kinds) => set({ changeKinds: kinds }),
