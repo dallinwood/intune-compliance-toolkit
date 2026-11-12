@@ -493,7 +493,7 @@ def test_an_existing_output_file_is_not_overwritten_without_force(tmp_path, monk
     output_path.parent.mkdir(parents=True)
     output_path.write_text("keep me", encoding="utf-8")
     assert run_main(monkeypatch, tmp_path, "mscp", "asd_ism") == 1
-    assert "use --force to replace it" in capsys.readouterr().out
+    assert "use --force to replace it" in capsys.readouterr().err
     assert output_path.read_text(encoding="utf-8") == "keep me"
     assert run_main(monkeypatch, tmp_path, "mscp", "asd_ism", "--force") == 0
     assert output_path.read_text(encoding="utf-8") != "keep me"
@@ -555,3 +555,28 @@ def test_the_committed_library_yields_a_well_formed_asd_e4eit_to_mscp_file(tmp_p
         assert item["from"] and item["to"].startswith("mscp.")
         assert all(from_id.startswith("asd_e4eit.") for from_id in item["from"])
         assert set(item["evidence"]) == set(item["from"])
+
+
+def test_a_current_release_tag_missing_from_the_releases_raises_a_clear_error(tmp_path):
+    baselines_dir = build_library(tmp_path)
+    manifest_path = baselines_dir / "_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["sources"][1]["release_tag"] = "release_missing"
+    write_json(manifest_path, manifest)
+    with pytest.raises(ValueError, match="release_missing"):
+        load_current_rules(baselines_dir, "mscp")
+
+
+@pytest.mark.parametrize("option, value", [("--per-rule", "0"), ("--per-rule", "-3"), ("--min-text-score", "-0.5")])
+def test_out_of_range_numeric_options_are_rejected_by_argparse(tmp_path, monkeypatch, capsys, option, value):
+    build_library(tmp_path)
+    with pytest.raises(SystemExit) as exit_info:
+        run_main(monkeypatch, tmp_path, "mscp", "asd_ism", option, value)
+    assert exit_info.value.code == 2
+    assert option in capsys.readouterr().err
+    assert not (tmp_path / "docs").exists()
+
+
+def test_zero_min_text_score_is_accepted(tmp_path, monkeypatch):
+    build_library(tmp_path)
+    assert run_main(monkeypatch, tmp_path, "mscp", "asd_ism", "--min-text-score", "0") == 0

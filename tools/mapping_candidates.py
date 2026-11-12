@@ -263,7 +263,9 @@ def load_current_rules(baselines_dir: Path, source_name: str) -> tuple[str, list
         raise KeyError(source_name)
     source = sources[source_name]
     release_tag = source["release_tag"]
-    release = next(release for release in source["releases"] if release["tag"] == release_tag)
+    release = next((release for release in source["releases"] if release["tag"] == release_tag), None)
+    if release is None:
+        raise ValueError(f"source {source_name!r} names release_tag {release_tag!r} but does not list that release")
     index_path = baselines_dir / release["index_path"]
     index = read_json_rejecting_duplicates(index_path, "release index")
     rules: list[RuleText] = []
@@ -460,6 +462,20 @@ def calibration(
     }
 
 
+def _positive_integer(text: str) -> int:
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError("must be at least 1")
+    return value
+
+
+def _non_negative_number(text: str) -> float:
+    value = float(text)
+    if value < 0:
+        raise argparse.ArgumentTypeError("must be 0 or more")
+    return value
+
+
 def _argument_parser() -> argparse.ArgumentParser:
     defaults = SelectionSettings()
     parser = argparse.ArgumentParser(
@@ -469,8 +485,8 @@ def _argument_parser() -> argparse.ArgumentParser:
     parser.add_argument("from_source")
     parser.add_argument("to_source")
     parser.add_argument("--relation", choices=RELATIONS, default=DEFAULT_RELATION)
-    parser.add_argument("--per-rule", type=int, default=defaults.per_rule)
-    parser.add_argument("--min-text-score", type=float, default=defaults.min_text_score)
+    parser.add_argument("--per-rule", type=_positive_integer, default=defaults.per_rule)
+    parser.add_argument("--min-text-score", type=_non_negative_number, default=defaults.min_text_score)
     parser.add_argument("--from-section", action="append", default=[])
     parser.add_argument("--to-section", action="append", default=[])
     parser.add_argument("--no-exclude-reviewed", action="store_true")
@@ -506,7 +522,7 @@ def main(argv: list[str] | None = None) -> int:
 
     output_path = arguments.output or default_output_path(REPOSITORY_ROOT, arguments.from_source, arguments.to_source)
     if output_path.exists() and not arguments.force:
-        print(f"{output_path} already exists; use --force to replace it")
+        print(f"{output_path} already exists; use --force to replace it", file=sys.stderr)
         return 1
     document = build_candidate_file(
         baselines_dir, mappings_dir, None if arguments.no_exclude_reviewed else review_dir,

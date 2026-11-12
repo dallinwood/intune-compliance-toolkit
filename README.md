@@ -554,9 +554,10 @@ To start a new review queue for any two sources, run
 `python tools/mapping_candidates.py <from source> <to source>` (for example
 `mscp asd_ism`, or `asd_e4eit mscp --relation related`). It writes
 `docs/mappings/<from>-to-<to>-candidates.json` (source names with `_` turned
-into `-`) in the review queue's shape, one item per target rule listing the
-source rules proposed for it, and every item starts as `open` so the existing
-review workflow applies unchanged. A pair is proposed when it has at least one
+into `-`) for the existing review workflow. It follows the review queue's
+layout with generic keys (`from`, `to`, `to_section`, `to_text` and `evidence`
+instead of the `mscp` and `ism` keys), one item per target rule listing the
+source rules proposed for it, and every item starts as `open`. A pair is proposed when it has at least one
 of three signals: a shared mapped neighbour (both rules are already linked to
 the same third rule), a shared reference (the same value under the same key
 path, such as `nist.800-171r3: 03.01.01`), or enough shared words in the titles
@@ -570,10 +571,16 @@ at most `--per-rule` (default 5) candidates, and `--from-section` and
 to overwrite an existing file unless you pass `--force`. `--calibrate` writes
 nothing and prints how many existing hand-written pairs between the two
 sources the settings would have proposed, as a count and a percentage, plus the
-total number of candidate pairs; use it to pick a threshold. The tool only
-proposes: moving a confirmed link into `baselines/_mappings/rules/` stays a
-manual step, and a generated candidate file is not committed unless the
-maintainer chooses to.
+total number of candidate pairs; use it to pick a threshold.
+The signals are lexical and
+structural only; the tool does not understand what a rule requires. Measured
+with `--calibrate` at the default threshold, it proposes only 7.7% of the 222
+existing hand-written mSCP to ASD ISM pairs and about 21% of the E4EIT to ISM
+`related` pairs, so a missing pair is not evidence that no link exists, and a
+listed pair is not evidence that one does. The output is a starting list for
+review, never a mapping: moving a confirmed link into
+`baselines/_mappings/rules/` stays a manual step, and a generated candidate
+file is not committed unless the maintainer chooses to.
 
 ## Product and licence catalog
 
