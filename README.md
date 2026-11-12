@@ -455,8 +455,16 @@ from the imported data, so every re-import keeps them. A rule with links
 shows a "Mapped rules" tab next to "Details", listing each link from both
 sides, grouped by relation and source with the groups closed at first. Each
 group heading puts the relation first, as a badge (for example "Supports ASD
-ISM"), and an open group says in a sentence who supports whom. A
-filter finds a rule by id or title, or by automated or manual. Hovering a
+ISM"), and an open group says in a sentence who supports whom. Each row says
+which mapping file its link is in and whether that file is generated or
+hand-written. When a rule supports a rule that supports another (or is related
+to a rule that something supports, and the other way round), the chain shows
+under "Indirect mapped rules", after the direct groups: one block per path
+("Through ASD ISM ism-1584 (this rule supports it)"), its groups labelled
+"indirectly", and a "How this is linked" button listing each hop. Only
+support chains in one direction, with at most one "related" hop, are followed
+(up to 4 levels), so other rules that merely support the same control are not
+listed. A filter finds a rule by id or title, or by automated or manual. Hovering a
 title shows a summary, clicking a row shows that rule's details in place, and
 "Go to this rule" opens it in the main table (the URL holds the opened rule,
 so the link can be shared).

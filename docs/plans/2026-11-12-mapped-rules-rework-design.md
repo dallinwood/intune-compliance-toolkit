@@ -1,8 +1,9 @@
 # Design: mapped rules rework (relation-first headings, indirect mappings, provenance)
 
 Date: 2026-11-12
-Status: Proposed. Section 9 lists the calls made without the maintainer; the traversal rule
-(section 5.1) was confirmed by the maintainer on 2026-11-12.
+Status: Implemented on 2026-11-12 (see the progress log at the end). Section 9 lists the calls
+made without the maintainer; the traversal rule (section 5.1) was confirmed by the maintainer on
+2026-11-12.
 
 ## 1. Intent
 
