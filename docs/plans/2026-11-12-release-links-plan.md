@@ -104,3 +104,5 @@
 - [ ] **Step 3: Commit**: `docs: describe release links on the Frameworks tab`
 
 ## Progress log
+
+- 2026-11-12: Task 1 done: empty-release logic (releaseRange.ts, compareReleases from the empty baseline) with Vitest coverage. Commit 5cda032 feat: add an empty-release baseline for release comparisons.
