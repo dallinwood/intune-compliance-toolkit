@@ -156,3 +156,5 @@ def main(argv: list[str] | None = None) -> int
 - [ ] **Step 3: Commit**: `docs: describe the mapping candidates command`
 
 ## Progress log
+
+- 2026-11-12: Task 1 done, the pure selection logic in `tools/mapping_candidates.py` (tokenizer, reference leaves, IDF, shared-neighbour/reference/word signals, ranking, per-rule cap, grouping into items) with 15 tests. The tokenizer applies the plural rule before the -ise family so "organisations" and "organizations" share a stem. `to_text` is the to-rule title, because the ISM rule title is the control text. Landed in 476a5d8 feat: add mapping candidate selection logic.
