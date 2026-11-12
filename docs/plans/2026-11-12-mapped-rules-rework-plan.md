@@ -155,3 +155,6 @@
 - [ ] Commit `feat: show indirect mapped rules grouped by the path they come through`, push.
 
 ## Progress log
+
+- 2026-11-12: Task 1 done. Mapped rules group headings now lead with a relation badge ("Supports ASD ISM (2)"), open groups show a caption saying who supports whom, groups sort by relation then source; e2e selectors updated and a new e2e covers both ends of a link.
+  - 08183a8 feat: name the relation first in mapped rules group headings

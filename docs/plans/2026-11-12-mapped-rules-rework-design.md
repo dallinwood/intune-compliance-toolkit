@@ -417,3 +417,6 @@ and 2 can ship before the traversal rule is confirmed.
 | Indirect rules are not counted on the Coverage view. | Count supports-only chains as indirect coverage. |
 
 ## Progress log
+
+- 2026-11-12: Task 1 done. Mapped rules group headings now lead with a relation badge ("Supports ASD ISM (2)"), open groups show a caption saying who supports whom, groups sort by relation then source; e2e selectors updated and a new e2e covers both ends of a link.
+  - 08183a8 feat: name the relation first in mapped rules group headings
