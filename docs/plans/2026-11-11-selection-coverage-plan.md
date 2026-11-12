@@ -128,3 +128,5 @@
 - [ ] **Step 3: Commit**: `docs: describe the Coverage view`
 
 ## Progress log
+
+- 2026-11-12: Task 1 done, the pure coverage logic (`selectionCoverage.ts`) with 18 Vitest tests. Landed in 85a6cdf feat: add selection coverage logic over the mapping index.
