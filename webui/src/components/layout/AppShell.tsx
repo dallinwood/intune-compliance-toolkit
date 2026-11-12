@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
-import type { MappedRule } from '../../logic/mappingIndex'
+import type { MappedRule, MappingFileInfo } from '../../logic/mappingIndex'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
@@ -26,6 +26,7 @@ export function AppShell({
   vocabularyWarnings,
   overlayWarnings,
   mappingsByRule,
+  mappingFiles,
   mappingWarnings,
 }: {
   rows: RuleRow[]
@@ -35,6 +36,7 @@ export function AppShell({
   vocabularyWarnings: string[]
   overlayWarnings: string[]
   mappingsByRule: ReadonlyMap<string, MappedRule[]>
+  mappingFiles: ReadonlyMap<string, MappingFileInfo>
   mappingWarnings: string[]
 }) {
   // Review & generate is a sub-screen of the Rules view, so it is local state
@@ -69,7 +71,7 @@ export function AppShell({
   )
   const selections = useSelectionStore((store) => store.selections)
   const rowsById = useMemo(() => new Map(rows.map((row) => [row.ref.id, row])), [rows])
-  const ruleMappings = useMemo(() => ({ byRule: mappingsByRule, rowsById }), [mappingsByRule, rowsById])
+  const ruleMappings = useMemo(() => ({ byRule: mappingsByRule, mappingFiles, rowsById }), [mappingsByRule, mappingFiles, rowsById])
   // Memoized so the review screen's fetch effect only re-runs when the
   // selection itself changes.
   const { known: knownSelections, unknownIds } = useMemo(

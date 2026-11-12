@@ -500,6 +500,9 @@ and a file name of letters, digits, `.`, `_` and `-`):
   changed between the two releases (ignoring `source`, `schema_version`, `id`
   and `file`). The note names the kinds of change; a release that is not kept
   here still gets the plain note.
+- `generated_by` is optional: the command that writes the file. Only the two
+  generated files carry it; the app shows "Generated" for a file with it and
+  "Hand-written" for one without, so leave it out of files you write by hand.
 - A rule cannot link to itself, and a pair of rules is linked once: the same
   pair twice, with two relations, or in both directions of `supports`,
   anywhere across the files, is an error.

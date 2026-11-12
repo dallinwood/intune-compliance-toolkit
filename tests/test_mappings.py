@@ -55,6 +55,8 @@ EXPECTED_ERROR_BY_CASE = {
     "both-directions": "is already linked in the other direction",
     "related-twice-reversed": "is already defined by a.json links[0]",
     "note-not-string": "note must be a string or null",
+    "generated-by-empty": "generated_by must be a non-empty string",
+    "generated-by-not-string": "generated_by must be a non-empty string",
     "wrong-schema-version": "schema_version must be 1",
     "not-json": "cannot read JSON",
 }
@@ -100,6 +102,14 @@ def test_committed_mappings_are_valid():
     for message in mapping_warnings:
         warnings.warn(message, MappingWarning)
     assert errors == []
+
+
+def test_generated_by_is_accepted_when_a_non_empty_string(tmp_path):
+    mapping = simple_mapping("generated")
+    mapping["generated_by"] = "python tools/some_generator.py"
+    write_bytes(tmp_path, "generated.json", json.dumps(mapping).encode("utf-8"))
+
+    assert validate_mappings(tmp_path, BASELINES_DIR) == ([], [])
 
 
 def test_committed_mappings_folder_exists_for_maintainers():

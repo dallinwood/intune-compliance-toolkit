@@ -1,6 +1,6 @@
 import { benchmarksAt, parseVersionKey, scopeKeysOf, targetKeysOf } from '../logic/applicability'
 import { GENERATED_TARGET } from '../logic/checkPlan'
-import { linksWithinLibrary, type MappedRule } from '../logic/mappingIndex'
+import { linksWithinLibrary, type MappedRule, type MappingFileInfo } from '../logic/mappingIndex'
 import { applyOverlaysToIndexEntry, type OnOverlaySkipped, type Overlay } from '../logic/overlays'
 import { compareVersionsDescending } from '../logic/versions'
 import type { ManifestSource, RuleIndex } from '../types/library'
@@ -18,6 +18,7 @@ export interface Library {
   overlayWarnings: string[]
   // Each rule's mapped rules, only where both rules are in this library.
   mappingsByRule: ReadonlyMap<string, MappedRule[]>
+  mappingFiles: ReadonlyMap<string, MappingFileInfo>
   mappingWarnings: string[]
 }
 
@@ -94,6 +95,7 @@ export async function loadLibrary(): Promise<Library> {
     coveredVersions: coveredVersionsOf(rows, GENERATED_TARGET),
     overlayWarnings: warnings,
     mappingsByRule: linksWithinLibrary(mappingIndex.byRule, new Set(rows.map((row) => row.ref.id))),
+    mappingFiles: mappingIndex.mappingFiles,
     mappingWarnings: mappingIndex.warnings,
   }
 }

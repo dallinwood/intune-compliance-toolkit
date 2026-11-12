@@ -114,6 +114,7 @@ def test_mapping_header_names_the_command_both_releases_and_not_to_edit(tmp_path
         "do not edit by hand",
     ):
         assert expected_text in mapping["description"]
+    assert mapping["generated_by"] == "python tools/generate_mscp_nist_800_53_mapping.py"
 
 
 def test_rules_without_the_key_or_with_only_failed_citations_have_no_link(tmp_path):

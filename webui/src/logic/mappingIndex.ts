@@ -33,9 +33,17 @@ export interface MappingIndexEntry {
   self_changed_kinds?: ChangeKind[] | null
 }
 
+export interface MappingFileInfo {
+  description: string | null
+  generatedBy: string | null
+}
+
 export interface MappingIndexFile {
   schema_version: typeof MAPPING_INDEX_SCHEMA_VERSION
   by_rule: Record<string, MappingIndexEntry[]>
+  // Per mapping file id, so the app can say where a link comes from. Optional:
+  // an older published index has none.
+  mapping_files?: Record<string, { description: string | null; generated_by: string | null }>
 }
 
 interface MappingEndpoint {
@@ -53,13 +61,15 @@ interface MappingLink {
 
 interface MappingFile {
   id: string
+  description: string | null
+  generatedBy: string | null
   links: MappingLink[]
 }
 
 type JsonObject = Record<string, unknown>
 
 const MAPPING_ID_PATTERN = /^[a-z0-9][a-z0-9-]*$/
-const MAPPING_KEYS = new Set(['schema_version', 'id', 'description', 'links'])
+const MAPPING_KEYS = new Set(['schema_version', 'id', 'description', 'generated_by', 'links'])
 const LINK_KEYS = new Set(['relation', 'from', 'to', 'note'])
 const ENDPOINT_KEYS = ['id', 'kind', 'release']
 const DIRECTIONS: readonly MappingDirection[] = ['outgoing', 'incoming', 'related']
@@ -112,6 +122,7 @@ export function parseMappingFile(value: unknown, fileName: string): { mapping: M
   if (value.schema_version !== MAPPING_INDEX_SCHEMA_VERSION) return { error: `${fileName}: schema_version must be 1` }
   if (typeof value.id !== 'string' || !MAPPING_ID_PATTERN.test(value.id)) return { error: `${fileName}: id must match ^[a-z0-9][a-z0-9-]*$` }
   if (value.description !== undefined && typeof value.description !== 'string') return { error: `${fileName}: description must be a string` }
+  if (value.generated_by !== undefined && !isText(value.generated_by)) return { error: `${fileName}: generated_by must be a non-empty string` }
   if (!Array.isArray(value.links) || value.links.length === 0) return { error: `${fileName}: links must be a non-empty list` }
   for (const [position, link] of value.links.entries()) {
     const problem = linkProblem(link, position)
@@ -125,7 +136,14 @@ export function parseMappingFile(value: unknown, fileName: string): { mapping: M
       note: typeof link.note === 'string' ? link.note : null,
     }),
   )
-  return { mapping: { id: value.id, links } }
+  return {
+    mapping: {
+      id: value.id,
+      description: typeof value.description === 'string' ? value.description : null,
+      generatedBy: typeof value.generated_by === 'string' ? value.generated_by : null,
+      links,
+    },
+  }
 }
 
 export function compareMappingEntries(left: MappingIndexEntry, right: MappingIndexEntry): number {
@@ -147,6 +165,7 @@ function pairKey(firstRule: string, secondRule: string): string {
 export function buildMappingIndex(files: { fileName: string; value: unknown }[], log: (message: string) => void): MappingIndexFile {
   const byRule: Record<string, MappingIndexEntry[]> = {}
   const fileById = new Map<string, string>()
+  const infoById: Record<string, { description: string | null; generated_by: string | null }> = {}
   const definedPairs = new Set<string>()
 
   function add(ruleId: string, entry: MappingIndexEntry) {
@@ -166,6 +185,7 @@ export function buildMappingIndex(files: { fileName: string; value: unknown }[],
       continue
     }
     fileById.set(mapping.id, fileName)
+    infoById[mapping.id] = { description: mapping.description, generated_by: mapping.generatedBy }
     for (const link of mapping.links) {
       for (const from of link.from) {
         for (const to of link.to) {
@@ -208,7 +228,9 @@ export function buildMappingIndex(files: { fileName: string; value: unknown }[],
   for (const ruleId of Object.keys(byRule).sort(compareText)) {
     sortedByRule[ruleId] = [...byRule[ruleId]].sort(compareMappingEntries)
   }
-  return { schema_version: MAPPING_INDEX_SCHEMA_VERSION, by_rule: sortedByRule }
+  const sortedInfo: Record<string, { description: string | null; generated_by: string | null }> = {}
+  for (const mappingId of Object.keys(infoById).sort(compareText)) sortedInfo[mappingId] = infoById[mappingId]
+  return { schema_version: MAPPING_INDEX_SCHEMA_VERSION, by_rule: sortedByRule, mapping_files: sortedInfo }
 }
 
 export interface MappedRule {
@@ -259,7 +281,26 @@ function parseEntry(entry: unknown): MappedRule | string {
 
 export interface ParsedMappingIndex {
   byRule: Map<string, MappedRule[]>
+  mappingFiles: Map<string, MappingFileInfo>
   warnings: string[]
+}
+
+function parseMappingFiles(value: unknown, warnings: string[]): Map<string, MappingFileInfo> {
+  const mappingFiles = new Map<string, MappingFileInfo>()
+  if (value === undefined) return mappingFiles
+  if (!isObject(value)) {
+    warnings.push('Mapping index: mapping_files must be an object. It was skipped.')
+    return mappingFiles
+  }
+  for (const [mappingId, info] of Object.entries(value)) {
+    const isNullableText = (field: unknown) => field === null || typeof field === 'string'
+    if (!isObject(info) || !isNullableText(info.description) || !isNullableText(info.generated_by)) {
+      warnings.push(`Mapping index file entry for ${mappingId}: it must have a description and generated_by, each a string or null. It was skipped.`)
+      continue
+    }
+    mappingFiles.set(mappingId, { description: info.description as string | null, generatedBy: info.generated_by as string | null })
+  }
+  return mappingFiles
 }
 
 // A bad entry is dropped with a warning so one bad line cannot hide the
@@ -282,7 +323,7 @@ export function parseMappingIndex(value: unknown): ParsedMappingIndex | string {
     }
     if (parsedEntries.length > 0) byRule.set(ruleId, parsedEntries)
   }
-  return { byRule, warnings }
+  return { byRule, mappingFiles: parseMappingFiles(value.mapping_files, warnings), warnings }
 }
 
 // Entries for rules the loaded library does not have, on either side, are

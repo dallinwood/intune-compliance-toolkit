@@ -29,6 +29,7 @@ import { useRuleMappings } from '../../state/mappingsContext'
 import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
+import { MappingProvenance } from '../mappings/MappingProvenance'
 import { MappedRuleSummary } from './MappedRuleSummary'
 import { RuleDetailPanel } from './RuleDetailPanel'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
@@ -149,6 +150,7 @@ function MappedSourceGroupSection({
 }) {
   const vocabularyIndex = useVocabularyIndex()
   const listId = useId()
+  const captionId = useId()
   const sourceLabel = termLabel(vocabularyIndex, 'sources', group.sourceName)
   const relationLabel = relationBadgeLabel(group.relation, group.indirect)
   const count = filtering ? `${group.items.length} of ${group.total}` : `${group.total}`
@@ -174,8 +176,8 @@ function MappedSourceGroupSection({
       </h4>
       {isOpen && (
         <div className="border-t border-border">
-          <p className="px-3 pt-2 text-xs text-muted-foreground">{groupCaption(group.relation, group.indirect)}</p>
-          <ul id={listId} aria-label={`${relationLabel}: ${sourceLabel}`} className="divide-y divide-border px-3">
+          <p id={captionId} className="px-3 pt-2 text-xs text-muted-foreground">{groupCaption(group.relation, group.indirect)}</p>
+          <ul id={listId} aria-describedby={captionId} aria-label={`${relationLabel}: ${sourceLabel}`} className="divide-y divide-border px-3">
             {group.items.map((item) => (
               <MappedRuleRow
                 key={item.link.rule}
@@ -249,7 +251,7 @@ export function MappedRuleRow({
             </TooltipContent>
           </Tooltip>
           <p className="font-mono break-all text-muted-foreground">{upstreamId}</p>
-          {link.note && <p className="text-muted-foreground">{link.note}</p>}
+          <MappingProvenance mapping={link.mapping} note={link.note || null} />
           {stale.map((endpoint) => (
             <p key={endpoint.ruleId} data-testid="stale-mapping-note" className="text-warning-foreground">
               {endpoint.changedKinds === null ? (

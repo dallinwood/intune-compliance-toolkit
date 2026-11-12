@@ -12,6 +12,7 @@ import {
   type SectionCoverage,
 } from '../../logic/selectionCoverage'
 import { compareGroupKeys, termLabel, type VocabularyIndex } from '../../logic/vocabulary'
+import { MappingProvenance } from '../mappings/MappingProvenance'
 import { CoverageBar } from './CoverageBar'
 
 const SELECT_CLASS = 'h-8 w-full max-w-xs rounded-md border border-control-border bg-background px-2 text-sm'
@@ -34,8 +35,9 @@ function LinkList({ heading, links }: { heading?: string; links: CoverageLink[] 
             <p className="break-words">
               <span className="font-mono text-xs">{upstreamRuleId(link.rule.ref.id)}</span> {link.rule.title}
             </p>
-            <p className="break-all font-mono text-xs text-muted-foreground">{link.mapping}</p>
-            {link.note !== null && <p className="break-words text-xs text-muted-foreground">{link.note}</p>}
+            <div className="text-xs">
+              <MappingProvenance mapping={link.mapping} note={link.note} />
+            </div>
             {link.checkedAgainstOlderRelease && <p className="text-xs text-muted-foreground">{OLDER_RELEASE_NOTE}</p>}
           </li>
         ))}

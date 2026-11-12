@@ -143,6 +143,22 @@ test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () =
     await openMappedRules(page, 'asd_ism.ism-1997', 'ism-1997')
     await expect(mappedRulesPanel(page, 'asd_ism.ism-1997')).toContainText('it.gov-01.1')
   })
+  test('each direct row says which mapping file its link is in and whether that file is generated', async ({ page }) => {
+    const gatekeeper = 'mscp.system_settings_gatekeeper_override_disallow'
+    await openCommittedMappedRules(page, gatekeeper, 'system_settings_gatekeeper_override_disallow')
+    const gatekeeperPanel = mappedRulesPanel(page, gatekeeper)
+    await gatekeeperPanel.getByRole('button', { name: /^Supports ASD ISM \(\d+\)$/ }).click()
+    await gatekeeperPanel.getByRole('button', { name: /^Supports NIST SP 800-53 \(\d+\)$/ }).click()
+
+    const ismRow = gatekeeperPanel.getByTestId('mapped-rule').filter({ hasText: 'ism-1584' })
+    await expect(ismRow).toContainText('mscp-to-asd-ism-system-hardening')
+    await expect(ismRow.getByText('Hand-written', { exact: true })).toBeVisible()
+
+    const nistRow = gatekeeperPanel.getByTestId('mapped-rule').filter({ hasText: 'cm-5' })
+    await expect(nistRow).toContainText('mscp-to-nist-800-53')
+    await expect(nistRow.getByText('Generated', { exact: true })).toBeVisible()
+  })
+
   test('each group names the relation first and its caption says who supports whom', async ({ page }) => {
     const gatekeeper = 'mscp.system_settings_gatekeeper_override_disallow'
     await openCommittedMappedRules(page, gatekeeper, 'system_settings_gatekeeper_override_disallow')

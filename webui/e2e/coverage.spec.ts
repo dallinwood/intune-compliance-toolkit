@@ -63,6 +63,7 @@ const mappingFiles = [
     value: {
       schema_version: 1,
       id: RELATED_MAPPING_ID,
+      generated_by: 'python tools/example_generator.py',
       links: [
         {
           relation: 'related',
@@ -116,6 +117,7 @@ test('a section expands to controls and a control to its provenance', async ({ p
   await openMediaControl(page)
   await expect(page.getByText(AUTOMATED_NOTE)).toBeVisible()
   await expect(page.getByText(SUPPORTS_MAPPING_ID).first()).toBeVisible()
+  await expect(page.getByText('Hand-written', { exact: true }).first()).toBeVisible()
 })
 
 test('the uncovered controls toggle keeps focus, reports aria-expanded and hides the list again', async ({ page }) => {
@@ -145,6 +147,7 @@ test('related links show as related only and are not counted', async ({ page }) 
   await expect(relatedControl.getByText('Related (not counted)')).toBeVisible()
   await expect(relatedControl.getByText(RELATED_NOTE)).toBeVisible()
   await expect(relatedControl.getByText(RELATED_MAPPING_ID)).toBeVisible()
+  await expect(relatedControl.getByText('Generated', { exact: true })).toBeVisible()
 })
 
 test('lists selected rules that support no control', async ({ page }) => {

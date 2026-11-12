@@ -44,6 +44,7 @@ This work builds the mapping mechanism only. No real mappings are authored yet.
   "schema_version": 1,
   "id": "powershell-constrained-language",          // unique across files, ^[a-z0-9][a-z0-9-]*$
   "description": "mSCP and Windows rules that support ISM-1622.",  // optional
+  "generated_by": "python tools/some_generator.py",  // optional: set only by the generators; marks the file "Generated" in the app
   "links": [
     {
       "relation": "supports",                        // supports | related

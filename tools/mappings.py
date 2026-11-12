@@ -24,7 +24,7 @@ DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 MAPPING_SCHEMA_VERSION = 1
 MAPPING_ID_PATTERN = re.compile(r"[a-z0-9][a-z0-9-]*")
 REQUIRED_MAPPING_KEYS = frozenset({"schema_version", "id", "links"})
-ALLOWED_MAPPING_KEYS = REQUIRED_MAPPING_KEYS | {"description"}
+ALLOWED_MAPPING_KEYS = REQUIRED_MAPPING_KEYS | {"description", "generated_by"}
 REQUIRED_LINK_KEYS = frozenset({"relation", "from", "to"})
 ALLOWED_LINK_KEYS = REQUIRED_LINK_KEYS | {"note"}
 ENDPOINT_KEYS = frozenset({"kind", "id", "release"})
@@ -151,6 +151,8 @@ def structure_errors(mapping: object) -> list[str]:
         errors.append(f"id must match ^[a-z0-9][a-z0-9-]*$, got {mapping_id!r}")
     if "description" in mapping and not isinstance(mapping["description"], str):
         errors.append("description must be a string")
+    if "generated_by" in mapping and not _is_text(mapping["generated_by"]):
+        errors.append("generated_by must be a non-empty string")
     if "links" in mapping:
         links = mapping["links"]
         if not isinstance(links, list) or not links:

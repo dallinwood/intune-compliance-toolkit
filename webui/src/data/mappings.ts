@@ -1,15 +1,16 @@
-import { parseMappingIndex, type MappedRule } from '../logic/mappingIndex'
+import { parseMappingIndex, type MappedRule, type MappingFileInfo } from '../logic/mappingIndex'
 import { describeError, fetchJson } from './fetchJson'
 
 const INDEX_PATH = 'baselines/_mappings/_index.json'
 
 export interface LoadedMappingIndex {
   byRule: ReadonlyMap<string, MappedRule[]>
+  mappingFiles: ReadonlyMap<string, MappingFileInfo>
   warnings: string[]
 }
 
 function noMappings(problem: string): LoadedMappingIndex {
-  return { byRule: new Map(), warnings: [`Rule mappings could not be loaded (${INDEX_PATH}: ${problem}), so no mapped rules are shown.`] }
+  return { byRule: new Map(), mappingFiles: new Map(), warnings: [`Rule mappings could not be loaded (${INDEX_PATH}: ${problem}), so no mapped rules are shown.`] }
 }
 
 async function loadMappingIndex(): Promise<LoadedMappingIndex> {

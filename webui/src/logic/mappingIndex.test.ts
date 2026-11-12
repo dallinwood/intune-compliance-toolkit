@@ -53,6 +53,7 @@ describe('buildMappingIndex', () => {
           { rule: 'ism.x', relation: 'supports', direction: 'outgoing', mapping: 'a', note: 'Only part.', release: 'r1', self_release: 'r1' },
         ],
       },
+      mapping_files: { a: { description: null, generated_by: null } },
     })
   })
 
@@ -127,7 +128,7 @@ describe('buildMappingIndex', () => {
   })
 
   it('gives an empty index for no files', () => {
-    expect(build({}).index).toEqual({ schema_version: 1, by_rule: {} })
+    expect(build({}).index).toEqual({ schema_version: 1, by_rule: {}, mapping_files: {} })
   })
 })
 
@@ -160,6 +161,67 @@ describe('parseMappingIndex', () => {
     expect(parsed.byRule.get('ism.x')?.map((entry) => entry.rule)).toEqual(['mscp.a'])
     expect(parsed.byRule.has('ism.y')).toBe(false)
     expect(parsed.warnings).toHaveLength(2)
+  })
+})
+
+describe('mapping file provenance', () => {
+  const sampleLinks = [link('supports', ['mscp.a'], ['ism.x'])]
+
+  it('round trips generated_by and description through the index, keys sorted', () => {
+    const { index } = build({
+      'b.json': { ...mappingFile('b', sampleLinks), generated_by: 'python tools/some_generator.py', description: 'Made by a tool' },
+      'a.json': mappingFile('a', [link('related', ['mscp.c'], ['ism.y'])]),
+    })
+
+    expect(Object.keys(index.mapping_files ?? {})).toEqual(['a', 'b'])
+    const parsed = parseMappingIndex(JSON.parse(JSON.stringify(index)))
+    if (typeof parsed === 'string') throw new Error(parsed)
+    expect(parsed.warnings).toEqual([])
+    expect(parsed.mappingFiles.get('b')).toEqual({ description: 'Made by a tool', generatedBy: 'python tools/some_generator.py' })
+    expect(parsed.mappingFiles.get('a')).toEqual({ description: null, generatedBy: null })
+  })
+
+  it('skips a mapping file whose generated_by is empty or not a string', () => {
+    for (const generatedBy of ['', 3]) {
+      const { index, logged } = build({ 'a.json': { ...mappingFile('a', sampleLinks), generated_by: generatedBy } })
+      expect(index.by_rule).toEqual({})
+      expect(logged[0]).toContain('generated_by must be a non-empty string')
+    }
+  })
+
+  it('reads an index without mapping_files as an empty table with no warning', () => {
+    const parsed = parseMappingIndex({ schema_version: 1, by_rule: {} })
+
+    if (typeof parsed === 'string') throw new Error(parsed)
+    expect(parsed.mappingFiles.size).toBe(0)
+    expect(parsed.warnings).toEqual([])
+  })
+
+  it('drops a mapping_files that is not an object with a warning and still loads by_rule', () => {
+    const good = { rule: 'mscp.a', relation: 'related', direction: 'related', mapping: 'a', note: null, release: 'r', self_release: 'r' }
+    const parsed = parseMappingIndex({ schema_version: 1, by_rule: { 'ism.x': [good] }, mapping_files: ['nope'] })
+
+    if (typeof parsed === 'string') throw new Error(parsed)
+    expect(parsed.mappingFiles.size).toBe(0)
+    expect(parsed.byRule.get('ism.x')).toHaveLength(1)
+    expect(parsed.warnings).toHaveLength(1)
+  })
+
+  it('drops only the entry of the wrong shape with a warning', () => {
+    const parsed = parseMappingIndex({
+      schema_version: 1,
+      by_rule: {},
+      mapping_files: {
+        good: { description: null, generated_by: 'cmd' },
+        'bad-type': { description: 3, generated_by: null },
+        'missing-key': { description: null },
+        'not-object': 'x',
+      },
+    })
+
+    if (typeof parsed === 'string') throw new Error(parsed)
+    expect([...parsed.mappingFiles.keys()]).toEqual(['good'])
+    expect(parsed.warnings).toHaveLength(3)
   })
 })
 

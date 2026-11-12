@@ -53,6 +53,7 @@ function App() {
       vocabularyWarnings={state.vocabulary.warnings}
       overlayWarnings={state.library.overlayWarnings}
       mappingsByRule={state.library.mappingsByRule}
+      mappingFiles={state.library.mappingFiles}
       mappingWarnings={state.library.mappingWarnings}
     />
   )
