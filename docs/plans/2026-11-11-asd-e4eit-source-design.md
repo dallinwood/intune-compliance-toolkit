@@ -1,7 +1,7 @@
 # Design: ASD Essentials for enterprise IT (E4EIT) as a third rule source
 
 Date: 2026-11-11
-Status: Draft, not yet reviewed by the maintainer
+Status: Implemented 2026-11-12 (the calls in section 11 were made without the maintainer and still await review)
 
 ## 1. Intent
 
@@ -535,3 +535,4 @@ implementation starts.
 
 - 2026-11-11: Design drafted from the upstream release and the existing ISM, release
   history and mappings designs (no code yet). Not yet reviewed by the maintainer.
+- 2026-11-12: Implemented in four tasks, per `2026-11-11-asd-e4eit-import-plan.md`: shared ASD helpers (e36737b "refactor: share ASD OSCAL helpers and the pinned-file download loop"), the normalizer (b63c687 "feat: normalize the ASD E4EIT OSCAL catalog into v5 rules"), the import and generated ISM mapping (baa1add "feat: import ASD E4EIT v2026.10.15 as a rule source"), and the web UI (c6dbce3 "feat: show ASD E4EIT rules in the web UI").
