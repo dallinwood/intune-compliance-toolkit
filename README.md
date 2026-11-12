@@ -550,6 +550,31 @@ reasoning and open question. A later research pass adds a comment and sets
 its status (`mapped`, `rejected` or `needs_maintainer`); the maintainer
 decides whatever is still uncertain.
 
+To start a new review queue for any two sources, run
+`python tools/mapping_candidates.py <from source> <to source>` (for example
+`mscp asd_ism`, or `asd_e4eit mscp --relation related`). It writes
+`docs/mappings/<from>-to-<to>-candidates.json` (source names with `_` turned
+into `-`) in the review queue's shape, one item per target rule listing the
+source rules proposed for it, and every item starts as `open` so the existing
+review workflow applies unchanged. A pair is proposed when it has at least one
+of three signals: a shared mapped neighbour (both rules are already linked to
+the same third rule), a shared reference (the same value under the same key
+path, such as `nist.800-171r3: 03.01.01`), or enough shared words in the titles
+and section paths, weighted so rare words count more (`--min-text-score`,
+default 8.0). Each item records which signal fired and which words matched.
+Pairs already linked in `baselines/_mappings/rules/` are left out, and so are
+pairs already listed in any file under `docs/mappings/` whatever their status;
+`--no-exclude-reviewed` turns the second exclusion off. Each source rule keeps
+at most `--per-rule` (default 5) candidates, and `--from-section` and
+`--to-section` narrow either side to a top-level section. The command refuses
+to overwrite an existing file unless you pass `--force`. `--calibrate` writes
+nothing and prints how many existing hand-written pairs between the two
+sources the settings would have proposed, as a count and a percentage, plus the
+total number of candidate pairs; use it to pick a threshold. The tool only
+proposes: moving a confirmed link into `baselines/_mappings/rules/` stays a
+manual step, and a generated candidate file is not committed unless the
+maintainer chooses to.
+
 ## Product and licence catalog
 
 The catalog records which products and features each licence includes,

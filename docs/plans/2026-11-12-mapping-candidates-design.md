@@ -1,7 +1,7 @@
 # Design: mapping candidate skeletons for review
 
 Date: 2026-11-12
-Status: Proposed (the calls in section 8 were made without the maintainer and await review)
+Status: Implemented 2026-11-12 (the calls in section 8 were made without the maintainer and still await review)
 
 ## 1. Intent
 
@@ -103,8 +103,8 @@ to both sides, so a rare odd stem only affects matching symmetrically.
 ### 4.2 Which pairs become candidates
 
 A pair is a candidate when it has at least one shared neighbour, at least one shared
-reference, or a text score at or above `--min-text-score` (default 8.0, to be confirmed by
-the calibration in plan Task 2). Then:
+reference, or a text score at or above `--min-text-score` (default 8.0, confirmed by
+the calibration recorded in the plan's progress log). Then:
 
 - Excluded: pairs already linked in any valid mapping file (by rule id, either direction,
   any relation), and pairs listed in any review or candidate file under `docs/mappings/`
