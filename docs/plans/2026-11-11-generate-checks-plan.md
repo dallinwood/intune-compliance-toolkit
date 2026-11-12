@@ -121,3 +121,4 @@
 ## Progress log
 
 - 2026-11-12: Task 1 done. Added the pure check logic (`buildGenerateChecks`, `newestReleaseChange`, `hasBlockingCheck`, `severityCounts`) with Vitest coverage; no UI yet. Commit: ba8e53b feat: add structured pre-generation check logic
+- 2026-11-12: Task 2 done. Extracted `loadCustomChangeStatus` into `webui/src/data/customChanges.ts`, added `GenerateChecksPanel`, and replaced the overlay-issue note and blocked alert on the Generate screen with it; new `generate-checks.spec.ts` covers error, newest-release note, history-unavailable and clean cases. Commit: c56f07b feat: show structured checks on the Generate screen
