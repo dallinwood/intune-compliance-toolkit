@@ -11,6 +11,7 @@ import { CHANGE_KINDS, effectiveKinds, type ChangeKind } from '../../logic/ruleC
 import { ToggleButtons } from '../rules/DisclosureButtons'
 import { ChangesBetween } from './ChangesBetween'
 import { KindTag } from './KindTag'
+import { NativeSelect } from '@/components/ui/native-select'
 
 export interface HistoryCompare {
   from: string
@@ -20,7 +21,6 @@ export interface HistoryCompare {
 
 const KIND_PILLS = CHANGE_KINDS.map((kind) => ({ key: kind, label: KIND_LABELS[kind] }))
 
-const SELECT_CLASS = 'h-8 rounded-md border border-control-border bg-background px-2 text-sm'
 const CARD_BUTTON_CLASS =
   'flex w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-md px-3 py-2 text-left text-sm focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 
@@ -151,25 +151,25 @@ function CompareSection({
         <label htmlFor={fromId} className="text-sm text-muted-foreground">
           From
         </label>
-        <select id={fromId} value={fromTag} onChange={(event) => onFromChange(event.target.value)} className={SELECT_CLASS}>
+        <NativeSelect id={fromId} value={fromTag} onChange={(event) => onFromChange(event.target.value)}>
           <option value="">Choose a release</option>
           {index.releases.slice(0, -1).map((release) => (
             <option key={release.tag} value={release.tag}>
               {release.label}
             </option>
           ))}
-        </select>
+        </NativeSelect>
         <label htmlFor={toId} className="text-sm text-muted-foreground">
           To
         </label>
-        <select id={toId} value={toTag} disabled={fromTag === ''} onChange={(event) => onToChange(event.target.value)} className={SELECT_CLASS}>
+        <NativeSelect id={toId} value={toTag} disabled={fromTag === ''} onChange={(event) => onToChange(event.target.value)}>
           <option value="">Choose a release</option>
           {toOptions.map((release) => (
             <option key={release.tag} value={release.tag}>
               {release.label}
             </option>
           ))}
-        </select>
+        </NativeSelect>
       </div>
       {fromTag !== '' && toTag !== '' && (
         <div data-testid="history-compare-result" className="rounded-md border border-border px-3 py-2">

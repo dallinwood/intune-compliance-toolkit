@@ -6,6 +6,7 @@ import { odvQuickPicks, prepareOdvValue, validateOdvValue, type OdvSubstitutionM
 import type { OrgDefinedValue } from '../../logic/selectionEntry'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Odv } from '../../types/library'
+import { NativeSelect } from '@/components/ui/native-select'
 
 const SHORT_VALUE_LENGTH = 24
 const HINT_VALUE_LENGTH = 120
@@ -101,10 +102,10 @@ export function OrgDefinedValueInput({
   let field
   if (odv.datatype === 'enum') {
     field = (
-      <select
+      <NativeSelect
         {...commonProps}
         onChange={(event) => handleChange(event.target.value)}
-        className={`h-7 w-full max-w-xs border border-control-border bg-transparent px-2 ${fieldClass}`}
+        className="h-7 w-full max-w-xs text-xs"
       >
         <option value="">Use recommended ({String(odv.recommended)})</option>
         {(odv.validation?.enumValues ?? []).map((enumValue) => (
@@ -112,7 +113,7 @@ export function OrgDefinedValueInput({
             {enumValue}
           </option>
         ))}
-      </select>
+      </NativeSelect>
     )
   } else if (odv.datatype === 'string' && mode !== 'text') {
     // Multi-line values (login and SSH banners) are only possible where the

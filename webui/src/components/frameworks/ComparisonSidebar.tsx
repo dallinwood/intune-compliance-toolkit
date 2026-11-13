@@ -11,8 +11,8 @@ import { useFilterStore } from '../../state/filterStore'
 import type { CompareOnly } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
+import { NativeSelect } from '@/components/ui/native-select'
 
-const SELECT_CLASS = 'h-8 w-full rounded-md border border-control-border bg-background px-2 text-sm'
 
 function Group({ title, children }: { title: string; children: ReactNode }) {
   const headingId = useId()
@@ -68,9 +68,9 @@ function LabelledSelect({ label, value, onChange, children, disabled }: { label:
       <Label htmlFor={id} className="mb-1 block text-xs text-muted-foreground">
         {label}
       </Label>
-      <select id={id} value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)} className={SELECT_CLASS}>
+      <NativeSelect id={id} value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)} className="w-full">
         {children}
-      </select>
+      </NativeSelect>
     </div>
   )
 }

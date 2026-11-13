@@ -19,8 +19,8 @@ import {
 import { compareGroupKeys, termLabel, type VocabularyIndex } from '../../logic/vocabulary'
 import { MappingProvenance } from '../mappings/MappingProvenance'
 import { CoverageBar } from './CoverageBar'
+import { NativeSelect } from '@/components/ui/native-select'
 
-const SELECT_CLASS = 'h-8 w-full max-w-xs rounded-md border border-control-border bg-background px-2 text-sm'
 const TOGGLE_CLASS = 'rounded-sm text-xs text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const ROW_BUTTON_CLASS = 'rounded-sm text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const OLDER_RELEASE_NOTE = 'Mapped against an older release that has since changed'
@@ -230,13 +230,13 @@ export function FrameworkCoverageCard({
         <Label htmlFor={scopeId} className="mb-1 block text-xs text-muted-foreground">
           Scope
         </Label>
-        <select id={scopeId} value={scope} onChange={(event) => setScope(event.target.value)} className={SELECT_CLASS}>
+        <NativeSelect id={scopeId} value={scope} onChange={(event) => setScope(event.target.value)} className="w-full max-w-xs">
           {scopes.map((option) => (
             <option key={option} value={option}>
               {option === ALL_CONTROLS_SCOPE ? 'All controls' : termLabel(vocabularyIndex, 'benchmarks', option)}
             </option>
           ))}
-        </select>
+        </NativeSelect>
       </div>
       <ul aria-label={`${label} sections`}>
         {coverage.sections.map((section) => (

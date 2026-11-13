@@ -3,6 +3,7 @@ import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { clampPage } from '../../logic/sectionTree'
 import { PAGE_SIZES, parsePageSize, type PageSize } from '../../state/urlState'
+import { NativeSelect } from '@/components/ui/native-select'
 
 interface PagingBarProps {
   currentPage: number
@@ -39,21 +40,20 @@ export function PagingBar({ currentPage, pageCount, size, onPageChange, onSizeCh
       )}
       <div className="flex items-center gap-2">
         <label htmlFor={sizeSelectId}>Rules per page</label>
-        <select
+        <NativeSelect
           id={sizeSelectId}
           value={String(size)}
           onChange={(event) => {
             const nextSize = parsePageSize(event.target.value)
             if (nextSize !== null) onSizeChange(nextSize)
           }}
-          className="h-8 rounded-md border border-control-border bg-card px-2 text-sm text-foreground/90"
         >
           {PAGE_SIZES.map((option) => (
             <option key={String(option)} value={String(option)}>
               {sizeLabel(option)}
             </option>
           ))}
-        </select>
+        </NativeSelect>
       </div>
     </nav>
   )
