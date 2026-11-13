@@ -4,6 +4,7 @@ import { expect, test, type Page } from '@playwright/test'
 import { unzipSync } from 'fflate'
 import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
+import { openFacetGroup } from './facets'
 
 const TOTAL_RULES = 2567
 const E4EIT_RULES = 58
@@ -36,7 +37,8 @@ async function routeCatalogAsEmpty(page: Page) {
   )
 }
 
-async function tickFacetOption(page: Page, name: string) {
+async function tickFacetOption(page: Page, name: string, groupTitle: string) {
+  await openFacetGroup(page, groupTitle)
   const option = page.getByRole('checkbox', { name, exact: true })
   await option.scrollIntoViewIfNeeded()
   await option.click()
@@ -54,7 +56,7 @@ test.describe('ASD E4EIT rules with no mappings loaded', () => {
   })
 
   test('the ASD E4EIT source keeps its 58 rules', async ({ page }) => {
-    await tickFacetOption(page, 'ASD E4EIT')
+    await tickFacetOption(page, 'ASD E4EIT', 'Source')
     await expect(ruleCount(page)).toHaveText(`${E4EIT_RULES} of ${TOTAL_RULES} rules`)
   })
 
@@ -67,11 +69,12 @@ test.describe('ASD E4EIT rules with no mappings loaded', () => {
   })
 
   test('the phase 1 benchmark keeps all 58 rules and the User devices domain keeps 20', async ({ page }) => {
-    await tickFacetOption(page, 'E4EIT priority phase 1')
+    await tickFacetOption(page, 'E4EIT priority phase 1', 'Benchmark')
     await expect(ruleCount(page)).toHaveText(`${E4EIT_RULES} of ${TOTAL_RULES} rules`)
+    await openFacetGroup(page, 'Benchmark')
     await page.getByRole('checkbox', { name: 'E4EIT priority phase 1', exact: true }).click()
     await expect(ruleCount(page)).toHaveText(`${TOTAL_RULES} of ${TOTAL_RULES} rules`)
-    await tickFacetOption(page, 'E4EIT User devices')
+    await tickFacetOption(page, 'E4EIT User devices', 'Benchmark')
     await expect(ruleCount(page)).toHaveText(`20 of ${TOTAL_RULES} rules`)
   })
 

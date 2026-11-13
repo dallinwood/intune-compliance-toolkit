@@ -30,7 +30,7 @@ export function RulesView({
       <div id="filter-sidebar" className={`shrink-0 ${filtersOpen ? 'block' : 'hidden'} md:flex`}>
         <FilterSidebar rows={rows} />
       </div>
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
         <RuleTable rows={filteredRows} isStale={isStale} search={search} />
       </main>
     </div>

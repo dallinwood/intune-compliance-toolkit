@@ -2,6 +2,7 @@ import { Loader2, Settings2 } from 'lucide-react'
 import { Fragment, memo, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { RULE_TABLE_ID } from './ruleTableId'
 import { useDisplayTitle } from '@/hooks/useDisplayTitle'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { sectionGroupKey } from '../../logic/ruleFilters'
@@ -29,6 +30,7 @@ import { AssessmentCell, BenchmarkText } from './RuleRowCells'
 import { RuleStatusLegend } from './RuleStatusLegend'
 import { SectionHeader } from './SectionHeader'
 import { SectionToolbar } from './SectionToolbar'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 const INFINITE_SCROLL_STEP = 100
 
@@ -148,7 +150,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
   }
 
   return (
-    <div ref={tableTopRef} data-testid="rule-table">
+    <div ref={tableTopRef} id={RULE_TABLE_ID} tabIndex={-1} data-testid="rule-table" className="outline-none">
       <SectionToolbar
         onExpandAll={() => setExpanded(allNodeIds(tree), false)}
         onCollapseAll={() => setExpanded(new Set(), true)}
@@ -384,7 +386,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                     aria-label={isExpanded ? `Collapse ${upstreamRuleId(row.ref.id)}` : `Expand ${upstreamRuleId(row.ref.id)}`}
                     onClick={() => onToggleRule(key)}
                   >
-                    {isExpanded ? '▾' : '▸'}
+                    <DisclosureChevron isOpen={isExpanded} />
                   </Button>
                 </td>
                 <td className={`px-2 py-1.5 ${titleIndent}`}>

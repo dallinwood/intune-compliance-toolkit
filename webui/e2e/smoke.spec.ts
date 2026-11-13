@@ -5,6 +5,7 @@ import { unzipSync } from 'fflate'
 import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { buildOverlayIndex } from '../src/logic/overlayIndex'
+import { openFacetGroup } from './facets'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
@@ -82,6 +83,8 @@ test('Version and benchmark facets narrow the table together', async ({ page }) 
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 
   const countOf = async () => Number((await ruleCount(page).textContent())?.split(' ')[0])
+  await openFacetGroup(page, 'Version')
+  await openFacetGroup(page, 'Benchmark')
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
   await expect(ruleCount(page)).not.toHaveText('2567 of 2567 rules')
@@ -123,6 +126,8 @@ test('a benchmark severity option narrows the table to rules listing that severi
 
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
+  await openFacetGroup(page, 'Version')
+  await openFacetGroup(page, 'Benchmark')
   const stigLabels = page.getByTestId('sidebar-scroll-area').locator('label').filter({ hasText: /^DISA STIG/ })
   await expect(stigLabels).toHaveText(['DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)', 'DISA STIG (no severity)'])
   await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
@@ -149,6 +154,7 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
 
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
+  await openFacetGroup(page, 'Version')
   await page.getByRole('checkbox', { name: 'macOS 15', exact: true }).click()
 
   await searchBox(page).fill(stigOnlyOnFifteen.id.replace('mscp.', ''))
@@ -200,6 +206,7 @@ test('Version "None" and Target "None" filter to the rules without a version or 
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 
+  await openFacetGroup(page, 'Version')
   await expect(page.getByRole('group', { name: 'Target', exact: true })).toBeVisible()
   await expect(page.getByRole('group', { name: 'Version', exact: true })).toBeVisible()
 
@@ -228,9 +235,11 @@ test('an ISM benchmark filters to ISM rules and its benchmarks show in the table
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 
+  await openFacetGroup(page, 'Benchmark')
   await page.getByRole('checkbox', { name: 'Essential Eight ML3', exact: true }).click()
   await expect(ruleCount(page)).not.toHaveText('2567 of 2567 rules')
   await expect(ruleCount(page)).not.toHaveText('0 of 2567 rules')
+  await openFacetGroup(page, 'Version')
 
   await page.getByRole('button', { name: 'Expand all' }).click()
   await expect(page.locator('table tbody tr td .font-mono').first()).toBeVisible()
@@ -496,6 +505,7 @@ test('an invalid stored ODV value is reported as blocking generation until fixed
 // then fades out - "the count changed" alone can't see either half.
 test('an unreachable facet option greys out, fades, then disappears', async ({ page }) => {
   await page.goto('/')
+  await openFacetGroup(page, 'Benchmark')
 
   const unreachableBenchmark = page.getByRole('checkbox', { name: 'ISM Non-classified', exact: true })
   // The animated wrapper FilterSidebar's StableFacetGroup toggles
@@ -524,6 +534,7 @@ test('an unreachable facet option greys out, fades, then disappears', async ({ p
   )
 
   // ISM rules name no target, so none of its benchmarks is listed under macOS 27.
+  await openFacetGroup(page, 'Version')
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
 
   await expect(unreachableBenchmark).toBeVisible()
@@ -662,6 +673,7 @@ test('a saved selection that is no longer in the library is reported and removab
 test('display names come from the vocabulary file, with raw codes and a warning when it is missing', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
+  await openFacetGroup(page, 'Benchmark')
   await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: /^Operating system/ })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Display name problems' })).toHaveCount(0)
@@ -670,6 +682,8 @@ test('display names come from the vocabulary file, with raw codes and a warning 
   await page.reload()
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('raw codes are shown')
+  await openFacetGroup(page, 'Benchmark')
+  await openFacetGroup(page, 'Version')
   await expect(page.getByRole('checkbox', { name: 'cis_lvl1', exact: true })).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'macOS 27', exact: true })).toHaveCount(0)
   await expect(page.getByRole('checkbox', { name: 'macOS 27.0', exact: true })).toBeVisible()
@@ -687,6 +701,7 @@ test('a malformed vocabulary file falls back to raw codes with a warning', async
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
+  await openFacetGroup(page, 'Benchmark')
   await expect(page.getByRole('checkbox', { name: 'disa_stig (high)', exact: true })).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'disa_stig (no severity)', exact: true })).toBeVisible()
 })
@@ -702,6 +717,9 @@ test.describe('filter sidebar scrolling', () => {
     await page.goto('/')
     await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 
+    await openFacetGroup(page, 'Section')
+    await openFacetGroup(page, 'Tags')
+    await scroller(page).evaluate((element) => element.scrollTo({ top: 0 }))
     const metrics = await scroller(page).evaluate((element) => ({
       scrollHeight: element.scrollHeight,
       clientHeight: element.clientHeight,
@@ -727,6 +745,7 @@ test.describe('filter sidebar scrolling', () => {
     await page.goto('/')
     await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 
+    await openFacetGroup(page, 'Tags')
     const tagsFacet = scroller(page).getByRole('heading', { name: 'Tags', exact: true }).locator('..')
     const lastTag = tagsFacet.getByRole('checkbox').last()
     await lastTag.scrollIntoViewIfNeeded()
@@ -751,6 +770,7 @@ test('the None facet options read as system-generated', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 
+  await openFacetGroup(page, 'Version')
   for (const facetTitle of ['Target', 'Version']) {
     const noneCheckbox = page.getByRole('group', { name: facetTitle, exact: true }).getByRole('checkbox', { name: 'None', exact: true })
     const noneLabel = page.getByRole('group', { name: facetTitle, exact: true }).locator('label', { hasText: /^None$/ })
@@ -785,6 +805,7 @@ test('facet options show how many rules they would leave in view', async ({ page
 test('ticking one option leaves the others in its group selectable', async ({ page }) => {
   await page.goto('/')
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
+  await openFacetGroup(page, 'Section')
   const sectionGroup = page.getByRole('group', { name: 'Section', exact: true })
   const sourceGroup = page.getByRole('group', { name: 'Source', exact: true })
 
@@ -856,6 +877,8 @@ test('eight facet options from four facets toggled in quick succession all regis
   expect(expectedCount).toBeLessThan(352)
 
   await openLibrary(page)
+  await openFacetGroup(page, 'Version')
+  await openFacetGroup(page, 'Benchmark')
   const optionNames = ['macOS', 'NIST mSCP', 'macOS 26', 'macOS 27', 'CIS Level 2', 'DISA STIG (low)', 'DISA STIG (medium)', 'DISA STIG (high)']
   const options = optionNames.map((name) => page.getByRole('checkbox', { name, exact: true }))
   // dispatchEvent fires on the element itself; coordinate clicks issued
@@ -877,6 +900,8 @@ async function openLibrary(page: Page, path = '/') {
 
 test('filters, search, page and size survive a reload through the URL', async ({ page }) => {
   await openLibrary(page)
+  await openFacetGroup(page, 'Version')
+  await openFacetGroup(page, 'Benchmark')
   const versionOption = page.getByRole('checkbox', { name: 'macOS 15', exact: true })
 
   await searchBox(page).fill('configure')
@@ -988,6 +1013,7 @@ test('a shared URL with unknown values loads and drops them on the next write', 
 
 test('Version None and its page and size are restored from the URL', async ({ page }) => {
   await openLibrary(page)
+  await openFacetGroup(page, 'Version')
   const versionNone = page.getByRole('group', { name: 'Version', exact: true }).getByRole('checkbox', { name: 'None', exact: true })
   await versionNone.click()
   await expect(ruleCount(page)).toHaveText('2217 of 2567 rules')
@@ -1095,6 +1121,7 @@ test.describe('section tree and paging', () => {
 
   test('infinite scroll restarts from the first batch after a collapse and expand, and its sentinel goes once every row is shown', async ({ page }) => {
     await openLibrary(page, '/?size=all')
+    await openFacetGroup(page, 'Section')
     await page.getByRole('checkbox', { name: 'Operating system', exact: true }).click()
     await expect(ruleCount(page)).toHaveText('203 of 2567 rules')
     await page.getByRole('button', { name: 'Expand all' }).click()
@@ -1308,6 +1335,7 @@ test.describe('custom overlays', () => {
     await searchBox.fill('')
     await expect(ruleCount(page)).toHaveText('2567 of 2567 rules')
 
+    await openFacetGroup(page, 'Tags')
     const tagOption = page.getByRole('checkbox', { name: 'powershell-custom', exact: true })
     await tagOption.scrollIntoViewIfNeeded()
     await expect(tagOption.locator('xpath=..')).toContainText('(1)')

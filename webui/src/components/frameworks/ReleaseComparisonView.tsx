@@ -20,6 +20,7 @@ import { RuleDetailPanel } from '../rules/RuleDetailPanel'
 import { SectionHeader } from '../rules/SectionHeader'
 import { SectionToolbar } from '../rules/SectionToolbar'
 import { ComparisonSidebar } from './ComparisonSidebar'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 type Group = CompareGroup
 
@@ -109,13 +110,16 @@ function ComparisonRow({
         aria-expanded={isOpen}
         aria-controls={isOpen ? bodyId : undefined}
         onClick={onToggle}
-        className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 text-left text-sm focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+        className="flex w-full items-start gap-2 px-4 py-2 text-left text-sm focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
       >
-        <span className={group === 'removed' ? 'min-w-0 break-words line-through' : 'min-w-0 break-words'}>{entry.title}</span>
-        <span className="font-mono text-xs text-muted-foreground">{upstreamRuleId(entry.id)}</span>
-        {entry.kinds.map((kind) => (
-          <KindTag key={kind} kind={kind} />
-        ))}
+        <DisclosureChevron isOpen={isOpen} className="mt-0.5" />
+        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
+          <span className={group === 'removed' ? 'min-w-0 break-words line-through' : 'min-w-0 break-words'}>{entry.title}</span>
+          <span className="font-mono text-xs text-muted-foreground">{upstreamRuleId(entry.id)}</span>
+          {entry.kinds.map((kind) => (
+            <KindTag key={kind} kind={kind} />
+          ))}
+        </span>
       </button>
       {isOpen && (
         <div id={bodyId} className="border-t border-border px-4 py-2">
@@ -300,7 +304,7 @@ export function ReleaseComparisonView({
           only={only}
         />
       </div>
-      <main className="min-w-0 flex-1 overflow-y-auto">
+      <main className="min-w-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
         <div className="space-y-3 p-4">
           <div>
             <button type="button" onClick={closeComparison} className="text-sm text-link underline">

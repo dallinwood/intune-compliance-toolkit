@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type MouseEvent } from 'react'
+import { RULE_TABLE_ID } from '../rules/ruleTableId'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
@@ -19,6 +20,22 @@ import { AttributionFooter } from './AttributionFooter'
 import { CommandPalette } from './CommandPalette'
 import { ViewTabs } from './ViewTabs'
 import { WarningsNotice } from './WarningsNotice'
+
+function SkipToRulesLink() {
+  function focusRuleTable(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault()
+    document.getElementById(RULE_TABLE_ID)?.focus()
+  }
+  return (
+    <a
+      href={`#${RULE_TABLE_ID}`}
+      onClick={focusRuleTable}
+      className="sr-only rounded-md bg-background px-3 py-2 text-sm text-link underline focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:ring-2 focus:ring-focus-ring focus:outline-none"
+    >
+      Skip to rules
+    </a>
+  )
+}
 
 export function AppShell({
   rows,
@@ -86,7 +103,8 @@ export function AppShell({
       <MappingsContext value={ruleMappings}>
         <TooltipProvider>
           <div className="flex h-screen flex-col">
-            <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
+            {isRulesView && !isReviewingSelection && <SkipToRulesLink />}
+          <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
               <div className="flex items-center gap-2">
                 {hasFilterSidebar && (
                   <button

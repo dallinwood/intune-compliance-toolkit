@@ -20,6 +20,7 @@ import { compareGroupKeys, termLabel, type VocabularyIndex } from '../../logic/v
 import { MappingProvenance } from '../mappings/MappingProvenance'
 import { CoverageBar } from './CoverageBar'
 import { NativeSelect } from '@/components/ui/native-select'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 const TOGGLE_CLASS = 'rounded-sm text-xs text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const ROW_BUTTON_CLASS = 'rounded-sm text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
@@ -109,6 +110,7 @@ function ControlRow({ coverage }: { coverage: ControlCoverage }) {
         <div className={`${summaryClass} text-muted-foreground`}>{summary}</div>
       ) : (
         <button type="button" aria-expanded={isOpen} onClick={() => setIsOpen(!isOpen)} className={`${summaryClass} ${ROW_BUTTON_CLASS}`}>
+          <DisclosureChevron isOpen={isOpen} className="self-center" />
           {summary}
         </button>
       )}
@@ -136,6 +138,7 @@ function SectionRow({ section }: { section: SectionCoverage }) {
         onClick={() => setIsOpen(!isOpen)}
         className={`flex w-full flex-wrap items-baseline gap-x-3 gap-y-1 py-2 text-sm ${ROW_BUTTON_CLASS}`}
       >
+        <DisclosureChevron isOpen={isOpen} className="self-center" />
         <span className="min-w-0 basis-full break-words sm:basis-0 sm:flex-1">{section.section}</span>
         <span className="shrink-0 text-xs text-muted-foreground">
           {section.coveredThroughSupporting > 0 ? `${section.covered} + ${section.coveredThroughSupporting}` : section.covered} of {section.total}

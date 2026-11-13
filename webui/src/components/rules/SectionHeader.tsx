@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 // Tailwind only sees literal class names, so each level's classes are spelled out.
 const SECTION_LEVEL_STYLES: Record<number, string> = {
@@ -36,7 +36,7 @@ export function SectionHeader({
         onClick={() => onToggle(id)}
         className={`flex w-full items-center gap-1.5 py-2 pr-4 text-left hover:bg-foreground/5 ${SECTION_LEVEL_INDENTS[level]}`}
       >
-        <ChevronRight className={`size-4 shrink-0 text-section-muted-foreground transition-transform ${isOpen ? 'rotate-90' : ''}`} aria-hidden="true" />
+        <DisclosureChevron isOpen={isOpen} className="text-section-muted-foreground" />
         <span>
           {label} <span className="font-normal text-section-muted-foreground">({count})</span>
         </span>

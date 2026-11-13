@@ -1,6 +1,8 @@
 import { useId, type ReactNode } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { NativeSelect } from '@/components/ui/native-select'
+import { FacetGroup } from '../filters/FacetGroup'
 import { KIND_LABELS } from '../../logic/changeLabels'
 import { toggledKindSelection, type ComparisonFacetCounts } from '../../logic/comparisonFilters'
 import type { HistoryIndex } from '../../logic/historyIndex'
@@ -11,23 +13,6 @@ import { useFilterStore } from '../../state/filterStore'
 import type { CompareOnly } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
-import { NativeSelect } from '@/components/ui/native-select'
-
-
-function Group({ title, children }: { title: string; children: ReactNode }) {
-  const headingId = useId()
-  return (
-    <div className="mb-4">
-      <h2 id={headingId} className="mb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-        {title}
-      </h2>
-      <div role="group" aria-labelledby={headingId}>
-        {children}
-      </div>
-    </div>
-  )
-}
-
 function Option({ label, count, checked, disabled, onChange }: { label: string; count?: number; checked: boolean; disabled?: boolean; onChange: () => void }) {
   const id = useId()
   return (
@@ -145,9 +130,9 @@ export function ComparisonSidebar({
   )
 
   return (
-    <aside className="flex max-h-64 w-full flex-col border-b border-border text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
+    <aside aria-label="Filters" className="flex max-h-64 w-full flex-col border-b border-border text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
       <div data-testid="comparison-sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto p-4">
-        <Group title="Releases">
+        <FacetGroup title="Releases" startsOpen>
           <LabelledSelect label="Framework" value={source.name} onChange={changeFramework}>
             {sources.map((candidate) => (
               <option key={candidate.name} value={candidate.name}>
@@ -170,32 +155,32 @@ export function ComparisonSidebar({
               </option>
             ))}
           </LabelledSelect>
-        </Group>
+        </FacetGroup>
 
-        <Group title="Kind of change">
+        <FacetGroup title="Kind of change" startsOpen>
           {CHANGE_KINDS.map((kind) => (
             <Option key={kind} label={KIND_LABELS[kind]} count={counts.kinds[kind]} checked={tickedKinds.includes(kind)} onChange={() => toggleKind(kind)} />
           ))}
           <KindsNote selectedCount={tickedKinds.length} onShowAll={() => setChangeKinds(null)} />
-        </Group>
+        </FacetGroup>
 
-        <Group title="Only rules that…">
+        <FacetGroup title="Only rules that…" startsOpen>
           <Option label="have my custom changes" checked={only.includes('custom')} disabled={customisedUnavailable} onChange={() => toggleOnly('custom')} />
           {customisedUnavailable && <p className="text-xs text-muted-foreground">Your custom changes could not be loaded.</p>}
           <Option label="are in my selection" checked={only.includes('selected')} onChange={() => toggleOnly('selected')} />
-        </Group>
+        </FacetGroup>
 
-        <Group title="Section">
+        <FacetGroup title="Section" selectedCount={sections.length}>
           {sectionOptions.map((section) => (
             <Option key={section} label={termLabel(vocabularyIndex, 'sections', section)} count={counts.sections.get(section) ?? 0} checked={sections.includes(section)} onChange={() => toggleSection(section)} />
           ))}
-        </Group>
+        </FacetGroup>
 
-        <Group title="Benchmark">
+        <FacetGroup title="Benchmark" selectedCount={benchmarks.length}>
           {benchmarkOptions.map((benchmark) => (
             <Option key={benchmark} label={termLabel(vocabularyIndex, 'benchmarks', benchmark)} count={counts.benchmarks.get(benchmark) ?? 0} checked={benchmarks.includes(benchmark)} onChange={() => toggleBenchmark(benchmark)} />
           ))}
-        </Group>
+        </FacetGroup>
       </div>
     </aside>
   )

@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
+import { openFacetGroup } from './facets'
 
 const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
 
@@ -20,7 +21,8 @@ test.beforeEach(async ({ page }) => {
   await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
 })
 
-async function tickFacetOption(page: Page, name: string) {
+async function tickFacetOption(page: Page, name: string, groupTitle: string) {
+  await openFacetGroup(page, groupTitle)
   const option = page.getByRole('checkbox', { name, exact: true })
   await option.scrollIntoViewIfNeeded()
   await option.click()
@@ -36,12 +38,12 @@ async function searchForControlRow(page: Page, controlId: string) {
 }
 
 test('ticking the NIST SP 800-53 source keeps its 1014 rules', async ({ page }) => {
-  await tickFacetOption(page, 'NIST SP 800-53')
+  await tickFacetOption(page, 'NIST SP 800-53', 'Source')
   await expect(ruleCount(page)).toHaveText('1014 of 2567 rules')
 })
 
 test('ticking the 800-53 Moderate benchmark keeps its 287 rules', async ({ page }) => {
-  await tickFacetOption(page, '800-53 Moderate')
+  await tickFacetOption(page, '800-53 Moderate', 'Benchmark')
   await expect(ruleCount(page)).toHaveText('287 of 2567 rules')
 })
 
