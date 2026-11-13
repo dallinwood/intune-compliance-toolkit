@@ -1785,36 +1785,22 @@ test.describe('light and dark theme', () => {
 test.describe('target platform icons', () => {
   const iconNamed = (row: Locator, name: string) => row.getByRole('img', { name, exact: true })
 
-  test('an mSCP row shows a macOS icon to the left of its Automated badge, with a tooltip', async ({ page }) => {
+  test('an mSCP row shows a coloured macOS icon in the status column, with a tooltip', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'audit_auditd_enabled', /Enable Security Auditing/i)
-    const icon = iconNamed(row, 'macOS')
+    const icon = iconNamed(row, 'macOS: automated check')
     await expect(icon).toBeVisible()
-    await expect(icon.locator('svg')).toHaveCount(1)
-    const logoBox = await icon.locator('svg').boundingBox()
+    await expect(icon.locator('svg')).toHaveCount(2)
+    const logoBox = await icon.locator('svg').first().boundingBox()
     expect(logoBox!.width).toBeGreaterThan(8)
-    const badge = row.locator('td').nth(3).getByText(/^(Automated|Manual)/)
-    const iconBox = await icon.boundingBox()
-    const badgeBox = await badge.boundingBox()
-    expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(badgeBox!.x)
     await icon.hover()
-    await expect(page.getByRole('tooltip', { name: 'macOS' })).toBeVisible()
-  })
-
-  test('the longest badge stays on one line with its icon at desktop width', async ({ page }) => {
-    await page.goto('/')
-    const row = await searchForSingleRow(page, 'pwpolicy_temporary_or_emergency_accounts_disable', /./)
-    const iconBox = await iconNamed(row, 'macOS').boundingBox()
-    const badgeBox = await row.locator('td').nth(3).getByText('Manual - marked by mSCP').boundingBox()
-    expect(iconBox!.y).toBeLessThan(badgeBox!.y + badgeBox!.height)
-    expect(badgeBox!.y).toBeLessThan(iconBox!.y + iconBox!.height)
-    expect(iconBox!.x + iconBox!.width).toBeLessThanOrEqual(badgeBox!.x)
+    await expect(page.getByRole('tooltip', { name: 'macOS: automated check' })).toBeVisible()
   })
 
   test('an ISM control with no overlay shows no target icon', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
-    await expect(row.getByRole('img', { name: /^(macOS|Windows)$/ })).toHaveCount(0)
+    await expect(row.getByRole('img', { name: /^(macOS|Windows): / })).toHaveCount(0)
   })
 })
 
@@ -1824,9 +1810,9 @@ test.describe('Windows target from the ASD Blueprint overlays', () => {
   test('ISM-1621 shows a Windows icon', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1621', /ism-1621/)
-    const icon = row.getByRole('img', { name: 'Windows', exact: true })
+    const icon = row.getByRole('img', { name: /^Windows: (automated|manual) check/ })
     await expect(icon).toBeVisible()
-    await expect(icon.locator('svg')).toHaveCount(1)
+    await expect(icon.locator('svg')).toHaveCount(2)
   })
 
   test('the Target "Windows" option lists exactly the five Blueprint-overlaid controls', async ({ page }) => {
@@ -1951,7 +1937,7 @@ test.describe('rule mappings', () => {
     await expect(items.nth(0)).toContainText(/os_dictation_disable/)
     await expect(items.nth(1)).toContainText(/os_gatekeeper_enable/)
     await expect(items.first()).toContainText('Covers the PowerShell part only.')
-    await expect(items.first().getByText(/^(Automated|Manual)$/)).toBeVisible()
+    await expect(items.first().getByRole('img', { name: /: (automated|manual) check/ }).first()).toBeVisible()
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveCount(0)
   })
 
@@ -2034,7 +2020,7 @@ test.describe('rule mappings', () => {
     await expect(summary).toContainText('Enable Gatekeeper')
     await expect(summary).toContainText('Fix: yes')
     await expect(summary).toContainText('Gatekeeper MUST be enabled.')
-    await expect(summary.getByRole('img', { name: 'macOS' })).toBeVisible()
+    await expect(summary.getByRole('img', { name: /^macOS: (automated|manual) check$/ })).toBeVisible()
     await expect(summary.getByText(/^(Automated|Manual)$/)).toBeVisible()
   })
 

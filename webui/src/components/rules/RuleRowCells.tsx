@@ -7,14 +7,11 @@ import { versionsUnder } from '../../logic/ruleFilters'
 import { useFilterStore } from '../../state/filterStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
-import { TargetIcons } from './TargetIcons'
+import { RuleStatusIcons } from './RuleStatusIcons'
 
 export function AssessmentCell({ row }: { row: RuleRow }) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5 md:flex-nowrap">
-      <TargetIcons targetKeys={row.targetKeys} />
-      <AssessmentBadge row={row} />
-    </div>
+    <RuleStatusIcons row={row} />
   )
 }
 

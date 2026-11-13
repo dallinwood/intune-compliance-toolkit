@@ -29,6 +29,7 @@ import type { RuleRow } from '../../types/rule-row'
 import { PagingBar } from './PagingBar'
 import { RuleDetailPanel } from './RuleDetailPanel'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
+import { RuleStatusLegend } from './RuleStatusLegend'
 import { SectionHeader } from './SectionHeader'
 import { SectionToolbar } from './SectionToolbar'
 
@@ -157,6 +158,9 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
         onExpandAll={() => setExpanded(allNodeIds(tree), false)}
         onCollapseAll={() => setExpanded(new Set(), true)}
       />
+      <div className="px-4 pb-2 md:px-6">
+        <RuleStatusLegend />
+      </div>
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
@@ -331,12 +335,12 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
     // layout each one (and every expand/collapse, since a colSpan detail row
     // also perturbs the calculation) would compute its own column widths from
     // its own content, making the title column's start drift between runs.
-    // Fixed columns: checkbox 48 + chevron 32 + assessment 240 + benchmarks
-    // 192 = 512px, and min-w leaves the flexible title column room instead of
-    // squeezing it. The assessment column fits the longest badge ("Manual -
-    // marked by mSCP", about 167px) plus two target icons on one line, so row
-    // height never depends on a row's targets. Below md the assessment and benchmark columns fold under
-    // the title so phones never scroll sideways.
+    // Fixed columns: checkbox 48 + chevron 32 + assessment 128 + benchmarks
+    // 192 = 400px, and min-w leaves the flexible title column room instead of
+    // squeezing it. The assessment column fits the status strip (up to two
+    // platform icons, a divider and two link icons) on one line, so row
+    // height never depends on a row's targets. Below md the assessment and
+    // benchmark columns fold under the title so phones never scroll sideways.
     <table className="w-full table-fixed text-sm md:min-w-[780px]">
       {/* Explicit column widths: a fixed layout otherwise takes them from
           the first row, where the two md-only cells are hidden on phones,
@@ -346,7 +350,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
         <col className="w-12" />
         <col className="w-8" />
         <col />
-        <col className="w-0 md:w-60" />
+        <col className="w-0 md:w-32" />
         <col className="w-0 md:w-48" />
       </colgroup>
       <tbody>
@@ -399,7 +403,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                     <BenchmarkText row={row} />
                   </div>
                 </td>
-                <td className="hidden w-60 px-2 py-1.5 md:table-cell">
+                <td className="hidden w-32 px-2 py-1.5 md:table-cell">
                   <AssessmentCell row={row} />
                 </td>
                 <td className="hidden w-48 px-2 py-1.5 md:table-cell">

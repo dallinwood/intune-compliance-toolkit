@@ -103,3 +103,4 @@
 - [ ] **Step 2:** Commit `docs: describe rule status icons and close the plan` with progress log entries in this plan and the design; push.
 
 ## Progress log
+- 2026-11-13: Task 1 done. Added `ruleStatusIcons.ts` (strip icons, labels with manual reasons, distinct direct-link counts), the clipboard, link and check/dash mark glyphs in `targetIcons.ts`, and the `--status-automated` / `--status-manual` tokens per theme, with Vitest tests. Commit: 7855be2 feat: add rule status icon logic and status colour tokens

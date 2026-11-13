@@ -3,6 +3,7 @@ import { useRule, useUsableOdvValue } from '../../hooks/useRule'
 import { displayWithOdv } from '../../logic/odv'
 import { discussionExcerpt } from '../../logic/mappedRuleView'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
+import { targetStatus } from '../../logic/ruleStatusIcons'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
@@ -22,6 +23,8 @@ export function MappedRuleSummary({ row }: { row: RuleRow }) {
   const ruleState = useRule(row.ref)
   const odvValue = useUsableOdvValue(ruleState.status === 'ready' ? ruleState.rule : null, row.ref)
 
+  const statusByTarget = Object.fromEntries(row.targetKeys.map((targetKey) => [targetKey, targetStatus(row, targetKey)]))
+
   return (
     <div className="flex w-72 max-w-full flex-col gap-1.5 break-words whitespace-normal">
       <p className="font-mono break-all text-muted-foreground">
@@ -29,7 +32,7 @@ export function MappedRuleSummary({ row }: { row: RuleRow }) {
       </p>
       <p className="text-sm font-medium">{title}</p>
       <div className="flex flex-wrap items-center gap-1.5">
-        <TargetIcons targetKeys={row.targetKeys} />
+        <TargetIcons targetKeys={row.targetKeys} statusByTarget={statusByTarget} />
         <AssessmentBadge row={row} />
       </div>
       {ruleState.status === 'loading' && <p className="text-muted-foreground">Loading…</p>}
