@@ -15,6 +15,7 @@ import { VocabularyContext } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { AttributionFooter } from './AttributionFooter'
+import { CommandPalette } from './CommandPalette'
 import { ViewTabs } from './ViewTabs'
 import { WarningsNotice } from './WarningsNotice'
 
@@ -114,6 +115,7 @@ export function AppShell({
                 />
               </div>
             )}
+            <CommandPalette rows={rows} sources={sources} onNavigate={() => setIsReviewingSelection(false)} />
           </header>
           <ViewTabs activeViewId={activeView.id} />
           <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
