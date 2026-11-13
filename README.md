@@ -418,8 +418,8 @@ Merge rules, applied field by field:
 - Several overlays on one rule apply in file name order; the later file
   wins for single values.
 - Adding a `check` does not change `assessment`: an ISM control stays
-  "Manual - no check" in the table and the attestation report until the
-  overlay also sets `assessment` (for example
+  manual (reason "no check") in the table and the attestation report until
+  the overlay also sets `assessment` (for example
   `{ "status": "automated", "manual_reason": null }`).
 
 The repo ships five overlays, `baselines/_overlays/rules/asd-blueprint-*.json`, that add ASD
@@ -478,6 +478,15 @@ listed. A filter finds a rule by id or title, or by automated or manual. Hoverin
 title shows a summary, clicking a row shows that rule's details in place, and
 "Go to this rule" opens it in the main table (the URL holds the opened rule,
 so the link can be shared).
+
+In the rule table, each row shows its status as icons rather than text. A
+platform icon (macOS, Windows or Linux), or a clipboard when the rule has no
+platform, is green with a check mark when the rule is automated and orange
+with a dash mark when it is manual. After a divider come up to two link
+icons: green when a directly linked rule is automated, orange when one is
+manual, with the counts in the tooltip. A rule with no links shows none. A key
+above the table lists the icons. Hover an icon, or Tab to a row's icons, to
+read the full text, including the reason a rule is manual.
 
 Put each mapping file in `baselines/_mappings/rules/<name>.json` (UTF-8, LF,
 and a file name of letters, digits, `.`, `_` and `-`):

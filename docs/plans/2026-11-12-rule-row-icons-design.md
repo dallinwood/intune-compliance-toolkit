@@ -1,7 +1,7 @@
 # Design: rule row status icons (coloured platform and link icons)
 
-Status: proposed. **The choice of Option B below needs maintainer
-confirmation** before the plan is built; the plan builds Option B.
+Status: implemented (Option B, confirmed by the maintainer). See the
+progress log at the end.
 
 ## 1. Intent
 
@@ -277,3 +277,4 @@ export function stripAccessibleName(icons: readonly StatusIcon[]): string
   the licence plugin.
 
 ## Progress log
+- 2026-11-13: Implemented as Option B. The maintainer confirmed Option B and the token values; the glyphs reuse the bundled bootstrap-icons package. Commits: 7855be2 feat: add rule status icon logic and status colour tokens; cbaf063 feat: show rule status as coloured platform and link icons. Notes: the strip tooltip opens on keyboard focus only (a programmatic `focus()` without keyboard modality does not open it); the hover tooltip belongs to each icon.
