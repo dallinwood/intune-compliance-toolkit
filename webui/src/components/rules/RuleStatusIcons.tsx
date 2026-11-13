@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { linkStatusCounts, rowStatusIcons, stripAccessibleName, type StatusIcon } from '../../logic/ruleStatusIcons'
+import { linkStatusCounts, rowStatusIcons, stripAccessibleName, stripTooltipShouldOpen, type StatusIcon } from '../../logic/ruleStatusIcons'
 import { LINK_ICON, NO_TARGET_ICON, targetIconFor } from '../../logic/targetIcons'
 import { useRuleMappings } from '../../state/mappingsContext'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
@@ -41,7 +41,7 @@ export function RuleStatusIcons({ row }: { row: RuleRow }) {
   return (
     <Tooltip
       open={isStripTooltipOpen}
-      onOpenChange={(isOpen, eventDetails) => setIsStripTooltipOpen(!isOpen || eventDetails.reason === 'trigger-focus')}
+      onOpenChange={(isOpen, eventDetails) => setIsStripTooltipOpen(stripTooltipShouldOpen(isOpen, eventDetails.reason))}
     >
       <TooltipTrigger
         render={<span role="group" aria-label={stripAccessibleName(icons)} />}

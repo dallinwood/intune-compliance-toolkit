@@ -14,10 +14,10 @@ const LEGEND_ENTRIES: { glyphMarkup: string; status: CheckStatus; text: string }
 
 export function RuleStatusLegend() {
   return (
-    <p data-testid="rule-status-legend" className="flex flex-wrap gap-x-3.5 gap-y-1 text-xs text-muted-foreground">
-      <span>Key:</span>
+    <p data-testid="rule-status-legend" className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">
+      <span className="font-medium text-foreground">Key</span>
       {LEGEND_ENTRIES.map((entry) => (
-        <span key={entry.text} className="inline-flex items-center gap-1.5">
+        <span key={entry.text} className="inline-flex items-center gap-2">
           <StatusGlyph glyphMarkup={entry.glyphMarkup} status={entry.status} />
           {entry.text}
         </span>

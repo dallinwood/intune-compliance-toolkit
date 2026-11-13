@@ -336,8 +336,6 @@ export function ReleaseComparisonView({
         </div>
         {/* As on the Rules tab, the toolbar opens and closes the section headers only; a row opens by click. */}
         <SectionToolbar
-          onExpandOneLevel={() => groupsOpen.expand(shownGroupKeys)}
-          onCollapseOneLevel={() => groupsOpen.collapse(shownGroupKeys)}
           onExpandAll={() => groupsOpen.expand(shownGroupKeys)}
           onCollapseAll={() => groupsOpen.collapse(shownGroupKeys)}
         />

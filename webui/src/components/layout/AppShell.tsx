@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
@@ -83,59 +84,61 @@ export function AppShell({
   return (
     <VocabularyContext value={vocabularyIndex}>
       <MappingsContext value={ruleMappings}>
-        <div className="flex h-screen flex-col">
-          <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
-            <div className="flex items-center gap-2">
-              {hasFilterSidebar && (
-                <button
-                  type="button"
-                  onClick={() => setFiltersOpen((value) => !value)}
-                  aria-expanded={filtersOpen}
-                  aria-controls="filter-sidebar"
-                  className="rounded border border-control-border px-2 py-1 text-xs md:hidden"
-                >
-                  Filters
-                </button>
-              )}
-              <h1 className="text-lg font-semibold text-foreground">Intune Compliance Toolkit</h1>
-            </div>
-            {isRulesView && (
-              <div className="flex flex-wrap items-center gap-4">
-                <span className="text-sm text-muted-foreground">
-                  {filteredRows.length} of {rows.length} rules
-                </span>
-                <SelectionToolbar
-                  rows={rows}
-                  sources={sources}
-                  selectedCount={knownSelections.length}
-                  onGenerate={() => {
-                    setViewId(DEFAULT_VIEW_ID)
-                    setIsReviewingSelection(true)
-                  }}
-                />
+        <TooltipProvider>
+          <div className="flex h-screen flex-col">
+            <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
+              <div className="flex items-center gap-2">
+                {hasFilterSidebar && (
+                  <button
+                    type="button"
+                    onClick={() => setFiltersOpen((value) => !value)}
+                    aria-expanded={filtersOpen}
+                    aria-controls="filter-sidebar"
+                    className="rounded border border-control-border px-2 py-1 text-xs md:hidden"
+                  >
+                    Filters
+                  </button>
+                )}
+                <h1 className="text-lg font-semibold text-foreground">Intune Compliance Toolkit</h1>
               </div>
-            )}
-            <CommandPalette rows={rows} sources={sources} onNavigate={() => setIsReviewingSelection(false)} />
-          </header>
-          <ViewTabs activeViewId={activeView.id} />
-          <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
-          <WarningsNotice label="Custom content problems" summary="Some custom content could not be used:" warnings={overlayWarnings} />
-          <WarningsNotice label="Mapping problems" summary="Some rule mappings could not be used:" warnings={mappingWarnings} />
-          <StaleSelectionsNotice unknownIds={unknownIds} />
-          {activeView.render({
-            rows,
-            filteredRows,
-            isStale,
-            search: deferredFilters.search,
-            sources,
-            coveredVersions,
-            filtersOpen,
-            isReviewingSelection,
-            enabledSelections: knownSelections,
-            onCloseReview: () => setIsReviewingSelection(false),
-          })}
-          <AttributionFooter sources={sources} />
-        </div>
+              {isRulesView && (
+                <div className="flex flex-wrap items-center gap-4">
+                  <span className="text-sm text-muted-foreground">
+                    {filteredRows.length} of {rows.length} rules
+                  </span>
+                  <SelectionToolbar
+                    rows={rows}
+                    sources={sources}
+                    selectedCount={knownSelections.length}
+                    onGenerate={() => {
+                      setViewId(DEFAULT_VIEW_ID)
+                      setIsReviewingSelection(true)
+                    }}
+                  />
+                </div>
+              )}
+              <CommandPalette rows={rows} sources={sources} onNavigate={() => setIsReviewingSelection(false)} />
+            </header>
+            <ViewTabs activeViewId={activeView.id} />
+            <WarningsNotice label="Display name problems" summary="Some display names could not be used:" warnings={vocabularyWarnings} />
+            <WarningsNotice label="Custom content problems" summary="Some custom content could not be used:" warnings={overlayWarnings} />
+            <WarningsNotice label="Mapping problems" summary="Some rule mappings could not be used:" warnings={mappingWarnings} />
+            <StaleSelectionsNotice unknownIds={unknownIds} />
+            {activeView.render({
+              rows,
+              filteredRows,
+              isStale,
+              search: deferredFilters.search,
+              sources,
+              coveredVersions,
+              filtersOpen,
+              isReviewingSelection,
+              enabledSelections: knownSelections,
+              onCloseReview: () => setIsReviewingSelection(false),
+            })}
+            <AttributionFooter sources={sources} />
+          </div>
+        </TooltipProvider>
       </MappingsContext>
     </VocabularyContext>
   )

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { NO_TARGET_KEY } from './applicability'
 import type { MappedRule } from './mappingIndex'
-import { linkStatusCounts, rowStatusIcons, stripAccessibleName, targetStatus } from './ruleStatusIcons'
+import { linkStatusCounts, rowStatusIcons, stripAccessibleName, stripTooltipShouldOpen, targetStatus } from './ruleStatusIcons'
 import { committedVocabularyIndex } from './testVocabularyFixtures'
 import type { RuleRow } from '../types/rule-row'
 
@@ -118,4 +118,18 @@ describe('linkStatusCounts', () => {
   it('a rule with no entry has no links', () => {
     expect(linkStatusCounts('mscp.a', new Map(), new Map())).toEqual({ automated: 0, manual: 0 })
   })
+})
+
+describe('stripTooltipShouldOpen', () => {
+  it('opens only for an open request caused by keyboard focus', () => {
+    expect(stripTooltipShouldOpen(true, 'trigger-focus')).toBe(true)
+    expect(stripTooltipShouldOpen(true, 'trigger-hover')).toBe(false)
+  })
+
+  it.each(['trigger-hover', 'trigger-focus', 'trigger-press', 'escape-key', 'outside-press', 'none'])(
+    'closes on every close request, whatever the reason (%s)',
+    (reason) => {
+      expect(stripTooltipShouldOpen(false, reason)).toBe(false)
+    },
+  )
 })

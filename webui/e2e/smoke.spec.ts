@@ -1024,32 +1024,11 @@ test.describe('section tree and paging', () => {
     await expect(pageStatus(page)).toHaveText('Page 1 of 1')
   })
 
-  test('expand and collapse one level walk the mSCP and ISM sections level by level', async ({ page }) => {
-    await openLibrary(page, '/?size=200&section=audit&section=Guidelines+for+email')
-    await expect(ruleCount(page)).toHaveText('57 of 2567 rules')
-    const ismRuleIds = ruleTable(page).locator('.font-mono', { hasText: /^ism-/ })
-
-    await page.getByRole('button', { name: 'Expand one level' }).click()
-    await expect(ruleTable(page).getByText('audit_acls_files_configure', { exact: true })).toBeVisible()
-    await expect(sectionHeadings(page, 3)).toHaveText([/^Email gateways and servers \(\d+\)$/, /^Email usage \(\d+\)$/])
-    await expect(ismRuleIds).toHaveCount(0)
-
-    await page.getByRole('button', { name: 'Expand one level' }).click()
-    await expect(sectionHeadings(page, 4).first()).toBeVisible()
-    await expect(ismRuleIds).toHaveCount(0)
-
-    await page.getByRole('button', { name: 'Expand one level' }).click()
-    await expect(ismRuleIds).toHaveCount(26)
-    await expect(ruleRows(page)).toHaveCount(57)
-
-    await page.getByRole('button', { name: 'Collapse one level' }).click()
-    await expect(ismRuleIds).toHaveCount(0)
-    await expect(sectionHeadings(page, 4).first()).toBeVisible()
-    await expect(ruleRows(page)).toHaveCount(31)
-
-    await page.getByRole('button', { name: 'Collapse all' }).click()
-    await expect(ruleRows(page)).toHaveCount(0)
-    await expect(sectionHeadings(page, 3)).toHaveCount(0)
+  test('the toolbar offers Expand all and Collapse all only', async ({ page }) => {
+    await openLibrary(page)
+    await expect(page.getByRole('button', { name: 'Expand all' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Collapse all' })).toBeVisible()
+    await expect(page.getByRole('button', { name: /one level/ })).toHaveCount(0)
   })
 
   test('a section header toggles its own section', async ({ page }) => {
@@ -1150,8 +1129,8 @@ test.describe('section tree and paging', () => {
     await expect(page.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
     await expect(page.getByRole('checkbox', { name: 'Guidelines for email', exact: true })).toBeChecked()
     await expect(ruleCount(page)).toHaveText('57 of 2567 rules')
-    await page.getByRole('button', { name: 'Expand one level' }).click()
-    await expect(ruleRows(page)).toHaveCount(31)
+    await page.getByRole('button', { name: 'Expand all' }).click()
+    await expect(ruleRows(page)).toHaveCount(57)
     await expect(sectionHeadings(page, 3)).toHaveCount(2)
 
     await searchBox(page).fill('ism-0267')
@@ -1161,10 +1140,10 @@ test.describe('section tree and paging', () => {
 
     await searchBox(page).fill('')
     await expect(ruleCount(page)).toHaveText('57 of 2567 rules')
-    await expect(ruleTable(page).getByText('ism-0267', { exact: true })).toHaveCount(0)
-    await expect(ruleRows(page)).toHaveCount(31)
+    await expect(ruleTable(page).getByText('ism-0267', { exact: true })).toBeVisible()
+    await expect(ruleRows(page)).toHaveCount(57)
     await expect(sectionHeadings(page, 3)).toHaveCount(2)
-    await expect(sectionHeadings(page, 4)).toHaveCount(0)
+    await expect(sectionHeadings(page, 4)).not.toHaveCount(0)
 
     // Facet filters do not open sections.
     await page.getByRole('button', { name: 'Collapse all' }).click()

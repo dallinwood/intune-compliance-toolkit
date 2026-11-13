@@ -67,3 +67,10 @@ export function rowStatusIcons(row: RuleRow, linkCounts: LinkStatusCounts, index
 export function stripAccessibleName(icons: readonly StatusIcon[]): string {
   return icons.map((icon) => icon.label).join('. ')
 }
+
+// The strip's tooltip is controlled so that hovering shows the hovered icon's
+// own tooltip instead; it opens for keyboard focus only and every other
+// request, including every close, is honoured as given.
+export function stripTooltipShouldOpen(isOpen: boolean, reason: string): boolean {
+  return isOpen && reason === 'trigger-focus'
+}

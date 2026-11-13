@@ -119,3 +119,39 @@ test('the legend lists the five meanings', async ({ page }) => {
     await expect(legend).toContainText(text)
   }
 })
+
+test('hovering several strips in sequence and moving away leaves no tooltip open', async ({ page }) => {
+  await page.goto('/')
+  await page.getByPlaceholder('Search title or id…').fill('smartcard')
+  await page.getByRole('button', { name: 'Expand all' }).click()
+  const strips = page.locator('table tbody tr[data-rule-id] > td:nth-child(4)').getByRole('group')
+  await expect(strips.nth(2)).toBeVisible()
+  for (const stripIndex of [0, 1, 2]) {
+    await strips.nth(stripIndex).getByRole('img').first().hover()
+    await expect(page.getByRole('tooltip')).toHaveCount(1)
+  }
+  await page.mouse.move(0, 0)
+  await expect(page.getByRole('tooltip')).toHaveCount(0)
+})
+
+test('hovering one icon shows exactly one tooltip', async ({ page }) => {
+  const row = await rowFor(page, automatedMacosRule)
+  await row.locator('td').nth(3).getByRole('img').first().hover()
+  await expect(page.getByRole('tooltip')).toHaveCount(1)
+})
+
+test('Escape closes the strip tooltip opened by keyboard focus', async ({ page }) => {
+  const row = await rowFor(page, linkedControl)
+  await row.locator('td').nth(3).getByRole('group').focus()
+  await expect(page.getByRole('tooltip')).toHaveCount(1)
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('tooltip')).toHaveCount(0)
+})
+
+test('tabbing away from the strip closes its tooltip', async ({ page }) => {
+  const row = await rowFor(page, linkedControl)
+  await row.locator('td').nth(3).getByRole('group').focus()
+  await expect(page.getByRole('tooltip')).toHaveCount(1)
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('tooltip').filter({ hasText: 'No platform: manual' })).toHaveCount(0)
+})

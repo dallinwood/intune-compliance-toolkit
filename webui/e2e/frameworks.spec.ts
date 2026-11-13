@@ -167,6 +167,7 @@ test('group headers collapse like the Rules tab sections, and the toolbar expand
   await expect(page.locator('[data-testid="comparison-row"][data-group="added"]')).toHaveCount(0)
 
   const toolbar = page.getByRole('group', { name: 'Sections' })
+  await expect(toolbar.getByRole('button', { name: /one level/ })).toHaveCount(0)
   await toolbar.getByRole('button', { name: 'Collapse all' }).click()
   for (const name of [/^Added \(/, /^Removed \(/, /^Changed \(/]) await expect(page.getByRole('button', { name })).toHaveAttribute('aria-expanded', 'false')
 

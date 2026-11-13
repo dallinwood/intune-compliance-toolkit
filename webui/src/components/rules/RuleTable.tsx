@@ -2,7 +2,6 @@ import { Loader2, Settings2 } from 'lucide-react'
 import { Fragment, memo, useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { TooltipProvider } from '@/components/ui/tooltip'
 import { useDisplayTitle } from '@/hooks/useDisplayTitle'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { sectionGroupKey } from '../../logic/ruleFilters'
@@ -10,8 +9,6 @@ import {
   allNodeIds,
   buildSectionTree,
   clampPage,
-  collapseOneLevel,
-  expandOneLevel,
   paginate,
   revealRules,
   searchExpanded,
@@ -153,29 +150,23 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
   return (
     <div ref={tableTopRef} data-testid="rule-table">
       <SectionToolbar
-        onExpandOneLevel={() => setExpanded(expandOneLevel(tree, expanded), false)}
-        onCollapseOneLevel={() => setExpanded(collapseOneLevel(tree, expanded), true)}
         onExpandAll={() => setExpanded(allNodeIds(tree), false)}
         onCollapseAll={() => setExpanded(new Set(), true)}
+        trailing={<RuleStatusLegend />}
       />
-      <div className="px-4 pb-2 md:px-6">
-        <RuleStatusLegend />
-      </div>
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
             <p className="p-6 text-sm text-muted-foreground">No rules match the current filters.</p>
           ) : (
             <>
-              <TooltipProvider>
-                <RuleItems
-                  items={shownItems}
-                  expanded={deferredExpanded}
-                  expandedRules={expandedRules}
-                  onToggleSection={toggleSection}
-                  onToggleRule={toggleRule}
-                />
-              </TooltipProvider>
+              <RuleItems
+                items={shownItems}
+                expanded={deferredExpanded}
+                expandedRules={expandedRules}
+                onToggleSection={toggleSection}
+                onToggleRule={toggleRule}
+              />
               {revealed?.hasMore && <InfiniteScrollSentinel onReveal={revealMore} />}
               <PagingBar
                 currentPage={currentPage}

@@ -4,8 +4,6 @@ import {
   allNodeIds,
   buildSectionTree,
   clampPage,
-  collapseOneLevel,
-  expandOneLevel,
   paginate,
   revealRules,
   searchExpanded,
@@ -67,21 +65,6 @@ function sectionId(...path: string[]): string {
 
 function describeItems(items: VisibleItem[]): string[] {
   return items.map((item) => (item.kind === 'section' ? `${'#'.repeat(item.node.depth)} ${item.node.label}` : item.row.title))
-}
-
-function sectionIdsByDepth(tree: SectionNode[]): Map<string, number> {
-  const depthById = new Map<string, number>()
-  const visit = (node: SectionNode) => {
-    depthById.set(node.id, node.depth)
-    node.children.forEach(visit)
-  }
-  tree.forEach(visit)
-  return depthById
-}
-
-function parentId(id: string): string | null {
-  const separatorPosition = id.lastIndexOf(SECTION_ID_SEPARATOR)
-  return separatorPosition === -1 ? null : id.slice(0, separatorPosition)
 }
 
 describe('buildSectionTree', () => {
@@ -168,55 +151,6 @@ describe('visibleItems', () => {
       'Control three',
     ])
     expect(items.flatMap((item) => (item.kind === 'rule' ? [item.depth] : []))).toEqual([1, 1, 1, 3, 3, 3, 3])
-  })
-})
-
-describe('expandOneLevel and collapseOneLevel', () => {
-  it('walk depth 1 to 2 to 3 and back on mixed data, never leaving a section open under a closed parent', () => {
-    const tree = mixedTree()
-    const depthById = sectionIdsByDepth(tree)
-    const openDepths = (expanded: ReadonlySet<string>) => [...new Set([...expanded].map((id) => depthById.get(id)))].sort()
-    const expectNoOrphans = (expanded: ReadonlySet<string>) => {
-      for (const id of expanded) {
-        const parent = parentId(id)
-        if (parent !== null) expect(expanded.has(parent)).toBe(true)
-      }
-    }
-
-    let expanded: Set<string> = new Set()
-    const expandedStates: number[][] = []
-    for (let step = 0; step < 4; step += 1) {
-      expanded = expandOneLevel(tree, expanded)
-      expectNoOrphans(expanded)
-      expandedStates.push(openDepths(expanded) as number[])
-    }
-    expect(expandedStates).toEqual([[1], [1, 2], [1, 2, 3], [1, 2, 3]])
-    expect(expanded).toEqual(allNodeIds(tree))
-
-    const collapsedStates: number[][] = []
-    for (let step = 0; step < 4; step += 1) {
-      expanded = collapseOneLevel(tree, expanded)
-      expectNoOrphans(expanded)
-      collapsedStates.push(openDepths(expanded) as number[])
-    }
-    expect(collapsedStates).toEqual([[1, 2], [1], [], []])
-  })
-
-  it('expand one level opens the shallowest collapsed visible sections, even when deeper ones elsewhere are open', () => {
-    const tree = mixedTree()
-    const emailId = 'Guidelines for email'
-    const usageId = sectionId(emailId, 'Email usage')
-    const expanded = expandOneLevel(tree, new Set([emailId, usageId]))
-    expect(expanded).toEqual(new Set(['os', 'audit', 'Guidelines for cryptography', emailId, usageId]))
-  })
-
-  it('both ignore remembered open sections hidden under a closed parent and drop them', () => {
-    const tree = mixedTree()
-    const hiddenUsage = sectionId('Guidelines for email', 'Email usage')
-    expect(collapseOneLevel(tree, new Set(['os', hiddenUsage]))).toEqual(new Set())
-    expect(expandOneLevel(tree, new Set(['os', 'audit', 'Guidelines for cryptography', hiddenUsage]))).toEqual(
-      new Set(['os', 'audit', 'Guidelines for cryptography', 'Guidelines for email']),
-    )
   })
 })
 
