@@ -97,7 +97,7 @@ const SUPPORTING_CHOICES: SupportingCheckChoices = {
   includeSupporting: true,
   overrides: { 'mscp.os_firewall_enable': 'exclude', 'mscp.os_gatekeeper_enable': 'include' },
 }
-const UNREADABLE_WARNING = 'Supporting check choices in this file were not readable and were ignored.'
+const UNREADABLE_WARNING = 'Supporting check choices in this file were not readable and were reset to the defaults.'
 
 describe('supporting check choices in a settings file', () => {
   it('omits the field when no choices are given', () => {

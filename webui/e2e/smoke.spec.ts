@@ -1790,7 +1790,7 @@ test.describe('light and dark theme', () => {
 })
 
 test.describe('target platform icons', () => {
-  const iconNamed = (row: Locator, name: string) => row.getByRole('img', { name, exact: true })
+  const iconNamed = (row: Locator, name: string) => row.locator(`[data-status-icon="${name}"]`)
 
   test('an mSCP row shows a coloured macOS icon in the status column, with a tooltip', async ({ page }) => {
     await page.goto('/')
@@ -1807,7 +1807,7 @@ test.describe('target platform icons', () => {
   test('an ISM control with no overlay shows no target icon', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
-    await expect(row.getByRole('img', { name: /^(macOS|Windows): / })).toHaveCount(0)
+    await expect(row.locator('[data-status-icon^="macOS: "], [data-status-icon^="Windows: "]')).toHaveCount(0)
   })
 })
 
@@ -1817,7 +1817,7 @@ test.describe('Windows target from the ASD Blueprint overlays', () => {
   test('ISM-1621 shows a Windows icon', async ({ page }) => {
     await page.goto('/')
     const row = await searchForSingleRow(page, 'ism-1621', /ism-1621/)
-    const icon = row.getByRole('img', { name: /^Windows: (automated|manual) check/ })
+    const icon = row.locator('[data-status-icon^="Windows: "]')
     await expect(icon).toBeVisible()
     await expect(icon.locator('svg')).toHaveCount(2)
   })
@@ -1944,7 +1944,7 @@ test.describe('rule mappings', () => {
     await expect(items.nth(0)).toContainText(/os_dictation_disable/)
     await expect(items.nth(1)).toContainText(/os_gatekeeper_enable/)
     await expect(items.first()).toContainText('Covers the PowerShell part only.')
-    await expect(items.first().getByRole('img', { name: /: (automated|manual) check/ }).first()).toBeVisible()
+    await expect(items.first().locator('[data-status-icon$=" check"]').first()).toBeVisible()
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('stale-mapping-note')).toHaveCount(0)
   })
 

@@ -16,7 +16,7 @@ function glyphMarkupOf(icon: StatusIcon): string {
 function StatusIconItem({ icon }: { icon: StatusIcon }) {
   return (
     <Tooltip>
-      <TooltipTrigger render={<span role="img" aria-label={icon.label} />} className="inline-flex shrink-0">
+      <TooltipTrigger render={<span aria-hidden="true" data-status-icon={icon.label} />} className="inline-flex shrink-0">
         <StatusGlyph glyphMarkup={glyphMarkupOf(icon)} status={icon.status} />
       </TooltipTrigger>
       <TooltipContent>{icon.label}</TooltipContent>
@@ -24,6 +24,8 @@ function StatusIconItem({ icon }: { icon: StatusIcon }) {
   )
 }
 
+// The group's label already announces every icon, so the icons themselves stay out of the
+// accessibility tree (a role="img" child would announce each status a second time).
 // One tab stop per strip, not per icon, so thousands of rows add no extra
 // stops. The strip's own tooltip opens on keyboard focus only; hovering shows
 // the hovered icon's tooltip instead.

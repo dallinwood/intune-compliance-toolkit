@@ -71,13 +71,20 @@ const countWord = (count: number) => (count === 1 ? 'rule' : 'rules')
 test('an automated mSCP rule shows a macOS icon named "macOS: automated check" and no pill text', async ({ page }) => {
   const row = await rowFor(page, automatedMacosRule)
   const cell = row.locator('td').nth(3)
-  await expect(cell.getByRole('img', { name: 'macOS: automated check', exact: true })).toBeVisible()
+  await expect(cell.locator('[data-status-icon="macOS: automated check"]')).toBeVisible()
   await expect(cell.getByText(/Automated|Manual/)).toHaveCount(0)
+})
+
+test('a strip is announced once, by its group, and exposes no image roles of its own', async ({ page }) => {
+  const row = await rowFor(page, automatedMacosRule)
+  const cell = row.locator('td').nth(3)
+  await expect(cell.getByRole('group', { name: /macOS: automated check/ })).toHaveCount(1)
+  await expect(cell.getByRole('img')).toHaveCount(0)
 })
 
 test('an ISM control with no platform shows a clipboard icon named "No platform: manual - <reason>"', async ({ page }) => {
   const row = await rowFor(page, unlinkedManualControl)
-  const icon = row.locator('td').nth(3).getByRole('img', { name: /^No platform: manual - / })
+  const icon = row.locator('td').nth(3).locator('[data-status-icon^="No platform: manual - "]')
   await expect(icon).toHaveCount(1)
   await expect(icon).toBeVisible()
 })
@@ -86,13 +93,13 @@ test('a linked ISM control shows link icons whose names give the automated and m
   const counts = linkCountsOf(linkedControl.id)
   const row = await rowFor(page, linkedControl)
   const cell = row.locator('td').nth(3)
-  await expect(cell.getByRole('img', { name: `Linked to ${counts.automated} automated ${countWord(counts.automated)}`, exact: true })).toBeVisible()
-  await expect(cell.getByRole('img', { name: `Linked to ${counts.manual} manual ${countWord(counts.manual)}`, exact: true })).toBeVisible()
+  await expect(cell.locator(`[data-status-icon="Linked to ${counts.automated} automated ${countWord(counts.automated)}"]`)).toBeVisible()
+  await expect(cell.locator(`[data-status-icon="Linked to ${counts.manual} manual ${countWord(counts.manual)}"]`)).toBeVisible()
 })
 
 test('a rule with no links shows no link icon', async ({ page }) => {
   const row = await rowFor(page, unlinkedManualControl)
-  await expect(row.getByRole('img', { name: /^Linked to / })).toHaveCount(0)
+  await expect(row.locator('[data-status-icon^="Linked to "]')).toHaveCount(0)
 })
 
 test('hovering an icon shows its tooltip; focusing the strip shows every line', async ({ page }) => {
@@ -101,7 +108,7 @@ test('hovering an icon shows its tooltip; focusing the strip shows every line', 
   const cell = row.locator('td').nth(3)
   const automatedLabel = `Linked to ${counts.automated} automated ${countWord(counts.automated)}`
 
-  await cell.getByRole('img', { name: automatedLabel, exact: true }).hover()
+  await cell.locator(`[data-status-icon="${automatedLabel}"]`).hover()
   await expect(page.getByRole('tooltip', { name: automatedLabel })).toBeVisible()
 
   await page.mouse.move(0, 0)
@@ -127,7 +134,7 @@ test('hovering several strips in sequence and moving away leaves no tooltip open
   const strips = page.locator('table tbody tr[data-rule-id] > td:nth-child(4)').getByRole('group')
   await expect(strips.nth(2)).toBeVisible()
   for (const stripIndex of [0, 1, 2]) {
-    await strips.nth(stripIndex).getByRole('img').first().hover()
+    await strips.nth(stripIndex).locator('[data-status-icon]').first().hover()
     await expect(page.getByRole('tooltip')).toHaveCount(1)
   }
   await page.mouse.move(0, 0)
@@ -136,7 +143,7 @@ test('hovering several strips in sequence and moving away leaves no tooltip open
 
 test('hovering one icon shows exactly one tooltip', async ({ page }) => {
   const row = await rowFor(page, automatedMacosRule)
-  await row.locator('td').nth(3).getByRole('img').first().hover()
+  await row.locator('td').nth(3).locator('[data-status-icon]').first().hover()
   await expect(page.getByRole('tooltip')).toHaveCount(1)
 })
 

@@ -78,7 +78,7 @@ export function parseSupportingCheckChoices(raw: unknown): SupportingCheckChoice
   return { includeSupporting: candidate.includeSupporting, overrides }
 }
 
-const UNREADABLE_SUPPORTING_CHECKS_WARNING = 'Supporting check choices in this file were not readable and were ignored.'
+const UNREADABLE_SUPPORTING_CHECKS_WARNING = 'Supporting check choices in this file were not readable and were reset to the defaults.'
 
 export type SettingsFileValidation =
   | { valid: true; file: SettingsFileV2; warnings: string[] }
