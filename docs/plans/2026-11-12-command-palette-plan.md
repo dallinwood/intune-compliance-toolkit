@@ -111,3 +111,5 @@
 
 - 2026-11-12: Task 1 done: palette logic (entries, ranking, status, shortcut and platform predicates) with Vitest coverage, and showComparison now also sets the Frameworks view. Commit 4a52109 feat: add command palette search logic.
 - 2026-11-13: Task 2 done: CommandPalette component (Base UI Dialog with inline grouped Autocomplete, so no hand-built listbox was needed), header Search button on every view, Ctrl+K / Cmd+K shortcut, eight e2e tests, and a single hoisted Intl.Collator in rankRules. Commit 7399696 feat: add a Ctrl+K command palette.
+- 2026-11-13: Logged the Task 1 and Task 2 commits in this plan. bbd570d docs: log the command palette logic commit in the plan; 053a75d docs: log the command palette component commit in the plan.
+- 2026-11-13: Task 3 done, plan closed: README paragraph on the palette, design status set to Implemented, idea 5 marked built in the CISO Assistant analysis. Commit: docs: describe the command palette (this commit).

@@ -95,6 +95,11 @@ Requires [Bun](https://bun.sh).
   | `custom-changes-older-release` | Note | Custom changes were written for an older release, but the rule has not changed in any field they touch. |
   | `changed-in-newest-release` | Note | The rule's behaviour or scope changed between the last two releases of its framework, or the rule is new in the newest release. Wording or reference changes alone do not count. |
   | `history-unavailable` | Note | The release history for a source could not be loaded, so release checks were skipped for its rules. |
+- Press Ctrl+K (Cmd+K on a Mac) or use the Search button in the header to open a command
+  palette from any view. Type a rule id or words from its title to find rules from all four
+  sources, or a framework or view name. The first result is highlighted, and Enter or a click
+  goes there: a rule opens in the Rules view with the filters cleared, a framework opens its
+  release comparison, and a view opens that tab. Back returns to where you were.
 - `bun run test` runs the unit tests. `bun run test:e2e` runs the Playwright
   tests against a running `bun run dev`.
 

@@ -1,7 +1,7 @@
 # Design: command palette (Ctrl+K / Cmd+K)
 
 Date: 2026-11-12
-Status: Proposed (the calls in section 9 were made without the maintainer and await review)
+Status: Implemented 2026-11-13 (the calls in section 9 were made without the maintainer and still await review)
 
 ## 1. Intent
 
@@ -200,3 +200,7 @@ the README.
 | `showComparison` now also sets the view to Frameworks. | A separate store action for the palette. |
 
 ## Progress log
+
+- 2026-11-12: Palette logic and the `showComparison` view change. 4a52109 feat: add command palette search logic.
+- 2026-11-13: CommandPalette component, header Search button, Ctrl+K / Cmd+K shortcut and e2e tests. 7399696 feat: add a Ctrl+K command palette.
+- 2026-11-13: Documented in the README; idea 5 marked built in the analysis. See the plan's progress log for the docs commit.
