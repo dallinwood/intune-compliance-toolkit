@@ -1,9 +1,16 @@
 import { useId, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import type { PulledInOutcome } from '../../logic/generateReview'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { chainAccessibleText, chainText, type SupportingCheckOffer } from '../../logic/supportingChecks'
+import { odvSubstitutionMode } from '../../logic/odv'
+import type { OrgDefinedValue, RuleRef } from '../../logic/selectionEntry'
 import type { SupportingCheckValueSummary } from '../../logic/supportingCheckValue'
+import { useSelectionStore } from '../../state/selectionStore'
+import type { Rule } from '../../types/library'
+import { OrgDefinedValueInput } from '../rules/OrgDefinedValueInput'
+import { SupportingCheckDetailsDialog } from './SupportingCheckDetailsDialog'
 
 const SHOWN_CONTROL_COUNT = 2
 
@@ -33,6 +40,9 @@ function SupportsLine({ offer }: { offer: SupportingCheckOffer }) {
 
 export function SupportingCheckRow({
   offer,
+  ruleRef,
+  rule,
+  storedValue,
   title,
   checked,
   toggleDisabled,
@@ -42,6 +52,10 @@ export function SupportingCheckRow({
   outcome,
 }: {
   offer: SupportingCheckOffer
+  ruleRef: RuleRef
+  // Known once the offered rules are fetched (the option is on); the quick editor needs it.
+  rule: Rule | null
+  storedValue: OrgDefinedValue | null
   title: string
   checked: boolean
   toggleDisabled: boolean
@@ -53,6 +67,11 @@ export function SupportingCheckRow({
   outcome: PulledInOutcome | null
 }) {
   const label = upstreamRuleId(offer.ruleId)
+  const setOdvValue = useSelectionStore((store) => store.setOdvValue)
+  const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
+  const [editing, setEditing] = useState(false)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const editorId = useId()
   const [shortestChain] = [...offer.supports].sort((left, right) => left.path.length - right.path.length)
   const valueClass = valueSummary?.kind === 'invalid' || valueSummary?.kind === 'missing' ? 'text-destructive' : 'text-foreground/80'
 
@@ -82,8 +101,31 @@ export function SupportingCheckRow({
             needsValue && <p className="text-xs text-muted-foreground">Has an organization value</p>
           )}
           {outcome?.kind === 'manual' && <p className="break-words text-xs text-muted-foreground">Not scripted: {outcome.reason}</p>}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {rule?.odv && (
+              <Button type="button" size="xs" variant="outline" aria-expanded={editing} aria-controls={editorId} onClick={() => setEditing(!editing)}>
+                Change
+              </Button>
+            )}
+            <Button type="button" size="xs" variant="outline" onClick={() => setDetailsOpen(true)}>
+              Details
+            </Button>
+          </div>
+          {editing && rule?.odv && (
+            <div id={editorId} className="pt-2">
+              <OrgDefinedValueInput
+                ruleId={rule.id}
+                odv={rule.odv}
+                mode={odvSubstitutionMode(rule)}
+                storedValue={storedValue}
+                onCommit={(value) => setOdvValue(ruleRef, value)}
+                onClear={() => clearOdvValue(ruleRef)}
+              />
+            </div>
+          )}
         </div>
       </div>
+      <SupportingCheckDetailsDialog ruleRef={ruleRef} title={`${label} - ${title}`} open={detailsOpen} onOpenChange={setDetailsOpen} />
     </li>
   )
 }

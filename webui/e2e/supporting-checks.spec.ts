@@ -215,3 +215,91 @@ test('supporting check choices survive an export and an import', async ({ page }
     .poll(() => page.evaluate(() => JSON.parse(window.localStorage.getItem('intune-toolkit:supporting-checks') ?? '{}').state))
     .toEqual({ includeSupporting: true, overrides: { [DIRECT_SUPPORTER]: 'exclude', [CHAIN_SUPPORTER]: 'include' } })
 })
+
+function watchRuleFetches(page: Page): string[] {
+  const rulePathRequests: string[] = []
+  page.on('request', (request) => {
+    if (/\/baselines\/(mscp|asd_ism)\/.*\/rules\/.*\.json/.test(request.url())) rulePathRequests.push(request.url())
+  })
+  return rulePathRequests
+}
+
+const valueField = (row: ReturnType<typeof rowOf>) => row.getByRole('textbox')
+
+test('the quick editor takes a typed value or a recommended pick, rejects an invalid one, and never re-fetches', async ({ page }) => {
+  await seed(page, [{ ruleId: MEDIA_CONTROL }], { includeSupporting: true, overrides: {} })
+  await openGenerate(page, 1)
+  await expect(panel(page)).toContainText('Adding', { timeout: 15_000 })
+  await reviewButton(page).click()
+  const row = rowOf(page, VALUE_SUPPORTER)
+  await expect(row).toContainText('Value: 6 (recommended)')
+
+  const rulePathRequests = watchRuleFetches(page)
+  const change = row.getByRole('button', { name: 'Change' })
+  await expect(change).toHaveAttribute('aria-expanded', 'false')
+  await change.click()
+  await expect(change).toHaveAttribute('aria-expanded', 'true')
+
+  await valueField(row).fill('12')
+  await expect(row).toContainText('Value: 12 (set by you)')
+  await expect(row).toContainText('Require a Minimum Password Length of 12 Characters')
+
+  await valueField(row).fill('abc')
+  await expect(row.getByRole('alert')).toContainText('Value must be a whole number.')
+  await expect(row).toContainText('Value: 12 (set by you)')
+  const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem('intune-toolkit:selections') ?? '{}').state.selections)
+  expect(stored[VALUE_SUPPORTER]).toMatchObject({ enabled: false, odvValue: 12 })
+
+  await row.getByRole('button', { name: /^Recommended/ }).click()
+  await expect(row).toContainText('Value: 6 (set by you)')
+  expect(rulePathRequests).toEqual([])
+})
+
+test('a recommended pick clears a blocking stored value and the scripted count follows', async ({ page }) => {
+  await seed(page, [{ ruleId: MEDIA_CONTROL }, { ruleId: VALUE_SUPPORTER, enabled: false, odvValue: "12'" }], {
+    includeSupporting: true,
+    overrides: { [DIRECT_SUPPORTER]: 'exclude' },
+  })
+  await openGenerate(page, 1)
+  await expect(download(page)).toBeDisabled({ timeout: 15_000 })
+  await reviewButton(page).click()
+  const row = rowOf(page, VALUE_SUPPORTER)
+  await expect(row).toContainText("Value: 12' is invalid")
+
+  await row.getByRole('button', { name: 'Change' }).click()
+  await row.getByRole('button', { name: /^Recommended/ }).click()
+  await expect(row).toContainText('Value: 6 (set by you)')
+  await expect(download(page)).toBeEnabled()
+  await expect(page.getByText('1 scripted rule(s)')).toBeVisible()
+})
+
+test('Details opens the rule in a dialog, a value set there shows on the row, and focus returns to Details', async ({ page }) => {
+  await seed(page, [{ ruleId: MEDIA_CONTROL }], { includeSupporting: true, overrides: {} })
+  await openGenerate(page, 1)
+  await expect(panel(page)).toContainText('Adding', { timeout: 15_000 })
+  await reviewButton(page).click()
+  const row = rowOf(page, VALUE_SUPPORTER)
+  await row.scrollIntoViewIfNeeded()
+  const scrollContainer = page.locator('div.overflow-y-auto').first()
+  const scrollTopBefore = await scrollContainer.evaluate((element) => element.scrollTop)
+
+  const rulePathRequests = watchRuleFetches(page)
+  const detailsButton = row.getByRole('button', { name: 'Details' })
+  await detailsButton.click()
+  const dialog = page.getByRole('dialog', { name: new RegExp(`^${upstreamId(VALUE_SUPPORTER)} - Require a Minimum Password Length of [0-9]+ Characters$`) })
+  await expect(dialog).toBeVisible()
+  await dialog.getByRole('textbox').fill('20')
+  await expect(row).toContainText('Value: 20 (set by you)')
+
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
+  await expect(detailsButton).toBeFocused()
+  expect(await scrollContainer.evaluate((element) => element.scrollTop)).toBe(scrollTopBefore)
+
+  await detailsButton.click()
+  await expect(dialog).toBeVisible()
+  await dialog.getByRole('button', { name: 'Close' }).click()
+  await expect(dialog).toHaveCount(0)
+  await expect(detailsButton).toBeFocused()
+  expect(rulePathRequests).toEqual([])
+})

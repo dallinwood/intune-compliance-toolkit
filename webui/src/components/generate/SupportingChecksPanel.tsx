@@ -98,6 +98,8 @@ export function SupportingChecksPanel({
   function renderRow(offer: SupportingCheckOffer) {
     const rule = fetchedRules.get(offer.ruleId)
     const storedValue = selections[offer.ruleId]?.odvValue ?? null
+    const ruleRef = rowsById.get(offer.ruleId)?.ref
+    if (ruleRef === undefined) return null
     const valueSummary = rule?.odv ? supportingCheckValueSummary(rule.odv, odvSubstitutionMode(rule), storedValue, rule.id) : null
     // Shown as it will be once the option is on, so the choices can be read while it is off.
     const checked = isSupportingCheckIncluded(offer, { ...choices, includeSupporting: true })
@@ -105,6 +107,9 @@ export function SupportingChecksPanel({
       <SupportingCheckRow
         key={offer.ruleId}
         offer={offer}
+        ruleRef={ruleRef}
+        rule={rule ?? null}
+        storedValue={storedValue}
         title={titleOf(offer)}
         checked={checked}
         toggleDisabled={!toggleOn}
