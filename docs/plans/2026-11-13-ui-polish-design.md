@@ -1,5 +1,7 @@
 # UI Polish: Readability, Accessibility and Consistency Audit
 
+Status: Implemented (every finding except P3-8, the phone header, which is deferred). See the plan's progress log for the commits.
+
 Audit of the whole web UI (`webui/`, branch `macos-compliance-framework-rebase`, 2026-11-13) against the maintainer's goals: "a full readability and accessibility pass over the entire app", "making sure things look good, and consistent", and consistency of "how we do styling and formatting". Desktop (about 1280px) is the focus; mobile changes are included only where they cost desktop nothing.
 
 The conventions the fixes converge on are in `docs/ui-style-guide.md`. The implementation order is in `docs/plans/2026-11-13-ui-polish-plan.md`.
