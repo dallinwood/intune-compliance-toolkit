@@ -82,10 +82,10 @@ export function chainAccessibleText(path: readonly MappingHop[], ruleLabel: (rul
 - `pruneSupportingCheckChoices` drops overrides whose rule id is not offered; returns the same object when nothing changes (so the store does not re-render).
 
 **Steps:**
-- [ ] Write failing Vitest cases on hand-built rows and `byRule`: direct supporter offered; two-hop supporter through a manual rule offered at depth 2 with its path; peer (supports the same control) not offered; `related` ignored; manual supporter walked through but not offered; selected supporter listed in `alreadySelectedSupporterIds`, not offered; automated selected rule pulls nothing; one rule supporting two controls listed once at its smallest depth with both paths; defaults by depth; overrides both ways; toggle off gives `[]`; pruning; `chainText` and `chainAccessibleText`.
-- [ ] Add one test over the committed data (load rows and mappings the way `indirectMappings.test.ts` does): select every ISM control with benchmark `ism_protected`, expect 144 direct, 0 through, 56 controls with support, 16 offered rules with an ODV. If the data has moved, update the numbers and the design's section 4 in the same commit, and say so in the log.
-- [ ] Implement until green; time `supportingCheckOffers` on that selection in the test and assert it is under 200 ms.
-- [ ] Verify (Global Constraints), commit `feat: find automated checks that support selected controls`, log, push.
+- [x] Write failing Vitest cases on hand-built rows and `byRule`: direct supporter offered; two-hop supporter through a manual rule offered at depth 2 with its path; peer (supports the same control) not offered; `related` ignored; manual supporter walked through but not offered; selected supporter listed in `alreadySelectedSupporterIds`, not offered; automated selected rule pulls nothing; one rule supporting two controls listed once at its smallest depth with both paths; defaults by depth; overrides both ways; toggle off gives `[]`; pruning; `chainText` and `chainAccessibleText`.
+- [x] Add one test over the committed data (load rows and mappings the way `indirectMappings.test.ts` does): select every ISM control with benchmark `ism_protected`, expect 144 direct, 0 through, 56 controls with support, 16 offered rules with an ODV. If the data has moved, update the numbers and the design's section 4 in the same commit, and say so in the log.
+- [x] Implement until green; time `supportingCheckOffers` on that selection in the test and assert it is under 200 ms.
+- [x] Verify (Global Constraints), commit `feat: find automated checks that support selected controls`, log, push.
 
 ---
 
@@ -120,10 +120,10 @@ export function parseSupportingCheckChoices(raw: unknown): SupportingCheckChoice
 - ODVs for pulled-in rules need nothing new: they are `enabled: false` selection entries and already export. Add a test proving an `enabled: false` entry with an ODV round-trips through export, validate and `sanitizeImportedSelections`.
 
 **Steps:**
-- [ ] Failing Vitest cases: round trip with and without `supportingChecks`; malformed field dropped with the warning; non-boolean `includeSupporting` and unknown override values rejected by the parser; disabled-entry ODV round trip.
-- [ ] Implement the parser, the optional field and the store; wire export and import.
-- [ ] E2e (extend the existing settings export/import spec, or `smoke.spec.ts` if that is where it lives): export with the toggle on and one override, clear storage, import, the stored choices match.
-- [ ] Verify, commit `feat: persist supporting check choices and carry them in settings export`, log, push.
+- [x] Failing Vitest cases: round trip with and without `supportingChecks`; malformed field dropped with the warning; non-boolean `includeSupporting` and unknown override values rejected by the parser; disabled-entry ODV round trip.
+- [x] Implement the parser, the optional field and the store; wire export and import.
+- [x] E2e (extend the existing settings export/import spec, or `smoke.spec.ts` if that is where it lives): export with the toggle on and one override, clear storage, import, the stored choices match.
+- [x] Verify, commit `feat: persist supporting check choices and carry them in settings export`, log, push.
 
 ---
 
@@ -173,11 +173,11 @@ supportingCheck: boolean
 - Download: scripts and rules JSON unchanged in shape; `supporting-checks.md` when any check is included (Direct, Through other rules, Excluded by you, each hop's mapping id); `manual-attestation.md` splits selected manual controls into "No automated support" then "Supported by automated checks in this bundle" with an "Automated support: ..." line. The on-screen report shows the same two groups (first open, second collapsed, counts in headings).
 
 **Steps:**
-- [ ] Failing Vitest cases for `buildSupportingChecksMarkdown`, `automatedSupportByControl` (selected automated supporter counts; excluded check does not), the split attestation Markdown, `buildBundleFiles` with and without the new file, the occurrence suffix and message sentence.
-- [ ] Implement logic, then the panel and screen wiring.
-- [ ] E2e with a routed fixture index (two ISM controls, three mSCP supporters, one with an ODV, one two-hop chain through a manual rule): panel hidden with no manual selection; toggle adds the scripted count; Through group excluded by default; excluding a row removes it from the count; no rule fetch is issued after a row click (record `page.on('request')`); an invalid stored ODV on an included supporter disables the download and excluding it re-enables it; the zip holds `supporting-checks.md` and the split attestation report.
-- [ ] Screenshots at 375px and 1280px, light and dark, of the panel open with the real committed data and every ISM PROTECTED control selected (seed `localStorage`), read with the Read tool.
-- [ ] Verify, commit `feat: offer automated checks from supporting rules on the Generate screen`, log, push.
+- [x] Failing Vitest cases for `buildSupportingChecksMarkdown`, `automatedSupportByControl` (selected automated supporter counts; excluded check does not), the split attestation Markdown, `buildBundleFiles` with and without the new file, the occurrence suffix and message sentence.
+- [x] Implement logic, then the panel and screen wiring.
+- [x] E2e with a routed fixture index (two ISM controls, three mSCP supporters, one with an ODV, one two-hop chain through a manual rule): panel hidden with no manual selection; toggle adds the scripted count; Through group excluded by default; excluding a row removes it from the count; no rule fetch is issued after a row click (record `page.on('request')`); an invalid stored ODV on an included supporter disables the download and excluding it re-enables it; the zip holds `supporting-checks.md` and the split attestation report.
+- [x] Screenshots at 375px and 1280px, light and dark, of the panel open with the real committed data and every ISM PROTECTED control selected (seed `localStorage`), read with the Read tool.
+- [x] Verify, commit `feat: offer automated checks from supporting rules on the Generate screen`, log, push.
 
 ---
 
@@ -206,10 +206,10 @@ export function SupportingCheckDetailsDialog(props: {
 - Changing a value re-classifies only through the Task 3 `useMemo`; no fetch.
 
 **Steps:**
-- [ ] E2e: quick-pick "Recommended" and a typed value both update the row and the scripted count; an invalid typed value shows the input's error and is never committed; dialog opens with the rule's title, value set inside it shows on the row after close, focus is back on "Details"; no rule fetch after the value change.
-- [ ] Implement.
-- [ ] Screenshots at 375px and 1280px, light and dark: a row with "Change" open, and the dialog open, read with the Read tool.
-- [ ] Verify, commit `feat: set organization values for supporting checks on the Generate screen`, log, push.
+- [x] E2e: quick-pick "Recommended" and a typed value both update the row and the scripted count; an invalid typed value shows the input's error and is never committed; dialog opens with the rule's title, value set inside it shows on the row after close, focus is back on "Details"; no rule fetch after the value change.
+- [x] Implement.
+- [x] Screenshots at 375px and 1280px, light and dark: a row with "Change" open, and the dialog open, read with the Read tool.
+- [x] Verify, commit `feat: set organization values for supporting checks on the Generate screen`, log, push.
 
 ---
 
@@ -245,13 +245,16 @@ export function coverageHeadline(coverage: FrameworkCoverage, scopeLabel: string
 - Existing callers passing empty sets get identical numbers (a test pins this).
 
 **Steps:**
-- [ ] Failing Vitest cases: empty sets reproduce today's output; included supporting check makes a selected ISM control `covered-through-supporting`; two-hop chain from a selected rule counts as through; direct wins over through; related only never counts; automated-only filter applies to both; potential vs included; section counts; headline text with and without through.
-- [ ] Implement logic, bar, card and view.
-- [ ] E2e in `coverage.spec.ts` with the fixture index: headline, three-segment bar label, a control's chain text, the "Add supporting checks" button flipping the toggle and the numbers.
-- [ ] Screenshots at 375px and 1280px, light and dark, of the ISM card with a section and a chained control expanded, read with the Read tool.
-- [ ] Update README and the design's Status; verify, commit `feat: show coverage through supporting rules in a second tone`, log, push.
+- [x] Failing Vitest cases: empty sets reproduce today's output; included supporting check makes a selected ISM control `covered-through-supporting`; two-hop chain from a selected rule counts as through; direct wins over through; related only never counts; automated-only filter applies to both; potential vs included; section counts; headline text with and without through.
+- [x] Implement logic, bar, card and view.
+- [x] E2e in `coverage.spec.ts` with the fixture index: headline, three-segment bar label, a control's chain text, the "Add supporting checks" button flipping the toggle and the numbers.
+- [x] Screenshots at 375px and 1280px, light and dark, of the ISM card with a section and a chained control expanded, read with the Read tool.
+- [x] Update README and the design's Status; verify, commit `feat: show coverage through supporting rules in a second tone`, log, push.
 
 ## Progress log
 
 - 2026-11-12: Task 1 done. Added `supportingChecks.ts` (offers, choices, chain text) with Vitest tests including the real-data check of the design numbers (144 direct, 0 through, 56 controls, 16 with an ODV; numbers unchanged, design section 4 still correct). Commit: ab60763 feat: find automated checks that support selected controls
 - 2026-11-12: Task 2 done (logic and state; the e2e step of the task is left for the e2e pass). Added `supportingChecksStore.ts` (persisted choices, storage access wrapped), the optional `supportingChecks` field in the settings file with `parseSupportingCheckChoices`, an import warning when the field is unreadable, and wired Export/Import. Old-format files import unchanged. Commit: 5b93377 feat: persist supporting check choices and carry them in settings export
+- 2026-11-13: Task 3 done. Generate screen Supporting checks panel (toggle, reviewable list with per-rule choice, filters), classification kept pure so choices and values never refetch, `supporting-checks.md` in the download, attestation report split by automated support, e2e including the owed settings export/import round trip of choices. Commit: fc66fc0 feat: offer automated checks from supporting rules on the Generate screen
+- 2026-11-13: Task 4 done. Organization values for supporting checks in place: a Change quick editor under the row and a Details dialog holding the rule detail panel, focus returning to Details. Commit: 3f4b0ae feat: set organization values for supporting checks on the Generate screen
+- 2026-11-13: Task 5 done. Two-tone Coverage with chains, headline and bar labels, "Add supporting checks" button on the card, README updated, design marked Implemented. Plan closed. Commit: b3d9fe6 feat: show coverage through supporting rules in a second tone
