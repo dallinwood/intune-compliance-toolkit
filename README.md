@@ -78,6 +78,19 @@ Requires [Bun](https://bun.sh).
   rules, mapping file and note behind it. Only `supports` links count; `related` links are shown
   separately and never raise the count. The figures describe mappings, not compliance: a control
   counted as supported still needs its own assessment.
+  Supporting checks add a second tone: a control reached only through a rule that supports it
+  (an automated check you added on the Generate screen, or a chain of two or more `supports`
+  links from a rule you selected) counts as "+M through supporting rules", never as "directly",
+  and clicking the control shows the chain. When supporting checks are not added, the card says
+  how many more they would cover and offers a button to add them.
+- Supporting checks on the Review & generate screen: when a selected control has no automated
+  check of its own (an ISM control, say), a Supporting checks panel offers the automated checks
+  of the rules that support it. One toggle adds them, a reviewable list lets you include or
+  exclude each one, and checks reached through other rules start excluded. Organization values
+  can be set in place, with a quick field or the rule's details in a dialog. The download then
+  holds `supporting-checks.md` (what was added and why) and splits `manual-attestation.md` into
+  controls with and without automated support. A supporting check is evidence, never a
+  replacement: every selected control stays in the attestation report.
 - The Review & generate screen opens with a Checks list that tells you what to look at before
   you deploy. Each check has a fixed id and a severity: an error, a warning or a note. Only
   errors block the download, and today the only error is a missing or invalid organization

@@ -4,6 +4,8 @@ import {
   ALL_CONTROLS_SCOPE,
   coverageFrameworks,
   frameworkCoverage,
+  coverageBarLabel,
+  coverageHeadline,
   scopeOptions,
   selectedRulesSupportingNothing,
   type CoverageInput,
@@ -67,8 +69,16 @@ function input(
   pairs: Array<[string, MappedRule]>,
   selectedRuleIds: string[],
   automatedOnly = false,
+  supporting: { included?: string[]; offered?: string[] } = {},
 ): CoverageInput {
-  return { rows, mappingsByRule: indexOf(pairs), selectedRuleIds: new Set(selectedRuleIds), automatedOnly }
+  return {
+    rows,
+    mappingsByRule: indexOf(pairs),
+    selectedRuleIds: new Set(selectedRuleIds),
+    automatedOnly,
+    includedSupportingRuleIds: new Set(supporting.included ?? []),
+    offeredSupportingRuleIds: new Set(supporting.offered ?? []),
+  }
 }
 
 const ruleOne = row({ sourceName: 'mscp', upstreamId: 'rule_one' })
@@ -267,5 +277,131 @@ describe('selectedRulesSupportingNothing', () => {
     const lonely = selectedRulesSupportingNothing(input(allRows, pairs, selected), ['asd_ism'])
 
     expect(lonely.map((lonelyRow) => lonelyRow.ref.id)).toEqual(['mscp.a_lonely_rule', 'asd_e4eit.it.pro-13.1'])
+  })
+})
+
+describe('coverage through supporting rules', () => {
+  const supporter = row({ sourceName: 'mscp', upstreamId: 'supporter' })
+  const otherSupporter = row({ sourceName: 'mscp', upstreamId: 'other_supporter' })
+  const manualRule = row({ sourceName: 'mscp', upstreamId: 'manual_rule', assessmentStatus: 'manual' })
+  const controlC = row({ sourceName: 'asd_ism', upstreamId: 'ism-3', benchmarks: ['ism_protected'], section: 'Section B' })
+  const rows = [supporter, otherSupporter, manualRule, controlA, controlB, controlC]
+  const scopeAll = (coverageInput: CoverageInput) => frameworkCoverage(coverageInput, 'asd_ism', ALL_CONTROLS_SCOPE)
+  const controlOf = (coverage: ReturnType<typeof scopeAll>, control: RuleRow) =>
+    coverage.sections.flatMap((section) => section.controls).find((entry) => entry.control.ref.id === control.ref.id)
+
+  it('with empty sets gives the same numbers as before and no through status', () => {
+    const pairs = supportPair(supporter.ref.id, controlA.ref.id)
+    const coverage = scopeAll(input(rows, pairs, [supporter.ref.id]))
+    expect(coverage.covered).toBe(1)
+    expect(coverage.coveredThroughSupporting).toBe(0)
+    expect(coverage.potentialThroughSupporting).toBe(0)
+    const statuses = coverage.sections.flatMap((section) => section.controls).map((entry) => entry.status)
+    expect(statuses).not.toContain('covered-through-supporting')
+  })
+
+  it('makes a control covered through supporting when an included supporting check supports it, and not direct', () => {
+    const pairs = supportPair(supporter.ref.id, controlA.ref.id)
+    const coverage = scopeAll(input(rows, pairs, [controlA.ref.id], false, { included: [supporter.ref.id] }))
+    const control = controlOf(coverage, controlA)
+    expect(control?.status).toBe('covered-through-supporting')
+    expect(control?.supportedBy).toEqual([])
+    expect(control?.throughChains).toHaveLength(1)
+    expect(control?.throughChains[0].startsAtSupportingCheck).toBe(true)
+    expect(control?.throughChains[0].path.map((hop) => [hop.fromRuleId, hop.toRuleId, hop.step])).toEqual([
+      [supporter.ref.id, controlA.ref.id, 'supports'],
+    ])
+    expect(coverage.covered).toBe(0)
+    expect(coverage.coveredThroughSupporting).toBe(1)
+    expect(coverage.selectedDirectly).toBe(1)
+  })
+
+  it('counts a two-hop chain from a selected rule as through, and the first hop as direct', () => {
+    const pairs = [...supportPair(supporter.ref.id, controlA.ref.id), ...supportPair(controlA.ref.id, controlC.ref.id)]
+    const coverage = scopeAll(input(rows, pairs, [supporter.ref.id]))
+    expect(controlOf(coverage, controlA)?.status).toBe('covered')
+    const chained = controlOf(coverage, controlC)
+    expect(chained?.status).toBe('covered-through-supporting')
+    expect(chained?.throughChains[0].startsAtSupportingCheck).toBe(false)
+    expect(chained?.throughChains[0].path).toHaveLength(2)
+    expect(coverage.covered).toBe(1)
+    expect(coverage.coveredThroughSupporting).toBe(1)
+  })
+
+  it('lets direct support win over a chain', () => {
+    const pairs = [...supportPair(supporter.ref.id, controlA.ref.id), ...supportPair(otherSupporter.ref.id, controlA.ref.id)]
+    const coverage = scopeAll(input(rows, pairs, [supporter.ref.id], false, { included: [otherSupporter.ref.id] }))
+    const control = controlOf(coverage, controlA)
+    expect(control?.status).toBe('covered')
+    expect(control?.throughChains).toEqual([])
+    expect(coverage.coveredThroughSupporting).toBe(0)
+  })
+
+  it('never counts a related link, even from a rule that is also an included supporting check', () => {
+    const offered = [supporter.ref.id]
+    const coverage = scopeAll(
+      input(rows, relatedPair(supporter.ref.id, controlA.ref.id), [supporter.ref.id], false, { included: offered, offered }),
+    )
+    expect(controlOf(coverage, controlA)?.status).toBe('related-only')
+    expect(coverage.coveredThroughSupporting).toBe(0)
+    expect(coverage.potentialThroughSupporting).toBe(0)
+  })
+
+  it('applies the automated-only filter to chains from selected rules', () => {
+    const pairs = [...supportPair(manualRule.ref.id, controlA.ref.id), ...supportPair(controlA.ref.id, controlC.ref.id)]
+    const everything = scopeAll(input(rows, pairs, [manualRule.ref.id], false))
+    const automatedOnly = scopeAll(input(rows, pairs, [manualRule.ref.id], true))
+    expect(everything.coveredThroughSupporting).toBe(1)
+    expect(automatedOnly.coveredThroughSupporting).toBe(0)
+  })
+
+  it('reports the potential separately from what is included', () => {
+    const pairs = [...supportPair(supporter.ref.id, controlA.ref.id), ...supportPair(otherSupporter.ref.id, controlB.ref.id)]
+    const offered = [supporter.ref.id, otherSupporter.ref.id]
+    const selected = [controlA.ref.id, controlB.ref.id]
+    const none = scopeAll(input(rows, pairs, selected, false, { offered }))
+    expect(none.coveredThroughSupporting).toBe(0)
+    expect(none.potentialThroughSupporting).toBe(2)
+    const some = scopeAll(input(rows, pairs, selected, false, { included: [supporter.ref.id], offered }))
+    expect(some.coveredThroughSupporting).toBe(1)
+    expect(some.potentialThroughSupporting).toBe(2)
+  })
+
+  it('counts through-supporting controls per section and lists them after the directly supported ones', () => {
+    const pairs = [...supportPair(supporter.ref.id, controlA.ref.id), ...supportPair(otherSupporter.ref.id, controlC.ref.id)]
+    const coverage = scopeAll(input(rows, pairs, [supporter.ref.id], false, { included: [otherSupporter.ref.id] }))
+    expect(coverage.sections.find((section) => section.section === 'Section B')?.coveredThroughSupporting).toBe(1)
+    const sectionA = coverage.sections.find((section) => section.section === 'Section A')
+    expect(sectionA?.covered).toBe(1)
+    expect(sectionA?.controls.map((entry) => entry.status)).toEqual(['covered', 'uncovered'])
+  })
+
+  it('lists chains nearest first', () => {
+    const pairs = [
+      ...supportPair(supporter.ref.id, controlA.ref.id),
+      ...supportPair(otherSupporter.ref.id, controlB.ref.id),
+      ...supportPair(controlB.ref.id, controlA.ref.id),
+    ]
+    const included = [supporter.ref.id, otherSupporter.ref.id]
+    const coverage = scopeAll(input(rows, pairs, [controlA.ref.id], false, { included }))
+    const chains = controlOf(coverage, controlA)?.throughChains.map((chain) => chain.path.map((hop) => hop.fromRuleId))
+    expect(chains).toEqual([[supporter.ref.id], [otherSupporter.ref.id, controlB.ref.id]])
+  })
+})
+
+describe('coverageHeadline and coverageBarLabel', () => {
+  const base = { sourceName: 'asd_ism', scope: 'all', relatedOnly: 4, selectedDirectly: 0, sections: [] }
+
+  it('reads as it always did when nothing is through supporting rules', () => {
+    const coverage = { ...base, covered: 61, coveredThroughSupporting: 0, potentialThroughSupporting: 0, total: 1143 }
+    expect(coverageHeadline(coverage, null)).toBe('Supports 61 of 1143 controls')
+    expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 of 1143 controls at ISM PROTECTED')
+    expect(coverageBarLabel(coverage)).toBe('61 of 1143 supported, 4 related only')
+  })
+
+  it('names directly and through supporting rules, with the scope', () => {
+    const coverage = { ...base, covered: 61, coveredThroughSupporting: 14, potentialThroughSupporting: 20, total: 1143 }
+    expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 directly, +14 through supporting rules, of 1,143 at ISM PROTECTED')
+    expect(coverageBarLabel(coverage)).toBe('61 supported directly, 14 through supporting rules, 4 related only, of 1,143')
   })
 })

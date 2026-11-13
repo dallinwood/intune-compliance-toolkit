@@ -1,12 +1,17 @@
 import { useId, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
+import { chainAccessibleText } from '../../logic/supportingChecks'
 import {
   ALL_CONTROLS_SCOPE,
+  coverageBarLabel,
+  coverageHeadline,
   frameworkCoverage,
   scopeOptions,
   type ControlCoverage,
+  type CoverageChain,
   type CoverageInput,
   type CoverageLink,
   type SectionCoverage,
@@ -19,10 +24,6 @@ const SELECT_CLASS = 'h-8 w-full max-w-xs rounded-md border border-control-borde
 const TOGGLE_CLASS = 'rounded-sm text-xs text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const ROW_BUTTON_CLASS = 'rounded-sm text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const OLDER_RELEASE_NOTE = 'Mapped against an older release that has since changed'
-
-function barLabel(covered: number, total: number, relatedOnly: number): string {
-  return `${covered} of ${total} supported, ${relatedOnly} related only`
-}
 
 function LinkList({ heading, links }: { heading?: string; links: CoverageLink[] }) {
   if (links.length === 0) return null
@@ -46,6 +47,48 @@ function LinkList({ heading, links }: { heading?: string; links: CoverageLink[] 
   )
 }
 
+// "a (supporting check) -> supports b -> supports c": the marker follows the rule that was pulled in.
+function ChainLine({ chain }: { chain: CoverageChain }) {
+  const [firstHop] = chain.path
+  return (
+    <p aria-label={chainAccessibleText(chain.path, upstreamRuleId)} className="break-words text-sm">
+      <span className="font-mono text-xs">{upstreamRuleId(firstHop.fromRuleId)}</span>
+      {chain.startsAtSupportingCheck && <span className="text-xs text-muted-foreground"> (supporting check)</span>}
+      {chain.path.map((hop) => (
+        <span key={`${hop.fromRuleId}>${hop.toRuleId}`} className="text-xs">
+          {' -> supports '}
+          <span className="font-mono">{upstreamRuleId(hop.toRuleId)}</span>
+        </span>
+      ))}
+    </p>
+  )
+}
+
+function chainKey(chain: CoverageChain): string {
+  return chain.path.map((hop) => `${hop.fromRuleId}>${hop.toRuleId}`).join('|')
+}
+
+function ThroughChains({ chains }: { chains: CoverageChain[] }) {
+  if (chains.length === 0) return null
+  return (
+    <div className="space-y-1">
+      <p className="text-xs font-medium text-muted-foreground">Through</p>
+      <ul className="space-y-2">
+        {chains.map((chain) => (
+          <li key={chainKey(chain)} className="min-w-0">
+            <ChainLine chain={chain} />
+            <div className="space-y-1 text-xs">
+              {chain.path.map((hop) => (
+                <MappingProvenance key={`${hop.fromRuleId}>${hop.toRuleId}`} mapping={hop.link.mapping} note={hop.link.note} />
+              ))}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 function ControlRow({ coverage }: { coverage: ControlCoverage }) {
   const [isOpen, setIsOpen] = useState(false)
   const { control, status } = coverage
@@ -54,6 +97,7 @@ function ControlRow({ coverage }: { coverage: ControlCoverage }) {
       <span className="font-mono text-xs">{upstreamRuleId(control.ref.id)}</span>
       <span className="min-w-0 break-words">{control.title}</span>
       {status === 'covered' && <Badge>Supported</Badge>}
+      {status === 'covered-through-supporting' && <Badge variant="secondary">Through supporting rules</Badge>}
       {status === 'related-only' && <Badge variant="outline">Related only</Badge>}
       {coverage.selectedDirectly && <Badge variant="secondary">Selected</Badge>}
     </>
@@ -71,6 +115,7 @@ function ControlRow({ coverage }: { coverage: ControlCoverage }) {
       {isOpen && (
         <div className="mt-2 space-y-3 border-l border-border pl-3">
           <LinkList links={coverage.supportedBy} />
+          <ThroughChains chains={coverage.throughChains} />
           <LinkList heading="Related (not counted)" links={coverage.relatedTo} />
         </div>
       )}
@@ -93,13 +138,14 @@ function SectionRow({ section }: { section: SectionCoverage }) {
       >
         <span className="min-w-0 basis-full break-words sm:basis-0 sm:flex-1">{section.section}</span>
         <span className="shrink-0 text-xs text-muted-foreground">
-          {section.covered} of {section.total}
+          {section.coveredThroughSupporting > 0 ? `${section.covered} + ${section.coveredThroughSupporting}` : section.covered} of {section.total}
         </span>
         <CoverageBar
           covered={section.covered}
+          coveredThroughSupporting={section.coveredThroughSupporting}
           relatedOnly={section.relatedOnly}
           total={section.total}
-          label={barLabel(section.covered, section.total, section.relatedOnly)}
+          label={coverageBarLabel(section)}
           className="h-1.5 flex-1 sm:w-28 sm:flex-none"
         />
       </button>
@@ -137,10 +183,15 @@ export function FrameworkCoverageCard({
   input,
   sourceName,
   vocabularyIndex,
+  includeSupporting,
+  onAddSupportingChecks,
 }: {
   input: CoverageInput
   sourceName: string
   vocabularyIndex: VocabularyIndex
+  // Whether supporting checks are added to the bundle; the card offers to add them when they are not.
+  includeSupporting: boolean
+  onAddSupportingChecks: () => void
 }) {
   const [scope, setScope] = useState(ALL_CONTROLS_SCOPE)
   const scopeId = useId()
@@ -151,20 +202,30 @@ export function FrameworkCoverageCard({
   )
   const coverage = useMemo(() => frameworkCoverage(input, sourceName, scope), [input, sourceName, scope])
   const scopeLabel = scope === ALL_CONTROLS_SCOPE ? null : termLabel(vocabularyIndex, 'benchmarks', scope)
+  const notAddedCount = coverage.potentialThroughSupporting - coverage.coveredThroughSupporting
   return (
     <section data-testid="coverage-card" aria-label={label} className="min-w-0 space-y-3 rounded-lg border border-border bg-panel p-4">
       <h2 className="text-base font-semibold">{label}</h2>
       <p className="text-sm">
-        Supports {coverage.covered} of {coverage.total} controls{scopeLabel !== null && ` at ${scopeLabel}`}
+        {coverageHeadline(coverage, scopeLabel)}
         {coverage.relatedOnly > 0 && <span className="text-muted-foreground"> + {coverage.relatedOnly} related only</span>}
         {coverage.selectedDirectly > 0 && <span className="text-muted-foreground"> · {coverage.selectedDirectly} selected directly</span>}
       </p>
       <CoverageBar
         covered={coverage.covered}
+        coveredThroughSupporting={coverage.coveredThroughSupporting}
         relatedOnly={coverage.relatedOnly}
         total={coverage.total}
-        label={barLabel(coverage.covered, coverage.total, coverage.relatedOnly)}
+        label={coverageBarLabel(coverage)}
       />
+      {!includeSupporting && notAddedCount > 0 && (
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <span>+{notAddedCount} more through supporting checks you have not added.</span>
+          <Button type="button" size="xs" variant="outline" aria-label="Add supporting checks to the bundle" onClick={onAddSupportingChecks}>
+            Add supporting checks
+          </Button>
+        </p>
+      )}
       <div>
         <Label htmlFor={scopeId} className="mb-1 block text-xs text-muted-foreground">
           Scope

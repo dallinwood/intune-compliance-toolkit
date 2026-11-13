@@ -1,7 +1,7 @@
 # Design: supporting checks (pull automated checks through the supports chain)
 
 Date: 2026-11-12
-Status: Proposed. The maintainer answered the three open questions (section 1); section 12 lists
+Status: Implemented. The maintainer answered the three open questions (section 1); section 12 lists
 the calls made without the maintainer.
 
 ## 1. Intent

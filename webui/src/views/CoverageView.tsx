@@ -3,28 +3,45 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { FrameworkCoverageCard } from '../components/selectionCoverage/FrameworkCoverageCard'
 import { upstreamRuleId } from '../logic/ruleDisplay'
+import { includedSupportingRuleIds, supportingCheckOffers } from '../logic/supportingChecks'
 import { coverageFrameworks, selectedRulesSupportingNothing, type CoverageInput } from '../logic/selectionCoverage'
 import { termLabel } from '../logic/vocabulary'
 import { useRuleMappings } from '../state/mappingsContext'
+import { useSupportingChecksStore } from '../state/supportingChecksStore'
 import { useVocabularyIndex } from '../state/vocabularyContext'
 import type { ViewContext } from './viewContext'
 
 const TOGGLE_CLASS = 'rounded-sm text-sm text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 
 export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'rows' | 'enabledSelections'>) {
-  const { byRule } = useRuleMappings()
+  const { byRule, rowsById } = useRuleMappings()
+  const includeSupporting = useSupportingChecksStore((store) => store.includeSupporting)
+  const overrides = useSupportingChecksStore((store) => store.overrides)
+  const setIncludeSupporting = useSupportingChecksStore((store) => store.setIncludeSupporting)
   const vocabularyIndex = useVocabularyIndex()
   const [automatedOnly, setAutomatedOnly] = useState(false)
   const [showUnsupportedRules, setShowUnsupportedRules] = useState(false)
 
+  const selectedRuleIds = useMemo(() => new Set(enabledSelections.map((selection) => selection.ref.id)), [enabledSelections])
+  const offers = useMemo(() => supportingCheckOffers(rowsById, byRule, selectedRuleIds), [rowsById, byRule, selectedRuleIds])
+  const offeredSupportingRuleIds = useMemo(
+    () => new Set([...offers.direct, ...offers.throughOtherRules].map((offer) => offer.ruleId)),
+    [offers],
+  )
+  const includedSupportingIds = useMemo(
+    () => new Set(includedSupportingRuleIds(offers, { includeSupporting, overrides })),
+    [offers, includeSupporting, overrides],
+  )
   const input = useMemo<CoverageInput>(
     () => ({
       rows,
       mappingsByRule: byRule,
-      selectedRuleIds: new Set(enabledSelections.map((selection) => selection.ref.id)),
+      selectedRuleIds,
       automatedOnly,
+      includedSupportingRuleIds: includedSupportingIds,
+      offeredSupportingRuleIds,
     }),
-    [rows, byRule, enabledSelections, automatedOnly],
+    [rows, byRule, selectedRuleIds, automatedOnly, includedSupportingIds, offeredSupportingRuleIds],
   )
   const frameworks = useMemo(() => {
     const { counted, relatedOnly } = coverageFrameworks(rows, byRule)
@@ -53,7 +70,14 @@ export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'row
             )}
             <div className="grid gap-4 md:grid-cols-2">
               {frameworks.counted.map((sourceName) => (
-                <FrameworkCoverageCard key={sourceName} input={input} sourceName={sourceName} vocabularyIndex={vocabularyIndex} />
+                <FrameworkCoverageCard
+                  key={sourceName}
+                  input={input}
+                  sourceName={sourceName}
+                  vocabularyIndex={vocabularyIndex}
+                  includeSupporting={includeSupporting}
+                  onAddSupportingChecks={() => setIncludeSupporting(true)}
+                />
               ))}
             </div>
             {frameworks.relatedOnly.map((sourceName) => (

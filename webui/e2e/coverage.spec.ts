@@ -171,3 +171,95 @@ test('navigating to /coverage directly opens the view', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Coverage' })).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('heading', { name: /^Coverage of your selection/ })).toBeVisible()
 })
+
+// Selected: the gatekeeper check and the hardening control. The gatekeeper check supports the media
+// control (direct), the media control supports another hardening control (so that one is covered two
+// hops from a selected rule), and the password length check supports the selected hardening control
+// (so it is offered as a supporting check, and covers it only once added).
+const SUPPORTING_MAPPING_ID = 'supporting-coverage'
+const CHAINED_CONTROL = 'asd_ism.ism-1621'
+const SUPPORTING_CHECK = 'mscp.pwpolicy_minimum_length_enforce'
+
+test.describe('coverage through supporting rules', () => {
+  const upstreamOf = (ruleId: string) => ruleId.slice(ruleId.indexOf('.') + 1)
+  const formattedControlCount = ismControlCount.toLocaleString('en-US')
+
+  test.beforeEach(async ({ page }) => {
+    const mappingIndex = buildMappingIndex(
+      [
+        {
+          fileName: `${SUPPORTING_MAPPING_ID}.json`,
+          value: {
+            schema_version: 1,
+            id: SUPPORTING_MAPPING_ID,
+            links: [
+              { relation: 'supports', from: [endpoint(AUTOMATED_SUPPORTER, MSCP_RELEASE)], to: [endpoint(MEDIA_CONTROL, ISM_RELEASE)] },
+              { relation: 'supports', from: [endpoint(MEDIA_CONTROL, ISM_RELEASE)], to: [endpoint(CHAINED_CONTROL, ISM_RELEASE)] },
+              { relation: 'supports', from: [endpoint(SUPPORTING_CHECK, MSCP_RELEASE)], to: [endpoint(HARDENING_CONTROL, ISM_RELEASE)] },
+            ],
+          },
+        },
+      ],
+      () => {},
+    )
+    await page.route('**/baselines/_mappings/_index.json', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mappingIndex) }),
+    )
+    await page.addInitScript(
+      ({ selectedRuleIds, seededKey }) => {
+        if (window.localStorage.getItem(seededKey) !== null) return
+        window.localStorage.setItem(seededKey, '1')
+        const selections = Object.fromEntries(
+          selectedRuleIds.map((ruleId) => {
+            const source = ruleId.slice(0, ruleId.indexOf('.'))
+            const ref = { id: ruleId, path: `${source}/rules/${ruleId.slice(ruleId.indexOf('.') + 1)}.json` }
+            return [ruleId, { ref, enabled: true, odvValue: null }]
+          }),
+        )
+        window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 2 }))
+        window.localStorage.removeItem('intune-toolkit:supporting-checks')
+      },
+      { selectedRuleIds: [AUTOMATED_SUPPORTER, HARDENING_CONTROL], seededKey: 'intune-toolkit:supporting-coverage-seeded' },
+    )
+    await page.goto('/coverage')
+    await expect(ismCard(page)).toBeVisible({ timeout: 15_000 })
+  })
+
+  test('the headline and bar name direct and through counts, and the add button flips the shared toggle and the numbers', async ({ page }) => {
+    await expect(ismCard(page)).toContainText(`Supports 1 directly, +1 through supporting rules, of ${formattedControlCount}`)
+    await expect(
+      ismCard(page).getByRole('img', {
+        name: `1 supported directly, 1 through supporting rules, 0 related only, of ${formattedControlCount}`,
+      }),
+    ).toBeVisible()
+    await expect(ismCard(page)).toContainText('+1 more through supporting checks you have not added.')
+
+    await ismCard(page).getByRole('button', { name: 'Add supporting checks to the bundle' }).click()
+
+    await expect(ismCard(page)).toContainText(`Supports 1 directly, +2 through supporting rules, of ${formattedControlCount}`)
+    await expect(ismCard(page)).not.toContainText('you have not added')
+    await expect(ismCard(page).getByRole('button', { name: 'Add supporting checks to the bundle' })).toHaveCount(0)
+    const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem('intune-toolkit:supporting-checks') ?? '{}').state)
+    expect(stored.includeSupporting).toBe(true)
+  })
+
+  test('a control covered through supporting rules shows its chain, with the supporting check marked once added', async ({ page }) => {
+    const hardeningSection = page.getByTestId('coverage-section').filter({ hasText: 'Guidelines for system hardening' })
+    await expect(hardeningSection).toContainText('0 + 1 of')
+    await hardeningSection.getByRole('button', { name: /Guidelines for system hardening/ }).click()
+
+    const chained = hardeningSection.getByTestId('coverage-control').filter({ hasText: upstreamOf(CHAINED_CONTROL) })
+    await expect(chained).toContainText('Through supporting rules')
+    await chained.getByRole('button').click()
+    await expect(chained.getByText('Through', { exact: true })).toBeVisible()
+    await expect(chained).toContainText(`${upstreamOf(AUTOMATED_SUPPORTER)} -> supports ${upstreamOf(MEDIA_CONTROL)} -> supports ${upstreamOf(CHAINED_CONTROL)}`)
+    await expect(chained).not.toContainText('(supporting check)')
+    await expect(chained.getByText(SUPPORTING_MAPPING_ID).first()).toBeVisible()
+
+    await ismCard(page).getByRole('button', { name: 'Add supporting checks to the bundle' }).click()
+    const supported = hardeningSection.getByTestId('coverage-control').filter({ hasText: upstreamOf(HARDENING_CONTROL) })
+    await expect(supported).toContainText('Through supporting rules')
+    await supported.getByRole('button').click()
+    await expect(supported).toContainText(`${upstreamOf(SUPPORTING_CHECK)} (supporting check) -> supports ${upstreamOf(HARDENING_CONTROL)}`)
+  })
+})

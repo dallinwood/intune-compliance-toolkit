@@ -1,14 +1,17 @@
 // Selection coverage (docs/plans/2026-11-11-selection-coverage-design.md): how many
 // controls of each control framework the selected rules support through
 // mappings. Only `supports` links count; `related` links are reported but
-// never added to the covered figure.
+// never added to the covered figure. Support through supporting rules
+// (docs/plans/2026-11-12-supporting-checks-design.md, section 8) is counted
+// separately from the user's own selection and never added to "directly".
 
 import type { RuleRow } from '../types/rule-row'
 import { compareText } from './catalogIndex'
+import { supportChain, type MappingHop } from './indirectMappings'
 import type { MappedRule } from './mappingIndex'
 import { upstreamRuleId } from './ruleDisplay'
 
-export type ControlStatus = 'covered' | 'related-only' | 'uncovered'
+export type ControlStatus = 'covered' | 'covered-through-supporting' | 'related-only' | 'uncovered'
 export const ALL_CONTROLS_SCOPE = 'all'
 
 export interface CoverageLink {
@@ -19,17 +22,27 @@ export interface CoverageLink {
   checkedAgainstOlderRelease: boolean
 }
 
+export interface CoverageChain {
+  // From the effective rule up to the control; every step is 'supports'. Length >= 1.
+  path: MappingHop[]
+  // The effective rule is an included supporting check, not one the user selected.
+  startsAtSupportingCheck: boolean
+}
+
 export interface ControlCoverage {
   control: RuleRow
   status: ControlStatus
   supportedBy: CoverageLink[]
   relatedTo: CoverageLink[]
   selectedDirectly: boolean
+  // Nearest first; empty unless status is 'covered-through-supporting'.
+  throughChains: CoverageChain[]
 }
 
 export interface SectionCoverage {
   section: string
   covered: number
+  coveredThroughSupporting: number
   relatedOnly: number
   total: number
   controls: ControlCoverage[]
@@ -39,6 +52,9 @@ export interface FrameworkCoverage {
   sourceName: string
   scope: string
   covered: number
+  coveredThroughSupporting: number
+  // Controls that would be covered through supporting rules if every offered check were included.
+  potentialThroughSupporting: number
   relatedOnly: number
   selectedDirectly: number
   total: number
@@ -50,9 +66,13 @@ export interface CoverageInput {
   mappingsByRule: ReadonlyMap<string, MappedRule[]>
   selectedRuleIds: ReadonlySet<string>
   automatedOnly: boolean
+  // Supporting checks the user added to the bundle; never counted as the user's own selection.
+  includedSupportingRuleIds: ReadonlySet<string>
+  // Every offered supporting check, for potentialThroughSupporting.
+  offeredSupportingRuleIds: ReadonlySet<string>
 }
 
-const STATUS_ORDER: Record<ControlStatus, number> = { covered: 0, 'related-only': 1, uncovered: 2 }
+const STATUS_ORDER: Record<ControlStatus, number> = { covered: 0, 'covered-through-supporting': 1, 'related-only': 2, uncovered: 3 }
 
 function entriesOf(mappingsByRule: ReadonlyMap<string, MappedRule[]>, ruleId: string): readonly MappedRule[] {
   return mappingsByRule.get(ruleId) ?? []
@@ -109,6 +129,40 @@ function compareControls(left: ControlCoverage, right: ControlCoverage): number 
   return STATUS_ORDER[left.status] - STATUS_ORDER[right.status] || byUpstreamId(left.control, right.control)
 }
 
+function compareChains(left: CoverageChain, right: CoverageChain): number {
+  return (
+    left.path.length - right.path.length ||
+    compareText(upstreamRuleId(left.path[0].fromRuleId), upstreamRuleId(right.path[0].fromRuleId))
+  )
+}
+
+// By control id, the chains from an effective rule that make the control covered through supporting
+// rules: one hop from a supporting check, or two or more hops from any effective rule. A one-hop link
+// from a selected rule is direct support and is handled by the caller.
+function throughChainsByControl(
+  input: CoverageInput,
+  rowsById: ReadonlyMap<string, RuleRow>,
+  sourceName: string,
+  supportingRuleIds: ReadonlySet<string>,
+): Map<string, CoverageChain[]> {
+  const chainsByControl = new Map<string, CoverageChain[]>()
+  const effectiveRuleIds = new Set([...input.selectedRuleIds, ...supportingRuleIds])
+  for (const ruleId of effectiveRuleIds) {
+    const effectiveRow = rowsById.get(ruleId)
+    if (effectiveRow === undefined || effectiveRow.sourceName === sourceName) continue
+    if (input.automatedOnly && effectiveRow.assessment.status !== 'automated') continue
+    const startsAtSupportingCheck = supportingRuleIds.has(ruleId) && !input.selectedRuleIds.has(ruleId)
+    for (const { ruleId: controlId, path } of supportChain(ruleId, input.mappingsByRule, 'supports')) {
+      if (!startsAtSupportingCheck && path.length < 2) continue
+      const chains = chainsByControl.get(controlId) ?? []
+      chains.push({ path, startsAtSupportingCheck })
+      chainsByControl.set(controlId, chains)
+    }
+  }
+  for (const chains of chainsByControl.values()) chains.sort(compareChains)
+  return chainsByControl
+}
+
 export function frameworkCoverage(input: CoverageInput, sourceName: string, scope: string): FrameworkCoverage {
   const rowsById = new Map(input.rows.map((row) => [row.ref.id, row]))
   const rowsInScope = input.rows.filter(
@@ -137,33 +191,63 @@ export function frameworkCoverage(input: CoverageInput, sourceName: string, scop
       .sort(compareLinks)
   }
 
+  const throughChains = throughChainsByControl(input, rowsById, sourceName, input.includedSupportingRuleIds)
+  const everythingOffered = new Set([...input.includedSupportingRuleIds, ...input.offeredSupportingRuleIds])
+  const potentialChains =
+    everythingOffered.size === input.includedSupportingRuleIds.size
+      ? throughChains
+      : throughChainsByControl(input, rowsById, sourceName, everythingOffered)
+
   const controlsBySection = new Map<string, ControlCoverage[]>()
   let covered = 0
+  let coveredThroughSupporting = 0
+  let potentialThroughSupporting = 0
   let relatedOnly = 0
   let selectedDirectly = 0
   for (const control of rowsInScope) {
     const supportedBy = linksOf(control, 'supports')
     const relatedTo = linksOf(control, 'related')
-    const status: ControlStatus = supportedBy.length > 0 ? 'covered' : relatedTo.length > 0 ? 'related-only' : 'uncovered'
+    const chainsToControl = supportedBy.length === 0 ? (throughChains.get(control.ref.id) ?? []) : []
+    const status: ControlStatus =
+      supportedBy.length > 0
+        ? 'covered'
+        : chainsToControl.length > 0
+          ? 'covered-through-supporting'
+          : relatedTo.length > 0
+            ? 'related-only'
+            : 'uncovered'
     const isSelectedDirectly = input.selectedRuleIds.has(control.ref.id)
+    if (supportedBy.length === 0 && potentialChains.has(control.ref.id)) potentialThroughSupporting += 1
     if (status === 'covered') covered += 1
+    if (status === 'covered-through-supporting') coveredThroughSupporting += 1
     if (status === 'related-only') relatedOnly += 1
     if (isSelectedDirectly) selectedDirectly += 1
     const section = control.sectionPath[0] ?? control.section
     const controlsOfSection = controlsBySection.get(section) ?? []
-    controlsOfSection.push({ control, status, supportedBy, relatedTo, selectedDirectly: isSelectedDirectly })
+    controlsOfSection.push({ control, status, supportedBy, relatedTo, selectedDirectly: isSelectedDirectly, throughChains: chainsToControl })
     controlsBySection.set(section, controlsOfSection)
   }
 
   const sections: SectionCoverage[] = [...controlsBySection].map(([section, controls]) => ({
     section,
     covered: controls.filter((control) => control.status === 'covered').length,
+    coveredThroughSupporting: controls.filter((control) => control.status === 'covered-through-supporting').length,
     relatedOnly: controls.filter((control) => control.status === 'related-only').length,
     total: controls.length,
     controls: controls.sort(compareControls),
   }))
 
-  return { sourceName, scope, covered, relatedOnly, selectedDirectly, total: rowsInScope.length, sections }
+  return {
+    sourceName,
+    scope,
+    covered,
+    coveredThroughSupporting,
+    potentialThroughSupporting,
+    relatedOnly,
+    selectedDirectly,
+    total: rowsInScope.length,
+    sections,
+  }
 }
 
 export function selectedRulesSupportingNothing(input: CoverageInput, frameworkSources: readonly string[]): RuleRow[] {
@@ -180,4 +264,27 @@ export function selectedRulesSupportingNothing(input: CoverageInput, frameworkSo
   return input.rows
     .filter((row) => input.selectedRuleIds.has(row.ref.id) && !frameworkSources.includes(row.sourceName) && !linksIntoAFramework(row))
     .sort(byUpstreamId)
+}
+
+const COUNT_FORMAT = new Intl.NumberFormat('en-US')
+
+// With nothing covered through supporting rules the headline reads as it always did.
+export function coverageHeadline(coverage: FrameworkCoverage, scopeLabel: string | null): string {
+  const scopeSuffix = scopeLabel === null ? '' : ` at ${scopeLabel}`
+  if (coverage.coveredThroughSupporting === 0) return `Supports ${coverage.covered} of ${coverage.total} controls${scopeSuffix}`
+  return (
+    `Supports ${COUNT_FORMAT.format(coverage.covered)} directly, ` +
+    `+${COUNT_FORMAT.format(coverage.coveredThroughSupporting)} through supporting rules, ` +
+    `of ${COUNT_FORMAT.format(coverage.total)}${scopeSuffix}`
+  )
+}
+
+// The bar's words, shared by the card and each section row.
+export function coverageBarLabel(counts: { covered: number; coveredThroughSupporting: number; relatedOnly: number; total: number }): string {
+  const { covered, coveredThroughSupporting, relatedOnly, total } = counts
+  if (coveredThroughSupporting === 0) return `${covered} of ${total} supported, ${relatedOnly} related only`
+  return (
+    `${COUNT_FORMAT.format(covered)} supported directly, ${COUNT_FORMAT.format(coveredThroughSupporting)} through supporting rules, ` +
+    `${COUNT_FORMAT.format(relatedOnly)} related only, of ${COUNT_FORMAT.format(total)}`
+  )
 }
