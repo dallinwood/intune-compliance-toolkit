@@ -77,7 +77,7 @@ function input(
     selectedRuleIds: new Set(selectedRuleIds),
     automatedOnly,
     includedSupportingRuleIds: new Set(supporting.included ?? []),
-    offeredSupportingRuleIds: new Set(supporting.offered ?? []),
+    supportingRuleIdsIfAdded: new Set(supporting.offered ?? []),
   }
 }
 

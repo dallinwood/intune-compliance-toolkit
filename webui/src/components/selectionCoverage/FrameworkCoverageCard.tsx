@@ -203,7 +203,7 @@ export function FrameworkCoverageCard({
   const notAddedCount = coverage.potentialThroughSupporting - coverage.coveredThroughSupporting
   return (
     <section data-testid="coverage-card" aria-label={label} className="min-w-0 space-y-3 rounded-lg border border-border bg-panel p-4">
-      <h2 className="text-base font-semibold">{label}</h2>
+      <h3 className="text-base font-semibold">{label}</h3>
       <p className="text-sm">
         {coverageHeadline(coverage, scopeLabel)}
         {coverage.relatedOnly > 0 && <span className="text-muted-foreground"> + {formatCount(coverage.relatedOnly)} related only</span>}
@@ -216,6 +216,11 @@ export function FrameworkCoverageCard({
         total={coverage.total}
         label={coverageBarLabel(coverage)}
       />
+      {includeSupporting && coverage.coveredThroughSupporting > 0 && (
+        <p className="text-xs text-muted-foreground">
+          Counts the supporting checks you have added. Generate leaves out any it cannot script for your covered macOS versions.
+        </p>
+      )}
       {!includeSupporting && notAddedCount > 0 && (
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
           <span>+{formatCount(notAddedCount)} more through supporting checks you have not added.</span>

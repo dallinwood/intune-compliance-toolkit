@@ -116,6 +116,12 @@ export function includedSupportingRuleIds(offers: SupportingCheckOffers, choices
   return [...offers.direct, ...offers.throughOtherRules].filter((offer) => isSupportingCheckIncluded(offer, choices)).map((offer) => offer.ruleId)
 }
 
+// What turning the option on would include now, keeping the per-check choices: a through-other-rules
+// offer the user never turned on is not part of it.
+export function wouldIncludeSupportingRuleIds(offers: SupportingCheckOffers, choices: SupportingCheckChoices): string[] {
+  return includedSupportingRuleIds(offers, { ...choices, includeSupporting: true })
+}
+
 export function pruneSupportingCheckChoices(choices: SupportingCheckChoices, offers: SupportingCheckOffers): SupportingCheckChoices {
   const offeredRuleIds = new Set([...offers.direct, ...offers.throughOtherRules].map((offer) => offer.ruleId))
   const keptOverrides = Object.entries(choices.overrides).filter(([ruleId]) => offeredRuleIds.has(ruleId))

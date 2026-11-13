@@ -401,6 +401,15 @@ coverage" and the mapped-rules rework's "indirect rules are not counted on the C
 The guard they wanted stays: chained support is a separate figure, a separate tone, and never
 added to "directly".
 
+**Known limitation.** The Coverage view counts every included supporting check, but the bundle
+scripts only those that classify as generatable on the Generate screen (`classifyReview`). An
+included check can still be manual there, for example when mSCP has no check for one of the
+covered macOS versions, and then it supports nothing in the bundle. Coverage does not run that
+classification (it needs the fetched rules and the covered versions, which this view does not
+load), so its figure can be higher than what Generate scripts. The card says so in a muted line
+whenever supporting checks are added and some control is covered through them. Closing the gap
+would mean classifying included checks here, which is deliberately out of scope.
+
 ### 8.2 Layout
 
 - Headline: "Supports 61 directly, +14 through supporting rules, of 1,143" (plus "at ISM

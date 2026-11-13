@@ -69,8 +69,8 @@ export interface CoverageInput {
   automatedOnly: boolean
   // Supporting checks the user added to the bundle; never counted as the user's own selection.
   includedSupportingRuleIds: ReadonlySet<string>
-  // Every offered supporting check, for potentialThroughSupporting.
-  offeredSupportingRuleIds: ReadonlySet<string>
+  // What turning the option on would include (per-check choices kept), for potentialThroughSupporting.
+  supportingRuleIdsIfAdded: ReadonlySet<string>
 }
 
 const STATUS_ORDER: Record<ControlStatus, number> = { covered: 0, 'covered-through-supporting': 1, 'related-only': 2, uncovered: 3 }
@@ -193,7 +193,7 @@ export function frameworkCoverage(input: CoverageInput, sourceName: string, scop
   }
 
   const throughChains = throughChainsByControl(input, rowsById, sourceName, input.includedSupportingRuleIds)
-  const everythingOffered = new Set([...input.includedSupportingRuleIds, ...input.offeredSupportingRuleIds])
+  const everythingOffered = new Set([...input.includedSupportingRuleIds, ...input.supportingRuleIdsIfAdded])
   const potentialChains =
     everythingOffered.size === input.includedSupportingRuleIds.size
       ? throughChains

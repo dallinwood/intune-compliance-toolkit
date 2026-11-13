@@ -3,7 +3,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { FrameworkCoverageCard } from '../components/selectionCoverage/FrameworkCoverageCard'
 import { upstreamRuleId } from '../logic/ruleDisplay'
-import { includedSupportingRuleIds, supportingCheckOffers } from '../logic/supportingChecks'
+import { includedSupportingRuleIds, supportingCheckOffers, wouldIncludeSupportingRuleIds } from '../logic/supportingChecks'
 import { coverageFrameworks, selectedRulesSupportingNothing, type CoverageInput } from '../logic/selectionCoverage'
 import { termLabel } from '../logic/vocabulary'
 import { useRuleMappings } from '../state/mappingsContext'
@@ -25,9 +25,9 @@ export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'row
 
   const selectedRuleIds = useMemo(() => new Set(enabledSelections.map((selection) => selection.ref.id)), [enabledSelections])
   const offers = useMemo(() => supportingCheckOffers(rowsById, byRule, selectedRuleIds), [rowsById, byRule, selectedRuleIds])
-  const offeredSupportingRuleIds = useMemo(
-    () => new Set([...offers.direct, ...offers.throughOtherRules].map((offer) => offer.ruleId)),
-    [offers],
+  const supportingRuleIdsIfAdded = useMemo(
+    () => new Set(wouldIncludeSupportingRuleIds(offers, { includeSupporting, overrides })),
+    [offers, includeSupporting, overrides],
   )
   const includedSupportingIds = useMemo(
     () => new Set(includedSupportingRuleIds(offers, { includeSupporting, overrides })),
@@ -40,9 +40,9 @@ export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'row
       selectedRuleIds,
       automatedOnly,
       includedSupportingRuleIds: includedSupportingIds,
-      offeredSupportingRuleIds,
+      supportingRuleIdsIfAdded,
     }),
-    [rows, byRule, selectedRuleIds, automatedOnly, includedSupportingIds, offeredSupportingRuleIds],
+    [rows, byRule, selectedRuleIds, automatedOnly, includedSupportingIds, supportingRuleIdsIfAdded],
   )
   const frameworks = useMemo(() => {
     const { counted, relatedOnly } = coverageFrameworks(rows, byRule)

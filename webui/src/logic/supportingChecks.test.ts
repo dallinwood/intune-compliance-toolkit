@@ -16,6 +16,7 @@ import {
   isSupportingCheckIncluded,
   pruneSupportingCheckChoices,
   supportingCheckOffers,
+  wouldIncludeSupportingRuleIds,
   type SupportingCheckChoices,
   type SupportingCheckOffer,
   type SupportingCheckOffers,
@@ -246,6 +247,13 @@ describe('supporting check choices', () => {
     const choices: SupportingCheckChoices = { includeSupporting: false, overrides: { 'mscp.through': 'include' } }
     expect(isSupportingCheckIncluded(throughOffer, choices)).toBe(false)
     expect(includedSupportingRuleIds(offers, choices)).toEqual([])
+  })
+
+  it('reports what turning the option on would include, honouring the overrides', () => {
+    const off: SupportingCheckChoices = { includeSupporting: false, overrides: { 'mscp.direct': 'exclude' } }
+    expect(includedSupportingRuleIds(offers, off)).toEqual([])
+    expect(wouldIncludeSupportingRuleIds(offers, off)).toEqual([])
+    expect(wouldIncludeSupportingRuleIds(offers, DEFAULT_SUPPORTING_CHECK_CHOICES)).toEqual(['mscp.direct'])
   })
 
   it('drops overrides for rules that are no longer offered', () => {
