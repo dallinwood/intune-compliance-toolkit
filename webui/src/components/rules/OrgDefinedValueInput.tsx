@@ -91,7 +91,7 @@ export function OrgDefinedValueInput({
     }
   }
 
-  const fieldClass = 'rounded text-xs'
+  const fieldClass = 'rounded-md text-xs'
   const commonProps = {
     id: inputId,
     value: text,
@@ -123,7 +123,7 @@ export function OrgDefinedValueInput({
         {...commonProps}
         rows={4}
         onChange={(event) => handleChange(event.target.value)}
-        className={`w-full border border-control-border bg-transparent px-2 py-1 ${fieldClass}`}
+        className={`w-full border border-control-border bg-background px-2 py-1 ${fieldClass}`}
       />
     )
   } else {

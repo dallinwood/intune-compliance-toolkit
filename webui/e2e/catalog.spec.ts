@@ -200,7 +200,7 @@ test('an unknown licence id renders the list without a selection and without err
   await page.goto('/licences?licence=nope')
 
   await expect(page.getByRole('heading', { name: 'Acme', exact: true })).toBeVisible()
-  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
+  await expect(page.getByRole('heading', { level: 2 }).filter({ hasNotText: /^(Licences|Products)$/ })).toHaveCount(0)
   expect(problems).toEqual([])
 })
 
@@ -354,7 +354,7 @@ test('an unknown product id renders the list without a selection and without err
   await page.goto('/products?product=nope')
 
   await expect(page.getByRole('searchbox', { name: 'Search products' })).toBeVisible()
-  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
+  await expect(page.getByRole('heading', { level: 2 }).filter({ hasNotText: /^(Licences|Products)$/ })).toHaveCount(0)
   expect(problems).toEqual([])
 })
 
@@ -424,7 +424,7 @@ test('back and forward walk from a licence to a product and back to the list', a
 
   await page.goBack()
   await expect(page).toHaveURL(/\/licences$/)
-  await expect(page.getByRole('heading', { level: 2 })).toHaveCount(0)
+  await expect(page.getByRole('heading', { level: 2 }).filter({ hasNotText: /^(Licences|Products)$/ })).toHaveCount(0)
 
   await page.goForward()
   await expect(page.getByRole('heading', { level: 2, name: 'Acme Basic' })).toBeVisible()

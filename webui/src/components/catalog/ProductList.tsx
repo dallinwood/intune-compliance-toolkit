@@ -1,4 +1,3 @@
-import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { ancestorsOf, productTree, searchProducts, type ProductTreeNode, type ProductTreeVendor } from '../../logic/productSearch'
@@ -7,6 +6,7 @@ import { CatalogLink } from './CatalogLink'
 import { subgroupKey, useExpandedGroups, vendorGroupKey } from '../../hooks/useExpandedGroups'
 import { CollapsibleHeading } from './CollapsibleHeading'
 import { StatusMessage } from '@/components/ui/status-message'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 const INDENT_REM_PER_LEVEL = 1
 
@@ -45,9 +45,9 @@ function ProductRow({
             onClick={() => onToggle(product.id)}
             aria-expanded={isExpanded}
             aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${product.title} (${children.length} features)`}
-            className="-ml-2 -mr-2 -mb-2 -mt-0.5 flex shrink-0 items-center rounded p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            className="-ml-2 -mr-2 -mb-2 -mt-0.5 flex shrink-0 items-center rounded-sm p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
           >
-            {isExpanded ? <ChevronDown className="size-4" aria-hidden="true" /> : <ChevronRight className="size-4" aria-hidden="true" />}
+            <DisclosureChevron isOpen={isExpanded} />
           </button>
         ) : (
           <span className="size-4 shrink-0" aria-hidden="true" />
@@ -151,7 +151,7 @@ export function ProductList({ catalog, selectedProductId }: { catalog: CatalogIn
                 const isCategoryExpanded = isGroupExpanded(subgroupKey(vendor.id, category))
                 return (
                   <div key={category}>
-                    <CollapsibleHeading level={4} isExpanded={isCategoryExpanded} onToggle={() => toggleGroup(subgroupKey(vendor.id, category))} headingClassName="text-xs font-medium text-muted-foreground">
+                    <CollapsibleHeading level={4} isExpanded={isCategoryExpanded} onToggle={() => toggleGroup(subgroupKey(vendor.id, category))} headingClassName="text-sm font-medium text-foreground">
                       {category}
                     </CollapsibleHeading>
                     {isCategoryExpanded && (

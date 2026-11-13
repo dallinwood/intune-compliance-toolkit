@@ -1,4 +1,3 @@
-import { ChevronLeft } from 'lucide-react'
 import { useMemo } from 'react'
 import { WarningsNotice } from '../components/layout/WarningsNotice'
 import { ProductDetail } from '../components/catalog/ProductDetail'
@@ -7,6 +6,7 @@ import { useCatalogIndex } from '../hooks/useCatalogIndex'
 import { buildCatalogLookup } from '../logic/inclusionDisplay'
 import { useFilterStore } from '../state/filterStore'
 import { StatusMessage } from '@/components/ui/status-message'
+import { BackLink } from '@/components/ui/back-link'
 
 export function ProductsView() {
   const loadedCatalog = useCatalogIndex()
@@ -36,18 +36,14 @@ export function ProductsView() {
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <aside className={`${isRightPaneShown ? 'hidden lg:block' : 'block'} w-full shrink-0 overflow-y-auto border-border lg:w-80 lg:border-r`}>
+      <aside aria-label="Product catalog" className={`${isRightPaneShown ? 'hidden lg:block' : 'block'} w-full shrink-0 overflow-y-auto border-border lg:w-80 lg:border-r`}>
+        <h2 className="sr-only">Products</h2>
         <ProductList catalog={catalog} selectedProductId={productId} />
       </aside>
       <main className={`${isRightPaneShown ? 'flex' : 'hidden lg:flex'} min-w-0 flex-1 flex-col overflow-y-auto`}>
-        <button
-          type="button"
-          onClick={() => setProduct(null)}
-          className="flex items-center gap-1 px-4 pt-3 text-sm text-link hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none lg:hidden"
-        >
-          <ChevronLeft className="size-4" aria-hidden="true" />
+        <BackLink onClick={() => setProduct(null)} className="mx-4 mt-3 self-start lg:hidden">
           All products
-        </button>
+        </BackLink>
         {selectedProduct !== null ? (
           <ProductDetail key={selectedProduct.id} product={selectedProduct} catalog={catalog} lookup={lookup} />
         ) : (

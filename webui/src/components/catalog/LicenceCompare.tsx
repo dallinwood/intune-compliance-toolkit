@@ -7,6 +7,8 @@ import type { EffectiveInclusion } from '../../logic/catalogTree'
 import type { CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { AvailabilityBadgeIcon } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
+import { PageTitle } from '@/components/ui/page-title'
+import { formatCount, pluralize } from '../../lib/format'
 
 const INDENT_REM_PER_LEVEL = 1
 const STICKY_FIRST_COLUMN = 'sticky left-0 z-10 bg-background'
@@ -57,15 +59,17 @@ export function LicenceCompare({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 p-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-xl font-semibold">Compare licences</h2>
-        <label className="flex items-center gap-2 text-sm">
-          <Checkbox checked={hideIdentical} onCheckedChange={(checked) => setHideIdentical(checked)} />
-          Hide identical rows
-        </label>
-      </div>
+      <PageTitle
+        title="Compare licences"
+        actions={
+          <label className="flex items-center gap-2 text-sm">
+            <Checkbox checked={hideIdentical} onCheckedChange={(checked) => setHideIdentical(checked)} />
+            Hide identical rows
+          </label>
+        }
+      />
       <p className="text-xs text-muted-foreground" aria-live="polite">
-        {visibleRows.length} of {rows.length} rows
+        {formatCount(visibleRows.length)} of {pluralize(rows.length, 'row', 'rows')}
       </p>
       <ul aria-label="Legend" className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         {AVAILABILITIES.map((availability) => (
@@ -81,7 +85,7 @@ export function LicenceCompare({
           Not included
         </li>
       </ul>
-      <div className="min-h-0 flex-1 overflow-auto rounded border border-border">
+      <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-border">
         <table className="w-full border-separate border-spacing-0 text-sm">
           <thead>
             <tr>

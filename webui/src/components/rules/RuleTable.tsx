@@ -32,6 +32,7 @@ import { SectionHeader } from './SectionHeader'
 import { SectionToolbar } from './SectionToolbar'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import { StatusMessage } from '@/components/ui/status-message'
+import { useIsWideLayout } from '@/hooks/useIsWideLayout'
 
 const INFINITE_SCROLL_STEP = 100
 
@@ -320,6 +321,7 @@ interface RuleRowsTableProps {
 
 function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTableProps) {
   const titleIndent = RULE_TITLE_INDENTS[Math.min(depth, 3)]
+  const isWideLayout = useIsWideLayout()
   const selections = useSelectionStore((store) => store.selections)
   const setEnabled = useSelectionStore((store) => store.setEnabled)
 
@@ -370,7 +372,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                   onToggleRule(key)
                 }}
               >
-                <td className="w-12 py-2 pl-4 md:pl-6">
+                <td className="w-12 py-2 pl-4">
                   <RowCheckbox
                     ruleId={upstreamRuleId(row.ref.id)}
                     checked={isEnabled(selections, row.ref)}
@@ -392,17 +394,15 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                 </td>
                 <td className={`px-2 py-1.5 ${titleIndent}`}>
                   <RuleTitle row={row} />
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 md:hidden">
-                    <AssessmentCell row={row} />
-                    <BenchmarkText row={row} />
-                  </div>
+                  {!isWideLayout && (
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <AssessmentCell row={row} />
+                      <BenchmarkText row={row} />
+                    </div>
+                  )}
                 </td>
-                <td className="hidden w-32 px-2 py-1.5 md:table-cell">
-                  <AssessmentCell row={row} />
-                </td>
-                <td className="hidden w-48 px-2 py-1.5 md:table-cell">
-                  <BenchmarkText row={row} />
-                </td>
+                <td className="hidden w-32 px-2 py-1.5 md:table-cell">{isWideLayout && <AssessmentCell row={row} />}</td>
+                <td className="hidden w-48 px-2 py-1.5 md:table-cell">{isWideLayout && <BenchmarkText row={row} />}</td>
               </tr>
               {isExpanded && (
                 <tr id={detailId} className={`border-l-4 ${expandedAccent}`}>

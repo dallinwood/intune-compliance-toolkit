@@ -12,7 +12,7 @@ const FAILURE_MESSAGES: Record<Exclude<CopyOutcome, 'copied'>, string> = {
 
 const TONE_CLASSES = {
   // The dark tone sits on a code block, which stays dark in both themes.
-  dark: 'text-slate-300 hover:bg-slate-700 hover:text-white focus-visible:ring-focus-ring',
+  dark: 'text-code-muted hover:bg-code-foreground/15 hover:text-code-foreground focus-visible:ring-focus-ring',
   light: 'text-foreground/80 hover:bg-foreground/10 hover:text-foreground focus-visible:ring-focus-ring',
 } as const
 
@@ -41,7 +41,7 @@ export function CopyButton({ text, tone = 'dark' }: { text: string; tone?: keyof
         type="button"
         aria-label="Copy code"
         onClick={copy}
-        className={`absolute top-1 right-1 rounded p-1 focus-visible:ring-2 focus-visible:outline-none ${TONE_CLASSES[tone]}`}
+        className={`absolute top-1 right-1 rounded-sm p-1 focus-visible:ring-2 focus-visible:outline-none ${TONE_CLASSES[tone]}`}
       >
         {state.status === 'copied' ? <Check aria-hidden className="size-4" /> : <Copy aria-hidden className="size-4" />}
       </button>

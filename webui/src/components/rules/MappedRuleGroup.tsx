@@ -1,4 +1,4 @@
-import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { useId, type MouseEvent } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
@@ -20,6 +20,7 @@ import { MappingPathHops } from './MappingPathHops'
 import { RuleDetailPanel } from './RuleDetailPanel'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
 import { StaleLinkNotes } from './StaleLinkNotes'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 // What a new tab or a copied link opens: just the search and the open rule.
 // A plain click keeps every filter that does not hide the rule instead.
@@ -47,7 +48,7 @@ function alsoThroughText(ruleLabels: string[]): string {
   return `Also through ${list}`
 }
 
-export type GroupHeadingLevel = 4 | 5 | 6
+export type GroupHeadingLevel = 3 | 4 | 5 | 6
 
 export function MappedSourceGroupSection({
   group,
@@ -75,14 +76,13 @@ export function MappedSourceGroupSection({
   const sourceLabel = termLabel(vocabularyIndex, 'sources', group.sourceName)
   const relationLabel = relationBadgeLabel(group.relation, group.indirect)
   const count = filtering ? `${group.items.length} of ${group.total}` : `${group.total}`
-  const Chevron = isOpen ? ChevronDown : ChevronRight
   const Heading = `h${headingLevel}` as const
   const baseCaption = groupCaption(group.relation, group.indirect)
   const caption = throughLabel === undefined ? baseCaption : `${baseCaption} Through ${throughLabel}.`
   const listName = throughLabel === undefined ? `${relationLabel}: ${sourceLabel}` : `${relationLabel}, through ${throughLabel}: ${sourceLabel}`
 
   return (
-    <section className="rounded-md border border-border">
+    <section className="rounded-lg border border-border">
       <Heading>
         <button
           type="button"
@@ -93,7 +93,7 @@ export function MappedSourceGroupSection({
           onClick={filtering ? undefined : onToggle}
           className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left font-medium hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
         >
-          <Chevron className="size-4 shrink-0" aria-hidden="true" />
+          <DisclosureChevron isOpen={isOpen} />
           <Badge variant={RELATION_BADGE_VARIANTS[group.relation]} className={group.indirect ? 'h-auto border-dashed whitespace-normal' : undefined}>
             {relationLabel}
           </Badge>
@@ -150,7 +150,6 @@ export function MappedRuleRow({
   const lastHop = indirect?.path[indirect.path.length - 1]
   // An indirect link's stale notes are judged against the rule just before this one on the path, not the open rule.
   const linkedFromRow = (lastHop === undefined ? undefined : rowsById.get(lastHop.fromRuleId)) ?? self
-  const HopChevron = isHopListOpen ? ChevronDown : ChevronRight
 
   function navigate(event: MouseEvent<HTMLAnchorElement>) {
     if (!isPlainClick(event)) return
@@ -198,7 +197,7 @@ export function MappedRuleRow({
                 onClick={onToggleHopList}
                 className="mt-1 flex items-center gap-1 rounded-sm text-left text-link underline underline-offset-4 hover:no-underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
               >
-                <HopChevron className="size-3 shrink-0" aria-hidden="true" />
+                <DisclosureChevron isOpen={isHopListOpen} className="size-3" />
                 How this is linked
               </button>
               {isHopListOpen && <MappingPathHops id={hopListId} path={indirect.path} />}
@@ -215,7 +214,7 @@ export function MappedRuleRow({
         </div>
       </div>
       {isExpanded && (
-        <div id={detailsId} className="mt-2 overflow-hidden rounded-md border border-border">
+        <div id={detailsId} className="mt-2 overflow-hidden rounded-lg border border-border">
           <div className="flex justify-end border-b border-border bg-panel px-4 py-2">
             <a href={hrefShowing(row.ref.id)} onClick={navigate} className={buttonVariants({ variant: 'outline', size: 'xs' })}>
               Go to this rule

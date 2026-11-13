@@ -17,6 +17,7 @@ import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { VIEWS } from '../../views/viewRegistry'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '../ui/dialog'
+import { Badge } from '@/components/ui/badge'
 
 const PALETTE_DESCRIPTION = 'Search rules, frameworks and views'
 const INPUT_PLACEHOLDER = 'Search rules, frameworks and views…'
@@ -46,9 +47,9 @@ function PaletteItemContent({ entry }: { entry: PaletteEntry }) {
           <span className="block font-mono text-xs break-all text-muted-foreground">{entry.upstreamId}</span>
           <span className="line-clamp-2 text-sm">{entry.title}</span>
         </span>
-        <span className="shrink-0 rounded-3xl border border-border px-2 text-xs text-muted-foreground">
+        <Badge variant="outline" className="text-muted-foreground">
           {entry.sourceLabel}
-        </span>
+        </Badge>
       </>
     )
   }
@@ -115,7 +116,7 @@ export function CommandPalette({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger
         aria-keyshortcuts="Control+K Meta+K"
-        className="inline-flex items-center gap-2 rounded border border-control-border px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+        className="inline-flex items-center gap-2 rounded-md border border-control-border px-2 py-1 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
       >
         <SearchIcon className="size-4" aria-hidden="true" />
         Search
@@ -144,7 +145,7 @@ export function CommandPalette({
             />
             <DialogClose
               aria-label="Close"
-              className="rounded px-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+              className="rounded-sm px-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
             >
               Esc
             </DialogClose>

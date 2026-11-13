@@ -21,6 +21,8 @@ import { CommandPalette } from './CommandPalette'
 import { ViewTabs } from './ViewTabs'
 import { WarningsNotice } from './WarningsNotice'
 import { formatCount, pluralize } from '../../lib/format'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 function SkipToRulesLink() {
   function focusRuleTable(event: MouseEvent<HTMLAnchorElement>) {
@@ -113,7 +115,7 @@ export function AppShell({
                     onClick={() => setFiltersOpen((value) => !value)}
                     aria-expanded={filtersOpen}
                     aria-controls="filter-sidebar"
-                    className="rounded border border-control-border px-2 py-1 text-xs md:hidden"
+                    className={cn(buttonVariants({ variant: 'outline', size: 'xs' }), 'md:hidden')}
                   >
                     Filters
                   </button>

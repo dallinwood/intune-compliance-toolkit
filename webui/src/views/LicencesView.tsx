@@ -1,4 +1,3 @@
-import { ChevronLeft } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { WarningsNotice } from '../components/layout/WarningsNotice'
 import { LicenceCompare } from '../components/catalog/LicenceCompare'
@@ -8,6 +7,7 @@ import { useCatalogIndex } from '../hooks/useCatalogIndex'
 import { buildCatalogLookup } from '../logic/inclusionDisplay'
 import { useFilterStore } from '../state/filterStore'
 import { StatusMessage } from '@/components/ui/status-message'
+import { BackLink } from '@/components/ui/back-link'
 
 const MINIMUM_COMPARED_LICENCES = 2
 
@@ -75,7 +75,8 @@ export function LicencesView() {
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <aside className={`${isRightPaneShown ? 'hidden lg:block' : 'block'} w-full shrink-0 overflow-y-auto border-border lg:w-80 lg:border-r`}>
+      <aside aria-label="Licence catalog" className={`${isRightPaneShown ? 'hidden lg:block' : 'block'} w-full shrink-0 overflow-y-auto border-border lg:w-80 lg:border-r`}>
+        <h2 className="sr-only">Licences</h2>
         <LicenceList
           catalog={catalog}
           selectedLicenceId={licenceId}
@@ -87,14 +88,9 @@ export function LicencesView() {
         />
       </aside>
       <main className={`${isRightPaneShown ? 'flex' : 'hidden lg:flex'} min-w-0 flex-1 flex-col overflow-y-auto`}>
-        <button
-          type="button"
-          onClick={() => (isComparing ? setIsPickingComparison(true) : setLicence(null))}
-          className="flex items-center gap-1 px-4 pt-3 text-sm text-link hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none lg:hidden"
-        >
-          <ChevronLeft className="size-4" aria-hidden="true" />
+        <BackLink onClick={() => (isComparing ? setIsPickingComparison(true) : setLicence(null))} className="mx-4 mt-3 self-start lg:hidden">
           All licences
-        </button>
+        </BackLink>
         {isShowingComparison ? (
           <LicenceCompare licences={comparedLicences} catalog={catalog} lookup={lookup} onOpenLicence={openLicenceFromComparison} />
         ) : selectedLicence !== null ? (

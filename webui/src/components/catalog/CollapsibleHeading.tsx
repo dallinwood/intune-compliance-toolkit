@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import type { ReactNode } from 'react'
 
 // A vendor, family or category heading that folds the group beneath it.
@@ -24,7 +24,7 @@ export function CollapsibleHeading({
         onClick={onToggle}
         className="-my-1 flex w-full items-center gap-1 px-4 py-2 text-left hover:bg-muted focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
       >
-        {isExpanded ? <ChevronDown className="size-4 shrink-0" aria-hidden="true" /> : <ChevronRight className="size-4 shrink-0" aria-hidden="true" />}
+        <DisclosureChevron isOpen={isExpanded} />
         <span className="min-w-0 break-words">{children}</span>
       </button>
     </Heading>

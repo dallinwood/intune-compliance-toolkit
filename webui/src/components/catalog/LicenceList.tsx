@@ -6,6 +6,8 @@ import type { CatalogIndex, CatalogLicence } from '../../types/catalog'
 import { CatalogLink } from './CatalogLink'
 import { subgroupKey, useExpandedGroups, vendorGroupKey } from '../../hooks/useExpandedGroups'
 import { CollapsibleHeading } from './CollapsibleHeading'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 // Lines a licence up with its family heading's text, past that heading's chevron.
 const LICENCE_ROW_PADDING = 'pr-4 pl-9'
@@ -103,9 +105,7 @@ export function LicenceList({
           type="button"
           aria-pressed={isComparing}
           onClick={onToggleCompareMode}
-          className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-1 text-xs focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
-            isComparing ? 'border-primary bg-primary text-primary-foreground' : 'border-control-border hover:bg-muted'
-          }`}
+          className={cn(buttonVariants({ variant: 'outline', size: 'xs' }), 'aria-pressed:border-foreground/60 aria-pressed:bg-muted')}
         >
           {isComparing ? 'Exit compare' : 'Compare'}
         </button>
@@ -115,13 +115,19 @@ export function LicenceList({
               {compareIds.length >= 2 ? `${compareIds.length} selected` : 'Tick two or more licences to compare.'}
             </span>
             {compareIds.length >= 2 && (
-              <button type="button" onClick={onShowComparison} className="rounded-full border border-control-border px-3 py-1 text-xs hover:bg-muted lg:hidden">
+              <button type="button" onClick={onShowComparison} className={cn(buttonVariants({ variant: 'outline', size: 'xs' }), 'lg:hidden')}>
                 Show comparison
               </button>
             )}
           </>
         )}
       </div>
+      {catalog.licences.some((licence) => licence.review.length > 0) && (
+        <p className="flex items-center gap-2 px-4 pt-2 text-xs text-muted-foreground">
+          <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-warning-foreground" />
+          Needs review
+        </p>
+      )}
       {groups.map(({ vendorId, vendorTitle, families }) => (
         <div key={vendorId}>
           <CollapsibleHeading level={3} isExpanded={isExpanded(vendorGroupKey(vendorId))} onToggle={() => toggleGroup(vendorGroupKey(vendorId))} headingClassName="pt-2 text-sm font-semibold">
@@ -132,7 +138,7 @@ export function LicenceList({
               const isFamilyExpanded = isExpanded(subgroupKey(vendorId, family))
               return (
                 <div key={family}>
-                  <CollapsibleHeading level={4} isExpanded={isFamilyExpanded} onToggle={() => toggleGroup(subgroupKey(vendorId, family))} headingClassName="text-xs font-medium text-muted-foreground">
+                  <CollapsibleHeading level={4} isExpanded={isFamilyExpanded} onToggle={() => toggleGroup(subgroupKey(vendorId, family))} headingClassName="text-sm font-medium text-foreground">
                     {family}
                   </CollapsibleHeading>
                   {isFamilyExpanded && (

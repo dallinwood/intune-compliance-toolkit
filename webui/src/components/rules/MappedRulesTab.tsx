@@ -82,18 +82,18 @@ export function MappedRulesTab({ ruleId, view }: { ruleId: string; view: MappedR
       ) : (
         <>
           {blocks.length === 0 ? (
-            <DirectGroups groups={visibleGroups} self={self} filtering={filtering} view={view} headingLevel={4} />
+            <DirectGroups groups={visibleGroups} self={self} filtering={filtering} view={view} headingLevel={3} />
           ) : (
             <>
               {visibleGroups.length > 0 && (
                 <section className="space-y-2">
-                  <h4 className="font-medium">Direct mapped rules ({distinctMappedRuleCount(links ?? [], rowsById)})</h4>
-                  <DirectGroups groups={visibleGroups} self={self} filtering={filtering} view={view} headingLevel={5} />
+                  <h3 className="font-medium">Direct mapped rules ({distinctMappedRuleCount(links ?? [], rowsById)})</h3>
+                  <DirectGroups groups={visibleGroups} self={self} filtering={filtering} view={view} headingLevel={4} />
                 </section>
               )}
               {visibleBlocks.length > 0 && (
                 <section className="space-y-3">
-                  <h4 className="font-medium">Indirect mapped rules ({blocks.reduce((sum, block) => sum + block.total, 0)})</h4>
+                  <h3 className="font-medium">Indirect mapped rules ({blocks.reduce((sum, block) => sum + block.total, 0)})</h3>
                   {visibleBlocks.map((block) => (
                     <IndirectPathBlockSection key={block.key} block={block} self={self} filtering={filtering} view={view} />
                   ))}

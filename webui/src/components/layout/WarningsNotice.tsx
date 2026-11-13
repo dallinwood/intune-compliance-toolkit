@@ -8,7 +8,7 @@ export function WarningsNotice({ label, summary, warnings }: { label: string; su
     <div
       role="status"
       aria-label={label}
-      className="mx-4 mt-3 rounded border border-warning-border bg-warning p-3 text-xs break-words text-warning-foreground"
+      className="mx-4 mt-3 rounded-lg border border-warning-border bg-warning p-3 text-xs break-words text-warning-foreground"
     >
       {warnings.length === 1 ? (
         <p>{warnings[0]}</p>

@@ -20,7 +20,7 @@ export function CodeBlock({ code, language }: { code: string; language?: Highlig
   const html = highlightedHtml(code, language)
   return (
     <div className="relative">
-      <pre className="max-w-full overflow-x-auto rounded bg-slate-900 p-2 dark:ring-1 dark:ring-white/10 pr-10 font-mono text-xs whitespace-pre-wrap text-slate-100 [overflow-wrap:anywhere]">
+      <pre className="max-w-full overflow-x-auto rounded-md bg-code p-2 pr-10 font-mono text-xs whitespace-pre-wrap text-code-foreground dark:ring-1 dark:ring-white/10 [overflow-wrap:anywhere]">
         {html === null ? <code>{code}</code> : <code className="hljs" dangerouslySetInnerHTML={{ __html: html }} />}
       </pre>
       <CopyButton text={code} />
@@ -95,7 +95,7 @@ export function OdvCodeBlock({
 }
 
 export function SectionHeading({ children, custom = false }: { children: string; custom?: boolean }) {
-  const heading = <h5 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{children}</h5>
+  const heading = <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{children}</h3>
   if (!custom) return heading
   return (
     <div className="flex items-center gap-2">

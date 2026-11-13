@@ -1206,7 +1206,7 @@ test.describe('benchmark cell and detail benchmarks', () => {
   test.use({ viewport: { width: 1280, height: 800 } })
 
   const benchmarkCell = (row: Locator) => row.locator('td').last().getByTestId('benchmark-text')
-  const detailHeadings = (page: Page) => page.locator('[id^="rule-detail-"]').locator('h5')
+  const detailHeadings = (page: Page) => page.locator('[id^="rule-detail-"]').locator('h3')
   const benchmarkList = (page: Page, scopeLabel: string) =>
     page.locator('[id^="rule-detail-"]').getByRole('region', { name: 'Benchmarks' }).getByRole('list', { name: scopeLabel })
 

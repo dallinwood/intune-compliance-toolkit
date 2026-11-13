@@ -44,6 +44,8 @@ import { SupportingChecksPanel } from './SupportingChecksPanel'
 import { pluralize } from '../../lib/format'
 import { StatusMessage } from '@/components/ui/status-message'
 import { BackLink } from '@/components/ui/back-link'
+import { Card } from '@/components/ui/card'
+import { PageTitle } from '@/components/ui/page-title'
 
 interface ReadyReview {
   status: 'ready'
@@ -250,9 +252,8 @@ export function GenerateReviewScreen({
 
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold text-foreground">Review &amp; generate</h2>
-        <BackLink onClick={onBack}>Back to rules</BackLink>
+      <div className="mb-4">
+        <PageTitle title="Review & generate" actions={<BackLink onClick={onBack}>Back to rules</BackLink>} />
       </div>
       <ReviewBody
         enabledCount={enabledEntries.length}
@@ -419,7 +420,7 @@ function ReviewBody({
 
 function DeploymentNote() {
   return (
-    <div className="mb-4 rounded border border-border bg-panel p-3 text-xs text-foreground/80">
+    <Card className="mb-4 text-xs text-foreground/80">
       <h3 className="mb-1 text-sm font-medium text-foreground">Deploying in Intune</h3>
       <p>
         For each bundle, add its <span className="font-mono">-discovery.sh</span> under Endpoint security &gt; Device
@@ -431,6 +432,6 @@ function DeploymentNote() {
         A rule reports compliant without running its check on a macOS version it does not list, including versions
         older than this library covers, so pair these policies with Intune's minimum OS version compliance setting.
       </p>
-    </div>
+    </Card>
   )
 }

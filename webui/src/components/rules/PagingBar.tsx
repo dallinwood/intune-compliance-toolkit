@@ -90,7 +90,7 @@ function PageJumpInput({ currentPage, pageCount, onPageChange }: PageJumpInputPr
         onKeyDown={(event) => {
           if (event.key === 'Enter') jump()
         }}
-        className="h-8 w-16 rounded-md border border-control-border bg-card px-2 text-sm text-foreground/90 tabular-nums"
+        className="h-8 w-16 rounded-md border border-control-border bg-background px-2 text-sm text-foreground tabular-nums"
       />
     </label>
   )

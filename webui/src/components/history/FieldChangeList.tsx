@@ -2,6 +2,7 @@ import { changeLabel, visibleChanges } from '../../logic/changeLabels'
 import type { ChangeKind, FieldChange } from '../../logic/ruleChanges'
 import { diffLines, diffWords } from '../../logic/sequenceDiff'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
+import { Badge } from '@/components/ui/badge'
 
 const REMOVED_CLASSES = 'bg-diff-removed text-diff-removed-foreground'
 const ADDED_CLASSES = 'bg-diff-added text-diff-added-foreground'
@@ -38,9 +39,9 @@ function TextDiff({ before, after }: { before: unknown; after: unknown }) {
 }
 
 const LINE_CLASSES = {
-  same: 'text-slate-300',
-  removed: 'bg-red-500/25 text-red-100',
-  added: 'bg-green-500/25 text-green-100',
+  same: 'text-code-muted',
+  removed: 'bg-code-removed text-code-removed-foreground',
+  added: 'bg-code-added text-code-added-foreground',
 } as const
 const GUTTERS = { same: ' ', removed: '-', added: '+' } as const
 
@@ -48,7 +49,7 @@ const GUTTERS = { same: ' ', removed: '-', added: '+' } as const
 // the gutter of every changed line.
 function CodeDiff({ before, after }: { before: unknown; after: unknown }) {
   return (
-    <pre className="max-w-full overflow-x-auto rounded bg-slate-900 py-2 font-mono text-xs dark:ring-1 dark:ring-white/10">
+    <pre className="max-w-full overflow-x-auto rounded-md bg-code py-2 font-mono text-xs text-code-foreground dark:ring-1 dark:ring-white/10">
       <code>
         {diffLines(asText(before), asText(after)).flatMap((operation, operationPosition) =>
           operation.items.map((line, linePosition) => (
@@ -78,16 +79,20 @@ function ListDiff({ before, after }: { before: unknown; after: unknown }) {
   return (
     <ul className="flex flex-wrap gap-1.5">
       {added.map((item) => (
-        <li key={`added-${item}`} className={`${ADDED_CLASSES} rounded-full px-2 py-0.5 text-xs`}>
-          <span aria-hidden="true">+ </span>
-          <span className="sr-only">Added: </span>
-          {item}
+        <li key={`added-${item}`}>
+          <Badge className={`${ADDED_CLASSES} h-auto whitespace-normal`}>
+            <span aria-hidden="true">+ </span>
+            <span className="sr-only">Added: </span>
+            {item}
+          </Badge>
         </li>
       ))}
       {removed.map((item) => (
-        <li key={`removed-${item}`} className={`${REMOVED_CLASSES} rounded-full px-2 py-0.5 text-xs line-through`}>
-          <span className="sr-only">Removed: </span>
-          {item}
+        <li key={`removed-${item}`}>
+          <Badge className={`${REMOVED_CLASSES} h-auto whitespace-normal line-through`}>
+            <span className="sr-only">Removed: </span>
+            {item}
+          </Badge>
         </li>
       ))}
     </ul>

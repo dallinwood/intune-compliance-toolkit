@@ -51,7 +51,7 @@ function ReleaseCard({
   const stateText = timelineStateText(entry)
   const previousTag = previousTagWithRule(index, ruleId, entry.tag)
   return (
-    <li data-testid="history-card" className="rounded-md border border-border">
+    <li data-testid="history-card" className="rounded-lg border border-border">
       <button type="button" aria-expanded={isOpen} aria-controls={isOpen ? bodyId : undefined} onClick={onToggle} className={CARD_BUTTON_CLASS}>
         <span className="font-medium">{entry.label}</span>
         <span className="font-mono text-xs text-muted-foreground">{entry.tag}</span>
@@ -172,7 +172,7 @@ function CompareSection({
         </NativeSelect>
       </div>
       {fromTag !== '' && toTag !== '' && (
-        <div data-testid="history-compare-result" className="rounded-md border border-border px-3 py-2">
+        <div data-testid="history-compare-result" className="rounded-lg border border-border px-3 py-2">
           {missingIn.length > 0 ? (
             <p className="text-sm text-muted-foreground">This rule is not in {missingIn.map((tag) => labelOfTag(index, tag)).join(' or ')}, so there is nothing to compare.</p>
           ) : (

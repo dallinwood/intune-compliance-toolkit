@@ -59,7 +59,7 @@ export function ManualAttestationReport({ entries }: { entries: ManualAttestatio
   const unsupported = entries.filter((entry) => entry.automatedSupportRuleIds.length === 0)
 
   return (
-    <section aria-labelledby={HEADING_ID} className="mt-4 rounded border border-border bg-panel p-3 text-sm">
+    <section aria-labelledby={HEADING_ID} className="mt-4 rounded-lg border border-border bg-panel p-4 text-sm">
       <h3 id={HEADING_ID} className="mb-1 font-medium text-foreground">
         Needs manual attestation ({entries.length})
       </h3>

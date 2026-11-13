@@ -8,6 +8,9 @@ import type { Availability, CatalogIndex, CatalogLicence } from '../../types/cat
 import { CatalogLink } from './CatalogLink'
 import { InclusionTree } from './InclusionTree'
 import { RequirementText } from './RequirementText'
+import { PageTitle } from '@/components/ui/page-title'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 type AvailabilityFilter = Availability | 'all'
 
@@ -28,7 +31,7 @@ function ReviewCallout({ notes }: { notes: string[] }) {
     <details
       role="group"
       aria-label={`Needs review (${notes.length})`}
-      className="rounded border border-warning-border bg-warning p-3 text-sm text-warning-foreground"
+      className="rounded-lg border border-warning-border bg-warning p-3 text-sm text-warning-foreground"
     >
       <summary className="cursor-pointer font-medium focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none">
         Needs review ({notes.length})
@@ -60,9 +63,7 @@ function AvailabilityChips({
           type="button"
           aria-pressed={value === option}
           onClick={() => onChange(option)}
-          className={`rounded-full border px-3 py-1 text-xs focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
-            value === option ? 'border-primary bg-primary text-primary-foreground' : 'border-control-border hover:bg-muted'
-          }`}
+          className={cn(buttonVariants({ variant: 'outline', size: 'xs' }), 'aria-pressed:border-foreground/60 aria-pressed:bg-muted')}
         >
           {option === 'all' ? 'All' : AVAILABILITY_LABELS[option]} ({counts[option]})
         </button>
@@ -114,10 +115,15 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
   return (
     <div className="space-y-4 p-4">
       <header className="space-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-xl font-semibold break-words">{licence.title}</h2>
-          <Badge variant={licence.kind === 'add_on' ? 'outline' : 'secondary'}>{licence.kind === 'add_on' ? 'Add-on' : 'Subscription'}</Badge>
-        </div>
+        <PageTitle
+          title={licence.title}
+          adornment={
+            <>
+              <Badge variant={licence.kind === 'add_on' ? 'outline' : 'secondary'}>{licence.kind === 'add_on' ? 'Add-on' : 'Subscription'}</Badge>
+              {licence.review.length > 0 && <Badge className="border-warning-border bg-warning text-warning-foreground">Needs review</Badge>}
+            </>
+          }
+        />
         <p className="text-sm text-muted-foreground">
           {vendorTitle} · {licence.family}
         </p>
@@ -156,7 +162,7 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
       <ReviewCallout notes={licence.review} />
 
       {missingReferences.length > 0 && (
-        <section aria-label="Catalog reference problems" className="rounded border border-warning-border bg-warning p-3 text-sm text-warning-foreground">
+        <section aria-label="Catalog reference problems" className="rounded-lg border border-warning-border bg-warning p-3 text-sm text-warning-foreground">
           <h3 className="font-medium">Catalog reference problems</h3>
           <ul className="mt-1 list-disc pl-5">
             {missingReferences.map((problem) => <li key={problem}>{problem}</li>)}
@@ -165,7 +171,7 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
       )}
 
       {licence.includes.some((inclusion) => inclusion.type === 'licence') && (
-        <section aria-label="Included and offered licences" className="rounded border border-border">
+        <section aria-label="Included and offered licences" className="rounded-lg border border-border">
           <h3 className="border-b border-border bg-muted px-3 py-2 text-sm font-medium">Included and offered licences</h3>
           <ul className="divide-y divide-border px-3">
             {licence.includes.flatMap((inclusion) => {
@@ -199,7 +205,7 @@ export function LicenceDetail({ licence, catalog, lookup }: { licence: CatalogLi
         </div>
         {categories.length === 0 && <p className="text-sm text-muted-foreground">Nothing matches.</p>}
         {categories.map(({ category, roots }) => (
-          <section key={category} aria-label={category} className="rounded border border-border">
+          <section key={category} aria-label={category} className="rounded-lg border border-border">
             <h3 className="border-b border-border bg-muted px-3 py-2 text-sm font-medium">
               {category} <span className="font-normal text-muted-foreground">({countInclusions(roots)})</span>
             </h3>

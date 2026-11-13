@@ -4,6 +4,7 @@ import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import { pluralize } from '../../lib/format'
+import { Card } from '@/components/ui/card'
 
 export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
   const index = useVocabularyIndex()
@@ -11,7 +12,7 @@ export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
   const baseName = bundleBaseName(chunk)
 
   return (
-    <section className="rounded border border-border bg-card p-3 text-sm" aria-label={`Bundle ${baseName}`}>
+    <Card className="text-sm" aria-label={`Bundle ${baseName}`} role="region">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h3 className="font-medium text-foreground">
           {termLabel(index, 'sections', chunk.section)}
@@ -36,6 +37,6 @@ export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   )
 }

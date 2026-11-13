@@ -8,6 +8,7 @@ import { TargetIcons } from '../rules/TargetIcons'
 import { AvailabilityBadge, SourceRouteList } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
 import { RequirementText } from './RequirementText'
+import { PageTitle } from '@/components/ui/page-title'
 
 const COLLAPSED_FEATURE_COUNT = 12
 
@@ -41,7 +42,7 @@ function FeatureGrid({ productIds, lookup }: { productIds: string[]; lookup: Cat
           type="button"
           aria-expanded={isShowingAll}
           onClick={() => setIsShowingAll(!isShowingAll)}
-          className="mt-2 rounded text-sm text-link hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+          className="mt-2 rounded-sm text-sm text-link hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           {isShowingAll ? 'Show fewer' : `Show all ${sortedProductIds.length}`}
         </button>
@@ -89,7 +90,7 @@ function IncludedIn({ entries, catalog, lookup }: { entries: ProductLicenceEntry
           const group = rowsByAvailability(availability)
           if (group.length === 0) return null
           return (
-            <div key={availability} role="group" aria-label={AVAILABILITY_LABELS[availability]} className="rounded border border-border">
+            <div key={availability} role="group" aria-label={AVAILABILITY_LABELS[availability]} className="rounded-lg border border-border">
               <div className="border-b border-border bg-muted px-3 py-2">
                 <AvailabilityBadge availability={availability} />
               </div>
@@ -135,10 +136,7 @@ export function ProductDetail({ product, catalog, lookup }: { product: CatalogPr
             </ol>
           </nav>
         )}
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-xl font-semibold break-words">{product.title}</h2>
-          <TargetIcons targetKeys={product.targets} />
-        </div>
+        <PageTitle title={product.title} adornment={<TargetIcons targetKeys={product.targets} />} />
         <p className="text-sm text-muted-foreground">{vendorTitle}</p>
         {product.description !== null && <p className="text-sm break-words">{product.description}</p>}
         {product.requires !== null && (

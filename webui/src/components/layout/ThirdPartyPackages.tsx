@@ -30,7 +30,7 @@ export function ThirdPartyPackages() {
     )
   }
   return (
-    <ul className="divide-y divide-border rounded border border-border">
+    <ul className="divide-y divide-border rounded-lg border border-border">
       {state.packages.map((item) => (
         <li key={`${item.name}@${item.version}`}>
           <details>

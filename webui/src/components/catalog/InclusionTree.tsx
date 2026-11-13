@@ -1,9 +1,9 @@
-import { ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 import type { InclusionNode } from '../../logic/catalogTree'
 import { distinctRoutesOf, type CatalogLookup } from '../../logic/inclusionDisplay'
 import { AvailabilityBadge, SourceRouteList } from './AvailabilityBadge'
 import { CatalogLink } from './CatalogLink'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 const INDENT_REM_PER_LEVEL = 1.25
 
@@ -40,9 +40,9 @@ function InclusionRow({
             onClick={() => onToggle(node.product.id)}
             aria-expanded={!isCollapsed}
             aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} ${node.product.title}`}
-            className="-mt-1.5 -mr-2 -mb-2 -ml-2 flex shrink-0 items-center rounded p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+            className="-mt-1.5 -mr-2 -mb-2 -ml-2 flex shrink-0 items-center rounded-sm p-2 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
           >
-            {isCollapsed ? <ChevronRight className="size-4" aria-hidden="true" /> : <ChevronDown className="size-4" aria-hidden="true" />}
+            <DisclosureChevron isOpen={!isCollapsed} />
           </button>
         ) : (
           <span className="size-4 shrink-0" aria-hidden="true" />

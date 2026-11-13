@@ -1,8 +1,9 @@
-import { cn, isPlainLeftClick } from '@/lib/utils'
+import { isPlainLeftClick } from '@/lib/utils'
 import { EMPTY_RELEASE_LABEL, comparisonLocation, previousReleaseTag } from '../../logic/releaseRange'
 import { useFilterStore } from '../../state/filterStore'
 import type { ManifestSource } from '../../types/library'
 import { pluralize } from '../../lib/format'
+import { buttonVariants } from '@/components/ui/button'
 
 function accessibleName(label: string, isCurrent: boolean, isFirst: boolean): string {
   if (isFirst) return `${label}: see everything in it, compared with an ${EMPTY_RELEASE_LABEL.toLowerCase()}`
@@ -40,12 +41,7 @@ export function FrameworkCards({ sources }: { sources: ManifestSource[] }) {
                         event.preventDefault()
                         showComparison(source.name, range.fromTag, range.toTag)
                       }}
-                      className={cn(
-                        'inline-block rounded-full border px-2.5 py-0.5 text-xs hover:underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none',
-                        isCurrent
-                          ? 'border-transparent bg-primary text-primary-foreground hover:opacity-90'
-                          : 'border-border bg-background text-foreground hover:bg-muted',
-                      )}
+                      className={buttonVariants({ variant: isCurrent ? 'default' : 'outline', size: 'xs' })}
                     >
                       {release.label}
                       {isCurrent && ' · current'}

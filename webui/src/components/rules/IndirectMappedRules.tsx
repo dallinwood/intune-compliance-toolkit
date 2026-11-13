@@ -32,7 +32,7 @@ export function IndirectPathBlockSection({
   return (
     <section className="space-y-2">
       <div className="min-w-0 break-words">
-        <h5 className="text-sm font-medium">{throughDescription(block, ruleLabel)}</h5>
+        <h4 className="text-sm font-medium">{throughDescription(block, ruleLabel)}</h4>
         {lastThroughRow !== undefined && <ThroughRuleTitle row={lastThroughRow} />}
       </div>
       <div className="space-y-2 border-l-2 border-border pl-3">
@@ -47,7 +47,7 @@ export function IndirectPathBlockSection({
               isOpen={filtering || view.openGroupKeys.has(key)}
               onToggle={() => view.toggleGroup(key)}
               view={view}
-              headingLevel={6}
+              headingLevel={5}
               throughLabel={throughLabel}
             />
           )

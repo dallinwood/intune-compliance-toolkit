@@ -24,6 +24,7 @@ import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import { StatusMessage } from '@/components/ui/status-message'
 import { BackLink } from '@/components/ui/back-link'
 import { formatCount } from '../../lib/format'
+import { PageTitle } from '@/components/ui/page-title'
 
 type Group = CompareGroup
 
@@ -48,9 +49,10 @@ function SummaryTile({ group, label, value, isSelected, onSelect }: { group: Gro
       data-testid={`summary-tile-${group}`}
       aria-pressed={isSelected}
       onClick={onSelect}
+      title={`Show only ${label} rules`}
       className={cn(
         'rounded-lg border border-border bg-panel px-3 py-2 text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none',
-        'hover:bg-muted aria-pressed:border-foreground/60 aria-pressed:bg-muted',
+        'hover:border-foreground/40 hover:bg-muted aria-pressed:border-foreground/60 aria-pressed:bg-muted',
       )}
     >
       <span className="block text-2xl font-semibold tabular-nums">{formatCount(value)}</span>
@@ -116,12 +118,14 @@ function ComparisonRow({
         className="flex w-full items-start gap-2 px-4 py-2 text-left text-sm focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
       >
         <DisclosureChevron isOpen={isOpen} className="mt-0.5" />
-        <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
-          <span className={group === 'removed' ? 'min-w-0 break-words line-through' : 'min-w-0 break-words'}>{entry.title}</span>
-          <span className="font-mono text-xs text-muted-foreground">{upstreamRuleId(entry.id)}</span>
-          {entry.kinds.map((kind) => (
-            <KindTag key={kind} kind={kind} />
-          ))}
+        <span className="min-w-0 flex-1 space-y-1">
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className={group === 'removed' ? 'min-w-0 break-words line-through' : 'min-w-0 break-words'}>{entry.title}</span>
+            {entry.kinds.map((kind) => (
+              <KindTag key={kind} kind={kind} />
+            ))}
+          </span>
+          <span className="block font-mono text-xs text-muted-foreground">{upstreamRuleId(entry.id)}</span>
         </span>
       </button>
       {isOpen && (
@@ -133,7 +137,7 @@ function ComparisonRow({
             </>
           )}
           {group !== 'changed' && storedPath !== null && (
-            <div className="overflow-hidden rounded-md border border-border">
+            <div className="overflow-hidden rounded-lg border border-border">
               <RuleDetailPanel ruleRef={{ id: entry.id, path: storedPath }} nested />
             </div>
           )}
@@ -307,12 +311,10 @@ export function ReleaseComparisonView({
         <div className="space-y-3 p-4">
           <div>
             <BackLink onClick={closeComparison}>All frameworks</BackLink>
-            <h2 className="text-lg font-semibold">
-              {source.display_name}: {fromLabel} to {toLabel}
-            </h2>
-            {comparesWithEmptyRelease && (
-              <p className="text-sm text-muted-foreground">Compared with an empty release, so every rule in {toLabel} is listed as added.</p>
-            )}
+            <PageTitle
+              title={`${source.display_name}: ${fromLabel} to ${toLabel}`}
+              subtitle={comparesWithEmptyRelease ? `Compared with an empty release, so every rule in ${toLabel} is listed as added.` : undefined}
+            />
           </div>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {(
