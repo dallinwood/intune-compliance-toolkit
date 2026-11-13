@@ -16,10 +16,15 @@ export interface FetchedRule {
 export type FetchedRulesState =
   | { status: 'idle' }
   | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | { status: 'ready'; rulesById: ReadonlyMap<string, FetchedRule> }
+  // A rule that failed to load is in failedRuleIds with the reason; the others are still in rulesById,
+  // so each caller decides which failures matter to it.
+  | { status: 'ready'; rulesById: ReadonlyMap<string, FetchedRule>; failedRuleIds: ReadonlyMap<string, string> }
 
-type Outcome = { status: 'error'; message: string } | { status: 'ready'; rulesById: ReadonlyMap<string, FetchedRule> }
+type Outcome = Extract<FetchedRulesState, { status: 'ready' }>
+
+function messageOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
 
 const FIELD_SEPARATOR = '\t'
 const REF_SEPARATOR = '\n'
@@ -49,19 +54,22 @@ export function useFetchedRules(refs: readonly RuleRef[], active: boolean): Fetc
   useEffect(() => {
     if (!active) return
     let cancelled = false
-    Promise.all(
+    Promise.allSettled(
       refsOf(key).map(async (ref) => {
         const overlaid = await fetchOverlaidRule(ref)
         return { ref, rule: await resolveGeneratedCheckFiles(overlaid.rule, fetchReferencedText), overlaid }
       }),
-    )
-      .then((fetchedRules) => {
-        if (cancelled) return
-        setLoaded({ key, outcome: { status: 'ready', rulesById: new Map(fetchedRules.map((fetched) => [fetched.ref.id, fetched])) } })
+    ).then((settlements) => {
+      if (cancelled) return
+      const refs = refsOf(key)
+      const rulesById = new Map<string, FetchedRule>()
+      const failedRuleIds = new Map<string, string>()
+      settlements.forEach((settlement, position) => {
+        if (settlement.status === 'fulfilled') rulesById.set(refs[position].id, settlement.value)
+        else failedRuleIds.set(refs[position].id, messageOf(settlement.reason))
       })
-      .catch((error: unknown) => {
-        if (!cancelled) setLoaded({ key, outcome: { status: 'error', message: error instanceof Error ? error.message : String(error) } })
-      })
+      setLoaded({ key, outcome: { status: 'ready', rulesById, failedRuleIds } })
+    })
     return () => {
       cancelled = true
     }

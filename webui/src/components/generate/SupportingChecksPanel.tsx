@@ -38,6 +38,7 @@ export function SupportingChecksPanel({
   loading,
   outcomes,
   fetchedRules,
+  unavailableRuleIds,
   selections,
 }: {
   offers: SupportingCheckOffers
@@ -48,6 +49,8 @@ export function SupportingChecksPanel({
   loading: boolean
   outcomes: ReadonlyMap<string, PulledInOutcome>
   fetchedRules: ReadonlyMap<string, Rule>
+  // Offered checks whose rule could not be loaded; the review stays usable unless one of them is included.
+  unavailableRuleIds: ReadonlySet<string>
   selections: SelectionMap
 }) {
   const setIncludeSupporting = useSupportingChecksStore((store) => store.setIncludeSupporting)
@@ -65,6 +68,7 @@ export function SupportingChecksPanel({
   const allOffers = useMemo(() => [...offers.direct, ...offers.throughOtherRules], [offers])
   const needsValueCount = allOffers.filter((offer) => rowsById.get(offer.ruleId)?.hasOdv === true).length
   const toggleOn = choices.includeSupporting
+  const isFilterActive = needsValueOnly || filterText.trim() !== ''
 
   function titleOf(offer: SupportingCheckOffer): string {
     const rule = fetchedRules.get(offer.ruleId)
@@ -117,6 +121,7 @@ export function SupportingChecksPanel({
     const shownOffers = group.filter(matchesFilter)
     const isOpen = collapsible === null || collapsible.open
     const headingText = `${heading} (${formatCount(group.length)})`
+    const bulkScope = isFilterActive ? 'shown' : 'all'
     return (
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -138,11 +143,11 @@ export function SupportingChecksPanel({
           </h4>
           {isOpen && (
             <span className="flex gap-1.5">
-              <Button type="button" size="xs" variant="outline" disabled={!toggleOn} onClick={() => chooseForGroup(shownOffers, 'include')} aria-label={`Include all ${groupLabel}`}>
-                Include all
+              <Button type="button" size="xs" variant="outline" disabled={!toggleOn} onClick={() => chooseForGroup(shownOffers, 'include')} aria-label={`Include ${bulkScope} ${groupLabel}`}>
+                Include {bulkScope}
               </Button>
-              <Button type="button" size="xs" variant="outline" disabled={!toggleOn} onClick={() => chooseForGroup(shownOffers, 'exclude')} aria-label={`Exclude all ${groupLabel}`}>
-                Exclude all
+              <Button type="button" size="xs" variant="outline" disabled={!toggleOn} onClick={() => chooseForGroup(shownOffers, 'exclude')} aria-label={`Exclude ${bulkScope} ${groupLabel}`}>
+                Exclude {bulkScope}
               </Button>
             </span>
           )}
@@ -172,6 +177,12 @@ export function SupportingChecksPanel({
       {toggleOn && (
         <p className="mt-1 text-sm text-foreground" aria-live="polite">
           {loading ? 'Loading supporting checks…' : `Adding ${formatCount(includedRuleIds.size)} of ${formatCount(allOffers.length)} supporting checks`}
+        </p>
+      )}
+      {unavailableRuleIds.size > 0 && (
+        <p role="alert" className="mt-2 rounded-lg border border-warning-border bg-warning p-2 text-xs text-warning-foreground">
+          {pluralize(unavailableRuleIds.size, 'supporting check', 'supporting checks')} could not be loaded. Including{' '}
+          {unavailableRuleIds.size === 1 ? 'it' : 'any of them'} will stop the bundle from being prepared.
         </p>
       )}
       {offers.alreadySelectedSupporterIds.length > 0 && (

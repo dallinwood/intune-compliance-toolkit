@@ -152,6 +152,29 @@ test('the toggle adds direct supporting checks, leaves those through other rules
   expect(rulePathRequests).toEqual([])
 })
 
+test('with a filter active the bulk buttons say they act on the shown rows only', async ({ page }) => {
+  await seed(page, [{ ruleId: MEDIA_CONTROL }, { ruleId: HARDENING_CONTROL }])
+  await openGenerate(page, 2)
+  await reviewButton(page).click()
+  await expect(panel(page).getByRole('button', { name: 'Include all direct supporting checks' })).toHaveText('Include all')
+
+  await panel(page).getByRole('searchbox', { name: 'Filter supporting checks' }).fill('gatekeeper')
+  const includeShown = panel(page).getByRole('button', { name: 'Include shown direct supporting checks' })
+  await expect(includeShown).toHaveText('Include shown')
+  await expect(panel(page).getByRole('button', { name: 'Exclude shown direct supporting checks' })).toHaveText('Exclude shown')
+  await expect(panel(page).getByRole('button', { name: 'Include all direct supporting checks' })).toHaveCount(0)
+})
+
+test('an offered check that fails to load only warns while it is not included', async ({ page }) => {
+  await page.route(`**/rules/${upstreamId(CHAIN_SUPPORTER)}.json`, (route) => route.abort())
+  await seed(page, [{ ruleId: MEDIA_CONTROL }, { ruleId: HARDENING_CONTROL }])
+  await openGenerate(page, 2)
+  await mainToggle(page).click()
+  await expect(panel(page)).toContainText('1 supporting check could not be loaded', { timeout: 15_000 })
+  await expect(page.getByText('3 scripted rule')).toBeVisible()
+  await expect(download(page)).toBeEnabled()
+})
+
 test('an invalid stored value on an included supporting check blocks the download until it is excluded', async ({ page }) => {
   await seed(page, [{ ruleId: MEDIA_CONTROL }, { ruleId: VALUE_SUPPORTER, enabled: false, odvValue: "12'" }], {
     includeSupporting: true,

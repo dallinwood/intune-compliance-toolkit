@@ -12,7 +12,7 @@ import {
   type CustomChangeResult,
   type GenerateCheckInput,
 } from '../../logic/generateChecks'
-import { classifyReview, type PulledInOutcome } from '../../logic/generateReview'
+import { classifyReview, scriptedSupportingCheckIds, type PulledInOutcome } from '../../logic/generateReview'
 import type { HistoryIndex } from '../../logic/historyIndex'
 import { displayWithOdv } from '../../logic/odv'
 import type { OverlayApplication } from '../../logic/overlays'
@@ -154,6 +154,11 @@ export function GenerateReviewScreen({
     [offeredFetch],
   )
 
+  const unavailableSupportingRuleIds = useMemo(
+    () => new Set(offeredFetch.status === 'ready' ? offeredFetch.failedRuleIds.keys() : []),
+    [offeredFetch],
+  )
+
   const releaseCheckInput = useMemo<ReleaseCheckInput | null>(() => {
     if (selectedFetch.status !== 'ready') return null
     const fetchedRules = [...selectedFetch.rulesById.values()]
@@ -166,8 +171,13 @@ export function GenerateReviewScreen({
   }, [selectedFetch])
 
   const review = useMemo<ReviewState>(() => {
-    if (selectedFetch.status === 'error') return { status: 'error', message: selectedFetch.message }
-    if (offeredFetch.status === 'error') return { status: 'error', message: offeredFetch.message }
+    if (selectedFetch.status === 'ready' && selectedFetch.failedRuleIds.size > 0) {
+      return { status: 'error', message: [...selectedFetch.failedRuleIds.values()][0] }
+    }
+    if (offeredFetch.status === 'ready') {
+      const failedIncludedMessage = includedIds.map((ruleId) => offeredFetch.failedRuleIds.get(ruleId)).find((message) => message !== undefined)
+      if (failedIncludedMessage !== undefined) return { status: 'error', message: failedIncludedMessage }
+    }
     if (selectedFetch.status !== 'ready') return { status: 'loading' }
 
     const selected = enabledEntries.flatMap((entry) => {
@@ -183,12 +193,8 @@ export function GenerateReviewScreen({
         : []
     const classification = classifyReview({ selected, includedSupporting, selections, coveredVersions, vocabularyIndex })
 
-    const scriptedSupportingIds = new Set(
-      [...classification.pulledIn].filter(([, outcome]) => outcome.kind === 'generatable').map(([ruleId]) => ruleId),
-    )
-    const selectedAutomatedRuleIds = new Set(
-      enabledEntries.filter((entry) => rowsById.get(entry.ref.id)?.assessment.status === 'automated').map((entry) => entry.ref.id),
-    )
+    const scriptedSupportingIds = scriptedSupportingCheckIds(classification)
+    const selectedAutomatedRuleIds = classification.scriptedSelectedRuleIds
     const supportByControl = automatedSupportByControl(offers, scriptedSupportingIds, selectedAutomatedRuleIds, byRule)
 
     const includedEntries = allOffers
@@ -267,6 +273,7 @@ export function GenerateReviewScreen({
           includedRuleIds: new Set(includedIds),
           loading: supportingLoading,
           fetchedRules: fetchedOfferedRules,
+          unavailableRuleIds: unavailableSupportingRuleIds,
           selections,
           selectedManualControlCount,
         }}
@@ -328,6 +335,7 @@ interface SupportingChecksView {
   includedRuleIds: ReadonlySet<string>
   loading: boolean
   fetchedRules: ReadonlyMap<string, Rule>
+  unavailableRuleIds: ReadonlySet<string>
   selections: SelectionMap
   selectedManualControlCount: number
 }
@@ -385,6 +393,7 @@ function ReviewBody({
           loading={supportingChecks.loading}
           outcomes={pulledIn}
           fetchedRules={supportingChecks.fetchedRules}
+          unavailableRuleIds={supportingChecks.unavailableRuleIds}
           selections={supportingChecks.selections}
         />
       )}

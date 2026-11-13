@@ -29,6 +29,8 @@ export interface ReviewClassification {
   blocked: BlockedEntry[]
   // By rule id, for every included supporting check.
   pulledIn: Map<string, PulledInOutcome>
+  // The selected rules that are scripted for the covered versions.
+  scriptedSelectedRuleIds: Set<string>
 }
 
 export interface ReviewClassificationInput {
@@ -51,10 +53,14 @@ export function classifyReview(input: ReviewClassificationInput): ReviewClassifi
   const manual: ManualAttestationEntry[] = []
   const blocked: BlockedEntry[] = []
   const pulledIn = new Map<string, PulledInOutcome>()
+  const scriptedSelectedRuleIds = new Set<string>()
 
   for (const { entry, rule } of input.selected) {
     const result = classifyRule(rule, entry, coveredVersions, vocabularyIndex)
-    if (result.kind === 'generatable') generatable.push(result.rule)
+    if (result.kind === 'generatable') {
+      generatable.push(result.rule)
+      scriptedSelectedRuleIds.add(result.rule.id)
+    }
     else if (result.kind === 'manual') manual.push(result.entry)
     else blocked.push(result.entry)
   }
@@ -83,6 +89,15 @@ export function classifyReview(input: ReviewClassificationInput): ReviewClassifi
     manual: manual.sort(byId),
     blocked: blocked.sort(byId),
     pulledIn,
+    scriptedSelectedRuleIds,
   }
+}
+
+// The supporting checks the bundle really scripts: an included check can still be manual for the
+// covered versions, and then it supports nothing in the bundle.
+export function scriptedSupportingCheckIds(classification: ReviewClassification): Set<string> {
+  return new Set(
+    [...classification.pulledIn].filter(([, outcome]) => outcome.kind === 'generatable').map(([ruleId]) => ruleId),
+  )
 }
 
