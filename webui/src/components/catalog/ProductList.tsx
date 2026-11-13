@@ -6,6 +6,7 @@ import type { CatalogIndex, CatalogProduct } from '../../types/catalog'
 import { CatalogLink } from './CatalogLink'
 import { subgroupKey, useExpandedGroups, vendorGroupKey } from '../../hooks/useExpandedGroups'
 import { CollapsibleHeading } from './CollapsibleHeading'
+import { StatusMessage } from '@/components/ui/status-message'
 
 const INDENT_REM_PER_LEVEL = 1
 
@@ -74,7 +75,7 @@ function ProductRow({
 
 function SearchResults({ products, query, selectedProductId }: { products: CatalogProduct[]; query: string; selectedProductId: string | null }) {
   const results = useMemo(() => searchProducts(products, query), [products, query])
-  if (results.length === 0) return <p className="px-4 py-3 text-sm text-muted-foreground">No products match.</p>
+  if (results.length === 0) return <StatusMessage>No products match these filters.</StatusMessage>
   return (
     <ul>
       {results.map(({ product, path }) => {

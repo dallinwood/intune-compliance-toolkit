@@ -6,10 +6,7 @@ import { ProductList } from '../components/catalog/ProductList'
 import { useCatalogIndex } from '../hooks/useCatalogIndex'
 import { buildCatalogLookup } from '../logic/inclusionDisplay'
 import { useFilterStore } from '../state/filterStore'
-
-function Message({ children }: { children: string }) {
-  return <p className="p-4 text-sm text-muted-foreground">{children}</p>
-}
+import { StatusMessage } from '@/components/ui/status-message'
 
 export function ProductsView() {
   const loadedCatalog = useCatalogIndex()
@@ -21,7 +18,7 @@ export function ProductsView() {
   if (loadedCatalog === null) {
     return (
       <main className="flex-1 overflow-y-auto">
-        <Message>Loading the product and licence catalog…</Message>
+        <StatusMessage isLoading>Loading the product and licence catalog…</StatusMessage>
       </main>
     )
   }
@@ -29,7 +26,7 @@ export function ProductsView() {
     return (
       <main className="flex-1 overflow-y-auto">
         <WarningsNotice label="Catalog problems" summary="Some of the product and licence catalog could not be used:" warnings={loadedCatalog.warning === null ? [] : [loadedCatalog.warning]} />
-        <Message>The product and licence catalog could not be loaded.</Message>
+        <StatusMessage>The product and licence catalog could not be loaded.</StatusMessage>
       </main>
     )
   }
@@ -54,7 +51,7 @@ export function ProductsView() {
         {selectedProduct !== null ? (
           <ProductDetail key={selectedProduct.id} product={selectedProduct} catalog={catalog} lookup={lookup} />
         ) : (
-          <Message>Select a product to see which licences include it.</Message>
+          <StatusMessage>Select a product to see which licences include it.</StatusMessage>
         )}
       </main>
     </div>

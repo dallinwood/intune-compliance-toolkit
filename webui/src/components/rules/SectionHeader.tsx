@@ -1,4 +1,5 @@
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
+import { formatCount } from '../../lib/format'
 
 // Tailwind only sees literal class names, so each level's classes are spelled out.
 const SECTION_LEVEL_STYLES: Record<number, string> = {
@@ -38,7 +39,7 @@ export function SectionHeader({
       >
         <DisclosureChevron isOpen={isOpen} className="text-section-muted-foreground" />
         <span>
-          {label} <span className="font-normal text-section-muted-foreground">({count})</span>
+          {label} <span className="font-normal text-section-muted-foreground">({formatCount(count)})</span>
         </span>
       </button>
     </HeadingTag>

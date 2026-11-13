@@ -10,6 +10,7 @@ import { compareText } from './catalogIndex'
 import { supportChain, type MappingHop } from './indirectMappings'
 import type { MappedRule } from './mappingIndex'
 import { upstreamRuleId } from './ruleDisplay'
+import { formatCount } from '../lib/format'
 
 export type ControlStatus = 'covered' | 'covered-through-supporting' | 'related-only' | 'uncovered'
 export const ALL_CONTROLS_SCOPE = 'all'
@@ -266,25 +267,23 @@ export function selectedRulesSupportingNothing(input: CoverageInput, frameworkSo
     .sort(byUpstreamId)
 }
 
-const COUNT_FORMAT = new Intl.NumberFormat('en-US')
-
 // With nothing covered through supporting rules the headline reads as it always did.
 export function coverageHeadline(coverage: FrameworkCoverage, scopeLabel: string | null): string {
   const scopeSuffix = scopeLabel === null ? '' : ` at ${scopeLabel}`
-  if (coverage.coveredThroughSupporting === 0) return `Supports ${coverage.covered} of ${coverage.total} controls${scopeSuffix}`
+  if (coverage.coveredThroughSupporting === 0) return `Supports ${formatCount(coverage.covered)} of ${formatCount(coverage.total)} controls${scopeSuffix}`
   return (
-    `Supports ${COUNT_FORMAT.format(coverage.covered)} directly, ` +
-    `+${COUNT_FORMAT.format(coverage.coveredThroughSupporting)} through supporting rules, ` +
-    `of ${COUNT_FORMAT.format(coverage.total)}${scopeSuffix}`
+    `Supports ${formatCount(coverage.covered)} directly, ` +
+    `+${formatCount(coverage.coveredThroughSupporting)} through supporting rules, ` +
+    `of ${formatCount(coverage.total)}${scopeSuffix}`
   )
 }
 
 // The bar's words, shared by the card and each section row.
 export function coverageBarLabel(counts: { covered: number; coveredThroughSupporting: number; relatedOnly: number; total: number }): string {
   const { covered, coveredThroughSupporting, relatedOnly, total } = counts
-  if (coveredThroughSupporting === 0) return `${covered} of ${total} supported, ${relatedOnly} related only`
+  if (coveredThroughSupporting === 0) return `${formatCount(covered)} of ${formatCount(total)} supported, ${formatCount(relatedOnly)} related only`
   return (
-    `${COUNT_FORMAT.format(covered)} supported directly, ${COUNT_FORMAT.format(coveredThroughSupporting)} through supporting rules, ` +
-    `${COUNT_FORMAT.format(relatedOnly)} related only, of ${COUNT_FORMAT.format(total)}`
+    `${formatCount(covered)} supported directly, ${formatCount(coveredThroughSupporting)} through supporting rules, ` +
+    `${formatCount(relatedOnly)} related only, of ${formatCount(total)}`
   )
 }

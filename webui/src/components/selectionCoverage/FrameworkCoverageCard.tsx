@@ -21,8 +21,8 @@ import { MappingProvenance } from '../mappings/MappingProvenance'
 import { CoverageBar } from './CoverageBar'
 import { NativeSelect } from '@/components/ui/native-select'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
+import { formatCount } from '../../lib/format'
 
-const TOGGLE_CLASS = 'rounded-sm text-xs text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const ROW_BUTTON_CLASS = 'rounded-sm text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
 const OLDER_RELEASE_NOTE = 'Mapped against an older release that has since changed'
 
@@ -141,7 +141,7 @@ function SectionRow({ section }: { section: SectionCoverage }) {
         <DisclosureChevron isOpen={isOpen} className="self-center" />
         <span className="min-w-0 basis-full break-words sm:basis-0 sm:flex-1">{section.section}</span>
         <span className="shrink-0 text-xs text-muted-foreground">
-          {section.coveredThroughSupporting > 0 ? `${section.covered} + ${section.coveredThroughSupporting}` : section.covered} of {section.total}
+          {section.coveredThroughSupporting > 0 ? `${formatCount(section.covered)} + ${formatCount(section.coveredThroughSupporting)}` : formatCount(section.covered)} of {formatCount(section.total)}
         </span>
         <CoverageBar
           covered={section.covered}
@@ -160,14 +160,9 @@ function SectionRow({ section }: { section: SectionCoverage }) {
             ))}
           </ul>
           {uncoveredControls.length > 0 && (
-            <button
-              type="button"
-              aria-expanded={showUncovered}
-              onClick={() => setShowUncovered(!showUncovered)}
-              className={`${TOGGLE_CLASS} mt-2`}
-            >
-              {showUncovered ? 'Hide uncovered' : `Show ${uncoveredControls.length} uncovered`}
-            </button>
+            <Button type="button" variant="link" size="xs" aria-expanded={showUncovered} onClick={() => setShowUncovered(!showUncovered)} className="mt-2">
+              {showUncovered ? 'Hide uncovered' : `Show ${formatCount(uncoveredControls.length)} uncovered`}
+            </Button>
           )}
           {showUncovered && (
             <ul className="divide-y divide-border">
@@ -211,8 +206,8 @@ export function FrameworkCoverageCard({
       <h2 className="text-base font-semibold">{label}</h2>
       <p className="text-sm">
         {coverageHeadline(coverage, scopeLabel)}
-        {coverage.relatedOnly > 0 && <span className="text-muted-foreground"> + {coverage.relatedOnly} related only</span>}
-        {coverage.selectedDirectly > 0 && <span className="text-muted-foreground"> · {coverage.selectedDirectly} selected directly</span>}
+        {coverage.relatedOnly > 0 && <span className="text-muted-foreground"> + {formatCount(coverage.relatedOnly)} related only</span>}
+        {coverage.selectedDirectly > 0 && <span className="text-muted-foreground"> · {formatCount(coverage.selectedDirectly)} selected directly</span>}
       </p>
       <CoverageBar
         covered={coverage.covered}
@@ -223,7 +218,7 @@ export function FrameworkCoverageCard({
       />
       {!includeSupporting && notAddedCount > 0 && (
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span>+{notAddedCount} more through supporting checks you have not added.</span>
+          <span>+{formatCount(notAddedCount)} more through supporting checks you have not added.</span>
           <Button type="button" size="xs" variant="outline" aria-label="Add supporting checks to the bundle" onClick={onAddSupportingChecks}>
             Add supporting checks
           </Button>

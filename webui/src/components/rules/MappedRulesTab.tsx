@@ -20,6 +20,7 @@ import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 import { IndirectPathBlockSection } from './IndirectMappedRules'
 import { MappedSourceGroupSection, type GroupHeadingLevel } from './MappedRuleGroup'
+import { StatusMessage } from '@/components/ui/status-message'
 
 const ASSESSMENT_OPTIONS: { value: AssessmentChoice; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -77,7 +78,7 @@ export function MappedRulesTab({ ruleId, view }: { ruleId: string; view: MappedR
       </div>
 
       {visibleGroups.length === 0 && visibleBlocks.length === 0 ? (
-        <p className="text-muted-foreground">No mapped rules match these filters.</p>
+        <StatusMessage className="p-0">No mapped rules match these filters.</StatusMessage>
       ) : (
         <>
           {blocks.length === 0 ? (

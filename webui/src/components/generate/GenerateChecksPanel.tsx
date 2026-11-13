@@ -1,13 +1,24 @@
 import { useId, useState } from 'react'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { severityCounts, type CheckSeverity, type GenerateCheck } from '../../logic/generateChecks'
+import type { ComponentProps } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { pluralize } from '../../lib/format'
 
 const SEVERITY_TAG_LABELS: Record<CheckSeverity, string> = { error: 'Error', warning: 'Warning', info: 'Note' }
 
+// Error is an outlined destructive chip: destructive text on its own tint is below 4.5:1 in light mode.
+const SEVERITY_TAG_VARIANTS: Record<CheckSeverity, ComponentProps<typeof Badge>['variant']> = {
+  error: 'outline',
+  warning: 'outline',
+  info: 'secondary',
+}
+
 const SEVERITY_TAG_CLASSES: Record<CheckSeverity, string> = {
-  error: 'border-warning-border bg-warning text-warning-foreground',
+  error: 'border-destructive text-destructive',
   warning: 'border-warning-border bg-warning text-warning-foreground',
-  info: 'border-border bg-muted text-muted-foreground',
+  info: '',
 }
 
 const COUNT_NOUNS: Record<CheckSeverity, { singular: string; plural: string }> = {
@@ -22,7 +33,7 @@ function countSummary(checks: readonly GenerateCheck[]): string {
     .filter((severity) => counts[severity] > 0)
     .map((severity) => {
       const nouns = COUNT_NOUNS[severity]
-      return `${counts[severity]} ${counts[severity] === 1 ? nouns.singular : nouns.plural}`
+      return pluralize(counts[severity], nouns.singular, nouns.plural)
     })
     .join(', ')
 }
@@ -33,24 +44,26 @@ function CheckRow({ check }: { check: GenerateCheck }) {
   const occurrenceCount = check.occurrences.length
 
   return (
-    <li data-check-id={check.id} className="rounded border border-border bg-panel p-3">
+    <li data-check-id={check.id} className="rounded-lg border border-border bg-panel p-4">
       <div className="flex items-start gap-2">
-        <span className={`shrink-0 rounded border px-1.5 py-0.5 text-xs font-medium ${SEVERITY_TAG_CLASSES[check.severity]}`}>
+        <Badge variant={SEVERITY_TAG_VARIANTS[check.severity]} className={SEVERITY_TAG_CLASSES[check.severity]}>
           {SEVERITY_TAG_LABELS[check.severity]}
-        </span>
+        </Badge>
         <p className="min-w-0 break-words text-foreground">{check.message}</p>
       </div>
       {occurrenceCount > 0 && (
         <>
-          <button
+          <Button
             type="button"
+            variant="link"
+            size="xs"
             aria-expanded={open}
             aria-controls={listId}
             onClick={() => setOpen((wasOpen) => !wasOpen)}
-            className="mt-2 text-xs text-link underline"
+            className="mt-2 -ml-2.5"
           >
-            {open ? 'Hide' : 'Show'} {occurrenceCount} {occurrenceCount === 1 ? 'rule' : 'rules'}
-          </button>
+            {open ? 'Hide' : 'Show'} {pluralize(occurrenceCount, 'rule', 'rules')}
+          </Button>
           {open && (
             <ul id={listId} className="mt-2 space-y-2 border-l border-border pl-3">
               {check.occurrences.map((occurrence, occurrenceIndex) => (

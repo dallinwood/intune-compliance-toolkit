@@ -95,8 +95,18 @@ const download = (page: Page) => page.getByRole('button', { name: 'Download bund
 test('the panel is hidden when no selected control has an automated supporter', async ({ page }) => {
   await seed(page, [{ ruleId: DIRECT_SUPPORTER }])
   await openGenerate(page, 1)
-  await expect(page.getByText('1 scripted rule(s)')).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByText('1 scripted rule')).toBeVisible({ timeout: 15_000 })
   await expect(panel(page)).toHaveCount(0)
+})
+
+test('a supporting check row stays a compact list row rather than a card', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await seed(page, [{ ruleId: MEDIA_CONTROL }, { ruleId: HARDENING_CONTROL }])
+  await openGenerate(page, 2)
+  await reviewButton(page).click()
+  const box = await rowOf(page, DIRECT_SUPPORTER).boundingBox()
+  expect(box).not.toBeNull()
+  expect(box!.height).toBeLessThan(70)
 })
 
 test('the toggle adds direct supporting checks, leaves those through other rules out, and an excluded row leaves the count', async ({ page }) => {
@@ -104,12 +114,12 @@ test('the toggle adds direct supporting checks, leaves those through other rules
   await openGenerate(page, 2)
 
   await expect(panel(page)).toContainText('4 checks available for 2 of 2 selected controls; 1 need an organization value.')
-  await expect(page.getByText('0 scripted rule(s)')).toBeVisible()
+  await expect(page.getByText('0 scripted rule')).toBeVisible()
   await expect(mainToggle(page)).not.toBeChecked()
 
   await mainToggle(page).click()
   await expect(panel(page)).toContainText('Adding 3 of 4 supporting checks', { timeout: 15_000 })
-  await expect(page.getByText('3 scripted rule(s)')).toBeVisible()
+  await expect(page.getByText('3 scripted rule')).toBeVisible()
 
   await reviewButton(page).click()
   await expect(reviewButton(page)).toHaveAttribute('aria-expanded', 'true')
@@ -133,7 +143,7 @@ test('the toggle adds direct supporting checks, leaves those through other rules
   })
   await rowOf(page, DIRECT_SUPPORTER).getByRole('checkbox').click()
   await expect(panel(page)).toContainText('Adding 2 of 4 supporting checks')
-  await expect(page.getByText('2 scripted rule(s)')).toBeVisible()
+  await expect(page.getByText('2 scripted rule')).toBeVisible()
   await chainRow.getByRole('checkbox').click()
   await expect(panel(page)).toContainText('Adding 3 of 4 supporting checks')
   await mainToggle(page).click()
@@ -270,7 +280,7 @@ test('a recommended pick clears a blocking stored value and the scripted count f
   await row.getByRole('button', { name: /^Recommended/ }).click()
   await expect(row).toContainText('Value: 6 (set by you)')
   await expect(download(page)).toBeEnabled()
-  await expect(page.getByText('1 scripted rule(s)')).toBeVisible()
+  await expect(page.getByText('1 scripted rule')).toBeVisible()
 })
 
 test('Details opens the rule in a dialog, a value set there shows on the row, and focus returns to Details', async ({ page }) => {

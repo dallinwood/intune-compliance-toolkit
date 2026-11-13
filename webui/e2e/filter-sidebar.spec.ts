@@ -5,7 +5,7 @@ test.use({ viewport: { width: 1280, height: 800 } })
 
 test('the filter list fits the sidebar on the full library, so only the table scrolls', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByText(/^\d+ of \d+ rules$/)).toBeVisible({ timeout: 10_000 })
+  await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   const dimensions = await page.getByTestId('sidebar-scroll-area').evaluate((element) => ({
     scrollHeight: element.scrollHeight,
     clientHeight: element.clientHeight,
@@ -26,7 +26,7 @@ test('a group restored from the URL with a selection starts open, and shows its 
 
 test('Version, Benchmark, Section and Tags start closed and Automation, Target and Source start open', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByText(/^\d+ of \d+ rules$/)).toBeVisible({ timeout: 10_000 })
+  await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   for (const title of ['Automation', 'Target', 'Source']) {
     await expect(page.getByRole('heading', { name: title, exact: true }).getByRole('button')).toHaveAttribute('aria-expanded', 'true')
   }

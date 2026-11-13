@@ -21,6 +21,9 @@ import { SectionHeader } from '../rules/SectionHeader'
 import { SectionToolbar } from '../rules/SectionToolbar'
 import { ComparisonSidebar } from './ComparisonSidebar'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
+import { StatusMessage } from '@/components/ui/status-message'
+import { BackLink } from '@/components/ui/back-link'
+import { formatCount } from '../../lib/format'
 
 type Group = CompareGroup
 
@@ -50,7 +53,7 @@ function SummaryTile({ group, label, value, isSelected, onSelect }: { group: Gro
         'hover:bg-muted aria-pressed:border-foreground/60 aria-pressed:bg-muted',
       )}
     >
-      <span className="block text-2xl font-semibold tabular-nums">{value}</span>
+      <span className="block text-2xl font-semibold tabular-nums">{formatCount(value)}</span>
       <span className="block text-xs text-muted-foreground">{label}</span>
     </button>
   )
@@ -192,7 +195,7 @@ function GroupSection({
           {entries.length > visibleCount && (
             <div className="px-4 py-2">
               <button type="button" onClick={onShowMore} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-                Show {Math.min(ROWS_PER_STEP, entries.length - visibleCount)} more ({entries.length - visibleCount} left)
+                Show {formatCount(Math.min(ROWS_PER_STEP, entries.length - visibleCount))} more ({formatCount(entries.length - visibleCount)} left)
               </button>
             </div>
           )}
@@ -200,10 +203,6 @@ function GroupSection({
       )}
     </section>
   )
-}
-
-function Message({ children }: { children: string }) {
-  return <p className="p-4 text-sm text-muted-foreground">{children}</p>
 }
 
 export function ReleaseComparisonView({
@@ -268,8 +267,8 @@ export function ReleaseComparisonView({
   const filtered = useMemo(() => (comparison === null ? null : filterComparison(comparison, filters)), [comparison, filters])
   const counts = useMemo(() => (comparison === null ? null : comparisonFacetCounts(comparison, filters)), [comparison, filters])
 
-  if (state.status === 'loading') return <main className="flex-1 overflow-y-auto"><Message>Loading the release history…</Message></main>
-  if (state.status === 'error') return <main className="flex-1 overflow-y-auto"><Message>{`The release history could not be loaded: ${state.message}`}</Message></main>
+  if (state.status === 'loading') return <main className="flex-1 overflow-y-auto"><StatusMessage isLoading>Loading the release history…</StatusMessage></main>
+  if (state.status === 'error') return <main className="flex-1 overflow-y-auto"><StatusMessage>{`The release history could not be loaded: ${state.message}`}</StatusMessage></main>
   if (history === null || range === null || comparison === null || filtered === null || counts === null) return null
 
   const fromLabel = releaseLabel(history.releases, range.fromTag)
@@ -307,9 +306,7 @@ export function ReleaseComparisonView({
       <main className="min-w-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
         <div className="space-y-3 p-4">
           <div>
-            <button type="button" onClick={closeComparison} className="text-sm text-link underline">
-              All frameworks
-            </button>
+            <BackLink onClick={closeComparison}>All frameworks</BackLink>
             <h2 className="text-lg font-semibold">
               {source.display_name}: {fromLabel} to {toLabel}
             </h2>
@@ -362,7 +359,7 @@ export function ReleaseComparisonView({
             />
           ))
         ) : (
-          <Message>No rules match these filters.</Message>
+          <StatusMessage>No rules match these filters.</StatusMessage>
         )}
       </main>
     </div>

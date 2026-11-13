@@ -4,7 +4,7 @@ import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { openFacetGroup } from './facets'
 
-const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
+const ruleCount = (page: Page) => page.getByText(/^[\d,]+ of [\d,]+ rules$/)
 
 const EMPTY_MAPPING_INDEX = { schema_version: 1, by_rule: {} }
 const EMPTY_CATALOG_INDEX = { schema_version: 1, vendors: [], products: [], licences: [], by_product: {} }
@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_CATALOG_INDEX) }),
   )
   await page.goto('/')
-  await expect(ruleCount(page)).toHaveText('2567 of 2567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 })
 
 async function tickFacetOption(page: Page, name: string, groupTitle: string) {
@@ -39,17 +39,17 @@ async function searchForControlRow(page: Page, controlId: string) {
 
 test('ticking the NIST SP 800-53 source keeps its 1014 rules', async ({ page }) => {
   await tickFacetOption(page, 'NIST SP 800-53', 'Source')
-  await expect(ruleCount(page)).toHaveText('1014 of 2567 rules')
+  await expect(ruleCount(page)).toHaveText('1,014 of 2,567 rules')
 })
 
 test('ticking the 800-53 Moderate benchmark keeps its 287 rules', async ({ page }) => {
   await tickFacetOption(page, '800-53 Moderate', 'Benchmark')
-  await expect(ruleCount(page)).toHaveText('287 of 2567 rules')
+  await expect(ruleCount(page)).toHaveText('287 of 2,567 rules')
 })
 
 test('searching an enhancement id finds exactly that enhancement, titled with its parent control', async ({ page }) => {
   await page.getByPlaceholder('Search title or id…').fill('ac-20.1')
-  await expect(ruleCount(page)).toHaveText('1 of 2567 rules')
+  await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
   const row = page.locator('table tbody tr')
   await expect(row).toHaveCount(1)
   await expect(row).toContainText('Use of External Systems | Limits on Authorized Use')
@@ -87,7 +87,7 @@ test('the Sources & licences dialog lists NIST SP 800-53 Rev. 5 under CC0 1.0', 
 test('the Frameworks card shows the release tag once beside the 800-53 version', async ({ page }) => {
   await page.goto('/frameworks')
   const card = page.getByTestId('framework-card').filter({ hasText: 'NIST SP 800-53 Rev. 5' })
-  await expect(card).toContainText('Current: 5.2.0 (v1.6.0) · 1014 rules')
+  await expect(card).toContainText('Current: 5.2.0 (v1.6.0) · 1,014 rules')
 })
 
 // These tests serve the committed baselines/_mappings/rules/ folder through the
@@ -121,7 +121,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(committedMappingIndex) }),
     )
     await page.goto(`/?q=${search}&rule=${ruleId}`)
-    await expect(ruleCount(page)).toHaveText(/^\d+ of 2567 rules$/, { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
   }

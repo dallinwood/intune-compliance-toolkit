@@ -14,6 +14,7 @@ import { useSelectionStore } from '../../state/selectionStore'
 import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import type { ManifestSource, Rule } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
+import { pluralize } from '../../lib/format'
 
 interface ImportMessage {
   summary: string
@@ -25,7 +26,7 @@ function describeImport(result: ImportSanitization, fileWarnings: readonly strin
   const importedCount = Object.keys(result.selections).length
   const details: string[] = [...fileWarnings]
   if (result.unknownIds.length > 0) {
-    details.push(`Skipped ${result.unknownIds.length} rule(s) not in this library: ${result.unknownIds.join(', ')}.`)
+    details.push(`Skipped ${pluralize(result.unknownIds.length, 'rule', 'rules')} not in this library: ${result.unknownIds.join(', ')}.`)
   }
   if (result.duplicateIds.length > 0) {
     details.push(`Listed more than once, so the last entry was used: ${result.duplicateIds.join(', ')}.`)
@@ -33,7 +34,7 @@ function describeImport(result: ImportSanitization, fileWarnings: readonly strin
   for (const dropped of result.droppedValues) {
     details.push(`Value for ${dropped.id} not imported: ${dropped.reason}`)
   }
-  return { summary: `Imported ${importedCount} rule selection(s).`, details, isError: false }
+  return { summary: `Imported ${pluralize(importedCount, 'rule selection', 'rule selections')}.`, details, isError: false }
 }
 
 async function fetchRulesById(ids: string[], rowsById: ReadonlyMap<string, RuleRow>): Promise<Map<string, Rule>> {

@@ -394,9 +394,9 @@ describe('coverageHeadline and coverageBarLabel', () => {
 
   it('reads as it always did when nothing is through supporting rules', () => {
     const coverage = { ...base, covered: 61, coveredThroughSupporting: 0, potentialThroughSupporting: 0, total: 1143 }
-    expect(coverageHeadline(coverage, null)).toBe('Supports 61 of 1143 controls')
-    expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 of 1143 controls at ISM PROTECTED')
-    expect(coverageBarLabel(coverage)).toBe('61 of 1143 supported, 4 related only')
+    expect(coverageHeadline(coverage, null)).toBe('Supports 61 of 1,143 controls')
+    expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 of 1,143 controls at ISM PROTECTED')
+    expect(coverageBarLabel(coverage)).toBe('61 of 1,143 supported, 4 related only')
   })
 
   it('names directly and through supporting rules, with the scope', () => {

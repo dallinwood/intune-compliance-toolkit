@@ -3,6 +3,7 @@ import type { Chunk } from '../../logic/chunking'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
+import { pluralize } from '../../lib/format'
 
 export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
   const index = useVocabularyIndex()
@@ -21,7 +22,7 @@ export function BundleGroupCard({ chunk }: { chunk: Chunk }) {
           </span>
         </h3>
         <span className="text-xs text-muted-foreground">
-          {chunk.rules.length} rule(s), {(rulesJsonBytes / 1024).toFixed(1)} KB of rules JSON
+          {pluralize(chunk.rules.length, 'rule', 'rules')}, {(rulesJsonBytes / 1024).toFixed(1)} KB of rules JSON
         </span>
       </div>
       <ul className="mt-1 font-mono text-xs break-all text-muted-foreground" aria-label="Files">

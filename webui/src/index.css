@@ -38,6 +38,9 @@ input[type='search']::-webkit-search-cancel-button {
   --color-warning-border: var(--warning-border);
   --color-status-automated: var(--status-automated);
   --color-status-manual: var(--status-manual);
+  --color-meter-track: var(--meter-track);
+  --color-meter-fill: var(--meter-fill);
+  --color-meter-fill-secondary: var(--meter-fill-secondary);
   --color-custom: var(--custom);
   --color-custom-foreground: var(--custom-foreground);
   --color-kind-behaviour: var(--kind-behaviour);
@@ -151,6 +154,13 @@ input[type='search']::-webkit-search-cancel-button {
      theme to reach 3:1 on the row backgrounds. */
   --status-automated: oklch(0.500 0.115 165.5);
   --status-manual: oklch(0.640 0.135 76.8);
+  /* Coverage meters. The track's edge is --control-border (3.8:1 on --panel);
+     the fill is --link (4.65:1 on the track) and the through-supporting
+     stripes are 3.1:1 on the track, drawn as stripes so the two blues never
+     rely on colour alone. */
+  --meter-track: oklch(0.93 0.004 286);
+  --meter-fill: oklch(0.5 0.105 223);
+  --meter-fill-secondary: oklch(0.6 0.1 223);
   --custom: oklch(0.943 0.029 294.588);
   --custom-foreground: oklch(0.432 0.232 292.759);
   /* Release history: one tag colour per kind of change and the two diff
@@ -224,6 +234,10 @@ input[type='search']::-webkit-search-cancel-button {
   --warning-border: oklch(0.473 0.137 46.201);
   --status-automated: oklch(0.620 0.130 165.5);
   --status-manual: oklch(0.753 0.158 76.8);
+  /* Coverage meters: edge 3.8:1 on --panel, fill 7.0:1 and stripes 3.5:1 on the track. */
+  --meter-track: oklch(0.3 0.006 286);
+  --meter-fill: oklch(0.78 0.11 220);
+  --meter-fill-secondary: oklch(0.6 0.09 223);
   --custom: oklch(0.283 0.141 291.089);
   --custom-foreground: oklch(0.811 0.111 293.571);
   --kind-behaviour: oklch(0.3 0.06 255);

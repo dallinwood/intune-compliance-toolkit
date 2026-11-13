@@ -103,13 +103,13 @@ async function openMediaControl(page: Page) {
 
 test('coverage shows supports N of M for ISM', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Coverage of your selection (3 rules)' })).toBeVisible()
-  await expect(ismCard(page)).toContainText(`Supports 2 of ${ismControlCount} controls`)
-  await expect(ismCard(page).getByRole('img', { name: `2 of ${ismControlCount} supported, 1 related only` })).toBeVisible()
+  await expect(ismCard(page)).toContainText(`Supports 2 of ${ismControlCount.toLocaleString('en-US')} controls`)
+  await expect(ismCard(page).getByRole('img', { name: `2 of ${ismControlCount.toLocaleString('en-US')} supported, 1 related only` })).toBeVisible()
 })
 
 test('scope narrows the denominator', async ({ page }) => {
   await ismCard(page).getByLabel('Scope').selectOption({ label: 'ISM PROTECTED' })
-  await expect(ismCard(page).getByText(new RegExp(`Supports \\d+ of ${ismProtectedControlCount} controls at ISM PROTECTED`))).toBeVisible()
+  await expect(ismCard(page).getByText(new RegExp(`Supports \\d+ of ${ismProtectedControlCount.toLocaleString('en-US')} controls at ISM PROTECTED`))).toBeVisible()
 })
 
 test('a section expands to controls and a control to its provenance', async ({ page }) => {
@@ -151,7 +151,7 @@ test('related links show as related only and are not counted', async ({ page }) 
 })
 
 test('lists selected rules that support no control', async ({ page }) => {
-  await expect(page.getByText('1 selected rules support no control')).toBeVisible()
+  await expect(page.getByText('1 selected rule supports no control')).toBeVisible()
   await page.getByRole('button', { name: 'Show the list' }).click()
   const list = page.getByRole('list', { name: 'Selected rules that support no control' })
   await expect(list).toContainText(SELECTED_WITHOUT_LINKS.slice('mscp.'.length))
@@ -163,7 +163,7 @@ test('automated checks only drops a manual supporter', async ({ page }) => {
   await page.getByRole('checkbox', { name: 'Automated checks only' }).click()
   await expect(page.getByText(MANUAL_NOTE)).toHaveCount(0)
   await expect(page.getByText(AUTOMATED_NOTE)).toBeVisible()
-  await expect(ismCard(page)).toContainText(`Supports 2 of ${ismControlCount} controls`)
+  await expect(ismCard(page)).toContainText(`Supports 2 of ${ismControlCount.toLocaleString('en-US')} controls`)
   await expect(ismCard(page)).not.toContainText('related only')
 })
 

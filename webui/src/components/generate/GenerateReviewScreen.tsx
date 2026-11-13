@@ -41,6 +41,9 @@ import { BundleGroupCard } from './BundleGroupCard'
 import { GenerateChecksPanel } from './GenerateChecksPanel'
 import { ManualAttestationReport } from './ManualAttestationReport'
 import { SupportingChecksPanel } from './SupportingChecksPanel'
+import { pluralize } from '../../lib/format'
+import { StatusMessage } from '@/components/ui/status-message'
+import { BackLink } from '@/components/ui/back-link'
 
 interface ReadyReview {
   status: 'ready'
@@ -249,9 +252,7 @@ export function GenerateReviewScreen({
     <div className="flex-1 overflow-y-auto p-4 text-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-lg font-semibold text-foreground">Review &amp; generate</h2>
-        <button type="button" onClick={onBack} className="text-xs text-muted-foreground underline hover:text-foreground">
-          Back to browse
-        </button>
+        <BackLink onClick={onBack}>Back to rules</BackLink>
       </div>
       <ReviewBody
         enabledCount={enabledEntries.length}
@@ -357,7 +358,7 @@ function ReviewBody({
       </p>
     )
   }
-  if (state.status === 'loading') return <p className="text-muted-foreground">Loading selected rules…</p>
+  if (state.status === 'loading') return <StatusMessage isLoading className="p-0">Loading selected rules…</StatusMessage>
   if (state.status === 'error') return <p className="text-destructive">Could not prepare the bundle: {state.message}</p>
 
   const { scriptedCount, chunks, manual, skippedCustomChanges, blocked, pulledIn, supportingChecksMarkdown } = state
@@ -388,9 +389,9 @@ function ReviewBody({
       )}
 
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-foreground/80">
-        <span>{hasBlockingCheck(checks) ? 'Bundles are packed once nothing is blocked' : `${chunks.length} bundle(s)`}</span>
-        <span>{scriptedCount} scripted rule(s)</span>
-        <span>{manual.length} rule(s) need manual attestation</span>
+        <span>{hasBlockingCheck(checks) ? 'Bundles are packed once nothing is blocked' : pluralize(chunks.length, 'bundle', 'bundles')}</span>
+        <span>{pluralize(scriptedCount, 'scripted rule', 'scripted rules')}</span>
+        <span>{pluralize(manual.length, 'rule needs', 'rules need')} manual attestation</span>
         <Button
           type="button"
           size="sm"

@@ -29,6 +29,7 @@ import { compareGroupKeys, groupLabel, type VocabularyIndex, type VocabularyName
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
+import { formatCount } from '../../lib/format'
 
 const AUTOMATABLE_OPTIONS = [
   { value: 'all', label: 'All rules' },
@@ -345,7 +346,7 @@ function FacetOption({
           {label}
         </Label>{' '}
         <span aria-hidden="true" className="text-sm font-normal text-muted-foreground">
-          ({count})
+          ({formatCount(count)})
         </span>
       </div>
     </div>

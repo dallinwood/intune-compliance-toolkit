@@ -10,8 +10,8 @@ import { useRuleMappings } from '../state/mappingsContext'
 import { useSupportingChecksStore } from '../state/supportingChecksStore'
 import { useVocabularyIndex } from '../state/vocabularyContext'
 import type { ViewContext } from './viewContext'
-
-const TOGGLE_CLASS = 'rounded-sm text-sm text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
+import { Button } from '@/components/ui/button'
+import { pluralize } from '../lib/format'
 
 export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'rows' | 'enabledSelections'>) {
   const { byRule, rowsById } = useRuleMappings()
@@ -55,7 +55,7 @@ export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'row
     <main className="flex-1 overflow-y-auto p-4">
       <div className="mx-auto max-w-5xl space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-          <h1 className="text-lg font-semibold">Coverage of your selection ({enabledSelections.length} rules)</h1>
+          <h1 className="text-lg font-semibold">Coverage of your selection ({pluralize(enabledSelections.length, 'rule', 'rules')})</h1>
           <Label className="gap-2 text-sm font-normal">
             <Checkbox checked={automatedOnly} onCheckedChange={setAutomatedOnly} />
             Automated checks only
@@ -86,17 +86,19 @@ export function CoverageView({ rows, enabledSelections }: Pick<ViewContext, 'row
               </p>
             ))}
             <div className="space-y-2 border-t border-border pt-3">
-              <p className="text-sm">{unsupportedRules.length} selected rules support no control</p>
+              <p className="text-sm">{pluralize(unsupportedRules.length, 'selected rule', 'selected rules')} {unsupportedRules.length === 1 ? 'supports' : 'support'} no control</p>
               <p className="text-xs text-muted-foreground">Counts every selected rule, whether or not Automated checks only is on.</p>
               {unsupportedRules.length > 0 && (
-                <button
+                <Button
                   type="button"
+                  variant="link"
+                  size="sm"
                   aria-expanded={showUnsupportedRules}
                   onClick={() => setShowUnsupportedRules(!showUnsupportedRules)}
-                  className={TOGGLE_CLASS}
+                  className="-ml-3"
                 >
                   {showUnsupportedRules ? 'Hide the list' : 'Show the list'}
-                </button>
+                </Button>
               )}
               {showUnsupportedRules && (
                 <ul aria-label="Selected rules that support no control" className="space-y-1">

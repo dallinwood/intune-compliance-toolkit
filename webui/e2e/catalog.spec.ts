@@ -210,7 +210,7 @@ test('a Rules-only visit never requests the catalog index', async ({ page }) => 
     if (request.url().includes('catalog/_index.json')) catalogRequests.push(request.url())
   })
   await page.goto('/')
-  await expect(page.getByText(/^\d+ of \d+ rules$/)).toBeVisible({ timeout: 10_000 })
+  await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   await page.waitForTimeout(500)
 
   expect(catalogRequests).toEqual([])
@@ -220,14 +220,14 @@ test('a missing catalog index warns only inside the Licences tab and leaves the 
   await page.route('**/catalog/_index.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
   await page.goto('/')
 
-  await expect(page.getByText(/^\d+ of \d+ rules$/)).toBeVisible({ timeout: 10_000 })
+  await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Catalog problems' })).toHaveCount(0)
 
   await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Licences' }).click()
   await expect(page.getByRole('status', { name: 'Catalog problems' })).toBeVisible()
   await expect(page.getByText('The product and licence catalog could not be loaded.', { exact: true })).toBeVisible()
-  await expect(page.getByText(/^\d+ of \d+ rules$/)).toHaveCount(0)
+  await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toHaveCount(0)
 
   await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' }).click()
   await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toBeVisible()

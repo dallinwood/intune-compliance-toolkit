@@ -2,6 +2,7 @@ import { cn, isPlainLeftClick } from '@/lib/utils'
 import { EMPTY_RELEASE_LABEL, comparisonLocation, previousReleaseTag } from '../../logic/releaseRange'
 import { useFilterStore } from '../../state/filterStore'
 import type { ManifestSource } from '../../types/library'
+import { pluralize } from '../../lib/format'
 
 function accessibleName(label: string, isCurrent: boolean, isFirst: boolean): string {
   if (isFirst) return `${label}: see everything in it, compared with an ${EMPTY_RELEASE_LABEL.toLowerCase()}`
@@ -21,7 +22,7 @@ export function FrameworkCards({ sources }: { sources: ManifestSource[] }) {
           <li key={source.name} data-testid="framework-card" className="space-y-3 rounded-lg border border-border bg-panel p-4">
             <h2 className="text-base font-semibold">{source.display_name}</h2>
             <p className="text-sm text-muted-foreground">
-              Current: {current.label} ({current.tag}) · {source.rule_count} rules
+              Current: {current.label} ({current.tag}) · {pluralize(source.rule_count, 'rule', 'rules')}
             </p>
             <p className="text-sm text-muted-foreground">Choose a release to see what changed in it.</p>
             <ul aria-label="Releases" className="flex flex-wrap gap-2">

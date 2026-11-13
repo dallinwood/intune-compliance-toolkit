@@ -13,6 +13,7 @@ import { useFilterStore } from '../../state/filterStore'
 import type { CompareOnly } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { ManifestSource } from '../../types/library'
+import { formatCount } from '../../lib/format'
 function Option({ label, count, checked, disabled, onChange }: { label: string; count?: number; checked: boolean; disabled?: boolean; onChange: () => void }) {
   const id = useId()
   return (
@@ -26,7 +27,7 @@ function Option({ label, count, checked, disabled, onChange }: { label: string; 
           <>
             {' '}
             <span aria-hidden="true" className="text-sm font-normal text-muted-foreground">
-              ({count})
+              ({formatCount(count)})
             </span>
           </>
         )}

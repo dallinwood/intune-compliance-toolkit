@@ -20,6 +20,7 @@ import { AttributionFooter } from './AttributionFooter'
 import { CommandPalette } from './CommandPalette'
 import { ViewTabs } from './ViewTabs'
 import { WarningsNotice } from './WarningsNotice'
+import { formatCount, pluralize } from '../../lib/format'
 
 function SkipToRulesLink() {
   function focusRuleTable(event: MouseEvent<HTMLAnchorElement>) {
@@ -104,7 +105,7 @@ export function AppShell({
         <TooltipProvider>
           <div className="flex h-screen flex-col">
             {isRulesView && !isReviewingSelection && <SkipToRulesLink />}
-          <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
+            <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
               <div className="flex items-center gap-2">
                 {hasFilterSidebar && (
                   <button
@@ -122,7 +123,7 @@ export function AppShell({
               {isRulesView && (
                 <div className="flex flex-wrap items-center gap-4">
                   <span className="text-sm text-muted-foreground">
-                    {filteredRows.length} of {rows.length} rules
+                    {formatCount(filteredRows.length)} of {pluralize(rows.length, 'rule', 'rules')}
                   </span>
                   <SelectionToolbar
                     rows={rows}

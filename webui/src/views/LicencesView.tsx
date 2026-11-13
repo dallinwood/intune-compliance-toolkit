@@ -7,12 +7,9 @@ import { LicenceList } from '../components/catalog/LicenceList'
 import { useCatalogIndex } from '../hooks/useCatalogIndex'
 import { buildCatalogLookup } from '../logic/inclusionDisplay'
 import { useFilterStore } from '../state/filterStore'
+import { StatusMessage } from '@/components/ui/status-message'
 
 const MINIMUM_COMPARED_LICENCES = 2
-
-function Message({ children }: { children: string }) {
-  return <p className="p-4 text-sm text-muted-foreground">{children}</p>
-}
 
 export function LicencesView() {
   const loadedCatalog = useCatalogIndex()
@@ -42,7 +39,7 @@ export function LicencesView() {
   if (loadedCatalog === null) {
     return (
       <main className="flex-1 overflow-y-auto">
-        <Message>Loading the product and licence catalog…</Message>
+        <StatusMessage isLoading>Loading the product and licence catalog…</StatusMessage>
       </main>
     )
   }
@@ -50,7 +47,7 @@ export function LicencesView() {
     return (
       <main className="flex-1 overflow-y-auto">
         <WarningsNotice label="Catalog problems" summary="Some of the product and licence catalog could not be used:" warnings={loadedCatalog.warning === null ? [] : [loadedCatalog.warning]} />
-        <Message>The product and licence catalog could not be loaded.</Message>
+        <StatusMessage>The product and licence catalog could not be loaded.</StatusMessage>
       </main>
     )
   }
@@ -103,7 +100,7 @@ export function LicencesView() {
         ) : selectedLicence !== null ? (
           <LicenceDetail key={selectedLicence.id} licence={selectedLicence} catalog={catalog} lookup={lookup} />
         ) : (
-          <Message>{isComparing ? 'Tick two or more licences to compare them.' : 'Select a licence to see what it includes.'}</Message>
+          <StatusMessage>{isComparing ? 'Tick two or more licences to compare them.' : 'Select a licence to see what it includes.'}</StatusMessage>
         )}
       </main>
     </div>

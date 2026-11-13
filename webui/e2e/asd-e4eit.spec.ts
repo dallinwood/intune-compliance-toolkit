@@ -6,12 +6,12 @@ import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { openFacetGroup } from './facets'
 
-const TOTAL_RULES = 2567
+const TOTAL_RULES = '2,567'
 const E4EIT_RULES = 58
 const PRO_13_1_STATEMENT =
   'Identify and disable or remove default and unused accounts regularly, permitting exceptions only where the account is documented, justified, hardened and monitored.'
 
-const ruleCount = (page: Page) => page.getByText(/^\d+ of \d+ rules$/)
+const ruleCount = (page: Page) => page.getByText(/^[\d,]+ of [\d,]+ rules$/)
 const detailOf = (page: Page, ruleId: string) => page.locator(`[id="rule-detail-${ruleId}"]`)
 const mappedRulesPanel = (page: Page, ruleId: string) => detailOf(page, ruleId).getByRole('tabpanel', { name: /^Mapped rules/ })
 
@@ -129,7 +129,7 @@ test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () =
     )
     await routeCatalogAsEmpty(page)
     await page.goto(`/?q=${search}&rule=${ruleId}`)
-    await expect(ruleCount(page)).toHaveText(/^\d+ of 2567 rules$/, { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
   }

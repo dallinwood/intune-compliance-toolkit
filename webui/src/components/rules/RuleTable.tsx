@@ -31,6 +31,7 @@ import { RuleStatusLegend } from './RuleStatusLegend'
 import { SectionHeader } from './SectionHeader'
 import { SectionToolbar } from './SectionToolbar'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
+import { StatusMessage } from '@/components/ui/status-message'
 
 const INFINITE_SCROLL_STEP = 100
 
@@ -159,7 +160,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
-            <p className="p-6 text-sm text-muted-foreground">No rules match the current filters.</p>
+            <StatusMessage>No rules match these filters.</StatusMessage>
           ) : (
             <>
               <RuleItems

@@ -18,7 +18,7 @@ test('the Frameworks tab lists a card per framework with its current release and
 
   await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
   const ismCard = card(page, ism.display_name)
-  await expect(ismCard).toContainText(`Current: ${currentIsmRelease.label} (${currentIsmRelease.tag}) · ${ism.rule_count} rules`)
+  await expect(ismCard).toContainText(`Current: ${currentIsmRelease.label} (${currentIsmRelease.tag}) · ${ism.rule_count.toLocaleString('en-US')} rules`)
   const pills = ismCard.getByRole('list', { name: 'Releases' }).getByRole('listitem')
   await expect(pills).toHaveCount(ism.releases.length)
   await expect(pills.last()).toContainText(`${currentIsmRelease.label} · current`)
@@ -69,11 +69,11 @@ const ismHistory = JSON.parse(readFileSync(new URL('../public/baselines/_history
 const REMOVED_ISM_RULE = compareReleases(ismHistory, firstIsmRelease.tag, currentIsmRelease.tag).removed[0]?.id ?? ''
 const comparisonUrl = `/frameworks?framework=asd_ism&from=${firstIsmRelease.tag}&to=${currentIsmRelease.tag}`
 
-const tileValue = async (page: Page, name: string) => Number(await page.getByTestId(`summary-tile-${name}`).locator('span').first().textContent())
+const tileValue = async (page: Page, name: string) => Number((await page.getByTestId(`summary-tile-${name}`).locator('span').first().textContent())?.replace(',', ''))
 const groupCount = async (page: Page, title: string) => {
   const heading = page.getByRole('heading').filter({ hasText: `${title} (` })
   if ((await heading.count()) === 0) return 0
-  return Number(/\((\d+)\)/.exec((await heading.first().textContent()) ?? '')![1])
+  return Number(/\(([\d,]+)\)/.exec((await heading.first().textContent()) ?? '')![1].replace(',', ''))
 }
 
 test('the summary tiles match the number of rules in each group', async ({ page }) => {

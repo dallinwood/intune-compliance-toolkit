@@ -20,16 +20,8 @@ import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import type { Rule } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { SupportingCheckRow } from './SupportingCheckRow'
-
-const NUMBER_FORMAT = new Intl.NumberFormat('en-US')
-
-function formatCount(count: number): string {
-  return NUMBER_FORMAT.format(count)
-}
-
-function plural(count: number, singular: string, pluralForm: string): string {
-  return count === 1 ? singular : pluralForm
-}
+import { formatCount, pluralize } from '../../lib/format'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 
 interface CollapsibleGroup {
   open: boolean
@@ -137,8 +129,9 @@ export function SupportingChecksPanel({
                 aria-expanded={collapsible.open}
                 aria-controls={collapsible.listId}
                 onClick={collapsible.onToggle}
-                className="rounded-sm text-left underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+                className="inline-flex items-center gap-1 rounded-sm text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
               >
+                <DisclosureChevron isOpen={collapsible.open} />
                 {headingText}
               </button>
             )}
@@ -155,7 +148,7 @@ export function SupportingChecksPanel({
           )}
         </div>
         {isOpen && caption !== null && <p className="text-xs text-muted-foreground">{caption}</p>}
-        <ul id={collapsible?.listId} aria-label={heading} hidden={!isOpen} className="space-y-1.5">
+        <ul id={collapsible?.listId} aria-label={heading} hidden={!isOpen || shownOffers.length === 0} className="divide-y divide-border rounded-lg border border-border bg-card">
           {isOpen && shownOffers.map(renderRow)}
         </ul>
         {isOpen && shownOffers.length === 0 && <p className="text-xs text-muted-foreground">No supporting checks match.</p>}
@@ -164,7 +157,7 @@ export function SupportingChecksPanel({
   }
 
   return (
-    <section data-testid="supporting-checks" aria-labelledby={headingId} className="mb-4 rounded border border-border bg-panel p-3">
+    <section data-testid="supporting-checks" aria-labelledby={headingId} className="mb-4 rounded-lg border border-border bg-panel p-4">
       <h3 id={headingId} className="mb-2 text-sm font-medium text-foreground">
         Supporting checks
       </h3>
@@ -173,31 +166,32 @@ export function SupportingChecksPanel({
         Add automated checks from rules that support your selected controls
       </Label>
       <p className="mt-1.5 text-xs text-muted-foreground">
-        {formatCount(allOffers.length)} {plural(allOffers.length, 'check', 'checks')} available for{' '}
-        {formatCount(offers.controlsWithSupportIds.length)} of {formatCount(selectedManualControlCount)} selected{' '}
-        {plural(selectedManualControlCount, 'control', 'controls')}; {formatCount(needsValueCount)} need an organization value.
+        {pluralize(allOffers.length, 'check', 'checks')} available for {formatCount(offers.controlsWithSupportIds.length)} of{' '}
+        {pluralize(selectedManualControlCount, 'selected control', 'selected controls')}; {formatCount(needsValueCount)} need an organization value.
       </p>
       {toggleOn && (
         <p className="mt-1 text-sm text-foreground" aria-live="polite">
-          {loading ? 'Loading supporting checks...' : `Adding ${formatCount(includedRuleIds.size)} of ${formatCount(allOffers.length)} supporting checks`}
+          {loading ? 'Loading supporting checks…' : `Adding ${formatCount(includedRuleIds.size)} of ${formatCount(allOffers.length)} supporting checks`}
         </p>
       )}
       {offers.alreadySelectedSupporterIds.length > 0 && (
         <p className="mt-1 text-xs text-muted-foreground">
-          {formatCount(offers.alreadySelectedSupporterIds.length)}{' '}
-          {plural(offers.alreadySelectedSupporterIds.length, 'supporting rule is', 'supporting rules are')} already in your selection.
+          {pluralize(offers.alreadySelectedSupporterIds.length, 'supporting rule is', 'supporting rules are')} already in your selection.
         </p>
       )}
 
-      <button
+      <Button
         type="button"
+        variant="link"
+        size="sm"
         aria-expanded={reviewOpen}
         aria-controls={reviewId}
         onClick={() => setReviewOpen(!reviewOpen)}
-        className="mt-2 rounded-sm text-sm text-link underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+        className="mt-2 -ml-3"
       >
+        <DisclosureChevron isOpen={reviewOpen} className="text-link" />
         Review supporting checks ({formatCount(allOffers.length)})
-      </button>
+      </Button>
       <div id={reviewId} hidden={!reviewOpen} className="mt-2 space-y-3">
         {reviewOpen && (
           <>
