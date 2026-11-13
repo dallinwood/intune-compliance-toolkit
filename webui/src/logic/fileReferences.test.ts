@@ -136,7 +136,7 @@ describe('resolveGeneratedCheckFiles', () => {
       const result = classifyRule(rule, { ...createSelectionEntry({ id: rule.id, path: 'mscp/rules/x.json' }), enabled: true }, ['27.0', '26.0', '15.0'], index)
       expect(result.kind).toBe('generatable')
       const chunks = packChunks([(result as { rule: GeneratableRule }).rule], index)
-      return buildBundleFiles(chunks, [], [])
+      return buildBundleFiles(chunks, [], [], null)
     }
 
     const fromFile = bundleOf(await resolveGeneratedCheckFiles(ruleWithCheckFile(), async () => SCRIPT_TEXT))

@@ -26,6 +26,7 @@ export interface CheckOccurrence {
   ruleId: string
   title: string
   detail: string | null
+  supportingCheck: boolean
 }
 
 export interface GenerateCheck {
@@ -75,6 +76,8 @@ const STATIC_MESSAGES: Record<Exclude<GenerateCheckId, 'history-unavailable'>, s
     'Changed in the newest release of its framework. What it checks or where it applies may differ from earlier bundles.',
 }
 
+const SUPPORTING_CHECK_VALUE_HINT = 'For supporting checks, set the value under Supporting checks below.'
+
 const KINDS_THAT_CHANGE_THE_CHECK: readonly ChangeKind[] = ['behaviour', 'scope']
 
 export function newestReleaseChange(history: HistoryIndex, ruleId: string): NewestReleaseChange | null {
@@ -102,12 +105,12 @@ function compareOccurrences(first: CheckOccurrence, second: CheckOccurrence): nu
 function customChangeOccurrence(entry: GenerateCheckInput['customChanges'][number]): CheckOccurrence {
   const { ruleId, title, result } = entry
   if (result.kind === 'unknown') {
-    return { ruleId, title, detail: `Written for ${result.release}; could not compare with the release history.` }
+    return { ruleId, title, detail: `Written for ${result.release}; could not compare with the release history.`, supportingCheck: false }
   }
   if (result.status.kind === 'touched') {
-    return { ruleId, title, detail: `Written for ${result.releaseLabel}; changed: ${result.status.labels.join(', ')}` }
+    return { ruleId, title, detail: `Written for ${result.releaseLabel}; changed: ${result.status.labels.join(', ')}`, supportingCheck: false }
   }
-  return { ruleId, title, detail: `Written for ${result.releaseLabel}` }
+  return { ruleId, title, detail: `Written for ${result.releaseLabel}`, supportingCheck: false }
 }
 
 function isOutdated(result: CustomChangeResult): boolean {
@@ -121,9 +124,14 @@ function newestReleaseDetail(change: NewestReleaseChange): string {
 
 export function buildGenerateChecks(input: GenerateCheckInput): GenerateCheck[] {
   const occurrencesById: Record<Exclude<GenerateCheckId, 'history-unavailable'>, CheckOccurrence[]> = {
-    'organization-value': input.blocked.map(({ id, title, reason }) => ({ ruleId: id, title, detail: reason })),
+    'organization-value': input.blocked.map(({ id, title, reason, supportingCheck }) => ({
+      ruleId: id,
+      title,
+      detail: supportingCheck ? `${reason} (supporting check)` : reason,
+      supportingCheck,
+    })),
     'custom-changes-not-applied': input.skippedCustomChanges.flatMap(({ ruleId, title, skipped }) =>
-      skipped.map(({ overlayId, message }) => ({ ruleId, title, detail: `${overlayId}: ${message}` })),
+      skipped.map(({ overlayId, message }) => ({ ruleId, title, detail: `${overlayId}: ${message}`, supportingCheck: false })),
     ),
     'custom-changes-outdated': input.customChanges
       .filter((entry) => isOutdated(entry.result))
@@ -135,6 +143,7 @@ export function buildGenerateChecks(input: GenerateCheckInput): GenerateCheck[] 
       ruleId,
       title,
       detail: newestReleaseDetail(change),
+      supportingCheck: false,
     })),
   }
 
@@ -155,7 +164,9 @@ export function buildGenerateChecks(input: GenerateCheckInput): GenerateCheck[] 
     checks.push({
       id,
       severity: SEVERITY_BY_CHECK_ID[id],
-      message: STATIC_MESSAGES[id],
+      message: id === 'organization-value' && occurrences.some((occurrence) => occurrence.supportingCheck)
+        ? `${STATIC_MESSAGES[id]} ${SUPPORTING_CHECK_VALUE_HINT}`
+        : STATIC_MESSAGES[id],
       occurrences: [...occurrences].sort(compareOccurrences),
     })
   }

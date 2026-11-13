@@ -4,6 +4,7 @@ import { buildManualAttestationMarkdown } from './manualAttestationReport'
 import type { ManifestSource } from '../types/library'
 import type { IntuneRuleEntry } from './rulesJsonGen'
 import { generateBashScript } from './scriptGen/bash'
+import { SUPPORTING_CHECKS_FILE } from './supportingChecksReport'
 import type { BundleFile } from './zipBundle'
 
 export const MANUAL_ATTESTATION_FILE = 'manual-attestation.md'
@@ -28,11 +29,18 @@ function chunkFiles(chunk: Chunk): BundleFile[] {
 }
 
 // Every file the downloadable zip needs: a discovery script and rules JSON
-// per chunk, plus one manual-attestation report for the rules no script checks.
-export function buildBundleFiles(chunks: Chunk[], manualEntries: ManualAttestationEntry[], sources: ManifestSource[]): BundleFile[] {
+// per chunk, one manual-attestation report for the rules no script checks, and the
+// supporting-checks report when any supporting check is included.
+export function buildBundleFiles(
+  chunks: Chunk[],
+  manualEntries: ManualAttestationEntry[],
+  sources: ManifestSource[],
+  supportingChecksMarkdown: string | null,
+): BundleFile[] {
   const files = [
     ...chunks.flatMap(chunkFiles),
     { path: MANUAL_ATTESTATION_FILE, content: buildManualAttestationMarkdown(manualEntries, sources) },
+    ...(supportingChecksMarkdown === null ? [] : [{ path: SUPPORTING_CHECKS_FILE, content: supportingChecksMarkdown }]),
   ]
 
   // Unreachable while packChunks groups by source, release and section;

@@ -1,19 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { useFetchedRules } from '@/hooks/useFetchedRules'
 import { loadCustomChangeStatus } from '../../data/customChanges'
 import { fetchHistoryIndex } from '../../data/history'
-import { fetchReferencedText } from '../../data/referencedFiles'
-import { fetchOverlaidRule } from '../../data/ruleDetail'
 import { buildBundleFiles } from '../../logic/bundleFiles'
-import {
-  classifyRule,
-  packChunks,
-  type BlockedEntry,
-  type Chunk,
-  type GeneratableRule,
-  type ManualAttestationEntry,
-} from '../../logic/chunking'
-import { resolveGeneratedCheckFiles } from '../../logic/fileReferences'
+import type { BlockedEntry, Chunk, ManualAttestationEntry } from '../../logic/chunking'
 import {
   buildGenerateChecks,
   hasBlockingCheck,
@@ -21,51 +12,75 @@ import {
   type CustomChangeResult,
   type GenerateCheckInput,
 } from '../../logic/generateChecks'
+import { classifyReview, type PulledInOutcome } from '../../logic/generateReview'
 import type { HistoryIndex } from '../../logic/historyIndex'
+import { displayWithOdv } from '../../logic/odv'
 import type { OverlayApplication } from '../../logic/overlays'
-import type { SelectionEntry } from '../../logic/selectionEntry'
+import { upstreamRuleId } from '../../logic/ruleDisplay'
+import type { SelectionEntry, SelectionMap } from '../../logic/selectionEntry'
+import {
+  includedSupportingRuleIds,
+  supportingCheckOffers,
+  type SupportingCheckChoices,
+  type SupportingCheckOffer,
+  type SupportingCheckOffers,
+} from '../../logic/supportingChecks'
+import {
+  automatedSupportByControl,
+  buildSupportingChecksMarkdown,
+  type SupportingCheckReportEntry,
+} from '../../logic/supportingChecksReport'
 import { buildZip } from '../../logic/zipBundle'
 import { termLabel, type VocabularyIndex } from '../../logic/vocabulary'
+import { useRuleMappings } from '../../state/mappingsContext'
+import { useSelectionStore } from '../../state/selectionStore'
+import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { ManifestSource, Rule } from '../../types/library'
 import { BundleGroupCard } from './BundleGroupCard'
 import { GenerateChecksPanel } from './GenerateChecksPanel'
 import { ManualAttestationReport } from './ManualAttestationReport'
+import { SupportingChecksPanel } from './SupportingChecksPanel'
 
-type ReviewState =
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | {
-      status: 'ready'
-      scriptedCount: number
-      chunks: Chunk[]
-      manual: ManualAttestationEntry[]
-      blocked: BlockedEntry[]
-      // Every selected rule, for the release checks.
-      selectedRules: Rule[]
-      // Rules whose custom content could not be applied, shown as imported.
-      skippedCustomChanges: GenerateCheckInput['skippedCustomChanges'][number][]
-      // Custom changes written for a release other than the rule's current one.
-      staleApplications: { rule: Rule; application: OverlayApplication }[]
-    }
+interface ReadyReview {
+  status: 'ready'
+  scriptedCount: number
+  chunks: Chunk[]
+  manual: ManualAttestationEntry[]
+  blocked: BlockedEntry[]
+  // Rules whose custom content could not be applied, shown as imported.
+  skippedCustomChanges: GenerateCheckInput['skippedCustomChanges'][number][]
+  pulledIn: ReadonlyMap<string, PulledInOutcome>
+  supportingChecksMarkdown: string | null
+}
 
-type ReadyReviewState = Extract<ReviewState, { status: 'ready' }>
+type ReviewState = { status: 'loading' } | { status: 'error'; message: string } | ReadyReview
+
+// What the release checks read; changes only when the fetched selection does, so
+// choosing or editing a supporting check never re-runs them.
+interface ReleaseCheckInput {
+  // Every selected rule, for the release checks.
+  selectedRules: Rule[]
+  // Custom changes written for a release other than the rule's current one.
+  staleApplications: { rule: Rule; application: OverlayApplication }[]
+}
 
 type ReleaseChecksResult = Pick<GenerateCheckInput, 'customChanges' | 'newestReleaseChanges' | 'historyUnavailableSourceLabels'>
 
-// Held with the review it was computed for, so a result for a previous
+// Held with the input it was computed for, so a result for a previous
 // selection is never shown as current.
 interface LoadedReleaseChecks {
-  forState: ReviewState
+  forInput: ReleaseCheckInput
   result: ReleaseChecksResult
 }
 
-function byId(left: { id: string }, right: { id: string }): number {
-  return left.id.localeCompare(right.id)
-}
-
-function downloadZip(chunks: Chunk[], manual: ManualAttestationEntry[], sources: ManifestSource[]): void {
-  const zipBytes = buildZip(buildBundleFiles(chunks, manual, sources))
+function downloadZip(
+  chunks: Chunk[],
+  manual: ManualAttestationEntry[],
+  sources: ManifestSource[],
+  supportingChecksMarkdown: string | null,
+): void {
+  const zipBytes = buildZip(buildBundleFiles(chunks, manual, sources, supportingChecksMarkdown))
   const url = URL.createObjectURL(new Blob([zipBytes as BlobPart], { type: 'application/zip' }))
   const link = document.createElement('a')
   link.href = url
@@ -74,6 +89,10 @@ function downloadZip(chunks: Chunk[], manual: ManualAttestationEntry[], sources:
   // Revoking synchronously can cancel the download in some browsers before
   // it has read the blob.
   setTimeout(() => URL.revokeObjectURL(url), 0)
+}
+
+function reportEntry(offer: SupportingCheckOffer, title: string): SupportingCheckReportEntry {
+  return { ruleId: offer.ruleId, title, supports: offer.supports, depth: offer.depth }
 }
 
 // enabledEntries are the enabled selections whose rule is in the loaded
@@ -91,82 +110,140 @@ export function GenerateReviewScreen({
   sources: ManifestSource[]
   onBack: () => void
 }) {
-  const [state, setState] = useState<ReviewState>({ status: 'loading' })
   const vocabularyIndex = useVocabularyIndex()
+  const { byRule, rowsById } = useRuleMappings()
+  const selections = useSelectionStore((store) => store.selections)
+  const includeSupporting = useSupportingChecksStore((store) => store.includeSupporting)
+  const overrides = useSupportingChecksStore((store) => store.overrides)
+  const pruneSupportingChoices = useSupportingChecksStore((store) => store.prune)
+  const choices = useMemo<SupportingCheckChoices>(() => ({ includeSupporting, overrides }), [includeSupporting, overrides])
 
+  // Keyed by the ids, so editing a value (which replaces enabledEntries) does not redo the offers.
+  const selectedIdsKey = enabledEntries
+    .map((entry) => entry.ref.id)
+    .sort()
+    .join('\n')
+  const selectedRuleIds = useMemo(() => new Set(selectedIdsKey === '' ? [] : selectedIdsKey.split('\n')), [selectedIdsKey])
+  const offers = useMemo(() => supportingCheckOffers(rowsById, byRule, selectedRuleIds), [rowsById, byRule, selectedRuleIds])
+  const allOffers = useMemo(() => [...offers.direct, ...offers.throughOtherRules], [offers])
+  const includedIds = useMemo(() => includedSupportingRuleIds(offers, choices), [offers, choices])
+
+  // An empty mapping index means mappings failed to load, not that nothing is offered.
   useEffect(() => {
-    let cancelled = false
-    setState({ status: 'loading' })
+    if (byRule.size > 0) pruneSupportingChoices(offers)
+  }, [offers, byRule, pruneSupportingChoices])
 
-    // The macOS check's script files are resolved before classifying, so the
-    // bundle holds exactly what an inline script would give.
-    Promise.all(
-      enabledEntries.map(async (entry) => {
-        const overlaid = await fetchOverlaidRule(entry.ref)
-        return {
-          entry,
-          rule: await resolveGeneratedCheckFiles(overlaid.rule, fetchReferencedText),
-          overlaid,
-        }
-      }),
-    )
-      .then((loaded) => {
-        if (cancelled) return
-        const generatable: GeneratableRule[] = []
-        const manual: ManualAttestationEntry[] = []
-        const blocked: BlockedEntry[] = []
-        const skippedCustomChanges: ReadyReviewState['skippedCustomChanges'] = []
-        const staleApplications: ReadyReviewState['staleApplications'] = []
-        for (const { entry, rule, overlaid } of loaded) {
-          if (overlaid.skipped.length > 0) {
-            skippedCustomChanges.push({ ruleId: entry.ref.id, title: rule.title, skipped: overlaid.skipped })
-          }
-          for (const application of overlaid.applied) {
-            if (application.stale) staleApplications.push({ rule, application })
-          }
-          const result = classifyRule(rule, entry, coveredVersions, vocabularyIndex)
-          if (result.kind === 'generatable') generatable.push(result.rule)
-          else if (result.kind === 'manual') manual.push(result.entry)
-          else blocked.push(result.entry)
-        }
-        // Packing waits until nothing is blocked: a chunk built before a
-        // blocked rule is fixed would only be thrown away.
-        const chunks = blocked.length === 0 ? packChunks(generatable, vocabularyIndex) : []
-        setState({
-          status: 'ready',
-          scriptedCount: generatable.length,
-          chunks,
-          manual: manual.sort(byId),
-          blocked: blocked.sort(byId),
-          selectedRules: loaded.map(({ rule }) => rule),
-          skippedCustomChanges,
-          staleApplications,
-        })
-      })
-      .catch((error: unknown) => {
-        if (!cancelled) setState({ status: 'error', message: error instanceof Error ? error.message : String(error) })
-      })
+  const selectedFetch = useFetchedRules(
+    enabledEntries.map((entry) => entry.ref),
+    true,
+  )
+  const offeredRefs = allOffers.flatMap((offer) => {
+    const row = rowsById.get(offer.ruleId)
+    return row === undefined ? [] : [row.ref]
+  })
+  const offeredFetch = useFetchedRules(offeredRefs, includeSupporting && offeredRefs.length > 0)
+  const supportingLoading = includeSupporting && offeredRefs.length > 0 && offeredFetch.status === 'loading'
 
-    return () => {
-      cancelled = true
+  const fetchedOfferedRules = useMemo(
+    () => new Map(offeredFetch.status === 'ready' ? [...offeredFetch.rulesById].map(([ruleId, fetched]) => [ruleId, fetched.rule]) : []),
+    [offeredFetch],
+  )
+
+  const releaseCheckInput = useMemo<ReleaseCheckInput | null>(() => {
+    if (selectedFetch.status !== 'ready') return null
+    const fetchedRules = [...selectedFetch.rulesById.values()]
+    return {
+      selectedRules: fetchedRules.map(({ rule }) => rule),
+      staleApplications: fetchedRules.flatMap(({ rule, overlaid }) =>
+        overlaid.applied.filter((application) => application.stale).map((application) => ({ rule, application })),
+      ),
     }
-  }, [enabledEntries, coveredVersions, vocabularyIndex])
+  }, [selectedFetch])
+
+  const review = useMemo<ReviewState>(() => {
+    if (selectedFetch.status === 'error') return { status: 'error', message: selectedFetch.message }
+    if (offeredFetch.status === 'error') return { status: 'error', message: offeredFetch.message }
+    if (selectedFetch.status !== 'ready') return { status: 'loading' }
+
+    const selected = enabledEntries.flatMap((entry) => {
+      const fetched = selectedFetch.rulesById.get(entry.ref.id)
+      return fetched === undefined ? [] : [{ entry, rule: fetched.rule }]
+    })
+    const includedSupporting =
+      offeredFetch.status === 'ready'
+        ? includedIds.flatMap((ruleId) => {
+            const fetched = offeredFetch.rulesById.get(ruleId)
+            return fetched === undefined ? [] : [{ ref: fetched.ref, rule: fetched.rule }]
+          })
+        : []
+    const classification = classifyReview({ selected, includedSupporting, selections, coveredVersions, vocabularyIndex })
+
+    const scriptedSupportingIds = new Set(
+      [...classification.pulledIn].filter(([, outcome]) => outcome.kind === 'generatable').map(([ruleId]) => ruleId),
+    )
+    const selectedAutomatedRuleIds = new Set(
+      enabledEntries.filter((entry) => rowsById.get(entry.ref.id)?.assessment.status === 'automated').map((entry) => entry.ref.id),
+    )
+    const supportByControl = automatedSupportByControl(offers, scriptedSupportingIds, selectedAutomatedRuleIds, byRule)
+
+    const includedEntries = allOffers
+      .filter((offer) => scriptedSupportingIds.has(offer.ruleId))
+      .map((offer) => reportEntry(offer, classification.pulledIn.get(offer.ruleId)?.title ?? offer.ruleId))
+    const excludedEntries = includeSupporting
+      ? allOffers
+          .filter((offer) => !includedIds.includes(offer.ruleId))
+          .map((offer) => reportEntry(offer, displayWithOdv(rowsById.get(offer.ruleId)?.title ?? offer.ruleId, null)))
+      : []
+
+    const skippedCustomChanges: ReadyReview['skippedCustomChanges'] = []
+    for (const { entry, rule } of selected) {
+      const skipped = selectedFetch.rulesById.get(entry.ref.id)?.overlaid.skipped ?? []
+      if (skipped.length > 0) skippedCustomChanges.push({ ruleId: entry.ref.id, title: rule.title, skipped })
+    }
+
+    return {
+      status: 'ready',
+      scriptedCount: classification.scriptedCount,
+      chunks: classification.chunks,
+      manual: classification.manual.map((entry) => ({ ...entry, automatedSupportRuleIds: supportByControl.get(entry.id) ?? [] })),
+      blocked: classification.blocked,
+      skippedCustomChanges,
+      pulledIn: classification.pulledIn,
+      supportingChecksMarkdown:
+        includedEntries.length === 0 ? null : buildSupportingChecksMarkdown(includedEntries, excludedEntries, upstreamRuleId),
+    }
+  }, [
+    selectedFetch,
+    offeredFetch,
+    enabledEntries,
+    includedIds,
+    selections,
+    coveredVersions,
+    vocabularyIndex,
+    offers,
+    allOffers,
+    byRule,
+    rowsById,
+    includeSupporting,
+  ])
 
   const [loadedReleaseChecks, setLoadedReleaseChecks] = useState<LoadedReleaseChecks | null>(null)
 
   useEffect(() => {
-    if (state.status !== 'ready') return
+    if (releaseCheckInput === null) return
     let cancelled = false
-    loadReleaseChecks(state, sources, vocabularyIndex).then((result) => {
-      if (!cancelled) setLoadedReleaseChecks({ forState: state, result })
+    loadReleaseChecks(releaseCheckInput, sources, vocabularyIndex).then((result) => {
+      if (!cancelled) setLoadedReleaseChecks({ forInput: releaseCheckInput, result })
     })
     return () => {
       cancelled = true
     }
-  }, [state, sources, vocabularyIndex])
+  }, [releaseCheckInput, sources, vocabularyIndex])
 
   const releaseChecks =
-    loadedReleaseChecks !== null && loadedReleaseChecks.forState === state ? loadedReleaseChecks.result : null
+    loadedReleaseChecks !== null && loadedReleaseChecks.forInput === releaseCheckInput ? loadedReleaseChecks.result : null
+
+  const selectedManualControlCount = enabledEntries.filter((entry) => rowsById.get(entry.ref.id)?.assessment.status === 'manual').length
 
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">
@@ -178,10 +255,19 @@ export function GenerateReviewScreen({
       </div>
       <ReviewBody
         enabledCount={enabledEntries.length}
-        state={state}
+        state={review}
         releaseChecks={releaseChecks}
         sources={sources}
         onBack={onBack}
+        supportingChecks={{
+          offers,
+          choices,
+          includedRuleIds: new Set(includedIds),
+          loading: supportingLoading,
+          fetchedRules: fetchedOfferedRules,
+          selections,
+          selectedManualControlCount,
+        }}
       />
     </div>
   )
@@ -190,7 +276,7 @@ export function GenerateReviewScreen({
 // Never rejects: a failed history or comparison load becomes a check result,
 // so it can neither fail the review nor block the download.
 async function loadReleaseChecks(
-  state: ReadyReviewState,
+  state: ReleaseCheckInput,
   sources: ManifestSource[],
   vocabularyIndex: VocabularyIndex,
 ): Promise<ReleaseChecksResult> {
@@ -234,19 +320,32 @@ async function loadReleaseChecks(
   return { customChanges, newestReleaseChanges, historyUnavailableSourceLabels: historyUnavailableSourceLabels.sort() }
 }
 
+interface SupportingChecksView {
+  offers: SupportingCheckOffers
+  choices: SupportingCheckChoices
+  includedRuleIds: ReadonlySet<string>
+  loading: boolean
+  fetchedRules: ReadonlyMap<string, Rule>
+  selections: SelectionMap
+  selectedManualControlCount: number
+}
+
 function ReviewBody({
   enabledCount,
   state,
   releaseChecks,
   sources,
   onBack,
+  supportingChecks,
 }: {
   enabledCount: number
   state: ReviewState
   releaseChecks: ReleaseChecksResult | null
   sources: ManifestSource[]
   onBack: () => void
+  supportingChecks: SupportingChecksView
 }) {
+  const { rowsById } = useRuleMappings()
   if (enabledCount === 0) {
     return (
       <p className="text-muted-foreground">
@@ -261,7 +360,7 @@ function ReviewBody({
   if (state.status === 'loading') return <p className="text-muted-foreground">Loading selected rules…</p>
   if (state.status === 'error') return <p className="text-destructive">Could not prepare the bundle: {state.message}</p>
 
-  const { scriptedCount, chunks, manual, skippedCustomChanges, blocked } = state
+  const { scriptedCount, chunks, manual, skippedCustomChanges, blocked, pulledIn, supportingChecksMarkdown } = state
   const checks = buildGenerateChecks({
     blocked,
     skippedCustomChanges,
@@ -274,6 +373,20 @@ function ReviewBody({
     <>
       <GenerateChecksPanel checks={checks} pending={releaseChecks === null} />
 
+      {supportingChecks.offers.direct.length + supportingChecks.offers.throughOtherRules.length > 0 && (
+        <SupportingChecksPanel
+          offers={supportingChecks.offers}
+          selectedManualControlCount={supportingChecks.selectedManualControlCount}
+          rowsById={rowsById}
+          choices={supportingChecks.choices}
+          includedRuleIds={supportingChecks.includedRuleIds}
+          loading={supportingChecks.loading}
+          outcomes={pulledIn}
+          fetchedRules={supportingChecks.fetchedRules}
+          selections={supportingChecks.selections}
+        />
+      )}
+
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-foreground/80">
         <span>{hasBlockingCheck(checks) ? 'Bundles are packed once nothing is blocked' : `${chunks.length} bundle(s)`}</span>
         <span>{scriptedCount} scripted rule(s)</span>
@@ -282,9 +395,9 @@ function ReviewBody({
           type="button"
           size="sm"
           className="sm:ml-auto"
-          onClick={() => downloadZip(chunks, manual, sources)}
+          onClick={() => downloadZip(chunks, manual, sources, supportingChecksMarkdown)}
           // A manual-only selection still downloads, as a zip holding just manual-attestation.md.
-          disabled={hasBlockingCheck(checks) || (chunks.length === 0 && manual.length === 0)}
+          disabled={supportingChecks.loading || hasBlockingCheck(checks) || (chunks.length === 0 && manual.length === 0)}
         >
           Download bundle (.zip)
         </Button>

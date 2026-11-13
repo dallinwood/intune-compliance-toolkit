@@ -25,12 +25,17 @@ export interface ManualAttestationEntry {
   reason: string
   // The check's additional_info from mSCP, appended after the reason.
   additionalInfo: string | null
+  // Selected automated rules and included supporting checks that support this control; the
+  // screen fills it in after classifying. Empty means no automated support.
+  automatedSupportRuleIds: string[]
 }
 
 export interface BlockedEntry {
   id: string
   title: string
   reason: string
+  // True for a supporting check pulled in by the user's choice, not selected.
+  supportingCheck: boolean
 }
 
 export type ClassificationResult =
@@ -63,12 +68,13 @@ export function classifyRule(
         title: displayWithOdv(rule.title, displayOdv),
         reason,
         additionalInfo: additionalInfoFor(rule, displayOdv),
+        automatedSupportRuleIds: [],
       },
     }
   }
   const blocked = (reason: string): ClassificationResult => ({
     kind: 'blocked',
-    entry: { id: rule.id, title: displayWithOdv(rule.title, null), reason },
+    entry: { id: rule.id, title: displayWithOdv(rule.title, null), reason, supportingCheck: false },
   })
 
   if (rule.assessment.status === 'manual') return manual(manualReasonText(rule.assessment.manual_reason, index))

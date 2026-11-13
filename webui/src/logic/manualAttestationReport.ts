@@ -42,15 +42,30 @@ function indentContinuation(text: string): string {
     .join('\n')
 }
 
+function entryLines(entry: ManualAttestationEntry): string[] {
+  const lines = [`- **${upstreamRuleId(entry.id)}** - ${entry.title}`, '', indentContinuation(entry.reason), '']
+  if (entry.additionalInfo) lines.push(indentContinuation(entry.additionalInfo), '')
+  if (entry.automatedSupportRuleIds.length > 0) {
+    lines.push(`  Automated support: ${entry.automatedSupportRuleIds.map(upstreamRuleId).join(', ')}`, '')
+  }
+  return lines
+}
+
+// A control with automated support is still attested by hand: the supporting
+// checks are evidence, not a substitute. Without any, the report has no groups.
 export function buildManualAttestationMarkdown(entries: ManualAttestationEntry[], sources: ManifestSource[]): string {
   const lines = ['# Manual attestation', '']
   if (entries.length === 0) {
     lines.push('No selected rules need manual attestation.', '')
   } else {
     lines.push('The generated discovery scripts do not check these selected rules. Verify each one manually.', '')
-    for (const entry of entries) {
-      lines.push(`- **${upstreamRuleId(entry.id)}** - ${entry.title}`, '', indentContinuation(entry.reason), '')
-      if (entry.additionalInfo) lines.push(indentContinuation(entry.additionalInfo), '')
+    const supported = entries.filter((entry) => entry.automatedSupportRuleIds.length > 0)
+    if (supported.length === 0) {
+      lines.push(...entries.flatMap(entryLines))
+    } else {
+      const unsupported = entries.filter((entry) => entry.automatedSupportRuleIds.length === 0)
+      if (unsupported.length > 0) lines.push(`## No automated support (${unsupported.length})`, '', ...unsupported.flatMap(entryLines))
+      lines.push(`## Supported by automated checks in this bundle (${supported.length})`, '', ...supported.flatMap(entryLines))
     }
   }
   const attributions = attributionLines(entries, sources)

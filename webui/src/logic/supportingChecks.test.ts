@@ -9,6 +9,9 @@ import {
   DEFAULT_SUPPORTING_CHECK_CHOICES,
   chainAccessibleText,
   chainText,
+  defaultSupportingCheckChoice,
+  groupChoiceChanges,
+  storedSupportingCheckChoice,
   includedSupportingRuleIds,
   isSupportingCheckIncluded,
   pruneSupportingCheckChoices,
@@ -257,6 +260,34 @@ describe('supporting check choices', () => {
     const choices: SupportingCheckChoices = { includeSupporting: true, overrides: { 'mscp.direct': 'exclude' } }
     expect(pruneSupportingCheckChoices(choices, offers)).toBe(choices)
     expect(pruneSupportingCheckChoices(DEFAULT_SUPPORTING_CHECK_CHOICES, offers)).toBe(DEFAULT_SUPPORTING_CHECK_CHOICES)
+  })
+})
+
+describe('group choices', () => {
+  const directOffer: SupportingCheckOffer = { ruleId: 'mscp.direct', depth: 1, supports: [] }
+  const throughOffer: SupportingCheckOffer = { ruleId: 'mscp.through', depth: 2, supports: [] }
+
+  it('defaults to include for a direct check and exclude for one through other rules', () => {
+    expect(defaultSupportingCheckChoice(directOffer)).toBe('include')
+    expect(defaultSupportingCheckChoice(throughOffer)).toBe('exclude')
+  })
+
+  it('stores only a choice that differs from the default', () => {
+    expect(storedSupportingCheckChoice(directOffer, 'include')).toBe('default')
+    expect(storedSupportingCheckChoice(directOffer, 'exclude')).toBe('exclude')
+    expect(storedSupportingCheckChoice(throughOffer, 'include')).toBe('include')
+    expect(storedSupportingCheckChoice(throughOffer, 'exclude')).toBe('default')
+  })
+
+  it('splits a group choice into overrides and rules that return to their default', () => {
+    expect(groupChoiceChanges([directOffer, throughOffer], 'include')).toEqual({
+      overrideRuleIds: ['mscp.through'],
+      defaultRuleIds: ['mscp.direct'],
+    })
+    expect(groupChoiceChanges([directOffer, throughOffer], 'exclude')).toEqual({
+      overrideRuleIds: ['mscp.direct'],
+      defaultRuleIds: ['mscp.through'],
+    })
   })
 })
 

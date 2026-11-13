@@ -134,3 +134,27 @@ export function chainAccessibleText(path: readonly MappingHop[], ruleLabel: (rul
   const first = `${ruleLabel(firstHop.fromRuleId)} supports ${ruleLabel(firstHop.toRuleId)}`
   return [first, ...laterHops.map((hop) => `which supports ${ruleLabel(hop.toRuleId)}`)].join(', ')
 }
+
+export function defaultSupportingCheckChoice(offer: SupportingCheckOffer): 'include' | 'exclude' {
+  return offer.depth === 1 ? 'include' : 'exclude'
+}
+
+// Only a choice that differs from the rule's default is stored, so a choice equal to
+// the default clears any override.
+export function storedSupportingCheckChoice(offer: SupportingCheckOffer, wanted: 'include' | 'exclude'): 'include' | 'exclude' | 'default' {
+  return wanted === defaultSupportingCheckChoice(offer) ? 'default' : wanted
+}
+
+export interface GroupChoiceChanges {
+  overrideRuleIds: string[]
+  defaultRuleIds: string[]
+}
+
+export function groupChoiceChanges(offers: readonly SupportingCheckOffer[], wanted: 'include' | 'exclude'): GroupChoiceChanges {
+  const changes: GroupChoiceChanges = { overrideRuleIds: [], defaultRuleIds: [] }
+  for (const offer of offers) {
+    if (storedSupportingCheckChoice(offer, wanted) === 'default') changes.defaultRuleIds.push(offer.ruleId)
+    else changes.overrideRuleIds.push(offer.ruleId)
+  }
+  return changes
+}

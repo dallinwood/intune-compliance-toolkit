@@ -21,7 +21,7 @@ function numbered(count: number, section: string, releaseTag = 'release_27.0'): 
 
 describe('buildBundleFiles', () => {
   it('names an unsplit section macOS-<source>-<release>-<section> with a discovery script and rules JSON', () => {
-    const files = buildBundleFiles(packChunks(numbered(2, 'auth'), vocabularyIndex), [], [])
+    const files = buildBundleFiles(packChunks(numbered(2, 'auth'), vocabularyIndex), [], [], null)
     const paths = files.map((file) => file.path)
 
     expect(paths).toEqual([
@@ -40,7 +40,7 @@ describe('buildBundleFiles', () => {
   })
 
   it('adds -part<N> only when a section splits into several chunks', () => {
-    const paths = buildBundleFiles(packChunks(numbered(3, 'os'), vocabularyIndex, { maxRulesPerChunk: 2 }), [], []).map((file) => file.path)
+    const paths = buildBundleFiles(packChunks(numbered(3, 'os'), vocabularyIndex, { maxRulesPerChunk: 2 }), [], [], null).map((file) => file.path)
 
     expect(paths).toEqual([
       'macOS-mscp-release_27.0-os-part1-discovery.sh',
@@ -58,14 +58,14 @@ describe('buildBundleFiles', () => {
       ...numbered(3, 'auth'),
       ...numbered(4, 'system_settings'),
     ]
-    const paths = buildBundleFiles(packChunks(rules, vocabularyIndex, { maxRulesPerChunk: 2 }), [], []).map((file) => file.path)
+    const paths = buildBundleFiles(packChunks(rules, vocabularyIndex, { maxRulesPerChunk: 2 }), [], [], null).map((file) => file.path)
 
     expect(new Set(paths).size).toBe(paths.length)
     expect(paths).toHaveLength(2 * (3 + 3 + 2 + 2) + 1)
   })
 
   it('always includes manual-attestation.md, even with no chunks', () => {
-    expect(buildBundleFiles([], [], []).map((file) => file.path)).toEqual(['manual-attestation.md'])
+    expect(buildBundleFiles([], [], [], null).map((file) => file.path)).toEqual(['manual-attestation.md'])
   })
 
   it('credits the sources it is given in manual-attestation.md', () => {
@@ -88,10 +88,11 @@ describe('buildBundleFiles', () => {
     const [report] = buildBundleFiles(
       [],
       [
-        { id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null },
-        { id: 'asd_ism.ism-1667', title: 'Z', reason: 'Y', additionalInfo: null },
+        { id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null, automatedSupportRuleIds: [] },
+        { id: 'asd_ism.ism-1667', title: 'Z', reason: 'Y', additionalInfo: null, automatedSupportRuleIds: [] },
       ],
       sources,
+      null,
     )
 
     expect(report.content).toContain('Rule content from the NIST macOS Security Compliance Project')
@@ -102,6 +103,14 @@ describe('buildBundleFiles', () => {
     const [chunk] = packChunks(numbered(1, 'os'), vocabularyIndex)
     const duplicate: Chunk = { ...chunk }
 
-    expect(() => buildBundleFiles([chunk, duplicate], [], [])).toThrow(/same name/)
+    expect(() => buildBundleFiles([chunk, duplicate], [], [], null)).toThrow(/same name/)
+  })
+
+  it('adds supporting-checks.md only when its content is given', () => {
+    const without = buildBundleFiles([], [], [], null).map((file) => file.path)
+    const withFile = buildBundleFiles([], [], [], '# Supporting checks\n')
+    expect(without).toEqual(['manual-attestation.md'])
+    expect(withFile.map((file) => file.path)).toEqual(['manual-attestation.md', 'supporting-checks.md'])
+    expect(withFile[1].content).toBe('# Supporting checks\n')
   })
 })

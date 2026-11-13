@@ -80,7 +80,7 @@ describe('classifyRule', () => {
 
     expect(classify(rule)).toEqual({
       kind: 'manual',
-      entry: { id: rule.id, title: rule.title, reason: 'Met by macOS by design (mSCP: inherent).', additionalInfo: null },
+      entry: { id: rule.id, title: rule.title, reason: 'Met by macOS by design (mSCP: inherent).', additionalInfo: null, automatedSupportRuleIds: [] },
     })
   })
 
@@ -119,7 +119,7 @@ describe('classifyRule', () => {
 
     expect(classify(rule)).toEqual({
       kind: 'blocked',
-      entry: { id: rule.id, title: 'Require a Minimum Password Length of [value] Characters', reason: 'Needs an organization value' },
+      entry: { id: rule.id, title: 'Require a Minimum Password Length of [value] Characters', reason: 'Needs an organization value', supportingCheck: false },
     })
   })
 
@@ -132,6 +132,7 @@ describe('classifyRule', () => {
         id: rule.id,
         title: 'Require a Minimum Password Length of [value] Characters',
         reason: 'Organization value is invalid: Value must be a whole number.',
+        supportingCheck: false,
       },
     })
   })
@@ -154,7 +155,7 @@ describe('classifyRule', () => {
 
     expect(classify(rule)).toEqual({
       kind: 'manual',
-      entry: { id: rule.id, title: rule.title, reason: 'mSCP has no check for macOS 15.0.', additionalInfo: null },
+      entry: { id: rule.id, title: rule.title, reason: 'mSCP has no check for macOS 15.0.', additionalInfo: null, automatedSupportRuleIds: [] },
     })
   })
 
@@ -163,7 +164,7 @@ describe('classifyRule', () => {
 
     expect(classify(rule)).toEqual({
       kind: 'manual',
-      entry: { id: rule.id, title: rule.title, reason: 'mSCP does not map this rule to any macOS version.', additionalInfo: null },
+      entry: { id: rule.id, title: rule.title, reason: 'mSCP does not map this rule to any macOS version.', additionalInfo: null, automatedSupportRuleIds: [] },
     })
   })
 

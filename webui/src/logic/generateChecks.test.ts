@@ -44,8 +44,8 @@ describe('buildGenerateChecks', () => {
     const checks = buildGenerateChecks(
       inputWith({
         blocked: [
-          { id: 'mscp.b', title: 'B', reason: 'Needs an organization value' },
-          { id: 'mscp.a', title: 'A', reason: 'Organization value is invalid: x' },
+          { id: 'mscp.b', title: 'B', reason: 'Needs an organization value', supportingCheck: false },
+          { id: 'mscp.a', title: 'A', reason: 'Organization value is invalid: x', supportingCheck: false },
         ],
       }),
     )
@@ -56,8 +56,27 @@ describe('buildGenerateChecks', () => {
       "Fix these before generating: set a valid organization value in each rule's details on the browse screen.",
     )
     expect(checks[0].occurrences).toEqual([
-      { ruleId: 'mscp.a', title: 'A', detail: 'Organization value is invalid: x' },
-      { ruleId: 'mscp.b', title: 'B', detail: 'Needs an organization value' },
+      { ruleId: 'mscp.a', title: 'A', detail: 'Organization value is invalid: x', supportingCheck: false },
+      { ruleId: 'mscp.b', title: 'B', detail: 'Needs an organization value', supportingCheck: false },
+    ])
+  })
+
+  it('marks a supporting check occurrence and adds where to fix it to the message', () => {
+    const checks = buildGenerateChecks(
+      inputWith({
+        blocked: [
+          { id: 'mscp.a', title: 'A', reason: 'Needs an organization value', supportingCheck: false },
+          { id: 'mscp.b', title: 'B', reason: 'Needs an organization value', supportingCheck: true },
+        ],
+      }),
+    )
+    expect(checks[0].message).toBe(
+      "Fix these before generating: set a valid organization value in each rule's details on the browse screen. " +
+        'For supporting checks, set the value under Supporting checks below.',
+    )
+    expect(checks[0].occurrences).toEqual([
+      { ruleId: 'mscp.a', title: 'A', detail: 'Needs an organization value', supportingCheck: false },
+      { ruleId: 'mscp.b', title: 'B', detail: 'Needs an organization value (supporting check)', supportingCheck: true },
     ])
   })
 
@@ -172,7 +191,7 @@ describe('buildGenerateChecks', () => {
 
   it('orders errors, then warnings, then notes, then catalogue order; occurrences by upstream id', () => {
     const checks = buildGenerateChecks({
-      blocked: [{ id: 'mscp.x', title: 'X', reason: 'r' }],
+      blocked: [{ id: 'mscp.x', title: 'X', reason: 'r', supportingCheck: false }],
       skippedCustomChanges: [{ ruleId: 'mscp.x', title: 'X', skipped: [{ overlayId: 'o', message: 'm' }] }],
       customChanges: [
         { ruleId: 'asd_ism.b.1', title: 'B', result: { kind: 'unknown', release: 'v1' } },
@@ -223,7 +242,7 @@ describe('newestReleaseChange', () => {
 })
 
 describe('hasBlockingCheck and severityCounts', () => {
-  const errorCheck = buildGenerateChecks(inputWith({ blocked: [{ id: 'mscp.a', title: 'A', reason: 'r' }] }))
+  const errorCheck = buildGenerateChecks(inputWith({ blocked: [{ id: 'mscp.a', title: 'A', reason: 'r', supportingCheck: false }] }))
   const noteCheck = buildGenerateChecks(inputWith({ historyUnavailableSourceLabels: ['S'] }))
 
   it('hasBlockingCheck is true only with an error check', () => {

@@ -32,8 +32,8 @@ const ISM_ATTRIBUTION =
   'Rule content from the ASD Information Security Manual (https://github.com/AustralianCyberSecurityCentre/ism-oscal), ' +
   'licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Content modified by this project.'
 
-const MSCP_ENTRY = { id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null }
-const ISM_ENTRY = { id: 'asd_ism.ism-1667', title: 'Z', reason: 'Y', additionalInfo: null }
+const MSCP_ENTRY = { id: 'mscp.os_x', title: 'X', reason: 'Y', additionalInfo: null, automatedSupportRuleIds: [] }
+const ISM_ENTRY = { id: 'asd_ism.ism-1667', title: 'Z', reason: 'Y', additionalInfo: null, automatedSupportRuleIds: [] }
 
 function manualRule(manualReason: ManualReason | null, additionalInfo: string | null = null) {
   return inlineRule({
@@ -104,6 +104,7 @@ describe('buildManualAttestationMarkdown', () => {
         title: 'Disable Temporary Accounts',
         reason: 'mSCP marks this check as manual.',
         additionalInfo: 'Ask the ISSO.\n\nThen record it.',
+        automatedSupportRuleIds: [],
       },
     ], SOURCES)
 
@@ -140,7 +141,7 @@ ${MSCP_ATTRIBUTION}
       license: { name: 'CC0 1.0 (public domain)', url: 'https://creativecommons.org/publicdomain/zero/1.0/', rights_holder: 'NIST', modified: true as const },
     }
     const markdown = buildManualAttestationMarkdown(
-      [MSCP_ENTRY, { id: 'nist_800_53.ac-7', title: 'W', reason: 'Y', additionalInfo: null }],
+      [MSCP_ENTRY, { id: 'nist_800_53.ac-7', title: 'W', reason: 'Y', additionalInfo: null, automatedSupportRuleIds: [] }],
       [MSCP_SOURCE, nistSource],
     )
 
@@ -162,7 +163,7 @@ ${ISM_ATTRIBUTION}
   })
 
   it('has no bare separator when no entry matches a source', () => {
-    const markdown = buildManualAttestationMarkdown([{ id: 'unknown.rule_x', title: 'X', reason: 'Y', additionalInfo: null }], SOURCES)
+    const markdown = buildManualAttestationMarkdown([{ id: 'unknown.rule_x', title: 'X', reason: 'Y', additionalInfo: null, automatedSupportRuleIds: [] }], SOURCES)
 
     expect(markdown).not.toContain('---')
     expect(markdown).not.toContain('Rule content from')
@@ -173,5 +174,23 @@ ${ISM_ATTRIBUTION}
 
     expect(markdown).not.toContain('---')
     expect(markdown).not.toContain('Rule content from')
+  })
+
+  it('splits controls by automated support, with an Automated support line and counts in the headings', () => {
+    const markdown = buildManualAttestationMarkdown(
+      [MSCP_ENTRY, { ...ISM_ENTRY, automatedSupportRuleIds: ['mscp.os_a', 'mscp.os_b'] }],
+      SOURCES,
+    )
+    const withoutSupport = markdown.indexOf('## No automated support (1)')
+    const withSupport = markdown.indexOf('## Supported by automated checks in this bundle (1)')
+    expect(withoutSupport).toBeGreaterThan(-1)
+    expect(withSupport).toBeGreaterThan(withoutSupport)
+    expect(markdown.indexOf('**os_x**')).toBeLessThan(withSupport)
+    expect(markdown.indexOf('**ism-1667**')).toBeGreaterThan(withSupport)
+    expect(markdown).toContain('  Automated support: os_a, os_b')
+  })
+
+  it('has no groups when no control has automated support', () => {
+    expect(buildManualAttestationMarkdown([MSCP_ENTRY], SOURCES)).not.toContain('## ')
   })
 })
