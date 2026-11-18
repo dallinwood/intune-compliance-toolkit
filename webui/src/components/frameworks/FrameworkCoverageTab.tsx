@@ -27,8 +27,6 @@ import type { SectionDrillDown } from '../selectionCoverage/CoverageSections'
 import { PairCoverageReport, type CoverageMode } from '../selectionCoverage/PairCoverageReport'
 import { RelatedPairNote } from '../selectionCoverage/RelatedPairNote'
 
-const COVERED_CONTROLS: SectionDrillDown = { kind: 'covered-controls' }
-
 // Holds one report's toggle and scope; both reset when the tab is left, as they are not in the URL.
 function CappedReport({
   title,
@@ -189,7 +187,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
             coveringLabel={sourceLabel(sourceName)}
             rows={rows}
             settings={settings}
-            drillDown={{ kind: 'covering-rules', coveringSource: sourceName, automatedOnly }}
+            drillDown={{ coveringSources: [sourceName], automatedOnly }}
           />
         ))}
         {pairsCoveringThis.map((pair) => (
@@ -200,7 +198,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
             coveringLabel={sourceLabel(pair.coveringSource)}
             rows={rows}
             settings={settings}
-            drillDown={COVERED_CONTROLS}
+            drillDown={{ coveringSources: [pair.coveringSource], automatedOnly }}
           />
         ))}
         {relatedCoverages.map(({ otherSource, coverage }) => (
@@ -215,7 +213,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
               rows={rows}
               computeCap={computeCombinedCap}
               computeSelection={computeCombinedSelection}
-              drillDown={COVERED_CONTROLS}
+              drillDown={{ coveringSources: supportingSources, automatedOnly }}
             />
           </div>
         )}

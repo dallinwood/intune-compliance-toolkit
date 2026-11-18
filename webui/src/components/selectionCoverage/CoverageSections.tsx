@@ -2,107 +2,21 @@ import { Fragment, useMemo, useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
-import { chainAccessibleText } from '../../logic/supportingChecks'
-import { cappedBarLabel, type ControlCoverage, type CoverageChain, type CoverageLink, type FrameworkCoverage, type SectionCoverage } from '../../logic/selectionCoverage'
-import { MappingProvenance } from '../mappings/MappingProvenance'
+import { cappedBarLabel, type FrameworkCoverage, type SectionCoverage } from '../../logic/selectionCoverage'
 import { CoverageBar } from './CoverageBar'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import { formatCount } from '../../lib/format'
 import { useDisplayTitle } from '../../hooks/useDisplayTitle'
-import { controlStatusText, coveringRulesInSection, selectedFirst, type SectionWithinReach } from '../../logic/sectionDrillDown'
+import { coveringRulesInSection, selectedFirst, type SectionWithinReach } from '../../logic/sectionDrillDown'
 import { isEnabled } from '../../logic/selectionEntry'
+import { termLabel } from '../../logic/vocabulary'
 import { useRuleMappings } from '../../state/mappingsContext'
 import { useSelectionStore } from '../../state/selectionStore'
+import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 import { RuleDetailsDialog } from '../rules/RuleDetailsDialog'
 
 const ROW_BUTTON_CLASS = 'rounded-sm text-left focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none'
-const OLDER_RELEASE_NOTE = 'Mapped against an older release that has since changed'
-
-function LinkList({ heading, links }: { heading?: string; links: CoverageLink[] }) {
-  if (links.length === 0) return null
-  return (
-    <div className="space-y-1">
-      {heading !== undefined && <p className="text-xs font-medium text-muted-foreground">{heading}</p>}
-      <ul className="space-y-2">
-        {links.map((link) => (
-          <li key={`${link.rule.ref.id}:${link.mapping}`} className="min-w-0 text-sm">
-            <p className="break-words">
-              <span className="font-mono text-xs">{upstreamRuleId(link.rule.ref.id)}</span> {link.rule.title}
-            </p>
-            <div className="text-xs">
-              <MappingProvenance mapping={link.mapping} note={link.note} />
-            </div>
-            {link.checkedAgainstOlderRelease && <p className="text-xs text-muted-foreground">{OLDER_RELEASE_NOTE}</p>}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-// "a (supporting check) -> supports b -> supports c": the marker follows the rule that was pulled in.
-function ChainLine({ chain }: { chain: CoverageChain }) {
-  const [firstHop] = chain.path
-  return (
-    <p aria-label={chainAccessibleText(chain.path, upstreamRuleId)} className="break-words text-sm">
-      <span className="font-mono text-xs">{upstreamRuleId(firstHop.fromRuleId)}</span>
-      {chain.startsAtSupportingCheck && <span className="text-xs text-muted-foreground"> (supporting check)</span>}
-      {chain.path.map((hop) => (
-        <span key={`${hop.fromRuleId}>${hop.toRuleId}`} className="text-xs">
-          {' -> supports '}
-          <span className="font-mono">{upstreamRuleId(hop.toRuleId)}</span>
-        </span>
-      ))}
-    </p>
-  )
-}
-
-function chainKey(chain: CoverageChain): string {
-  return chain.path.map((hop) => `${hop.fromRuleId}>${hop.toRuleId}`).join('|')
-}
-
-function ThroughChains({ chains }: { chains: CoverageChain[] }) {
-  if (chains.length === 0) return null
-  return (
-    <div className="space-y-1">
-      <p className="text-xs font-medium text-muted-foreground">Through</p>
-      <ul className="space-y-2">
-        {chains.map((chain) => (
-          <li key={chainKey(chain)} className="min-w-0">
-            <ChainLine chain={chain} />
-            <div className="space-y-1 text-xs">
-              {chain.path.map((hop) => (
-                <MappingProvenance key={`${hop.fromRuleId}>${hop.toRuleId}`} mapping={hop.link.mapping} note={hop.link.note} />
-              ))}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-function ControlProvenance({ coverage }: { coverage: ControlCoverage }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const statusText = controlStatusText(coverage.status)
-  if (coverage.status === 'uncovered') return <p className="text-xs">{statusText}</p>
-  return (
-    <div className="text-xs">
-      <button type="button" aria-expanded={isOpen} onClick={() => setIsOpen(!isOpen)} className={`inline-flex items-center gap-1 ${ROW_BUTTON_CLASS}`}>
-        <DisclosureChevron isOpen={isOpen} />
-        {statusText}
-      </button>
-      {isOpen && (
-        <div className="mt-2 space-y-3 border-l border-border pl-3 text-foreground">
-          <LinkList links={coverage.supportedBy} />
-          <ThroughChains chains={coverage.throughChains} />
-          <LinkList heading="Related (not counted)" links={coverage.relatedTo} />
-        </div>
-      )}
-    </div>
-  )
-}
 
 function SelectableRuleRow({
   rule,
@@ -177,16 +91,19 @@ function DrillDownList({ label, items, testId }: { label: string; items: DrillDo
   )
 }
 
-function CoveringRulesDrillDown({ section, coveringSource, automatedOnly }: { section: SectionCoverage; coveringSource: string; automatedOnly: boolean }) {
+function CoveringRulesDrillDown({ section, coveringSources, automatedOnly }: { section: SectionCoverage; coveringSources: readonly string[]; automatedOnly: boolean }) {
   const { byRule, rowsById } = useRuleMappings()
+  const vocabularyIndex = useVocabularyIndex()
+  const showFrameworkLabel = coveringSources.length > 1
   const items = useMemo(() => {
-    const coveringRows = [...rowsById.values()].filter((row) => row.sourceName === coveringSource)
+    const coveringRows = [...rowsById.values()].filter((row) => coveringSources.includes(row.sourceName))
     const sectionControlIds = new Set(section.controls.map((coverage) => coverage.control.ref.id))
     return coveringRulesInSection(coveringRows, byRule, sectionControlIds, automatedOnly).map(
       ({ rule, supportedControlIds }): DrillDownItem => ({
         rule,
         details: (openDetails) => (
           <p className="text-xs [overflow-wrap:anywhere]">
+            {showFrameworkLabel && <span className="text-muted-foreground">{termLabel(vocabularyIndex, 'sources', rule.sourceName)} - </span>}
             Supports{' '}
             {supportedControlIds.map((controlId, position) => {
               const control = rowsById.get(controlId)
@@ -213,19 +130,16 @@ function CoveringRulesDrillDown({ section, coveringSource, automatedOnly }: { se
         ),
       }),
     )
-  }, [rowsById, byRule, section, coveringSource, automatedOnly])
+  }, [rowsById, byRule, section, coveringSources, automatedOnly, vocabularyIndex, showFrameworkLabel])
   if (items.length === 0) return <p className="py-1.5 text-sm text-muted-foreground">No rule of this framework maps into this section.</p>
   return <DrillDownList label={`Rules supporting ${section.section}`} items={items} testId="coverage-rule" />
 }
 
-function CoveredControlsDrillDown({ section }: { section: SectionCoverage }) {
-  const items = section.controls.map((coverage): DrillDownItem => ({ rule: coverage.control, details: () => <ControlProvenance coverage={coverage} /> }))
-  return <DrillDownList label={`Controls in ${section.section}`} items={items} testId="coverage-control" />
+// A section lists the rules of the covering framework(s) that map into it, on both sides of a pair.
+export interface SectionDrillDown {
+  coveringSources: readonly string[]
+  automatedOnly: boolean
 }
-
-// On the covering framework's page a section lists that framework's own rules; on the covered
-// framework's page, and in the combined report, it lists the section's controls.
-export type SectionDrillDown = { kind: 'covering-rules'; coveringSource: string; automatedOnly: boolean } | { kind: 'covered-controls' }
 
 function SectionRow({ entry, drillDown }: { entry: SectionWithinReach; drillDown: SectionDrillDown }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -262,11 +176,7 @@ function SectionRow({ entry, drillDown }: { entry: SectionWithinReach; drillDown
       </div>
       {isOpen && (
         <div className="pb-3 pl-7">
-          {drillDown.kind === 'covering-rules' ? (
-            <CoveringRulesDrillDown section={section} coveringSource={drillDown.coveringSource} automatedOnly={drillDown.automatedOnly} />
-          ) : (
-            <CoveredControlsDrillDown section={section} />
-          )}
+          <CoveringRulesDrillDown section={section} coveringSources={drillDown.coveringSources} automatedOnly={drillDown.automatedOnly} />
         </div>
       )}
     </li>

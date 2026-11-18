@@ -181,13 +181,14 @@ test.describe('with the library mappings', () => {
     await expect(dialog.getByRole('heading', { level: 2 })).toContainText(firstSupportedId)
   })
 
-  test('a section on the ASD ISM page lists ISM controls', async ({ page }) => {
+  test('a section on the ASD ISM page lists the mSCP rules that map into it', async ({ page }) => {
     await page.goto(ISM_COVERAGE_PATH)
     const firstSection = report(page, SUPPORTED_BY_MSCP).getByTestId('coverage-section').first()
     await firstSection.getByRole('button', { expanded: false }).click()
-    await expect(firstSection.getByTestId('coverage-control').first()).toContainText(/ism-\d+/)
-    await expect(firstSection.getByTestId('coverage-control').first().getByRole('checkbox')).toBeVisible()
-    await expect(firstSection.getByTestId('coverage-rule')).toHaveCount(0)
+    const ruleRows = firstSection.getByTestId('coverage-rule')
+    await expect(ruleRows.first()).toContainText(/Supports ism-\d+/)
+    await expect(ruleRows.first().getByRole('checkbox')).toBeVisible()
+    await expect(firstSection.getByTestId('coverage-control')).toHaveCount(0)
   })
 })
 
@@ -204,9 +205,10 @@ test.describe('with fixture mappings', () => {
   const ismReport = (page: Page) => report(page, SUPPORTED_BY_MSCP)
   const mediaSection = (page: Page) => page.getByTestId('coverage-section').filter({ hasText: 'Guidelines for media' })
 
-  async function openMediaControl(page: Page) {
-    await mediaSection(page).getByRole('button', { name: /Guidelines for media/ }).click()
-    await mediaSection(page).getByTestId('coverage-control').filter({ hasText: 'ism-0459' }).getByRole('button', { name: 'Covered directly' }).click()
+  const openSection = async (page: Page, name: string) => {
+    const section = page.getByTestId('coverage-section').filter({ hasText: name })
+    await section.getByRole('button', { name: new RegExp(name) }).click()
+    return section
   }
 
   test('the report names supported, related and cap counts', async ({ page }) => {
@@ -224,12 +226,13 @@ test.describe('with fixture mappings', () => {
     await expect(ismReport(page)).toContainText(`Whole framework - ${ismProtectedControlCount.toLocaleString('en-US')} controls at ISM PROTECTED`)
   })
 
-  test('a section expands to controls and a control to its provenance', async ({ page }) => {
+  test('a section lists the mSCP rules that map into it, with the ISM controls they support', async ({ page }) => {
     await expect(mediaSection(page).getByRole('button', { name: /Guidelines for media/ })).toHaveAttribute('aria-expanded', 'false')
-    await openMediaControl(page)
-    await expect(page.getByText(AUTOMATED_NOTE)).toBeVisible()
-    await expect(page.getByText(SUPPORTS_MAPPING_ID).first()).toBeVisible()
-    await expect(page.getByText('Hand-written', { exact: true }).first()).toBeVisible()
+    const section = await openSection(page, 'Guidelines for media')
+    const ruleRows = section.getByTestId('coverage-rule')
+    await expect(ruleRows).toHaveCount(2)
+    await expect(ruleRows.filter({ hasText: AUTOMATED_SUPPORTER.slice('mscp.'.length) })).toContainText('Supports ism-0459')
+    await expect(section.getByTestId('coverage-control')).toHaveCount(0)
   })
 
   test('only sections within reach are listed, each bar with its own cap', async ({ page }) => {
@@ -242,31 +245,14 @@ test.describe('with fixture mappings', () => {
     await expect(page.getByRole('tooltip')).toHaveText('max 1')
   })
 
-  test('a section lists all its controls, selected first, each with a checkbox', async ({ page }) => {
-    const section = mediaSection(page)
-    await section.getByRole('button', { name: /Guidelines for media/ }).click()
-    const controlRows = section.getByTestId('coverage-control')
-    const sectionTotal = Number((await section.getByRole('button', { name: /Guidelines for media/ }).innerText()).match(/of ([\d,]+)/)?.[1].replace(',', ''))
-    await expect(controlRows).toHaveCount(sectionTotal)
-    await expect(controlRows.filter({ hasText: 'ism-0459' })).toContainText('Covered directly')
-    await expect(controlRows.first()).toHaveAttribute('data-selected', 'false')
-
-    const lastRow = controlRows.last()
-    const lastControlId = (await lastRow.getByRole('button').first().locator('span.font-mono').innerText()).trim()
-    await lastRow.getByRole('checkbox', { name: `Select ${lastControlId}` }).click()
-    await expect(controlRows.first()).toContainText(lastControlId)
-    await expect(controlRows.first()).toHaveAttribute('data-selected', 'true')
-  })
-
-  test('related links show as related only and are not counted', async ({ page }) => {
-    const hardeningSection = page.getByTestId('coverage-section').filter({ hasText: 'Guidelines for system hardening' })
-    await hardeningSection.getByRole('button', { name: /Guidelines for system hardening/ }).click()
-    const relatedControl = hardeningSection.getByTestId('coverage-control').filter({ hasText: 'ism-1621' })
-    await relatedControl.getByRole('button', { name: 'Related only' }).click()
-    await expect(relatedControl.getByText('Related (not counted)')).toBeVisible()
-    await expect(relatedControl.getByText(RELATED_NOTE)).toBeVisible()
-    await expect(relatedControl.getByText(RELATED_MAPPING_ID)).toBeVisible()
-    await expect(relatedControl.getByText('Generated', { exact: true })).toBeVisible()
+  test('selected rules come first and ticking one moves the bars', async ({ page }) => {
+    const section = await openSection(page, 'Guidelines for media')
+    const ruleRows = section.getByTestId('coverage-rule')
+    const gatekeeperRow = ruleRows.filter({ hasText: AUTOMATED_SUPPORTER.slice('mscp.'.length) })
+    await expect(gatekeeperRow).toHaveAttribute('data-selected', 'true')
+    await gatekeeperRow.getByRole('checkbox').click()
+    await expect(gatekeeperRow).toHaveAttribute('data-selected', 'false')
+    await expect(ismReport(page)).toContainText('1 supported')
   })
 
   test('lists selected rules that support no control', async ({ page }) => {
@@ -276,12 +262,12 @@ test.describe('with fixture mappings', () => {
     await expect(list).toContainText(SELECTED_WITHOUT_LINKS.slice('mscp.'.length))
   })
 
-  test('automated checks only drops a manual supporter from the selection and the cap', async ({ page }) => {
-    await openMediaControl(page)
-    await expect(page.getByText(MANUAL_NOTE)).toBeVisible()
+  test('automated checks only drops a manual supporter from the list, the selection and the cap', async ({ page }) => {
+    const section = await openSection(page, 'Guidelines for media')
+    await expect(section.getByTestId('coverage-rule').filter({ hasText: MANUAL_SUPPORTER.slice('mscp.'.length) })).toHaveCount(1)
     await page.getByRole('checkbox', { name: 'Automated checks only' }).click()
-    await expect(page.getByText(MANUAL_NOTE)).toHaveCount(0)
-    await expect(page.getByText(AUTOMATED_NOTE)).toBeVisible()
+    await expect(section.getByTestId('coverage-rule').filter({ hasText: MANUAL_SUPPORTER.slice('mscp.'.length) })).toHaveCount(0)
+    await expect(section.getByTestId('coverage-rule')).toHaveCount(1)
     await expect(ismReport(page)).toContainText('2 supported')
     await expect(ismReport(page)).not.toContainText('related only')
   })
@@ -360,22 +346,13 @@ test.describe('coverage through supporting rules', () => {
     expect(stored.includeSupporting).toBe(true)
   })
 
-  test('a control covered through supporting rules shows its chain, with the supporting check marked once added', async ({ page }) => {
+  test('a section lists the mSCP rules whose supports chain reaches it', async ({ page }) => {
     const hardeningSection = page.getByTestId('coverage-section').filter({ hasText: 'Guidelines for system hardening' })
     await expect(hardeningSection).toContainText('0 + 1 of')
     await hardeningSection.getByRole('button', { name: /Guidelines for system hardening/ }).click()
-
-    const chained = hardeningSection.getByTestId('coverage-control').filter({ hasText: upstreamOf(CHAINED_CONTROL) })
-    await chained.getByRole('button', { name: 'Covered through supporting checks' }).click()
-    await expect(chained.getByText('Through', { exact: true })).toBeVisible()
-    await expect(chained).toContainText(`${upstreamOf(AUTOMATED_SUPPORTER)} -> supports ${upstreamOf(MEDIA_CONTROL)} -> supports ${upstreamOf(CHAINED_CONTROL)}`)
-    await expect(chained).not.toContainText('(supporting check)')
-    await expect(chained.getByText(SUPPORTING_MAPPING_ID).first()).toBeVisible()
-
-    await ismReport(page).getByRole('button', { name: 'Add supporting checks to the bundle' }).click()
-    const supported = hardeningSection.getByTestId('coverage-control').filter({ hasText: upstreamOf(HARDENING_CONTROL) })
-    await supported.getByRole('button', { name: 'Covered through supporting checks' }).click()
-    await expect(supported).toContainText(`${upstreamOf(SUPPORTING_CHECK)} (supporting check) -> supports ${upstreamOf(HARDENING_CONTROL)}`)
+    const ruleRows = hardeningSection.getByTestId('coverage-rule')
+    await expect(ruleRows.filter({ hasText: upstreamOf(AUTOMATED_SUPPORTER) })).toContainText(`Supports ${upstreamOf(CHAINED_CONTROL)}`)
+    await expect(ruleRows.filter({ hasText: upstreamOf(SUPPORTING_CHECK) })).toContainText(`Supports ${upstreamOf(HARDENING_CONTROL)}`)
   })
 })
 
@@ -405,6 +382,10 @@ test.describe('with two frameworks supporting the same framework', () => {
     await page.goto(ISM_COVERAGE_PATH)
 
     await expect(report(page, SUPPORTED_BY_MSCP)).toBeVisible({ timeout: 15_000 })
-    await expect(report(page, 'All mapped frameworks')).toBeVisible()
+    const combinedReport = report(page, 'All mapped frameworks')
+    await expect(combinedReport).toBeVisible()
+    const hardeningSection = combinedReport.getByTestId('coverage-section').filter({ hasText: 'Guidelines for system hardening' })
+    await hardeningSection.getByRole('button', { name: /Guidelines for system hardening/ }).click()
+    await expect(hardeningSection.getByTestId('coverage-rule').filter({ hasText: 'NIST SP 800-53 - Supports' })).toHaveCount(1)
   })
 })

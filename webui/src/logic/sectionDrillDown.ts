@@ -8,7 +8,7 @@ import { capCount } from './frameworkPairs'
 import { supportChain } from './indirectMappings'
 import type { MappedRule } from './mappingIndex'
 import { upstreamRuleId } from './ruleDisplay'
-import type { ControlStatus, FrameworkCoverage, SectionCoverage } from './selectionCoverage'
+import type { FrameworkCoverage, SectionCoverage } from './selectionCoverage'
 
 export interface SectionWithinReach {
   section: SectionCoverage
@@ -53,15 +53,4 @@ export function coveringRulesInSection(
 
 export function selectedFirst<Item>(items: readonly Item[], isSelected: (item: Item) => boolean): { selected: Item[]; unselected: Item[] } {
   return { selected: items.filter(isSelected), unselected: items.filter((item) => !isSelected(item)) }
-}
-
-const STATUS_TEXT: Record<ControlStatus, string> = {
-  covered: 'Covered directly',
-  'covered-through-supporting': 'Covered through supporting checks',
-  'related-only': 'Related only',
-  uncovered: 'Not covered',
-}
-
-export function controlStatusText(status: ControlStatus): string {
-  return STATUS_TEXT[status]
 }

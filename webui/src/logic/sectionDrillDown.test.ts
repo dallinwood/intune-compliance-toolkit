@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { MappedRule } from './mappingIndex'
 import { pairCoverage, type SelectionSettings } from './frameworkPairs'
 import { ALL_CONTROLS_SCOPE } from './selectionCoverage'
-import { controlStatusText, coveringRulesInSection, sectionsWithinReach, selectedFirst } from './sectionDrillDown'
+import { coveringRulesInSection, sectionsWithinReach, selectedFirst } from './sectionDrillDown'
 import type { RuleRow } from '../types/rule-row'
 
 interface RowOptions {
@@ -143,14 +143,5 @@ describe('selectedFirst', () => {
       selected: ['two', 'four'],
       unselected: ['one', 'three'],
     })
-  })
-})
-
-describe('controlStatusText', () => {
-  it('names every status', () => {
-    expect(controlStatusText('covered')).toBe('Covered directly')
-    expect(controlStatusText('covered-through-supporting')).toBe('Covered through supporting checks')
-    expect(controlStatusText('related-only')).toBe('Related only')
-    expect(controlStatusText('uncovered')).toBe('Not covered')
   })
 })

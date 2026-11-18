@@ -211,24 +211,21 @@ sections:
   tooltip on hover or focus, and its accessible label ends `max N with
   current mappings`.
 - **Opening a section** (this replaces the old "Show N uncovered" toggle):
-  - On the covering framework's page (every `Supports B` report), the
-    covering framework's own rules whose supports chain reaches a control
-    in this section (manual rules left out when Automated checks only is
-    on), each with a secondary line `Supports {control ids}`.
-  - On the covered framework's page (`Supported by A`) and in the combined
-    report, every control of the section, with its status as the secondary
-    line: `Covered directly`, `Covered through supporting checks`,
-    `Related only` or `Not covered`. A status other than `Not covered`
-    opens to the mapping provenance (supporting rules, chains, related
-    links) the old control rows showed.
-  - In both lists, selected rules come first and unselected ones follow,
-    greyed. Each row has a checkbox writing to the same selection store as
-    the rules table (ODV values kept), so the bars update at once, and the
-    rule id and title open the rule's full detail panel in a dialog (the
-    same Dialog pattern as Sources & licences and the Icon key). On the
-    covered side (`Supported by A`), ticking one of B's own controls selects
-    it but does not move that pair's bars, because those bars count A's
-    rules; the bars move when A's rules are ticked.
+  - On both sides of a pair, the covering framework's rules whose supports
+    chain reaches a control in this section (manual rules left out when
+    Automated checks only is on), each with a secondary line `Supports
+    {control ids}`. On the covered framework's page (`Supported by A`)
+    these are A's rules mapping into the section, the same list the
+    covering side shows. In the combined report they are the rules of
+    every supporting framework, each line prefixed with its framework's
+    label (`NIST SP 800-53 - Supports ...`) when more than one framework
+    appears. The covered framework's own controls are not listed.
+  - Selected rules come first and unselected ones follow, greyed. Each row
+    has a checkbox writing to the same selection store as the rules table
+    (ODV values kept), so the bars update at once on both sides of the
+    pair, and the rule id and title open the rule's full detail panel in a
+    dialog (the same Dialog pattern as Sources & licences and the Icon
+    key).
 
 ### What carries over from today's Coverage view
 
