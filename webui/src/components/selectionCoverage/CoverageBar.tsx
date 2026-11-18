@@ -1,3 +1,5 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+
 interface CoverageBarProps {
   covered: number
   coveredThroughSupporting: number
@@ -7,6 +9,9 @@ interface CoverageBarProps {
   className?: string
   capCount?: number
   capLabel?: string
+  // 'tooltip' leaves the cap number off the bar and shows it on hover or focus, for the many
+  // small section bars where a printed label would crowd the row.
+  capLabelDisplay?: 'printed' | 'tooltip'
 }
 
 function percentOf(count: number, total: number): number {
@@ -32,9 +37,11 @@ export function CoverageBar({
   className = 'h-2',
   capCount,
   capLabel,
+  capLabelDisplay = 'printed',
 }: CoverageBarProps) {
+  const hasCapTooltip = capCount !== undefined && capLabelDisplay === 'tooltip'
   const bar = (
-    <div role="img" aria-label={label} className={`flex w-full gap-px overflow-hidden rounded-full bg-meter-track ring-1 ring-control-border ${className}`}>
+    <div role={hasCapTooltip ? undefined : 'img'} aria-label={hasCapTooltip ? undefined : label} className={`flex w-full gap-px overflow-hidden rounded-full bg-meter-track ring-1 ring-control-border ${className}`}>
       {covered > 0 && <div className="bg-meter-fill" style={{ width: `${percentOf(covered, total)}%` }} />}
       {coveredThroughSupporting > 0 && (
         <div style={{ width: `${percentOf(coveredThroughSupporting, total)}%`, ...THROUGH_SUPPORTING_STRIPES }} />
@@ -45,6 +52,21 @@ export function CoverageBar({
   if (capCount === undefined) return bar
 
   const capPercent = Math.min(percentOf(capCount, total), 100)
+  if (hasCapTooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger
+          render={<div role="img" aria-label={label} />}
+          tabIndex={0}
+          className="relative block rounded-sm focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:ring-offset-2 focus-visible:ring-offset-panel focus-visible:outline-none"
+        >
+          {bar}
+          <div aria-hidden="true" className="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 bg-meter-cap" style={{ left: `${capPercent}%` }} />
+        </TooltipTrigger>
+        <TooltipContent>{capLabel}</TooltipContent>
+      </Tooltip>
+    )
+  }
   const labelFlipsLeft = capPercent > CAP_LABEL_FLIP_PERCENT
   return (
     <div className="relative pt-4">

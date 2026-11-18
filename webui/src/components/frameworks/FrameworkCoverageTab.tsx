@@ -21,8 +21,11 @@ import { useRuleMappings } from '../../state/mappingsContext'
 import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
+import type { SectionDrillDown } from '../selectionCoverage/CoverageSections'
 import { PairCoverageReport, type CoverageMode } from '../selectionCoverage/PairCoverageReport'
 import { RelatedPairNote } from '../selectionCoverage/RelatedPairNote'
+
+const COVERED_CONTROLS: SectionDrillDown = { kind: 'covered-controls' }
 
 // Holds one report's toggle and scope; both reset when the tab is left, as they are not in the URL.
 function CappedReport({
@@ -31,12 +34,14 @@ function CappedReport({
   coveredSource,
   rows,
   computeCoverage,
+  drillDown,
 }: {
   title: string
   coveringLabel: string
   coveredSource: string
   rows: readonly RuleRow[]
   computeCoverage: (scope: string) => CappedCoverage
+  drillDown: SectionDrillDown
 }) {
   const vocabularyIndex = useVocabularyIndex()
   const [mode, setMode] = useState<CoverageMode>('selection')
@@ -53,6 +58,7 @@ function CappedReport({
       scope={scope}
       onScopeChange={setScope}
       scopes={scopes}
+      drillDown={drillDown}
     />
   )
 }
@@ -63,16 +69,27 @@ function SupportsPairReport({
   coveringLabel,
   rows,
   settings,
+  drillDown,
 }: {
   pair: SupportsPair
   title: string
   coveringLabel: string
   rows: readonly RuleRow[]
   settings: SelectionSettings
+  drillDown: SectionDrillDown
 }) {
   const { byRule } = useRuleMappings()
   const computeCoverage = useMemo(() => (scope: string) => pairCoverage(rows, byRule, pair, settings, scope), [rows, byRule, pair, settings])
-  return <CappedReport title={title} coveringLabel={coveringLabel} coveredSource={pair.coveredSource} rows={rows} computeCoverage={computeCoverage} />
+  return (
+    <CappedReport
+      title={title}
+      coveringLabel={coveringLabel}
+      coveredSource={pair.coveredSource}
+      rows={rows}
+      computeCoverage={computeCoverage}
+      drillDown={drillDown}
+    />
+  )
 }
 
 function UnsupportedSelectedRules({ unsupportedRules }: { unsupportedRules: RuleRow[] }) {
@@ -158,6 +175,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
             coveringLabel={sourceLabel(sourceName)}
             rows={rows}
             settings={settings}
+            drillDown={{ kind: 'covering-rules', coveringSource: sourceName, automatedOnly }}
           />
         ))}
         {pairsCoveringThis.map((pair) => (
@@ -168,6 +186,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
             coveringLabel={sourceLabel(pair.coveringSource)}
             rows={rows}
             settings={settings}
+            drillDown={COVERED_CONTROLS}
           />
         ))}
         {relatedCoverages.map(({ otherSource, coverage }) => (
@@ -181,6 +200,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
               coveredSource={sourceName}
               rows={rows}
               computeCoverage={computeCombinedCoverage}
+              drillDown={COVERED_CONTROLS}
             />
           </div>
         )}

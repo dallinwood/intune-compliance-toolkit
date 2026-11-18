@@ -82,7 +82,7 @@ export function supportsPairsCovering(pairs: readonly FrameworkPair[], coveringS
   return pairs.filter((pair): pair is SupportsPair => pair.kind === 'supports' && pair.coveringSource === coveringSource)
 }
 
-export function capCount(coverage: FrameworkCoverage): number {
+export function capCount(coverage: Pick<FrameworkCoverage, 'covered' | 'coveredThroughSupporting'>): number {
   return coverage.covered + coverage.coveredThroughSupporting
 }
 

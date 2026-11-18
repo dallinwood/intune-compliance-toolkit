@@ -196,6 +196,37 @@ single pair's bar):
 - Same two-bar format, "max N" cap line and toggle, titled "All mapped
   frameworks". On B's Coverage sub-tab it comes after the per-pair reports.
 
+### Section breakdown and drill-down (as built, Task 9)
+
+Below the two bars, every report (pair or combined) lists B's top-level
+sections:
+
+- **Only sections within reach.** A section is listed only when its own cap
+  is above zero, computed with the same cap input as the report (so with
+  Automated checks only on, a section reached only through manual rules
+  drops out, and a section with only related links never shows). Sections
+  are ordered by their cap, largest first, ties in B's section order.
+- **Section cap line.** Each section bar carries its own cap line. The
+  number is not printed: the bar is focusable and shows `max N` in a
+  tooltip on hover or focus, and its accessible label ends `max N with
+  current mappings`.
+- **Opening a section** (this replaces the old "Show N uncovered" toggle):
+  - On the covering framework's page (every `Supports B` report), the
+    covering framework's own rules whose supports chain reaches a control
+    in this section (manual rules left out when Automated checks only is
+    on), each with a secondary line `Supports {control ids}`.
+  - On the covered framework's page (`Supported by A`) and in the combined
+    report, every control of the section, with its status as the secondary
+    line: `Covered directly`, `Covered through supporting checks`,
+    `Related only` or `Not covered`. A status other than `Not covered`
+    opens to the mapping provenance (supporting rules, chains, related
+    links) the old control rows showed.
+  - In both lists, selected rules come first and unselected ones follow,
+    greyed. Each row has a checkbox writing to the same selection store as
+    the rules table (ODV values kept), so the bars update at once, and the
+    rule id and title open the rule's full detail panel in a dialog (the
+    same Dialog pattern as Sources & licences and the Icon key).
+
 ### What carries over from today's Coverage view
 
 The "selected rules that support no control" list and the "Add supporting

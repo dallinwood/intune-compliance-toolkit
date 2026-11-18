@@ -4,12 +4,13 @@ import { NativeSelect } from '@/components/ui/native-select'
 import { Button } from '@/components/ui/button'
 import { formatCount } from '../../lib/format'
 import { capCount, withinReach, type CappedCoverage } from '../../logic/frameworkPairs'
+import { sectionsWithinReach } from '../../logic/sectionDrillDown'
 import { ALL_CONTROLS_SCOPE, cappedBarLabel, type FrameworkCoverage } from '../../logic/selectionCoverage'
 import { termLabel } from '../../logic/vocabulary'
 import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import { CoverageBar } from './CoverageBar'
-import { CoverageSectionList, SupportingChecksNotes } from './CoverageSections'
+import { CoverageSectionList, SupportingChecksNotes, type SectionDrillDown } from './CoverageSections'
 
 export type CoverageMode = 'all-rules' | 'selection'
 
@@ -98,6 +99,7 @@ export function PairCoverageReport({
   scope,
   onScopeChange,
   scopes,
+  drillDown,
 }: {
   title: string
   coveringLabel: string
@@ -107,6 +109,7 @@ export function PairCoverageReport({
   scope: string
   onScopeChange: (scope: string) => void
   scopes: readonly string[]
+  drillDown: SectionDrillDown
 }) {
   const scopeId = useId()
   const vocabularyIndex = useVocabularyIndex()
@@ -141,7 +144,7 @@ export function PairCoverageReport({
           ))}
         </NativeSelect>
       </div>
-      <CoverageSectionList label={`${title} sections`} sections={coverage.sections} />
+      <CoverageSectionList label={`${title} sections`} sections={sectionsWithinReach(coverage, capped.cap)} drillDown={drillDown} />
     </section>
   )
 }
