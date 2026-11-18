@@ -6,6 +6,7 @@ import {
   DEFAULT_PAGE_SIZE,
   ALL_FRAMEWORKS,
   DEFAULT_VIEW_ID,
+  isBareBasePath,
   migrateLegacyView,
   parsePageSize,
   parseUrlState,
@@ -146,7 +147,11 @@ const BASE_PATH = import.meta.env.BASE_URL
 // A size in the URL wins; without one, the size this browser last chose.
 function stateFromLocation(): UrlState {
   if (typeof window === 'undefined') return parseUrlState('')
-  const fromUrl = migrateLegacyView(parseUrlState(window.location.search, window.location.pathname, BASE_PATH), window.location.search)
+  const fromUrl = migrateLegacyView(
+    parseUrlState(window.location.search, window.location.pathname, BASE_PATH),
+    window.location.search,
+    isBareBasePath(window.location.pathname, BASE_PATH),
+  )
   if (new URLSearchParams(window.location.search).has('size')) return fromUrl
   return { ...fromUrl, size: readStoredPageSize() ?? fromUrl.size }
 }

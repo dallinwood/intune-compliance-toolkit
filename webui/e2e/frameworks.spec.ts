@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import { compareReleases, type HistoryIndex } from '../src/logic/historyIndex'
 import type { Manifest, ManifestSource } from '../src/types/library'
+import { ALL_RULES_PATH } from './locations'
 
 const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8')) as Manifest
 const sourceNamed = (name: string): ManifestSource => manifest.sources.find((source) => source.name === name)!
@@ -435,15 +436,63 @@ test('the card Rules and Coverage links sit in the title row, to the right of th
   }
 })
 
-test('no Older releases menu appears while every framework has four releases or fewer', async ({ page }) => {
+test('an Older releases menu appears on exactly the cards that keep more than four releases', async ({ page }) => {
   await page.goto('/frameworks')
 
   await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
   await expect(page.getByRole('button', { name: 'Older releases' })).toHaveCount(manifest.sources.filter((source) => source.releases.length > 4).length)
 })
 
+test('an older release from the Older releases menu opens its comparison on the Releases sub-tab', async ({ page }) => {
+  const framework = manifest.sources.find((source) => source.releases.length > 4)
+  test.skip(framework === undefined, 'no framework keeps more than four releases')
+  const olderRelease = framework!.releases[1]
+  await page.goto('/frameworks')
+
+  await card(page, framework!.display_name).getByRole('button', { name: 'Older releases' }).click()
+  await page.getByRole('menuitem', { name: new RegExp(`^${olderRelease.label}`) }).click()
+
+  await expect(page).toHaveURL(new RegExp(`framework=${framework!.name}&tab=releases&from=${framework!.releases[0].tag}&to=${olderRelease.tag}$`))
+  await expect(page.getByRole('heading', { name: new RegExp(`^${framework!.display_name}: .* to ${olderRelease.label}`) })).toBeVisible({ timeout: 15_000 })
+})
+
+test('a remembered page size on the explicit /frameworks path keeps the card grid', async ({ page }) => {
+  await page.goto('/frameworks?size=100')
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+  await expect(page).not.toHaveURL(/framework=all/)
+})
+
+test('Back from a framework page to a searched grid lands on the grid, not the all-rules page', async ({ page }) => {
+  await page.goto(ALL_RULES_PATH)
+  await page.getByPlaceholder('Search title or id…').fill('audit')
+  await page.getByRole('link', { name: 'All frameworks' }).click()
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+  await card(page, ism.display_name).getByRole('link', { name: 'Rules' }).click()
+  await expect(page).toHaveURL(/framework=asd_ism/)
+
+  await page.goBack()
+
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+})
+
 test('an old bare-base Rules link lands on the all-rules page with its search kept', async ({ page }) => {
   await page.goto('/?q=audit')
   await expect(page).toHaveURL(/framework=all&tab=rules/)
   await expect(page).toHaveURL(/q=audit/)
+})
+
+test('an unknown framework in the address shows the card grid and is dropped from the address', async ({ page }) => {
+  await page.goto('/frameworks?framework=nonsense')
+
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+  await expect(page).not.toHaveURL(/framework=/)
+})
+
+test('a framework card with a related partner draws a grey related-only bar', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await expect(page.getByTestId('framework-card').first()).toBeVisible()
+  const relatedLines = page.getByText(/^Related to /)
+  test.skip((await relatedLines.count()) === 0, 'no framework pair is related only')
+  await expect(page.getByRole('img', { name: /related only, not counted as coverage/ }).first()).toBeVisible()
 })

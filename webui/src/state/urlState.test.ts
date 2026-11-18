@@ -4,6 +4,7 @@ import {
   DEFAULT_PAGE_SIZE,
   ALL_FRAMEWORKS,
   DEFAULT_VIEW_ID,
+  isBareBasePath,
   migrateLegacyView,
   PAGE_SIZES,
   parsePageSize,
@@ -279,7 +280,8 @@ describe('urlState', () => {
   })
 
   describe('migrateLegacyView', () => {
-    const migrated = (search: string, pathname: string) => migrateLegacyView(parseUrlState(search, pathname, '/'), search)
+    const migrated = (search: string, pathname: string) =>
+      migrateLegacyView(parseUrlState(search, pathname, '/'), search, isBareBasePath(pathname, '/'))
 
     it('sends /rules to the all-rules page and keeps its filters', () => {
       expect(migrated('?q=foo&source=mscp', '/rules')).toMatchObject({
@@ -297,6 +299,10 @@ describe('urlState', () => {
         expect(migrated(search, '/')).toMatchObject({ view: 'frameworks', framework: ALL_FRAMEWORKS, frameworkTab: 'rules' })
       },
     )
+
+    it.each(['?size=100', '?q=x', '?automation=manual', '?rule=mscp.x'])('keeps the explicit /frameworks path carrying %s on the card grid', (search) => {
+      expect(migrated(search, '/frameworks')).toMatchObject({ view: 'frameworks', framework: null, frameworkTab: null })
+    })
 
     it('leaves the bare base address without parameters on the card grid', () => {
       expect(migrated('', '/')).toMatchObject({ framework: null, frameworkTab: null })

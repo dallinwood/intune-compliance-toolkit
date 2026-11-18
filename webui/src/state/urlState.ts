@@ -98,9 +98,17 @@ export function parsePageSize(text: string | null): PageSize | null {
 }
 
 // The first path segment under the base names the view; the base alone is the default view.
+function relativePathOf(pathname: string, basePath: string): string {
+  return pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname.replace(/^\//, '')
+}
+
 function viewIdFromPath(pathname: string, basePath: string): string {
-  const relativePath = pathname.startsWith(basePath) ? pathname.slice(basePath.length) : pathname.replace(/^\//, '')
-  return relativePath.split('/')[0] || DEFAULT_VIEW_ID
+  return relativePathOf(pathname, basePath).split('/')[0] || DEFAULT_VIEW_ID
+}
+
+// Whether the address names no view at all, as opposed to naming the default one.
+export function isBareBasePath(pathname: string, basePath: string): boolean {
+  return relativePathOf(pathname, basePath).split('/')[0] === ''
 }
 
 export function parseUrlState(search: string, pathname = '', basePath = '/'): UrlState {
@@ -179,18 +187,18 @@ export function serializeUrlLocation(state: UrlState, defaults: UrlDefaults, bas
 // merged into the unified Frameworks view into the equivalent new one.
 const RULES_PARAMETER_NAMES = ['q', 'rule', 'source', 'target', 'version', 'benchmark', 'section', 'tag', 'linked', 'automation', 'page', 'size']
 
-// A bare base address used to be the Rules view, so one carrying any Rules parameter is an old
-// Rules link; the all-rules page writes a framework, so it never looks like this.
-function isBareBaseRulesLink(state: UrlState, search: string): boolean {
-  if (state.view !== DEFAULT_VIEW_ID || state.framework !== null || state.frameworkTab !== null) return false
+// A bare base address (no view in the path) used to be the Rules view, so one carrying any Rules
+// parameter is an old Rules link; the explicit /frameworks path never is; the all-rules page writes a framework, so it never looks like this.
+function isBareBaseRulesLink(state: UrlState, search: string, isBarePath: boolean): boolean {
+  if (!isBarePath || state.framework !== null || state.frameworkTab !== null) return false
   const parameters = new URLSearchParams(search)
   return RULES_PARAMETER_NAMES.some((name) => parameters.has(name))
 }
 
-export function migrateLegacyView(state: UrlState, search = ''): UrlState {
+export function migrateLegacyView(state: UrlState, search = '', isBarePath = false): UrlState {
   if (state.view === 'rules') return { ...state, view: 'frameworks', framework: ALL_FRAMEWORKS, frameworkTab: 'rules' }
   if (state.view === 'coverage') return { ...state, view: 'frameworks', framework: null, frameworkTab: null }
-  if (isBareBaseRulesLink(state, search)) return { ...state, framework: ALL_FRAMEWORKS, frameworkTab: 'rules' }
+  if (isBareBaseRulesLink(state, search, isBarePath)) return { ...state, framework: ALL_FRAMEWORKS, frameworkTab: 'rules' }
   const isComparisonLink =
     state.view === 'frameworks' && state.framework !== null && state.frameworkTab === null && state.compareFrom !== null && state.compareTo !== null
   return isComparisonLink ? { ...state, frameworkTab: 'releases' } : state
