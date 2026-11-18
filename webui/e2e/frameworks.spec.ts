@@ -389,3 +389,25 @@ test('Generate opens the review in place of the framework page and Back returns 
   await page.getByRole('button', { name: 'Back to rules' }).click()
   await expect(page.getByRole('heading', { name: ism.display_name, level: 2 })).toBeVisible()
 })
+
+test('the mSCP card shows its caps, the ISM card a combined bar and the NIST card none', async ({ page }) => {
+  await page.goto('/frameworks')
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+
+  const mscpCard = card(page, mscp.display_name)
+  await expect(mscpCard.getByText('max 140')).toBeVisible()
+  await expect(mscpCard.getByText('max 61')).toBeVisible()
+  await expect(card(page, ism.display_name).getByText('All mapped frameworks')).toBeVisible()
+  await expect(card(page, sourceNamed('nist_800_53').display_name).getByText('All mapped frameworks')).toHaveCount(0)
+})
+
+test('Browse all rules opens the all-rules page and a card Coverage link opens its Coverage sub-tab', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await page.getByRole('link', { name: 'Browse all rules' }).click()
+  await expect(page).toHaveURL(/framework=all&tab=rules$/)
+
+  await page.goto('/frameworks')
+  await card(page, mscp.display_name).getByRole('link', { name: 'Coverage' }).click()
+  await expect(page).toHaveURL(/framework=mscp&tab=coverage$/)
+})
