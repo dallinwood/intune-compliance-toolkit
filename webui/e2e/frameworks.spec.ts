@@ -347,7 +347,8 @@ test('a framework page lists only its rules, hides the Source facet and leaves t
   await page.goto('/frameworks?framework=mscp&tab=rules&source=asd_ism')
 
   await expect(page.getByRole('heading', { name: mscp.display_name, level: 2 })).toBeVisible()
-  await expect(page.getByText(`Current release: ${mscp.releases.at(-1)!.label} (${mscp.releases.at(-1)!.tag}) · ${mscp.rule_count} rules`)).toBeVisible()
+  await expect(page.getByRole('combobox', { name: 'Release' })).toHaveValue(mscp.releases.at(-1)!.tag)
+  await expect(page.getByText(`· ${mscp.rule_count} rules`)).toBeVisible()
   await expect(subTabs(page)).toHaveText(['Rules', 'Releases', 'Coverage'])
   await expect(ruleCount(page)).toHaveText(`${mscp.rule_count} of ${mscp.rule_count} rules`, { timeout: 10_000 })
   await expect(page.getByRole('heading', { name: 'Source' })).toHaveCount(0)
