@@ -33,6 +33,7 @@ test('choosing an older release shows its rules read-only, survives a reload and
   const ruleCount = olderIndex.rules.length.toLocaleString('en-US')
   await expect(page.getByText(`${ruleCount} of ${ruleCount} rules`)).toBeVisible({ timeout: 15_000 })
   await expect(page.getByRole('checkbox', { name: 'Select all rules in this view' })).toBeDisabled()
+  await page.getByRole('button', { name: 'Expand all' }).click()
   await expect(page.locator('table tbody tr[data-rule-id]').getByRole('checkbox').first()).toBeDisabled()
 
   await page.reload()
