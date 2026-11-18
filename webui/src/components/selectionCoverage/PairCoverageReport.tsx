@@ -56,11 +56,6 @@ function WholeFrameworkBar({
           of {coveredLabel}
         </span>
       </p>
-      <p className="text-xs text-muted-foreground">
-        {formatCount(capCount(coverage))} supported
-        {coverage.relatedOnly > 0 && ` · ${formatCount(coverage.relatedOnly)} related only`}
-        {coverage.selectedDirectly > 0 && ` · ${formatCount(coverage.selectedDirectly)} selected directly`}
-      </p>
       <CoverageBar
         covered={coverage.covered}
         coveredThroughSupporting={coverage.coveredThroughSupporting}
@@ -70,6 +65,11 @@ function WholeFrameworkBar({
         capCount={maximum}
         capLabel={`max ${formatCount(maximum)}`}
       />
+      <p className="text-xs text-muted-foreground">
+        {formatCount(capCount(coverage))} supported
+        {coverage.relatedOnly > 0 && ` · ${formatCount(coverage.relatedOnly)} related only`}
+        {coverage.selectedDirectly > 0 && ` · ${formatCount(coverage.selectedDirectly)} selected directly`}
+      </p>
     </div>
   )
 }
