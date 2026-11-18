@@ -1,6 +1,6 @@
 # Unified Frameworks tab - design
 
-Status: awaiting approval (builder check done)
+Status: Implemented
 Mockups: `.superpowers/brainstorm/frameworks-unify/mockups-v1.html` (layout B, coverage option 2)
 
 ## Why
@@ -225,7 +225,10 @@ sections:
     greyed. Each row has a checkbox writing to the same selection store as
     the rules table (ODV values kept), so the bars update at once, and the
     rule id and title open the rule's full detail panel in a dialog (the
-    same Dialog pattern as Sources & licences and the Icon key).
+    same Dialog pattern as Sources & licences and the Icon key). On the
+    covered side (`Supported by A`), ticking one of B's own controls selects
+    it but does not move that pair's bars, because those bars count A's
+    rules; the bars move when A's rules are ticked.
 
 ### What carries over from today's Coverage view
 
