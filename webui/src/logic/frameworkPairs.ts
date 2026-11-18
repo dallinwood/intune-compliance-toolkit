@@ -7,7 +7,7 @@ import type { RuleRow } from '../types/rule-row'
 import { compareText } from './catalogIndex'
 import { supportChain } from './indirectMappings'
 import type { MappedRule } from './mappingIndex'
-import { frameworkCoverage, type CoverageInput, type FrameworkCoverage } from './selectionCoverage'
+import { ALL_CONTROLS_SCOPE, frameworkCoverage, type CoverageInput, type FrameworkCoverage } from './selectionCoverage'
 import { supportingCheckOffers, includedSupportingRuleIds, wouldIncludeSupportingRuleIds, type SupportingCheckChoices } from './supportingChecks'
 
 export interface SupportsPair {
@@ -172,4 +172,49 @@ export function pairCoverage(
 ): CappedCoverage {
   const coveringSources = new Set([pair.coveringSource])
   return cappedCoverage(rows, byRule, pair.coveredSource, coveringSources, coveringSources, settings, scope)
+}
+
+// The user's whole selection, for the "selected rules that support no control" list.
+export function selectionCoverageInput(rows: readonly RuleRow[], byRule: ReadonlyMap<string, MappedRule[]>, settings: SelectionSettings): CoverageInput {
+  return selectionInput(rows, byRule, null, settings)
+}
+
+// Related links never count as coverage, so this is a fact about the mappings: it ignores the
+// selection and Automated checks only.
+export function relatedPairCoverage(
+  rows: readonly RuleRow[],
+  byRule: ReadonlyMap<string, MappedRule[]>,
+  relatedSource: string,
+  ofSource: string,
+): FrameworkCoverage {
+  const everyRelatedSourceRuleId = new Set(rows.filter((row) => row.sourceName === relatedSource).map((row) => row.ref.id))
+  const input: CoverageInput = {
+    rows,
+    mappingsByRule: byRule,
+    selectedRuleIds: everyRelatedSourceRuleId,
+    automatedOnly: false,
+    includedSupportingRuleIds: new Set(),
+    supportingRuleIdsIfAdded: new Set(),
+  }
+  return frameworkCoverage(input, ofSource, ALL_CONTROLS_SCOPE)
+}
+
+export interface WithinReach {
+  capCount: number
+  direct: number
+  throughSupporting: number
+  percentOfCap: number
+  stillToGo: number
+}
+
+export function withinReach(coverage: FrameworkCoverage, cap: FrameworkCoverage): WithinReach {
+  const capTotal = capCount(cap)
+  const reached = capCount(coverage)
+  return {
+    capCount: capTotal,
+    direct: coverage.covered,
+    throughSupporting: coverage.coveredThroughSupporting,
+    percentOfCap: capTotal === 0 ? 0 : Math.round((reached / capTotal) * 100),
+    stillToGo: capTotal - reached,
+  }
 }

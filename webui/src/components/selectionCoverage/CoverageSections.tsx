@@ -1,25 +1,11 @@
-import { useId, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { chainAccessibleText } from '../../logic/supportingChecks'
-import {
-  ALL_CONTROLS_SCOPE,
-  coverageBarLabel,
-  coverageHeadline,
-  frameworkCoverage,
-  scopeOptions,
-  type ControlCoverage,
-  type CoverageChain,
-  type CoverageInput,
-  type CoverageLink,
-  type SectionCoverage,
-} from '../../logic/selectionCoverage'
-import { compareGroupKeys, termLabel, type VocabularyIndex } from '../../logic/vocabulary'
+import { coverageBarLabel, type ControlCoverage, type CoverageChain, type CoverageLink, type FrameworkCoverage, type SectionCoverage } from '../../logic/selectionCoverage'
 import { MappingProvenance } from '../mappings/MappingProvenance'
 import { CoverageBar } from './CoverageBar'
-import { NativeSelect } from '@/components/ui/native-select'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import { formatCount } from '../../lib/format'
 
@@ -177,45 +163,29 @@ function SectionRow({ section }: { section: SectionCoverage }) {
   )
 }
 
-export function FrameworkCoverageCard({
-  input,
-  sourceName,
-  vocabularyIndex,
+export function CoverageSectionList({ label, sections }: { label: string; sections: SectionCoverage[] }) {
+  return (
+    <ul aria-label={label}>
+      {sections.map((section) => (
+        <SectionRow key={section.section} section={section} />
+      ))}
+    </ul>
+  )
+}
+
+// What the supporting checks add to these numbers, and the offer to add them when they are not in the bundle.
+export function SupportingChecksNotes({
+  coverage,
   includeSupporting,
   onAddSupportingChecks,
 }: {
-  input: CoverageInput
-  sourceName: string
-  vocabularyIndex: VocabularyIndex
-  // Whether supporting checks are added to the bundle; the card offers to add them when they are not.
+  coverage: FrameworkCoverage
   includeSupporting: boolean
   onAddSupportingChecks: () => void
 }) {
-  const [scope, setScope] = useState(ALL_CONTROLS_SCOPE)
-  const scopeId = useId()
-  const label = termLabel(vocabularyIndex, 'sources', sourceName)
-  const scopes = useMemo(
-    () => scopeOptions(input.rows, sourceName, compareGroupKeys(vocabularyIndex, 'benchmarks')),
-    [input.rows, sourceName, vocabularyIndex],
-  )
-  const coverage = useMemo(() => frameworkCoverage(input, sourceName, scope), [input, sourceName, scope])
-  const scopeLabel = scope === ALL_CONTROLS_SCOPE ? null : termLabel(vocabularyIndex, 'benchmarks', scope)
   const notAddedCount = coverage.potentialThroughSupporting - coverage.coveredThroughSupporting
   return (
-    <section data-testid="coverage-card" aria-label={label} className="min-w-0 space-y-3 rounded-lg border border-border bg-panel p-4">
-      <h3 className="text-base font-semibold">{label}</h3>
-      <p className="text-sm">
-        {coverageHeadline(coverage, scopeLabel)}
-        {coverage.relatedOnly > 0 && <span className="text-muted-foreground"> + {formatCount(coverage.relatedOnly)} related only</span>}
-        {coverage.selectedDirectly > 0 && <span className="text-muted-foreground"> · {formatCount(coverage.selectedDirectly)} selected directly</span>}
-      </p>
-      <CoverageBar
-        covered={coverage.covered}
-        coveredThroughSupporting={coverage.coveredThroughSupporting}
-        relatedOnly={coverage.relatedOnly}
-        total={coverage.total}
-        label={coverageBarLabel(coverage)}
-      />
+    <>
       {includeSupporting && coverage.coveredThroughSupporting > 0 && (
         <p className="text-xs text-muted-foreground">
           Counts the supporting checks you have added. Generate leaves out any it cannot script for your covered macOS versions.
@@ -229,23 +199,6 @@ export function FrameworkCoverageCard({
           </Button>
         </p>
       )}
-      <div>
-        <Label htmlFor={scopeId} className="mb-1 block text-xs text-muted-foreground">
-          Scope
-        </Label>
-        <NativeSelect id={scopeId} value={scope} onChange={(event) => setScope(event.target.value)} className="w-full max-w-xs">
-          {scopes.map((option) => (
-            <option key={option} value={option}>
-              {option === ALL_CONTROLS_SCOPE ? 'All controls' : termLabel(vocabularyIndex, 'benchmarks', option)}
-            </option>
-          ))}
-        </NativeSelect>
-      </div>
-      <ul aria-label={`${label} sections`}>
-        {coverage.sections.map((section) => (
-          <SectionRow key={section.section} section={section} />
-        ))}
-      </ul>
-    </section>
+    </>
   )
 }

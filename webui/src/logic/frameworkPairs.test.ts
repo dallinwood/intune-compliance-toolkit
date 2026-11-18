@@ -6,11 +6,13 @@ import {
   coveringSourcesOf,
   frameworkPairs,
   pairCoverage,
+  relatedPairCoverage,
+  withinReach,
   type FrameworkPair,
   type SelectionSettings,
   type SupportsPair,
 } from './frameworkPairs'
-import { ALL_CONTROLS_SCOPE } from './selectionCoverage'
+import { ALL_CONTROLS_SCOPE, type FrameworkCoverage } from './selectionCoverage'
 import type { RuleRow } from '../types/rule-row'
 
 interface RowOptions {
@@ -213,5 +215,52 @@ describe('selection never exceeds cap', () => {
         }
       }
     }
+  })
+})
+
+describe('relatedPairCoverage', () => {
+  it('counts the controls related to any rule of the other framework, whatever is selected', () => {
+    const rows = [
+      row({ sourceName: 'a', upstreamId: 'r1', assessmentStatus: 'manual' }),
+      row({ sourceName: 'a', upstreamId: 'r2' }),
+      row({ sourceName: 'b', upstreamId: 'c1' }),
+      row({ sourceName: 'b', upstreamId: 'c2' }),
+      row({ sourceName: 'b', upstreamId: 'c3' }),
+    ]
+    const byRule = indexOf([...relatedPair('a.r1', 'b.c1'), ...relatedPair('a.r2', 'b.c2')])
+
+    const coverage = relatedPairCoverage(rows, byRule, 'a', 'b')
+
+    expect(coverage.relatedOnly).toBe(2)
+    expect(coverage.total).toBe(3)
+    expect(capCount(coverage)).toBe(0)
+  })
+})
+
+describe('withinReach', () => {
+  const coverageOf = (covered: number, coveredThroughSupporting: number): FrameworkCoverage => ({
+    sourceName: 'b',
+    scope: ALL_CONTROLS_SCOPE,
+    covered,
+    coveredThroughSupporting,
+    potentialThroughSupporting: coveredThroughSupporting,
+    relatedOnly: 0,
+    selectedDirectly: 0,
+    total: 1000,
+    sections: [],
+  })
+
+  it('measures the selection against the cap', () => {
+    expect(withinReach(coverageOf(82, 9), coverageOf(120, 20))).toEqual({
+      capCount: 140,
+      direct: 82,
+      throughSupporting: 9,
+      percentOfCap: 65,
+      stillToGo: 49,
+    })
+  })
+
+  it('reads 0% of an empty cap', () => {
+    expect(withinReach(coverageOf(0, 0), coverageOf(0, 0)).percentOfCap).toBe(0)
   })
 })

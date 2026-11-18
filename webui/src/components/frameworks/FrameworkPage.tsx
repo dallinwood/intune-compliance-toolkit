@@ -9,10 +9,10 @@ import { hrefForFrameworkPage, useFilterStore } from '../../state/filterStore'
 import { useRuleMappings } from '../../state/mappingsContext'
 import { ALL_FRAMEWORKS, type FrameworkTab } from '../../state/urlState'
 import type { ManifestSource } from '../../types/library'
-import { CoverageView } from '../../views/CoverageView'
 import { RulesView } from '../../views/RulesView'
 import type { ViewContext } from '../../views/viewContext'
 import { tabLinkClassName } from '../layout/tabLinkClassName'
+import { FrameworkCoverageTab } from './FrameworkCoverageTab'
 import { ReleaseComparisonView } from './ReleaseComparisonView'
 
 const TAB_LABELS: Record<FrameworkTab, string> = { rules: 'Rules', releases: 'Releases', coverage: 'Coverage' }
@@ -99,7 +99,7 @@ export function FrameworkPage({ source, context }: { source: ManifestSource | ty
       {activeTab === 'releases' && !isAll && (
         <ReleaseComparisonView sources={sources} source={source} enabledRuleIds={enabledRuleIds} filtersOpen={filtersOpen} />
       )}
-      {activeTab === 'coverage' && <CoverageView rows={rows} enabledSelections={enabledSelections} />}
+      {activeTab === 'coverage' && !isAll && <FrameworkCoverageTab sourceName={source.name} rows={rows} selectedRuleIds={enabledRuleIds} />}
     </div>
   )
 }
