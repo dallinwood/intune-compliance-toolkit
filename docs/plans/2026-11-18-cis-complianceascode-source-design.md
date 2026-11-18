@@ -99,6 +99,13 @@ All checked on 2026-11-18 against CaC release `v0.1.82`:
   daemon's PermitRootLogin option is set, run the following command: `$ sudo grep -i
   PermitRootLogin /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf` If a line
   indicating no is returned, then the required value is set."
+- **OCIL text loses variable values.** Unlike fixes and descriptions, the built OCIL question
+  text has no `<sub>` elements: CaC's build drops the value (RHEL 9
+  `accounts_password_pam_minlen`: "enforces a minimum -character password length", "minlen = ")
+  or leaves it as escaped text (`"&lt;sub idref="var_password_pam_minlen" /&gt;"`). Escaped
+  placeholders appear in 20 of 388 RHEL 9 and 17 of 470 Ubuntu OCIL texts; rules that use a
+  variable at all (so may have a dropped value) are 77 and 95. The per-profile HTML guides in
+  the zip do not contain OCIL text either. (Found 2026-11-18 while planning.)
 - **Per-profile bash scripts** `bash/<product>-script-<profile>.sh` have every variable already
   resolved for that profile, and delimit each rule with
   `# BEGIN fix (n / N) for '<xccdf rule id>'` ... `# END fix for '<xccdf rule id>'`.
@@ -169,7 +176,13 @@ in `references.cis.levels`, so the UI can still show "Level 1".
 - **Audit** (`check[target]`): CaC's OCIL question text for each linked rule, variables
   resolved from the refined values of the same profile the fix was taken from (the control's
   lowest listed level), failing loudly if the resolved text differs between the control's
-  profiles, with the CaC rule title before each. Stored as
+  profiles, with the CaC rule title before each. Because built OCIL text loses variable values
+  (section 3), each escaped `<sub idref="var_x" />` placeholder is replaced with the level's
+  value, and every rule that uses variables (any `<xccdf-1.2:sub>` in its XCCDF description or
+  bash fix) gets a line after its text listing them, e.g. "Expected values for CIS L1 Server:
+  var_password_pam_minlen = 14". Values come from the profile's `refine-value` selector,
+  else the XCCDF `Value`'s default. Dropped values can't be put back into the sentence itself;
+  the listed values make the audit usable anyway. Stored as
   `language: bash`, `shell: null`, `result: null`, the text in `additional_info`. The schema
   allows only one check entry per target, so multiple CaC rules are concatenated into it.
 - A linked CaC rule with no bash fix, or no OCIL text, is listed in the step or audit text as
@@ -216,7 +229,10 @@ the control id.
   asset, downloads the control file from the tag, and stores in
   `sources/<source>/releases/<tag>/upstream/` unmodified copies of: the control file, the
   product's datastream, the four per-profile bash scripts, and CaC's `LICENSE`.
-- `tools/cac_normalize.py`: section 5, pure functions.
+- `tools/cac_normalize.py`: section 5, pure functions. The datastream is parsed with the
+  standard library's `xml.etree.ElementTree` after rejecting any document that contains a
+  `<!DOCTYPE` or `<!ENTITY` declaration, which blocks entity-expansion attacks without adding
+  a dependency (`defusedxml` would be the alternative).
 - `tools/import_cis_cac.py`: one `SourceImporter` per table entry (source name, display name,
   CaC product, control-file path, level-to-profile map, target, version, helper-id allowlist).
 - Import format id: `cac-cis-1`.
