@@ -239,7 +239,10 @@ Requires Python 3.10 or newer.
 1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
 2. `python tools/import_mscp.py --tag <release tag>`
 3. Review `git diff sources/mscp/` and `git diff baselines/`. Each release is kept in its own folder (`sources/mscp/releases/<tag>/`, `baselines/mscp/releases/<tag>/`), so importing a new tag adds a release and never replaces an older one. To regenerate every stored release without fetching (after a schema change), use `--offline`; add `--release <tag>` for just one.
-4. `python -m pytest`
+4. `python -m pytest -W error -n auto --all-releases`
+   (`-n auto` runs the tests in parallel; `--all-releases` also regenerates
+   every older stored release, which only an importer change can affect, so
+   plain `python -m pytest -n auto` is enough for other changes)
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
@@ -266,7 +269,10 @@ Requires Python 3.10 or newer.
    release label is the month and the library validator rejects two
    releases with the same label.
 3. Review `git diff sources/asd_ism/` and `git diff baselines/asd_ism/`.
-4. `python -m pytest -W error`
+4. `python -m pytest -W error -n auto --all-releases`
+   (`-n auto` runs the tests in parallel; `--all-releases` also regenerates
+   every older stored release, which only an importer change can affect, so
+   plain `python -m pytest -n auto` is enough for other changes)
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
@@ -283,7 +289,10 @@ Requires Python 3.10 or newer.
    regenerate every stored release from the vendored copies without fetching,
    use `--offline`; add `--release <tag>` for just one.
 3. Review `git diff sources/asd_e4eit/` and `git diff baselines/asd_e4eit/`.
-4. `python -m pytest -W error`
+4. `python -m pytest -W error -n auto --all-releases`
+   (`-n auto` runs the tests in parallel; `--all-releases` also regenerates
+   every older stored release, which only an importer change can affect, so
+   plain `python -m pytest -n auto` is enough for other changes)
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
@@ -309,7 +318,10 @@ Requires Python 3.10 or newer.
    from the vendored copies without fetching, use `--offline`; add
    `--release <tag>` for just one.
 3. Review `git diff sources/nist_800_53/` and `git diff baselines/nist_800_53/`.
-4. `python -m pytest -W error`
+4. `python -m pytest -W error -n auto --all-releases`
+   (`-n auto` runs the tests in parallel; `--all-releases` also regenerates
+   every older stored release, which only an importer change can affect, so
+   plain `python -m pytest -n auto` is enough for other changes)
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
    running.
 6. Commit the result.
