@@ -195,7 +195,12 @@ export const useFilterStore = create<FilterState>((set) => {
     setView: (value) => set({ view: value }),
     showComparison: (framework, from, to) =>
       set({ view: 'frameworks', framework, frameworkTab: 'releases', compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
-    setFrameworkPage: (framework, tab) => set({ view: 'frameworks', framework, frameworkTab: tab }),
+    setFrameworkPage: (framework, tab) =>
+      set((state) =>
+        framework === state.framework
+          ? { view: 'frameworks', frameworkTab: tab }
+          : { view: 'frameworks', framework, frameworkTab: tab, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS },
+      ),
     closeComparison: () => set({ framework: null, frameworkTab: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
     setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
     setChangeKinds: (kinds) => set({ changeKinds: kinds }),

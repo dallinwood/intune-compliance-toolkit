@@ -106,6 +106,7 @@ function viewIdFromPath(pathname: string, basePath: string): string {
 export function parseUrlState(search: string, pathname = '', basePath = '/'): UrlState {
   const parameters = new URLSearchParams(search)
   const listValues = (name: string) => parameters.getAll(name).filter((value) => value !== '')
+  const tabParameter = parameters.get('tab')
   const parsedKinds = listValues('kind').filter(isChangeKind)
 
   return {
@@ -125,7 +126,7 @@ export function parseUrlState(search: string, pathname = '', basePath = '/'): Ur
     product: parameters.get('product') || null,
     compare: listValues('compare'),
     framework: parameters.get('framework') || null,
-    frameworkTab: isFrameworkTab(parameters.get('tab')) ? (parameters.get('tab') as FrameworkTab) : null,
+    frameworkTab: isFrameworkTab(tabParameter) ? tabParameter : null,
     compareFrom: parameters.get('from') || null,
     compareTo: parameters.get('to') || null,
     compareGroup: isCompareGroup(parameters.get('group')) ? (parameters.get('group') as CompareGroup) : null,
