@@ -159,6 +159,33 @@ describe('combinedCoverage', () => {
   })
 })
 
+describe('automated checks only', () => {
+  it('shrinks the cap when a covering rule is manual', () => {
+    const manualRule = row({ sourceName: 'a', upstreamId: 'm1', assessmentStatus: 'manual' })
+    const rows = [aRuleOne, manualRule, bControlOne, bControlTwo]
+    const byRule = indexOf([...supportPair('a.r1', 'b.c1'), ...supportPair('a.m1', 'b.c2')])
+
+    const everything = pairCoverage(rows, byRule, supportsPair('a', 'b'), settings([], false), ALL_CONTROLS_SCOPE)
+    const automatedOnly = pairCoverage(rows, byRule, supportsPair('a', 'b'), settings([], true), ALL_CONTROLS_SCOPE)
+
+    expect(capCount(everything.cap)).toBe(2)
+    expect(capCount(automatedOnly.cap)).toBe(1)
+  })
+})
+
+describe('combinedCoverage selection beyond the covering frameworks', () => {
+  it('counts a selected manual control of the covered framework through its supporting check', () => {
+    const manualControl = row({ sourceName: 'b', upstreamId: 'c4', assessmentStatus: 'manual' })
+    const supporter = row({ sourceName: 'd', upstreamId: 's1' })
+    const rows = [supporter, manualControl]
+    const byRule = indexOf(supportPair('d.s1', 'b.c4'))
+
+    const { selection } = combinedCoverage(rows, byRule, 'b', ['d'], settings(['b.c4'], false, true), ALL_CONTROLS_SCOPE)
+
+    expect(selection.coveredThroughSupporting).toBe(1)
+  })
+})
+
 describe('selection never exceeds cap', () => {
   const manualControl = row({ sourceName: 'b', upstreamId: 'c4', assessmentStatus: 'manual' })
   const manualAdjacent = row({ sourceName: 'a', upstreamId: 'm1', assessmentStatus: 'manual' })

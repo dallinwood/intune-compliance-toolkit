@@ -92,28 +92,36 @@ export function capCount(coverage: FrameworkCoverage): number {
 function selectionInput(
   rows: readonly RuleRow[],
   byRule: ReadonlyMap<string, MappedRule[]>,
-  coveringSources: ReadonlySet<string>,
+  restrictToSources: ReadonlySet<string> | null,
   settings: SelectionSettings,
 ): CoverageInput {
   const rowsById = new Map(rows.map((row) => [row.ref.id, row]))
-  const restrictedRuleIds = new Set(
-    [...settings.selectedRuleIds].filter((ruleId) => {
-      const sourceName = rowsById.get(ruleId)?.sourceName
-      return sourceName !== undefined && coveringSources.has(sourceName)
-    }),
-  )
-  const offers = supportingCheckOffers(rowsById, byRule, restrictedRuleIds)
+  const effectiveRuleIds =
+    restrictToSources === null
+      ? new Set(settings.selectedRuleIds)
+      : new Set(
+          [...settings.selectedRuleIds].filter((ruleId) => {
+            const sourceName = rowsById.get(ruleId)?.sourceName
+            return sourceName !== undefined && restrictToSources.has(sourceName)
+          }),
+        )
+  const offers = supportingCheckOffers(rowsById, byRule, effectiveRuleIds)
   return {
     rows,
     mappingsByRule: byRule,
-    selectedRuleIds: restrictedRuleIds,
+    selectedRuleIds: effectiveRuleIds,
     automatedOnly: settings.automatedOnly,
     includedSupportingRuleIds: new Set(includedSupportingRuleIds(offers, settings.choices)),
     supportingRuleIdsIfAdded: new Set(wouldIncludeSupportingRuleIds(offers, settings.choices)),
   }
 }
 
-function capInput(rows: readonly RuleRow[], byRule: ReadonlyMap<string, MappedRule[]>, coveringSources: ReadonlySet<string>): CoverageInput {
+function capInput(
+  rows: readonly RuleRow[],
+  byRule: ReadonlyMap<string, MappedRule[]>,
+  coveringSources: ReadonlySet<string>,
+  automatedOnly: boolean,
+): CoverageInput {
   const rowsById = new Map(rows.map((row) => [row.ref.id, row]))
   const allCoveringRuleIds = new Set(rows.filter((row) => coveringSources.has(row.sourceName)).map((row) => row.ref.id))
   const offers = supportingCheckOffers(rowsById, byRule, allCoveringRuleIds)
@@ -122,12 +130,28 @@ function capInput(rows: readonly RuleRow[], byRule: ReadonlyMap<string, MappedRu
     rows,
     mappingsByRule: byRule,
     selectedRuleIds: allCoveringRuleIds,
-    automatedOnly: false,
+    automatedOnly,
     includedSupportingRuleIds: everyOfferedRuleId,
     supportingRuleIdsIfAdded: everyOfferedRuleId,
   }
 }
 
+function cappedCoverage(
+  rows: readonly RuleRow[],
+  byRule: ReadonlyMap<string, MappedRule[]>,
+  coveredSource: string,
+  coveringSources: ReadonlySet<string>,
+  selectionRestriction: ReadonlySet<string> | null,
+  settings: SelectionSettings,
+  scope: string,
+): CappedCoverage {
+  return {
+    cap: frameworkCoverage(capInput(rows, byRule, coveringSources, settings.automatedOnly), coveredSource, scope),
+    selection: frameworkCoverage(selectionInput(rows, byRule, selectionRestriction, settings), coveredSource, scope),
+  }
+}
+
+// The combined report shows what the user's whole selection reaches, whichever framework it came from.
 export function combinedCoverage(
   rows: readonly RuleRow[],
   byRule: ReadonlyMap<string, MappedRule[]>,
@@ -136,11 +160,7 @@ export function combinedCoverage(
   settings: SelectionSettings,
   scope: string,
 ): CappedCoverage {
-  const coveringSourceSet = new Set(coveringSources)
-  return {
-    cap: frameworkCoverage(capInput(rows, byRule, coveringSourceSet), coveredSource, scope),
-    selection: frameworkCoverage(selectionInput(rows, byRule, coveringSourceSet, settings), coveredSource, scope),
-  }
+  return cappedCoverage(rows, byRule, coveredSource, new Set(coveringSources), null, settings, scope)
 }
 
 export function pairCoverage(
@@ -150,5 +170,6 @@ export function pairCoverage(
   settings: SelectionSettings,
   scope: string,
 ): CappedCoverage {
-  return combinedCoverage(rows, byRule, pair.coveredSource, [pair.coveringSource], settings, scope)
+  const coveringSources = new Set([pair.coveringSource])
+  return cappedCoverage(rows, byRule, pair.coveredSource, coveringSources, coveringSources, settings, scope)
 }
