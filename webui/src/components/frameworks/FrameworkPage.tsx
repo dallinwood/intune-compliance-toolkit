@@ -4,9 +4,8 @@ import { buttonVariants } from '@/components/ui/button'
 import { PageTitle } from '@/components/ui/page-title'
 import { cn, isPlainLeftClick } from '@/lib/utils'
 import { pluralize } from '../../lib/format'
-import { frameworkHasPairs, resolveFrameworkTab } from '../../logic/frameworkTabs'
+import type { ResolvedFrameworkPage } from '../../logic/frameworkTabs'
 import { hrefForFrameworkPage, useFilterStore } from '../../state/filterStore'
-import { useRuleMappings } from '../../state/mappingsContext'
 import { ALL_FRAMEWORKS, type FrameworkTab } from '../../state/urlState'
 import type { ManifestSource } from '../../types/library'
 import { RulesView } from '../../views/RulesView'
@@ -68,14 +67,11 @@ function BackToGridLink() {
 
 // One framework's page (or the all-rules page): its header and sub-tabs, then
 // the chosen sub-tab.
-export function FrameworkPage({ source, context }: { source: ManifestSource | typeof ALL_FRAMEWORKS; context: ViewContext }) {
+export function FrameworkPage({ page, context }: { page: ResolvedFrameworkPage<ManifestSource>; context: ViewContext }) {
   const { rows, filteredRows, isStale, search, sources, filtersOpen, enabledSelections } = context
-  const storedTab = useFilterStore((state) => state.frameworkTab)
-  const { frameworkPairs } = useRuleMappings()
+  const { source, tab: activeTab, hasCoverage } = page
   const isAll = source === ALL_FRAMEWORKS
   const frameworkName = isAll ? ALL_FRAMEWORKS : source.name
-  const hasCoverage = !isAll && frameworkHasPairs(frameworkPairs, source.name)
-  const activeTab = resolveFrameworkTab(storedTab, isAll, hasCoverage)
   const tabs: FrameworkTab[] = isAll ? ['rules'] : hasCoverage ? ['rules', 'releases', 'coverage'] : ['rules', 'releases']
   const pageRows = useMemo(() => (isAll ? rows : rows.filter((row) => row.sourceName === frameworkName)), [isAll, rows, frameworkName])
   const enabledRuleIds = useMemo(() => new Set(enabledSelections.map((selection) => selection.ref.id)), [enabledSelections])

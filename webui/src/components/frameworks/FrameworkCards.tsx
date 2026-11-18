@@ -1,19 +1,17 @@
 import { ChevronDown } from 'lucide-react'
 import type { MouseEvent } from 'react'
-import { isPlainLeftClick } from '@/lib/utils'
 import { splitReleases } from '../../logic/cardReleases'
 import { EMPTY_RELEASE_LABEL, comparisonLocation, previousReleaseTag } from '../../logic/releaseRange'
-import { useFilterStore } from '../../state/filterStore'
 import type { ManifestSource } from '../../types/library'
 import { formatCount, pluralize } from '../../lib/format'
 import { buttonVariants } from '@/components/ui/button'
 import { Menu, MenuContent, MenuLinkItem, MenuTrigger } from '@/components/ui/menu'
-import { cn } from '@/lib/utils'
+import { cn, isPlainLeftClick } from '@/lib/utils'
 import type { CardCoverage } from '../../logic/cardCoverage'
 import { capCount, type CappedCoverage } from '../../logic/frameworkPairs'
 import { cappedBarLabel } from '../../logic/selectionCoverage'
 import { termLabel } from '../../logic/vocabulary'
-import { hrefForFrameworkPage } from '../../state/filterStore'
+import { hrefForFrameworkPage, useFilterStore } from '../../state/filterStore'
 import { ALL_FRAMEWORKS, type FrameworkTab } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import { CoverageBar } from '../selectionCoverage/CoverageBar'
@@ -83,6 +81,13 @@ function CardCoverageBlock({ coverage }: { coverage: CardCoverage }) {
             <span className="font-medium">Related to {sourceLabel(otherSource)}</span>
             <span className="text-muted-foreground">{formatCount(relatedCoverage.relatedOnly)} related only</span>
           </p>
+          <CoverageBar
+            covered={0}
+            coveredThroughSupporting={0}
+            relatedOnly={relatedCoverage.relatedOnly}
+            total={relatedCoverage.total}
+            label={`Related to ${sourceLabel(otherSource)}: ${formatCount(relatedCoverage.relatedOnly)} of ${formatCount(relatedCoverage.total)} related only, not counted as coverage`}
+          />
           <p className="text-xs text-muted-foreground">{RELATED_NOT_COVERAGE_NOTE}</p>
         </div>
       ))}
@@ -111,77 +116,77 @@ export function FrameworkCards({ sources, coverageBySource }: { sources: Manifes
         </FrameworkPageLink>
       </div>
       <ul className="grid gap-4 p-4 md:grid-cols-2">
-      {sources.map((source) => {
-        const current = source.releases[source.releases.length - 1]
-        const releaseTags = source.releases.map((release) => release.tag)
-        const coverage = coverageBySource.get(source.name)
-        const hasPairs = hasCoverageBlock(coverage)
-        const { older, visible } = splitReleases(source.releases)
-        const releaseLinkProps = (release: ManifestSource['releases'][number]) => {
-          const range = { fromTag: previousReleaseTag(releaseTags, release.tag)!, toTag: release.tag }
-          return {
-            href: comparisonLocation(source.name, range, import.meta.env.BASE_URL),
-            'aria-label': accessibleName(release.label, release.tag === current.tag, release.tag === releaseTags[0]),
-            onClick: (event: MouseEvent<HTMLElement>) => {
-              if (!isPlainLeftClick(event)) return
-              event.preventDefault()
-              showComparison(source.name, range.fromTag, range.toTag)
-            },
+        {sources.map((source) => {
+          const current = source.releases[source.releases.length - 1]
+          const releaseTags = source.releases.map((release) => release.tag)
+          const coverage = coverageBySource.get(source.name)
+          const hasPairs = hasCoverageBlock(coverage)
+          const { older, visible } = splitReleases(source.releases)
+          const releaseLinkProps = (release: ManifestSource['releases'][number]) => {
+            const range = { fromTag: previousReleaseTag(releaseTags, release.tag)!, toTag: release.tag }
+            return {
+              href: comparisonLocation(source.name, range, import.meta.env.BASE_URL),
+              'aria-label': accessibleName(release.label, release.tag === current.tag, release.tag === releaseTags[0]),
+              onClick: (event: MouseEvent<HTMLElement>) => {
+                if (!isPlainLeftClick(event)) return
+                event.preventDefault()
+                showComparison(source.name, range.fromTag, range.toTag)
+              },
+            }
           }
-        }
-        return (
-          <li key={source.name} data-testid="framework-card" className="space-y-3 rounded-lg border border-border bg-panel p-4">
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-              <h2 className="text-base font-semibold">{source.display_name}</h2>
-              <div className="flex gap-2">
-                <FrameworkPageLink framework={source.name} tab="rules">
-                  Rules
-                </FrameworkPageLink>
-                {hasPairs && (
-                  <FrameworkPageLink framework={source.name} tab="coverage">
-                    Coverage
+          return (
+            <li key={source.name} data-testid="framework-card" className="space-y-3 rounded-lg border border-border bg-panel p-4">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                <h2 className="text-base font-semibold">{source.display_name}</h2>
+                <div className="flex gap-2">
+                  <FrameworkPageLink framework={source.name} tab="rules">
+                    Rules
                   </FrameworkPageLink>
-                )}
+                  {hasPairs && (
+                    <FrameworkPageLink framework={source.name} tab="coverage">
+                      Coverage
+                    </FrameworkPageLink>
+                  )}
+                </div>
               </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Current: {current.label} ({current.tag}) · {pluralize(source.rule_count, 'rule', 'rules')}
-            </p>
-            <p className="text-sm text-muted-foreground">Choose a release to see what changed in it.</p>
-            <ul aria-label="Releases" className="flex flex-wrap gap-2">
-              {older.length > 0 && (
-                <li>
-                  <Menu>
-                    <MenuTrigger className={buttonVariants({ variant: 'outline', size: 'xs' })}>
-                      Older releases
-                      <ChevronDown aria-hidden="true" />
-                    </MenuTrigger>
-                    <MenuContent>
-                      {older.map((release) => (
-                        <MenuLinkItem key={release.tag} {...releaseLinkProps(release)}>
-                          {release.label}
-                        </MenuLinkItem>
-                      ))}
-                    </MenuContent>
-                  </Menu>
-                </li>
-              )}
-              {visible.map((release) => (
-                <li key={release.tag}>
-                  <a
-                    {...releaseLinkProps(release)}
-                    className={buttonVariants({ variant: release.tag === current.tag ? 'default' : 'outline', size: 'xs' })}
-                  >
-                    {release.label}
-                    {release.tag === current.tag && ' · current'}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            {hasCoverageBlock(coverage) && <CardCoverageBlock coverage={coverage} />}
-          </li>
-        )
-      })}
+              <p className="text-sm text-muted-foreground">
+                Current: {current.label} ({current.tag}) · {pluralize(source.rule_count, 'rule', 'rules')}
+              </p>
+              <p className="text-sm text-muted-foreground">Choose a release to see what changed in it.</p>
+              <ul aria-label="Releases" className="flex flex-wrap gap-2">
+                {older.length > 0 && (
+                  <li>
+                    <Menu>
+                      <MenuTrigger className={buttonVariants({ variant: 'outline', size: 'xs' })}>
+                        Older releases
+                        <ChevronDown aria-hidden="true" />
+                      </MenuTrigger>
+                      <MenuContent>
+                        {older.map((release) => (
+                          <MenuLinkItem key={release.tag} {...releaseLinkProps(release)}>
+                            {release.label}
+                          </MenuLinkItem>
+                        ))}
+                      </MenuContent>
+                    </Menu>
+                  </li>
+                )}
+                {visible.map((release) => (
+                  <li key={release.tag}>
+                    <a
+                      {...releaseLinkProps(release)}
+                      className={buttonVariants({ variant: release.tag === current.tag ? 'default' : 'outline', size: 'xs' })}
+                    >
+                      {release.label}
+                      {release.tag === current.tag && ' · current'}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              {hasCoverageBlock(coverage) && <CardCoverageBlock coverage={coverage} />}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

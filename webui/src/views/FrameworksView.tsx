@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
-import { cardCoverages } from '../logic/cardCoverage'
+import { cardCaps, cardCoverages, type CardCoverage } from '../logic/cardCoverage'
 import { useSupportingChecksStore } from '../state/supportingChecksStore'
 import { FrameworkCards } from '../components/frameworks/FrameworkCards'
 import { FrameworkPage } from '../components/frameworks/FrameworkPage'
 import { GenerateReviewScreen } from '../components/generate/GenerateReviewScreen'
-import { resolveFrameworkPage } from '../logic/frameworkTabs'
 import { useFilterStore } from '../state/filterStore'
 import { ALL_FRAMEWORKS } from '../state/urlState'
 import { useVocabularyIndex } from '../state/vocabularyContext'
@@ -13,25 +12,30 @@ import { useRuleMappings } from '../state/mappingsContext'
 import type { ViewContext } from './viewContext'
 
 export function FrameworksView(context: ViewContext) {
-  const { sources, coveredVersions, isReviewingSelection, enabledSelections, onCloseReview } = context
+  const { sources, frameworkPage: page, coveredVersions, isReviewingSelection, enabledSelections, onCloseReview } = context
   const framework = useFilterStore((state) => state.framework)
-  const frameworkTab = useFilterStore((state) => state.frameworkTab)
   const { byRule, frameworkPairs } = useRuleMappings()
   const vocabularyIndex = useVocabularyIndex()
   const includeSupporting = useSupportingChecksStore((store) => store.includeSupporting)
   const overrides = useSupportingChecksStore((store) => store.overrides)
-  const page = useMemo(() => resolveFrameworkPage(framework, frameworkTab, sources, frameworkPairs), [framework, frameworkTab, sources, frameworkPairs])
 
+  const showsCardGrid = page === null && !isReviewingSelection
+  const sourceNames = useMemo(() => sources.map((source) => source.name), [sources])
+  // The caps do not depend on the selection, so ticking a rule only recomputes the selection bars.
+  const caps = useMemo(() => (showsCardGrid ? cardCaps(sourceNames, context.rows, byRule, frameworkPairs) : null), [showsCardGrid, sourceNames, context.rows, byRule, frameworkPairs])
   const coverageBySource = useMemo(
     () =>
-      cardCoverages(
-        sources.map((source) => source.name),
-        context.rows,
-        byRule,
-        frameworkPairs,
-        { selectedRuleIds: new Set(enabledSelections.map((selection) => selection.ref.id)), automatedOnly: false, choices: { includeSupporting, overrides } },
-      ),
-    [sources, context.rows, byRule, frameworkPairs, enabledSelections, includeSupporting, overrides],
+      caps === null
+        ? new Map<string, CardCoverage>()
+        : cardCoverages(
+            sourceNames,
+            context.rows,
+            byRule,
+            frameworkPairs,
+            { selectedRuleIds: new Set(enabledSelections.map((selection) => selection.ref.id)), automatedOnly: false, choices: { includeSupporting, overrides } },
+            caps,
+          ),
+    [caps, sourceNames, context.rows, byRule, frameworkPairs, enabledSelections, includeSupporting, overrides],
   )
 
   if (isReviewingSelection) {
@@ -54,5 +58,5 @@ export function FrameworksView(context: ViewContext) {
       </main>
     )
   }
-  return <FrameworkPage source={page.source} context={context} />
+  return <FrameworkPage page={page} context={context} />
 }

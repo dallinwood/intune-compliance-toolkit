@@ -11,7 +11,7 @@ import { linkedFrameworksByRule } from '../../logic/linkedFrameworks'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
-import { replaceFrameworkTab, replaceView, useFilterStore } from '../../state/filterStore'
+import { replaceFrameworkTab, replaceUnknownFramework, replaceView, useFilterStore } from '../../state/filterStore'
 import { ALL_FRAMEWORKS, DEFAULT_VIEW_ID } from '../../state/urlState'
 import { resolveView } from '../../views/viewRegistry'
 import { MappingsContext } from '../../state/mappingsContext'
@@ -91,6 +91,10 @@ export function AppShell({
   useEffect(() => {
     if (resolvedTab !== null && frameworkTab !== resolvedTab) replaceFrameworkTab(resolvedTab)
   }, [resolvedTab, frameworkTab])
+  // A framework no library source has shows the card grid, so the address says that too.
+  useEffect(() => {
+    if (isFrameworksView && framework !== null && frameworkPage === null) replaceUnknownFramework()
+  }, [isFrameworksView, framework, frameworkPage])
   const [filtersOpen, setFiltersOpen] = useState(false)
   // The table and the count render from deferred filters so a click or
   // keystroke updates its own control at once while the 1,493-row table
@@ -175,6 +179,7 @@ export function AppShell({
               isStale,
               search: deferredFilters.search,
               sources,
+              frameworkPage,
               coveredVersions,
               filtersOpen,
               isReviewingSelection,

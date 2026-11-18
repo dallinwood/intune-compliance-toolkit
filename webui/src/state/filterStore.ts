@@ -388,6 +388,11 @@ export function replaceView(viewId: string) {
   runReplacingHistory(() => useFilterStore.getState().setView(viewId))
 }
 
+// A framework the library does not have is dropped, which also removes it from the address.
+export function replaceUnknownFramework() {
+  runReplacingHistory(() => useFilterStore.getState().setFrameworkPage(null, null))
+}
+
 // A missing or disallowed sub-tab is shown as the one it falls back to; the
 // address is corrected in place to say so.
 export function replaceFrameworkTab(tab: FrameworkTab) {

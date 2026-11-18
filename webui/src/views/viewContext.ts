@@ -1,3 +1,4 @@
+import type { ResolvedFrameworkPage } from '../logic/frameworkTabs'
 import type { SelectionEntry } from '../logic/selectionEntry'
 import type { ManifestSource } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
@@ -9,6 +10,8 @@ export interface ViewContext {
   isStale: boolean
   search: string
   sources: ManifestSource[]
+  // The framework page the address names, resolved once; null is the card grid.
+  frameworkPage: ResolvedFrameworkPage<ManifestSource> | null
   coveredVersions: string[]
   filtersOpen: boolean
   isReviewingSelection: boolean
