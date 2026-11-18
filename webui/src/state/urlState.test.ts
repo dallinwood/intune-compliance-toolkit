@@ -37,6 +37,7 @@ const everyKeySet: UrlState = {
   compare: ['microsoft.m365-e3', 'microsoft.m365-e5'],
   framework: 'asd_ism',
   frameworkTab: 'coverage',
+  release: 'v2026.03.24',
   compareFrom: 'v2025.12.9',
   compareTo: 'v2026.09.4',
   compareGroup: 'changed',
@@ -50,7 +51,7 @@ const everyKeySet: UrlState = {
 describe('urlState', () => {
   it('writes the comparison parameters under their own names, in a fixed order', () => {
     expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], linked: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
-      '?framework=asd_ism&tab=coverage&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
+      '?framework=asd_ism&tab=coverage&release=v2026.03.24&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
     )
   })
 
@@ -222,6 +223,26 @@ describe('urlState', () => {
 
   it('never writes a view parameter into the query', () => {
     expect(serializeUrlState({ ...parseUrlState(''), view: 'reports' }, defaults)).toBe('')
+  })
+
+  describe('release', () => {
+    it('reads the release tag and writes it after the sub-tab', () => {
+      const state = parseUrlState('?framework=mscp&tab=rules&release=release_27.0')
+      expect(state.release).toBe('release_27.0')
+      expect(serializeUrlState(state, defaults)).toBe('?framework=mscp&tab=rules&release=release_27.0')
+    })
+
+    it('is null and left out of the address when absent or empty', () => {
+      expect(parseUrlState('?framework=mscp&tab=rules').release).toBeNull()
+      expect(parseUrlState('?framework=mscp&release=').release).toBeNull()
+      expect(serializeUrlState(parseUrlState('?framework=mscp&tab=rules'), defaults)).toBe('?framework=mscp&tab=rules')
+    })
+
+    it('starts a history entry when it changes', () => {
+      const onRules = parseUrlState('?framework=mscp&tab=rules')
+      expect(startsHistoryEntry(onRules, { ...onRules, release: 'release_27.0' })).toBe(true)
+      expect(startsHistoryEntry({ ...onRules, release: 'release_27.0' }, onRules)).toBe(true)
+    })
   })
 
   describe('startsHistoryEntry', () => {

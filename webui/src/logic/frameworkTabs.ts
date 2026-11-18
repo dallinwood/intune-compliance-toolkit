@@ -35,3 +35,15 @@ export function resolveFrameworkPage<Source extends { name: string }>(
   const hasCoverage = frameworkHasPairs(pairs, source.name)
   return { source, tab: resolveFrameworkTab(tab, false, hasCoverage), hasCoverage }
 }
+
+// The older release a page's Rules sub-tab browses: only a single framework's
+// Rules sub-tab offers one, and only a kept release other than the current
+// (newest, last) one. Anything else is null, which shows the current release.
+export function resolveBrowsedRelease<Release extends { tag: string }>(
+  page: ResolvedFrameworkPage<{ releases: readonly Release[] }> | null,
+  releaseTag: string | null,
+): Release | null {
+  if (releaseTag === null || page === null || page.source === ALL_FRAMEWORKS || page.tab !== 'rules') return null
+  const olderReleases = page.source.releases.slice(0, -1)
+  return olderReleases.find((release) => release.tag === releaseTag) ?? null
+}

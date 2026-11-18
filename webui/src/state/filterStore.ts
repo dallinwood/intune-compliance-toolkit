@@ -50,6 +50,7 @@ export interface FilterState {
   // The Frameworks view (see UrlState).
   framework: string | null
   frameworkTab: FrameworkTab | null
+  release: string | null
   compareFrom: string | null
   compareTo: string | null
   compareGroup: CompareGroup | null
@@ -63,6 +64,8 @@ export interface FilterState {
   // One update, so one history entry: open a framework's page (or the card grid
   // for null) on the given sub-tab.
   setFrameworkPage: (framework: string | null, tab: FrameworkTab | null) => void
+  // The release a framework's Rules sub-tab browses; null is the current one.
+  setRelease: (tag: string | null) => void
   // One update, so one history entry: open a framework's Releases sub-tab with
   // the narrowing filters cleared.
   showComparison: (framework: string, from: string | null, to: string | null) => void
@@ -176,6 +179,7 @@ function filterValuesOf(urlState: UrlState) {
     compare: urlState.compare,
     framework: urlState.framework,
     frameworkTab: urlState.frameworkTab,
+    release: urlState.release,
     compareFrom: urlState.compareFrom,
     compareTo: urlState.compareTo,
     compareGroup: urlState.compareGroup,
@@ -209,10 +213,27 @@ const NO_FRAMEWORK_FACET_FILTERS = {
 // over from another framework could not be unticked). They are cleared when the
 // page switches framework and kept when only the sub-tab changes. Search text,
 // automation and the hidden source set apply to every framework and stay.
+// Every page change goes back to the current release, so entering a Rules
+// sub-tab always starts there; only a shared address opens an older one.
 function frameworkPageChange(state: Pick<FilterState, 'framework'>, framework: string | null, tab: FrameworkTab | null) {
   return framework === state.framework
-    ? { view: DEFAULT_VIEW_ID, frameworkTab: tab }
-    : { view: DEFAULT_VIEW_ID, framework, frameworkTab: tab, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS, ...NO_FRAMEWORK_FACET_FILTERS, ...FIRST_PAGE }
+    ? { view: DEFAULT_VIEW_ID, frameworkTab: tab, release: null }
+    : {
+        view: DEFAULT_VIEW_ID,
+        framework,
+        frameworkTab: tab,
+        release: null,
+        compareFrom: null,
+        compareTo: null,
+        ...NO_COMPARISON_FILTERS,
+        ...NO_FRAMEWORK_FACET_FILTERS,
+        ...FIRST_PAGE,
+      }
+}
+
+// Leaving the Frameworks view for another view also leaves any older release.
+function viewChange(state: Pick<FilterState, 'view' | 'release'>, view: string) {
+  return { view, release: view === state.view ? state.release : null }
 }
 
 export const useFilterStore = create<FilterState>((set) => {
@@ -220,10 +241,11 @@ export const useFilterStore = create<FilterState>((set) => {
     ...filterValuesOf(stateFromLocation()),
     openRuleRequest: 0,
     openRuleTab: null,
-    setView: (value) => set({ view: value }),
+    setView: (value) => set((state) => viewChange(state, value)),
     showComparison: (framework, from, to) =>
-      set({ view: 'frameworks', framework, frameworkTab: 'releases', compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
+      set({ view: 'frameworks', framework, frameworkTab: 'releases', release: null, compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
     setFrameworkPage: (framework, tab) => set((state) => frameworkPageChange(state, framework, tab)),
+    setRelease: (tag) => set({ release: tag }),
     setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
     setChangeKinds: (kinds) => set({ changeKinds: kinds }),
     setCompareGroup: (group) => set({ compareGroup: group }),
@@ -234,7 +256,7 @@ export const useFilterStore = create<FilterState>((set) => {
     setLicence: (id) => set({ licence: id }),
     setProduct: (id) => set({ product: id }),
     setCompare: (ids) => set({ compare: ids }),
-    showCatalogEntry: (view, id) => set(view === 'licences' ? { view, licence: id } : { view, product: id }),
+    showCatalogEntry: (view, id) => set(view === 'licences' ? { view, release: null, licence: id } : { view, release: null, product: id }),
     showLicenceFromComparison: (id) => set({ licence: id, compare: [] }),
     setSearch: (value) => set({ search: value, openRule: null, openRuleTab: null, ...FIRST_PAGE }),
     toggleTarget: (value) => set((state) => ({ targets: toggled(state.targets, value), ...FIRST_PAGE })),
@@ -330,6 +352,7 @@ function urlStateOf(state: FilterState): UrlState {
     compare: state.compare,
     framework: state.framework,
     frameworkTab: state.frameworkTab,
+    release: state.release,
     compareFrom: state.compareFrom,
     compareTo: state.compareTo,
     compareGroup: state.compareGroup,
@@ -346,7 +369,7 @@ const URL_DEFAULTS = { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }
 // The address of a view with the current filters, so a copied or
 // opened-in-a-new-tab tab link lands on the same Rules state.
 export function hrefForView(state: FilterState, viewId: string): string {
-  return `${serializeUrlLocation({ ...urlStateOf(state), view: viewId }, URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
+  return `${serializeUrlLocation({ ...urlStateOf(state), ...viewChange(state, viewId) }, URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
 }
 
 // The address of a catalog entry in its tab, for a link that can also open
@@ -356,6 +379,7 @@ export function hrefForCatalogEntry(state: FilterState, view: 'licences' | 'prod
   const entryState: UrlState = {
     ...urlStateOf(state),
     view,
+    release: null,
     licence: view === 'licences' ? id : state.licence,
     product: view === 'products' ? id : state.product,
   }
@@ -397,6 +421,12 @@ export function replaceUnknownFramework() {
 // address is corrected in place to say so.
 export function replaceFrameworkTab(tab: FrameworkTab) {
   runReplacingHistory(() => useFilterStore.setState({ frameworkTab: tab }))
+}
+
+// A release that is not an older kept release of the open Rules sub-tab's
+// framework shows the current release, so the address drops it too.
+export function replaceUnknownRelease() {
+  runReplacingHistory(() => useFilterStore.getState().setRelease(null))
 }
 
 function writeStateToUrl(state: FilterState, previousState?: FilterState) {

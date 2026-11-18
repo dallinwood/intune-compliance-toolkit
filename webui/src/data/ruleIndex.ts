@@ -12,6 +12,12 @@ export function fetchRuleIndex(indexPath: string): Promise<RuleIndex> {
       return response.json() as Promise<RuleIndex>
     })
     cache.set(indexPath, entry)
+    // A failure is not kept, so a later request (an older release chosen
+    // again) retries instead of replaying it.
+    const pending = entry
+    pending.catch(() => {
+      if (cache.get(indexPath) === pending) cache.delete(indexPath)
+    })
   }
   return entry
 }

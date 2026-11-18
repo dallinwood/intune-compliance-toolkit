@@ -69,6 +69,18 @@ const firstIsmRelease = ism.releases[0]
 const ismHistory = JSON.parse(readFileSync(new URL('../.generated/baselines/_history/asd_ism.json', import.meta.url), 'utf8')) as HistoryIndex
 const REMOVED_ISM_RULE = compareReleases(ismHistory, firstIsmRelease.tag, currentIsmRelease.tag).removed[0]?.id ?? ''
 const comparisonUrl = `/frameworks?framework=asd_ism&from=${firstIsmRelease.tag}&to=${currentIsmRelease.tag}`
+// Across the whole kept history every rule has changed, so the tests that need
+// unchanged rules and a wording-only change compare from the latest release
+// before the current one that has both.
+const narrowableFromRelease = ism.releases
+  .slice(0, -1)
+  .reverse()
+  .find((release) => {
+    const comparison = compareReleases(ismHistory, release.tag, currentIsmRelease.tag)
+    const hasWordingOnlyChange = comparison.changed.some((rule) => rule.kinds.length === 1 && rule.kinds[0] === 'wording')
+    return comparison.unchanged.length > 0 && hasWordingOnlyChange
+  })!
+const narrowableComparisonUrl = `/frameworks?framework=asd_ism&from=${narrowableFromRelease.tag}&to=${currentIsmRelease.tag}`
 
 const tileValue = async (page: Page, name: string) => Number((await page.getByTestId(`summary-tile-${name}`).locator('span').first().textContent())?.replace(',', ''))
 const groupCount = async (page: Page, title: string) => {
@@ -89,7 +101,7 @@ test('the summary tiles match the number of rules in each group', async ({ page 
 })
 
 test('every kind starts ticked, and unticking one narrows the Changed group, with a way back', async ({ page }) => {
-  await page.goto(comparisonUrl)
+  await page.goto(narrowableComparisonUrl)
   await expect(page.getByTestId('summary-tile-changed')).toBeVisible({ timeout: 15_000 })
   const before = await tileValue(page, 'changed')
   for (const name of ['Behaviour', 'Scope', 'Wording', 'References']) await expect(page.getByRole('checkbox', { name })).toBeChecked()
@@ -142,7 +154,7 @@ test('a summary tile narrows the comparison to its group, and pressing it again 
 })
 
 test('the unchanged tile lists the unchanged rules, whose rows open to the rule at the To release', async ({ page }) => {
-  await page.goto(comparisonUrl)
+  await page.goto(narrowableComparisonUrl)
   await expect(page.getByTestId('summary-tile-unchanged')).toBeVisible({ timeout: 15_000 })
   await expect(page.getByRole('heading', { name: /^Unchanged \(/ })).toHaveCount(0)
   const unchangedCount = await tileValue(page, 'unchanged')
@@ -258,7 +270,13 @@ const emptyIsmUrl = `/frameworks?framework=asd_ism&from=empty&to=${firstIsmRelea
 test('pressing the first release compares it with an empty release, so every rule is added', async ({ page }) => {
   await page.goto('/frameworks')
 
-  await pill(page, ism.display_name, firstIsmRelease.label).click()
+  const firstReleaseIsInOlderMenu = ism.releases.length > 4
+  if (firstReleaseIsInOlderMenu) {
+    await card(page, ism.display_name).getByRole('button', { name: 'Older releases' }).click()
+    await page.getByRole('menuitem', { name: new RegExp(`^${firstIsmRelease.label}`) }).click()
+  } else {
+    await pill(page, ism.display_name, firstIsmRelease.label).click()
+  }
 
   await expect(page).toHaveURL(new RegExp(`framework=asd_ism&tab=releases&from=empty&to=${firstIsmRelease.tag}$`))
   await expect(page.getByRole('heading', { name: /Empty release to/ })).toBeVisible({ timeout: 15_000 })
@@ -329,7 +347,8 @@ test('a framework page lists only its rules, hides the Source facet and leaves t
   await page.goto('/frameworks?framework=mscp&tab=rules&source=asd_ism')
 
   await expect(page.getByRole('heading', { name: mscp.display_name, level: 2 })).toBeVisible()
-  await expect(page.getByText(`Current release: ${mscp.releases.at(-1)!.label} (${mscp.releases.at(-1)!.tag}) · ${mscp.rule_count} rules`)).toBeVisible()
+  await expect(page.getByRole('combobox', { name: 'Release' })).toHaveValue(mscp.releases.at(-1)!.tag)
+  await expect(page.getByText(`· ${mscp.rule_count} rules`)).toBeVisible()
   await expect(subTabs(page)).toHaveText(['Rules', 'Releases', 'Coverage'])
   await expect(ruleCount(page)).toHaveText(`${mscp.rule_count} of ${mscp.rule_count} rules`, { timeout: 10_000 })
   await expect(page.getByRole('heading', { name: 'Source' })).toHaveCount(0)

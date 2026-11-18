@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { FrameworkPair } from './frameworkPairs'
-import { frameworkHasPairs, resolveFrameworkPage, resolveFrameworkTab } from './frameworkTabs'
+import { frameworkHasPairs, resolveBrowsedRelease, resolveFrameworkPage, resolveFrameworkTab } from './frameworkTabs'
 
 describe('resolveFrameworkTab', () => {
   it('sends the all-rules page to rules whatever tab it asks for', () => {
@@ -55,5 +55,29 @@ describe('resolveFrameworkPage', () => {
   it('resolves a framework page with or without a Coverage sub-tab', () => {
     expect(resolveFrameworkPage('mscp', 'coverage', [mscp, cis], pairs)).toEqual({ source: mscp, tab: 'coverage', hasCoverage: true })
     expect(resolveFrameworkPage('cis', 'coverage', [mscp, cis], pairs)).toEqual({ source: cis, tab: 'rules', hasCoverage: false })
+  })
+})
+
+describe('resolveBrowsedRelease', () => {
+  const olderRelease = { tag: 'release_27.0' }
+  const currentRelease = { tag: 'release_27.1' }
+  const mscp = { releases: [olderRelease, currentRelease] }
+  const rulesPage = { source: mscp, tab: 'rules' as const, hasCoverage: true }
+
+  it('finds an older release on a framework Rules sub-tab', () => {
+    expect(resolveBrowsedRelease(rulesPage, 'release_27.0')).toBe(olderRelease)
+  })
+
+  it('is the current release (null) for no tag, the current tag or an unknown tag', () => {
+    expect(resolveBrowsedRelease(rulesPage, null)).toBeNull()
+    expect(resolveBrowsedRelease(rulesPage, 'release_27.1')).toBeNull()
+    expect(resolveBrowsedRelease(rulesPage, 'release_1.0')).toBeNull()
+  })
+
+  it('is null off a single framework Rules sub-tab', () => {
+    expect(resolveBrowsedRelease({ ...rulesPage, tab: 'coverage' }, 'release_27.0')).toBeNull()
+    expect(resolveBrowsedRelease({ ...rulesPage, tab: 'releases' }, 'release_27.0')).toBeNull()
+    expect(resolveBrowsedRelease({ source: 'all', tab: 'rules', hasCoverage: false }, 'release_27.0')).toBeNull()
+    expect(resolveBrowsedRelease(null, 'release_27.0')).toBeNull()
   })
 })

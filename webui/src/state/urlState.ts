@@ -41,6 +41,9 @@ export interface UrlState {
   framework: string | null
   // The sub-tab of a framework page; null when absent or not a known tab.
   frameworkTab: FrameworkTab | null
+  // The tag of the older release a framework's Rules sub-tab browses; null
+  // (and absent from the address) is the current release.
+  release: string | null
   compareFrom: string | null
   compareTo: string | null
   compareGroup: CompareGroup | null
@@ -136,6 +139,7 @@ export function parseUrlState(search: string, pathname = '', basePath = '/'): Ur
     compare: listValues('compare'),
     framework: parameters.get('framework') || null,
     frameworkTab: isFrameworkTab(tabParameter) ? tabParameter : null,
+    release: parameters.get('release') || null,
     compareFrom: parameters.get('from') || null,
     compareTo: parameters.get('to') || null,
     compareGroup: isCompareGroup(parameters.get('group')) ? (parameters.get('group') as CompareGroup) : null,
@@ -166,6 +170,7 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   for (const licenceId of state.compare) parameters.append('compare', licenceId)
   if (state.framework !== null) parameters.set('framework', state.framework)
   if (state.frameworkTab !== null) parameters.set('tab', state.frameworkTab)
+  if (state.release !== null) parameters.set('release', state.release)
   if (state.compareFrom !== null) parameters.set('from', state.compareFrom)
   if (state.compareTo !== null) parameters.set('to', state.compareTo)
   if (state.compareGroup !== null) parameters.set('group', state.compareGroup)
@@ -211,6 +216,7 @@ export function startsHistoryEntry(previous: UrlState, next: UrlState): boolean 
   return (
     next.view !== previous.view ||
     next.framework !== previous.framework ||
+    next.release !== previous.release ||
     (next.frameworkTab !== previous.frameworkTab && next.frameworkTab !== null && previous.frameworkTab !== null) ||
     next.licence !== previous.licence ||
     next.product !== previous.product ||
