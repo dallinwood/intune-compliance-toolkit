@@ -176,4 +176,4 @@ removed with it.
 
 ## Progress log
 
-(none yet)
+- 2026-11-18: Added `tools/odv_placeholders.py`, the shared placeholder and quoting rules, with tests (this commit).
