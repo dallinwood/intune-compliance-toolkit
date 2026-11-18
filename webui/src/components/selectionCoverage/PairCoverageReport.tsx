@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label'
 import { NativeSelect } from '@/components/ui/native-select'
 import { Button } from '@/components/ui/button'
 import { formatCount } from '../../lib/format'
+import { formatCoveragePercent } from '../../logic/coveragePercent'
 import { capCount, withinReach, type CappedCoverage } from '../../logic/frameworkPairs'
 import { sectionsWithinReach } from '../../logic/sectionDrillDown'
 import { ALL_CONTROLS_SCOPE, cappedBarLabel, type FrameworkCoverage } from '../../logic/selectionCoverage'
@@ -29,20 +30,36 @@ function ModeToggle({ mode, onModeChange }: { mode: CoverageMode; onModeChange: 
   )
 }
 
-function WholeFrameworkBar({ coverage, cap, scopeLabel }: { coverage: FrameworkCoverage; cap: FrameworkCoverage; scopeLabel: string | null }) {
+function WholeFrameworkBar({
+  coverage,
+  cap,
+  scopeLabel,
+  coveredLabel,
+}: {
+  coverage: FrameworkCoverage
+  cap: FrameworkCoverage
+  scopeLabel: string | null
+  coveredLabel: string
+}) {
   const maximum = capCount(cap)
   const scopeSuffix = scopeLabel === null ? '' : ` at ${scopeLabel}`
   return (
     <div className="space-y-1">
-      <p className="flex flex-wrap justify-between gap-x-3 text-xs text-muted-foreground">
+      <p className="flex flex-wrap items-baseline justify-between gap-x-3 text-xs text-muted-foreground">
         <span>
           Whole framework - {formatCount(coverage.total)} controls{scopeSuffix}
         </span>
         <span>
-          {formatCount(capCount(coverage))} supported
-          {coverage.relatedOnly > 0 && ` · ${formatCount(coverage.relatedOnly)} related only`}
-          {coverage.selectedDirectly > 0 && ` · ${formatCount(coverage.selectedDirectly)} selected directly`}
+          <span data-testid="whole-framework-percent" className="text-xl font-bold text-foreground">
+            {formatCoveragePercent(capCount(coverage), coverage.total)}
+          </span>{' '}
+          of {coveredLabel}
         </span>
+      </p>
+      <p className="text-xs text-muted-foreground">
+        {formatCount(capCount(coverage))} supported
+        {coverage.relatedOnly > 0 && ` · ${formatCount(coverage.relatedOnly)} related only`}
+        {coverage.selectedDirectly > 0 && ` · ${formatCount(coverage.selectedDirectly)} selected directly`}
       </p>
       <CoverageBar
         covered={coverage.covered}
@@ -123,7 +140,7 @@ export function PairCoverageReport({
         <h3 className="text-base font-semibold">{title}</h3>
         <ModeToggle mode={mode} onModeChange={onModeChange} />
       </div>
-      <WholeFrameworkBar coverage={coverage} cap={capped.cap} scopeLabel={scopeLabel} />
+      <WholeFrameworkBar coverage={coverage} cap={capped.cap} scopeLabel={scopeLabel} coveredLabel={termLabel(vocabularyIndex, 'sources', coverage.sourceName)} />
       <WithinReachBar coverage={coverage} cap={capped.cap} coveringLabel={coveringLabel} />
       {mode === 'all-rules' ? (
         coverage.coveredThroughSupporting > 0 && (

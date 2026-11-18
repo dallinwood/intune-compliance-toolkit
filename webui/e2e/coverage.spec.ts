@@ -140,6 +140,15 @@ test.describe('with the library mappings', () => {
     await expect(nistReport).toContainText('100% of the cap')
     await expect(nistReport).toContainText('0 still to go')
     await expect(nistReport).toContainText('140 supported')
+    await expect(nistReport.getByTestId('whole-framework-percent')).toHaveText('14%')
+    await expect(nistReport).toContainText('of NIST SP 800-53')
+  })
+
+  test('the whole-framework percentage is below 1% for a selection that reaches almost nothing', async ({ page }) => {
+    await seedSelection(page, [AUDIT_RULE])
+    await page.goto(MSCP_COVERAGE_PATH)
+    const percent = report(page, 'Supports NIST SP 800-53').getByTestId('whole-framework-percent')
+    await expect(percent).toHaveText(/^(<1|\d+)%$/)
   })
 
   test('a section on the mSCP page lists mSCP rules to select and open', async ({ page }) => {
