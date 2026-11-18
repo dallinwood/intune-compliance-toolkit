@@ -386,18 +386,20 @@ test('Generate opens the review in place of the framework page and Back returns 
   await expect(page.getByRole('heading', { name: 'Review & generate' })).toBeVisible()
   await expect(subTabs(page)).toHaveCount(0)
 
-  await page.getByRole('button', { name: 'Back to rules' }).click()
+  await page.getByRole('button', { name: 'Back to ASD ISM' }).click()
   await expect(page.getByRole('heading', { name: ism.display_name, level: 2 })).toBeVisible()
 })
 
-test('the mSCP card shows its caps, the ISM card a combined bar and the NIST card none', async ({ page }) => {
+test('the mSCP card shows its caps, and neither the ISM card nor the NIST card has a combined bar', async ({ page }) => {
   await page.goto('/frameworks')
   await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
 
   const mscpCard = card(page, mscp.display_name)
   await expect(mscpCard.getByText('max 140')).toBeVisible()
   await expect(mscpCard.getByText('max 61')).toBeVisible()
-  await expect(card(page, ism.display_name).getByText('All mapped frameworks')).toBeVisible()
+  await expect(card(page, mscp.display_name).getByText('Supports NIST SP 800-53')).toBeVisible()
+  await expect(card(page, ism.display_name).getByText('All mapped frameworks')).toHaveCount(0)
+  await expect(card(page, ism.display_name).getByText('linked as related, not counted as coverage')).toBeVisible()
   await expect(card(page, sourceNamed('nist_800_53').display_name).getByText('All mapped frameworks')).toHaveCount(0)
 })
 
@@ -410,4 +412,10 @@ test('Browse all rules opens the all-rules page and a card Coverage link opens i
   await page.goto('/frameworks')
   await card(page, mscp.display_name).getByRole('link', { name: 'Coverage' }).click()
   await expect(page).toHaveURL(/framework=mscp&tab=coverage$/)
+})
+
+test('an old bare-base Rules link lands on the all-rules page with its search kept', async ({ page }) => {
+  await page.goto('/?q=audit')
+  await expect(page).toHaveURL(/framework=all&tab=rules/)
+  await expect(page).toHaveURL(/q=audit/)
 })

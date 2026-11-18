@@ -69,16 +69,13 @@ export function frameworkPairs(rows: readonly RuleRow[], byRule: ReadonlyMap<str
   return [...sortedSupportsPairs, ...relatedPairs]
 }
 
-export function coveringSourcesOf(pairs: readonly FrameworkPair[], coveredSource: string): string[] {
-  const coveringSources = new Set<string>()
-  for (const pair of pairs) {
-    if (pair.kind === 'supports') {
-      if (pair.coveredSource === coveredSource) coveringSources.add(pair.coveringSource)
-    } else if (pair.sources.includes(coveredSource)) {
-      coveringSources.add(pair.sources[0] === coveredSource ? pair.sources[1] : pair.sources[0])
-    }
-  }
-  return [...coveringSources].sort(compareText)
+// Related partners are left out: the combined report counts only frameworks that support the
+// covered one, so a related-only partner never makes it a duplicate of a single pair's report.
+export function supportingSourcesOf(pairs: readonly FrameworkPair[], coveredSource: string): string[] {
+  const supportingSources = pairs
+    .filter((pair): pair is SupportsPair => pair.kind === 'supports' && pair.coveredSource === coveredSource)
+    .map((pair) => pair.coveringSource)
+  return [...new Set(supportingSources)].sort(compareText)
 }
 
 export function supportsPairsCovering(pairs: readonly FrameworkPair[], coveringSource: string): SupportsPair[] {

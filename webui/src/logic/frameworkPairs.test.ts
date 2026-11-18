@@ -3,15 +3,16 @@ import type { MappedRule } from './mappingIndex'
 import {
   capCount,
   combinedCoverage,
-  coveringSourcesOf,
   frameworkPairs,
   pairCoverage,
   relatedPairCoverage,
+  supportingSourcesOf,
   withinReach,
   type FrameworkPair,
   type SelectionSettings,
   type SupportsPair,
 } from './frameworkPairs'
+import { cardCoverages } from './cardCoverage'
 import { ALL_CONTROLS_SCOPE, type FrameworkCoverage } from './selectionCoverage'
 import type { RuleRow } from '../types/rule-row'
 
@@ -105,11 +106,42 @@ describe('frameworkPairs', () => {
   })
 })
 
-describe('coveringSourcesOf', () => {
-  it('includes supports and related partners', () => {
+describe('supportingSourcesOf', () => {
+  it('lists supports partners and leaves related partners out', () => {
     const pairs: FrameworkPair[] = [supportsPair('a', 'b'), { kind: 'related', sources: ['b', 'e'] }]
 
-    expect(coveringSourcesOf(pairs, 'b')).toEqual(['a', 'e'])
+    expect(supportingSourcesOf(pairs, 'b')).toEqual(['a'])
+  })
+
+  it('lists every supporting framework once', () => {
+    const pairs: FrameworkPair[] = [supportsPair('c', 'b'), supportsPair('a', 'b'), supportsPair('a', 'z')]
+
+    expect(supportingSourcesOf(pairs, 'b')).toEqual(['a', 'c'])
+  })
+})
+
+describe('the combined report threshold on cards', () => {
+  const rows = [
+    row({ sourceName: 'a', upstreamId: 'r1' }),
+    row({ sourceName: 'c', upstreamId: 'r2' }),
+    row({ sourceName: 'e', upstreamId: 'r3' }),
+    row({ sourceName: 'b', upstreamId: 'c1' }),
+  ]
+  const cardSettings = settings([])
+
+  it('is absent for one supporting framework plus a related-only partner', () => {
+    const byRule = indexOf([...supportPair('a.r1', 'b.c1'), ...relatedPair('e.r3', 'b.c1')])
+    const coverage = cardCoverages(['b'], rows, byRule, frameworkPairs(rows, byRule), cardSettings)
+
+    expect(coverage.get('b')?.combined).toBeNull()
+    expect(coverage.get('b')?.related.map((entry) => entry.otherSource)).toEqual(['e'])
+  })
+
+  it('is present for two supporting frameworks', () => {
+    const byRule = indexOf([...supportPair('a.r1', 'b.c1'), ...supportPair('c.r2', 'b.c1')])
+    const coverage = cardCoverages(['b'], rows, byRule, frameworkPairs(rows, byRule), cardSettings)
+
+    expect(coverage.get('b')?.combined).not.toBeNull()
   })
 })
 

@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { pluralize } from '../../lib/format'
 import {
   combinedCoverage,
-  coveringSourcesOf,
+  supportingSourcesOf,
   pairCoverage,
   relatedPairCoverage,
   selectionCoverageInput,
@@ -102,7 +102,7 @@ function UnsupportedSelectedRules({ unsupportedRules }: { unsupportedRules: Rule
 }
 
 // A framework page's Coverage sub-tab: one report per framework pair it belongs to, related-only
-// pairs as notes, and the combined report when two or more frameworks cover it.
+// pairs as notes, and the combined report when two or more frameworks support it.
 export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { sourceName: string; rows: readonly RuleRow[]; selectedRuleIds: ReadonlySet<string> }) {
   const { byRule, frameworkPairs } = useRuleMappings()
   const vocabularyIndex = useVocabularyIndex()
@@ -117,7 +117,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
   )
   const pairsThisCovers = supportsPairsCovering(frameworkPairs, sourceName)
   const pairsCoveringThis = frameworkPairs.filter((pair): pair is SupportsPair => pair.kind === 'supports' && pair.coveredSource === sourceName)
-  const coveringSources = useMemo(() => coveringSourcesOf(frameworkPairs, sourceName), [frameworkPairs, sourceName])
+  const supportingSources = useMemo(() => supportingSourcesOf(frameworkPairs, sourceName), [frameworkPairs, sourceName])
   const relatedCoverages = useMemo(
     () =>
       frameworkPairs.flatMap((pair) => {
@@ -128,8 +128,8 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
     [rows, byRule, frameworkPairs, sourceName],
   )
   const computeCombinedCoverage = useMemo(
-    () => (scope: string) => combinedCoverage(rows, byRule, sourceName, coveringSources, settings, scope),
-    [rows, byRule, sourceName, coveringSources, settings],
+    () => (scope: string) => combinedCoverage(rows, byRule, sourceName, supportingSources, settings, scope),
+    [rows, byRule, sourceName, supportingSources, settings],
   )
   const unsupportedRules = useMemo(
     () => selectedRulesSupportingNothing(selectionCoverageInput(rows, byRule, settings), coverageFrameworks(rows, byRule).counted),
@@ -154,7 +154,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
           <SupportsPairReport
             key={`covers:${pair.coveredSource}`}
             pair={pair}
-            title={`${sourceLabel(sourceName)} → ${sourceLabel(pair.coveredSource)}`}
+            title={`Supports ${sourceLabel(pair.coveredSource)}`}
             coveringLabel={sourceLabel(sourceName)}
             rows={rows}
             settings={settings}
@@ -173,7 +173,7 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
         {relatedCoverages.map(({ otherSource, coverage }) => (
           <RelatedPairNote key={`related:${otherSource}`} otherLabel={sourceLabel(otherSource)} coverage={coverage} />
         ))}
-        {coveringSources.length >= 2 && (
+        {supportingSources.length >= 2 && (
           <div className="space-y-4 border-t border-border pt-4">
             <CappedReport
               title="All mapped frameworks"

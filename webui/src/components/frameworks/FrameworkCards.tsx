@@ -60,22 +60,27 @@ function CompactCappedBar({ title, capped }: { title: string; capped: CappedCove
   )
 }
 
+const RELATED_NOT_COVERAGE_NOTE = 'linked as related, not counted as coverage'
+
 function CardCoverageBlock({ coverage }: { coverage: CardCoverage }) {
   const vocabularyIndex = useVocabularyIndex()
   const sourceLabel = (name: string) => termLabel(vocabularyIndex, 'sources', name)
   return (
     <div data-testid="card-coverage" className="space-y-4 border-t border-border pt-3">
       {coverage.covers.map(({ coveredSource, capped }) => (
-        <CompactCappedBar key={`covers:${coveredSource}`} title={`→ ${sourceLabel(coveredSource)}`} capped={capped} />
+        <CompactCappedBar key={`covers:${coveredSource}`} title={`Supports ${sourceLabel(coveredSource)}`} capped={capped} />
       ))}
       {coverage.coveredBy.map(({ coveringSource, capped }) => (
         <CompactCappedBar key={`covered-by:${coveringSource}`} title={`Supported by ${sourceLabel(coveringSource)}`} capped={capped} />
       ))}
       {coverage.related.map(({ otherSource, coverage: relatedCoverage }) => (
-        <p key={`related:${otherSource}`} className="flex flex-wrap justify-between gap-x-3 text-xs">
-          <span className="font-medium">Related to {sourceLabel(otherSource)}</span>
-          <span className="text-muted-foreground">{formatCount(relatedCoverage.relatedOnly)} related only</span>
-        </p>
+        <div key={`related:${otherSource}`} className="space-y-0.5">
+          <p className="flex flex-wrap justify-between gap-x-3 text-xs">
+            <span className="font-medium">Related to {sourceLabel(otherSource)}</span>
+            <span className="text-muted-foreground">{formatCount(relatedCoverage.relatedOnly)} related only</span>
+          </p>
+          <p className="text-xs text-muted-foreground">{RELATED_NOT_COVERAGE_NOTE}</p>
+        </div>
       ))}
       {coverage.combined !== null && (
         <div className="border-t border-border pt-3">

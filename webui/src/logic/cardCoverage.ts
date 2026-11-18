@@ -4,7 +4,7 @@
 import type { RuleRow } from '../types/rule-row'
 import {
   combinedCoverage,
-  coveringSourcesOf,
+  supportingSourcesOf,
   pairCoverage,
   relatedPairCoverage,
   type CappedCoverage,
@@ -33,7 +33,7 @@ export function cardCoverages(
   const cappedByPair = new Map(supportsPairs.map((pair) => [pair, pairCoverage(rows, byRule, pair, settings, ALL_CONTROLS_SCOPE)]))
   return new Map(
     sourceNames.map((sourceName) => {
-      const coveringSources = coveringSourcesOf(pairs, sourceName)
+      const supportingSources = supportingSourcesOf(pairs, sourceName)
       const coverage: CardCoverage = {
         covers: supportsPairs.filter((pair) => pair.coveringSource === sourceName).map((pair) => ({ coveredSource: pair.coveredSource, capped: cappedByPair.get(pair)! })),
         coveredBy: supportsPairs.filter((pair) => pair.coveredSource === sourceName).map((pair) => ({ coveringSource: pair.coveringSource, capped: cappedByPair.get(pair)! })),
@@ -42,7 +42,7 @@ export function cardCoverages(
           const otherSource = pair.sources[0] === sourceName ? pair.sources[1] : pair.sources[0]
           return [{ otherSource, coverage: relatedPairCoverage(rows, byRule, otherSource, sourceName) }]
         }),
-        combined: coveringSources.length >= 2 ? combinedCoverage(rows, byRule, sourceName, coveringSources, settings, ALL_CONTROLS_SCOPE) : null,
+        combined: supportingSources.length >= 2 ? combinedCoverage(rows, byRule, sourceName, supportingSources, settings, ALL_CONTROLS_SCOPE) : null,
       }
       return [sourceName, coverage]
     }),

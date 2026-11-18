@@ -99,28 +99,29 @@ function seedSelection(page: Page, selectedRuleIds: string[]) {
 test.describe('with the library mappings', () => {
   const AUDIT_RULE = 'mscp.audit_auditd_enabled'
 
-  test('ASD ISM lists the mSCP report, the E4EIT note and the combined report', async ({ page }) => {
+  test('ASD ISM lists the mSCP report and the E4EIT note, without a combined report', async ({ page }) => {
     await page.goto(ISM_COVERAGE_PATH)
     await expect(page.getByRole('navigation', { name: 'Page tabs' }).getByRole('link', { name: 'Coverage' })).toHaveAttribute('aria-current', 'page')
     await expect(report(page, SUPPORTED_BY_MSCP)).toContainText('max 61')
     await expect(report(page, SUPPORTED_BY_MSCP)).toContainText('Within reach of NIST mSCP - 61 controls')
     const relatedNote = report(page, 'Related to ASD E4EIT')
     await expect(relatedNote).toContainText('related only')
+    await expect(relatedNote).toContainText('Linked as related, not counted as coverage.')
     await expect(relatedNote).not.toContainText('max')
-    await expect(report(page, 'All mapped frameworks')).toContainText('max 61')
+    await expect(report(page, 'All mapped frameworks')).toHaveCount(0)
   })
 
   test('mSCP lists one report per framework it supports and no combined report', async ({ page }) => {
     await page.goto(MSCP_COVERAGE_PATH)
-    await expect(report(page, 'NIST mSCP → NIST SP 800-53')).toContainText('max 140')
-    await expect(report(page, 'NIST mSCP → ASD ISM')).toContainText('max 61')
+    await expect(report(page, 'Supports NIST SP 800-53')).toContainText('max 140')
+    await expect(report(page, 'Supports ASD ISM')).toContainText('max 61')
     await expect(page.getByTestId('pair-coverage-report')).toHaveCount(2)
     await expect(report(page, 'All mapped frameworks')).toHaveCount(0)
   })
 
   test('selecting an mSCP rule raises its pair selection', async ({ page }) => {
     await page.goto(MSCP_COVERAGE_PATH)
-    const nistReport = report(page, 'NIST mSCP → NIST SP 800-53')
+    const nistReport = report(page, 'Supports NIST SP 800-53')
     await expect(nistReport).toContainText('0 direct · 0 through supporting checks')
 
     await seedSelection(page, [AUDIT_RULE])
@@ -132,7 +133,7 @@ test.describe('with the library mappings', () => {
 
   test('All rules shows the cap in both bars', async ({ page }) => {
     await page.goto(MSCP_COVERAGE_PATH)
-    const nistReport = report(page, 'NIST mSCP → NIST SP 800-53')
+    const nistReport = report(page, 'Supports NIST SP 800-53')
     await expect(nistReport.getByRole('button', { name: 'Your selection' })).toHaveAttribute('aria-pressed', 'true')
     await nistReport.getByRole('button', { name: 'All rules' }).click()
     await expect(nistReport.getByRole('button', { name: 'All rules' })).toHaveAttribute('aria-pressed', 'true')
@@ -321,5 +322,35 @@ test.describe('coverage through supporting rules', () => {
     await expect(supported).toContainText('Through supporting rules')
     await supported.getByRole('button').click()
     await expect(supported).toContainText(`${upstreamOf(SUPPORTING_CHECK)} (supporting check) -> supports ${upstreamOf(HARDENING_CONTROL)}`)
+  })
+})
+
+const NIST_RELEASE = currentReleaseOf('nist_800_53')
+
+test.describe('with two frameworks supporting the same framework', () => {
+  test('ASD ISM shows the combined report', async ({ page }) => {
+    const mappingIndex = buildMappingIndex(
+      [
+        {
+          fileName: 'two-supporters.json',
+          value: {
+            schema_version: 1,
+            id: 'two-supporters',
+            links: [
+              { relation: 'supports', from: [endpoint(AUTOMATED_SUPPORTER, MSCP_RELEASE)], to: [endpoint(MEDIA_CONTROL, ISM_RELEASE)] },
+              { relation: 'supports', from: [endpoint('nist_800_53.ac-1', NIST_RELEASE)], to: [endpoint(HARDENING_CONTROL, ISM_RELEASE)] },
+            ],
+          },
+        },
+      ],
+      () => {},
+    )
+    await page.route('**/baselines/_mappings/_index.json', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mappingIndex) }),
+    )
+    await page.goto(ISM_COVERAGE_PATH)
+
+    await expect(report(page, SUPPORTED_BY_MSCP)).toBeVisible({ timeout: 15_000 })
+    await expect(report(page, 'All mapped frameworks')).toBeVisible()
   })
 })

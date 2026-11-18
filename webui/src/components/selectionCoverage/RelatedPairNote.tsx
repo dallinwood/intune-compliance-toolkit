@@ -20,7 +20,7 @@ export function RelatedPairNote({ otherLabel, coverage }: { otherLabel: string; 
         total={coverage.total}
         label={`${formatCount(coverage.relatedOnly)} of ${formatCount(coverage.total)} related only, not counted as coverage`}
       />
-      <p className="text-xs text-muted-foreground">Related links are not counted as coverage.</p>
+      <p className="text-xs text-muted-foreground">Linked as related, not counted as coverage.</p>
     </section>
   )
 }
