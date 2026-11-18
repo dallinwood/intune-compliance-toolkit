@@ -20,7 +20,8 @@ test('the Frameworks tab lists a card per framework with its current release and
   const ismCard = card(page, ism.display_name)
   await expect(ismCard).toContainText(`Current: ${currentIsmRelease.label} (${currentIsmRelease.tag}) · ${ism.rule_count.toLocaleString('en-US')} rules`)
   const pills = ismCard.getByRole('list', { name: 'Releases' }).getByRole('listitem')
-  await expect(pills).toHaveCount(ism.releases.length)
+  const hasOlderReleasesMenu = ism.releases.length > 4
+  await expect(pills).toHaveCount(hasOlderReleasesMenu ? 5 : ism.releases.length)
   await expect(pills.last()).toContainText(`${currentIsmRelease.label} · current`)
   await expect(ismCard.getByText('· current')).toHaveCount(1)
 })
@@ -265,15 +266,15 @@ test('pressing the first release compares it with an empty release, so every rul
   for (const name of ['removed', 'changed', 'unchanged']) expect(await tileValue(page, name)).toBe(0)
 })
 
-test("a single-release framework's release opens its comparison", async ({ page }) => {
+test("a framework's oldest release opens its comparison against an empty release", async ({ page }) => {
   const nist = sourceNamed('nist_800_53')
-  expect(nist.releases).toHaveLength(1)
+  const oldestNistRelease = nist.releases[0]
   await page.goto('/frameworks')
 
-  await pill(page, nist.display_name, nist.releases[0].label).click()
+  await pill(page, nist.display_name, oldestNistRelease.label).click()
 
-  await expect(page).toHaveURL(new RegExp(`framework=nist_800_53&tab=releases&from=empty&to=${nist.releases[0].tag}$`))
-  await expect.poll(() => tileValue(page, 'added'), { timeout: 15_000 }).toBe(nist.rule_count)
+  await expect(page).toHaveURL(new RegExp(`framework=nist_800_53&tab=releases&from=empty&to=${oldestNistRelease.tag}$`))
+  await expect.poll(() => tileValue(page, 'added'), { timeout: 15_000 }).toBe(oldestNistRelease.rule_count)
 })
 
 test('the From select offers Empty release and choosing it lists every rule in To as added', async ({ page }) => {
@@ -296,7 +297,7 @@ test('the Framework select lists every framework', async ({ page }) => {
   await expect(page.getByLabel('Framework').locator('option')).toHaveCount(manifest.sources.length)
 
   await page.getByLabel('Framework').selectOption('nist_800_53')
-  await expect(page).toHaveURL(/framework=nist_800_53&tab=releases&from=empty&to=/)
+  await expect(page).toHaveURL(/framework=nist_800_53&tab=releases&from=/)
 })
 
 test('an empty-release address survives a reload', async ({ page }) => {
@@ -412,6 +413,33 @@ test('Browse all rules opens the all-rules page and a card Coverage link opens i
   await page.goto('/frameworks')
   await card(page, mscp.display_name).getByRole('link', { name: 'Coverage' }).click()
   await expect(page).toHaveURL(/framework=mscp&tab=coverage$/)
+})
+
+test('a card Rules link opens the Rules sub-tab of its framework', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await card(page, ism.display_name).getByRole('link', { name: 'Rules' }).click()
+  await expect(page).toHaveURL(/framework=asd_ism&tab=rules$/)
+})
+
+test('the card Rules and Coverage links sit in the title row, to the right of the title', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/frameworks')
+
+  const mscpCard = card(page, mscp.display_name)
+  const titleBox = (await mscpCard.getByRole('heading', { name: mscp.display_name }).boundingBox())!
+  for (const linkName of ['Rules', 'Coverage']) {
+    const linkBox = (await mscpCard.getByRole('link', { name: linkName, exact: true }).boundingBox())!
+    expect(linkBox.x).toBeGreaterThan(titleBox.x + titleBox.width)
+    expect(Math.abs(linkBox.y + linkBox.height / 2 - (titleBox.y + titleBox.height / 2))).toBeLessThan(titleBox.height)
+  }
+})
+
+test('no Older releases menu appears while every framework has four releases or fewer', async ({ page }) => {
+  await page.goto('/frameworks')
+
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+  await expect(page.getByRole('button', { name: 'Older releases' })).toHaveCount(manifest.sources.filter((source) => source.releases.length > 4).length)
 })
 
 test('an old bare-base Rules link lands on the all-rules page with its search kept', async ({ page }) => {

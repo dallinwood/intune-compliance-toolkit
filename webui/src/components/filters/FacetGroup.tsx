@@ -24,7 +24,7 @@ export function FacetGroup({ title, selectedCount = 0, startsOpen = false, child
   }
 
   return (
-    <div className="mb-2">
+    <div className="mb-1">
       <h2 id={headingId} className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         <button
           type="button"

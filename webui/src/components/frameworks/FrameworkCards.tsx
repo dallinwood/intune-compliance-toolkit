@@ -1,9 +1,13 @@
+import { ChevronDown } from 'lucide-react'
+import type { MouseEvent } from 'react'
 import { isPlainLeftClick } from '@/lib/utils'
+import { splitReleases } from '../../logic/cardReleases'
 import { EMPTY_RELEASE_LABEL, comparisonLocation, previousReleaseTag } from '../../logic/releaseRange'
 import { useFilterStore } from '../../state/filterStore'
 import type { ManifestSource } from '../../types/library'
 import { formatCount, pluralize } from '../../lib/format'
 import { buttonVariants } from '@/components/ui/button'
+import { Menu, MenuContent, MenuLinkItem, MenuTrigger } from '@/components/ui/menu'
 import { cn } from '@/lib/utils'
 import type { CardCoverage } from '../../logic/cardCoverage'
 import { capCount, type CappedCoverage } from '../../logic/frameworkPairs'
@@ -29,7 +33,7 @@ function FrameworkPageLink({ framework, tab, children, variant = 'outline' }: { 
         event.preventDefault()
         filterState.setFrameworkPage(framework, tab)
       }}
-      className={cn(buttonVariants({ variant, size: 'xs' }))}
+      className={cn(buttonVariants({ variant, size: 'sm' }))}
     >
       {children}
     </a>
@@ -112,48 +116,69 @@ export function FrameworkCards({ sources, coverageBySource }: { sources: Manifes
         const releaseTags = source.releases.map((release) => release.tag)
         const coverage = coverageBySource.get(source.name)
         const hasPairs = hasCoverageBlock(coverage)
+        const { older, visible } = splitReleases(source.releases)
+        const releaseLinkProps = (release: ManifestSource['releases'][number]) => {
+          const range = { fromTag: previousReleaseTag(releaseTags, release.tag)!, toTag: release.tag }
+          return {
+            href: comparisonLocation(source.name, range, import.meta.env.BASE_URL),
+            'aria-label': accessibleName(release.label, release.tag === current.tag, release.tag === releaseTags[0]),
+            onClick: (event: MouseEvent<HTMLElement>) => {
+              if (!isPlainLeftClick(event)) return
+              event.preventDefault()
+              showComparison(source.name, range.fromTag, range.toTag)
+            },
+          }
+        }
         return (
           <li key={source.name} data-testid="framework-card" className="space-y-3 rounded-lg border border-border bg-panel p-4">
-            <h2 className="text-base font-semibold">{source.display_name}</h2>
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+              <h2 className="text-base font-semibold">{source.display_name}</h2>
+              <div className="flex gap-2">
+                <FrameworkPageLink framework={source.name} tab="rules">
+                  Rules
+                </FrameworkPageLink>
+                {hasPairs && (
+                  <FrameworkPageLink framework={source.name} tab="coverage">
+                    Coverage
+                  </FrameworkPageLink>
+                )}
+              </div>
+            </div>
             <p className="text-sm text-muted-foreground">
               Current: {current.label} ({current.tag}) · {pluralize(source.rule_count, 'rule', 'rules')}
             </p>
             <p className="text-sm text-muted-foreground">Choose a release to see what changed in it.</p>
             <ul aria-label="Releases" className="flex flex-wrap gap-2">
-              {source.releases.map((release, position) => {
-                const isCurrent = release.tag === current.tag
-                const previousTag = previousReleaseTag(releaseTags, release.tag)!
-                const range = { fromTag: previousTag, toTag: release.tag }
-                return (
-                  <li key={release.tag}>
-                    <a
-                      href={comparisonLocation(source.name, range, import.meta.env.BASE_URL)}
-                      aria-label={accessibleName(release.label, isCurrent, position === 0)}
-                      onClick={(event) => {
-                        if (!isPlainLeftClick(event)) return
-                        event.preventDefault()
-                        showComparison(source.name, range.fromTag, range.toTag)
-                      }}
-                      className={buttonVariants({ variant: isCurrent ? 'default' : 'outline', size: 'xs' })}
-                    >
-                      {release.label}
-                      {isCurrent && ' · current'}
-                    </a>
-                  </li>
-                )
-              })}
+              {older.length > 0 && (
+                <li>
+                  <Menu>
+                    <MenuTrigger className={buttonVariants({ variant: 'outline', size: 'xs' })}>
+                      Older releases
+                      <ChevronDown aria-hidden="true" />
+                    </MenuTrigger>
+                    <MenuContent>
+                      {older.map((release) => (
+                        <MenuLinkItem key={release.tag} {...releaseLinkProps(release)}>
+                          {release.label}
+                        </MenuLinkItem>
+                      ))}
+                    </MenuContent>
+                  </Menu>
+                </li>
+              )}
+              {visible.map((release) => (
+                <li key={release.tag}>
+                  <a
+                    {...releaseLinkProps(release)}
+                    className={buttonVariants({ variant: release.tag === current.tag ? 'default' : 'outline', size: 'xs' })}
+                  >
+                    {release.label}
+                    {release.tag === current.tag && ' · current'}
+                  </a>
+                </li>
+              ))}
             </ul>
             {hasCoverageBlock(coverage) && <CardCoverageBlock coverage={coverage} />}
-            <div className="flex gap-2">
-              <FrameworkPageLink framework={source.name} tab="rules">
-                Rules
-              </FrameworkPageLink>
-              {hasPairs && (
-                <FrameworkPageLink framework={source.name} tab="coverage">
-                  Coverage
-                </FrameworkPageLink>
-              )}
-            </div>
           </li>
         )
       })}
