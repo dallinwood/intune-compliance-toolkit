@@ -257,12 +257,32 @@ Behaviour:
   - Old bare-base Rules links (`/?q=..`, `/?rule=..`, or any Rules filter parameter on the bare base path) land on the card grid. In `migrateLegacyView`, send a bare-base address carrying Rules parameters (`q`, `rule`, `source`, `target`, `version`, `benchmark`, `section`, `tag`, `automation`, `page`, `size`) to `framework: 'all', frameworkTab: 'rules'`.
   - "Clear filters" on a framework page empties the hidden `sources` set. Spec: sources is left untouched while scoped. Keep `sources` when clearing on a framework page.
   - The Generate review's back button says "Back to rules". Make it name where it returns (e.g. "Back to {framework}" or "Back to all rules").
+  - The "All mapped frameworks" combined report (cards and Coverage sub-tab) appears only when TWO OR MORE frameworks have a *supports* pair into the covered framework. Related-only partners no longer count toward that threshold (ISM today has mSCP supports + E4EIT related, so its combined bar duplicated the mSCP bar). Related partners still get their own "Related to X" line. Add a unit/e2e test: ISM shows no combined report with today's data; a fixture with two supporting frameworks shows it. Update the spec's "Combined report" section and the "Data today" note to match.
+  - Covering-side pair titles change from "→ {B}" to "Supports {B}" (cards and Coverage sub-tab); covered side stays "Supported by {A}". Update e2e assertions and the spec's copy.
+  - "Related to {X}" lines get a short secondary note: "linked as related, not counted as coverage".
 
 - [ ] Search the repo for leftover references to the old tabs (`'coverage'` view id, `DEFAULT_VIEW_ID` assumptions, copy saying "Rules view" or "Coverage view", README screenshots/text) and update them.
 - [ ] Update the spec status to `Implemented` and add the final progress log entry.
 - [ ] Commit `docs: log the unified Frameworks tab and close the plan`; push.
 
-**Review checkpoint B (full review):** after Task 8, one whole-branch review covering Tasks 3-8 against the spec, including the Review Focus list.
+### Task 9: Section breakdown follows the cap, and a section drill-down
+
+Requested by the user (2026-11-18) after seeing the Coverage sub-tab.
+
+Behaviour:
+- Section breakdown of a pair report (and the combined report) lists only sections of the covered framework B that the covering framework(s) have at least one mapping into, computed in the current mode: with "Automated checks only" on, sections reachable only through manual rules drop out. Sections ordered by their cap, largest first (ties by section order).
+- Each section row's bar gets its own cap line (the section's max: controls in that section reachable with current mappings, honouring Automated checks only). The number is not printed; it shows on hover/focus (tooltip) and is in the bar's aria-label.
+- Opening a section (replaces "Show x uncovered"):
+  - On the covering framework's page (title "Supports {B}"): list the covering framework's rules that map into this section. Selected (enabled) rules first, unselected below greyed out. Each row: checkbox (enables/disables the rule in the selection, same store path as the rules table, ODV values kept), rule id + title as a button opening a rule dialog, and a secondary line "Supports {control ids}" listing the B controls in this section it maps to.
+  - On the covered framework's page (title "Supported by {A}") and in the combined report: list all of this section's B controls, selected first, unselected greyed below, same checkbox and rule dialog; secondary line shows coverage status (covered directly / through supporting checks / related only / not covered).
+- Rule dialog: same Dialog pattern as "Sources & licences" and the Icon key; content reuses the existing rule detail panel (RuleDetailPanel) for that rule.
+- Coverage bars update immediately when a checkbox in the drill-down changes.
+
+- [ ] Write failing unit tests for the section cap/visibility/ordering logic (sections with cap 0 hidden; automatedOnly drops manual-only sections; ordered by cap desc) and an e2e for the drill-down on both sides (mSCP page lists mSCP rules with checkboxes; ticking one raises the pair's selection bar; clicking a rule opens the dialog; ISM page lists ISM controls).
+- [ ] Implement; verify full suite, tsc, lint, e2e; screenshots of an opened section on both sides at 1280x800 and 375x800, light and dark, read with Read.
+- [ ] Commit `feat: section caps and a rule drill-down in coverage reports`; push.
+
+**Review checkpoint B (full review):** after Task 9, one whole-branch review covering Tasks 3-9 against the spec, including the Review Focus list.
 
 ## Progress log
 
