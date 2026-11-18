@@ -43,6 +43,176 @@
       "release_tag": "v2026.09.4",
       "releases": [
         {
+          "commit_sha": "4cf41717a3ae2aa810c960eecfc86a420998c3d2",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2022.09.15/_index.json",
+          "label": "Sep 2022",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 837,
+          "tag": "v2022.09.15"
+        },
+        {
+          "commit_sha": "feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2022.12.1/_index.json",
+          "label": "Dec 2022",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 850,
+          "tag": "v2022.12.1"
+        },
+        {
+          "commit_sha": "a19e8b6c0963d0324d995002f89e27568d4dd9a7",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2023.03.5/_index.json",
+          "label": "Mar 2023",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 877,
+          "tag": "v2023.03.5"
+        },
+        {
+          "commit_sha": "0885b930867b6107bb825093e65a6332478df457",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2023.04.12/_index.json",
+          "label": "Apr 2023",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 877,
+          "tag": "v2023.04.12"
+        },
+        {
+          "commit_sha": "242ac31bcd27e5680c0fbf0314cb3166e6a17ad0",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2023.06.29/_index.json",
+          "label": "Jun 2023",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 883,
+          "tag": "v2023.06.29"
+        },
+        {
+          "commit_sha": "a4365f02ff1ffe2069a8f521ca57bb706892fc0e",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2023.08.3/_index.json",
+          "label": "Aug 2023",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 883,
+          "tag": "v2023.08.3"
+        },
+        {
+          "commit_sha": "b5d28185775a33b5ebc2412e24d08d7abe6bda67",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2023.09.25/_index.json",
+          "label": "Sep 2023",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 898,
+          "tag": "v2023.09.25"
+        },
+        {
+          "commit_sha": "9fb9f5ae42a2f81a70f53a8b6fbc4eb4b8335340",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2023.12.1/_index.json",
+          "label": "Dec 2023",
+          "published_date": "2023-12-01",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 904,
+          "tag": "v2023.12.1"
+        },
+        {
+          "commit_sha": "9d239fb2bf42e872d3fc9b7bbbcf2580d24edd7f",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2024.03.12/_index.json",
+          "label": "Mar 2024",
+          "published_date": "2024-03-12",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 906,
+          "tag": "v2024.03.12"
+        },
+        {
+          "commit_sha": "61856f29596bf9840f7d71ad98b559a66cd93ad8",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2024.06.18/_index.json",
+          "label": "Jun 2024",
+          "published_date": "2024-06-18",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 913,
+          "tag": "v2024.06.18"
+        },
+        {
+          "commit_sha": "f2216619ca41ee824a0468c6fc4dfcf8f14d083c",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2024.09.26/_index.json",
+          "label": "Sep 2024",
+          "published_date": "2024-09-26",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 953,
+          "tag": "v2024.09.26"
+        },
+        {
+          "commit_sha": "3418d90671d57fcfed9b4767a645b87d335e33be",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2024.10.4/_index.json",
+          "label": "Oct 2024",
+          "published_date": "2024-10-04",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 953,
+          "tag": "v2024.10.4"
+        },
+        {
+          "commit_sha": "a62b6ae48a4a2ca562f92ebf4c032d8095af3452",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2024.12.19/_index.json",
+          "label": "Dec 2024",
+          "published_date": "2024-12-18",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 980,
+          "tag": "v2024.12.19"
+        },
+        {
+          "commit_sha": "3ae3f150b866baaf70e91bb51a41b92a7d7875a5",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2025.03.31/_index.json",
+          "label": "Mar 2025",
+          "published_date": "2025-03-31",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 1003,
+          "tag": "v2025.03.31"
+        },
+        {
+          "commit_sha": "96bb6d3016920bd314bcadb40c574171b491a1c1",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2025.07.16/_index.json",
+          "label": "Jul 2025",
+          "published_date": "2025-07-16",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 1053,
+          "tag": "v2025.07.16"
+        },
+        {
+          "commit_sha": "c2d912aa95d50ec77493717ffaae66c555dbdf4f",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2025.09.15/_index.json",
+          "label": "Sep 2025",
+          "published_date": "2025-09-15",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 1058,
+          "tag": "v2025.09.15"
+        },
+        {
+          "commit_sha": "d3eebc6744b9e286bc309c912f1c52cf766b5b1e",
+          "importer_format": "asd-ism-oscal-1",
+          "index_path": "asd_ism/releases/v2025.10.8/_index.json",
+          "label": "Oct 2025",
+          "published_date": "2025-10-08",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 1058,
+          "tag": "v2025.10.8"
+        },
+        {
           "commit_sha": "d14dcbb0d448c3e0ba99bdecc7de5c713bcb080f",
           "importer_format": "asd-ism-oscal-1",
           "index_path": "asd_ism/releases/v2025.12.9/_index.json",

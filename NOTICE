@@ -30,12 +30,17 @@ format:
   Project:  https://github.com/AustralianCyberSecurityCentre/ism-oscal
             (a mirror; the authoritative copy is
             https://www.cyber.gov.au/ism/oscal)
-  Release:  v2026.09.4 (September 2026 ISM)
+  Releases: v2022.09.15 (September 2022 ISM) to v2026.09.4 (September 2026
+            ISM), one release per ISM edition; each release's source.json
+            records its tag and commit
   Licence:  Creative Commons Attribution 4.0 International (CC BY 4.0)
             https://creativecommons.org/licenses/by/4.0/
 
 ASD's copyright notice and disclaimer for the material are in
-sources/asd_ism/releases/<tag>/upstream/README.md. The copyright notice reads: (c)
+sources/asd_ism/releases/<tag>/upstream/README.md for v2024.03.12 and later.
+The repository included no README or licence file at earlier tags; this
+project treats those releases as published under the same CC BY 4.0 licence
+and credits them the same way. The copyright notice reads: (c)
 Commonwealth of Australia 2024. With the exception of the Coat of Arms, the
 Australian Signals Directorate logo and where otherwise stated, all material
 presented in this publication is provided under a Creative Commons Attribution

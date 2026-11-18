@@ -85,3 +85,7 @@ so it must not be started and stopped once per subagent:
   instance rather than starting its own.
 - The coordinating session stops the server only when all pending work
   that needs it is finished.
+- This holds for every dev server, including a second one for a separate
+  git worktree (on another port). If a task genuinely needs to start the
+  server itself (e.g. it is measuring startup time), say so to the user
+  before dispatching it.

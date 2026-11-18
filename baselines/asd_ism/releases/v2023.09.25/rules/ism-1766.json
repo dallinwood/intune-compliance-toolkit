@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "For most purposes, a hashing algorithm with an output size of 224 bits provides 112 bits of effective security strength. Similarly, a hashing algorithm with an output size of 256 bits provides 128 bits of effective security strength, and an output size of 384 bits provides 192 bits of effective security strength. Only hashing algorithms from the SHA-2 family are approved for use.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1766",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Cryptography",
+    "ASD-Approved Cryptographic Algorithms",
+    "Using hashing algorithms"
+  ],
+  "source": {
+    "commit_sha": "b5d28185775a33b5ebc2412e24d08d7abe6bda67",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.09.25",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-1766",
+    "upstream_updated": "Mar-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/b5d28185775a33b5ebc2412e24d08d7abe6bda67/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "When using SHA-2 for hashing, an output size of at least 224 bits is used, preferably SHA-384."
+}

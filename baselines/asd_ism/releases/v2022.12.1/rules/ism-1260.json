@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "DBMS software often comes pre-configured with default database administrator accounts and credentials that are listed in vendor documentation. These default database administrator accounts should be disabled, renamed or have their credentials changed.\n\nWhen sharing database administrator accounts for the performance of administrative activities, any actions undertaken will not be attributable to an individual database administrator. This can hinder investigations relating to an attempted or successful intrusion. Furthermore, database administrator accounts shared across different databases can exacerbate any compromise of a database administrator account by an adversary.\n\nWhen creating new database administrator accounts, accounts are often allocated all privileges available to system administrators. However, most database administrators will only require a subset of all available privileges to undertake their duties.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1260",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Database Systems",
+    "Database management system software",
+    "Database administrator accounts"
+  ],
+  "source": {
+    "commit_sha": "feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2022.12.1",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "3",
+    "upstream_rule_id": "ism-1260",
+    "upstream_updated": "Mar-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Default database administrator accounts are disabled, renamed or have their credentials changed."
+}

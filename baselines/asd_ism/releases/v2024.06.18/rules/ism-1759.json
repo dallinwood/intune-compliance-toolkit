@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "A modulus of 2048 bits for correctly implemented DH provides 112 bits of effective security strength. Taking into account projected technological advances, it is assessed that 112 bits of effective security strength will remain secure until 2030.\n\nWhen DH in a prime field is used, the prime modulus impacts the security of the algorithm. The security considerations when creating such a prime modulus can be found in NIST SP 800-56A Rev. 3, along with a collection of commonly used secure moduli.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1759",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Cryptography",
+    "ASD-Approved Cryptographic Algorithms",
+    "Using Diffie-Hellman"
+  ],
+  "source": {
+    "commit_sha": "61856f29596bf9840f7d71ad98b559a66cd93ad8",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2024.06.18",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-1759",
+    "upstream_updated": "Mar-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/61856f29596bf9840f7d71ad98b559a66cd93ad8/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "When using DH for agreeing on encryption session keys, a modulus of at least 3072 bits is used, preferably 3072 bits."
+}

@@ -1,0 +1,70 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        },
+        {
+          "name": "e8_ml3",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Privileged accounts are considered to be those which can alter or circumvent a system’s controls. This can also apply to users who have only limited privileges, such as software developers, but can still bypass controls. A privileged account often has the ability to modify system configurations, account privileges, event logs and security configurations for applications.\n\nPrivileged users, and in some cases privileged service accounts, are often targeted by an adversary as they can potentially give full access to systems. As such, ensuring that privileged accounts do not have the ability to access the internet, email and web services minimises opportunities for these accounts to be compromised.\n\nFinally, privileged access event logs, privileged account management event logs and privileged group management logs can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cyber security incidents. To facilitate such activities, privileged access event logs, privileged account management event logs and privileged group management logs should be captured and stored centrally.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1653",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Personnel Security",
+    "Access to systems and their resources",
+    "Privileged access to systems"
+  ],
+  "source": {
+    "commit_sha": "feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2022.12.1",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-1653",
+    "upstream_updated": "Sep-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Privileged service accounts are prevented from accessing the internet, email and web services."
+}

@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 const mscpHistory = JSON.parse(
-  readFileSync(new URL('../public/baselines/_history/mscp.json', import.meta.url), 'utf8'),
+  readFileSync(new URL('../.generated/baselines/_history/mscp.json', import.meta.url), 'utf8'),
 ) as HistoryIndex
 
 const mscpRuleIds = Object.keys(mscpHistory.rules)

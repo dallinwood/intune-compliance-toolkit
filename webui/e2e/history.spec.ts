@@ -8,7 +8,7 @@ import { ALL_RULES_PATH } from './locations'
 
 // Written by `bun run dev` (copy-baselines) next to the other published indexes.
 function readHistory(sourceName: string): HistoryIndex {
-  return JSON.parse(readFileSync(new URL(`../public/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex
+  return JSON.parse(readFileSync(new URL(`../.generated/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex
 }
 
 const ismHistory = readHistory('asd_ism')

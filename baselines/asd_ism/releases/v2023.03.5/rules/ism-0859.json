@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The retention of event logs is integral to system monitoring, hunt and incident response activities. As such, event logs for Cross Domain Solutions, databases, Domain Name System services, email servers, gateways, operating systems, remote access services, security services, server applications, system access, user applications, web applications and web proxies should be retained for a suitable period of time to facilitate these activities.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0859",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for System Monitoring",
+    "Event logging and monitoring",
+    "Event log retention"
+  ],
+  "source": {
+    "commit_sha": "a19e8b6c0963d0324d995002f89e27568d4dd9a7",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.03.5",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-0859",
+    "upstream_updated": "Mar-23",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/a19e8b6c0963d0324d995002f89e27568d4dd9a7/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Event logs, excluding those for Domain Name System services and web proxies, are retained for at least seven years."
+}

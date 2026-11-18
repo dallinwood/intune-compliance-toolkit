@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Outsourced cloud service providers and their cloud services will need to undergo regular security assessments by an IRAP assessor to determine their security posture and security risks associated with their use. Following an initial security assessment by an IRAP assessor, subsequent security assessments should focus on any new cloud services that are being offered as well as any security-related changes that have occurred since the previous security assessment.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1570",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Procurement and Outsourcing",
+    "Managed services and cloud services",
+    "Assessment of outsourced cloud service providers"
+  ],
+  "source": {
+    "commit_sha": "242ac31bcd27e5680c0fbf0314cb3166e6a17ad0",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.06.29",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-1570",
+    "upstream_updated": "Jun-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/242ac31bcd27e5680c0fbf0314cb3166e6a17ad0/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Outsourced cloud service providers and their cloud services undergo a security assessment by an IRAP assessor at least every 24 months."
+}

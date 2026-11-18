@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "If an uncleared technician is used to undertake maintenance or repairs of ICT equipment, the technician is escorted by someone who:\n\n* is appropriately cleared and briefed\n* takes due care to ensure that data is not disclosed\n* takes all responsible measures to ensure the integrity of the ICT equipment\n* has the authority to direct the technician\n* is sufficiently familiar with the ICT equipment to understand the work being performed.\n\nUndertaking unauthorised maintenance or repairs to ICT equipment could impact its integrity. As such, using appropriately cleared technicians to maintain and repair ICT equipment on site is considered the most secure approach. This ensures that if data is disclosed during the course of maintenance or repairs, the technicians are aware of the requirements to protect such data.\n\nAn organisation choosing to use uncleared technicians to maintain or repair ICT equipment should be aware of the requirement for cleared personnel to escort uncleared technicians during maintenance or repair activities.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0306",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for ICT Equipment",
+    "ICT equipment maintenance and repairs",
+    "On-site maintenance and repairs"
+  ],
+  "source": {
+    "commit_sha": "242ac31bcd27e5680c0fbf0314cb3166e6a17ad0",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.06.29",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "5",
+    "upstream_rule_id": "ism-0306",
+    "upstream_updated": "Jun-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/242ac31bcd27e5680c0fbf0314cb3166e6a17ad0/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "If an uncleared technician is used to undertake maintenance or repairs of ICT equipment, the technician is escorted by someone who:"
+}

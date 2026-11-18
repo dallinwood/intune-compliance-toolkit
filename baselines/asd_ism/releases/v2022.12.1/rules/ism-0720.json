@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "To facilitate cyber security cultural change across their organisation, the CISO should act as a thought leader by continually communicating their strategy and vision. A communication strategy can be helpful in achieving this. Communications should be tailored to different parts of their organisation and be topical for the intended audience.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0720",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Cyber Security Roles",
+    "Chief Information Security Officer",
+    "Developing a cyber security communications strategy"
+  ],
+  "source": {
+    "commit_sha": "feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2022.12.1",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "2",
+    "upstream_rule_id": "ism-0720",
+    "upstream_updated": "Dec-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/feb4c9013badb5f4bffd0f2a46850ce3d1b7fa50/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "The CISO develops, implements and maintains a cyber security communications strategy for their organisation."
+}

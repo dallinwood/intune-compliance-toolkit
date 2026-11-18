@@ -1877,7 +1877,7 @@ test.describe('rule mappings', () => {
 
   // Written by `bun run dev` (copy-baselines), like the mapping index the app fetches.
   const historyIndexes = ['mscp', 'asd_ism'].map(
-    (sourceName) => JSON.parse(readFileSync(new URL(`../public/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex,
+    (sourceName) => JSON.parse(readFileSync(new URL(`../.generated/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex,
   )
   const mscpHistory = historyIndexes[0]
   const mscpFirstRelease = mscpHistory.releases[0].tag

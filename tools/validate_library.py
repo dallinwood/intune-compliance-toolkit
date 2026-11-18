@@ -2,6 +2,7 @@
 plus the hand-edited display-name vocabulary when one is present."""
 
 import datetime
+import functools
 import json
 import sys
 from pathlib import Path
@@ -23,9 +24,14 @@ def load_schema(name: str) -> dict:
     return json.loads(schema_path.read_text(encoding="utf-8"))
 
 
+@functools.cache
+def _schema_validator(schema_name: str) -> Draft202012Validator:
+    # Built once per schema: reading and compiling it for each of the library's tens of thousands of files dominated validation time.
+    return Draft202012Validator(load_schema(schema_name))
+
+
 def schema_errors(instance: dict, schema_name: str = "rule") -> list[str]:
-    validator = Draft202012Validator(load_schema(schema_name))
-    errors = sorted(validator.iter_errors(instance), key=lambda error: list(error.absolute_path))
+    errors = sorted(_schema_validator(schema_name).iter_errors(instance), key=lambda error: list(error.absolute_path))
     return [f"{error.json_path}: {error.message}" for error in errors]
 
 

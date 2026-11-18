@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When encryption is applied to data at rest it provides an additional layer of defence against unauthorised access by an adversary. In doing so, it is important that full disk encryption is used as it provides a greater level of protection than file-based encryption. This is due to the fact that while file-based encryption may encrypt individual files, there is the possibility that unencrypted copies of files may be left in temporary locations used by an operating system. When selecting cryptographic equipment or software for this purpose, the level of assurance required will depend on the sensitivity or classification of the data.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0457",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Cryptography",
+    "Cryptographic fundamentals",
+    "Encrypting data at rest"
+  ],
+  "source": {
+    "commit_sha": "a4365f02ff1ffe2069a8f521ca57bb706892fc0e",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.08.3",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "9",
+    "upstream_rule_id": "ism-0457",
+    "upstream_updated": "Mar-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/a4365f02ff1ffe2069a8f521ca57bb706892fc0e/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Cryptographic equipment or software that has completed a Common Criteria evaluation against a Protection Profile is used when encrypting media that contains OFFICIAL: Sensitive or PROTECTED data."
+}

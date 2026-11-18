@@ -11,6 +11,8 @@ from tools.source_lock import SourceLock, write_source_lock
 REPOSITORY = "AustralianCyberSecurityCentre/ism-oscal"
 USER_AGENT = "intune-compliance-toolkit-asd-ism-import"
 FILE_NAMES = ("ISM_catalog.json", "README.md")
+# ism-oscal has no README (or any licence file) at v2023.12.1 and earlier.
+OPTIONAL_FILE_NAMES = frozenset({"README.md"})
 IMPORTER_FORMAT = "asd-ism-oscal-1"
 
 
@@ -30,7 +32,9 @@ def fetch(tag: str, sources_dir: Path, today: str, opener=default_opener) -> Sou
     sources_dir.mkdir(parents=True, exist_ok=True)
     staging_dir = Path(tempfile.mkdtemp(prefix=f".{upstream_dir.name}-new-", dir=sources_dir))
     try:
-        github_fetch.download_pinned_files(REPOSITORY, commit_sha, FILE_NAMES, staging_dir, USER_AGENT, opener)
+        github_fetch.download_pinned_files(
+            REPOSITORY, commit_sha, FILE_NAMES, staging_dir, USER_AGENT, opener, OPTIONAL_FILE_NAMES
+        )
         replace_directory(staging_dir, upstream_dir)
     except BaseException:
         shutil.rmtree(staging_dir, ignore_errors=True)

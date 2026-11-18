@@ -259,6 +259,12 @@ Requires Python 3.10 or newer.
    so importing a new tag adds a release and never replaces an older one. To
    regenerate every stored release from the vendored copies without fetching,
    use `--offline`; add `--release <tag>` for just one.
+   The stored history keeps one release per ISM edition, back to the first
+   tag (`v2022.09.15`). Where a month has two tags, only the later one is
+   kept (the earlier ones, `v2022.09.14`, `v2023.03.3`, `v2023.09.21`,
+   `v2024.03.5` and `v2025.09.10`, are skipped on purpose), because the
+   release label is the month and the library validator rejects two
+   releases with the same label.
 3. Review `git diff sources/asd_ism/` and `git diff baselines/asd_ism/`.
 4. `python -m pytest -W error`
 5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`

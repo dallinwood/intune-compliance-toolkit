@@ -35,7 +35,22 @@
 // webui/src/logic/catalogIndex.ts): everything the Products and Licences views
 // list plus a by_product lookup, so the app makes a single startup fetch.
 //
-// Run it with bun (see the copy-baselines script in webui/package.json): it
+// Two modes (see the scripts in webui/package.json):
+//
+//   (default)  Build mode, `bun run copy-baselines`: copies baselines/ and
+//              catalog/ into webui/public/ and writes the generated files
+//              into that copy. This is what the published site is built from.
+//   --dev      Dev mode, `bun run generate-indexes`: copies nothing. Reads
+//              baselines/ and catalog/ in place and writes only the generated
+//              files into webui/.generated/, mirroring their served paths. The
+//              dev server (webui/vite-plugins/baselinesDevServer.ts) serves
+//              those first and falls back to the repo folders, so starting it
+//              does not copy ~24,000 files.
+//
+// Both modes read the repo's own folders and produce identical generated
+// files; the many small files are read 64 at a time to keep indexing fast.
+//
+// Run it with bun (see the scripts in webui/package.json): it
 // imports the app's TypeScript, which plain node cannot load.
 //
 // Paths are resolved from this file's own location, not the working
@@ -64,28 +79,53 @@ const OVERLAY_MANIFEST_NAME = "_manifest.json";
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const baselinesSource = join(repoRoot, "baselines");
-const baselinesDestination = join(repoRoot, "webui", "public", "baselines");
-const overlaysDestination = join(baselinesDestination, "_overlays");
-const overlayRulesDestination = join(overlaysDestination, "rules");
-const mappingsDestination = join(baselinesDestination, "_mappings");
-const mappingRulesDestination = join(mappingsDestination, "rules");
-const MAPPING_INDEX_NAME = "_index.json";
 const catalogSource = join(repoRoot, "catalog");
-const catalogDestination = join(repoRoot, "webui", "public", "catalog");
+const developmentMode = process.argv.includes("--dev");
+const outputRoot = developmentMode ? join(repoRoot, "webui", ".generated") : join(repoRoot, "webui", "public");
+const baselinesDestination = join(outputRoot, "baselines");
+const catalogDestination = join(outputRoot, "catalog");
+const overlaysDestination = join(baselinesDestination, "_overlays");
+const overlayRulesSource = join(baselinesSource, "_overlays", "rules");
+const mappingsDestination = join(baselinesDestination, "_mappings");
+const mappingRulesSource = join(baselinesSource, "_mappings", "rules");
+const MAPPING_INDEX_NAME = "_index.json";
+const READ_CONCURRENCY = 64;
 const CATALOG_INDEX_NAME = "_index.json";
 const CATALOG_VENDORS_FILE = "vendors.json";
 
-await rm(baselinesDestination, { recursive: true, force: true });
-// Dot-prefixed entries (editor/OS droppings, local scratch files) are not
-// part of the published library at any depth.
-await cp(baselinesSource, baselinesDestination, {
-  recursive: true,
-  filter: (entryPath) => !basename(entryPath).startsWith("."),
-});
-console.log(`Copied ${baselinesSource} -> ${baselinesDestination}`);
+// Applies the mapper to every item, at most `limit` at a time, and returns the
+// results in the order of the items so the output stays deterministic.
+async function mapWithConcurrency(items, limit, mapper) {
+  const results = new Array(items.length);
+  let nextPosition = 0;
+  async function worker() {
+    while (nextPosition < items.length) {
+      const position = nextPosition++;
+      results[position] = await mapper(items[position], position);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
 
-// Same selection and order as overlay_file_names in tools/overlays.py (read
-// from the published copy, which is identical to the source): the
+await rm(baselinesDestination, { recursive: true, force: true });
+await rm(catalogDestination, { recursive: true, force: true });
+if (!developmentMode) {
+  // Dot-prefixed entries (editor/OS droppings, local scratch files) are not
+  // part of the published library at any depth.
+  await cp(baselinesSource, baselinesDestination, {
+    recursive: true,
+    filter: (entryPath) => !basename(entryPath).startsWith("."),
+  });
+  console.log(`Copied ${baselinesSource} -> ${baselinesDestination}`);
+  await cp(catalogSource, catalogDestination, {
+    recursive: true,
+    filter: (entryPath) => !basename(entryPath).startsWith("."),
+  });
+  console.log(`Copied ${catalogSource} -> ${catalogDestination}`);
+}
+
+// Same selection and order as overlay_file_names in tools/overlays.py: the
 // plain code-unit sort matches Python's sorted(), so both apply overlays in
 // the same order.
 async function directoryEntries(directory) {
@@ -98,7 +138,7 @@ async function directoryEntries(directory) {
 }
 
 async function overlayFileNames() {
-  const entries = await directoryEntries(overlayRulesDestination);
+  const entries = await directoryEntries(overlayRulesSource);
   return entries
     .filter(
       (entry) =>
@@ -111,14 +151,17 @@ async function overlayFileNames() {
     .sort();
 }
 
-const overlayFiles = [];
-for (const fileName of await overlayFileNames()) {
-  const path = join(overlayRulesDestination, fileName);
+const overlayReads = await mapWithConcurrency(await overlayFileNames(), READ_CONCURRENCY, async (fileName) => {
   try {
-    overlayFiles.push({ fileName, value: JSON.parse(await readFile(path, "utf8")) });
+    return { fileName, value: JSON.parse(await readFile(join(overlayRulesSource, fileName), "utf8")) };
   } catch (error) {
-    console.warn(`${fileName}: cannot read JSON (${error.message}). It was skipped.`);
+    return { fileName, problem: error.message };
   }
+});
+const overlayFiles = [];
+for (const read of overlayReads) {
+  if ("problem" in read) console.warn(`${read.fileName}: cannot read JSON (${read.problem}). It was skipped.`);
+  else overlayFiles.push(read);
 }
 const overlayIndex = buildOverlayIndex(overlayFiles, (message) => console.warn(message));
 await mkdir(overlaysDestination, { recursive: true });
@@ -129,18 +172,17 @@ console.log(`Indexed ${overlayIndex.overlays.length} overlay file(s) in ${join(o
 // Built before the mapping index, which notes what changed in each mapped rule.
 const historyDestination = join(baselinesDestination, "_history");
 await mkdir(historyDestination, { recursive: true });
-const manifest = JSON.parse(await readFile(join(baselinesDestination, "_manifest.json"), "utf8"));
+const manifest = JSON.parse(await readFile(join(baselinesSource, "_manifest.json"), "utf8"));
 const historyIndexes = [];
 for (const source of manifest.sources) {
   const rulesByTag = new Map();
   for (const release of source.releases) {
-    const releaseDirectory = dirname(join(baselinesDestination, release.index_path));
-    const releaseIndex = JSON.parse(await readFile(join(baselinesDestination, release.index_path), "utf8"));
-    const rules = [];
-    for (const entry of releaseIndex.rules) {
+    const releaseDirectory = dirname(join(baselinesSource, release.index_path));
+    const releaseIndex = JSON.parse(await readFile(join(baselinesSource, release.index_path), "utf8"));
+    const rules = await mapWithConcurrency(releaseIndex.rules, READ_CONCURRENCY, async (entry) => {
       const rule = JSON.parse(await readFile(join(releaseDirectory, entry.file), "utf8"));
-      rules.push({ ...rule, file: entry.file });
-    }
+      return { ...rule, file: entry.file };
+    });
     rulesByTag.set(release.tag, rules);
   }
   const historyPath = join(historyDestination, `${source.name}.json`);
@@ -152,11 +194,10 @@ for (const source of manifest.sources) {
   console.log(`Indexed ${source.releases.length} release(s) of ${source.name} in ${historyPath}`);
 }
 
-// Same selection and order as mapping_file_names in tools/mappings.py. The
-// copy above already left out .gitkeep, so a folder holding only that is
-// empty or missing here and gives an empty index.
+// Same selection and order as mapping_file_names in tools/mappings.py. A
+// folder holding only .gitkeep is empty here and gives an empty index.
 async function mappingFileNames() {
-  const entries = await directoryEntries(mappingRulesDestination);
+  const entries = await directoryEntries(mappingRulesSource);
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".json") && !entry.name.startsWith("."))
     .map((entry) => entry.name)
@@ -185,9 +226,12 @@ async function readCheckedJsonFile(directory, fileName) {
   }
 }
 
+const mappingReads = await mapWithConcurrency(await mappingFileNames(), READ_CONCURRENCY, async (fileName) => ({
+  fileName,
+  file: await readCheckedJsonFile(mappingRulesSource, fileName),
+}));
 const mappingFiles = [];
-for (const fileName of await mappingFileNames()) {
-  const file = await readCheckedJsonFile(mappingRulesDestination, fileName);
+for (const { fileName, file } of mappingReads) {
   if ("problem" in file) console.warn(`${fileName}: ${file.problem}. It was skipped.`);
   else mappingFiles.push({ fileName, value: file.value });
 }
@@ -201,21 +245,15 @@ console.log(
   `Indexed ${mappingFiles.length} mapping file(s) for ${Object.keys(mappingIndex.by_rule).length} rule(s) in ${join(mappingsDestination, MAPPING_INDEX_NAME)}`,
 );
 
-await rm(catalogDestination, { recursive: true, force: true });
-await cp(catalogSource, catalogDestination, {
-  recursive: true,
-  filter: (entryPath) => !basename(entryPath).startsWith("."),
-});
-console.log(`Copied ${catalogSource} -> ${catalogDestination}`);
-
 // Same selection as _catalog_files in tools/catalog.py: every .json file under
 // products/ and licences/ at any depth. Names are relative paths with forward
 // slashes so warnings read the same on every platform.
 async function catalogJsonFiles(folderName) {
-  const folder = join(catalogDestination, folderName);
+  const folder = join(catalogSource, folderName);
   const entries = await directoryEntries(folder);
   const relativePaths = [];
   for (const entry of entries) {
+    if (entry.name.startsWith(".")) continue;
     if (entry.isDirectory()) {
       for (const nestedPath of await catalogJsonFiles(`${folderName}/${entry.name}`)) relativePaths.push(nestedPath);
     } else if (entry.isFile() && entry.name.endsWith(".json")) {
@@ -227,7 +265,7 @@ async function catalogJsonFiles(folderName) {
 
 async function readCatalogFile(kind, relativePath) {
   const separatorPosition = relativePath.lastIndexOf("/");
-  const directory = separatorPosition === -1 ? catalogDestination : join(catalogDestination, relativePath.slice(0, separatorPosition));
+  const directory = separatorPosition === -1 ? catalogSource : join(catalogSource, relativePath.slice(0, separatorPosition));
   const file = await readCheckedJsonFile(directory, relativePath.slice(separatorPosition + 1));
   if ("problem" in file) {
     console.warn(`${relativePath}: ${file.problem}. It was skipped.`);
@@ -236,18 +274,17 @@ async function readCatalogFile(kind, relativePath) {
   return { kind, fileName: relativePath, value: file.value };
 }
 
-const catalogFiles = [];
 const sourceFiles = [
   ["vendors", [CATALOG_VENDORS_FILE]],
   ["product", await catalogJsonFiles("products")],
   ["licence", await catalogJsonFiles("licences")],
 ];
-for (const [kind, relativePaths] of sourceFiles) {
-  for (const relativePath of relativePaths) {
-    const catalogFile = await readCatalogFile(kind, relativePath);
-    if (catalogFile !== null) catalogFiles.push(catalogFile);
-  }
-}
+const catalogReadTasks = sourceFiles.flatMap(([kind, relativePaths]) => relativePaths.map((relativePath) => ({ kind, relativePath })));
+const catalogReads = await mapWithConcurrency(catalogReadTasks, READ_CONCURRENCY, ({ kind, relativePath }) =>
+  readCatalogFile(kind, relativePath),
+);
+const catalogFiles = catalogReads.filter((catalogFile) => catalogFile !== null);
+await mkdir(catalogDestination, { recursive: true });
 const catalogIndex = buildCatalogIndex(catalogFiles, (message) => console.warn(message));
 // Compact for the same reason as the mapping index.
 await writeFile(join(catalogDestination, CATALOG_INDEX_NAME), `${JSON.stringify(catalogIndex)}
