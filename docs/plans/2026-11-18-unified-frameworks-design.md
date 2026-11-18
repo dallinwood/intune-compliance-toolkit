@@ -56,8 +56,10 @@ From `baselines/_mappings/rules/`:
 | mSCP | ASD ISM | supports | 61 | 1,143 |
 | ASD E4EIT | ASD ISM | related | 222 (related only) | 1,143 |
 
-No ISM to NIST or E4EIT to NIST links exist. So ISM is the only framework
-covered by two others today (and gets a combined bar); NIST does not yet.
+No ISM to NIST or E4EIT to NIST links exist. So no framework is supported by
+two others today: ISM has one supporting framework (mSCP) plus a related-only
+partner (E4EIT), which does not count toward the combined report, so ISM has
+no combined bar; NIST has none either.
 
 ## Approaches considered
 
@@ -94,11 +96,12 @@ does from Rules today.
   opens its comparison, now the Releases sub-tab); a compact coverage block
   (below); links to the Rules and Coverage sub-tabs.
 - Compact coverage block on a card lists every pair involving this
-  framework *as the covering side* ("→ NIST 800-53") and *as the covered
+  framework *as the covering side* ("Supports NIST 800-53") and *as the covered
   side* ("Supported by mSCP", "Related to E4EIT"), each as a small version
-  of the per-pair bar with its "max N" cap label. If the card's framework is
-  covered by two or more frameworks, a combined "All mapped frameworks" bar
-  is last, under a divider.
+  of the per-pair bar with its "max N" cap label. A "Related to X" line has
+  a short secondary note, "linked as related, not counted as coverage". If
+  the card's framework is supported by two or more frameworks, a combined
+  "All mapped frameworks" bar is last, under a divider.
 - A framework with no mappings shows no coverage block.
 
 ### Framework page
@@ -167,7 +170,7 @@ Display:
 5. Below the bars: the existing per-section breakdown and per-control
    detail from today's `FrameworkCoverageCard`, for the chosen mode.
 
-On A's page the report is titled "A → B"; on B's page the same report is
+On A's page the report is titled "Supports B"; on B's page the same report is
 titled "Supported by A". Both read identically otherwise.
 
 ### Related-only pairs
@@ -178,8 +181,10 @@ coverage percentage, because related links never count as covered.
 
 ### Combined report
 
-On the covered framework B, when B has two or more covering frameworks
-(supports or related):
+On the covered framework B, when B has two or more frameworks that *support*
+it (related-only partners do not count toward the threshold, and still get
+their own "Related to X" note; otherwise the combined bar would just repeat a
+single pair's bar):
 
 - **Cap:** as if every rule of every covering framework were selected.
 - **Your selection:** the user's whole selection, any framework, with
