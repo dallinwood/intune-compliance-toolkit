@@ -14,6 +14,7 @@ from tools.nist_800_53_normalize import (
     control_id_for_label,
     label_for_control_id,
     normalize_catalog,
+    zero_padded_label_for_control_id,
 )
 from tools.source_lock import SourceLock
 from tools.validate_library import schema_errors
@@ -381,12 +382,79 @@ def test_label_differing_from_the_derived_label_fails():
     mutate_catalog(relabel, "pm-1: label 'PM-2' differs")
 
 
-def test_missing_zero_padded_label_fails():
-    def drop_zero_padded_label(catalog):
-        props = find_control(catalog, "pm-1")["props"]
-        props[:] = [prop for prop in props if prop.get("class") != "zero-padded"]
+def drop_zero_padded_labels(catalog: dict) -> None:
+    for group in catalog["catalog"]["groups"]:
+        for control in group["controls"]:
+            for entry in [control, *control.get("controls", [])]:
+                entry["props"][:] = [prop for prop in entry["props"] if prop.get("class") != "zero-padded"]
 
-    mutate_catalog(drop_zero_padded_label, "exactly one 'label' property of class 'zero-padded'")
+
+def test_missing_zero_padded_labels_are_derived_like_the_published_ones():
+    catalog = load_catalog()
+    drop_zero_padded_labels(catalog)
+
+    assert normalize(catalog) == normalize()
+
+
+def test_zero_padded_label_derivation():
+    assert zero_padded_label_for_control_id("ac-2") == "AC-02"
+    assert zero_padded_label_for_control_id("ac-2.1") == "AC-02(01)"
+    assert zero_padded_label_for_control_id("si-12.10") == "SI-12(10)"
+
+
+def test_zero_padded_label_differing_from_the_derived_label_fails():
+    def relabel(catalog):
+        prop = next(prop for prop in find_control(catalog, "pm-1")["props"] if prop.get("class") == "zero-padded")
+        prop["value"] = "PM-1"
+
+    mutate_catalog(relabel, "pm-1: zero-padded label 'PM-1' differs from 'PM-01'")
+
+
+def test_second_zero_padded_label_fails():
+    mutate_catalog(
+        append_prop("pm-1", {"name": "label", "value": "PM-01", "class": "zero-padded"}),
+        "more than one zero-padded label",
+    )
+
+
+def test_withdrawn_entry_without_labels_is_accepted():
+    catalog = load_catalog()
+    props = find_control(catalog, "ac-2.2")["props"]
+    props[:] = [prop for prop in props if prop["name"] != "label"]
+
+    assert normalize(catalog) == normalize()
+
+
+def test_groups_without_a_label_are_accepted():
+    catalog = load_catalog()
+    for group in catalog["catalog"]["groups"]:
+        del group["props"]
+
+    assert normalize(catalog) == normalize()
+
+
+def test_group_with_two_labels_fails():
+    def add_group_label(catalog):
+        catalog["catalog"]["groups"][0]["props"].append({"name": "label", "value": "AC2"})
+
+    mutate_catalog(add_group_label, "group has more than one label property")
+
+
+def test_citation_only_resource_is_a_publication_and_plain_text_in_prose():
+    catalog = load_catalog()
+    del catalog["catalog"]["back-matter"]["resources"][0]["rlinks"]
+
+    rule = next(rule for rule in normalize(catalog) if rule["id"] == "nist_800_53.ac-2")
+
+    assert "Accounts are described in NIST SP 800-12 and relate to" in rule["discussion"]
+    assert SECURITY_PUBLICATION in rule["references"]["publications"]
+
+
+def test_params_with_depends_on_and_remarks_render_as_before():
+    catalog = load_catalog()
+    param_of(catalog, "ac-02_odp.01").update({"depends-on": "ac-02_odp.02", "remarks": "Editorial note."})
+
+    assert normalize(catalog) == normalize()
 
 
 @pytest.mark.parametrize("missing_part_name", ["statement", "guidance"])

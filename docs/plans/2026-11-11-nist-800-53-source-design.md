@@ -38,7 +38,8 @@ control.
   rethink of the manual attestation report.
 - Withdrawn controls as rules (section 5.5).
 - Older oscal-content releases. Only `v1.6.0` is imported now; the release history design already
-  supports adding more later.
+  supports adding more later. (Superseded 2026-11-18: `v1.0.0` and `v1.3.0` were added, one
+  release per 800-53 version; see the progress log.)
 - SP 800-53 Rev. 4, SP 800-171, CSF or any other catalog in the oscal-content repository.
 - Checks for 800-53 controls. Every 800-53 rule is manual.
 - Any judgment in the generated mapping: no confidence levels, no "partial" notes, no extra links

@@ -139,6 +139,26 @@
       "release_tag": "v1.6.0",
       "releases": [
         {
+          "commit_sha": "a207cd792c9cbb73f32127cbe1ffcec92ff0a14e",
+          "importer_format": "nist-800-53-rev5-oscal-1",
+          "index_path": "nist_800_53/releases/v1.0.0/_index.json",
+          "label": "5.0.1",
+          "published_date": "2021-06-10",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 1007,
+          "tag": "v1.0.0"
+        },
+        {
+          "commit_sha": "941c978d14c57379fbf6f7fb388f675067d5bff7",
+          "importer_format": "nist-800-53-rev5-oscal-1",
+          "index_path": "nist_800_53/releases/v1.3.0/_index.json",
+          "label": "5.1.1+u4",
+          "published_date": "2024-02-13",
+          "retrieved_date": "2026-11-18",
+          "rule_count": 1011,
+          "tag": "v1.3.0"
+        },
+        {
           "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
           "importer_format": "nist-800-53-rev5-oscal-1",
           "index_path": "nist_800_53/releases/v1.6.0/_index.json",

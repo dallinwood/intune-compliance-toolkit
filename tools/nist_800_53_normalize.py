@@ -61,7 +61,8 @@ KNOWN_PART_NAMES = {STATEMENT_PART_NAME, GUIDANCE_PART_NAME, ITEM_PART_NAME, *IG
 KNOWN_STATEMENT_KEYS = {"id", "name", "prose", "parts"}
 KNOWN_ITEM_KEYS = {"id", "name", "prose", "props", "parts"}
 KNOWN_GUIDANCE_KEYS = {"id", "name", "prose"}
-KNOWN_PARAM_KEYS = {"id", "props", "label", "guidelines", "select"}
+# depends-on and remarks appear only in oscal-content v1.0.0; neither changes how a parameter is rendered.
+KNOWN_PARAM_KEYS = {"id", "props", "label", "guidelines", "select", "depends-on", "remarks"}
 KNOWN_SELECT_KEYS = {"how-many", "choice"}
 ONE_OR_MORE = "one-or-more"
 KNOWN_PROFILE_IMPORT_KEYS = {"href", "include-controls"}
@@ -74,6 +75,15 @@ def label_for_control_id(control_id: str) -> str:
     family, number, enhancement_number = match.groups()
     label = f"{family.upper()}-{number}"
     return label if enhancement_number is None else f"{label}({enhancement_number})"
+
+
+def zero_padded_label_for_control_id(control_id: str) -> str:
+    match = CONTROL_ID_PATTERN.match(control_id)
+    if match is None:
+        raise UnsupportedUpstreamData(f"{control_id!r}: not a control id")
+    family, number, enhancement_number = match.groups()
+    label = f"{family.upper()}-{number.zfill(2)}"
+    return label if enhancement_number is None else f"{label}({enhancement_number.zfill(2)})"
 
 
 def control_id_for_label(label: str) -> str | None:
@@ -135,7 +145,7 @@ class _Catalog:
         self.params: dict[str, dict] = {}
         self.link_target_ids: set[str] = set()
         self.control_ids: set[str] = set()
-        self.resources: dict[str, tuple[str, str]] = {}
+        self.resources: dict[str, tuple[str, str | None]] = {}
         self._collect_back_matter(catalog)
         for group in catalog["groups"]:
             self._collect_group(group)
@@ -154,6 +164,10 @@ class _Catalog:
             rlinks = resource.get("rlinks")
             first_link = rlinks[0] if isinstance(rlinks, list) and rlinks else None
             first_href = first_link.get("href") if isinstance(first_link, dict) else None
+            if "rlinks" not in resource:
+                # oscal-content v1.0.0 has citation-only resources (old papers with no URL).
+                self.resources[uuid] = (title, None)
+                continue
             if not isinstance(first_href, str) or not first_href:
                 raise UnsupportedUpstreamData(f"back-matter resource {uuid!r} has no rlinks href")
             self.resources[uuid] = (title, first_href)
@@ -242,7 +256,8 @@ class _Catalog:
         def rewrite(match: re.Match) -> str:
             text, target = match.groups()
             if target in self.resources:
-                return f"[{text}]({self.resources[target][1]})"
+                resource_href = self.resources[target][1]
+                return text if resource_href is None else f"[{text}]({resource_href})"
             if target in self.link_target_ids:
                 return text
             raise UnsupportedUpstreamData(f"{where}: link to unknown target {target!r}")
@@ -393,8 +408,8 @@ def _benchmark_membership(
     return membership
 
 
-def _read_entry(entry: dict, expected_class: str) -> tuple[str, bool, str, str]:
-    """Check an entry's shape and return (id, is withdrawn, sort id, zero-padded label)."""
+def _read_entry(entry: dict, expected_class: str) -> tuple[str, bool, str, str | None]:
+    """Check an entry's shape and return (id, is withdrawn, sort id, zero-padded label or None if withdrawn)."""
     control_id = _entry_id(entry)
     _check_keys(entry, KNOWN_CONTROL_KEYS, control_id, "control")
     if entry.get("class") != expected_class:
@@ -402,18 +417,33 @@ def _read_entry(entry: dict, expected_class: str) -> tuple[str, bool, str, str]:
     if not CONTROL_ID_PATTERN.match(control_id):
         raise UnsupportedUpstreamData(f"{control_id!r}: control id is not safe to use in a rule id")
     properties = _properties(entry, control_id, KNOWN_CONTROL_PROPERTIES)
+    statuses = [prop["value"] for prop in properties if prop["name"] == "status"]
+    if any(status != WITHDRAWN_STATUS for status in statuses) or len(statuses) > 1:
+        raise UnsupportedUpstreamData(f"{control_id}: unsupported status {statuses!r}")
+    sort_id = _single_property_value(properties, "sort-id", None, control_id)
+    _link_targets(entry, control_id)
+    if statuses:
+        # Withdrawn entries never become rules, and oscal-content v1.3.0 has one (si-3.9) without a plain label.
+        return control_id, True, sort_id, None
     label = _single_property_value(properties, "label", None, control_id)
     if label != label_for_control_id(control_id):
         raise UnsupportedUpstreamData(
             f"{control_id}: label {label!r} differs from the label derived from its id"
         )
-    sort_id = _single_property_value(properties, "sort-id", None, control_id)
-    zero_padded_label = _single_property_value(properties, "label", ZERO_PADDED_LABEL_CLASS, control_id)
-    statuses = [prop["value"] for prop in properties if prop["name"] == "status"]
-    if any(status != WITHDRAWN_STATUS for status in statuses) or len(statuses) > 1:
-        raise UnsupportedUpstreamData(f"{control_id}: unsupported status {statuses!r}")
-    _link_targets(entry, control_id)
-    return control_id, bool(statuses), sort_id, zero_padded_label
+    derived_zero_padded_label = zero_padded_label_for_control_id(control_id)
+    zero_padded_labels = [
+        prop["value"]
+        for prop in properties
+        if prop["name"] == "label" and prop.get("class") == ZERO_PADDED_LABEL_CLASS
+    ]
+    if len(zero_padded_labels) > 1:
+        raise UnsupportedUpstreamData(f"{control_id}: more than one zero-padded label")
+    # oscal-content v1.0.0 has no zero-padded labels; later releases' labels must match the derivation, which proves it.
+    if zero_padded_labels and zero_padded_labels[0] != derived_zero_padded_label:
+        raise UnsupportedUpstreamData(
+            f"{control_id}: zero-padded label {zero_padded_labels[0]!r} differs from {derived_zero_padded_label!r}"
+        )
+    return control_id, False, sort_id, derived_zero_padded_label
 
 
 def _walk_entries(catalog_document: dict):
@@ -422,9 +452,10 @@ def _walk_entries(catalog_document: dict):
         _check_keys(group, KNOWN_GROUP_KEYS, _entry_id(group), "group")
         if group.get("class") != FAMILY_CLASS:
             raise UnsupportedUpstreamData(f"{_entry_id(group)}: unsupported group class {group.get('class')!r}")
+        # oscal-content v1.0.0 and v1.3.0 give groups no label; it is not used, so its absence is accepted.
         group_properties = _properties(group, _entry_id(group), {"label"})
-        if len(group_properties) != 1:
-            raise UnsupportedUpstreamData(f"{_entry_id(group)}: group needs exactly one label property")
+        if len(group_properties) > 1:
+            raise UnsupportedUpstreamData(f"{_entry_id(group)}: group has more than one label property")
         if not isinstance(group.get("title"), str):
             raise UnsupportedUpstreamData(f"{_entry_id(group)}: group has no title")
         for part in group.get("parts", []):

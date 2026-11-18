@@ -311,6 +311,12 @@ Requires Python 3.10 or newer.
 Withdrawn controls are not imported, and the import stops with an error on any
 part of the catalog it does not understand.
 
+The stored history keeps one oscal-content release per 800-53 version: `v1.0.0`
+(5.0.1), `v1.3.0` (5.1.1, the last of its `+uN` OSCAL representation updates)
+and `v1.6.0` (5.2.0). Releases that only re-publish the same 800-53 version
+(`v1.1.0`, `v1.2.0`, `v1.2.1`, `v1.4.0`, `v1.5.0`) are skipped on purpose; the
+library validator also rejects two releases with the same label.
+
 The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
 and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
 Review their diff with the rest.

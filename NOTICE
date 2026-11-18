@@ -89,8 +89,12 @@ published by the National Institute of Standards and Technology (NIST) in OSCAL
 format:
 
   Project:  https://github.com/usnistgov/oscal-content
-  Release:  v1.6.0 (commit f0de6d8d8c059d374f15e0ae07508d82e370fc1d),
+  Releases: v1.6.0 (commit f0de6d8d8c059d374f15e0ae07508d82e370fc1d),
             SP 800-53 Rev. 5.2.0
+            v1.3.0 (commit 941c978d14c57379fbf6f7fb388f675067d5bff7),
+            SP 800-53 Rev. 5.1.1 (OSCAL update 5.1.1+u4)
+            v1.0.0 (commit a207cd792c9cbb73f32127cbe1ffcec92ff0a14e),
+            SP 800-53 Rev. 5.0.1
   Licence:  a work of the United States government, in the public domain in
             the United States and dedicated worldwide under CC0 1.0 Universal
             https://creativecommons.org/publicdomain/zero/1.0/

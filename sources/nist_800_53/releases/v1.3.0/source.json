@@ -1,0 +1,8 @@
+{
+  "commit_sha": "941c978d14c57379fbf6f7fb388f675067d5bff7",
+  "importer_format": "nist-800-53-rev5-oscal-1",
+  "published_date": "2024-02-13",
+  "repository_url": "https://github.com/usnistgov/oscal-content",
+  "retrieved_date": "2026-11-18",
+  "tag": "v1.3.0"
+}
