@@ -190,13 +190,79 @@ Behaviour (spec, "Home: framework cards"): `Browse all rules` link above the gri
 - [ ] **Step 4: Verify** full suite, tsc, lint, e2e; screenshots per Global Constraints of the grid (check the cap labels do not collide at 375px).
 - [ ] **Step 5: Commit** `feat: show coverage summaries on framework cards`; push.
 
-### Task 7: Finish
+### Task 7: Rules table tweaks - icon key dialog and select-all checkbox
+
+#### Part A: Icon key button and dialog
+
+Requested by the user mid-plan (2026-11-18): replace the inline status key above the rules table with a **Key** button that opens a dialog, like the footer's "Sources & licences" dialog, listing every status icon actually present in the rules, grouped under headings by meaning.
+
+**Files:**
+- Create: `webui/src/logic/ruleStatusKey.ts`, `webui/src/logic/ruleStatusKey.test.ts`, `webui/src/components/rules/RuleStatusKeyDialog.tsx`
+- Modify: `webui/src/components/rules/RuleTable.tsx` (the `trailing={<RuleStatusLegend />}` slot), `webui/e2e/rule-status-icons.spec.ts`
+- Delete: `webui/src/components/rules/RuleStatusLegend.tsx` (and its `data-testid="rule-status-legend"` uses in e2e)
+
+**Interfaces:**
+- Consumes: `targetIconsOf`, `targetIconFor`, `NO_TARGET_ICON`, `LINK_ICON` (`logic/targetIcons.ts`); `linkStatusCounts`, `CheckStatus` (`logic/ruleStatusIcons.ts`); `StatusGlyph` (`components/rules/StatusGlyph.tsx`); the `Dialog` components used by `components/layout/AttributionFooter.tsx`.
+- Produces:
+  ```ts
+  export interface StatusKeyEntry { kind: 'target' | 'no-target' | 'link'; targetName?: string; status: CheckStatus; text: string }
+  export interface StatusKeyGroup { heading: 'Automated check' | 'Manual check' | 'Linked rules'; entries: StatusKeyEntry[] }
+  export function statusKeyGroups(rows: readonly RuleRow[], byRule: ReadonlyMap<string, MappedRule[]>, rowsById: ReadonlyMap<string, RuleRow>): StatusKeyGroup[]
+  ```
+
+Behaviour:
+- Groups, in this order, each only when it has entries: **Automated check** (one entry per platform that has at least one automated rule, text = the platform's display label, e.g. "macOS", "Microsoft Windows"; plus "No platform" when an automated rule has no target), **Manual check** (same for manual), **Linked rules** ("Linked to automated rules", "Linked to manual rules", each only if some row has such a link).
+- Platform entries sorted by display label; "No platform" last in its group.
+- Rows used: the rules in the current page's scope (all rules on `framework=all`, that framework's rules on a framework page), **not** narrowed by the other filters, so the key does not change while filtering.
+- Button: `Key` with a small icon, outline `xs` button, in the slot the inline legend used; accessible name `Icon key`. Dialog title `Icon key`; each group an `h3`-level heading with its glyphs (`StatusGlyph`) and texts in a list.
+
+- [ ] **Step 1: Write failing tests** in `ruleStatusKey.test.ts`: automated macOS + manual Windows rows -> groups `Automated check: [macOS]`, `Manual check: [Microsoft Windows]` (use the real display label from `targetIconFor`), no `Linked rules` group; a manual row with no targets -> `Manual check` ends with `No platform`; a row linked to an automated rule -> `Linked rules: [Linked to automated rules]`; empty rows -> `[]`.
+- [ ] **Step 2: Run** `bun run test src/logic/ruleStatusKey.test.ts` -> FAIL.
+- [ ] **Step 3: Implement** the function and the dialog; replace the legend.
+- [ ] **Step 4: Verify** full suite, `bunx tsc -b`, `bun run lint`; update `e2e/rule-status-icons.spec.ts` (open the Key dialog, see the `Automated check` heading and a `macOS` entry); `bun run test:e2e`; screenshots of the button and open dialog at 1280x800 and 375x800, light and dark, read with the Read tool.
+- [ ] **Step 5: Commit** `feat: replace the inline status key with an icon key dialog`; push.
+
+#### Part B: Select-all checkbox for the filtered rules
+
+Requested by the user (2026-11-18). A checkbox at the top of the rules table's checkbox column (header position, standard select-all pattern) that ticks every rule in the current filtered view.
+
+**Files:**
+- Create: `webui/src/logic/selectAll.ts`, `webui/src/logic/selectAll.test.ts`
+- Modify: `webui/src/state/selectionStore.ts` (bulk action), `webui/src/components/rules/RuleTable.tsx`, `webui/e2e/` (add `select-all.spec.ts` or extend the closest existing spec)
+
+**Interfaces:**
+- Produces:
+  ```ts
+  export type SelectAllState = 'checked' | 'unchecked' | 'indeterminate'
+  export function selectAllState(visibleRefs: readonly RuleRef[], selections: SelectionMap): SelectAllState
+  // selectionStore gains: setEnabledMany(refs: readonly RuleRef[], enabled: boolean) => void  (one store update)
+  ```
+
+Behaviour:
+- "Current filtered view" = every row the table currently shows after search and filters (and after the Task 3 framework scope), across all pages and collapsed groups, not just the visible page.
+- State: `checked` when every row in the view is enabled; `unchecked` when none is; `indeterminate` (Base UI checkbox's indeterminate state) when some are. It is derived, never stored, so it updates automatically when rows are ticked by hand or filters change. Empty view -> `unchecked` and disabled.
+- Ticking it (from unchecked or indeterminate) enables every row in the view; unticking it (from checked) disables every row in the view. Rows outside the view are never touched. Disabling uses the same path as unticking a row (`enabled: false`), so organisation-defined values the user typed are kept.
+- Example the user gave: filter down, tick select-all, clear the filter -> the box shows indeterminate (not all selected), and exactly the rows from the filtered view stay ticked.
+- Accessible name `Select all rules in this view`; with `aria-checked="mixed"` when indeterminate.
+
+- [ ] **Step 6: Write failing tests** in `selectAll.test.ts`: all enabled -> `checked`; none -> `unchecked`; one of two -> `indeterminate`; an entry present but `enabled: false` counts as not selected; empty refs -> `unchecked`. And a store test: `setEnabledMany` on two refs enables both and keeps an existing `odvValue`.
+- [ ] **Step 7: Run** -> FAIL. **Step 8: Implement** and wire the header checkbox.
+- [ ] **Step 9: Verify** full suite, tsc, lint; e2e: search to narrow the table, tick select-all, clear search -> header checkbox is `mixed`, ticked count equals the narrowed count; tick every row of a small filtered view by hand -> header checkbox becomes checked. Screenshots of the header checkbox in all three states at 1280x800 and 375x800.
+- [ ] **Step 10: Commit** `feat: add a select-all checkbox for the filtered rules`; push.
+
+### Task 8: Finish
+
+- [ ] Fix the Task 3 loose ends, each with a test:
+  - The all-rules page's filter sidebar overflows by about 86px at 1280x800 with the stacked header. Make it fit again (tighten the header/sidebar spacing) and move the "filter list fits" e2e test back to 1280x800.
+  - Old bare-base Rules links (`/?q=..`, `/?rule=..`, or any Rules filter parameter on the bare base path) land on the card grid. In `migrateLegacyView`, send a bare-base address carrying Rules parameters (`q`, `rule`, `source`, `target`, `version`, `benchmark`, `section`, `tag`, `automation`, `page`, `size`) to `framework: 'all', frameworkTab: 'rules'`.
+  - "Clear filters" on a framework page empties the hidden `sources` set. Spec: sources is left untouched while scoped. Keep `sources` when clearing on a framework page.
+  - The Generate review's back button says "Back to rules". Make it name where it returns (e.g. "Back to {framework}" or "Back to all rules").
 
 - [ ] Search the repo for leftover references to the old tabs (`'coverage'` view id, `DEFAULT_VIEW_ID` assumptions, copy saying "Rules view" or "Coverage view", README screenshots/text) and update them.
 - [ ] Update the spec status to `Implemented` and add the final progress log entry.
 - [ ] Commit `docs: log the unified Frameworks tab and close the plan`; push.
 
-**Review checkpoint B (full review):** after Task 7, one whole-branch review covering Tasks 3-7 against the spec, including the Review Focus list.
+**Review checkpoint B (full review):** after Task 8, one whole-branch review covering Tasks 3-8 against the spec, including the Review Focus list.
 
 ## Progress log
 
