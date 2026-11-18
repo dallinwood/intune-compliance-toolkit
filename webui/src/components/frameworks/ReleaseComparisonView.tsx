@@ -12,7 +12,7 @@ import { isEmptyRelease, releaseLabel, resolveComparisonRange } from '../../logi
 import { effectiveKinds, type ChangeKind } from '../../logic/ruleChanges'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { useFilterStore } from '../../state/filterStore'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation, type CompareGroup } from '../../state/urlState'
+import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, RULES_VIEW_ID, parseUrlState, serializeUrlLocation, type CompareGroup } from '../../state/urlState'
 import type { ManifestSource } from '../../types/library'
 import { ChangesBetween } from '../history/ChangesBetween'
 import { KindTag } from '../history/KindTag'
@@ -37,7 +37,7 @@ const groupKey = (group: Group) => `group:${group}`
 const rowKey = (group: Group, ruleId: string) => `${group}:${ruleId}`
 
 function hrefShowing(ruleId: string): string {
-  const state = { ...parseUrlState(''), view: DEFAULT_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
+  const state = { ...parseUrlState(''), view: RULES_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
   return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
 }
 

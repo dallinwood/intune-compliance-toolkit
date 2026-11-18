@@ -6,7 +6,7 @@ import { resolveView, VIEWS, type ViewDefinition } from './viewRegistry'
 describe('viewRegistry', () => {
   it('lists the default view first with unique ids and labels', () => {
     expect(VIEWS[0].id).toBe(DEFAULT_VIEW_ID)
-    expect(VIEWS.map((view) => view.label)).toContain('Rules')
+    expect(VIEWS.map((view) => view.label)).toContain('Frameworks')
     expect(new Set(VIEWS.map((view) => view.id)).size).toBe(VIEWS.length)
   })
 

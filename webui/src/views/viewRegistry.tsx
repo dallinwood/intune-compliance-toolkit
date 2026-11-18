@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { DEFAULT_VIEW_ID } from '../state/urlState'
+import { DEFAULT_VIEW_ID, RULES_VIEW_ID } from '../state/urlState'
 import { CoverageView } from './CoverageView'
 import { FrameworksView } from './FrameworksView'
 import { LicencesView } from './LicencesView'
@@ -16,10 +16,10 @@ export interface ViewDefinition {
 // Tab order. Adding a view is one entry here plus its component, and its id
 // in scripts/route-pages.mjs (a test keeps the two in step). The first entry
 // must be DEFAULT_VIEW_ID, the view a bare base address shows; its own
-// address is written out as /rules.
+// address is written out as /frameworks.
 export const VIEWS: readonly ViewDefinition[] = [
-  { id: DEFAULT_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
-  { id: 'frameworks', label: 'Frameworks', render: (context) => <FrameworksView {...context} /> },
+  { id: DEFAULT_VIEW_ID, label: 'Frameworks', render: (context) => <FrameworksView {...context} /> },
+  { id: RULES_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
   { id: 'coverage', label: 'Coverage', render: (context) => <CoverageView {...context} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
   { id: 'products', label: 'Products', render: () => <ProductsView /> },

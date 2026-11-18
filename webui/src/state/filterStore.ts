@@ -4,13 +4,15 @@ import type { ChangeKind } from '../logic/ruleChanges'
 import {
   DEFAULT_AUTOMATION,
   DEFAULT_PAGE_SIZE,
-  DEFAULT_VIEW_ID,
+  RULES_VIEW_ID,
+  migrateLegacyView,
   parsePageSize,
   parseUrlState,
   serializeUrlLocation,
   startsHistoryEntry,
   type CompareGroup,
   type CompareOnly,
+  type FrameworkTab,
   type PageSize,
   type UrlState,
 } from './urlState'
@@ -44,6 +46,7 @@ export interface FilterState {
   compare: string[]
   // The Frameworks view (see UrlState).
   framework: string | null
+  frameworkTab: FrameworkTab | null
   compareFrom: string | null
   compareTo: string | null
   compareGroup: CompareGroup | null
@@ -54,8 +57,11 @@ export interface FilterState {
   compareBenchmarks: string[]
   compareOnly: CompareOnly[]
   setView: (value: string) => void
-  // One update, so one history entry: open a framework's comparison on the
-  // Frameworks view with the narrowing filters cleared.
+  // One update, so one history entry: open a framework's page (or the card grid
+  // for null) on the given sub-tab.
+  setFrameworkPage: (framework: string | null, tab: FrameworkTab | null) => void
+  // One update, so one history entry: open a framework's Releases sub-tab with
+  // the narrowing filters cleared.
   showComparison: (framework: string, from: string | null, to: string | null) => void
   closeComparison: () => void
   setCompareReleases: (from: string | null, to: string | null) => void
@@ -137,7 +143,7 @@ const BASE_PATH = import.meta.env.BASE_URL
 // A size in the URL wins; without one, the size this browser last chose.
 function stateFromLocation(): UrlState {
   if (typeof window === 'undefined') return parseUrlState('')
-  const fromUrl = parseUrlState(window.location.search, window.location.pathname, BASE_PATH)
+  const fromUrl = migrateLegacyView(parseUrlState(window.location.search, window.location.pathname, BASE_PATH))
   if (new URLSearchParams(window.location.search).has('size')) return fromUrl
   return { ...fromUrl, size: readStoredPageSize() ?? fromUrl.size }
 }
@@ -160,6 +166,7 @@ function filterValuesOf(urlState: UrlState) {
     product: urlState.product,
     compare: urlState.compare,
     framework: urlState.framework,
+    frameworkTab: urlState.frameworkTab,
     compareFrom: urlState.compareFrom,
     compareTo: urlState.compareTo,
     compareGroup: urlState.compareGroup,
@@ -187,8 +194,9 @@ export const useFilterStore = create<FilterState>((set) => {
     openRuleTab: null,
     setView: (value) => set({ view: value }),
     showComparison: (framework, from, to) =>
-      set({ view: 'frameworks', framework, compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
-    closeComparison: () => set({ framework: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
+      set({ view: 'frameworks', framework, frameworkTab: 'releases', compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
+    setFrameworkPage: (framework, tab) => set({ view: 'frameworks', framework, frameworkTab: tab }),
+    closeComparison: () => set({ framework: null, frameworkTab: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
     setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
     setChangeKinds: (kinds) => set({ changeKinds: kinds }),
     setCompareGroup: (group) => set({ compareGroup: group }),
@@ -232,7 +240,7 @@ export const useFilterStore = create<FilterState>((set) => {
     closeOpenRule: () => set({ openRule: null, openRuleTab: null }),
     showRuleFromComparison: (ruleId, upstreamId, tab) =>
       set((state) => ({
-        view: DEFAULT_VIEW_ID,
+        view: RULES_VIEW_ID,
         search: upstreamId,
         targets: new Set(),
         sources: new Set(),
@@ -280,6 +288,7 @@ function urlStateOf(state: FilterState): UrlState {
     product: state.product,
     compare: state.compare,
     framework: state.framework,
+    frameworkTab: state.frameworkTab,
     compareFrom: state.compareFrom,
     compareTo: state.compareTo,
     compareGroup: state.compareGroup,
@@ -351,6 +360,6 @@ if (typeof window !== 'undefined') {
       }),
     )
   })
-  // A bare base address shows Rules, so its address says so.
+  // A bare base address shows the default view, so its address says so.
   writeStateToUrl(useFilterStore.getState())
 }

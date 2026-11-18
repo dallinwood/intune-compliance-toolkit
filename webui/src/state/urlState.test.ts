@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { benchmarkFacetValue } from '../logic/ruleFilters'
 import {
   DEFAULT_PAGE_SIZE,
+  ALL_FRAMEWORKS,
   DEFAULT_VIEW_ID,
+  migrateLegacyView,
   PAGE_SIZES,
   parsePageSize,
   parseUrlState,
@@ -32,6 +34,7 @@ const everyKeySet: UrlState = {
   product: 'microsoft.entra-id',
   compare: ['microsoft.m365-e3', 'microsoft.m365-e5'],
   framework: 'asd_ism',
+  frameworkTab: 'coverage',
   compareFrom: 'v2025.12.9',
   compareTo: 'v2026.09.4',
   compareGroup: 'changed',
@@ -45,7 +48,7 @@ const everyKeySet: UrlState = {
 describe('urlState', () => {
   it('writes the comparison parameters under their own names, in a fixed order', () => {
     expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
-      '?framework=asd_ism&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
+      '?framework=asd_ism&tab=coverage&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
     )
   })
 
@@ -206,7 +209,7 @@ describe('urlState', () => {
   it('serializes to the view path under the base, then the query', () => {
     const state = { ...parseUrlState('?q=gatekeeper&size=100&rule=a.b'), view: 'licences', licence: 'a.one' }
     expect(serializeUrlLocation(state, defaults, '/intune-compliance-toolkit/')).toBe('/intune-compliance-toolkit/licences?q=gatekeeper&size=100&rule=a.b&licence=a.one')
-    expect(serializeUrlLocation({ ...parseUrlState(''), view: DEFAULT_VIEW_ID }, defaults, '/')).toBe('/rules')
+    expect(serializeUrlLocation({ ...parseUrlState(''), view: DEFAULT_VIEW_ID }, defaults, '/')).toBe('/frameworks')
   })
 
   it('never writes a view parameter into the query', () => {
@@ -231,7 +234,13 @@ describe('urlState', () => {
       expect(startsHistoryEntry(comparing, { ...comparing, compareFrom: 'c', compareTo: 'd' })).toBe(false)
       expect(startsHistoryEntry(comparing, { ...comparing, compareGroup: 'added' })).toBe(false)
       expect(startsHistoryEntry(comparing, { ...comparing, changeKinds: ['behaviour'], compareSearch: 'x', compareSections: ['s'], compareOnly: ['custom'] })).toBe(false)
-      expect(startsHistoryEntry(comparing, { ...comparing, framework: 'mscp' })).toBe(false)
+    })
+
+    it('is true when the framework or the sub-tab changes between two set values', () => {
+      const onFramework = { ...base, framework: 'mscp', frameworkTab: 'rules' as const }
+      expect(startsHistoryEntry(onFramework, { ...onFramework, framework: 'asd_ism' })).toBe(true)
+      expect(startsHistoryEntry(onFramework, { ...onFramework, frameworkTab: 'coverage' })).toBe(true)
+      expect(startsHistoryEntry(onFramework, { ...onFramework, frameworkTab: 'rules' })).toBe(false)
     })
 
     it('is false for search, filters, paging, closing a rule and ticking more licences inside compare', () => {
@@ -239,6 +248,55 @@ describe('urlState', () => {
       expect(startsHistoryEntry(base, { ...base, targets: ['macOS'], page: 2, size: 100 })).toBe(false)
       expect(startsHistoryEntry({ ...base, openRule: 'a.b' }, { ...base, openRule: null })).toBe(false)
       expect(startsHistoryEntry({ ...base, compare: ['a.one'] }, { ...base, compare: ['a.one', 'a.two'] })).toBe(false)
+    })
+  })
+
+  describe('framework sub-tab', () => {
+    it('reads tab, and gives null for a missing or unknown tab', () => {
+      expect(parseUrlState('?framework=mscp&tab=coverage')).toMatchObject({ framework: 'mscp', frameworkTab: 'coverage' })
+      expect(parseUrlState('?framework=mscp&tab=nonsense').frameworkTab).toBeNull()
+      expect(parseUrlState('?framework=mscp').frameworkTab).toBeNull()
+    })
+
+    it('writes tab only when set and round trips it', () => {
+      const withTab = { ...parseUrlState('?framework=mscp'), frameworkTab: 'releases' as const }
+      const queryString = serializeUrlState(withTab, defaults)
+      expect(queryString).toBe('?framework=mscp&tab=releases')
+      expect(parseUrlState(queryString).frameworkTab).toBe('releases')
+      expect(serializeUrlState(parseUrlState('?framework=mscp'), defaults)).toBe('?framework=mscp')
+    })
+
+    it('shows the frameworks view at a bare base path', () => {
+      expect(parseUrlState('', '/base/', '/base/').view).toBe('frameworks')
+    })
+  })
+
+  describe('migrateLegacyView', () => {
+    const migrated = (search: string, pathname: string) => migrateLegacyView(parseUrlState(search, pathname, '/'))
+
+    it('sends /rules to the all-rules page and keeps its filters', () => {
+      expect(migrated('?q=foo&source=mscp', '/rules')).toMatchObject({
+        view: 'frameworks',
+        framework: ALL_FRAMEWORKS,
+        frameworkTab: 'rules',
+        search: 'foo',
+        sources: ['mscp'],
+      })
+    })
+
+    it('sends /coverage to the card grid', () => {
+      expect(migrated('', '/coverage')).toMatchObject({ view: 'frameworks', framework: null, frameworkTab: null })
+    })
+
+    it('opens the Releases sub-tab for a comparison link without a tab', () => {
+      expect(migrated('?framework=mscp&from=a&to=b', '/frameworks')).toMatchObject({ view: 'frameworks', framework: 'mscp', frameworkTab: 'releases', compareFrom: 'a', compareTo: 'b' })
+    })
+
+    it('leaves every other address alone', () => {
+      for (const [search, pathname] of [['?framework=mscp&tab=coverage', '/frameworks'], ['?framework=mscp', '/frameworks'], ['', '/frameworks'], ['', '/licences']] as const) {
+        const parsed = parseUrlState(search, pathname, '/')
+        expect(migrateLegacyView(parsed)).toEqual(parsed)
+      }
     })
   })
 

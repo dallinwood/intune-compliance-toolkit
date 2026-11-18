@@ -9,7 +9,7 @@ import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
 import { replaceView, useFilterStore } from '../../state/filterStore'
-import { DEFAULT_VIEW_ID } from '../../state/urlState'
+import { RULES_VIEW_ID } from '../../state/urlState'
 import { resolveView } from '../../views/viewRegistry'
 import { MappingsContext } from '../../state/mappingsContext'
 import { useSelectionStore } from '../../state/selectionStore'
@@ -67,7 +67,7 @@ export function AppShell({
   const viewId = useFilterStore((state) => state.view)
   const setViewId = useFilterStore((state) => state.setView)
   const activeView = resolveView(viewId)
-  const isRulesView = activeView.id === DEFAULT_VIEW_ID
+  const isRulesView = activeView.id === RULES_VIEW_ID
   const comparedFramework = useFilterStore((state) => state.framework)
   // The Rules view and an open release comparison both have a filter sidebar.
   const hasFilterSidebar = isRulesView || (activeView.id === 'frameworks' && comparedFramework !== null)
@@ -132,7 +132,7 @@ export function AppShell({
                     sources={sources}
                     selectedCount={knownSelections.length}
                     onGenerate={() => {
-                      setViewId(DEFAULT_VIEW_ID)
+                      setViewId(RULES_VIEW_ID)
                       setIsReviewingSelection(true)
                     }}
                   />

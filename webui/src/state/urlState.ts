@@ -8,7 +8,13 @@ export type CompareGroup = 'added' | 'removed' | 'changed' | 'unchanged'
 export const COMPARE_GROUPS: readonly CompareGroup[] = ['added', 'removed', 'changed', 'unchanged']
 export const COMPARE_ONLY_VALUES: readonly CompareOnly[] = ['custom', 'selected']
 
-export const DEFAULT_VIEW_ID = 'rules'
+export type FrameworkTab = 'rules' | 'releases' | 'coverage'
+export const FRAMEWORK_TABS: readonly FrameworkTab[] = ['rules', 'releases', 'coverage']
+// The framework value of the page that lists every rule, whatever its framework.
+export const ALL_FRAMEWORKS = 'all'
+export const DEFAULT_VIEW_ID = 'frameworks'
+// The id the Rules view has until the Frameworks view takes it over.
+export const RULES_VIEW_ID = 'rules'
 
 export interface UrlState {
   // Read from the path, kept as written; an id no view has is replaced by the app.
@@ -34,6 +40,8 @@ export interface UrlState {
   // the list of frameworks), the two releases, and how the comparison is
   // narrowed. changeKinds empty means no kind is selected, which shows every kind.
   framework: string | null
+  // The sub-tab of a framework page; null when absent or not a known tab.
+  frameworkTab: FrameworkTab | null
   compareFrom: string | null
   compareTo: string | null
   compareGroup: CompareGroup | null
@@ -65,6 +73,10 @@ const LIST_PARAMETER_NAMES = {
 
 function isChangeKind(value: string): value is ChangeKind {
   return (CHANGE_KINDS as readonly string[]).includes(value)
+}
+
+function isFrameworkTab(value: string | null): value is FrameworkTab {
+  return (FRAMEWORK_TABS as readonly (string | null)[]).includes(value)
 }
 
 function isCompareGroup(value: string | null): value is CompareGroup {
@@ -113,6 +125,7 @@ export function parseUrlState(search: string, pathname = '', basePath = '/'): Ur
     product: parameters.get('product') || null,
     compare: listValues('compare'),
     framework: parameters.get('framework') || null,
+    frameworkTab: isFrameworkTab(parameters.get('tab')) ? (parameters.get('tab') as FrameworkTab) : null,
     compareFrom: parameters.get('from') || null,
     compareTo: parameters.get('to') || null,
     compareGroup: isCompareGroup(parameters.get('group')) ? (parameters.get('group') as CompareGroup) : null,
@@ -142,6 +155,7 @@ export function serializeUrlState(state: UrlState, defaults: UrlDefaults): strin
   if (state.product !== null) parameters.set('product', state.product)
   for (const licenceId of state.compare) parameters.append('compare', licenceId)
   if (state.framework !== null) parameters.set('framework', state.framework)
+  if (state.frameworkTab !== null) parameters.set('tab', state.frameworkTab)
   if (state.compareFrom !== null) parameters.set('from', state.compareFrom)
   if (state.compareTo !== null) parameters.set('to', state.compareTo)
   if (state.compareGroup !== null) parameters.set('group', state.compareGroup)
@@ -159,13 +173,24 @@ export function serializeUrlLocation(state: UrlState, defaults: UrlDefaults, bas
   return `${basePath}${state.view}${serializeUrlState(state, defaults)}`
 }
 
+// Rewrites an address from before the Rules, Frameworks and Coverage views were
+// merged into the unified Frameworks view into the equivalent new one.
+export function migrateLegacyView(state: UrlState): UrlState {
+  if (state.view === 'rules') return { ...state, view: 'frameworks', framework: ALL_FRAMEWORKS, frameworkTab: 'rules' }
+  if (state.view === 'coverage') return { ...state, view: 'frameworks', framework: null, frameworkTab: null }
+  const isComparisonLink =
+    state.view === 'frameworks' && state.framework !== null && state.frameworkTab === null && state.compareFrom !== null && state.compareTo !== null
+  return isComparisonLink ? { ...state, frameworkTab: 'releases' } : state
+}
+
 // Whether moving from one state to the next is a navigation (the back button
 // should undo it) rather than a refinement of the current page (search,
 // filters, paging, ticking licences inside compare).
 export function startsHistoryEntry(previous: UrlState, next: UrlState): boolean {
   return (
     next.view !== previous.view ||
-    (next.framework === null) !== (previous.framework === null) ||
+    next.framework !== previous.framework ||
+    (next.frameworkTab !== previous.frameworkTab && next.frameworkTab !== null && previous.frameworkTab !== null) ||
     next.licence !== previous.licence ||
     next.product !== previous.product ||
     (next.openRule !== previous.openRule && next.openRule !== null) ||
