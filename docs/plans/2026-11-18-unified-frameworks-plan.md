@@ -282,7 +282,29 @@ Behaviour:
 - [ ] Implement; verify full suite, tsc, lint, e2e; screenshots of an opened section on both sides at 1280x800 and 375x800, light and dark, read with Read.
 - [ ] Commit `feat: section caps and a rule drill-down in coverage reports`; push.
 
-**Review checkpoint B (full review):** after Task 9, one whole-branch review covering Tasks 3-9 against the spec, including the Review Focus list.
+### Task 10: "Linked to" filter in the rules sidebar
+
+Requested by the user (2026-11-18): filter a rule list to rules linked to a given framework (e.g. on mSCP's Rules page, all mSCP rules linked to ASD ISM).
+
+Behaviour:
+- New facet "Linked to" in the filter sidebar (follow the existing facet pattern in components/filters/FilterSidebar.tsx and logic/ruleFilters.ts: option counts, multi-select OR within the facet, AND with other facets, retainKnownValues drops unknown values from a shared URL).
+- A rule is "linked to" framework F when any mapping path - direct (supports in either direction, or related) or indirect (the same indirect paths the rule details panel shows, logic/indirectMappings.ts) - reaches a rule whose sourceName is F, F != the rule's own sourceName.
+- Options: frameworks present in the current rows' links, labelled with the sources vocabulary label; a framework is never offered on its own framework page for its own rules.
+- URL parameter `linked` (repeatable), serialized/parsed in urlState.ts like `source`; included in the legacy-Rules-parameter list used by migrateLegacyView.
+- Precompute each rule's linked-framework set once per (rows, byRule) (memoised), not per filter change.
+
+- [ ] Failing unit tests: direct supports link, reverse (supported-by) link, related link, indirect two-hop link each produce the linked framework; own framework excluded; URL round-trip of `linked`.
+- [ ] Implement; full suite, tsc, lint; e2e: `?framework=mscp&tab=rules`, tick "Linked to: ASD ISM" -> count equals the number of mSCP rules with a path to ISM (assert > 0 and < 352); screenshots of the sidebar at 1280x800 and 375x800, light and dark.
+- [ ] Commit `feat: add a Linked to filter for rules`; push.
+
+#### Part B: Framework card tweaks (user request 2026-11-18)
+
+- Move each card's `Rules` and `Coverage` links from the bottom of the card to the right of the card title, in the same row (title left, links right; wrap under the title at narrow widths, e.g. 375px). Make them larger than today's `xs` pills (use the `sm` button size). Same hrefs and click behaviour as now.
+- Release list: when a framework has more than 4 releases, show only the newest 4 as buttons and put an `Older releases` menu button at the very left of the row. Opening it shows a small list (menu/popover, existing UI primitives) of the older releases, each opening that release's comparison exactly as the buttons do (real links, same accessible names). With 4 or fewer releases, nothing changes (today every framework has 4 or fewer, so the menu does not appear with real data).
+- Tests: a unit test for the split (`splitReleases(releases, visibleCount = 4): { older, visible }`, 5 releases -> 1 older + 4 visible newest, 4 -> 0 older); e2e for the moved links (card Rules/Coverage still navigate). Screenshots of the grid at 1280x800 and 375x800, light and dark; for the menu, a screenshot using a test fixture or a temporary dev-only override, reverted before committing.
+- Commit `feat: put card links beside the title and fold older releases into a menu`; push.
+
+**Review checkpoint B (full review):** after Task 10, one whole-branch review covering Tasks 3-10 against the spec, including the Review Focus list.
 
 ## Progress log
 
