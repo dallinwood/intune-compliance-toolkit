@@ -47,7 +47,21 @@ interface RevealedRules {
   ruleLimit: number
 }
 
-export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[]; scopeRows: RuleRow[]; isStale: boolean; search: string }) {
+// isSelectionReadOnly: an older release is browsed, and selections belong to
+// the current release, so its checkboxes are shown disabled.
+export function RuleTable({
+  rows,
+  scopeRows,
+  isStale,
+  search,
+  isSelectionReadOnly = false,
+}: {
+  rows: RuleRow[]
+  scopeRows: RuleRow[]
+  isStale: boolean
+  search: string
+  isSelectionReadOnly?: boolean
+}) {
   const index = useVocabularyIndex()
   const tree = useMemo(
     () =>
@@ -159,7 +173,7 @@ export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[
         onCollapseAll={() => setExpanded(new Set(), true)}
         trailing={<RuleStatusKeyDialog scopeRows={scopeRows} />}
       />
-      <SelectAllRow rows={rows} />
+      <SelectAllRow rows={rows} isReadOnly={isSelectionReadOnly} />
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
@@ -172,6 +186,7 @@ export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[
                 expandedRules={expandedRules}
                 onToggleSection={toggleSection}
                 onToggleRule={toggleRule}
+                isSelectionReadOnly={isSelectionReadOnly}
               />
               {revealed?.hasMore && <InfiniteScrollSentinel onReveal={revealMore} />}
               <PagingBar
@@ -200,7 +215,7 @@ export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[
 // collapsed sections included), not only the rows on screen. Its state is
 // derived from the selections, so it follows ticks made by hand and filter
 // changes without being stored.
-function SelectAllRow({ rows }: { rows: readonly RuleRow[] }) {
+function SelectAllRow({ rows, isReadOnly }: { rows: readonly RuleRow[]; isReadOnly: boolean }) {
   const selections = useSelectionStore((store) => store.selections)
   const setEnabledMany = useSelectionStore((store) => store.setEnabledMany)
   const refs = useMemo(() => rows.map((row) => row.ref), [rows])
@@ -211,7 +226,7 @@ function SelectAllRow({ rows }: { rows: readonly RuleRow[] }) {
         aria-label="Select all rules in this view"
         checked={state === 'checked'}
         indeterminate={state === 'indeterminate'}
-        disabled={refs.length === 0}
+        disabled={isReadOnly || refs.length === 0}
         onCheckedChange={(nextChecked) => setEnabledMany(refs, nextChecked === true)}
       />
       <span aria-hidden="true" className="text-xs text-muted-foreground">
@@ -308,11 +323,12 @@ interface RuleItemsProps {
   expandedRules: ReadonlySet<string>
   onToggleSection: (sectionId: string) => void
   onToggleRule: (ruleKey: string) => void
+  isSelectionReadOnly: boolean
 }
 
 // Memoized so flipping the stale overlay on (an urgent render) re-renders only
 // RuleTable's wrapper, not every row.
-const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onToggleSection, onToggleRule }: RuleItemsProps) {
+const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onToggleSection, onToggleRule, isSelectionReadOnly }: RuleItemsProps) {
   const blocks = useMemo(() => blocksOf(items), [items])
   return (
     <div>
@@ -328,7 +344,14 @@ const RuleItems = memo(function RuleItems({ items, expanded, expandedRules, onTo
             onToggle={onToggleSection}
           />
         ) : (
-          <RuleRowsTable key={block.key} depth={block.depth} rows={block.rows} expandedRules={expandedRules} onToggleRule={onToggleRule} />
+          <RuleRowsTable
+            key={block.key}
+            depth={block.depth}
+            rows={block.rows}
+            expandedRules={expandedRules}
+            onToggleRule={onToggleRule}
+            isSelectionReadOnly={isSelectionReadOnly}
+          />
         ),
       )}
     </div>
@@ -344,9 +367,10 @@ interface RuleRowsTableProps {
   rows: RuleRow[]
   expandedRules: ReadonlySet<string>
   onToggleRule: (ruleKey: string) => void
+  isSelectionReadOnly: boolean
 }
 
-function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTableProps) {
+function RuleRowsTable({ depth, rows, expandedRules, onToggleRule, isSelectionReadOnly }: RuleRowsTableProps) {
   const titleIndent = RULE_TITLE_INDENTS[Math.min(depth, 3)]
   const isWideLayout = useIsWideLayout()
   const selections = useSelectionStore((store) => store.selections)
@@ -403,6 +427,7 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
                   <RowCheckbox
                     ruleId={upstreamRuleId(row.ref.id)}
                     checked={isEnabled(selections, row.ref)}
+                    disabled={isSelectionReadOnly}
                     onCheckedChange={(checked) => setEnabled(row.ref, checked)}
                   />
                 </td>
@@ -449,13 +474,14 @@ function RuleRowsTable({ depth, rows, expandedRules, onToggleRule }: RuleRowsTab
 interface RowCheckboxProps {
   ruleId: string
   checked: boolean
+  disabled: boolean
   onCheckedChange: (checked: boolean) => void
 }
 
 // An explicit aria-labelledby makes Base UI skip its per-render lookup of the
 // checkbox's associated <label> (an O(DOM size) read of the hidden input's
 // .labels). Across 1,493 rows that lookup dominated every table repaint.
-function RowCheckbox({ ruleId, checked, onCheckedChange }: RowCheckboxProps) {
+function RowCheckbox({ ruleId, checked, disabled, onCheckedChange }: RowCheckboxProps) {
   const labelId = useId()
   return (
     <>
@@ -465,6 +491,7 @@ function RowCheckbox({ ruleId, checked, onCheckedChange }: RowCheckboxProps) {
       <Checkbox
         aria-labelledby={labelId}
         checked={checked}
+        disabled={disabled}
         onCheckedChange={(nextChecked) => onCheckedChange(nextChecked === true)}
       />
     </>

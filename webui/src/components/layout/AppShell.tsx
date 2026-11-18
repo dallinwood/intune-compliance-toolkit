@@ -4,14 +4,15 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
+import { useOlderReleaseRows } from '../../hooks/useOlderReleaseRows'
 import type { MappedRule, MappingFileInfo } from '../../logic/mappingIndex'
 import { frameworkPairs as findFrameworkPairs } from '../../logic/frameworkPairs'
-import { resolveFrameworkPage } from '../../logic/frameworkTabs'
+import { resolveBrowsedRelease, resolveFrameworkPage } from '../../logic/frameworkTabs'
 import { linkedFrameworksByRule } from '../../logic/linkedFrameworks'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
-import { replaceFrameworkTab, replaceUnknownFramework, replaceView, useFilterStore } from '../../state/filterStore'
+import { replaceFrameworkTab, replaceUnknownFramework, replaceUnknownRelease, replaceView, useFilterStore } from '../../state/filterStore'
 import { ALL_FRAMEWORKS, DEFAULT_VIEW_ID } from '../../state/urlState'
 import { resolveView } from '../../views/viewRegistry'
 import { MappingsContext } from '../../state/mappingsContext'
@@ -79,7 +80,12 @@ export function AppShell({
   // The Rules and Releases sub-tabs both have a filter sidebar.
   const hasFilterSidebar = isRulesTab || shownTab === 'releases'
   // The rules of the framework whose page is open; null lists every rule.
-  const scopedSourceName = frameworkPage === null || frameworkPage.source === ALL_FRAMEWORKS ? null : frameworkPage.source.name
+  const scopedSource = frameworkPage === null || frameworkPage.source === ALL_FRAMEWORKS ? null : frameworkPage.source
+  const scopedSourceName = scopedSource?.name ?? null
+  const releaseTag = useFilterStore((state) => state.release)
+  const browsedRelease = resolveBrowsedRelease(frameworkPage, releaseTag)
+  const olderRelease = useOlderReleaseRows(browsedRelease === null ? null : scopedSource, browsedRelease)
+  const olderReleaseRows = olderRelease?.status === 'ready' ? olderRelease.rows : null
   // A view id from a shared URL that no view has is replaced, which also
   // removes it from the URL.
   useEffect(() => {
@@ -95,6 +101,11 @@ export function AppShell({
   useEffect(() => {
     if (isFrameworksView && framework !== null && frameworkPage === null) replaceUnknownFramework()
   }, [isFrameworksView, framework, frameworkPage])
+  // An unknown tag, the current release's own tag, or a release on a page
+  // that does not browse one all show the current release, and the address says so.
+  useEffect(() => {
+    if (releaseTag !== null && browsedRelease === null) replaceUnknownRelease()
+  }, [releaseTag, browsedRelease])
   const [filtersOpen, setFiltersOpen] = useState(false)
   // The table and the count render from deferred filters so a click or
   // keystroke updates its own control at once while the 1,493-row table
@@ -103,16 +114,21 @@ export function AppShell({
   const retainKnownValues = useFilterStore((state) => state.retainKnownValues)
   const linkedFrameworks = useMemo(() => linkedFrameworksByRule(rows, mappingsByRule, vocabularyIndex), [rows, mappingsByRule, vocabularyIndex])
   // Filter values restored from a shared URL that this library has no option
-  // for are dropped, which also removes them from the URL.
+  // for are dropped, which also removes them from the URL. An older release
+  // being browsed has options of its own, so they wait until its rows arrive.
+  const isOlderReleasePending = olderRelease !== null && olderReleaseRows === null
   useEffect(() => {
-    retainKnownValues(knownFacetValues(rows, vocabularyIndex, linkedFrameworks))
-  }, [rows, vocabularyIndex, linkedFrameworks, retainKnownValues])
+    if (isOlderReleasePending) return
+    const knownRows = olderReleaseRows === null ? rows : [...rows, ...olderReleaseRows]
+    retainKnownValues(knownFacetValues(knownRows, vocabularyIndex, linkedFrameworks))
+  }, [rows, olderReleaseRows, isOlderReleasePending, vocabularyIndex, linkedFrameworks, retainKnownValues])
   // On a framework page the page is the scope, so the store's source filter
-  // is ignored there rather than cleared.
-  const scopedRows = useMemo(
-    () => (scopedSourceName === null ? rows : rows.filter((row) => row.sourceName === scopedSourceName)),
-    [rows, scopedSourceName],
-  )
+  // is ignored there rather than cleared. An older release has no rows until
+  // they arrive.
+  const scopedRows = useMemo(() => {
+    if (olderRelease !== null) return olderReleaseRows ?? []
+    return scopedSourceName === null ? rows : rows.filter((row) => row.sourceName === scopedSourceName)
+  }, [rows, scopedSourceName, olderRelease, olderReleaseRows])
   const filteredRows = useMemo(() => {
     const scopedFilters = scopedSourceName === null ? deferredFilters : { ...deferredFilters, sources: new Set<string>() }
     return scopedRows.filter((row) => matchesFilters(row, scopedFilters, vocabularyIndex, undefined, linkedFrameworks))
@@ -153,7 +169,7 @@ export function AppShell({
               </div>
               {isFrameworksView && (
                 <div className="flex flex-wrap items-center gap-4">
-                  {isRulesTab && (
+                  {isRulesTab && (olderRelease === null || olderRelease.status === 'ready') && (
                     <span className="text-sm text-muted-foreground">
                       {formatCount(filteredRows.length)} of {pluralize(scopedRows.length, 'rule', 'rules')}
                     </span>
@@ -180,6 +196,7 @@ export function AppShell({
               search: deferredFilters.search,
               sources,
               frameworkPage,
+              olderRelease,
               coveredVersions,
               filtersOpen,
               isReviewingSelection,

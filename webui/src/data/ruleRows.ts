@@ -3,7 +3,7 @@ import { GENERATED_TARGET } from '../logic/checkPlan'
 import { linksWithinLibrary, type MappedRule, type MappingFileInfo } from '../logic/mappingIndex'
 import { applyOverlaysToIndexEntry, type OnOverlaySkipped, type Overlay } from '../logic/overlays'
 import { compareVersionsDescending } from '../logic/versions'
-import type { ManifestSource, RuleIndex } from '../types/library'
+import type { ManifestRelease, ManifestSource, RuleIndex } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { fetchManifest } from './manifest'
 import { fetchMappingIndex } from './mappings'
@@ -98,4 +98,26 @@ export async function loadLibrary(): Promise<Library> {
     mappingFiles: mappingIndex.mappingFiles,
     mappingWarnings: mappingIndex.warnings,
   }
+}
+
+const releaseRowsCache = new Map<string, Promise<RuleRow[]>>()
+
+// An older release's rows, built like the current release's: from its own
+// index, with the same index-level overlays. Overlays are written against
+// the current release, so one that does not fit an older rule is skipped
+// without a warning; the startup warnings already cover the current release.
+// Cached per release for the session; a failure is not cached, so choosing
+// the release again retries.
+export function loadReleaseRows(source: ManifestSource, release: ManifestRelease): Promise<RuleRow[]> {
+  const cached = releaseRowsCache.get(release.index_path)
+  if (cached) return cached
+  const releaseSource: ManifestSource = { ...source, release_tag: release.tag, index_path: release.index_path }
+  const pending = Promise.all([fetchRuleIndex(release.index_path), fetchOverlayIndex()]).then(([index, overlayIndex]) =>
+    buildRuleRows(releaseSource, index, startupOverlays(overlayIndex)),
+  )
+  releaseRowsCache.set(release.index_path, pending)
+  pending.catch(() => {
+    if (releaseRowsCache.get(release.index_path) === pending) releaseRowsCache.delete(release.index_path)
+  })
+  return pending
 }

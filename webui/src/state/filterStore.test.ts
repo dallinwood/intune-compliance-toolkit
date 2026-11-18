@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { useFilterStore } from './filterStore'
+import { replaceUnknownRelease, useFilterStore } from './filterStore'
 
 describe('setFrameworkPage', () => {
   it('drops the previous framework release comparison when switching framework', () => {
@@ -73,5 +73,43 @@ describe('clear', () => {
     useFilterStore.getState().clear()
 
     expect(useFilterStore.getState().sources.size).toBe(0)
+  })
+})
+
+describe('release', () => {
+  it('resets to the current release on entering a framework Rules sub-tab', () => {
+    const store = useFilterStore.getState()
+    store.setFrameworkPage('mscp', 'rules')
+    useFilterStore.getState().setRelease('release_27.0')
+    expect(useFilterStore.getState().release).toBe('release_27.0')
+
+    useFilterStore.getState().setFrameworkPage('mscp', 'coverage')
+    expect(useFilterStore.getState().release).toBeNull()
+
+    useFilterStore.getState().setRelease('release_27.0')
+    useFilterStore.getState().setFrameworkPage('asd_ism', 'rules')
+    expect(useFilterStore.getState().release).toBeNull()
+
+    useFilterStore.getState().setFrameworkPage('mscp', 'rules')
+    useFilterStore.getState().setRelease('release_27.0')
+    useFilterStore.getState().setFrameworkPage(null, null)
+    expect(useFilterStore.getState().release).toBeNull()
+  })
+
+  it('resets on leaving the Frameworks view and keeps it when the view stays', () => {
+    useFilterStore.getState().setFrameworkPage('mscp', 'rules')
+    useFilterStore.getState().setRelease('release_27.0')
+    useFilterStore.getState().setView('frameworks')
+    expect(useFilterStore.getState().release).toBe('release_27.0')
+
+    useFilterStore.getState().setView('licences')
+    expect(useFilterStore.getState().release).toBeNull()
+  })
+
+  it('drops an unknown release from the store', () => {
+    useFilterStore.getState().setFrameworkPage('mscp', 'rules')
+    useFilterStore.getState().setRelease('nonsense')
+    replaceUnknownRelease()
+    expect(useFilterStore.getState().release).toBeNull()
   })
 })
