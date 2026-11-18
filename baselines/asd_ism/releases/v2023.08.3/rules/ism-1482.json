@@ -1,0 +1,62 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "If an organisation chooses to issue personnel with an organisation-owned mobile device to access their organisation’s systems or data, they should ensure that it does not present an unacceptable security risk. This can be achieved by using an ASD-approved platform, with a security configuration in accordance with ACSC guidance, along with enforced separation of work and personal data.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1482",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Enterprise Mobility",
+    "Mobile device management",
+    "Organisation-owned mobile devices"
+  ],
+  "source": {
+    "commit_sha": "a4365f02ff1ffe2069a8f521ca57bb706892fc0e",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.08.3",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "6",
+    "upstream_rule_id": "ism-1482",
+    "upstream_updated": "Sep-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/a4365f02ff1ffe2069a8f521ca57bb706892fc0e/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Personnel accessing systems or data using an organisation-owned mobile device use an ASD-approved platform, a security configuration in accordance with ACSC guidance, and have enforced separation of work and personal data."
+}

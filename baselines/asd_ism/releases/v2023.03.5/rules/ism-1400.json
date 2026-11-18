@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Allowing privately-owned mobile devices to access an organisation’s systems or data can increase liability risk. As such, an organisation should seek legal advice to ascertain whether this scenario affects compliance with relevant legislation, such as the [Privacy Act 1988](https://www.legislation.gov.au/Series/C2004A03712) and the [Archives Act 1983](https://www.legislation.gov.au/Series/C2004A02796), and also consider whether the increased liability risks are acceptable to the organisation.\n\nIf an organisation chooses to allow personnel to use a privately-owned mobile device to access their organisation’s systems or data, they should ensure that it does not present an unacceptable security risk. This can be achieved by encouraging the use of an ASD-approved platform, with a security configuration in accordance with Australian Cyber Security Centre (ACSC) guidance, along with enforced separation of work and personal data.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1400",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Enterprise Mobility",
+    "Mobile device management",
+    "Privately-owned mobile devices"
+  ],
+  "source": {
+    "commit_sha": "a19e8b6c0963d0324d995002f89e27568d4dd9a7",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.03.5",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "7",
+    "upstream_rule_id": "ism-1400",
+    "upstream_updated": "Sep-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/a19e8b6c0963d0324d995002f89e27568d4dd9a7/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Personnel accessing OFFICIAL and PROTECTED systems or data using a privately-owned mobile device use an ASD-approved platform, a security configuration in accordance with ACSC guidance, and have enforced separation of work and personal data."
+}

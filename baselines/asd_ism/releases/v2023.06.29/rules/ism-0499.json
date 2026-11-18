@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "In order to ensure interoperability and maintain trust, all High Assurance Cryptographic Equipment (HACE) that processes, stores or communicates SECRET or TOP SECRET data must be approved for use by the Australian Signals Directorate (ASD). In addition, the Australian Cyber Security Centre (ACSC) specifies additional requirements in Australian Communications Security Instructions and other cyber security-related publications for ASD-approved HACE that must be complied with. Such requirements supplement these guidelines and, where conflicts occur, take precedence.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0499",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Cryptography",
+    "Cryptographic fundamentals",
+    "ASD-approved High Assurance Cryptographic Equipment"
+  ],
+  "source": {
+    "commit_sha": "242ac31bcd27e5680c0fbf0314cb3166e6a17ad0",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.06.29",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "10",
+    "upstream_rule_id": "ism-0499",
+    "upstream_updated": "Sep-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/242ac31bcd27e5680c0fbf0314cb3166e6a17ad0/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "All communications security and equipment-specific doctrine produced by the ACSC for the management and use of ASD-approved HACE is complied with."
+}

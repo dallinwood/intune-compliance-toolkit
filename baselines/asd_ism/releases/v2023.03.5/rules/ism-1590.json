@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Credentials are changed if:\n\n* they are directly compromised\n* they are suspected of being compromised\n* they appear in an online data breach database\n* they are discovered stored on networks in the clear\n* they are discovered being transferred across networks in the clear\n* membership of a shared account changes\n* they have not been changed in the past 12 months.\n\nGenerally, credentials should not need to be changed on a frequent basis. However, some events may necessitate the requirement for individual accounts, or groups of accounts, to change their credentials. This can include direct or suspected compromises of credentials, credentials appearing in online data breach databases, credentials being discovered stored on networks in the clear, credentials being transferred across networks in the clear, when membership of shared accounts change, and if credentials haven’t been changed in the past 12 months.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1590",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for System Hardening",
+    "Authentication hardening",
+    "Changing credentials"
+  ],
+  "source": {
+    "commit_sha": "a19e8b6c0963d0324d995002f89e27568d4dd9a7",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.03.5",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "1",
+    "upstream_rule_id": "ism-1590",
+    "upstream_updated": "Mar-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/a19e8b6c0963d0324d995002f89e27568d4dd9a7/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Credentials are changed if:"
+}

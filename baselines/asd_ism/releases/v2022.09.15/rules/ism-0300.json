@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "When patches or updates are released by vendors for security vulnerabilities, an organisation should apply them in a timeframe commensurate with the likelihood of attempted exploitation by an adversary. For example, by prioritising patches or updates for security vulnerabilities in internet-facing services and their operating systems, especially when exploitation code exists or active exploitation is occurring.\n\nIf no patches or updates are available for security vulnerabilities, mitigation advice from vendors, trusted authorities or security researchers may provide some protection until patches or updates are made available. Such mitigation advice may be published in conjunction with, or soon after, announcements made relating to security vulnerabilities. Mitigation advice may cover how to disable or block access to vulnerable functionality, how to reconfigure vulnerable functionality, or how to detect attempted or successful exploitation of vulnerable functionality.\n\nIf a patch or update is released for high assurance ICT equipment, the ACSC will conduct an assessment of the patch or update. Subsequently, if the patch or update is approved for deployment, the ACSC will provide guidance on the methods and timeframes in which it is to be applied.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0300",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for System Management",
+    "System patching",
+    "When to patch security vulnerabilities"
+  ],
+  "source": {
+    "commit_sha": "4cf41717a3ae2aa810c960eecfc86a420998c3d2",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2022.09.15",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "8",
+    "upstream_rule_id": "ism-0300",
+    "upstream_updated": "Mar-22",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/4cf41717a3ae2aa810c960eecfc86a420998c3d2/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Patches, updates or vendor mitigations for security vulnerabilities in high assurance ICT equipment are applied only when approved by the ACSC, and in doing so, using methods and timeframes prescribed by the ACSC."
+}

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "It is important that an organisation does not lose access to their systems. As such, an organisation should always have a method for gaining access during emergencies. Typically, emergencies would occur when access to systems cannot be gained via normal authentication processes, such as due to misconfigurations of authentication services, misconfigurations of security settings or due to a cyber security incident. In these situations, a break glass account (also known as an emergency access account) can be used to gain access. As break glass accounts generally have the highest level of privileges available for systems, extreme care should be taken to both protect them and to monitor for any signs of compromise or abuse.\n\nWhen break glass accounts are used, any administrative activities performed will not be directly attributable to an individual, and systems may not generate event logs. As such, additional controls need to be implemented in order to maintain the system’s integrity. In doing so, an organisation should ensure that any administrative activities performed using a break glass account are identified and documented in support of change management processes and procedures. This includes documenting the individual using the break glass account, the reason for using the break glass account and any administrative activities performed using the break glass account.\n\nAs the custodian of each break glass account should be the only party who knows the account’s credentials, credentials will need to be changed and tested by custodians after any authorised access by another party. Modern password managers that support automated credential changes and testing can assist in reducing the administrative overhead of such activities.\n\nFinally, to assist with incident response activities, it is important that break glass event logs are centrally stored and protected from unauthorised modification and deletion, monitored for signs of compromise, and actioned when cyber security events are detected.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1610",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Personnel Security",
+    "Access to systems and their resources",
+    "Emergency access to systems"
+  ],
+  "source": {
+    "commit_sha": "4cf41717a3ae2aa810c960eecfc86a420998c3d2",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2022.09.15",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-1610",
+    "upstream_updated": "Aug-20",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/4cf41717a3ae2aa810c960eecfc86a420998c3d2/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "A method of emergency access to systems is documented and tested at least once when initially implemented and each time fundamental information technology infrastructure changes occur."
+}

@@ -40,6 +40,13 @@ BENCHMARK_BY_CLASSIFICATION = {
     "S": "ism_secret",
     "TS": "ism_top_secret",
 }
+# Releases up to v2024.10.4 mark controls for every classification as "ALL", and releases up to
+# v2023.08.3 write OFFICIAL: Sensitive as "O". ASD's own later releases replaced these with exactly
+# NC, OS, P, S and TS (v2024.12.19) and with OS (v2023.09.25), so they are mapped the same way.
+CLASSIFICATIONS_BY_LEGACY_VALUE = {
+    "ALL": tuple(BENCHMARK_BY_CLASSIFICATION),
+    "O": ("OS",),
+}
 BENCHMARK_BY_ESSENTIAL_EIGHT_LEVEL = {
     "ML1": "e8_ml1",
     "ML2": "e8_ml2",
@@ -126,11 +133,12 @@ def _benchmark_names(
 ) -> list[str]:
     present = set()
     for value in classifications:
-        if value not in BENCHMARK_BY_CLASSIFICATION:
-            raise UnsupportedUpstreamData(
-                f"{control_id}: unsupported {CLASSIFICATION_PROPERTY} value {value!r}"
-            )
-        present.add(BENCHMARK_BY_CLASSIFICATION[value])
+        for classification in CLASSIFICATIONS_BY_LEGACY_VALUE.get(value, (value,)):
+            if classification not in BENCHMARK_BY_CLASSIFICATION:
+                raise UnsupportedUpstreamData(
+                    f"{control_id}: unsupported {CLASSIFICATION_PROPERTY} value {value!r}"
+                )
+            present.add(BENCHMARK_BY_CLASSIFICATION[classification])
     for value in essential_eight_levels:
         if value not in BENCHMARK_BY_ESSENTIAL_EIGHT_LEVEL:
             raise UnsupportedUpstreamData(

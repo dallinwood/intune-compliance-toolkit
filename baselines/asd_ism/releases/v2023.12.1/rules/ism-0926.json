@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "To avoid confusion, it is important that, regardless of the type of cabling involved, a consistent cable colour is used. Furthermore, the use of designated cable colours can provide an easy way to distinguish cables for SECRET and TOP SECRET systems from cables for other systems. For example, while SECRET and TOP SECRET cables have designated cable colours, cables for other systems may be any colour except for those reserved for SECRET and TOP SECRET systems. In addition, cable colours for other systems, such as OFFICIAL: Sensitive and PROTECTED systems, may use the same colour, such as blue.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0926",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Communications Infrastructure",
+    "Cabling infrastructure",
+    "Cable colours"
+  ],
+  "source": {
+    "commit_sha": "9fb9f5ae42a2f81a70f53a8b6fbc4eb4b8335340",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.12.1",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "10",
+    "upstream_rule_id": "ism-0926",
+    "upstream_updated": "Sep-23",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9fb9f5ae42a2f81a70f53a8b6fbc4eb4b8335340/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "OFFICIAL: Sensitive and PROTECTED cables are coloured neither salmon pink nor red."
+}

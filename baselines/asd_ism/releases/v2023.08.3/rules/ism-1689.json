@@ -1,0 +1,74 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        },
+        {
+          "name": "e8_ml2",
+          "severity": null
+        },
+        {
+          "name": "e8_ml3",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "One of the greatest threats to the security of networks is the compromise of privileged accounts. Providing a separate privileged operating environment for system administrators, in addition to their unprivileged operating environment, makes it much harder for administrative activities and privileged accounts to be compromised by an adversary.\n\nUsing different physical workstations is the most secure approach to separating privileged and unprivileged operating environments for system administrators. However, a virtualisation-based solution may be sufficient for separating privileged and unprivileged operating environments. In such cases, privileged operating environments should not be virtualised within unprivileged operating environments.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1689",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for System Management",
+    "System administration",
+    "Separate privileged operating environments"
+  ],
+  "source": {
+    "commit_sha": "a4365f02ff1ffe2069a8f521ca57bb706892fc0e",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.08.3",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-1689",
+    "upstream_updated": "Sep-21",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/a4365f02ff1ffe2069a8f521ca57bb706892fc0e/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Privileged accounts (excluding local administrator accounts) cannot logon to unprivileged operating environments."
+}

@@ -99,12 +99,19 @@ def download_pinned_files(
     destination_dir: Path,
     user_agent: str,
     opener=default_opener,
+    optional_file_names: frozenset[str] = frozenset(),
 ) -> None:
+    """Download each file at the pinned commit; a file in optional_file_names that is absent (404) is skipped."""
     validate_commit_sha(commit_sha)
     for file_name in file_names:
         url = f"https://raw.githubusercontent.com/{repository}/{commit_sha}/{file_name}"
-        with opener(build_request(url, user_agent)) as response:
-            body = response.read()
+        try:
+            with opener(build_request(url, user_agent)) as response:
+                body = response.read()
+        except urllib.error.HTTPError as problem:
+            if problem.code == 404 and file_name in optional_file_names:
+                continue
+            raise
         destination_path = destination_dir / file_name
         destination_path.parent.mkdir(parents=True, exist_ok=True)
         destination_path.write_bytes(body)

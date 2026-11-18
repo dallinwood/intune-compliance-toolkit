@@ -156,6 +156,42 @@ def test_native_classification_only_control_lists_one_benchmark():
     assert rule["applicability"][0]["benchmarks"] == [{"name": "ism_non_classified", "severity": None}]
 
 
+def set_applicability_props(document: dict, control_id: str, values: list[str]) -> None:
+    control = control_of(document, control_id)
+    other_props = [prop for prop in control["props"] if prop["name"] != "applicability"]
+    control["props"] = [*other_props, *({"name": "applicability", "value": value} for value in values)]
+
+
+def test_legacy_all_applicability_lists_every_classification_benchmark():
+    legacy_document = load_fixture()
+    set_applicability_props(legacy_document, "ism-0001", ["ALL"])
+    current_document = load_fixture()
+    set_applicability_props(current_document, "ism-0001", ["NC", "OS", "P", "S", "TS"])
+
+    legacy_rule = rules_by_id(legacy_document)["asd_ism.ism-0001"]
+
+    assert legacy_rule["applicability"] == rules_by_id(current_document)["asd_ism.ism-0001"]["applicability"]
+    assert [benchmark["name"] for benchmark in legacy_rule["applicability"][0]["benchmarks"]] == [
+        "ism_non_classified",
+        "ism_official_sensitive",
+        "ism_protected",
+        "ism_secret",
+        "ism_top_secret",
+    ]
+
+
+def test_legacy_o_applicability_means_official_sensitive():
+    legacy_document = load_fixture()
+    set_applicability_props(legacy_document, "ism-0001", ["O", "P"])
+    current_document = load_fixture()
+    set_applicability_props(current_document, "ism-0001", ["OS", "P"])
+
+    assert (
+        rules_by_id(legacy_document)["asd_ism.ism-0001"]["applicability"]
+        == rules_by_id(current_document)["asd_ism.ism-0001"]["applicability"]
+    )
+
+
 def test_multi_paragraph_statement():
     rule = rules_by_id()["asd_ism.ism-0859"]
     statement = control_of(load_fixture(), "ism-0859")["parts"][0]["prose"]

@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "The CISO is responsible for ensuring the alignment of cybersecurity and business objectives within their organisation. To achieve this, they should facilitate communication between cybersecurity and business stakeholders. This includes translating cybersecurity concepts and language into business concepts and language, as well as ensuring that business teams consult with cybersecurity teams to determine appropriate controls when planning new business projects. Additionally, as the CISO is responsible for the development of their organisation’s cybersecurity program, they are best placed to advise projects on the strategic direction of cybersecurity within their organisation.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-0725",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for cybersecurity roles",
+    "Chief information security officer",
+    "Coordinating cybersecurity"
+  ],
+  "source": {
+    "commit_sha": "d3eebc6744b9e286bc309c912f1c52cf766b5b1e",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2025.10.8",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "4",
+    "upstream_rule_id": "ism-0725",
+    "upstream_updated": "Mar-25",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/d3eebc6744b9e286bc309c912f1c52cf766b5b1e/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "The CISO coordinates cybersecurity and business alignment through a cybersecurity steering committee or advisory board, comprising of key cybersecurity and business executives, which meets formally and on a regular basis."
+}

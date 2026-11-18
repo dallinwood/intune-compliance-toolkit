@@ -1,0 +1,66 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "ism_non_classified",
+          "severity": null
+        },
+        {
+          "name": "ism_official_sensitive",
+          "severity": null
+        },
+        {
+          "name": "ism_protected",
+          "severity": null
+        },
+        {
+          "name": "ism_secret",
+          "severity": null
+        },
+        {
+          "name": "ism_top_secret",
+          "severity": null
+        }
+      ],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "Following the identification of vulnerabilities, either via internal application security testing or external security researchers, software developers should ensure that such vulnerabilities are reported and resolved in a timely manner. In doing so, software developers should perform root cause analysis and, to the greatest extent possible, seek to remediate entire vulnerability classes.\n\nIf vulnerabilities cannot be resolved by software developers in a timely manner via patches or updates, software developers should provide advice on how, to the greatest extent possible, the likelihood of vulnerabilities being exploited can be reduced, the impact of vulnerabilities being exploited can be reduced or both.",
+  "discussion_format": "markdown",
+  "id": "asd_ism.ism-1908",
+  "odv": null,
+  "references": {},
+  "remediation": null,
+  "schema_version": 5,
+  "section_path": [
+    "Guidelines for Software Development",
+    "Application development",
+    "Reporting and resolving vulnerabilities"
+  ],
+  "source": {
+    "commit_sha": "9fb9f5ae42a2f81a70f53a8b6fbc4eb4b8335340",
+    "license": {
+      "modified": true,
+      "name": "CC BY 4.0",
+      "rights_holder": "Commonwealth of Australia (Australian Signals Directorate)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "name": "asd_ism",
+    "release_tag": "v2023.12.1",
+    "upstream_path": "ISM_catalog.json",
+    "upstream_revision": "0",
+    "upstream_rule_id": "ism-1908",
+    "upstream_updated": "Dec-23",
+    "upstream_url": "https://github.com/AustralianCyberSecurityCentre/ism-oscal/blob/9fb9f5ae42a2f81a70f53a8b6fbc4eb4b8335340/ISM_catalog.json"
+  },
+  "tags": [],
+  "title": "Vulnerabilities identified in applications are publicly disclosed (where appropriate to do so) by software developers in a timely manner."
+}
