@@ -120,12 +120,13 @@ test('hovering an icon shows its tooltip; focusing the strip shows every line', 
   await expect(tooltip).toContainText(`Linked to ${counts.manual} manual ${countWord(counts.manual)}`)
 })
 
-test('the legend lists the five meanings', async ({ page }) => {
+test('the Key button opens a dialog listing the icons present, grouped by meaning', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  const legend = page.getByTestId('rule-status-legend')
-  for (const text of ['automated check', 'manual', 'no platform', 'linked to automated rules', 'linked to manual rules']) {
-    await expect(legend).toContainText(text)
-  }
+  await page.getByRole('button', { name: 'Icon key' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Icon key' })
+  await expect(dialog.getByRole('heading', { name: 'Automated check' })).toBeVisible()
+  await expect(dialog.locator('section').filter({ has: page.getByRole('heading', { name: 'Automated check' }) }).getByText('macOS', { exact: true })).toBeVisible()
+  await expect(dialog.getByRole('heading', { name: 'Linked rules' })).toBeVisible()
 })
 
 test('hovering several strips in sequence and moving away leaves no tooltip open', async ({ page }) => {

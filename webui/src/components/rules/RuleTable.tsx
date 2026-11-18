@@ -27,7 +27,7 @@ import type { RuleRow } from '../../types/rule-row'
 import { PagingBar } from './PagingBar'
 import { RuleDetailPanel } from './RuleDetailPanel'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
-import { RuleStatusLegend } from './RuleStatusLegend'
+import { RuleStatusKeyDialog } from './RuleStatusKeyDialog'
 import { SectionHeader } from './SectionHeader'
 import { SectionToolbar } from './SectionToolbar'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
@@ -46,7 +46,7 @@ interface RevealedRules {
   ruleLimit: number
 }
 
-export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale: boolean; search: string }) {
+export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[]; scopeRows: RuleRow[]; isStale: boolean; search: string }) {
   const index = useVocabularyIndex()
   const tree = useMemo(
     () =>
@@ -156,7 +156,7 @@ export function RuleTable({ rows, isStale, search }: { rows: RuleRow[]; isStale:
       <SectionToolbar
         onExpandAll={() => setExpanded(allNodeIds(tree), false)}
         onCollapseAll={() => setExpanded(new Set(), true)}
-        trailing={<RuleStatusLegend />}
+        trailing={<RuleStatusKeyDialog scopeRows={scopeRows} />}
       />
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>

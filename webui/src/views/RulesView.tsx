@@ -24,7 +24,7 @@ export function RulesView({
         <FilterSidebar rows={rows} hideSourceFacet={hideSourceFacet} />
       </div>
       <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
-        <RuleTable rows={filteredRows} isStale={isStale} search={search} />
+        <RuleTable rows={filteredRows} scopeRows={rows} isStale={isStale} search={search} />
       </main>
     </div>
   )

@@ -18,7 +18,7 @@ export function SectionToolbar({ onExpandAll, onCollapseAll, trailing }: Section
           Collapse all
         </Button>
       </div>
-      {trailing && <div className="ml-auto">{trailing}</div>}
+      {trailing && <div className="ml-auto flex">{trailing}</div>}
     </div>
   )
 }
