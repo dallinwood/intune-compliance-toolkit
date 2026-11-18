@@ -3,14 +3,15 @@ import type { BenchmarkMembership } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { NO_TARGET_KEY, NO_VERSION_KEY, benchmarksAt } from './applicability'
 import { upstreamRuleId } from './ruleDisplay'
+import type { LinkedFrameworksByRule } from './linkedFrameworks'
 import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from './vocabulary'
 
-export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'automatable'>
+export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'linked' | 'automatable'>
 
 // The Set-valued facets matchesFilters can be asked to ignore - used to
 // compute "what values are still reachable in this facet, given every
 // other currently-applied filter" for faceted-search-style narrowing.
-export type FilterDimension = 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags'
+export type FilterDimension = 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'linked'
 
 // Filter state holds vocabulary group keys (benchmarks: group keys paired
 // with a severity group key, see benchmarkFacetValue), so grouped codes (e.g.
@@ -134,11 +135,16 @@ function matchesBenchmarks(row: RuleRow, filters: FilterValues, index: Vocabular
   return versionsUnder(row, selectedVersions, index).some((key) => listsAnyBenchmark(row, key, filters.benchmarks, index))
 }
 
+export function linkedFrameworkKeys(row: RuleRow, linkedFrameworks: LinkedFrameworksByRule | undefined): string[] {
+  return Array.from(linkedFrameworks?.get(row.ref.id) ?? [])
+}
+
 export function matchesFilters(
   row: RuleRow,
   filters: FilterValues,
   index: VocabularyIndex,
   excludeDimension?: FilterDimension,
+  linkedFrameworks?: LinkedFrameworksByRule,
 ): boolean {
   if (excludeDimension !== 'targets' && filters.targets.size > 0 && !targetGroupKeys(row, index).some((target) => filters.targets.has(target)))
     return false
@@ -151,6 +157,8 @@ export function matchesFilters(
   if (excludeDimension !== 'sections' && filters.sections.size > 0 && !filters.sections.has(sectionGroupKey(row, index)))
     return false
   if (excludeDimension !== 'tags' && filters.tags.size > 0 && !tagGroupKeys(row, index).some((tag) => filters.tags.has(tag)))
+    return false
+  if (excludeDimension !== 'linked' && filters.linked.size > 0 && !linkedFrameworkKeys(row, linkedFrameworks).some((key) => filters.linked.has(key)))
     return false
   if (filters.automatable === 'automatable' && row.assessment.status !== 'automated') return false
   if (filters.automatable === 'manual' && row.assessment.status !== 'manual') return false
@@ -179,10 +187,11 @@ export function facetOptionCounts(
   valueOf: (row: RuleRow) => string | string[],
   selected: Iterable<string>,
   index: VocabularyIndex,
+  linkedFrameworks?: LinkedFrameworksByRule,
 ): Map<string, number> {
   const counts = new Map<string, number>()
   for (const row of rows) {
-    if (!matchesFilters(row, filters, index, dimension)) continue
+    if (!matchesFilters(row, filters, index, dimension, linkedFrameworks)) continue
     const value = valueOf(row)
     const distinctValues = new Set(Array.isArray(value) ? value : [value])
     for (const distinctValue of distinctValues) counts.set(distinctValue, (counts.get(distinctValue) ?? 0) + 1)
@@ -198,18 +207,24 @@ export function facetOptions(
   valueOf: (row: RuleRow) => string | string[],
   selected: Iterable<string>,
   index: VocabularyIndex,
+  linkedFrameworks?: LinkedFrameworksByRule,
 ): string[] {
-  const counts = facetOptionCounts(rows, filters, dimension, valueOf, selected, index)
+  const counts = facetOptionCounts(rows, filters, dimension, valueOf, selected, index, linkedFrameworks)
   return Array.from(counts.keys()).sort((a, b) => a.localeCompare(b))
 }
 
 // For the Automation radio: each option's count is the rows matching every
 // other filter with that automation value ("all" is every such row).
-export function automationOptionCounts(rows: RuleRow[], filters: FilterValues, index: VocabularyIndex): Record<AutomatableFilter, number> {
+export function automationOptionCounts(
+  rows: RuleRow[],
+  filters: FilterValues,
+  index: VocabularyIndex,
+  linkedFrameworks?: LinkedFrameworksByRule,
+): Record<AutomatableFilter, number> {
   const counts: Record<AutomatableFilter, number> = { all: 0, automatable: 0, manual: 0 }
   const ignoringAutomation: FilterValues = { ...filters, automatable: 'all' }
   for (const row of rows) {
-    if (!matchesFilters(row, ignoringAutomation, index)) continue
+    if (!matchesFilters(row, ignoringAutomation, index, undefined, linkedFrameworks)) continue
     counts.all += 1
     if (row.assessment.status === 'automated') counts.automatable += 1
     if (row.assessment.status === 'manual') counts.manual += 1
@@ -257,7 +272,11 @@ export function versionsListingAnyOf(row: RuleRow, benchmarks: ReadonlySet<strin
 
 // Every facet value some row offers, per dimension, ignoring all filters. A
 // value restored from a shared URL that is not in here matches no option.
-export function knownFacetValues(rows: RuleRow[], index: VocabularyIndex): Record<FilterDimension, Set<string>> {
+export function knownFacetValues(
+  rows: RuleRow[],
+  index: VocabularyIndex,
+  linkedFrameworks?: LinkedFrameworksByRule,
+): Record<FilterDimension, Set<string>> {
   const noSelection: ReadonlySet<string> = new Set()
   const known: Record<FilterDimension, Set<string>> = {
     targets: new Set(),
@@ -266,6 +285,7 @@ export function knownFacetValues(rows: RuleRow[], index: VocabularyIndex): Recor
     benchmarks: new Set(),
     sections: new Set(),
     tags: new Set(),
+    linked: new Set(),
   }
   for (const row of rows) {
     targetGroupKeys(row, index).forEach((value) => known.targets.add(value))
@@ -274,6 +294,7 @@ export function knownFacetValues(rows: RuleRow[], index: VocabularyIndex): Recor
     benchmarksListedUnder(row, noSelection, index).forEach((value) => known.benchmarks.add(value))
     known.sections.add(sectionGroupKey(row, index))
     tagGroupKeys(row, index).forEach((value) => known.tags.add(value))
+    linkedFrameworkKeys(row, linkedFrameworks).forEach((value) => known.linked.add(value))
   }
   return known
 }

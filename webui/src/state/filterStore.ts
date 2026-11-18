@@ -31,6 +31,7 @@ export interface FilterState {
   benchmarks: Set<string>
   sections: Set<string>
   tags: Set<string>
+  linked: Set<string>
   automatable: AutomatableFilter
   page: number
   size: PageSize
@@ -85,6 +86,7 @@ export interface FilterState {
   toggleBenchmark: (value: string) => void
   toggleSection: (value: string) => void
   toggleTag: (value: string) => void
+  toggleLinked: (value: string) => void
   setAutomatable: (value: AutomatableFilter) => void
   setPage: (value: number) => void
   setSize: (value: PageSize) => void
@@ -159,6 +161,7 @@ function filterValuesOf(urlState: UrlState) {
     benchmarks: new Set(urlState.benchmarks),
     sections: new Set(urlState.sections),
     tags: new Set(urlState.tags),
+    linked: new Set(urlState.linked),
     automatable: automatableFrom(urlState.automation),
     page: urlState.page,
     size: urlState.size,
@@ -224,6 +227,7 @@ export const useFilterStore = create<FilterState>((set) => {
     toggleBenchmark: (value) => set((state) => ({ benchmarks: toggled(state.benchmarks, value), ...FIRST_PAGE })),
     toggleSection: (value) => set((state) => ({ sections: toggled(state.sections, value), ...FIRST_PAGE })),
     toggleTag: (value) => set((state) => ({ tags: toggled(state.tags, value), ...FIRST_PAGE })),
+    toggleLinked: (value) => set((state) => ({ linked: toggled(state.linked, value), ...FIRST_PAGE })),
     setAutomatable: (value) => set({ automatable: value, ...FIRST_PAGE }),
     setPage: (value) => set({ page: value }),
     setSize: (value) => {
@@ -239,6 +243,7 @@ export const useFilterStore = create<FilterState>((set) => {
           benchmarks: retained(state.benchmarks, known.benchmarks),
           sections: retained(state.sections, known.sections),
           tags: retained(state.tags, known.tags),
+          linked: retained(state.linked, known.linked),
         }
         const unchanged = (Object.keys(next) as (keyof typeof next)[]).every((key) => next[key] === state[key])
         return unchanged ? state : next
@@ -262,6 +267,7 @@ export const useFilterStore = create<FilterState>((set) => {
         benchmarks: new Set(),
         sections: new Set(),
         tags: new Set(),
+        linked: new Set(),
         automatable: 'all',
         openRule: ruleId,
         openRuleTab: tab,
@@ -280,6 +286,7 @@ export const useFilterStore = create<FilterState>((set) => {
           benchmarks: new Set(),
           sections: new Set(),
           tags: new Set(),
+          linked: new Set(),
           automatable: 'all',
           ...FIRST_PAGE,
         }
@@ -298,6 +305,7 @@ function urlStateOf(state: FilterState): UrlState {
     benchmarks: Array.from(state.benchmarks),
     sections: Array.from(state.sections),
     tags: Array.from(state.tags),
+    linked: Array.from(state.linked),
     page: state.page,
     size: state.size,
     openRule: state.openRule,

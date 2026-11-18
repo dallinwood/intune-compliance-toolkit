@@ -10,11 +10,12 @@ export function useDeferredFilters(): { filters: FilterValues; isStale: boolean 
   const benchmarks = useFilterStore((state) => state.benchmarks)
   const sections = useFilterStore((state) => state.sections)
   const tags = useFilterStore((state) => state.tags)
+  const linked = useFilterStore((state) => state.linked)
   const automatable = useFilterStore((state) => state.automatable)
 
   const currentFilters = useMemo<FilterValues>(
-    () => ({ search, targets, sources, versions, benchmarks, sections, tags, automatable }),
-    [search, targets, sources, versions, benchmarks, sections, tags, automatable],
+    () => ({ search, targets, sources, versions, benchmarks, sections, tags, linked, automatable }),
+    [search, targets, sources, versions, benchmarks, sections, tags, linked, automatable],
   )
   const deferredFilters = useDeferredValue(currentFilters)
 

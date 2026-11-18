@@ -7,6 +7,7 @@ import { useDeferredFilters } from '../../hooks/useDeferredFilters'
 import type { MappedRule, MappingFileInfo } from '../../logic/mappingIndex'
 import { frameworkPairs as findFrameworkPairs } from '../../logic/frameworkPairs'
 import { resolveFrameworkPage } from '../../logic/frameworkTabs'
+import { linkedFrameworksByRule } from '../../logic/linkedFrameworks'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
@@ -96,11 +97,12 @@ export function AppShell({
   // catches up in the background.
   const { filters: deferredFilters, isStale } = useDeferredFilters()
   const retainKnownValues = useFilterStore((state) => state.retainKnownValues)
+  const linkedFrameworks = useMemo(() => linkedFrameworksByRule(rows, mappingsByRule, vocabularyIndex), [rows, mappingsByRule, vocabularyIndex])
   // Filter values restored from a shared URL that this library has no option
   // for are dropped, which also removes them from the URL.
   useEffect(() => {
-    retainKnownValues(knownFacetValues(rows, vocabularyIndex))
-  }, [rows, vocabularyIndex, retainKnownValues])
+    retainKnownValues(knownFacetValues(rows, vocabularyIndex, linkedFrameworks))
+  }, [rows, vocabularyIndex, linkedFrameworks, retainKnownValues])
   // On a framework page the page is the scope, so the store's source filter
   // is ignored there rather than cleared.
   const scopedRows = useMemo(
@@ -109,13 +111,13 @@ export function AppShell({
   )
   const filteredRows = useMemo(() => {
     const scopedFilters = scopedSourceName === null ? deferredFilters : { ...deferredFilters, sources: new Set<string>() }
-    return scopedRows.filter((row) => matchesFilters(row, scopedFilters, vocabularyIndex))
-  }, [scopedRows, scopedSourceName, deferredFilters, vocabularyIndex])
+    return scopedRows.filter((row) => matchesFilters(row, scopedFilters, vocabularyIndex, undefined, linkedFrameworks))
+  }, [scopedRows, scopedSourceName, deferredFilters, vocabularyIndex, linkedFrameworks])
   const selections = useSelectionStore((store) => store.selections)
   const rowsById = useMemo(() => new Map(rows.map((row) => [row.ref.id, row])), [rows])
   const ruleMappings = useMemo(
-    () => ({ byRule: mappingsByRule, mappingFiles, rowsById, frameworkPairs: pairs }),
-    [mappingsByRule, mappingFiles, rowsById, pairs],
+    () => ({ byRule: mappingsByRule, mappingFiles, rowsById, frameworkPairs: pairs, linkedFrameworks }),
+    [mappingsByRule, mappingFiles, rowsById, pairs, linkedFrameworks],
   )
   // Memoized so the review screen's fetch effect only re-runs when the
   // selection itself changes.

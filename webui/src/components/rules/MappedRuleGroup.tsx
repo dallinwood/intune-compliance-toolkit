@@ -146,7 +146,7 @@ export function MappedRuleRow({
   onToggleHopList: () => void
 }) {
   const { link, row, indirect } = item
-  const { rowsById } = useRuleMappings()
+  const { rowsById, linkedFrameworks } = useRuleMappings()
   const vocabularyIndex = useVocabularyIndex()
   const showRule = useFilterStore((store) => store.showRule)
   const detailsId = useId()
@@ -164,7 +164,7 @@ export function MappedRuleRow({
     const currentState = useFilterStore.getState()
     // A framework page only lists its own rules, so a rule from another framework opens on the all-rules page.
     const framework = currentState.framework === row.sourceName ? row.sourceName : ALL_FRAMEWORKS
-    showRule(row.ref.id, filtersShowingRule(row, currentState, vocabularyIndex), framework)
+    showRule(row.ref.id, filtersShowingRule(row, currentState, vocabularyIndex, linkedFrameworks), framework)
   }
 
   return (

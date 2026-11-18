@@ -27,6 +27,7 @@ const everyKeySet: UrlState = {
   benchmarks: [benchmarkFacetValue('cis_lvl1', null), benchmarkFacetValue('disa_stig', 'high')],
   sections: ['Access Control'],
   tags: ['800-53r5', 'cnssi-1253'],
+  linked: ['asd_ism', 'e4eit'],
   page: 3,
   size: 100,
   openRule: 'asd_ism.ism-1622',
@@ -47,7 +48,7 @@ const everyKeySet: UrlState = {
 
 describe('urlState', () => {
   it('writes the comparison parameters under their own names, in a fixed order', () => {
-    expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
+    expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], linked: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
       '?framework=asd_ism&tab=coverage&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
     )
   })
@@ -114,6 +115,12 @@ describe('urlState', () => {
   it('writes repeated keys in the order the values were given', () => {
     const queryString = serializeUrlState({ ...parseUrlState(''), sources: ['b', 'a'] }, defaults)
     expect(queryString).toBe('?source=b&source=a')
+  })
+
+  it('round-trips the Linked to filter as a repeatable linked parameter', () => {
+    const queryString = serializeUrlState({ ...parseUrlState(''), linked: ['asd_ism', 'e4eit'] }, defaults)
+    expect(queryString).toBe('?linked=asd_ism&linked=e4eit')
+    expect(parseUrlState(queryString).linked).toEqual(['asd_ism', 'e4eit'])
   })
 
   it('serializes an all-default state to the empty string', () => {
@@ -284,7 +291,7 @@ describe('urlState', () => {
       })
     })
 
-    it.each(['?q=foo', '?rule=mscp.x', '?source=mscp', '?target=macOS', '?version=v1', '?benchmark=b', '?section=s', '?tag=t', '?automation=manual', '?page=2', '?size=25'])(
+    it.each(['?q=foo', '?rule=mscp.x', '?source=mscp', '?target=macOS', '?version=v1', '?benchmark=b', '?section=s', '?tag=t', '?linked=asd_ism', '?automation=manual', '?page=2', '?size=25'])(
       'sends a bare base address carrying %s to the all-rules page',
       (search) => {
         expect(migrated(search, '/')).toMatchObject({ view: 'frameworks', framework: ALL_FRAMEWORKS, frameworkTab: 'rules' })

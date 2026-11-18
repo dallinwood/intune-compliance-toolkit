@@ -18,6 +18,7 @@ import {
   compareTargetGroupKeys,
   automationOptionCounts,
   facetOptionCounts,
+  linkedFrameworkKeys,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
@@ -27,7 +28,9 @@ import {
 import { NONE_LABEL, NO_TARGET_KEY, NO_VERSION_KEY, compareScopeKeys } from '../../logic/applicability'
 import { compareGroupKeys, groupLabel, type VocabularyIndex, type VocabularyName } from '../../logic/vocabulary'
 import { useFilterStore, type AutomatableFilter } from '../../state/filterStore'
+import { useRuleMappings } from '../../state/mappingsContext'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
+import type { LinkedFrameworksByRule } from '../../logic/linkedFrameworks'
 import type { RuleRow } from '../../types/rule-row'
 import { formatCount } from '../../lib/format'
 
@@ -50,7 +53,7 @@ const NO_SELECTION: ReadonlySet<string> = new Set()
 // a severity, see benchmarkFacetValue), so grouped codes show as one option.
 // Built once per index so StableFacetGroup's memoized canonical order isn't
 // recomputed on every render by fresh inline functions.
-function facetAccessors(index: VocabularyIndex) {
+function facetAccessors(index: VocabularyIndex, linkedFrameworks: LinkedFrameworksByRule) {
   const labelIn = (vocabulary: VocabularyName) => (groupKey: string) => groupLabel(index, vocabulary, groupKey)
   // "None" is applied in code, never read from the vocabulary.
   const labelOrNone = (vocabulary: VocabularyName, noneKey: string) => (groupKey: string) =>
@@ -62,16 +65,19 @@ function facetAccessors(index: VocabularyIndex) {
     sourceOf: (row: RuleRow) => sourceGroupKey(row, index),
     sectionOf: (row: RuleRow) => sectionGroupKey(row, index),
     tagsOf: (row: RuleRow) => tagGroupKeys(row, index),
+    linkedOf: (row: RuleRow) => linkedFrameworkKeys(row, linkedFrameworks),
     targetLabel: labelOrNone('targets', NO_TARGET_KEY),
     sourceLabel: labelIn('sources'),
     versionLabel: labelOrNone('versions', NO_VERSION_KEY),
     sectionLabel: labelIn('sections'),
     tagLabel: labelIn('tags'),
+    linkedLabel: labelIn('sources'),
     compareBenchmarks: compareBenchmarkFacetValues(index),
     compareTargets: compareTargetGroupKeys(index),
     compareSources: compareGroupKeys(index, 'sources'),
     compareSections: compareGroupKeys(index, 'sections'),
     compareTags: compareGroupKeys(index, 'tags'),
+    compareLinked: compareGroupKeys(index, 'sources'),
   }
 }
 
@@ -83,7 +89,8 @@ const NO_SOURCES: Set<string> = new Set()
 export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow[]; hideSourceFacet?: boolean }) {
   const filters = useFilterStore()
   const index = useVocabularyIndex()
-  const accessors = useMemo(() => facetAccessors(index), [index])
+  const { linkedFrameworks } = useRuleMappings()
+  const accessors = useMemo(() => facetAccessors(index, linkedFrameworks), [index, linkedFrameworks])
   // Taken from every row, not just the reachable ones, so an option's label
   // never changes as other filters narrow the list.
   const benchmarkLabel = useMemo(() => {
@@ -108,12 +115,12 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
   // option leaves its siblings selectable; a count is how many rules that
   // option would show.
   const targetCounts = useMemo(
-    () => facetOptionCounts(rows, deferredFilters, 'targets', accessors.targetsOf, deferredFilters.targets, index),
-    [rows, deferredFilters, accessors, index],
+    () => facetOptionCounts(rows, deferredFilters, 'targets', accessors.targetsOf, deferredFilters.targets, index, linkedFrameworks),
+    [rows, deferredFilters, accessors, index, linkedFrameworks],
   )
   const sourceCounts = useMemo(
-    () => facetOptionCounts(rows, deferredFilters, 'sources', accessors.sourceOf, deferredFilters.sources, index),
-    [rows, deferredFilters, accessors, index],
+    () => facetOptionCounts(rows, deferredFilters, 'sources', accessors.sourceOf, deferredFilters.sources, index, linkedFrameworks),
+    [rows, deferredFilters, accessors, index, linkedFrameworks],
   )
   const versionCounts = useMemo(
     () =>
@@ -124,8 +131,9 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
         (row) => versionsListingAnyOf(row, deferredFilters.benchmarks, index),
         deferredFilters.versions,
         index,
+        linkedFrameworks,
       ),
-    [rows, deferredFilters, index],
+    [rows, deferredFilters, index, linkedFrameworks],
   )
   const benchmarkCounts = useMemo(
     () =>
@@ -136,19 +144,28 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
         (row) => benchmarksListedUnder(row, deferredFilters.versions, index),
         deferredFilters.benchmarks,
         index,
+        linkedFrameworks,
       ),
-    [rows, deferredFilters, index],
+    [rows, deferredFilters, index, linkedFrameworks],
   )
   const sectionCounts = useMemo(
-    () => facetOptionCounts(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index),
-    [rows, deferredFilters, accessors, index],
+    () => facetOptionCounts(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index, linkedFrameworks),
+    [rows, deferredFilters, accessors, index, linkedFrameworks],
   )
   const tagCounts = useMemo(
-    () => facetOptionCounts(rows, deferredFilters, 'tags', accessors.tagsOf, deferredFilters.tags, index),
-    [rows, deferredFilters, accessors, index],
+    () => facetOptionCounts(rows, deferredFilters, 'tags', accessors.tagsOf, deferredFilters.tags, index, linkedFrameworks),
+    [rows, deferredFilters, accessors, index, linkedFrameworks],
   )
 
-  const automationCounts = useMemo(() => automationOptionCounts(rows, deferredFilters, index), [rows, deferredFilters, index])
+  const linkedCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'linked', accessors.linkedOf, deferredFilters.linked, index, linkedFrameworks),
+    [rows, deferredFilters, accessors, index, linkedFrameworks],
+  )
+
+  const automationCounts = useMemo(
+    () => automationOptionCounts(rows, deferredFilters, index, linkedFrameworks),
+    [rows, deferredFilters, index, linkedFrameworks],
+  )
 
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const { canScrollUp, canScrollDown } = useScrollEdges(scrollAreaRef)
@@ -236,6 +253,17 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
             counts={sectionCounts}
             selected={filters.sections}
             onToggle={filters.toggleSection}
+          />
+
+          <StableFacetGroup
+            title="Linked to"
+            rows={rows}
+            valueOf={accessors.linkedOf}
+            compareValues={accessors.compareLinked}
+            labelOf={accessors.linkedLabel}
+            counts={linkedCounts}
+            selected={filters.linked}
+            onToggle={filters.toggleLinked}
           />
 
           <StableFacetGroup

@@ -33,6 +33,7 @@ function filters(overrides: Partial<FilterValues> = {}): FilterValues {
     benchmarks: new Set(),
     sections: new Set(),
     tags: new Set(),
+    linked: new Set(),
     automatable: 'all',
     ...overrides,
   }

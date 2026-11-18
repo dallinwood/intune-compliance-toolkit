@@ -25,6 +25,7 @@ export interface UrlState {
   benchmarks: string[]
   sections: string[]
   tags: string[]
+  linked: string[]
   page: number
   size: PageSize
   // The full id of the rule whose details a mapped-rule link opened.
@@ -67,6 +68,7 @@ const LIST_PARAMETER_NAMES = {
   benchmarks: 'benchmark',
   sections: 'section',
   tags: 'tag',
+  linked: 'linked',
 } as const
 
 function isChangeKind(value: string): value is ChangeKind {
@@ -117,6 +119,7 @@ export function parseUrlState(search: string, pathname = '', basePath = '/'): Ur
     benchmarks: listValues(LIST_PARAMETER_NAMES.benchmarks),
     sections: listValues(LIST_PARAMETER_NAMES.sections),
     tags: listValues(LIST_PARAMETER_NAMES.tags),
+    linked: listValues(LIST_PARAMETER_NAMES.linked),
     page: parsePositiveInteger(parameters.get('page')) ?? 1,
     size: parsePageSize(parameters.get('size')) ?? DEFAULT_PAGE_SIZE,
     openRule: parameters.get('rule') || null,
@@ -174,7 +177,7 @@ export function serializeUrlLocation(state: UrlState, defaults: UrlDefaults, bas
 
 // Rewrites an address from before the Rules, Frameworks and Coverage views were
 // merged into the unified Frameworks view into the equivalent new one.
-const RULES_PARAMETER_NAMES = ['q', 'rule', 'source', 'target', 'version', 'benchmark', 'section', 'tag', 'automation', 'page', 'size']
+const RULES_PARAMETER_NAMES = ['q', 'rule', 'source', 'target', 'version', 'benchmark', 'section', 'tag', 'linked', 'automation', 'page', 'size']
 
 // A bare base address used to be the Rules view, so one carrying any Rules parameter is an old
 // Rules link; the all-rules page writes a framework, so it never looks like this.
