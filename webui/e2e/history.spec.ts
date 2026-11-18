@@ -162,7 +162,21 @@ function changedPathsBetweenOldestAndCurrent(ruleId: string): string[] {
 
 const ismRuleIds = Object.keys(ismHistory.rules).filter((ruleId) => ismHistory.rules[ruleId].versions[0] !== null && ismHistory.rules[ruleId].versions.at(-1) !== null)
 const DISCUSSION_CHANGED_RULE = ismRuleIds.find((ruleId) => changedPathsBetweenOldestAndCurrent(ruleId).includes('discussion') && !changedPathsBetweenOldestAndCurrent(ruleId).includes('tags')) ?? ''
-const UNCHANGED_ISM_RULE = ismRuleIds.find((ruleId) => changedPathsBetweenOldestAndCurrent(ruleId).length === 0) ?? ''
+// Every rule has changed somewhere across the whole kept history, so the
+// unchanged rule is looked for from the newest older release back.
+const UNCHANGED_SINCE = ismHistory.releases
+  .slice(0, -1)
+  .reverse()
+  .map((release) => {
+    const position = ismHistory.releases.indexOf(release)
+    const ruleId = Object.keys(ismHistory.rules).find((candidate) => {
+      const versions = ismHistory.rules[candidate].versions
+      return versions[position] !== null && versions.at(-1) !== null && fieldChanges(ismRuleAt(release.tag, candidate), ismRuleAt(currentIsmRelease.tag, candidate)).length === 0
+    })
+    return { release, ruleId }
+  })
+  .find((candidate) => candidate.ruleId !== undefined)
+const UNCHANGED_ISM_RULE = UNCHANGED_SINCE?.ruleId ?? ''
 
 async function serveOverlayFor(page: Page, ruleId: string, release: string, fields: Record<string, unknown>) {
   const overlay = { schema_version: 1, id: 'written-for-an-older-release', targets: [{ rule: ruleId, release }], fields }
@@ -202,7 +216,7 @@ test('a rule that changed only elsewhere says so, in muted words', async ({ page
 
 test('a rule that has not changed since says the custom changes can be marked as up to date', async ({ page }) => {
   expect(UNCHANGED_ISM_RULE).not.toBe('')
-  await serveOverlayFor(page, UNCHANGED_ISM_RULE, oldestIsmRelease.tag, { tags: ['my-tag'] })
+  await serveOverlayFor(page, UNCHANGED_ISM_RULE, UNCHANGED_SINCE!.release.tag, { tags: ['my-tag'] })
   await openRule(page, UNCHANGED_ISM_RULE)
 
   await expect(staleNote(page, UNCHANGED_ISM_RULE)).toContainText("The rule hasn't changed since, so they can be marked as up to date.", { timeout: 15_000 })
