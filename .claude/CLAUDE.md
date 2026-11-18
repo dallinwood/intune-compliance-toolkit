@@ -64,3 +64,24 @@ just Vitest/typecheck/lint:
   single-word wrapping; only looking at a real screenshot caught it.
 - This supplements manual-in-browser verification and the existing e2e
   spec, it doesn't replace either.
+
+## The coordinating session owns the dev server
+
+The web UI dev server takes several minutes to start (copying baselines),
+so it must not be started and stopped once per subagent:
+
+- When work will need the running app (e2e, screenshots) across more than
+  one step or subagent, the coordinating (main) session starts one dev
+  server itself, in the background, from `webui/`:
+  `bun run dev -- --port 5199 --strictPort`. It waits for
+  `http://localhost:5199/` to answer 200 before dispatching work that
+  needs it.
+- Subagents never start or stop a dev server. Their dispatch prompt tells
+  them the server is shared on port 5199, to use
+  `PLAYWRIGHT_BASE_URL=http://localhost:5199`, to wait for it to answer if
+  it is still starting, and to leave it running when they finish.
+- If the server dies (crash, reboot, closed terminal), the coordinating
+  session restarts it and tells any running subagent to wait for the new
+  instance rather than starting its own.
+- The coordinating session stops the server only when all pending work
+  that needs it is finished.
