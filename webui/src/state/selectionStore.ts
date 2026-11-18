@@ -13,6 +13,9 @@ import {
 export interface SelectionState {
   selections: SelectionMap
   setEnabled: (ref: RuleRef, enabled: boolean) => void
+  // One store update for the whole list, so a select-all over thousands of
+  // rules re-renders once.
+  setEnabledMany: (refs: readonly RuleRef[], enabled: boolean) => void
   setOdvValue: (ref: RuleRef, value: OrgDefinedValue) => void
   clearOdvValue: (ref: RuleRef) => void
   clearAll: () => void
@@ -30,6 +33,13 @@ export const useSelectionStore = create<SelectionState>()(
       selections: {},
       setEnabled: (ref, enabled) =>
         set((state) => ({ selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, enabled })) })),
+      setEnabledMany: (refs, enabled) =>
+        set((state) => ({
+          selections: refs.reduce(
+            (selections, ref) => upsertSelection(selections, ref, (entry) => ({ ...entry, enabled })),
+            state.selections,
+          ),
+        })),
       setOdvValue: (ref, value) =>
         set((state) => ({
           selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, odvValue: value })),

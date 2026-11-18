@@ -17,6 +17,7 @@ import {
   type SectionNode,
   type VisibleItem,
 } from '../../logic/sectionTree'
+import { selectAllState } from '../../logic/selectAll'
 import { isEnabled, refKey } from '../../logic/selectionEntry'
 import { compareGroupKeys, groupLabel } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
@@ -158,6 +159,7 @@ export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[
         onCollapseAll={() => setExpanded(new Set(), true)}
         trailing={<RuleStatusKeyDialog scopeRows={scopeRows} />}
       />
+      <SelectAllRow rows={rows} />
       <div className="relative">
         <div className={isCatchingUp ? 'pointer-events-none opacity-50' : undefined}>
           {rows.length === 0 ? (
@@ -190,6 +192,31 @@ export function RuleTable({ rows, scopeRows, isStale, search }: { rows: RuleRow[
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// Acts on every rule the table holds after search and filters (all pages and
+// collapsed sections included), not only the rows on screen. Its state is
+// derived from the selections, so it follows ticks made by hand and filter
+// changes without being stored.
+function SelectAllRow({ rows }: { rows: readonly RuleRow[] }) {
+  const selections = useSelectionStore((store) => store.selections)
+  const setEnabledMany = useSelectionStore((store) => store.setEnabledMany)
+  const refs = useMemo(() => rows.map((row) => row.ref), [rows])
+  const state = useMemo(() => selectAllState(refs, selections), [refs, selections])
+  return (
+    <div className="flex items-center gap-3 border-b border-border py-2 pr-4 pl-5">
+      <Checkbox
+        aria-label="Select all rules in this view"
+        checked={state === 'checked'}
+        indeterminate={state === 'indeterminate'}
+        disabled={refs.length === 0}
+        onCheckedChange={(nextChecked) => setEnabledMany(refs, nextChecked === true)}
+      />
+      <span aria-hidden="true" className="text-xs text-muted-foreground">
+        Select all in this view
+      </span>
     </div>
   )
 }
