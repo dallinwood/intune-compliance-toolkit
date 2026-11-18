@@ -107,9 +107,18 @@ All checked on 2026-11-18 against CaC release `v0.1.82`:
   variable at all (so may have a dropped value) are 77 and 95. The per-profile HTML guides in
   the zip do not contain OCIL text either. (Found 2026-11-18 while planning.)
 - **Per-profile bash scripts** `bash/<product>-script-<profile>.sh` have every variable already
-  resolved for that profile, and delimit each rule with
-  `# BEGIN fix (n / N) for '<xccdf rule id>'` ... `# END fix for '<xccdf rule id>'`.
-  The profile ids differ per product:
+  resolved for that profile. Checked 2026-11-18: each script block equals the datastream's sh
+  fix with that profile's values put in place of its `<sub>` elements (0 differences across
+  `cis_server_l1`, `cis`, `cis_level1_server` and `cis_level2_workstation`, ignoring CaC's
+  separator and progress lines; the only mismatches are "FIX FOR THIS RULE ... IS MISSING!"
+  placeholders for rules without a fix). So the datastream alone is enough, and the scripts are
+  not used.
+- **Variables in fixes** sit in a single-quoted assignment (`var_x='<sub/>'`) in 582 of 588
+  places; the other 6 are login banner texts inside double quotes (`$(echo "<sub/>" ...)`).
+- **Several values per recommendation.** Counting the variables a control's linked fixes use:
+  RHEL 9 has 40 controls with one, 12 with two to four; Ubuntu 24.04 has 54 with one, 17 with
+  two to seven. XCCDF `Value` types used are `number` and `string`.
+- The profile ids differ per product:
 
   | level | RHEL 9 profile | Ubuntu 24.04 profile |
   |---|---|---|
@@ -150,7 +159,7 @@ fails the import instead of being silently skipped.
 | `remediation` | section 5.4 |
 | `references` | `cis`: `{benchmark_version, id, levels}` (levels as listed in the control file); `complianceascode`: `{status, rules, related_rules}`; plus each linked rule's CCE id for this product |
 | `source` | as other sources; `upstream_rule_id` is the CIS number, `upstream_path` the control-file path, `upstream_url` a link to the control file at the tag |
-| `odv` | `null` (variable values are already resolved in the fixes) |
+| `odvs` | section 5.7: one named ODV per XCCDF variable the linked rules use (requires `2026-11-18-named-odvs-design.md`) |
 
 ### 5.3 Levels
 
@@ -165,24 +174,15 @@ in `references.cis.levels`, so the UI can still show "Level 1".
 ### 5.4 Audit and fix
 
 - **Fix** (`remediation[target].steps`): one step per linked CaC rule, in control-file order,
-  `language: bash`, `name` the CaC rule title, `shell` that rule's block from the per-profile
-  bash script, `additional_info` the CaC rule id. The block is taken from the script of the
-  control's lowest listed level. If the block text differs between the profiles the control
-  belongs to (a variable set differently per level), or is present in some of them and not
-  others, the import fails loudly. Measured on 2026-11-18 against `v0.1.82` (comparing every
-  linked rule's block, minus CaC's "Remediating rule n/N" progress line, across all profiles
-  each control belongs to, inheritance included): 0 differences and 0 gaps on both RHEL 9 and
-  Ubuntu 24.04. So this is a guard for future releases, not a case to model now.
-- **Audit** (`check[target]`): CaC's OCIL question text for each linked rule, variables
-  resolved from the refined values of the same profile the fix was taken from (the control's
-  lowest listed level), failing loudly if the resolved text differs between the control's
-  profiles, with the CaC rule title before each. Because built OCIL text loses variable values
-  (section 3), each escaped `<sub idref="var_x" />` placeholder is replaced with the level's
-  value, and every rule that uses variables (any `<xccdf-1.2:sub>` in its XCCDF description or
-  bash fix) gets a line after its text listing them, e.g. "Expected values for CIS L1 Server:
-  var_password_pam_minlen = 14". Values come from the profile's `refine-value` selector,
-  else the XCCDF `Value`'s default. Dropped values can't be put back into the sentence itself;
-  the listed values make the audit usable anyway. Stored as
+  `language: bash`, `name` the CaC rule title, `shell` the rule's datastream sh fix with each
+  `<xccdf-1.2:sub>` replaced by `$ODV_<variable>` (so the admin's value, or the recommended
+  one, is shown and copied), `additional_info` the CaC rule id.
+- **Audit** (`check[target]`): CaC's OCIL question text for each linked rule, with the CaC rule
+  title before each. Because built OCIL text loses variable values (section 3), each escaped
+  `<sub idref="var_x" />` placeholder becomes `$ODV_var_x`, and every rule that uses variables
+  gets a line after its text listing them, e.g. "Expected values: var_password_pam_minlen =
+  $ODV_var_password_pam_minlen", which the UI shows with the chosen value. Dropped values can't
+  be put back into the sentence itself; the listed values make the audit usable anyway. Stored as
   `language: bash`, `shell: null`, `result: null`, the text in `additional_info`. The schema
   allows only one check entry per target, so multiple CaC rules are concatenated into it.
 - A linked CaC rule with no bash fix, or no OCIL text, is listed in the step or audit text as
@@ -216,10 +216,30 @@ and the `manual_reasons` vocabulary. The existing reasons and existing rules are
 ### 5.6 Fail loudly
 
 The import fails, naming the control, on: an unknown status or level; a listed rule missing
-from the datastream; a rule present in the datastream but its bash block missing from a profile
-script it should be in; a fix block differing between profiles (5.4); an unresolvable
-variable; an unknown non-CIS control id; a CIS reference in the datastream that disagrees with
-the control id.
+from the datastream; an unresolvable variable (no `refine-value` and no default); a variable in
+a fix that is not inside single or double quotes; a recommended or per-level value that breaks
+its own quoting rules; an unknown non-CIS control id; a CIS reference in the datastream that
+disagrees with the control id.
+
+### 5.7 Organization-defined values
+
+Per `2026-11-18-named-odvs-design.md`, each XCCDF variable used by any linked rule of a control
+(in its sh fix, description, rationale or OCIL text) becomes one ODV on that rule:
+
+| ODV field | From |
+|---|---|
+| `name` | the variable id without CaC's prefix, e.g. `var_password_pam_minlen` |
+| `datatype` | XCCDF `Value` `type`: `number` or `string` (any other type fails) |
+| `description` | the `Value`'s title |
+| `validation` | `null` |
+| `recommended` | the value for the control's lowest listed level |
+| `by_benchmark` | the value for each benchmark name the rule has (5.3, inheritance expanded) |
+| `quoting` | `single` or `double`, from where the variable sits in the fixes; `unquoted` for a variable used only in prose (it is never shown inside a command) |
+
+A level's value is the profile's `refine-value` selector, else the `Value`'s default `<value>`
+(the one without a selector). Every text field's `<xccdf-1.2:sub>` becomes the placeholder, so
+descriptions also show the chosen value. The ODVs the control-file's `var_name=value` entries
+set are already reflected in the profiles' refine-values, so they need no separate handling.
 
 ## 6. Importer
 
@@ -228,7 +248,7 @@ the control id.
 - `tools/cac_fetch.py`: downloads the release zip, verifies its SHA-512 against the companion
   asset, downloads the control file from the tag, and stores in
   `sources/<source>/releases/<tag>/upstream/` unmodified copies of: the control file, the
-  product's datastream, the four per-profile bash scripts, and CaC's `LICENSE`.
+  product's datastream and CaC's `LICENSE` (the per-profile scripts are not needed, section 3).
 - `tools/cac_normalize.py`: section 5, pure functions. The datastream is parsed with the
   standard library's `xml.etree.ElementTree` after rejecting any document that contains a
   `<!DOCTYPE` or `<!ENTITY` declaration, which blocks entity-expansion attacks without adding
@@ -249,7 +269,7 @@ copy; that trade is left to the builder to measure and propose.
 - NOTICE gets a CaC entry in the existing format: project URL, release, BSD-3-Clause, the
   copyright line, and where the licence text is kept
   (`sources/<source>/releases/<tag>/upstream/LICENSE`). It states that `baselines/cis_*` is
-  adapted (normalized, variables resolved) from that material.
+  adapted (normalized, variables turned into customisable values) from that material.
 - The manifest `license` block: name "BSD-3-Clause", rights holder "Red Hat, Inc.",
   `modified: true`.
 - README and the UI's source attribution follow the existing pattern.
@@ -307,7 +327,7 @@ For the maintainer to check while reading:
 - `section_path` as CIS number prefixes, since the control file has no section names (5.2).
 - Level inheritance expanded for filtering, with the CIS-assigned level kept in references (5.3).
 - Target `Linux`, version `RHEL-9` / `Ubuntu-24.04` (5.2).
-- Bash fixes only, taken from the per-profile scripts (5.4).
+- Bash fixes only, taken from the datastream with variables as customisable values (5.4, 5.7).
 - Multiple CaC rules' audit text concatenated into the one check entry the schema allows (5.4).
 - Upstream datastream stored verbatim, about 29 MB per benchmark per release (6.2).
 
