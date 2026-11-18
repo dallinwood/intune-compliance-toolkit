@@ -5,6 +5,7 @@ import {
   PERSIST_VERSION,
   removeSelections,
   upsertSelection,
+  upsertSelections,
   type OrgDefinedValue,
   type RuleRef,
   type SelectionMap,
@@ -34,12 +35,7 @@ export const useSelectionStore = create<SelectionState>()(
       setEnabled: (ref, enabled) =>
         set((state) => ({ selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, enabled })) })),
       setEnabledMany: (refs, enabled) =>
-        set((state) => ({
-          selections: refs.reduce(
-            (selections, ref) => upsertSelection(selections, ref, (entry) => ({ ...entry, enabled })),
-            state.selections,
-          ),
-        })),
+        set((state) => ({ selections: upsertSelections(state.selections, refs, (entry) => ({ ...entry, enabled })) })),
       setOdvValue: (ref, value) =>
         set((state) => ({
           selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, odvValue: value })),

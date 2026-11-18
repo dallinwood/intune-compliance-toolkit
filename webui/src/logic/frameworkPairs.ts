@@ -133,22 +133,49 @@ function capInput(
   }
 }
 
-function cappedCoverage(
+// The cap ignores the selection, so it can be kept while the selection changes.
+export function combinedCap(
   rows: readonly RuleRow[],
   byRule: ReadonlyMap<string, MappedRule[]>,
   coveredSource: string,
-  coveringSources: ReadonlySet<string>,
-  selectionRestriction: ReadonlySet<string> | null,
-  settings: SelectionSettings,
+  coveringSources: readonly string[],
+  automatedOnly: boolean,
   scope: string,
-): CappedCoverage {
-  return {
-    cap: frameworkCoverage(capInput(rows, byRule, coveringSources, settings.automatedOnly), coveredSource, scope),
-    selection: frameworkCoverage(selectionInput(rows, byRule, selectionRestriction, settings), coveredSource, scope),
-  }
+): FrameworkCoverage {
+  return frameworkCoverage(capInput(rows, byRule, new Set(coveringSources), automatedOnly), coveredSource, scope)
+}
+
+export function pairCap(
+  rows: readonly RuleRow[],
+  byRule: ReadonlyMap<string, MappedRule[]>,
+  pair: SupportsPair,
+  automatedOnly: boolean,
+  scope: string,
+): FrameworkCoverage {
+  return combinedCap(rows, byRule, pair.coveredSource, [pair.coveringSource], automatedOnly, scope)
 }
 
 // The combined report shows what the user's whole selection reaches, whichever framework it came from.
+export function combinedSelection(
+  rows: readonly RuleRow[],
+  byRule: ReadonlyMap<string, MappedRule[]>,
+  coveredSource: string,
+  settings: SelectionSettings,
+  scope: string,
+): FrameworkCoverage {
+  return frameworkCoverage(selectionInput(rows, byRule, null, settings), coveredSource, scope)
+}
+
+export function pairSelection(
+  rows: readonly RuleRow[],
+  byRule: ReadonlyMap<string, MappedRule[]>,
+  pair: SupportsPair,
+  settings: SelectionSettings,
+  scope: string,
+): FrameworkCoverage {
+  return frameworkCoverage(selectionInput(rows, byRule, new Set([pair.coveringSource]), settings), pair.coveredSource, scope)
+}
+
 export function combinedCoverage(
   rows: readonly RuleRow[],
   byRule: ReadonlyMap<string, MappedRule[]>,
@@ -157,7 +184,10 @@ export function combinedCoverage(
   settings: SelectionSettings,
   scope: string,
 ): CappedCoverage {
-  return cappedCoverage(rows, byRule, coveredSource, new Set(coveringSources), null, settings, scope)
+  return {
+    cap: combinedCap(rows, byRule, coveredSource, coveringSources, settings.automatedOnly, scope),
+    selection: combinedSelection(rows, byRule, coveredSource, settings, scope),
+  }
 }
 
 export function pairCoverage(
@@ -167,8 +197,10 @@ export function pairCoverage(
   settings: SelectionSettings,
   scope: string,
 ): CappedCoverage {
-  const coveringSources = new Set([pair.coveringSource])
-  return cappedCoverage(rows, byRule, pair.coveredSource, coveringSources, coveringSources, settings, scope)
+  return {
+    cap: pairCap(rows, byRule, pair, settings.automatedOnly, scope),
+    selection: pairSelection(rows, byRule, pair, settings, scope),
+  }
 }
 
 // The user's whole selection, for the "selected rules that support no control" list.

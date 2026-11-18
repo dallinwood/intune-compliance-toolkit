@@ -42,6 +42,21 @@ export function upsertSelection(
   return { ...selections, [key]: update(existing) }
 }
 
+// upsertSelection over many refs with one copy of the map, so a select-all over
+// thousands of rules is linear rather than copying the map per rule.
+export function upsertSelections(
+  selections: SelectionMap,
+  refs: readonly RuleRef[],
+  update: (entry: SelectionEntry) => SelectionEntry,
+): SelectionMap {
+  const updated = { ...selections }
+  for (const ref of refs) {
+    const key = refKey(ref)
+    updated[key] = update(updated[key] ?? createSelectionEntry(ref))
+  }
+  return updated
+}
+
 export function getSelection(selections: SelectionMap, ref: RuleRef): SelectionEntry {
   return selections[refKey(ref)] ?? createSelectionEntry(ref)
 }

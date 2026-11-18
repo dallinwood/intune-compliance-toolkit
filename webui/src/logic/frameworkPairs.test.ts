@@ -3,6 +3,8 @@ import type { MappedRule } from './mappingIndex'
 import {
   capCount,
   combinedCoverage,
+  pairCap,
+  pairSelection,
   frameworkPairs,
   pairCoverage,
   relatedPairCoverage,
@@ -12,7 +14,7 @@ import {
   type SelectionSettings,
   type SupportsPair,
 } from './frameworkPairs'
-import { cardCoverages } from './cardCoverage'
+import { cardCaps, cardCoverages } from './cardCoverage'
 import { ALL_CONTROLS_SCOPE, type FrameworkCoverage } from './selectionCoverage'
 import type { RuleRow } from '../types/rule-row'
 
@@ -142,6 +144,32 @@ describe('the combined report threshold on cards', () => {
     const coverage = cardCoverages(['b'], rows, byRule, frameworkPairs(rows, byRule), cardSettings)
 
     expect(coverage.get('b')?.combined).not.toBeNull()
+  })
+})
+
+describe('the cap and the selection are computed apart', () => {
+  const rows = [row({ sourceName: 'a', upstreamId: 'r1' }), row({ sourceName: 'a', upstreamId: 'r2' }), row({ sourceName: 'b', upstreamId: 'c1' }), row({ sourceName: 'b', upstreamId: 'c2' })]
+  const byRule = indexOf([...supportPair('a.r1', 'b.c1'), ...supportPair('a.r2', 'b.c2')])
+  const pair = { kind: 'supports', coveringSource: 'a', coveredSource: 'b' } as const
+
+  it('gives the same cap and selection as the paired computation', () => {
+    const selectionSettings = settings(['a.r1'])
+    const together = pairCoverage(rows, byRule, pair, selectionSettings, ALL_CONTROLS_SCOPE)
+
+    expect(pairCap(rows, byRule, pair, false, ALL_CONTROLS_SCOPE)).toEqual(together.cap)
+    expect(pairSelection(rows, byRule, pair, selectionSettings, ALL_CONTROLS_SCOPE)).toEqual(together.selection)
+  })
+
+  it('keeps the card caps the same whatever the selection, and the selection inside them', () => {
+    const pairs = frameworkPairs(rows, byRule)
+    const caps = cardCaps(['a', 'b'], rows, byRule, pairs)
+    const none = cardCoverages(['b'], rows, byRule, pairs, settings([]), caps).get('b')!
+    const one = cardCoverages(['b'], rows, byRule, pairs, settings(['a.r1']), caps).get('b')!
+
+    expect(none.coveredBy[0].capped.cap).toBe(one.coveredBy[0].capped.cap)
+    expect(capCount(none.coveredBy[0].capped.selection)).toBe(0)
+    expect(capCount(one.coveredBy[0].capped.selection)).toBe(1)
+    expect(capCount(one.coveredBy[0].capped.cap)).toBe(2)
   })
 })
 

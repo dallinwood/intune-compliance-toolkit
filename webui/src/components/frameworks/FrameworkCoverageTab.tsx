@@ -4,9 +4,11 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { pluralize } from '../../lib/format'
 import {
-  combinedCoverage,
+  combinedCap,
+  combinedSelection,
+  pairCap,
+  pairSelection,
   supportingSourcesOf,
-  pairCoverage,
   relatedPairCoverage,
   selectionCoverageInput,
   supportsPairsCovering,
@@ -15,7 +17,7 @@ import {
   type SupportsPair,
 } from '../../logic/frameworkPairs'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
-import { ALL_CONTROLS_SCOPE, coverageFrameworks, scopeOptions, selectedRulesSupportingNothing } from '../../logic/selectionCoverage'
+import { ALL_CONTROLS_SCOPE, coverageFrameworks, scopeOptions, selectedRulesSupportingNothing, type FrameworkCoverage } from '../../logic/selectionCoverage'
 import { compareGroupKeys, termLabel } from '../../logic/vocabulary'
 import { useRuleMappings } from '../../state/mappingsContext'
 import { useSupportingChecksStore } from '../../state/supportingChecksStore'
@@ -33,21 +35,27 @@ function CappedReport({
   coveringLabel,
   coveredSource,
   rows,
-  computeCoverage,
+  computeCap,
+  computeSelection,
   drillDown,
 }: {
   title: string
   coveringLabel: string
   coveredSource: string
   rows: readonly RuleRow[]
-  computeCoverage: (scope: string) => CappedCoverage
+  computeCap: (scope: string) => FrameworkCoverage
+  computeSelection: (scope: string) => FrameworkCoverage
   drillDown: SectionDrillDown
 }) {
   const vocabularyIndex = useVocabularyIndex()
   const [mode, setMode] = useState<CoverageMode>('selection')
   const [scope, setScope] = useState(ALL_CONTROLS_SCOPE)
   const scopes = useMemo(() => scopeOptions(rows, coveredSource, compareGroupKeys(vocabularyIndex, 'benchmarks')), [rows, coveredSource, vocabularyIndex])
-  const capped = useMemo(() => computeCoverage(scope), [computeCoverage, scope])
+  // The cap only changes with the pair, the scope and Automated checks only, so ticking
+  // rules recomputes just the selection.
+  const cap = useMemo(() => computeCap(scope), [computeCap, scope])
+  const selection = useMemo(() => computeSelection(scope), [computeSelection, scope])
+  const capped = useMemo<CappedCoverage>(() => ({ cap, selection }), [cap, selection])
   return (
     <PairCoverageReport
       title={title}
@@ -79,14 +87,16 @@ function SupportsPairReport({
   drillDown: SectionDrillDown
 }) {
   const { byRule } = useRuleMappings()
-  const computeCoverage = useMemo(() => (scope: string) => pairCoverage(rows, byRule, pair, settings, scope), [rows, byRule, pair, settings])
+  const computeCap = useMemo(() => (scope: string) => pairCap(rows, byRule, pair, settings.automatedOnly, scope), [rows, byRule, pair, settings.automatedOnly])
+  const computeSelection = useMemo(() => (scope: string) => pairSelection(rows, byRule, pair, settings, scope), [rows, byRule, pair, settings])
   return (
     <CappedReport
       title={title}
       coveringLabel={coveringLabel}
       coveredSource={pair.coveredSource}
       rows={rows}
-      computeCoverage={computeCoverage}
+      computeCap={computeCap}
+      computeSelection={computeSelection}
       drillDown={drillDown}
     />
   )
@@ -144,9 +154,13 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
       }),
     [rows, byRule, frameworkPairs, sourceName],
   )
-  const computeCombinedCoverage = useMemo(
-    () => (scope: string) => combinedCoverage(rows, byRule, sourceName, supportingSources, settings, scope),
-    [rows, byRule, sourceName, supportingSources, settings],
+  const computeCombinedCap = useMemo(
+    () => (scope: string) => combinedCap(rows, byRule, sourceName, supportingSources, automatedOnly, scope),
+    [rows, byRule, sourceName, supportingSources, automatedOnly],
+  )
+  const computeCombinedSelection = useMemo(
+    () => (scope: string) => combinedSelection(rows, byRule, sourceName, settings, scope),
+    [rows, byRule, sourceName, settings],
   )
   const unsupportedRules = useMemo(
     () => selectedRulesSupportingNothing(selectionCoverageInput(rows, byRule, settings), coverageFrameworks(rows, byRule).counted),
@@ -199,7 +213,8 @@ export function FrameworkCoverageTab({ sourceName, rows, selectedRuleIds }: { so
               coveringLabel="all mapped frameworks"
               coveredSource={sourceName}
               rows={rows}
-              computeCoverage={computeCombinedCoverage}
+              computeCap={computeCombinedCap}
+              computeSelection={computeCombinedSelection}
               drillDown={COVERED_CONTROLS}
             />
           </div>
