@@ -63,7 +63,17 @@ def committed_releases() -> list[tuple[str, str]]:
 
 
 COMMITTED_RELEASES = committed_releases()
-COMMITTED_RELEASE_IDS = [f"{source_name}-{tag}" for source_name, tag in COMMITTED_RELEASES]
+CURRENT_RELEASES = {(source["name"], source["release_tag"]) for source in committed_manifest()["sources"]}
+# Older releases only change when an importer changes, so they are regenerated with --all-releases (tests/conftest.py).
+COMMITTED_RELEASE_PARAMS = [
+    pytest.param(
+        source_name,
+        tag,
+        id=f"{source_name}-{tag}",
+        marks=() if (source_name, tag) in CURRENT_RELEASES else pytest.mark.older_release,
+    )
+    for source_name, tag in COMMITTED_RELEASES
+]
 
 
 def files_under(directory: Path) -> dict[str, bytes]:
@@ -103,7 +113,7 @@ def test_committed_library_is_valid():
     assert validate_library(BASELINES_DIR) == []
 
 
-@pytest.mark.parametrize(("source_name", "tag"), COMMITTED_RELEASES, ids=COMMITTED_RELEASE_IDS)
+@pytest.mark.parametrize(("source_name", "tag"), COMMITTED_RELEASE_PARAMS)
 def test_committed_release_matches_regeneration(tmp_path, source_name, tag):
     # Regenerated into an empty library: publishing writes this one release and
     # a one-release manifest, so only that release's folder and manifest entry are compared.
