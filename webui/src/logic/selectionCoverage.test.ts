@@ -4,6 +4,7 @@ import {
   ALL_CONTROLS_SCOPE,
   coverageFrameworks,
   frameworkCoverage,
+  cappedBarLabel,
   coverageBarLabel,
   coverageHeadline,
   scopeOptions,
@@ -403,5 +404,12 @@ describe('coverageHeadline and coverageBarLabel', () => {
     const coverage = { ...base, covered: 61, coveredThroughSupporting: 14, potentialThroughSupporting: 20, total: 1143 }
     expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 directly, +14 through supporting rules, of 1,143 at ISM PROTECTED')
     expect(coverageBarLabel(coverage)).toBe('61 supported directly, 14 through supporting rules, 4 related only, of 1,143')
+  })
+})
+
+describe('cappedBarLabel', () => {
+  it('appends the cap to the bar label', () => {
+    const counts = { covered: 82, coveredThroughSupporting: 9, relatedOnly: 30, total: 1014 }
+    expect(cappedBarLabel(counts, 140)).toBe('82 supported directly, 9 through supporting rules, 30 related only, of 1,014, max 140 with current mappings')
   })
 })

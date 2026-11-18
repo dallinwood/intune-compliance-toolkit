@@ -287,3 +287,10 @@ export function coverageBarLabel(counts: { covered: number; coveredThroughSuppor
     `${formatCount(relatedOnly)} related only, of ${formatCount(total)}`
   )
 }
+
+export function cappedBarLabel(
+  counts: { covered: number; coveredThroughSupporting: number; relatedOnly: number; total: number },
+  capCount: number,
+): string {
+  return `${coverageBarLabel(counts)}, max ${formatCount(capCount)} with current mappings`
+}
