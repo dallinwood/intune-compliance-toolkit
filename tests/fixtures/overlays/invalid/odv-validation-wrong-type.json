@@ -1,0 +1,1 @@
+{ "schema_version": 1, "id": "odv-validation-wrong-type", "targets": [{ "rule": "asd_ism.ism-1622", "release": "v2026.09.4" }], "fields": { "odv": { "datatype": "enum", "description": "Value", "validation": { "enumValues": { "a": 1 } }, "recommended": "1", "by_benchmark": {} } } }
