@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import type { Manifest } from '../src/types/library'
+import { ALL_RULES_PATH } from './locations'
 
 const baselinesFolder = new URL('../../baselines/', import.meta.url)
 const manifest = JSON.parse(readFileSync(new URL('_manifest.json', baselinesFolder), 'utf8')) as Manifest
@@ -59,7 +60,7 @@ const unlinkedManualControl = allRules.find(
 )!
 
 async function rowFor(page: Page, rule: IndexRule) {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await page.getByPlaceholder('Search title or id…').fill(upstreamIdOf(rule.id))
   const row = page.locator(`table tbody tr[data-rule-id="${rule.id}"]`)
   await expect(row).toHaveCount(1)
@@ -120,7 +121,7 @@ test('hovering an icon shows its tooltip; focusing the strip shows every line', 
 })
 
 test('the legend lists the five meanings', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const legend = page.getByTestId('rule-status-legend')
   for (const text of ['automated check', 'manual', 'no platform', 'linked to automated rules', 'linked to manual rules']) {
     await expect(legend).toContainText(text)
@@ -128,7 +129,7 @@ test('the legend lists the five meanings', async ({ page }) => {
 })
 
 test('hovering several strips in sequence and moving away leaves no tooltip open', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await page.getByPlaceholder('Search title or id…').fill('smartcard')
   await page.getByRole('button', { name: 'Expand all' }).click()
   const strips = page.locator('table tbody tr[data-rule-id] > td:nth-child(4)').getByRole('group')

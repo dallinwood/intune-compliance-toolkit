@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import { buildMappingIndex } from '../src/logic/mappingIndex'
+import { ALL_RULES_PATH } from './locations'
 
 const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8')) as {
   sources: { name: string; release_tag: string }[]
@@ -67,7 +68,7 @@ async function openMappedRules(page: Page, files: { fileName: string; value: unk
   await page.route('**/catalog/_index.json', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_CATALOG_INDEX) }),
   )
-  await page.goto(`/?q=${search}&rule=${ruleId}`)
+  await page.goto(`${ALL_RULES_PATH}&q=${search}&rule=${ruleId}`)
   await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
   await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
 }

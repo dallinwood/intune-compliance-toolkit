@@ -13,8 +13,6 @@ export const FRAMEWORK_TABS: readonly FrameworkTab[] = ['rules', 'releases', 'co
 // The framework value of the page that lists every rule, whatever its framework.
 export const ALL_FRAMEWORKS = 'all'
 export const DEFAULT_VIEW_ID = 'frameworks'
-// The id the Rules view has until the Frameworks view takes it over.
-export const RULES_VIEW_ID = 'rules'
 
 export interface UrlState {
   // Read from the path, kept as written; an id no view has is replaced by the app.

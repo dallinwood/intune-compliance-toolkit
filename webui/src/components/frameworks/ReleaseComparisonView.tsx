@@ -12,7 +12,7 @@ import { isEmptyRelease, releaseLabel, resolveComparisonRange } from '../../logi
 import { effectiveKinds, type ChangeKind } from '../../logic/ruleChanges'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { useFilterStore } from '../../state/filterStore'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, RULES_VIEW_ID, parseUrlState, serializeUrlLocation, type CompareGroup } from '../../state/urlState'
+import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, ALL_FRAMEWORKS, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation, type CompareGroup } from '../../state/urlState'
 import type { ManifestSource } from '../../types/library'
 import { ChangesBetween } from '../history/ChangesBetween'
 import { KindTag } from '../history/KindTag'
@@ -22,7 +22,6 @@ import { SectionToolbar } from '../rules/SectionToolbar'
 import { ComparisonSidebar } from './ComparisonSidebar'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import { StatusMessage } from '@/components/ui/status-message'
-import { BackLink } from '@/components/ui/back-link'
 import { formatCount } from '../../lib/format'
 import { PageTitle } from '@/components/ui/page-title'
 
@@ -37,7 +36,14 @@ const groupKey = (group: Group) => `group:${group}`
 const rowKey = (group: Group, ruleId: string) => `${group}:${ruleId}`
 
 function hrefShowing(ruleId: string): string {
-  const state = { ...parseUrlState(''), view: RULES_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
+  const state = {
+    ...parseUrlState(''),
+    view: DEFAULT_VIEW_ID,
+    framework: ALL_FRAMEWORKS,
+    frameworkTab: 'rules' as const,
+    search: upstreamRuleId(ruleId),
+    openRule: ruleId,
+  }
   return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
 }
 
@@ -229,7 +235,6 @@ export function ReleaseComparisonView({
   const benchmarks = useFilterStore((store) => store.compareBenchmarks)
   const only = useFilterStore((store) => store.compareOnly)
   const setSearch = useFilterStore((store) => store.setCompareSearch)
-  const closeComparison = useFilterStore((store) => store.closeComparison)
   const compareGroup = useFilterStore((store) => store.compareGroup)
   const setCompareGroup = useFilterStore((store) => store.setCompareGroup)
   const customised = useCustomisedRuleIds()
@@ -309,13 +314,10 @@ export function ReleaseComparisonView({
       </div>
       <main className="min-w-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
         <div className="space-y-3 p-4">
-          <div>
-            <BackLink onClick={closeComparison}>All frameworks</BackLink>
-            <PageTitle
-              title={`${source.display_name}: ${fromLabel} to ${toLabel}`}
-              subtitle={comparesWithEmptyRelease ? `Compared with an empty release, so every rule in ${toLabel} is listed as added.` : undefined}
-            />
-          </div>
+          <PageTitle
+            title={`${source.display_name}: ${fromLabel} to ${toLabel}`}
+            subtitle={comparesWithEmptyRelease ? `Compared with an empty release, so every rule in ${toLabel} is listed as added.` : undefined}
+          />
           <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
             {(
               [

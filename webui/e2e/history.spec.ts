@@ -4,6 +4,7 @@ import { changeCount, ruleTimeline, type HistoryIndex } from '../src/logic/histo
 import { buildOverlayIndex } from '../src/logic/overlayIndex'
 import { fieldChanges } from '../src/logic/ruleChanges'
 import type { Rule } from '../src/types/library'
+import { ALL_RULES_PATH } from './locations'
 
 // Written by `bun run dev` (copy-baselines) next to the other published indexes.
 function readHistory(sourceName: string): HistoryIndex {
@@ -28,7 +29,7 @@ const historyPanel = (page: Page, ruleId: string) => detailOf(page, ruleId).getB
 const cards = (panel: Locator) => panel.getByTestId('history-card')
 
 async function openRule(page: Page, ruleId: string) {
-  await page.goto(`/?q=${encodeURIComponent(ruleId.split('.')[1])}&rule=${ruleId}`)
+  await page.goto(`${ALL_RULES_PATH}&q=${encodeURIComponent(ruleId.split('.')[1])}&rule=${ruleId}`)
   await expect(historyTab(page, ruleId)).toBeVisible({ timeout: 15_000 })
 }
 

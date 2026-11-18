@@ -1,6 +1,7 @@
 import { isPlainLeftClick } from '@/lib/utils'
 import { VIEWS } from '../../views/viewRegistry'
 import { hrefForView, useFilterStore } from '../../state/filterStore'
+import { tabLinkClassName } from './tabLinkClassName'
 
 export function ViewTabs({ activeViewId }: { activeViewId: string }) {
   const filterState = useFilterStore()
@@ -22,11 +23,7 @@ export function ViewTabs({ activeViewId }: { activeViewId: string }) {
                     event.preventDefault()
                     if (!isActive) filterState.setView(view.id)
                   }}
-                  className={`inline-block border-b-2 px-3 py-2 text-sm whitespace-nowrap focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none ${
-                    isActive
-                      ? 'border-link font-medium text-link'
-                      : 'border-transparent text-muted-foreground hover:border-control-border hover:text-foreground'
-                  }`}
+                  className={tabLinkClassName(isActive)}
                 >
                   {view.label}
                 </a>

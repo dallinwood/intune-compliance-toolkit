@@ -3,6 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { openFacetGroup } from './facets'
+import { ALL_RULES_PATH } from './locations'
 
 const ruleCount = (page: Page) => page.getByText(/^[\d,]+ of [\d,]+ rules$/)
 
@@ -17,7 +18,7 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/catalog/_index.json', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_CATALOG_INDEX) }),
   )
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 })
 
@@ -120,7 +121,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     await page.route('**/baselines/_mappings/_index.json', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(committedMappingIndex) }),
     )
-    await page.goto(`/?q=${search}&rule=${ruleId}`)
+    await page.goto(`${ALL_RULES_PATH}&q=${search}&rule=${ruleId}`)
     await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()

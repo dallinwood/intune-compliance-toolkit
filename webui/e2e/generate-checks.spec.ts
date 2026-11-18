@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import { newestReleaseChange } from '../src/logic/generateChecks'
 import type { HistoryIndex } from '../src/logic/historyIndex'
+import { ALL_RULES_PATH } from './locations'
 
 const EMPTY_MAPPING_INDEX = { schema_version: 1, by_rule: {} }
 const EMPTY_CATALOG_INDEX = { schema_version: 1, vendors: [], products: [], licences: [], by_product: {} }
@@ -41,7 +42,7 @@ async function selectRules(page: Page, selections: { ruleId: string; odvValue: s
     }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections: persistedSelections }, version: 2 }))
   }, selections)
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(`${selections.length} selected`)).toBeVisible({ timeout: 10_000 })
   await page.getByRole('button', { name: 'Generate' }).click()
 }

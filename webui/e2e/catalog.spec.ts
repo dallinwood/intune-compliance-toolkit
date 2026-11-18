@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { buildCatalogIndex, type CatalogSourceFile } from '../src/logic/catalogIndex'
+import { ALL_RULES_PATH } from './locations'
 
 const EMPTY_MAPPING_INDEX = { schema_version: 1, by_rule: {} }
 
@@ -209,7 +210,7 @@ test('a Rules-only visit never requests the catalog index', async ({ page }) => 
   page.on('request', (request) => {
     if (request.url().includes('catalog/_index.json')) catalogRequests.push(request.url())
   })
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   await page.waitForTimeout(500)
 
@@ -218,7 +219,7 @@ test('a Rules-only visit never requests the catalog index', async ({ page }) => 
 
 test('a missing catalog index warns only inside the Licences tab and leaves the Rules tab working', async ({ page }) => {
   await page.route('**/catalog/_index.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
 
   await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toBeVisible()
@@ -229,7 +230,7 @@ test('a missing catalog index warns only inside the Licences tab and leaves the 
   await expect(page.getByText('The product and licence catalog could not be loaded.', { exact: true })).toBeVisible()
   await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toHaveCount(0)
 
-  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' }).click()
+  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Frameworks' }).click()
   await expect(page.getByRole('searchbox', { name: 'Search title or id' })).toBeVisible()
 })
 
@@ -443,15 +444,15 @@ test('a selection reached by going back opens its group again', async ({ page })
 })
 
 test('typing a Rules search adds no history entry', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByPlaceholder('Search title or id…')).toBeVisible({ timeout: 10_000 })
   await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Licences' }).click()
-  await expect(page).toHaveURL(/\/licences$/)
-  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' }).click()
+  await expect(page).toHaveURL(/\/licences\?framework=all&tab=rules$/)
+  await page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Frameworks' }).click()
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper')
   await expect(page).toHaveURL(/q=gatekeeper/)
   await page.goBack()
-  await expect(page).toHaveURL(/\/licences$/)
+  await expect(page).toHaveURL(/\/licences\?framework=all&tab=rules$/)
 })
 
 test('the tab bar has no scrollbar at phone and desktop widths', async ({ page }) => {

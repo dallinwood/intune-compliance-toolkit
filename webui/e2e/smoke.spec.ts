@@ -6,6 +6,7 @@ import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { buildOverlayIndex } from '../src/logic/overlayIndex'
 import { openFacetGroup } from './facets'
+import { ALL_RULES_PATH } from './locations'
 
 const ruleCount = (page: Page) => page.getByText(/^[\d,]+ of [\d,]+ rules$/)
 
@@ -40,7 +41,7 @@ async function searchForSingleRow(page: Page, search: string, title: RegExp | st
 }
 
 test('rule browser loads the mSCP library and expands a rule to its check', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
 
   await expect(page.getByRole('heading', { name: 'Intune Compliance Toolkit' })).toBeVisible()
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
@@ -67,7 +68,7 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
 })
 
 test('an architecture-gated rule names its architecture by the raw mSCP code', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'os_dictation_disable', /Dictation/)
   await row.getByRole('button').click()
   const detail = page.locator('[id^="rule-detail-"]')
@@ -79,7 +80,7 @@ test('an architecture-gated rule names its architecture by the raw mSCP code', a
 // checkbox that renders but no longer fires its handler looks identical in
 // a screenshot.
 test('Version and benchmark facets narrow the table together', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
   const countOf = async () => Number((await ruleCount(page).textContent())?.split(' ')[0].replace(',', ''))
@@ -124,7 +125,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
   ).length
   expect(expectedCount).toBeGreaterThan(0)
 
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Version')
   await openFacetGroup(page, 'Benchmark')
@@ -152,7 +153,7 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
   const rowOf = (ruleId: string) =>
     page.locator('table tbody tr').filter({ has: page.getByText(ruleId.replace('mscp.', ''), { exact: true }) })
 
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Version')
   await page.getByRole('checkbox', { name: 'macOS 15', exact: true }).click()
@@ -168,7 +169,7 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
 
 // Only the mSCP rules name a target, so ticking macOS or mscp keeps 352 of the 2567 rules; ticking ASD ISM keeps 1143 and NIST SP 800-53 keeps 1014.
 test('the Target facet follows Automation and the Source facet sits between Version and Benchmark, and each filters to its own rules', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
   const facetTitles = page.getByTestId('sidebar-scroll-area').getByRole('heading')
@@ -203,7 +204,7 @@ test('the Target facet follows Automation and the Source facet sits between Vers
 // as every ISM control does, so Version "None" keeps them with the 1143 ISM
 // rules while Target "None" keeps only the ISM rules.
 test('Version "None" and Target "None" filter to the rules without a version or a target', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
   await openFacetGroup(page, 'Version')
@@ -232,7 +233,7 @@ test('Version "None" and Target "None" filter to the rules without a version or 
 })
 
 test('an ISM benchmark filters to ISM rules and its benchmarks show in the table', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
   await openFacetGroup(page, 'Benchmark')
@@ -251,7 +252,7 @@ test('an ISM benchmark filters to ISM rules and its benchmarks show in the table
 })
 
 test('an ISM row lists its benchmarks in the benchmark column', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
   await expect(row.locator('td').last()).toContainText('ISM Non-classified')
   await expect(row.locator('td').last()).toContainText('Essential Eight ML3')
@@ -261,7 +262,7 @@ const ISM_1803_BREADCRUMB =
   'Guidelines for cyber security incidents › Managing cyber security incidents › Cyber security incident register'
 
 test('an ISM rule detail shows its breadcrumb, revision and Markdown list', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-1803', /./)
   await row.getByRole('button').click()
   const detail = page.locator('[id^="rule-detail-"]')
@@ -273,7 +274,7 @@ test('an ISM rule detail shows its breadcrumb, revision and Markdown list', asyn
 })
 
 test('an ISM rule detail turns a Markdown link into an external link', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-0009', /./)
   await row.getByRole('button').click()
   const link = page.locator('[id^="rule-detail-"]').getByRole('link', { name: 'Information security manual' }).first()
@@ -282,7 +283,7 @@ test('an ISM rule detail turns a Markdown link into an external link', async ({ 
 })
 
 test('a version-less mSCP rule keeps its macOS warning with the new wording and shows no revision', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'os_firewall_log_enable', /./)
   await row.getByRole('button').click()
   const detail = page.locator('[id^="rule-detail-"]')
@@ -292,7 +293,7 @@ test('a version-less mSCP rule keeps its macOS warning with the new wording and 
 })
 
 test('a one-level section path shows no breadcrumb while a multi-level one does', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const mscpRow = await searchForSingleRow(page, 'audit_acls_folders_configure', /./)
   await mscpRow.getByRole('button').click()
   const detail = page.locator('[id^="rule-detail-"]')
@@ -306,7 +307,7 @@ test('a one-level section path shows no breadcrumb while a multi-level one does'
 })
 
 test('each rule credits its own source in the detail panel', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const detail = page.locator('[id^="rule-detail-"]')
   const credit = detail.locator('p').filter({ hasText: /^From / })
 
@@ -321,7 +322,7 @@ test('each rule credits its own source in the detail panel', async ({ page }) =>
 })
 
 test('the sources dialog names no platform in its rule sources', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   await page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' }).click()
   const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
@@ -331,7 +332,7 @@ test('the sources dialog names no platform in its rule sources', async ({ page }
 })
 
 test('the Sources & licences dialog lists sources and bundled packages', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   const footerButton = page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' })
   await expect(page.getByRole('dialog')).toHaveCount(0)
@@ -358,7 +359,7 @@ test('the Sources & licences dialog lists sources and bundled packages', async (
 })
 
 test('a facet with no reachable options is not rendered', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   const tagsHeading = page.getByTestId('sidebar-scroll-area').getByRole('heading', { name: 'Tags', exact: true })
   await expect(tagsHeading).toBeVisible()
@@ -372,14 +373,14 @@ test('a facet with no reachable options is not rendered', async ({ page }) => {
 })
 
 test('searching an ISM control id finds exactly that control', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
   await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
   await expect(page.getByRole('checkbox', { name: 'Select ism-1667' })).toBeVisible()
 })
 
 test('an ISM control flows to the manual attestation report', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
   await row.getByRole('checkbox').click()
   await expect(page.getByText('1 selected')).toBeVisible()
@@ -402,7 +403,7 @@ test('an ISM control flows to the manual attestation report', async ({ page }) =
 })
 
 test('a mixed mSCP and ISM manual selection credits both sources in the attestation report', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   for (const [search, title] of [
     ['os_application_sandboxing', 'Ensure Separate Execution Domain for Processes'],
     ['ism-1667', 'Microsoft Office is blocked from creating child processes.'],
@@ -431,7 +432,7 @@ test('a mixed mSCP and ISM manual selection credits both sources in the attestat
 // interactive control. Base UI's Checkbox renders role="checkbox", not an
 // <input>, so a selector listing only `input` would both select AND expand.
 test('row checkbox selects without expanding the row', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
 
   await expect(page.getByText('0 selected')).toBeVisible()
@@ -441,7 +442,7 @@ test('row checkbox selects without expanding the row', async ({ page }) => {
 })
 
 test('an ODV title shows the effective value instead of $ODV', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
 
   await expect(row).toContainText(/Require a Minimum Password Length of \d+ Characters/)
@@ -449,7 +450,7 @@ test('an ODV title shows the effective value instead of $ODV', async ({ page }) 
 })
 
 test('an ODV value with an apostrophe is rejected and not stored', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
   await row.getByRole('button').click()
 
@@ -479,7 +480,7 @@ test('an invalid stored ODV value is reported as blocking generation until fixed
     const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
   await expect(row).toContainText('Require a Minimum Password Length of 6 Characters')
 
@@ -504,7 +505,7 @@ test('an invalid stored ODV value is reported as blocking generation until fixed
 // period instead of vanishing (or staying clickable into a zero-row table),
 // then fades out - "the count changed" alone can't see either half.
 test('an unreachable facet option greys out, fades, then disappears', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await openFacetGroup(page, 'Benchmark')
 
   const unreachableBenchmark = page.getByRole('checkbox', { name: 'ISM Non-classified', exact: true })
@@ -549,7 +550,7 @@ test('an unreachable facet option greys out, fades, then disappears', async ({ p
 })
 
 test('review & generate offers a download with defaults and lists an inherent rule for manual attestation', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   for (const [search, title] of [
     ['os_gatekeeper_enable', 'Enable Gatekeeper'],
     ['pwpolicy_minimum_length_enforce', /Minimum Password Length/],
@@ -583,7 +584,7 @@ test('review & generate blocks the download while a selected rule has an invalid
     const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
 
   await page.getByRole('button', { name: 'Generate' }).click()
@@ -603,7 +604,7 @@ test('review & generate downloads a manual-only selection as a zip holding manua
     const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: null } } }, version: 2 }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
   await page.getByRole('button', { name: 'Generate' }).click()
 
@@ -641,7 +642,7 @@ test('a saved selection that is no longer in the library is reported and removab
     }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
 
   await page.getByRole('button', { name: 'Generate' }).click()
@@ -671,7 +672,7 @@ test('a saved selection that is no longer in the library is reported and removab
 // Display names come from baselines/_vocabulary.json at runtime; the app
 // must stay usable with raw codes when that file is missing or broken.
 test('display names come from the vocabulary file, with raw codes and a warning when it is missing', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Benchmark')
   await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
@@ -698,7 +699,7 @@ test('a malformed vocabulary file falls back to raw codes with a warning', async
   await page.route('**/baselines/_vocabulary.json', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: '{"schema_version": 1, "vocabularies": []}' }),
   )
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
   await openFacetGroup(page, 'Benchmark')
@@ -714,7 +715,7 @@ test.describe('filter sidebar scrolling', () => {
   const scroller = (page: Page) => page.getByTestId('sidebar-scroll-area')
 
   test('scrolls with pinned search and edge indicators that follow the scroll position', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
     await openFacetGroup(page, 'Section')
@@ -742,7 +743,7 @@ test.describe('filter sidebar scrolling', () => {
   })
 
   test('the last tag is reachable and clickable', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
     await openFacetGroup(page, 'Tags')
@@ -755,7 +756,7 @@ test.describe('filter sidebar scrolling', () => {
   })
 
   test('the last source option is reachable and clickable', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
     const lastSource = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox').last()
@@ -767,7 +768,7 @@ test.describe('filter sidebar scrolling', () => {
 })
 
 test('the None facet options read as system-generated', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
   await openFacetGroup(page, 'Version')
@@ -782,7 +783,7 @@ test('the None facet options read as system-generated', async ({ page }) => {
 })
 
 test('facet options show how many rules they would leave in view', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   const sourceGroup = page.getByRole('group', { name: 'Source', exact: true })
   const optionRow = (group: Locator, name: string) => group.getByRole('checkbox', { name, exact: true }).locator('xpath=..')
@@ -803,7 +804,7 @@ test('facet options show how many rules they would leave in view', async ({ page
 })
 
 test('ticking one option leaves the others in its group selectable', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Section')
   const sectionGroup = page.getByRole('group', { name: 'Section', exact: true })
@@ -827,7 +828,7 @@ test('ticking one option leaves the others in its group selectable', async ({ pa
 })
 
 test('the table shows an Updating rules spinner while it catches up with a large filter change', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
   const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
   await expect(updatingStatus).toBeHidden()
@@ -893,7 +894,7 @@ test('eight facet options from four facets toggled in quick succession all regis
 
 const searchBox = (page: Page) => page.getByPlaceholder('Search title or id…')
 
-async function openLibrary(page: Page, path = '/') {
+async function openLibrary(page: Page, path = ALL_RULES_PATH) {
   await page.goto(path)
   await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
 }
@@ -922,7 +923,7 @@ test('filters, search, page and size survive a reload through the URL', async ({
   expect(page.url()).toContain('%1F')
   expect(parameters.getAll('version')).toHaveLength(1)
 
-  const withPaging = `${page.url()}&page=3&size=100`
+  const withPaging = page.url().replace('&framework=all', '&page=3&size=100&framework=all')
   await page.goto(withPaging)
   await expect(ruleCount(page)).toHaveText(filteredCount, { timeout: 10_000 })
   await expect(searchBox(page)).toHaveValue('configure')
@@ -943,15 +944,15 @@ test('filters, search, page and size survive a reload through the URL', async ({
   expect(new URL(page.url()).searchParams.has('page')).toBe(false)
 })
 
-test('clearing the filters leaves a URL with no query string', async ({ page }) => {
+test('clearing the filters leaves a URL with only the page in its query string', async ({ page }) => {
   await openLibrary(page)
   await searchBox(page).fill('gatekeeper')
   await page.getByRole('checkbox', { name: 'macOS', exact: true }).click()
-  expect(page.url()).toContain('?')
+  expect(page.url()).toContain('q=gatekeeper')
 
   await page.getByRole('button', { name: 'Clear filters' }).click()
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
-  expect(page.url()).not.toContain('?')
+  expect(page.url()).toMatch(/\/frameworks\?framework=all&tab=rules$/)
 })
 
 test('filter changes do not add history entries', async ({ page }) => {
@@ -999,7 +1000,7 @@ test('Escape in the search box clears the search', async ({ page }) => {
 })
 
 test('a shared URL with unknown values loads and drops them on the next write', async ({ page }) => {
-  await openLibrary(page, '/?benchmark=not_a_benchmark%1Fhigh&tag=no-such-tag&source=nope&target=macOS&unknown=1&automation=bogus&page=abc&size=junk')
+  await openLibrary(page, `${ALL_RULES_PATH}&benchmark=not_a_benchmark%1Fhigh&tag=no-such-tag&source=nope&target=macOS&unknown=1&automation=bogus&page=abc&size=junk`)
   await expect(page.getByRole('radio', { name: 'All rules' })).toBeChecked()
   await expect(page.getByRole('checkbox', { name: 'macOS', exact: true })).toBeChecked()
   await expect(ruleCount(page)).toHaveText('352 of 2,567 rules')
@@ -1105,7 +1106,7 @@ test.describe('section tree and paging', () => {
   })
 
   test('a collapse that leaves fewer pages moves the stored page back, so reopening a section starts at its top', async ({ page }) => {
-    await openLibrary(page, '/?page=7&size=25')
+    await openLibrary(page, `${ALL_RULES_PATH}&page=7&size=25`)
     await page.getByRole('button', { name: 'Expand all' }).click()
     await expect(pageStatus(page)).toHaveText('Page 7 of 103')
 
@@ -1120,7 +1121,7 @@ test.describe('section tree and paging', () => {
   })
 
   test('infinite scroll restarts from the first batch after a collapse and expand, and its sentinel goes once every row is shown', async ({ page }) => {
-    await openLibrary(page, '/?size=all')
+    await openLibrary(page, `${ALL_RULES_PATH}&size=all`)
     await openFacetGroup(page, 'Section')
     await page.getByRole('checkbox', { name: 'Operating system', exact: true }).click()
     await expect(ruleCount(page)).toHaveText('203 of 2,567 rules')
@@ -1152,7 +1153,7 @@ test.describe('section tree and paging', () => {
   })
 
   test('a search opens every section holding a match, and clearing it restores the stored collapse state', async ({ page }) => {
-    await openLibrary(page, '/?size=200&section=audit&section=Guidelines%20for%20email')
+    await openLibrary(page, `${ALL_RULES_PATH}&size=200&section=audit&section=Guidelines%20for%20email`)
     await expect(page.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
     await expect(page.getByRole('checkbox', { name: 'Guidelines for email', exact: true })).toBeChecked()
     await expect(ruleCount(page)).toHaveText('57 of 2,567 rules')
@@ -1197,7 +1198,7 @@ test.describe('section tree and paging', () => {
     parameters = new URL(page.url()).searchParams
     expect(parameters.get('page')).toBe('2')
 
-    await openLibrary(page, '/')
+    await openLibrary(page)
     await expect(pageSizeSelect(page)).toHaveValue('100')
   })
 })
@@ -1211,7 +1212,7 @@ test.describe('benchmark cell and detail benchmarks', () => {
     page.locator('[id^="rule-detail-"]').getByRole('region', { name: 'Benchmarks' }).getByRole('list', { name: scopeLabel })
 
   test('an ISM row with seven benchmarks and an mSCP row with one render at the same height', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const ismRow = await searchForSingleRow(page, 'ism-1667', /./)
     const ismHeight = (await ismRow.boundingBox())?.height ?? 0
     const mscpRow = await searchForSingleRow(page, 'audit_failure_halt', /./)
@@ -1222,7 +1223,7 @@ test.describe('benchmark cell and detail benchmarks', () => {
   })
 
   test('hovering or focusing an overflowing benchmark cell shows its full text in a tooltip', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'ism-1667', /./)
     const cell = benchmarkCell(row)
     await expect(cell).toHaveAttribute('data-overflowing', 'true')
@@ -1241,7 +1242,7 @@ test.describe('benchmark cell and detail benchmarks', () => {
   })
 
   test('the ism-1667 details list its benchmarks directly, with no None heading', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'ism-1667', /./)
     await row.getByRole('button').click()
     const section = page.locator('[id^="rule-detail-"]').getByRole('region', { name: 'Benchmarks' })
@@ -1255,7 +1256,7 @@ test.describe('benchmark cell and detail benchmarks', () => {
   })
 
   test('an mSCP rule details list DISA STIG (medium) under macOS 15, directly above References', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'audit_failure_halt', /./)
     await row.getByRole('button').click()
     await expect(benchmarkList(page, 'macOS 15').getByRole('listitem')).toHaveText(['DISA STIG (medium)'])
@@ -1324,7 +1325,7 @@ test.describe('custom overlays', () => {
 
   test('an overlay changes the title in the table, search and tag facet, and the details tag it Custom', async ({ page }) => {
     await serveOverlays(page, { 'a-title.json': titleOverlay })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
     const searchBox = page.getByPlaceholder('Search title or id…')
@@ -1353,7 +1354,7 @@ test.describe('custom overlays', () => {
 
   test('an overlay written for an older release shows a review note naming it', async ({ page }) => {
     await serveOverlays(page, { 'a-title.json': titleOverlay, 'b-old-guidance.json': staleOverlay })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
 
     const detail = await openIsm1622(page)
     await expect(detail.getByTestId('stale-overlay-note')).toHaveCount(1)
@@ -1370,7 +1371,7 @@ test.describe('custom overlays', () => {
     page.on('request', (request) => {
       if (request.url().includes('/baselines/_overlays/rules/')) fetchedOverlayFiles.push(new URL(request.url()).pathname)
     })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
     const searchBox = page.getByPlaceholder('Search title or id…')
@@ -1385,7 +1386,7 @@ test.describe('custom overlays', () => {
 
   test('a misfit overlay is skipped with a warning while the valid ones still apply', async ({ page }) => {
     await serveOverlays(page, { 'a-title.json': titleOverlay, 'c-index-misfit.json': indexLevelMisfit, 'd-rule-misfit.json': ruleLevelMisfit })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
     const notice = page.getByRole('status', { name: 'Custom content problems' })
@@ -1401,7 +1402,7 @@ test.describe('custom overlays', () => {
   })
 
   test('with no overlays the details show no custom content', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
@@ -1436,7 +1437,7 @@ test.describe('custom overlays', () => {
       if (fileName === 'Registry.pol') return route.fulfill({ status: 200, contentType: 'application/octet-stream', body: Buffer.from([0x50, 0x52, 0x65, 0x67, 0x0d, 0x0a]) })
       return route.fulfill({ status: 404, body: 'Not found' })
     })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const detail = await openIsm1622(page)
     const remediation = detail.getByTestId('remediation-target')
 
@@ -1464,7 +1465,7 @@ test.describe('custom overlays', () => {
 })
 
 test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerShell remediation step', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-1621', /./)
   await row.getByRole('button').click()
   const detail = page.locator('[id^="rule-detail-"]')
@@ -1478,7 +1479,7 @@ test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerS
 })
 
 test('ISM-1621 shows its Blueprint script loaded from the referenced script file', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-1621', /./)
   await row.getByRole('button').click()
   const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
@@ -1488,7 +1489,7 @@ test('ISM-1621 shows its Blueprint script loaded from the referenced script file
 })
 
 test('ISM-1654 and ISM-1655 each show their own Blueprint script step', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   for (const [ruleId, stepName] of [
     ['ism-1654', 'RemoveInternetExplorer'],
     ['ism-1655', 'RemoveDotNet35'],
@@ -1504,7 +1505,7 @@ test('ISM-1654 and ISM-1655 each show their own Blueprint script step', async ({
 
 test.describe('check and fix buttons', () => {
   test('a rule with a single check shows it open', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
@@ -1518,7 +1519,7 @@ test.describe('check and fix buttons', () => {
   })
 
   test('a fix with two items shows two closed buttons, one open at a time', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_sshd_fips_compliant', /./)
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
@@ -1554,7 +1555,7 @@ test.describe('check and fix buttons', () => {
   })
 
   test('a rule with per-version checks shows a version row that swaps the content', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_authenticated_root_enable', /./)
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
@@ -1575,7 +1576,7 @@ test.describe('check and fix buttons', () => {
 
 test.describe('code highlighting', () => {
   test('an mSCP bash check is coloured', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'audit_acls_folders_configure', /./)
     await row.getByRole('button').click()
     const check = page.locator('[id^="rule-detail-"]').getByTestId('check-target')
@@ -1583,7 +1584,7 @@ test.describe('code highlighting', () => {
   })
 
   test('the ISM-1621 PowerShell script is coloured', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'ism-1621', /./)
     await row.getByRole('button').click()
     const remediation = page.locator('[id^="rule-detail-"]').getByTestId('remediation-target')
@@ -1596,7 +1597,7 @@ test.describe('code block copy button', () => {
   test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
 
   test('copies the displayed text, confirms briefly, then reverts', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
     await row.getByRole('button').click()
 
@@ -1616,7 +1617,7 @@ test.describe('code block copy button', () => {
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
     })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
     await row.getByRole('button').click()
 
@@ -1625,7 +1626,7 @@ test.describe('code block copy button', () => {
   })
 
   test('the licence text in the Sources & licences dialog can be copied', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' }).click()
     const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
     const firstPackage = dialog.locator('details').first()
@@ -1642,7 +1643,7 @@ test.describe('live organization-defined value in code blocks', () => {
   test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
 
   async function openMinimumLengthRule(page: Page) {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
@@ -1678,7 +1679,7 @@ test.describe('live organization-defined value in code blocks', () => {
       const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
       window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
     })
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
     await row.getByRole('button', { name: /Expand/ }).click()
     const checkBlock = page.locator('[id^="rule-detail-"]').getByTestId('check-target').first().locator('pre').first()
@@ -1687,7 +1688,7 @@ test.describe('live organization-defined value in code blocks', () => {
   })
 
   test('a remediation script only shows a value that is safe to paste into a shell', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'audit_retention_configure', /./)
     await row.getByRole('button').click()
     const remediationBlock = page.getByTestId('remediation-target').first().locator('pre').first()
@@ -1701,7 +1702,7 @@ test.describe('live organization-defined value in code blocks', () => {
   })
 
   test('a variable-mode rule shows the export line the generated script runs, and Copy copies it', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_policy_banner_ssh_configure', /./)
     await row.getByRole('button').click()
     const checkBlock = page.getByTestId('check-target').first().locator('pre').first()
@@ -1731,7 +1732,7 @@ test.describe('live organization-defined value in code blocks', () => {
 })
 
 test('a URL in a rule reference is a link that opens in a new tab', async ({ page }) => {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   const row = await searchForSingleRow(page, 'ism-1674', /./)
   await row.getByRole('button').click()
   const detail = page.locator('[id^="rule-detail-"]')
@@ -1770,12 +1771,12 @@ test.describe('light and dark theme', () => {
     test('the inline script in index.html sets the class without the app bundle', async ({ page }) => {
       // With the app's entry module blocked, only the pre-paint script can set it.
       await page.route('**/src/main.tsx*', (route) => route.abort())
-      await page.goto('/')
+      await page.goto(ALL_RULES_PATH)
       await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
     })
 
     test('a first visit with no stored choice starts dark', async ({ page }) => {
-      await page.goto('/')
+      await page.goto(ALL_RULES_PATH)
       await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
       await expect(page.getByText(/^2,567 of 2,567 rules$/)).toBeVisible({ timeout: 10_000 })
       await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
@@ -1783,7 +1784,7 @@ test.describe('light and dark theme', () => {
 
     test('a stored light choice wins over the OS preference', async ({ page }) => {
       await page.addInitScript(() => window.localStorage.setItem('intune-toolkit:theme', 'light'))
-      await page.goto('/')
+      await page.goto(ALL_RULES_PATH)
       await expect(htmlElement(page)).not.toHaveClass(/\bdark\b/)
     })
   })
@@ -1793,7 +1794,7 @@ test.describe('target platform icons', () => {
   const iconNamed = (row: Locator, name: string) => row.locator(`[data-status-icon="${name}"]`)
 
   test('an mSCP row shows a coloured macOS icon in the status column, with a tooltip', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'audit_auditd_enabled', /Enable Security Auditing/i)
     const icon = iconNamed(row, 'macOS: automated check')
     await expect(icon).toBeVisible()
@@ -1805,7 +1806,7 @@ test.describe('target platform icons', () => {
   })
 
   test('an ISM control with no overlay shows no target icon', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
     await expect(row.locator('[data-status-icon^="macOS: "], [data-status-icon^="Windows: "]')).toHaveCount(0)
   })
@@ -1815,7 +1816,7 @@ test.describe('Windows target from the ASD Blueprint overlays', () => {
   const blueprintControls = ['ism-1542', 'ism-1621', 'ism-1654', 'ism-1655', 'ism-1674']
 
   test('ISM-1621 shows a Windows icon', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'ism-1621', /ism-1621/)
     const icon = row.locator('[data-status-icon^="Windows: "]')
     await expect(icon).toBeVisible()
@@ -1823,7 +1824,7 @@ test.describe('Windows target from the ASD Blueprint overlays', () => {
   })
 
   test('the Target "Windows" option lists exactly the five Blueprint-overlaid controls', async ({ page }) => {
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
     await page.getByRole('group', { name: 'Target', exact: true }).getByRole('checkbox', { name: 'Windows', exact: true }).click()
     await expect(ruleCount(page)).toHaveText('5 of 2,567 rules')
@@ -1919,7 +1920,7 @@ test.describe('rule mappings', () => {
 
   test('a rule with mappings shows Details first and a Mapped rules tab with its count', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
 
     const detail = detailOf(page, ISM_1622)
     await expect(detail.getByRole('tab', { name: 'Details' })).toHaveAttribute('aria-selected', 'true')
@@ -1930,7 +1931,7 @@ test.describe('rule mappings', () => {
 
   test('groups start closed and open to show rows like the main table, with the note', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
     const group = groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')
@@ -1950,7 +1951,7 @@ test.describe('rule mappings', () => {
 
   test('the mSCP side shows the ISM rule it supports', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=os_gatekeeper_enable&rule=${GATEKEEPER}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=os_gatekeeper_enable&rule=${GATEKEEPER}`)
     await openMappedRules(page, GATEKEEPER)
 
     const group = groupButton(page, GATEKEEPER, 'Supports ASD ISM (1)')
@@ -1963,7 +1964,7 @@ test.describe('rule mappings', () => {
 
   test('filtering opens matching groups, shows matching of total, and clearing restores them', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
     await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('gatekeeper')
@@ -1985,7 +1986,7 @@ test.describe('rule mappings', () => {
         links: [{ relation: 'supports', from: [ruleEndpoint(manualRule, MSCP_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
       },
     })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     const panel = mappedRulesPanel(page, ISM_1622)
     const assessment = panel.getByRole('radiogroup', { name: 'Assessment' })
@@ -2016,7 +2017,7 @@ test.describe('rule mappings', () => {
 
   test('hovering a mapped rule shows a summary with targets, automation, check and fix, and the start of its description', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
@@ -2033,7 +2034,7 @@ test.describe('rule mappings', () => {
 
   test('focusing a mapped rule title by keyboard shows the same summary', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
@@ -2047,7 +2048,7 @@ test.describe('rule mappings', () => {
 
   test('clicking a mapped rule expands its details in place, with no nested tabs', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
@@ -2069,7 +2070,7 @@ test.describe('rule mappings', () => {
 
   test('clicking anywhere on a mapped rule row toggles its details', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
@@ -2092,7 +2093,7 @@ test.describe('rule mappings', () => {
         links: [{ relation: 'related', from: [ruleEndpoint(deferral, MSCP_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
       },
     })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
 
@@ -2139,7 +2140,7 @@ test.describe('rule mappings', () => {
 
   test('the Go to this rule address opens just that rule when shared', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     const gatekeeperRow = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
@@ -2165,7 +2166,7 @@ test.describe('rule mappings', () => {
         links: [{ relation: 'related', from: [ruleEndpoint(familyControls, MSCP_RELEASE)], to: [ruleEndpoint(calendar, MSCP_RELEASE)] }],
       },
     })
-    await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=os_calendar_app_disable&rule=${calendar}`)
     await openMappedRules(page, calendar)
     await groupButton(page, calendar, 'Related NIST mSCP (1)').click()
     const familyControlsRow = mappedRulesPanel(page, calendar).getByTestId('mapped-rule')
@@ -2190,7 +2191,7 @@ test.describe('rule mappings', () => {
   test('a mapped rule whose file fails to load still shows its summary facts', async ({ page }) => {
     await page.route('**/mscp/releases/*/rules/os_gatekeeper_enable.json', (route) => route.fulfill({ status: 404, body: 'not found' }))
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
@@ -2203,7 +2204,7 @@ test.describe('rule mappings', () => {
 
   test('a group opened by hand stays open after a filter is typed and cleared', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     const group = groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')
     await group.click()
@@ -2218,7 +2219,7 @@ test.describe('rule mappings', () => {
 
   test('open groups and expanded rows survive switching to Details and back', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     const title = titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')
@@ -2235,7 +2236,7 @@ test.describe('rule mappings', () => {
 
   test('collapsing the rule and reopening it resets the tab to Details with groups closed', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
     await titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable').click()
@@ -2254,7 +2255,7 @@ test.describe('rule mappings', () => {
 
   test('a filter matching nothing says so', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
     await mappedRulesPanel(page, ISM_1622).getByRole('textbox', { name: 'Filter mapped rules' }).fill('zzz')
@@ -2263,7 +2264,7 @@ test.describe('rule mappings', () => {
 
   test('a link checked against an older release shows a review note inside an opened group', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622, 'older.json': staleRelated })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
     await groupButton(page, ISM_1622, 'Related ASD ISM (1)').click()
@@ -2279,7 +2280,7 @@ test.describe('rule mappings', () => {
       links: [{ relation: 'related', from: [ruleEndpoint(CHANGED_MSCP_RULE, mscpFirstRelease)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
     }
     await serveMappings(page, { 'changed.json': mapping })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
     await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
@@ -2296,7 +2297,7 @@ test.describe('rule mappings', () => {
       links: [{ relation: 'related', from: [ruleEndpoint(UNCHANGED_MSCP_RULE, mscpFirstRelease)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
     }
     await serveMappings(page, { 'unchanged.json': mapping })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
 
     await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
@@ -2306,7 +2307,7 @@ test.describe('rule mappings', () => {
 
   test('the stale note shows from the other side of the link too', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622, 'older.json': staleRelated })
-    await openLibrary(page, `/?q=ism-1621&rule=${ISM_1621}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1621&rule=${ISM_1621}`)
     await openMappedRules(page, ISM_1621)
 
     await groupButton(page, ISM_1621, 'Related ASD ISM (1)').click()
@@ -2315,7 +2316,7 @@ test.describe('rule mappings', () => {
 
   test('a shared URL opens the linked rule and collapsing it lets it go', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
-    await openLibrary(page, `/?q=os_dictation_disable&rule=${DICTATION}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=os_dictation_disable&rule=${DICTATION}`)
 
     await expect(mappedRulesTab(page, DICTATION)).toHaveAccessibleName('Mapped rules (1)')
     await page.getByRole('button', { name: 'Collapse os_dictation_disable' }).click()
@@ -2332,7 +2333,7 @@ test.describe('rule mappings', () => {
         links: [{ relation: 'related', from: [ruleEndpoint(passwordLength, MSCP_RELEASE)], to: [ruleEndpoint(ISM_1622, ISM_RELEASE)] }],
       },
     })
-    await openLibrary(page, `/?q=ism-1622&rule=${ISM_1622}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
 
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Related NIST mSCP (1)').click()
@@ -2356,7 +2357,7 @@ test.describe('rule mappings', () => {
       },
     })
     await page.setViewportSize({ width: 1280, height: 500 })
-    await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=os_calendar_app_disable&rule=${calendar}`)
     await expect(detailOf(page, calendar)).toBeVisible()
     await page.locator(`[data-rule-id="${familyControls}"]`).getByRole('button', { name: 'Expand os_calendar_app_disable_familycontrols' }).click()
 
@@ -2384,7 +2385,7 @@ test.describe('rule mappings', () => {
       },
     })
     await page.setViewportSize({ width: 1280, height: 500 })
-    await openLibrary(page, `/?q=os_calendar_app_disable&rule=${calendar}`)
+    await openLibrary(page, `${ALL_RULES_PATH}&q=os_calendar_app_disable&rule=${calendar}`)
     await expect(detailOf(page, calendar)).toBeVisible()
 
     await openMappedRules(page, calendar)
@@ -2428,34 +2429,42 @@ test.describe('rule mappings', () => {
   })
 })
 
-test('the Views navigation shows Rules as the current page', async ({ page }) => {
-  await page.goto('/')
+test('the Views navigation shows Frameworks as the current page on the all-rules page', async ({ page }) => {
+  await page.goto(ALL_RULES_PATH)
 
   const views = page.getByRole('navigation', { name: 'Views' })
-  const rulesTab = views.getByRole('link', { name: 'Rules' })
-  await expect(rulesTab).toHaveAttribute('aria-current', 'page')
+  const frameworksTab = views.getByRole('link', { name: 'Frameworks' })
+  await expect(frameworksTab).toHaveAttribute('aria-current', 'page')
   await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
 
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper')
-  await rulesTab.click()
+  await frameworksTab.click()
   await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
-  await expect(page).toHaveURL(/\/rules\?q=gatekeeper/)
+  await expect(page).toHaveURL(/\/frameworks\?q=gatekeeper&framework=all&tab=rules$/)
 })
 
-test('a bare base address shows Rules and its address says so', async ({ page }) => {
+test('a bare base address shows the framework cards and its address says so', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page).toHaveURL(/\/rules$/)
+  await expect(page).toHaveURL(/\/frameworks$/)
+  await expect(page.getByTestId('framework-card').first()).toBeVisible({ timeout: 10_000 })
 })
 
-test('an unknown view in the URL opens Rules and is replaced in the URL', async ({ page }) => {
-  await page.goto('/unknown?q=gatekeeper')
+test('an old /rules address opens the all-rules page with its filters', async ({ page }) => {
+  await page.goto('/rules?q=gatekeeper')
 
-  await expect(page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Rules' })).toHaveAttribute(
+  await expect(page).toHaveURL(/\/frameworks\?q=gatekeeper&framework=all&tab=rules$/)
+  await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper', { timeout: 10_000 })
+})
+
+test('an unknown view in the URL opens Frameworks and is replaced in the URL', async ({ page }) => {
+  await page.goto('/unknown?q=gatekeeper&framework=all&tab=rules')
+
+  await expect(page.getByRole('navigation', { name: 'Views' }).getByRole('link', { name: 'Frameworks' })).toHaveAttribute(
     'aria-current',
     'page',
   )
   await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper enable')
-  await expect(page).toHaveURL(/\/rules\?q=gatekeeper/)
+  await expect(page).toHaveURL(/\/frameworks\?q=gatekeeper/)
 })

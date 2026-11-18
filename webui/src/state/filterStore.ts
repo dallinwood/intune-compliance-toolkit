@@ -4,7 +4,8 @@ import type { ChangeKind } from '../logic/ruleChanges'
 import {
   DEFAULT_AUTOMATION,
   DEFAULT_PAGE_SIZE,
-  RULES_VIEW_ID,
+  ALL_FRAMEWORKS,
+  DEFAULT_VIEW_ID,
   migrateLegacyView,
   parsePageSize,
   parseUrlState,
@@ -63,7 +64,6 @@ export interface FilterState {
   // One update, so one history entry: open a framework's Releases sub-tab with
   // the narrowing filters cleared.
   showComparison: (framework: string, from: string | null, to: string | null) => void
-  closeComparison: () => void
   setCompareReleases: (from: string | null, to: string | null) => void
   setChangeKinds: (kinds: ChangeKind[] | null) => void
   setCompareGroup: (group: CompareGroup | null) => void
@@ -90,11 +90,12 @@ export interface FilterState {
   setSize: (value: PageSize) => void
   retainKnownValues: (known: Record<FilterDimension, ReadonlySet<string>>) => void
   // One update, so the URL is written once: the filters that show the rule
-  // (see filtersShowingRule), the first page and the open rule.
-  showRule: (ruleId: string, filters: FilterValues) => void
+  // (see filtersShowingRule), the first page and the open rule, on the given
+  // framework page's Rules sub-tab.
+  showRule: (ruleId: string, filters: FilterValues, framework: string) => void
   closeOpenRule: () => void
-  // One update, so one history entry: leave the comparison for the Rules
-  // view with every filter cleared, searching for the rule and opening it
+  // One update, so one history entry: leave the comparison for the all-rules
+  // page with every filter cleared, searching for the rule and opening it
   // (on its History tab when asked).
   showRuleFromComparison: (ruleId: string, upstreamId: string, tab: 'history' | null) => void
   clear: () => void
@@ -187,6 +188,14 @@ function toggledInList<T extends string>(values: T[], value: T): T[] {
 
 const NO_COMPARISON_FILTERS = { compareGroup: null, changeKinds: null, compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
 
+// The release comparison belongs to one framework, so it is cleared when the
+// page switches framework and kept when only the sub-tab changes.
+function frameworkPageChange(state: Pick<FilterState, 'framework'>, framework: string | null, tab: FrameworkTab | null) {
+  return framework === state.framework
+    ? { view: DEFAULT_VIEW_ID, frameworkTab: tab }
+    : { view: DEFAULT_VIEW_ID, framework, frameworkTab: tab, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }
+}
+
 export const useFilterStore = create<FilterState>((set) => {
   return {
     ...filterValuesOf(stateFromLocation()),
@@ -195,13 +204,7 @@ export const useFilterStore = create<FilterState>((set) => {
     setView: (value) => set({ view: value }),
     showComparison: (framework, from, to) =>
       set({ view: 'frameworks', framework, frameworkTab: 'releases', compareFrom: from, compareTo: to, ...NO_COMPARISON_FILTERS }),
-    setFrameworkPage: (framework, tab) =>
-      set((state) =>
-        framework === state.framework
-          ? { view: 'frameworks', frameworkTab: tab }
-          : { view: 'frameworks', framework, frameworkTab: tab, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS },
-      ),
-    closeComparison: () => set({ framework: null, frameworkTab: null, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }),
+    setFrameworkPage: (framework, tab) => set((state) => frameworkPageChange(state, framework, tab)),
     setCompareReleases: (from, to) => set({ compareFrom: from, compareTo: to }),
     setChangeKinds: (kinds) => set({ changeKinds: kinds }),
     setCompareGroup: (group) => set({ compareGroup: group }),
@@ -240,12 +243,18 @@ export const useFilterStore = create<FilterState>((set) => {
         const unchanged = (Object.keys(next) as (keyof typeof next)[]).every((key) => next[key] === state[key])
         return unchanged ? state : next
       }),
-    showRule: (ruleId, filters) =>
-      set((state) => ({ ...filters, openRule: ruleId, openRuleRequest: state.openRuleRequest + 1, ...FIRST_PAGE })),
+    showRule: (ruleId, filters, framework) =>
+      set((state) => ({
+        ...frameworkPageChange(state, framework, 'rules'),
+        ...filters,
+        openRule: ruleId,
+        openRuleRequest: state.openRuleRequest + 1,
+        ...FIRST_PAGE,
+      })),
     closeOpenRule: () => set({ openRule: null, openRuleTab: null }),
     showRuleFromComparison: (ruleId, upstreamId, tab) =>
       set((state) => ({
-        view: RULES_VIEW_ID,
+        ...frameworkPageChange(state, ALL_FRAMEWORKS, 'rules'),
         search: upstreamId,
         targets: new Set(),
         sources: new Set(),
@@ -326,6 +335,13 @@ export function hrefForCatalogEntry(state: FilterState, view: 'licences' | 'prod
   return `${serializeUrlLocation(entryState, URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
 }
 
+// The address of a framework page's sub-tab (or the card grid for null), for
+// a link that can also open in a new tab. It keeps the Rules filters.
+export function hrefForFrameworkPage(state: FilterState, framework: string | null, tab: FrameworkTab | null): string {
+  const pageState = urlStateOf({ ...state, ...frameworkPageChange(state, framework, tab) })
+  return `${serializeUrlLocation(pageState, URL_DEFAULTS, BASE_PATH)}${window.location.hash}`
+}
+
 // Set while a change must not add a history entry: the address already is
 // the new state (back and forward), or the app is correcting the address.
 let isReplacingHistory = false
@@ -343,6 +359,12 @@ function runReplacingHistory(action: () => void) {
 // never becomes a history entry of its own.
 export function replaceView(viewId: string) {
   runReplacingHistory(() => useFilterStore.getState().setView(viewId))
+}
+
+// A missing or disallowed sub-tab is shown as the one it falls back to; the
+// address is corrected in place to say so.
+export function replaceFrameworkTab(tab: FrameworkTab) {
+  runReplacingHistory(() => useFilterStore.setState({ frameworkTab: tab }))
 }
 
 function writeStateToUrl(state: FilterState, previousState?: FilterState) {

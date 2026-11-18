@@ -2,6 +2,9 @@ import { readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import { buildMappingIndex } from '../src/logic/mappingIndex'
 
+// Task 5 replaces this sub-tab's content; until then it shows the old Coverage view unchanged.
+const ISM_COVERAGE_PATH = '/frameworks?framework=asd_ism&tab=coverage'
+
 const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8')) as {
   sources: { name: string; release_tag: string }[]
 }
@@ -90,7 +93,7 @@ test.beforeEach(async ({ page }) => {
     )
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 2 }))
   }, [AUTOMATED_SUPPORTER, MANUAL_SUPPORTER, SELECTED_WITHOUT_LINKS])
-  await page.goto('/coverage')
+  await page.goto(ISM_COVERAGE_PATH)
 })
 
 const ismCard = (page: Page) => page.getByTestId('coverage-card').filter({ has: page.getByRole('heading', { name: 'ASD ISM' }) })
@@ -167,8 +170,8 @@ test('automated checks only drops a manual supporter', async ({ page }) => {
   await expect(ismCard(page)).not.toContainText('related only')
 })
 
-test('navigating to /coverage directly opens the view', async ({ page }) => {
-  await expect(page.getByRole('link', { name: 'Coverage' })).toHaveAttribute('aria-current', 'page')
+test('the Coverage sub-tab of a framework page shows the coverage view', async ({ page }) => {
+  await expect(page.getByRole('navigation', { name: 'Page tabs' }).getByRole('link', { name: 'Coverage' })).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('heading', { name: /^Coverage of your selection/ })).toBeVisible()
 })
 
@@ -221,7 +224,7 @@ test.describe('coverage through supporting rules', () => {
       },
       { selectedRuleIds: [AUTOMATED_SUPPORTER, HARDENING_CONTROL], seededKey: 'intune-toolkit:supporting-coverage-seeded' },
     )
-    await page.goto('/coverage')
+    await page.goto(ISM_COVERAGE_PATH)
     await expect(ismCard(page)).toBeVisible({ timeout: 15_000 })
   })
 

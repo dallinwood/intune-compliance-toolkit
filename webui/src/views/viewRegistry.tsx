@@ -1,10 +1,8 @@
 import type { ReactNode } from 'react'
-import { DEFAULT_VIEW_ID, RULES_VIEW_ID } from '../state/urlState'
-import { CoverageView } from './CoverageView'
+import { DEFAULT_VIEW_ID } from '../state/urlState'
 import { FrameworksView } from './FrameworksView'
 import { LicencesView } from './LicencesView'
 import { ProductsView } from './ProductsView'
-import { RulesView } from './RulesView'
 import type { ViewContext } from './viewContext'
 
 export interface ViewDefinition {
@@ -19,11 +17,13 @@ export interface ViewDefinition {
 // address is written out as /frameworks.
 export const VIEWS: readonly ViewDefinition[] = [
   { id: DEFAULT_VIEW_ID, label: 'Frameworks', render: (context) => <FrameworksView {...context} /> },
-  { id: RULES_VIEW_ID, label: 'Rules', render: (context) => <RulesView {...context} /> },
-  { id: 'coverage', label: 'Coverage', render: (context) => <CoverageView {...context} /> },
   { id: 'licences', label: 'Licences', render: () => <LicencesView /> },
   { id: 'products', label: 'Products', render: () => <ProductsView /> },
 ]
+
+// Views merged into Frameworks. Their pages are still emitted so old links
+// load the app, which rewrites them (see migrateLegacyView).
+export const LEGACY_VIEW_IDS: readonly string[] = ['rules', 'coverage']
 
 export function resolveView(id: string, views: readonly ViewDefinition[] = VIEWS): ViewDefinition {
   return views.find((view) => view.id === id) ?? views[0]

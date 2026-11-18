@@ -1,13 +1,14 @@
 // Copies webui/dist/index.html to dist/<view>/index.html for every view, so
 // GitHub Pages answers a refresh or a link straight to /<base>licences with
 // the app (status 200) instead of its 404 page; a static host has no
-// rewrite rule to do it. Keep the list in step with VIEWS in
-// webui/src/views/viewRegistry.tsx.
+// rewrite rule to do it. Keep the list in step with VIEWS and
+// LEGACY_VIEW_IDS in webui/src/views/viewRegistry.tsx: the legacy pages let
+// old /rules and /coverage links load the app, which rewrites them.
 import { copyFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const VIEW_IDS = ['frameworks', 'rules', 'coverage', 'licences', 'products']
+const VIEW_IDS = ['frameworks', 'licences', 'products', 'rules', 'coverage']
 const distDirectory = join(dirname(fileURLToPath(import.meta.url)), '..', 'webui', 'dist')
 
 for (const viewId of VIEW_IDS) {

@@ -5,11 +5,13 @@ import { SelectionToolbar } from '../selection/SelectionToolbar'
 import { StaleSelectionsNotice } from '../selection/StaleSelectionsNotice'
 import { useDeferredFilters } from '../../hooks/useDeferredFilters'
 import type { MappedRule, MappingFileInfo } from '../../logic/mappingIndex'
+import { frameworkPairs as findFrameworkPairs } from '../../logic/frameworkPairs'
+import { resolveFrameworkPage } from '../../logic/frameworkTabs'
 import { knownFacetValues, matchesFilters } from '../../logic/ruleFilters'
 import { partitionSelectionsByLibrary } from '../../logic/selectionEntry'
 import type { VocabularyIndex } from '../../logic/vocabulary'
-import { replaceView, useFilterStore } from '../../state/filterStore'
-import { RULES_VIEW_ID } from '../../state/urlState'
+import { replaceFrameworkTab, replaceView, useFilterStore } from '../../state/filterStore'
+import { ALL_FRAMEWORKS, DEFAULT_VIEW_ID } from '../../state/urlState'
 import { resolveView } from '../../views/viewRegistry'
 import { MappingsContext } from '../../state/mappingsContext'
 import { useSelectionStore } from '../../state/selectionStore'
@@ -61,21 +63,33 @@ export function AppShell({
   mappingFiles: ReadonlyMap<string, MappingFileInfo>
   mappingWarnings: string[]
 }) {
-  // Review & generate is a sub-screen of the Rules view, so it is local state
-  // rather than a URL view.
+  // Review & generate is a sub-screen of the Frameworks view, so it is local
+  // state rather than a URL view.
   const [isReviewingSelection, setIsReviewingSelection] = useState(false)
   const viewId = useFilterStore((state) => state.view)
-  const setViewId = useFilterStore((state) => state.setView)
   const activeView = resolveView(viewId)
-  const isRulesView = activeView.id === RULES_VIEW_ID
-  const comparedFramework = useFilterStore((state) => state.framework)
-  // The Rules view and an open release comparison both have a filter sidebar.
-  const hasFilterSidebar = isRulesView || (activeView.id === 'frameworks' && comparedFramework !== null)
+  const isFrameworksView = activeView.id === DEFAULT_VIEW_ID
+  const framework = useFilterStore((state) => state.framework)
+  const frameworkTab = useFilterStore((state) => state.frameworkTab)
+  const pairs = useMemo(() => findFrameworkPairs(rows, mappingsByRule), [rows, mappingsByRule])
+  const frameworkPage = isFrameworksView ? resolveFrameworkPage(framework, frameworkTab, sources, pairs) : null
+  const shownTab = frameworkPage === null || isReviewingSelection ? null : frameworkPage.tab
+  const isRulesTab = shownTab === 'rules'
+  // The Rules and Releases sub-tabs both have a filter sidebar.
+  const hasFilterSidebar = isRulesTab || shownTab === 'releases'
+  // The rules of the framework whose page is open; null lists every rule.
+  const scopedSourceName = frameworkPage === null || frameworkPage.source === ALL_FRAMEWORKS ? null : frameworkPage.source.name
   // A view id from a shared URL that no view has is replaced, which also
   // removes it from the URL.
   useEffect(() => {
     if (viewId !== activeView.id) replaceView(activeView.id)
   }, [viewId, activeView.id])
+  // So is a missing or disallowed sub-tab, which also makes a later sub-tab
+  // change a history entry (a change from no tab is not one).
+  const resolvedTab = frameworkPage?.tab ?? null
+  useEffect(() => {
+    if (resolvedTab !== null && frameworkTab !== resolvedTab) replaceFrameworkTab(resolvedTab)
+  }, [resolvedTab, frameworkTab])
   const [filtersOpen, setFiltersOpen] = useState(false)
   // The table and the count render from deferred filters so a click or
   // keystroke updates its own control at once while the 1,493-row table
@@ -87,13 +101,22 @@ export function AppShell({
   useEffect(() => {
     retainKnownValues(knownFacetValues(rows, vocabularyIndex))
   }, [rows, vocabularyIndex, retainKnownValues])
-  const filteredRows = useMemo(
-    () => rows.filter((row) => matchesFilters(row, deferredFilters, vocabularyIndex)),
-    [rows, deferredFilters, vocabularyIndex],
+  // On a framework page the page is the scope, so the store's source filter
+  // is ignored there rather than cleared.
+  const scopedRows = useMemo(
+    () => (scopedSourceName === null ? rows : rows.filter((row) => row.sourceName === scopedSourceName)),
+    [rows, scopedSourceName],
   )
+  const filteredRows = useMemo(() => {
+    const scopedFilters = scopedSourceName === null ? deferredFilters : { ...deferredFilters, sources: new Set<string>() }
+    return scopedRows.filter((row) => matchesFilters(row, scopedFilters, vocabularyIndex))
+  }, [scopedRows, scopedSourceName, deferredFilters, vocabularyIndex])
   const selections = useSelectionStore((store) => store.selections)
   const rowsById = useMemo(() => new Map(rows.map((row) => [row.ref.id, row])), [rows])
-  const ruleMappings = useMemo(() => ({ byRule: mappingsByRule, mappingFiles, rowsById }), [mappingsByRule, mappingFiles, rowsById])
+  const ruleMappings = useMemo(
+    () => ({ byRule: mappingsByRule, mappingFiles, rowsById, frameworkPairs: pairs }),
+    [mappingsByRule, mappingFiles, rowsById, pairs],
+  )
   // Memoized so the review screen's fetch effect only re-runs when the
   // selection itself changes.
   const { known: knownSelections, unknownIds } = useMemo(
@@ -106,7 +129,7 @@ export function AppShell({
       <MappingsContext value={ruleMappings}>
         <TooltipProvider>
           <div className="flex h-screen flex-col">
-            {isRulesView && !isReviewingSelection && <SkipToRulesLink />}
+            {isRulesTab && <SkipToRulesLink />}
             <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
               <div className="flex items-center gap-2">
                 {hasFilterSidebar && (
@@ -122,19 +145,18 @@ export function AppShell({
                 )}
                 <h1 className="text-lg font-semibold text-foreground">Intune Compliance Toolkit</h1>
               </div>
-              {isRulesView && (
+              {isFrameworksView && (
                 <div className="flex flex-wrap items-center gap-4">
-                  <span className="text-sm text-muted-foreground">
-                    {formatCount(filteredRows.length)} of {pluralize(rows.length, 'rule', 'rules')}
-                  </span>
+                  {isRulesTab && (
+                    <span className="text-sm text-muted-foreground">
+                      {formatCount(filteredRows.length)} of {pluralize(scopedRows.length, 'rule', 'rules')}
+                    </span>
+                  )}
                   <SelectionToolbar
                     rows={rows}
                     sources={sources}
                     selectedCount={knownSelections.length}
-                    onGenerate={() => {
-                      setViewId(RULES_VIEW_ID)
-                      setIsReviewingSelection(true)
-                    }}
+                    onGenerate={() => setIsReviewingSelection(true)}
                   />
                 </div>
               )}

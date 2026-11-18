@@ -11,7 +11,7 @@ import { termLabel } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
 import type { MappedRulesViewState } from '../../state/mappedRulesView'
 import { useRuleMappings } from '../../state/mappingsContext'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, RULES_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
+import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, ALL_FRAMEWORKS, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 import { MappingProvenance } from '../mappings/MappingProvenance'
@@ -25,7 +25,14 @@ import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 // What a new tab or a copied link opens: just the search and the open rule.
 // A plain click keeps every filter that does not hide the rule instead.
 function hrefShowing(ruleId: string): string {
-  const state = { ...parseUrlState(''), view: RULES_VIEW_ID, search: upstreamRuleId(ruleId), openRule: ruleId }
+  const state = {
+    ...parseUrlState(''),
+    view: DEFAULT_VIEW_ID,
+    framework: ALL_FRAMEWORKS,
+    frameworkTab: 'rules' as const,
+    search: upstreamRuleId(ruleId),
+    openRule: ruleId,
+  }
   return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
 }
 
@@ -154,7 +161,10 @@ export function MappedRuleRow({
   function navigate(event: MouseEvent<HTMLAnchorElement>) {
     if (!isPlainClick(event)) return
     event.preventDefault()
-    showRule(row.ref.id, filtersShowingRule(row, useFilterStore.getState(), vocabularyIndex))
+    const currentState = useFilterStore.getState()
+    // A framework page only lists its own rules, so a rule from another framework opens on the all-rules page.
+    const framework = currentState.framework === row.sourceName ? row.sourceName : ALL_FRAMEWORKS
+    showRule(row.ref.id, filtersShowingRule(row, currentState, vocabularyIndex), framework)
   }
 
   return (

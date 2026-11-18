@@ -75,7 +75,12 @@ function facetAccessors(index: VocabularyIndex) {
   }
 }
 
-export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
+const NO_SOURCES: Set<string> = new Set()
+
+// hideSourceFacet: on a framework page the rows are already that framework's,
+// so the Source facet is hidden and the store's source filter is ignored
+// (left as it is, so it applies again on the all-rules page).
+export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow[]; hideSourceFacet?: boolean }) {
   const filters = useFilterStore()
   const index = useVocabularyIndex()
   const accessors = useMemo(() => facetAccessors(index), [index])
@@ -94,7 +99,11 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
   // other, because a rule's benchmarks differ per version.
   // Options are derived from the deferred filters so a click's urgent render
   // is only the control itself; checked state below still reads the live store.
-  const { filters: deferredFilters } = useDeferredFilters()
+  const { filters: deferredStoreFilters } = useDeferredFilters()
+  const deferredFilters = useMemo(
+    () => (hideSourceFacet ? { ...deferredStoreFilters, sources: NO_SOURCES } : deferredStoreFilters),
+    [deferredStoreFilters, hideSourceFacet],
+  )
   // A facet's own selection is left out of its narrowing, so ticking one
   // option leaves its siblings selectable; a count is how many rules that
   // option would show.
@@ -193,17 +202,19 @@ export function FilterSidebar({ rows }: { rows: RuleRow[] }) {
             onToggle={filters.toggleVersion}
           />
 
-          <StableFacetGroup
-            title="Source"
-            startsOpen
-            rows={rows}
-            valueOf={accessors.sourceOf}
-            compareValues={accessors.compareSources}
-            labelOf={accessors.sourceLabel}
-            counts={sourceCounts}
-            selected={filters.sources}
-            onToggle={filters.toggleSource}
-          />
+          {!hideSourceFacet && (
+            <StableFacetGroup
+              title="Source"
+              startsOpen
+              rows={rows}
+              valueOf={accessors.sourceOf}
+              compareValues={accessors.compareSources}
+              labelOf={accessors.sourceLabel}
+              counts={sourceCounts}
+              selected={filters.sources}
+              onToggle={filters.toggleSource}
+            />
+          )}
 
           <StableFacetGroup
             title="Benchmark"

@@ -33,15 +33,15 @@ test('Ctrl+K opens the palette with the input focused and Escape closes it, retu
 })
 
 test('the header Search button opens the palette', async ({ page }) => {
-  await page.goto('/coverage')
+  await page.goto('/licences')
 
   await headerSearchButton(page).click()
 
   await expect(paletteInput(page)).toBeFocused()
-  await expect(palette(page).getByRole('option', { name: /Coverage/ })).toBeVisible()
+  await expect(palette(page).getByRole('option', { name: /Frameworks/ })).toBeVisible()
 })
 
-test('typing an ISM upstream id and pressing Enter opens that rule on the Rules tab', async ({ page }) => {
+test('typing an ISM upstream id and pressing Enter opens that rule on the all-rules page', async ({ page }) => {
   await page.goto('/frameworks')
   await openPaletteWithShortcut(page)
 
@@ -49,7 +49,7 @@ test('typing an ISM upstream id and pressing Enter opens that rule on the Rules 
   await expect(palette(page).getByRole('option').first()).toContainText(ismUpstreamId)
   await page.keyboard.press('Enter')
 
-  await expect(page).toHaveURL(new RegExp(`/rules\\?.*rule=${ismRuleId.replace('.', '\\.')}`))
+  await expect(page).toHaveURL(new RegExp(`/frameworks\\?.*rule=${ismRuleId.replace('.', '\\.')}&framework=all&tab=rules`))
   await expect(page.locator(`[id="rule-detail-${ismRuleId}"]`)).toBeVisible()
   await page.goBack()
   await expect(page).toHaveURL(/\/frameworks$/)
@@ -65,15 +65,15 @@ test('choosing a framework opens its comparison on the Frameworks tab', async ({
   await expect(page).toHaveURL(/\/frameworks\?.*framework=asd_ism/)
 })
 
-test('choosing the Coverage view switches to it', async ({ page }) => {
+test('choosing the Licences view switches to it', async ({ page }) => {
   await page.goto('/rules')
   await openPaletteWithShortcut(page)
 
-  await page.keyboard.type('coverage')
+  await page.keyboard.type('licences')
   await page.keyboard.press('Enter')
 
-  await expect(page).toHaveURL(/\/coverage$/)
-  await expect(page.getByRole('link', { name: 'Coverage' })).toHaveAttribute('aria-current', 'page')
+  await expect(page).toHaveURL(/\/licences\?/)
+  await expect(page.getByRole('link', { name: 'Licences' })).toHaveAttribute('aria-current', 'page')
 })
 
 test('the result list exposes combobox, listbox and option roles and announces a count', async ({ page }) => {

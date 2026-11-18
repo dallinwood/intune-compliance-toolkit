@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { expect, test, type Page } from '@playwright/test'
 import { unzipSync } from 'fflate'
 import { buildMappingIndex } from '../src/logic/mappingIndex'
+import { ALL_RULES_PATH } from './locations'
 
 const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8')) as {
   sources: { name: string; release_tag: string }[]
@@ -80,7 +81,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 async function openGenerate(page: Page, selectedCount: number) {
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(`${selectedCount} selected`)).toBeVisible({ timeout: 15_000 })
   await page.getByRole('button', { name: 'Generate' }).click()
   await expect(page.getByRole('heading', { name: 'Review & generate' })).toBeVisible()
@@ -228,7 +229,7 @@ test('the download holds supporting-checks.md and the attestation report split b
 
 test('supporting check choices survive an export and an import', async ({ page }) => {
   await seed(page, [{ ruleId: MEDIA_CONTROL }], { includeSupporting: true, overrides: { [DIRECT_SUPPORTER]: 'exclude', [CHAIN_SUPPORTER]: 'include' } })
-  await page.goto('/')
+  await page.goto(ALL_RULES_PATH)
   await expect(page.getByText('1 selected')).toBeVisible({ timeout: 15_000 })
 
   const downloadEvent = page.waitForEvent('download')

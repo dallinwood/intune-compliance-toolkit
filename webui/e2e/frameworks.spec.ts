@@ -33,7 +33,7 @@ test('pressing the current release opens its comparison with the release before 
 
   await pill(page, ism.display_name, currentIsmRelease.label).click()
 
-  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&from=${previousIsmRelease.tag}&to=${currentIsmRelease.tag}$`))
+  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&tab=releases&from=${previousIsmRelease.tag}&to=${currentIsmRelease.tag}$`))
   await page.goBack()
   await expect(page).toHaveURL(/\/frameworks$/)
   await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
@@ -44,7 +44,7 @@ test('pressing a middle release compares it with the release before it', async (
 
   await pill(page, ism.display_name, middleIsmRelease.label).click()
 
-  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&from=${releaseBeforeMiddleIsmRelease.tag}&to=${middleIsmRelease.tag}$`))
+  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&tab=releases&from=${releaseBeforeMiddleIsmRelease.tag}&to=${middleIsmRelease.tag}$`))
   await expect(page.getByRole('heading', { name: `${ism.display_name}: ${releaseBeforeMiddleIsmRelease.label} to ${middleIsmRelease.label}` })).toBeVisible({ timeout: 15_000 })
 })
 
@@ -56,11 +56,10 @@ test('the cards have no Compare releases button', async ({ page }) => {
   await expect(page.getByText('Choose a release to see what changed in it.')).toHaveCount(manifest.sources.length)
 })
 
-test('the Frameworks tab sits after Rules in the navigation', async ({ page }) => {
+test('the views are Frameworks, Licences and Products, with Frameworks first', async ({ page }) => {
   await page.goto('/')
   const links = page.getByRole('navigation', { name: 'Views' }).getByRole('link')
-  await expect(links.nth(0)).toHaveText('Rules')
-  await expect(links.nth(1)).toHaveText('Frameworks')
+  await expect(links).toHaveText(['Frameworks', 'Licences', 'Products'])
 })
 
 // A release comparison of the framework's oldest release against its current one.
@@ -193,13 +192,13 @@ test('expanding a changed rule shows what changed and links to the rule', async 
   await expect(row.getByRole('link', { name: 'Full history' })).toBeVisible()
 })
 
-test('Full history opens the rule in the Rules view on its History tab', async ({ page }) => {
+test('Full history opens the rule on the all-rules page on its History tab', async ({ page }) => {
   await page.goto(comparisonUrl)
   const row = page.locator('[data-testid="comparison-row"][data-group="changed"]').first()
   await row.getByRole('button').first().click()
   await row.getByRole('link', { name: 'Full history' }).click()
 
-  await expect(page).toHaveURL(/\/rules\?.*rule=asd_ism\./)
+  await expect(page).toHaveURL(/\/frameworks\?.*rule=asd_ism\.[^&]+&framework=all&tab=rules/)
   await expect(page.getByRole('tab', { name: /^History/ })).toHaveAttribute('aria-selected', 'true', { timeout: 15_000 })
 })
 
@@ -259,7 +258,7 @@ test('pressing the first release compares it with an empty release, so every rul
 
   await pill(page, ism.display_name, firstIsmRelease.label).click()
 
-  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&from=empty&to=${firstIsmRelease.tag}$`))
+  await expect(page).toHaveURL(new RegExp(`framework=asd_ism&tab=releases&from=empty&to=${firstIsmRelease.tag}$`))
   await expect(page.getByRole('heading', { name: /Empty release to/ })).toBeVisible({ timeout: 15_000 })
   await expect(page.getByText(`Compared with an empty release, so every rule in ${firstIsmRelease.label} is listed as added.`)).toBeVisible()
   await expect.poll(() => tileValue(page, 'added')).toBe(ruleCountFirstAddedInIsm)
@@ -273,7 +272,7 @@ test("a single-release framework's release opens its comparison", async ({ page 
 
   await pill(page, nist.display_name, nist.releases[0].label).click()
 
-  await expect(page).toHaveURL(new RegExp(`framework=nist_800_53&from=empty&to=${nist.releases[0].tag}$`))
+  await expect(page).toHaveURL(new RegExp(`framework=nist_800_53&tab=releases&from=empty&to=${nist.releases[0].tag}$`))
   await expect.poll(() => tileValue(page, 'added'), { timeout: 15_000 }).toBe(nist.rule_count)
 })
 
@@ -297,7 +296,7 @@ test('the Framework select lists every framework', async ({ page }) => {
   await expect(page.getByLabel('Framework').locator('option')).toHaveCount(manifest.sources.length)
 
   await page.getByLabel('Framework').selectOption('nist_800_53')
-  await expect(page).toHaveURL(/framework=nist_800_53&from=empty&to=/)
+  await expect(page).toHaveURL(/framework=nist_800_53&tab=releases&from=empty&to=/)
 })
 
 test('an empty-release address survives a reload', async ({ page }) => {
@@ -309,4 +308,84 @@ test('an empty-release address survives a reload', async ({ page }) => {
   await expect(page).toHaveURL(new RegExp(`from=empty&to=${firstIsmRelease.tag}$`))
   await expect(page.getByLabel('From')).toHaveValue('empty', { timeout: 15_000 })
   await expect(page.getByRole('heading', { name: /Empty release to/ })).toBeVisible()
+})
+
+const mscp = sourceNamed('mscp')
+const subTabs = (page: Page) => page.getByRole('navigation', { name: 'Page tabs' }).getByRole('link')
+const ruleCount = (page: Page) => page.getByText(/^[\d,]+ of [\d,]+ rules$/)
+
+test('the all-rules page has only the Rules sub-tab and keeps the Source facet', async ({ page }) => {
+  await page.goto('/frameworks?framework=all&tab=rules')
+
+  await expect(page.getByRole('heading', { name: 'All rules', level: 2 })).toBeVisible()
+  await expect(subTabs(page)).toHaveText(['Rules'])
+  await expect(ruleCount(page)).toBeVisible({ timeout: 10_000 })
+  await expect(page.getByRole('heading', { name: 'Source' })).toBeVisible()
+})
+
+test('a framework page lists only its rules, hides the Source facet and leaves the source filter alone', async ({ page }) => {
+  await page.goto('/frameworks?framework=mscp&tab=rules&source=asd_ism')
+
+  await expect(page.getByRole('heading', { name: mscp.display_name, level: 2 })).toBeVisible()
+  await expect(page.getByText(`Current release: ${mscp.releases.at(-1)!.label} (${mscp.releases.at(-1)!.tag}) · ${mscp.rule_count} rules`)).toBeVisible()
+  await expect(subTabs(page)).toHaveText(['Rules', 'Releases', 'Coverage'])
+  await expect(ruleCount(page)).toHaveText(`${mscp.rule_count} of ${mscp.rule_count} rules`, { timeout: 10_000 })
+  await expect(page.getByRole('heading', { name: 'Source' })).toHaveCount(0)
+  await expect(page).toHaveURL(/source=asd_ism/)
+})
+
+test('the Releases sub-tab defaults to the current release against the previous one, and Back returns to Rules', async ({ page }) => {
+  await page.goto('/frameworks?framework=asd_ism')
+  await expect(page).toHaveURL(/framework=asd_ism&tab=rules$/)
+
+  await subTabs(page).filter({ hasText: 'Releases' }).click()
+
+  await expect(page).toHaveURL(/framework=asd_ism&tab=releases$/)
+  await expect(page.getByRole('heading', { name: `${ism.display_name}: ${previousIsmRelease.label} to ${currentIsmRelease.label}` })).toBeVisible({ timeout: 15_000 })
+  await page.goBack()
+  await expect(page).toHaveURL(/framework=asd_ism&tab=rules$/)
+  await expect(ruleCount(page)).toBeVisible()
+})
+
+test('the sub-tabs are links that carry the page address', async ({ page }) => {
+  await page.goto('/frameworks?framework=asd_ism&tab=rules')
+
+  await expect(subTabs(page).filter({ hasText: 'Releases' })).toHaveAttribute('href', /\/frameworks\?framework=asd_ism&tab=releases$/)
+  await expect(subTabs(page).filter({ hasText: 'Rules' })).toHaveAttribute('aria-current', 'page')
+})
+
+test('All frameworks goes back to the card grid', async ({ page }) => {
+  await page.goto('/frameworks?framework=asd_ism&tab=releases')
+
+  await page.getByRole('link', { name: 'All frameworks' }).click()
+
+  await expect(page).toHaveURL(/\/frameworks$/)
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+})
+
+test('an unknown framework shows the grid and a disallowed sub-tab falls back to Rules', async ({ page }) => {
+  await page.goto('/frameworks?framework=nonsense')
+  await expect(page.getByTestId('framework-card')).toHaveCount(manifest.sources.length)
+
+  await page.goto('/frameworks?framework=all&tab=coverage')
+  await expect(page).toHaveURL(/framework=all&tab=rules$/)
+  await expect(subTabs(page)).toHaveText(['Rules'])
+})
+
+test('Generate opens the review in place of the framework page and Back returns to it', async ({ page }) => {
+  const ruleId = Object.keys(ismHistory.rules)[0]
+  await page.addInitScript((selectedRuleId) => {
+    const ref = { id: selectedRuleId, path: `asd_ism/rules/${selectedRuleId.slice(selectedRuleId.indexOf('.') + 1)}.json` }
+    const selections = { [selectedRuleId]: { ref, enabled: true, odvValue: null } }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 2 }))
+  }, ruleId)
+  await page.goto('/frameworks?framework=asd_ism&tab=rules')
+  await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })
+
+  await page.getByRole('button', { name: 'Generate' }).click()
+  await expect(page.getByRole('heading', { name: 'Review & generate' })).toBeVisible()
+  await expect(subTabs(page)).toHaveCount(0)
+
+  await page.getByRole('button', { name: 'Back to rules' }).click()
+  await expect(page.getByRole('heading', { name: ism.display_name, level: 2 })).toBeVisible()
 })

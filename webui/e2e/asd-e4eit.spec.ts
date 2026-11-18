@@ -5,6 +5,7 @@ import { unzipSync } from 'fflate'
 import type { HistoryIndex } from '../src/logic/historyIndex'
 import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { openFacetGroup } from './facets'
+import { ALL_RULES_PATH } from './locations'
 
 const TOTAL_RULES = '2,567'
 const E4EIT_RULES = 58
@@ -51,7 +52,7 @@ test.describe('ASD E4EIT rules with no mappings loaded', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EMPTY_MAPPING_INDEX) }),
     )
     await routeCatalogAsEmpty(page)
-    await page.goto('/')
+    await page.goto(ALL_RULES_PATH)
     await expect(ruleCount(page)).toHaveText(`${TOTAL_RULES} of ${TOTAL_RULES} rules`, { timeout: 10_000 })
   })
 
@@ -79,7 +80,7 @@ test.describe('ASD E4EIT rules with no mappings loaded', () => {
   })
 
   test('an action opens with Principle and Indicators headings, effectiveness lists and its credit line', async ({ page }) => {
-    await page.goto('/?q=IT.PRO-13.1&rule=asd_e4eit.it.pro-13.1')
+    await page.goto(`${ALL_RULES_PATH}&q=IT.PRO-13.1&rule=asd_e4eit.it.pro-13.1`)
     const detail = detailOf(page, 'asd_e4eit.it.pro-13.1')
     await expect(detail.getByText('Principle', { exact: true })).toBeVisible()
     await expect(detail.getByText('Indicators of Good Practice', { exact: true })).toBeVisible()
@@ -128,7 +129,7 @@ test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () =
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(committedMappingIndex) }),
     )
     await routeCatalogAsEmpty(page)
-    await page.goto(`/?q=${search}&rule=${ruleId}`)
+    await page.goto(`${ALL_RULES_PATH}&q=${search}&rule=${ruleId}`)
     await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
