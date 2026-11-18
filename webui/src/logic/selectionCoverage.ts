@@ -90,19 +90,14 @@ function byUpstreamId(left: RuleRow, right: RuleRow): number {
 export function coverageFrameworks(
   rows: readonly RuleRow[],
   mappingsByRule: ReadonlyMap<string, MappedRule[]>,
-): { counted: string[]; relatedOnly: string[] } {
+): { counted: string[] } {
   const counted = new Set<string>()
-  const supportingSources = new Set<string>()
-  const relatedSources = new Set<string>()
   for (const row of rows) {
     for (const entry of entriesOf(mappingsByRule, row.ref.id)) {
       if (entry.relation === 'supports' && entry.direction === 'incoming') counted.add(row.sourceName)
-      if (entry.relation === 'supports' && entry.direction === 'outgoing') supportingSources.add(row.sourceName)
-      if (entry.relation === 'related') relatedSources.add(row.sourceName)
     }
   }
-  const relatedOnly = [...relatedSources].filter((sourceName) => !counted.has(sourceName) && !supportingSources.has(sourceName))
-  return { counted: sortedNames(counted), relatedOnly: sortedNames(relatedOnly) }
+  return { counted: sortedNames(counted) }
 }
 
 export function scopeOptions(
@@ -265,17 +260,6 @@ export function selectedRulesSupportingNothing(input: CoverageInput, frameworkSo
   return input.rows
     .filter((row) => input.selectedRuleIds.has(row.ref.id) && !frameworkSources.includes(row.sourceName) && !linksIntoAFramework(row))
     .sort(byUpstreamId)
-}
-
-// With nothing covered through supporting rules the headline reads as it always did.
-export function coverageHeadline(coverage: FrameworkCoverage, scopeLabel: string | null): string {
-  const scopeSuffix = scopeLabel === null ? '' : ` at ${scopeLabel}`
-  if (coverage.coveredThroughSupporting === 0) return `Supports ${formatCount(coverage.covered)} of ${formatCount(coverage.total)} controls${scopeSuffix}`
-  return (
-    `Supports ${formatCount(coverage.covered)} directly, ` +
-    `+${formatCount(coverage.coveredThroughSupporting)} through supporting rules, ` +
-    `of ${formatCount(coverage.total)}${scopeSuffix}`
-  )
 }
 
 // The bar's words, shared by the card and each section row.

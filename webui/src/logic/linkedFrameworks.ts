@@ -7,8 +7,6 @@ import type { VocabularyIndex } from './vocabulary'
 // Each rule's id to the source group keys of the frameworks it is linked to.
 export type LinkedFrameworksByRule = ReadonlyMap<string, ReadonlySet<string>>
 
-export const NO_LINKED_FRAMEWORKS: LinkedFrameworksByRule = new Map()
-
 interface CachedLinkedFrameworks {
   byRule: ReadonlyMap<string, MappedRule[]>
   index: VocabularyIndex

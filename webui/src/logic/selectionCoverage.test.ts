@@ -6,7 +6,6 @@ import {
   frameworkCoverage,
   cappedBarLabel,
   coverageBarLabel,
-  coverageHeadline,
   scopeOptions,
   selectedRulesSupportingNothing,
   type CoverageInput,
@@ -91,30 +90,11 @@ describe('coverageFrameworks', () => {
   it('lists a source on the to side of supports as a coverage framework and not the from side', () => {
     const frameworks = coverageFrameworks([ruleOne, controlA], indexOf(supportPair(ruleOne.ref.id, controlA.ref.id)))
 
-    expect(frameworks).toEqual({ counted: ['asd_ism'], relatedOnly: [] })
-  })
-
-  it('names a source with only related links as related-only', () => {
-    const actionRow = row({ sourceName: 'asd_e4eit', upstreamId: 'it.pro-13.1' })
-    const frameworks = coverageFrameworks(
-      [ruleOne, controlA, actionRow],
-      indexOf([...supportPair(ruleOne.ref.id, controlA.ref.id), ...relatedPair(actionRow.ref.id, controlA.ref.id)]),
-    )
-
-    expect(frameworks).toEqual({ counted: ['asd_ism'], relatedOnly: ['asd_e4eit'] })
-  })
-
-  it('does not name a supporting source as related-only even when it also has related links', () => {
-    const frameworks = coverageFrameworks(
-      [ruleOne, controlA, ruleTwo],
-      indexOf([...supportPair(ruleOne.ref.id, controlA.ref.id), ...relatedPair(ruleTwo.ref.id, controlA.ref.id)]),
-    )
-
-    expect(frameworks.relatedOnly).toEqual([])
+    expect(frameworks).toEqual({ counted: ['asd_ism'] })
   })
 
   it('returns nothing for an empty mapping index', () => {
-    expect(coverageFrameworks([ruleOne], new Map())).toEqual({ counted: [], relatedOnly: [] })
+    expect(coverageFrameworks([ruleOne], new Map())).toEqual({ counted: [] })
   })
 })
 
@@ -390,19 +370,16 @@ describe('coverage through supporting rules', () => {
   })
 })
 
-describe('coverageHeadline and coverageBarLabel', () => {
+describe('coverageBarLabel', () => {
   const base = { sourceName: 'asd_ism', scope: 'all', relatedOnly: 4, selectedDirectly: 0, sections: [] }
 
-  it('reads as it always did when nothing is through supporting rules', () => {
+  it('words a bar with nothing through supporting rules', () => {
     const coverage = { ...base, covered: 61, coveredThroughSupporting: 0, potentialThroughSupporting: 0, total: 1143 }
-    expect(coverageHeadline(coverage, null)).toBe('Supports 61 of 1,143 controls')
-    expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 of 1,143 controls at ISM PROTECTED')
     expect(coverageBarLabel(coverage)).toBe('61 of 1,143 supported, 4 related only')
   })
 
-  it('names directly and through supporting rules, with the scope', () => {
+  it('words a bar with directly and through-supporting rules', () => {
     const coverage = { ...base, covered: 61, coveredThroughSupporting: 14, potentialThroughSupporting: 20, total: 1143 }
-    expect(coverageHeadline(coverage, 'ISM PROTECTED')).toBe('Supports 61 directly, +14 through supporting rules, of 1,143 at ISM PROTECTED')
     expect(coverageBarLabel(coverage)).toBe('61 supported directly, 14 through supporting rules, 4 related only, of 1,143')
   })
 })
