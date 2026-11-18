@@ -212,7 +212,7 @@ const NO_FRAMEWORK_FACET_FILTERS = {
 function frameworkPageChange(state: Pick<FilterState, 'framework'>, framework: string | null, tab: FrameworkTab | null) {
   return framework === state.framework
     ? { view: DEFAULT_VIEW_ID, frameworkTab: tab }
-    : { view: DEFAULT_VIEW_ID, framework, frameworkTab: tab, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS }
+    : { view: DEFAULT_VIEW_ID, framework, frameworkTab: tab, compareFrom: null, compareTo: null, ...NO_COMPARISON_FILTERS, ...NO_FRAMEWORK_FACET_FILTERS, ...FIRST_PAGE }
 }
 
 export const useFilterStore = create<FilterState>((set) => {
