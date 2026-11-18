@@ -174,9 +174,20 @@ export function serializeUrlLocation(state: UrlState, defaults: UrlDefaults, bas
 
 // Rewrites an address from before the Rules, Frameworks and Coverage views were
 // merged into the unified Frameworks view into the equivalent new one.
-export function migrateLegacyView(state: UrlState): UrlState {
+const RULES_PARAMETER_NAMES = ['q', 'rule', 'source', 'target', 'version', 'benchmark', 'section', 'tag', 'automation', 'page', 'size']
+
+// A bare base address used to be the Rules view, so one carrying any Rules parameter is an old
+// Rules link; the all-rules page writes a framework, so it never looks like this.
+function isBareBaseRulesLink(state: UrlState, search: string): boolean {
+  if (state.view !== DEFAULT_VIEW_ID || state.framework !== null || state.frameworkTab !== null) return false
+  const parameters = new URLSearchParams(search)
+  return RULES_PARAMETER_NAMES.some((name) => parameters.has(name))
+}
+
+export function migrateLegacyView(state: UrlState, search = ''): UrlState {
   if (state.view === 'rules') return { ...state, view: 'frameworks', framework: ALL_FRAMEWORKS, frameworkTab: 'rules' }
   if (state.view === 'coverage') return { ...state, view: 'frameworks', framework: null, frameworkTab: null }
+  if (isBareBaseRulesLink(state, search)) return { ...state, framework: ALL_FRAMEWORKS, frameworkTab: 'rules' }
   const isComparisonLink =
     state.view === 'frameworks' && state.framework !== null && state.frameworkTab === null && state.compareFrom !== null && state.compareTo !== null
   return isComparisonLink ? { ...state, frameworkTab: 'releases' } : state

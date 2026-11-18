@@ -21,7 +21,7 @@ import {
 export type AutomatableFilter = 'all' | 'automatable' | 'manual'
 
 export interface FilterState {
-  // The top-level view's id. The Rules view's own state above stays in the
+  // The top-level view's id. The Rules tab's own state above stays in the
   // store, and so in the URL, while another view is shown.
   view: string
   search: string
@@ -144,7 +144,7 @@ const BASE_PATH = import.meta.env.BASE_URL
 // A size in the URL wins; without one, the size this browser last chose.
 function stateFromLocation(): UrlState {
   if (typeof window === 'undefined') return parseUrlState('')
-  const fromUrl = migrateLegacyView(parseUrlState(window.location.search, window.location.pathname, BASE_PATH))
+  const fromUrl = migrateLegacyView(parseUrlState(window.location.search, window.location.pathname, BASE_PATH), window.location.search)
   if (new URLSearchParams(window.location.search).has('size')) return fromUrl
   return { ...fromUrl, size: readStoredPageSize() ?? fromUrl.size }
 }
@@ -269,17 +269,20 @@ export const useFilterStore = create<FilterState>((set) => {
         ...FIRST_PAGE,
       })),
     clear: () =>
-      set({
-        openRule: null,
-        search: '',
-        targets: new Set(),
-        sources: new Set(),
-        versions: new Set(),
-        benchmarks: new Set(),
-        sections: new Set(),
-        tags: new Set(),
-        automatable: 'all',
-        ...FIRST_PAGE,
+      set((state) => {
+        const sourceIsScopedByFrameworkPage = state.framework !== null && state.framework !== ALL_FRAMEWORKS
+        return {
+          openRule: null,
+          search: '',
+          targets: new Set(),
+          sources: sourceIsScopedByFrameworkPage ? state.sources : new Set(),
+          versions: new Set(),
+          benchmarks: new Set(),
+          sections: new Set(),
+          tags: new Set(),
+          automatable: 'all',
+          ...FIRST_PAGE,
+        }
       }),
   }
 })

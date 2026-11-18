@@ -62,7 +62,7 @@ function LabelledSelect({ label, value, onChange, children, disabled }: { label:
 }
 
 // The comparison's own filters: which releases, which kinds of change, which
-// rules. Mirrors the Rules view's sidebar (same width, same collapse below md).
+// rules. Mirrors the Rules tab's sidebar (same width, same collapse below md).
 export function ComparisonSidebar({
   sources,
   source,

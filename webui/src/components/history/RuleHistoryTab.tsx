@@ -195,7 +195,7 @@ export function RuleHistoryTab({
   timeline: TimelineEntry[]
   initialCompare?: HistoryCompare
 }) {
-  // All on to start; none on also shows every kind, as the Rules view's filters do.
+  // All on to start; none on also shows every kind, as the Rules tab's filters do.
   const [selectedKinds, setSelectedKinds] = useState<ReadonlySet<ChangeKind>>(new Set(CHANGE_KINDS))
   const shownKinds = effectiveKinds([...selectedKinds])
   const [fromTag, setFromTag] = useState(initialCompare?.from ?? '')

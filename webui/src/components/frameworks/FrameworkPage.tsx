@@ -58,7 +58,7 @@ function BackToGridLink() {
     <a
       href={hrefForFrameworkPage(filterState, null, null)}
       onClick={onPlainLeftClick(() => filterState.setFrameworkPage(null, null))}
-      className={cn(buttonVariants({ variant: 'link', size: 'sm' }), '-ml-3')}
+      className={cn(buttonVariants({ variant: 'link', size: 'sm' }), '-ml-3 h-6')}
     >
       <ChevronLeft aria-hidden="true" />
       All frameworks
@@ -86,10 +86,10 @@ export function FrameworkPage({ source, context }: { source: ManifestSource | ty
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="shrink-0 border-b border-border px-4 pt-2">
+      <div className="shrink-0 border-b border-border px-4 pt-0.5">
         <BackToGridLink />
         <PageTitle title={isAll ? 'All rules' : source.display_name} subtitle={subtitle} />
-        <div className="mt-2">
+        <div className="mt-1">
           <SubTabs frameworkName={frameworkName} tabs={tabs} activeTab={activeTab} />
         </div>
       </div>

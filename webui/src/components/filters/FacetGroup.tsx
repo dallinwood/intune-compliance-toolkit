@@ -24,14 +24,14 @@ export function FacetGroup({ title, selectedCount = 0, startsOpen = false, child
   }
 
   return (
-    <div className="mb-3">
+    <div className="mb-2">
       <h2 id={headingId} className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
         <button
           type="button"
           aria-expanded={isOpen}
           aria-controls={regionId}
           onClick={() => setIsOpen((wasOpen) => !wasOpen)}
-          className="flex w-full items-center gap-1 rounded-sm py-1 text-left uppercase focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+          className="flex w-full items-center gap-1 rounded-sm py-0.5 text-left uppercase focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           <DisclosureChevron isOpen={isOpen} />
           <span>{title}</span>

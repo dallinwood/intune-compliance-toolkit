@@ -272,7 +272,7 @@ describe('urlState', () => {
   })
 
   describe('migrateLegacyView', () => {
-    const migrated = (search: string, pathname: string) => migrateLegacyView(parseUrlState(search, pathname, '/'))
+    const migrated = (search: string, pathname: string) => migrateLegacyView(parseUrlState(search, pathname, '/'), search)
 
     it('sends /rules to the all-rules page and keeps its filters', () => {
       expect(migrated('?q=foo&source=mscp', '/rules')).toMatchObject({
@@ -282,6 +282,17 @@ describe('urlState', () => {
         search: 'foo',
         sources: ['mscp'],
       })
+    })
+
+    it.each(['?q=foo', '?rule=mscp.x', '?source=mscp', '?target=macOS', '?version=v1', '?benchmark=b', '?section=s', '?tag=t', '?automation=manual', '?page=2', '?size=25'])(
+      'sends a bare base address carrying %s to the all-rules page',
+      (search) => {
+        expect(migrated(search, '/')).toMatchObject({ view: 'frameworks', framework: ALL_FRAMEWORKS, frameworkTab: 'rules' })
+      },
+    )
+
+    it('leaves the bare base address without parameters on the card grid', () => {
+      expect(migrated('', '/')).toMatchObject({ framework: null, frameworkTab: null })
     })
 
     it('sends /coverage to the card grid', () => {

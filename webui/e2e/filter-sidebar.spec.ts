@@ -5,9 +5,6 @@ import { ALL_RULES_PATH } from './locations'
 test.use({ viewport: { width: 1280, height: 800 } })
 
 test('the filter list fits the sidebar on the full library, so only the table scrolls', async ({ page }) => {
-  // The framework page header (back link, title, sub-tabs) stacked above the
-  // sidebar takes about 90px, so at 800px tall the full filter list scrolls a little.
-  await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
   const dimensions = await page.getByTestId('sidebar-scroll-area').evaluate((element) => ({

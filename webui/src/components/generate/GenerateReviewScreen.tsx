@@ -108,11 +108,13 @@ export function GenerateReviewScreen({
   enabledEntries,
   coveredVersions,
   sources,
+  backLabel,
   onBack,
 }: {
   enabledEntries: SelectionEntry[]
   coveredVersions: string[]
   sources: ManifestSource[]
+  backLabel: string
   onBack: () => void
 }) {
   const vocabularyIndex = useVocabularyIndex()
@@ -259,7 +261,7 @@ export function GenerateReviewScreen({
   return (
     <div className="flex-1 overflow-y-auto p-4 text-sm">
       <div className="mb-4">
-        <PageTitle title="Review & generate" actions={<BackLink onClick={onBack}>Back to rules</BackLink>} />
+        <PageTitle title="Review & generate" actions={<BackLink onClick={onBack}>{backLabel}</BackLink>} />
       </div>
       <ReviewBody
         enabledCount={enabledEntries.length}

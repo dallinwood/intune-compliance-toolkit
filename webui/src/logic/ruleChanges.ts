@@ -14,7 +14,7 @@ export type ChangeKind = 'behaviour' | 'scope' | 'wording' | 'references'
 export const CHANGE_KINDS: readonly ChangeKind[] = ['behaviour', 'scope', 'wording', 'references']
 
 // Nothing selected means nothing narrowed: every kind is shown, as with the
-// Rules view's filters.
+// Rules tab's filters.
 export function effectiveKinds(selected: readonly ChangeKind[]): ReadonlySet<ChangeKind> {
   return new Set(selected.length === 0 ? CHANGE_KINDS : selected)
 }

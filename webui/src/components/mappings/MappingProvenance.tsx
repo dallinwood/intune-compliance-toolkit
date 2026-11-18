@@ -3,7 +3,7 @@ import { useRuleMappings } from '../../state/mappingsContext'
 
 // Where a mapping link comes from: its note, then the mapping file's id and
 // whether that file is generated or hand-written. Shared by the Mapped rules
-// rows and the Coverage view so the two cannot drift apart.
+// rows and the Coverage tab so the two cannot drift apart.
 export function MappingProvenance({ mapping, note }: { mapping: string; note: string | null }) {
   const { mappingFiles } = useRuleMappings()
   const fileInfo = mappingFiles.get(mapping)

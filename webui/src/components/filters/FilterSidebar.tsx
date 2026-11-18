@@ -155,12 +155,12 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
 
   return (
     <aside aria-label="Filters" className="flex max-h-64 w-full flex-col border-b border-border text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
-      <div className="p-4 pb-3">
+      <div className="px-4 pt-3 pb-2">
         <SearchBox value={filters.search} onChange={filters.setSearch} />
       </div>
 
       <div className="relative flex min-h-0 flex-1 flex-col">
-        <div ref={scrollAreaRef} data-testid="sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+        <div ref={scrollAreaRef} data-testid="sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto px-4 pb-2">
           <FacetGroup title="Automation" startsOpen>
             <RadioGroup
               value={filters.automatable}

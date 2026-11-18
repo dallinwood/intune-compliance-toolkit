@@ -6,6 +6,9 @@ import { FrameworkPage } from '../components/frameworks/FrameworkPage'
 import { GenerateReviewScreen } from '../components/generate/GenerateReviewScreen'
 import { resolveFrameworkPage } from '../logic/frameworkTabs'
 import { useFilterStore } from '../state/filterStore'
+import { ALL_FRAMEWORKS } from '../state/urlState'
+import { useVocabularyIndex } from '../state/vocabularyContext'
+import { termLabel } from '../logic/vocabulary'
 import { useRuleMappings } from '../state/mappingsContext'
 import type { ViewContext } from './viewContext'
 
@@ -14,6 +17,7 @@ export function FrameworksView(context: ViewContext) {
   const framework = useFilterStore((state) => state.framework)
   const frameworkTab = useFilterStore((state) => state.frameworkTab)
   const { byRule, frameworkPairs } = useRuleMappings()
+  const vocabularyIndex = useVocabularyIndex()
   const includeSupporting = useSupportingChecksStore((store) => store.includeSupporting)
   const overrides = useSupportingChecksStore((store) => store.overrides)
   const page = useMemo(() => resolveFrameworkPage(framework, frameworkTab, sources, frameworkPairs), [framework, frameworkTab, sources, frameworkPairs])
@@ -31,7 +35,17 @@ export function FrameworksView(context: ViewContext) {
   )
 
   if (isReviewingSelection) {
-    return <GenerateReviewScreen enabledEntries={enabledSelections} coveredVersions={coveredVersions} sources={sources} onBack={onCloseReview} />
+    const backLabel =
+      framework === null ? 'Back to frameworks' : framework === ALL_FRAMEWORKS ? 'Back to all rules' : `Back to ${termLabel(vocabularyIndex, 'sources', framework)}`
+    return (
+      <GenerateReviewScreen
+        enabledEntries={enabledSelections}
+        coveredVersions={coveredVersions}
+        sources={sources}
+        backLabel={backLabel}
+        onBack={onCloseReview}
+      />
+    )
   }
   if (page === null) {
     return (

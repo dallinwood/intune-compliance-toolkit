@@ -25,3 +25,22 @@ describe('setFrameworkPage', () => {
     expect(useFilterStore.getState()).toMatchObject({ framework: 'mscp', compareFrom: 'a', compareTo: 'b' })
   })
 })
+
+describe('clear', () => {
+  it('keeps the hidden sources while a framework page scopes them', () => {
+    useFilterStore.getState().setFrameworkPage('mscp', 'rules')
+    useFilterStore.setState({ sources: new Set(['mscp']), search: 'audit' })
+    useFilterStore.getState().clear()
+
+    expect(useFilterStore.getState().search).toBe('')
+    expect([...useFilterStore.getState().sources]).toEqual(['mscp'])
+  })
+
+  it('clears sources on the all-rules page, where they are a visible filter', () => {
+    useFilterStore.getState().setFrameworkPage('all', 'rules')
+    useFilterStore.setState({ sources: new Set(['mscp']) })
+    useFilterStore.getState().clear()
+
+    expect(useFilterStore.getState().sources.size).toBe(0)
+  })
+})
