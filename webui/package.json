@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "copy-baselines": "bun ../scripts/copy-baselines.mjs",
-    "dev": "bun run copy-baselines && vite",
+    "generate-indexes": "bun ../scripts/copy-baselines.mjs --dev",
+    "dev": "bun run generate-indexes && vite",
     "build": "bun run copy-baselines && tsc -b && vite build && bun ../scripts/route-pages.mjs",
     "lint": "oxlint",
     "preview": "vite preview",

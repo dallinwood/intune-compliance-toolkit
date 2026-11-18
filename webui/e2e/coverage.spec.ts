@@ -12,9 +12,9 @@ const currentReleaseOf = (sourceName: string) => manifest.sources.find((source) 
 const ISM_RELEASE = currentReleaseOf('asd_ism')
 const MSCP_RELEASE = currentReleaseOf('mscp')
 
-// Written by `bun run dev` (copy-baselines), like the indexes the app fetches.
+// Read straight from the repo, like the dev server serves it.
 const ismIndex = JSON.parse(
-  readFileSync(new URL(`../public/baselines/asd_ism/releases/${ISM_RELEASE}/_index.json`, import.meta.url), 'utf8'),
+  readFileSync(new URL(`../../baselines/asd_ism/releases/${ISM_RELEASE}/_index.json`, import.meta.url), 'utf8'),
 ) as { rules: { id: string; applicability: { benchmarks: { name: string }[] }[] }[] }
 const ismControlCount = ismIndex.rules.length
 const ismProtectedControlCount = ismIndex.rules.filter((rule) =>

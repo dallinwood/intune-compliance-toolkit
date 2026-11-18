@@ -10,7 +10,7 @@ const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json
 
 function ruleIdsOf(sourceName: string): string[] {
   const source = manifest.sources.find((candidate) => candidate.name === sourceName)
-  const index = JSON.parse(readFileSync(new URL(`../public/baselines/${source?.index_path}`, import.meta.url), 'utf8')) as { rules: { id: string }[] }
+  const index = JSON.parse(readFileSync(new URL(`../../baselines/${source?.index_path}`, import.meta.url), 'utf8')) as { rules: { id: string }[] }
   return index.rules.map((rule) => rule.id)
 }
 

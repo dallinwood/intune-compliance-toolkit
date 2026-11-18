@@ -107,7 +107,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     .sort()
     .map((fileName) => ({ fileName, value: JSON.parse(readFileSync(new URL(fileName, mappingsFolder), 'utf8')) as unknown }))
   const historyIndexes = ['mscp', 'asd_ism', 'nist_800_53'].map(
-    (sourceName) => JSON.parse(readFileSync(new URL(`../public/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex,
+    (sourceName) => JSON.parse(readFileSync(new URL(`../.generated/baselines/_history/${sourceName}.json`, import.meta.url), 'utf8')) as HistoryIndex,
   )
   const committedMappingIndex = addChangedKinds(
     buildMappingIndex(committedMappingFiles, () => {}),

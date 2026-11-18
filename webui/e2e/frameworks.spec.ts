@@ -66,7 +66,7 @@ test('the views are Frameworks, Licences and Products, with Frameworks first', a
 
 // A release comparison of the framework's oldest release against its current one.
 const firstIsmRelease = ism.releases[0]
-const ismHistory = JSON.parse(readFileSync(new URL('../public/baselines/_history/asd_ism.json', import.meta.url), 'utf8')) as HistoryIndex
+const ismHistory = JSON.parse(readFileSync(new URL('../.generated/baselines/_history/asd_ism.json', import.meta.url), 'utf8')) as HistoryIndex
 const REMOVED_ISM_RULE = compareReleases(ismHistory, firstIsmRelease.tag, currentIsmRelease.tag).removed[0]?.id ?? ''
 const comparisonUrl = `/frameworks?framework=asd_ism&from=${firstIsmRelease.tag}&to=${currentIsmRelease.tag}`
 
