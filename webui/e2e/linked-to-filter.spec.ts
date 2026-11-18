@@ -5,7 +5,7 @@ import { buildMappingIndex, linksWithinLibrary, parseMappingIndex } from '../src
 import { openFacetGroup } from './facets'
 
 const manifest = JSON.parse(readFileSync(new URL('../../baselines/_manifest.json', import.meta.url), 'utf8')) as {
-  sources: { name: string; index_path: string }[]
+  sources: { name: string; display_name: string; index_path: string }[]
 }
 
 function ruleIdsOf(sourceName: string): string[] {
@@ -58,4 +58,19 @@ test('mSCP is never offered as a link on its own page', async ({ page }) => {
 test('an unknown linked value in a shared address is dropped', async ({ page }) => {
   await page.goto('/frameworks?framework=mscp&tab=rules&linked=nonsense')
   await expect(page).not.toHaveURL(/linked=/, { timeout: 15_000 })
+})
+
+test('a Linked to filter does not follow the page to another framework', async ({ page }) => {
+  await page.goto('/frameworks?framework=mscp&tab=rules')
+  await openFacetGroup(page, 'Linked to')
+  await page.getByRole('checkbox', { name: 'ASD ISM' }).check()
+  await expect(page).toHaveURL(/[?&]linked=asd_ism/)
+
+  await page.getByRole('link', { name: 'All frameworks' }).click()
+  await page.getByTestId('framework-card').filter({ has: page.getByRole('heading', { name: manifest.sources.find((source) => source.name === 'asd_ism')!.display_name }) }).getByRole('link', { name: 'Rules' }).click()
+
+  await expect(page).toHaveURL(/framework=asd_ism/)
+  await expect(page).not.toHaveURL(/linked=/)
+  await expect(ruleCount(page)).toHaveText(/^[\d,]+ of [\d,]+ rules$/, { timeout: 15_000 })
+  await expect(ruleCount(page)).not.toHaveText(/^0 of/)
 })

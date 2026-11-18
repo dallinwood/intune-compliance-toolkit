@@ -196,8 +196,19 @@ function toggledInList<T extends string>(values: T[], value: T): T[] {
 
 const NO_COMPARISON_FILTERS = { compareGroup: null, changeKinds: null, compareSearch: '', compareSections: [], compareBenchmarks: [], compareOnly: [] }
 
-// The release comparison belongs to one framework, so it is cleared when the
-// page switches framework and kept when only the sub-tab changes.
+const NO_FRAMEWORK_FACET_FILTERS = {
+  sections: new Set<string>(),
+  versions: new Set<string>(),
+  benchmarks: new Set<string>(),
+  tags: new Set<string>(),
+  linked: new Set<string>(),
+}
+
+// The release comparison and the facet filters belong to one framework (the
+// sidebar only offers values the open framework's rules have, so a value left
+// over from another framework could not be unticked). They are cleared when the
+// page switches framework and kept when only the sub-tab changes. Search text,
+// automation and the hidden source set apply to every framework and stay.
 function frameworkPageChange(state: Pick<FilterState, 'framework'>, framework: string | null, tab: FrameworkTab | null) {
   return framework === state.framework
     ? { view: DEFAULT_VIEW_ID, frameworkTab: tab }
