@@ -201,3 +201,4 @@ Behaviour (spec, "Home: framework cards"): `Browse all rules` link above the gri
 ## Progress log
 
 - 2026-11-18: Design approved and plan written.
+- 2026-11-18: Task 1 done: framework pair discovery plus capped (cap vs selection) coverage logic in logic/frameworkPairs.ts, with a subset-sweep test that the selection never exceeds the cap. Landed in "feat: compute framework pairs and capped coverage".
