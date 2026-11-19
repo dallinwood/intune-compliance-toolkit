@@ -15,13 +15,14 @@
 - Placeholder grammar: `$ODV_<name>`, name `^[a-z][a-z0-9_]*$`. A bare `$ODV` (not followed by `_<name>`) is an error anywhere in rule data after import. Replace only the `$ODV` token: mSCP shells contain `-v ODV=$ODV`, whose `ODV=` must stay.
 - mSCP's single ODV is named `value` with `quoting: "unquoted"`. Its observable behaviour (what may be stored, what is shown, generated scripts) must not change apart from the placeholder and exported variable being `ODV_value` instead of `ODV`.
 - `quoting` (`unquoted` | `single` | `double`) only gates whether a value is shown inside a displayed shell command (design 5.3). Storage validation stays mode-based as today, computed per ODV.
-- Overlays may not set `odv`/`odvs` and may not contain `$ODV` text (design 5.5).
+- Overlays may set `odvs` only with `$replace` (whole list); `$merge`/`$append` on `odvs` are invalid. Overlaid rules, and script files they reference, must pass `placeholder_errors` in CI. The browser checks overlay shape only (design 5.5).
 - Rule `schema_version` becomes 6 (`tools/library_output.SCHEMA_VERSION`, `webui/src/types/library.ts`). `has_odv` stays, meaning `len(odvs) > 0`.
 - `PERSIST_VERSION` 3 (convert version 2: non-null `odvValue` -> `odvValues.value`; discard below 2 as today). Settings file `schemaVersion` 3 (import accepts 3, and 2 converted the same way).
 - Tasks 3 to 5 change data, Python and web UI together and land as **one commit** at the end of Task 5; Tasks 3 and 4 leave their work uncommitted for the next task. Every commit must pass `python -m pytest -W error`, and in `webui/`: `bun run test`, `bun run lint`, `bunx tsc -b`.
 - Before Task 3: the other in-progress work in the working tree must be committed. Check `git status --short`: nothing under `baselines/`, `sources/`, `tools/`, `tests/` or `webui/` may be modified or untracked except this plan's own files. Otherwise stop and ask the maintainer.
 - Commits: `type: summary`, body explains why, no `Co-Authored-By` or other AI attribution, stage explicit paths only, push after committing (branch is not `main`). Add a progress log entry to the design doc in each commit.
 - Dev server: the coordinating session starts `bun run dev -- --port 5199 --strictPort` in `webui/` once and waits for `http://localhost:5199/` to answer 200. Subagents use `PLAYWRIGHT_BASE_URL=http://localhost:5199` and never start or stop it.
+- Python runs from the repo `.venv` (`.venv/Scripts/python.exe -m pytest -W error -n auto`; it has `requirements-dev.txt`). At `fc3c4f68` one test already failed: `tests/test_github_fetch.py::test_download_pinned_files_skips_an_absent_optional_file` (another agent's in-progress area); a task is not responsible for it but must not add failures.
 - Never use the em dash character anywhere.
 
 ## Review Focus
@@ -58,37 +59,38 @@
 - [ ] **Step 4: Run.** Expected: PASS.
 - [ ] **Step 5: Commit** `feat: add shared rules for named ODV placeholders`.
 
-### Task 2: Overlays may not set ODVs or add `$ODV` text (Python and TS)
+### Task 2: Placeholder checks for referenced script files (Python)
 
 **Files:**
-- Modify: `tools/overlays.py` (`ODV_REQUIRED_KEYS`, `apply_overlay_to_index_entry`, the overlay field check)
-- Modify: `webui/src/logic/overlays.ts` (`FIELD_KINDS.odv`, `INDEX_OVERLAY_FIELDS`, `ODV_REQUIRED_KEYS`, `applyOverlayToIndexEntry`), `webui/src/logic/overlayIndex.ts` (`reduceOdv`, `indexFieldsOf`), `webui/src/logic/overlayShape.ts`
-- Modify: `tests/fixtures/overlays/cases.json` (shared parity cases), delete `tests/fixtures/overlays/invalid/odv-validation-wrong-type.json`
-- Test: `tests/test_overlays.py`, `webui/src/logic/overlays.test.ts`, `overlayIndex.test.ts`, `overlayShape.test.ts`, `webui/src/data/overlays.test.ts`, `webui/src/data/ruleRows.test.ts`
+- Modify: `tools/odv_placeholders.py`
+- Test: `tests/test_odv_placeholders.py`
 
 **Interfaces:**
-- Produces: an overlay whose fields include `odv` or `odvs`, or any string containing `$ODV`, is invalid in both languages with the message `"<field>: overlays may not set organization-defined values"` / `"<field>: overlays may not contain $ODV"`. `apply_overlay_to_index_entry` / `applyOverlayToIndexEntry` no longer seed or recompute `has_odv`; `has_odv` remains not overlayable.
+- Consumes: Task 1.
+- Produces: `placeholder_errors(rule: dict, read_script: Callable[[str], str] | None = None) -> list[str]`. When `read_script` is given, every `shell_file` path in `check[*].default`, `check[*].by_version[*]` and `remediation[*].steps[*]` is read with it, and its text counts as shell text: its placeholders count towards "used", and `single`/`double` occurrences in it must sit inside that quoting. Double-quote escape character by file extension: `\` for `.sh` and `.py`, `` ` `` for `.ps1`; an unknown extension is reported as an error. Without `read_script`, behaviour is unchanged. Messages name the script path.
 
-- [ ] **Step 1: Update `cases.json`:** turn the ODV cases (`odv $replace null`, `odv $merge recommended`, the four `has_odv` seeding cases, the complete-odv case) into rejection cases with the messages above; add one case rejecting a `title` overlay containing `$ODV`. Update `data/overlays.test.ts` (`'incomplete-odv'`) and `ruleRows.test.ts` ("turns hasOdv on when an overlay sets an odv") to expect rejection.
-- [ ] **Step 2: Run** `python -m pytest tests/test_overlays.py -v` and, in `webui/`, `bun run test -- overlays overlayIndex overlayShape ruleRows`. Expected: FAIL.
-- [ ] **Step 3: Implement** in both languages; remove `reduceOdv` and the `has_odv` seeding.
-- [ ] **Step 4: Run** `python -m pytest -W error`, and in `webui/` `bun run test`, `bun run lint`, `bunx tsc -b`. Expected: PASS. Confirm `git grep -l '"odv"' baselines/_overlays` prints nothing.
-- [ ] **Step 5: Commit** `feat: stop overlays from setting organization-defined values`.
+- [ ] **Step 1: Write failing tests:** `test_script_file_placeholder_counts_as_used`; `test_script_file_single_quoted_ok` (`.ps1` text `$Value = '$ODV_v'`); `test_script_file_unquoted_reported` (`.sh` text `echo $ODV_v` for a `single` ODV, message names the path); `test_powershell_backtick_escape_inside_double_quotes` (`.ps1` text ``"a`"b $ODV_v"`` keeps the placeholder inside double quotes); `test_unknown_script_extension_reported`; `test_without_reader_script_files_are_ignored`.
+- [ ] **Step 2: Run** `.venv/Scripts/python.exe -m pytest tests/test_odv_placeholders.py -v`. Expected: FAIL.
+- [ ] **Step 3: Implement.**
+- [ ] **Step 4: Run** the file's tests, then `.venv/Scripts/python.exe -m pytest -W error -n auto`. Expected: PASS (apart from failures already present at the base commit, which the report lists).
+- [ ] **Step 5: Commit** `feat: check ODV placeholders in referenced script files`.
 
 ### Task 3: Named ODVs in the rule format and Python importers (uncommitted)
 
 **Files:**
 - Modify: `baselines/_rule.schema.json`: `schema_version` const 6; `odv` replaced by required `odvs` (array of closed objects: `name` (pattern), `datatype`, `description`, `validation`, `recommended`, `by_benchmark`, `quoting` enum); integer check result `value` `oneOf` integer or `{"type": "string", "pattern": "^\\$ODV_[a-z][a-z0-9_]*$"}`.
-- Modify: `tools/library_output.py` (`SCHEMA_VERSION = 6`, `has_odv = len(rule["odvs"]) > 0`), `tools/mscp_normalize.py`, `tools/asd_ism_normalize.py`, `tools/asd_e4eit_normalize.py`, `tools/nist_800_53_normalize.py` (`"odvs": []`), `tools/file_references.py` (use `PLACEHOLDER_PATTERN`), `tools/validate_library.py` (run `placeholder_errors` on every rule)
+- Modify: `tools/library_output.py` (`SCHEMA_VERSION = 6`, `has_odv = len(rule["odvs"]) > 0`), `tools/mscp_normalize.py`, `tools/asd_ism_normalize.py`, `tools/asd_e4eit_normalize.py`, `tools/nist_800_53_normalize.py` (`"odvs": []`), `tools/file_references.py` (use `PLACEHOLDER_PATTERN`), `tools/validate_library.py` (run `placeholder_errors` on every rule, with a `read_script` that reads repo files)
+- Modify: `tools/overlays.py`: `odvs` is a list field that only accepts `$replace` (`$merge`/`$append` raise `InvalidOverlay("odvs: only $replace is allowed")`); `apply_overlay_to_index_entry` sets `has_odv` from the replacing list's length and drops the old `odv` seeding, `ODV_REQUIRED_KEYS` and completeness check; the CI overlay check runs `placeholder_errors(overlaid_rule, read_script)` on every overlaid rule and reports each message as a failure
+- Modify: `tests/fixtures/overlays/cases.json` (shared with the web UI, which Task 4 updates): replace the `odv` cases with `odvs` cases: `$replace` with a one-item list (index `has_odv` true), `$replace` with `[]` (false), `$merge` and `$append` rejected; `tests/fixtures/overlays/invalid/odv-validation-wrong-type.json` becomes an `odvs` item with a wrong-typed `validation`
 - Regenerate: every committed release of every source
-- Test: `tests/test_mscp_normalize.py`, `test_library_schema.py`, `test_library_output.py`, `test_file_references.py`, `test_asd_ism_normalize.py`, `test_asd_e4eit_normalize.py`, `test_nist_800_53_normalize.py`, `test_mappings_change_aware.py`, `test_release_import.py`, `test_committed_library.py`
+- Test: `tests/test_mscp_normalize.py`, `test_library_schema.py`, `test_library_output.py`, `test_file_references.py`, `test_asd_ism_normalize.py`, `test_asd_e4eit_normalize.py`, `test_nist_800_53_normalize.py`, `test_mappings_change_aware.py`, `test_release_import.py`, `test_committed_library.py`, `test_overlays.py`
 
 **Interfaces:**
 - Consumes: Task 1.
 - Produces: rule JSON with `odvs`; mSCP ODV `{"name": "value", ..., "quoting": "unquoted"}`; every `$ODV` token in a mSCP rule rewritten to `$ODV_value` (`re.sub(r"\$ODV(?![A-Za-z0-9_])", "$ODV_value", text)` over every string).
 
 - [ ] **Step 1: Confirm the precondition** in Global Constraints (other work committed). If not, stop and ask.
-- [ ] **Step 2: Update tests first:** in `test_mscp_normalize.py`, the ODV fixtures expect `odvs == [{"name": "value", ..., "quoting": "unquoted"}]`; add `test_odv_token_rewritten_not_bare_name` (a shell `awk -v ODV=$ODV` becomes `awk -v ODV=$ODV_value`) and `test_unused_odv_raises`; `test_odv_placeholder_without_odv_raises` keeps raising. In `test_library_schema.py`: `test_odv_placeholder_allowed_as_integer_value` uses `$ODV_value`; add `test_bad_odv_name_rejected`, `test_unknown_quoting_rejected`. Replace `"odv": None` fixtures with `"odvs": []` in the other listed tests. `test_file_references.py`: the check-script case uses `$ODV_value`.
+- [ ] **Step 2: Update tests first:** in `test_mscp_normalize.py`, the ODV fixtures expect `odvs == [{"name": "value", ..., "quoting": "unquoted"}]`; add `test_odv_token_rewritten_not_bare_name` (a shell `awk -v ODV=$ODV` becomes `awk -v ODV=$ODV_value`) and `test_unused_odv_raises`; `test_odv_placeholder_without_odv_raises` keeps raising. In `test_library_schema.py`: `test_odv_placeholder_allowed_as_integer_value` uses `$ODV_value`; add `test_bad_odv_name_rejected`, `test_unknown_quoting_rejected`. Replace `"odv": None` fixtures with `"odvs": []` in the other listed tests. `test_file_references.py`: the check-script case uses `$ODV_value`. `test_overlays.py`: the new `cases.json` cases pass; add `test_overlay_with_own_script_and_odvs_is_valid` (an overlay that `$replace`s `odvs` with `[{"name": "max_age", ..., "quoting": "single"}]` and adds a remediation step whose `shell_file` is a test `.ps1` containing `$MaxAge = '$ODV_max_age'`) and `test_overlay_placeholder_outside_quotes_is_rejected` (same, script text `$MaxAge = $ODV_max_age`).
 - [ ] **Step 3: Run** `python -m pytest -W error`. Expected: FAIL in the updated tests.
 - [ ] **Step 4: Implement** the schema, `library_output`, normalizers, `file_references`, `validate_library` changes.
 - [ ] **Step 5: Regenerate** with `python tools/import_mscp.py --offline`, `python tools/import_asd_ism.py --offline`, `python tools/import_asd_e4eit.py --offline`, `python tools/import_nist_800_53.py --offline`.
@@ -99,6 +101,7 @@
 
 **Files:**
 - Modify: `webui/src/types/library.ts`, `webui/src/logic/{odv,selectionEntry,exportImport,checkPlan,chunking,odvExportDisplay,supportingCheckValue,manualAttestationReport,rulesJsonGen,changeLabels,ruleChanges,testRuleFixtures}.ts`, `webui/src/logic/scriptGen/bash.ts`, `webui/src/state/selectionStore.ts`
+- Modify (overlays, matching Task 3's Python and the shared `cases.json`): `webui/src/logic/overlays.ts` (`FIELD_KINDS.odvs` replace-only list, `INDEX_OVERLAY_FIELDS` uses `odvs`, `applyOverlayToIndexEntry` sets `has_odv` from the list length, `ODV_REQUIRED_KEYS` and the `odv` seeding removed), `overlayIndex.ts` (`reduceOdv`/`indexFieldsOf`: the index keeps only whether the replacing list is non-empty), `overlayShape.ts` (`odvs`: list of objects with the design 5.1 keys, `quoting` enum); tests `overlays.test.ts`, `overlayIndex.test.ts`, `overlayShape.test.ts`, `webui/src/data/overlays.test.ts`, `webui/src/data/ruleRows.test.ts`
 - Test: the matching `*.test.ts` files, `logic/libraryData.test.ts`, and the fixture-only tests listed in the inventory (`odv: null` to `odvs: []`)
 
 **Interfaces:**

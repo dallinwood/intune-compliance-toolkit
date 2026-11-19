@@ -137,23 +137,35 @@ command, so the gate never applies). The per-rule `variable` mode (mSCP allowlis
 
 ### 5.5 Overlays
 
-Overlays may no longer set ODVs, and may not introduce `$ODV` text: `tools/overlays.py` and
-`webui/src/logic/overlayShape.ts` reject an overlay that sets `odv`/`odvs` or whose fields
-contain `$ODV`. No committed overlay does either.
+Maintainer decision (2026-11-19, replacing an earlier ban): overlays may set ODVs and use
+`$ODV_<name>` placeholders, because an overlay that adds its own script (as the ASD blueprint
+overlays already do) may need its own values.
 
-Why: once ODVs are a list, changing one ODV by overlay would need new by-name merge behaviour in
-both the Python and TypeScript merge engines, and an overlay that adds a placeholder to a fix
-could defeat the quoting checks, which only run at import. Nobody uses the capability today, so
-removing it is simpler and safer than re-checking every overlaid rule. The index-level `has_odv`
-stand-in in the overlay code (`odv: {}`/`null` seeding, `ODV_REQUIRED_KEYS`, `reduceOdv`) is
-removed with it.
+- **`odvs` is a replace-only field.** An overlay sets the whole list with `$replace`; `$merge`
+  and `$append` on `odvs` are invalid. An overlay only sets ODVs together with its own custom
+  script, so supplying the full list is natural, and no by-name merge is needed in either merge
+  engine.
+- **The index stand-in follows the list.** `has_odv` on an overlaid index entry is
+  `len(odvs) > 0` of the replacing list; the partial-object seeding and completeness check for
+  the old single `odv` (`odv: {}`/`null` seeding, `ODV_REQUIRED_KEYS`, `reduceOdv`) go away.
+- **Overlaid rules get the same placeholder and quoting checks as imported rules,** in CI
+  (`tools/overlays.py`, run by `tests/test_overlays.py`): `placeholder_errors` on every overlaid
+  rule, including the text of script files the rule references through `shell_file` (check and
+  remediation). In a script file, double-quote escapes follow the file's language: `\` for
+  `.sh`/`.py`, `` ` `` for `.ps1`. The quoting rules themselves (5.3) hold for both bash and
+  PowerShell, since a value can contain neither quote character nor `$`, `` ` `` or `\`.
+- **The browser** keeps its existing split (custom overlays design 3.4): it checks overlay
+  shape and merge types only, now including that `odvs` is a `$replace`d list of objects; full
+  rule validation, including these checks, stays CI's job. Overlays only come from the repo, so
+  every published overlay has passed CI.
 
 ## 6. Testing
 
 - Python: schema accepts the new shape and rejects a bad name, a duplicate name or an unknown
   `quoting`; mSCP normalization rewrites `$ODV` and fails on unmatched or unused placeholders;
-  overlays accept `odvs`; the committed-library tests regenerate every release under the new
-  schema.
+  overlays accept a `$replace`d `odvs`, reject `$merge`/`$append` on it, and reject an overlaid
+  rule (or a script file it references) whose placeholders break the quoting rules; the
+  committed-library tests regenerate every release under the new schema.
 - Web UI (Vitest): substitution with two ODVs whose names share a prefix; validation per
   `quoting`; persisted-state migration from version 2; settings import of version 2 and 3
   files; variable-mode export name.
@@ -170,7 +182,8 @@ removed with it.
 - `has_odv` keeps its name.
 - `quoting` only affects whether a value is shown inside a displayed command; what an admin may
   store stays mode-based as today (5.3). This keeps every current mSCP value valid.
-- Overlays can no longer set ODVs or add `$ODV` text (5.5).
+- Overlays set ODVs by replacing the whole list; overlaid rules, and the script files they
+  reference, are checked in CI only, matching how overlays are validated today (5.5).
 - Rule-specific value checks (`ODV_RULE_VALUE_CHECKS`) and the variable-mode allowlist are keyed
   by rule id and ODV name.
 
