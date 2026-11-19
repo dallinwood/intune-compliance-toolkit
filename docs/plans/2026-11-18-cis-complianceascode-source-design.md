@@ -333,4 +333,4 @@ For the maintainer to check while reading:
 
 ## Progress log
 
-- 2026-11-19: Added the `openscap` manual reason (schema enum, web UI shape check, vocabulary) and reworded the mSCP-specific manual reason descriptions neutrally. Commit: PENDING feat: add the openscap manual reason
+- 2026-11-19: Added the `openscap` manual reason (schema enum, web UI shape check, vocabulary) and reworded the mSCP-specific manual reason descriptions neutrally. Commit: 79ec4ee9 feat: add the openscap manual reason
