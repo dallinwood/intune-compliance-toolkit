@@ -148,6 +148,17 @@ The quoting check (`placeholder_errors` in `tools/odv_placeholders.py`) works as
 - In bash, a placeholder inside ANSI-C quoting (`$'...'`, where backslash escapes are active)
   counts as outside single quotes, so it is an error. In `.ps1` scripts the escape character is
   `` ` `` and the typographic quotes above open and close strings, as PowerShell reads them.
+- **Comments, heredocs and command substitution are not modelled, so they fail closed.** A
+  `single` or `double` placeholder inside one of them is an error, and the quote characters
+  inside them are ignored for quote tracking:
+  - Comments: in bash, `#` at the start of a word outside quotes starts a comment to the end of
+    the line; in `.ps1`, `#` anywhere outside quotes does, and `<# ... #>` is a block comment.
+  - Heredocs (bash): the body of `<<WORD`, `<<-WORD`, `<<'WORD'` and `<<"WORD"`, up to and
+    including its terminator line, is skipped.
+  - Command substitution: a `$(...)` (or, in bash, a backtick substitution) opened inside
+    double quotes is skipped as a whole, with no nested-context modelling. A substitution
+    outside double quotes is scanned normally, so `x=$(echo "$ODV_v" | sed 's/a/b/')` stays
+    valid for a `double` ODV.
 - With a script reader (CI), the text of `data_file` payloads counts towards the unknown-name,
   unused-ODV and malformed-placeholder checks, but is not quote-checked, since the web UI only
   shows payloads with the strict or JSON gate. Binary payloads are not read.
@@ -231,3 +242,4 @@ overlays already do) may need its own values.
 - 2026-11-19: Implemented end to end: rule schema 6 with `odvs` on every release of every source, the importers and overlays on named ODVs (`$ODV_<name>`, mSCP's is `$ODV_value`), the web UI logic and components (one input per ODV, `useStoredOdvValues` / `useUsableOdvValues`, per-placeholder code block notes), saved selections at version 3 with version 2 converted, and settings files at version 3 with version 2 converted on import. Playwright covers the renamed mSCP behaviour, version 2 saved selections and a two-ODV rule (a pwpolicy rule given a second ODV by a route in the spec, since no committed rule has two yet); screenshots at 375px and 1440px checked. Commit: bb90069c `feat: support several named organization-defined values per rule`.
 - 2026-11-19: Hardened the quoted ODV display gate after the final review: the typographic quotes PowerShell reads as quotes are denied in the `single` and `double` gates; quoted placeholders are allowed only in inline bash/zsh and `.sh`/`.ps1` scripts; the relaxed gate is used only for check and remediation shells and their `shell_file` scripts (everything else uses the strict rules); Python and TypeScript share one placeholder grammar, with malformed `$ODV` occurrences reported and never substituted; quote state is tracked across the whole text (unterminated quotes and `$'...'` are errors); `data_file` payloads count towards the placeholder checks; dropped import values name their ODV. Commit: b5f88172 `fix: harden the quoted ODV display gate`.
 - 2026-11-19: Known limit found by the fix re-review: the quote scanner does not yet model `#` comments, heredoc bodies or nested `$(...)` inside double quotes, and fails open on all three (an apostrophe in a comment, a lone `'` in a heredoc, or `"$(... "$ODV_x" ...)"` can make an unquoted placeholder pass as quoted). No committed rule uses `single`/`double` quoting yet. Closing these is the first task of the CIS ComplianceAsCode plan, before any quoted ODV is imported.
+- 2026-11-19: Closed the known limit above: `scan_quotes` now fails closed on comments (bash word-start `#`, `.ps1` `#` and `<# #>`), heredoc bodies and `$(...)` or backtick substitution opened inside double quotes, so a `single`/`double` placeholder in any of them is an error and their quote characters no longer open or close quotes. Rules stated in 5.3. Commit: `fix: fail closed on comments, heredocs and nested substitutions in the quote scanner`.

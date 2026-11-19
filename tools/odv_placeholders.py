@@ -77,23 +77,118 @@ def display_gate_problem(quoting: str, value: str | int) -> str | None:
     return None
 
 
+COMMENT = "comment"
+HEREDOC_BODY = "heredoc body"
+COMMAND_SUBSTITUTION = "command substitution in double quotes"
+# Text the scan does not model, so a quoted placeholder there is always an error.
+UNMODELLED_STATES = (COMMENT, HEREDOC_BODY, COMMAND_SUBSTITUTION)
+WORD_BOUNDARY_CHARACTERS = " \t\r\n;&|()"
+HEREDOC_WORD_END_CHARACTERS = " \t\r\n;&|()<>"
+
+
 @dataclass(frozen=True)
 class QuoteScan:
-    # The quote open just before each character: "single", "double", ANSI_C_QUOTE or None.
+    # The state just before each character: "single", "double", ANSI_C_QUOTE,
+    # one of UNMODELLED_STATES, or None outside quotes.
     quote_before: list[str | None]
     # Where the quote still open at the end of the text was opened, or None when every quote closes.
     unclosed_quote_start: int | None
 
 
+def find_substitution_end(text: str, index: int) -> int:
+    """Index of the `)` closing a `$(` whose contents start at index, or len(text) when it never closes."""
+    depth = 1
+    while index < len(text):
+        character = text[index]
+        if character == "\\":
+            index += 1
+        elif character in "'`":
+            closing = text.find(character, index + 1)
+            index = len(text) if closing == -1 else closing
+        elif character == '"':
+            index = find_double_quote_end(text, index + 1)
+        elif character == "(":
+            depth += 1
+        elif character == ")":
+            depth -= 1
+            if depth == 0:
+                return index
+        index += 1
+    return len(text)
+
+
+def find_double_quote_end(text: str, index: int) -> int:
+    """Index of the `"` closing a double-quoted string whose contents start at index, or len(text)."""
+    while index < len(text):
+        character = text[index]
+        if character == "\\":
+            index += 1
+        elif character == '"':
+            return index
+        elif text.startswith("$(", index):
+            index = find_substitution_end(text, index + 2)
+        index += 1
+    return len(text)
+
+
+def read_heredoc_delimiter(text: str, index: int) -> tuple[str, bool, int] | None:
+    """Parse what follows `<<`: the delimiter word, whether `<<-` strips tabs, and where the word ends."""
+    strips_tabs = text.startswith("-", index)
+    if strips_tabs:
+        index += 1
+    while index < len(text) and text[index] in " \t":
+        index += 1
+    if index >= len(text):
+        return None
+    if text[index] in "'\"":
+        closing = text.find(text[index], index + 1)
+        if closing == -1:
+            return None
+        return text[index + 1 : closing], strips_tabs, closing + 1
+    if text[index] == "\\":
+        index += 1
+    word_start = index
+    while index < len(text) and text[index] not in HEREDOC_WORD_END_CHARACTERS:
+        index += 1
+    if index == word_start:
+        return None
+    return text[word_start:index], strips_tabs, index
+
+
+def find_heredoc_body_end(text: str, body_start: int, delimiter: str, strips_tabs: bool) -> int:
+    """Index of the newline ending the delimiter line of a heredoc body, or len(text) when it never ends."""
+    line_start = body_start
+    while line_start < len(text):
+        line_end = text.find("\n", line_start)
+        line_end = len(text) if line_end == -1 else line_end
+        line = text[line_start:line_end].rstrip("\r")
+        if (line.lstrip("\t") if strips_tabs else line) == delimiter:
+            return line_end
+        line_start = line_end + 1
+    return len(text)
+
+
 def scan_quotes(text: str, dialect: QuoteDialect) -> QuoteScan:
-    """Track quoting across the whole text, as the shell does, so a quote may span lines."""
-    quote_before: list[str | None] = []
+    """Track quoting across the whole text, as the shell does, so a quote may span lines.
+
+    Comments, heredoc bodies and command substitutions opened inside double quotes
+    are not modelled; they are marked so that a placeholder there is an error.
+    """
+    quote_before: list[str | None] = [None] * len(text)
     open_quote: str | None = None
     open_quote_start = 0
+    pending_heredocs: list[tuple[str, bool]] = []
+    is_bash = dialect.has_ansi_c_quotes
+
+    def mark(start: int, end: int, state: str) -> None:
+        for position in range(start, min(end, len(text))):
+            quote_before[position] = state
+
     index = 0
     while index < len(text):
         character = text[index]
-        quote_before.append(open_quote)
+        quote_before[index] = open_quote
+        next_index = index + 1
         skips_next_character = False
         if open_quote == "single":
             if character in dialect.single_quotes:
@@ -108,17 +203,45 @@ def scan_quotes(text: str, dialect: QuoteDialect) -> QuoteScan:
         elif open_quote == "double":
             if character in dialect.double_quotes:
                 open_quote = None
-        elif dialect.has_ansi_c_quotes and character == "$" and text.startswith("'", index + 1):
+            elif text.startswith("$(", index):
+                next_index = find_substitution_end(text, index + 2) + 1
+                mark(index, next_index, COMMAND_SUBSTITUTION)
+            elif is_bash and character == "`":
+                closing = text.find("`", index + 1)
+                next_index = len(text) if closing == -1 else closing + 1
+                mark(index, next_index, COMMAND_SUBSTITUTION)
+        elif is_bash and character == "$" and text.startswith("'", index + 1):
             open_quote, open_quote_start = ANSI_C_QUOTE, index
             skips_next_character = True
+        elif character == "#" and (not is_bash or index == 0 or text[index - 1] in WORD_BOUNDARY_CHARACTERS):
+            comment_end = text.find("\n", index)
+            next_index = len(text) if comment_end == -1 else comment_end
+            mark(index, next_index, COMMENT)
+        elif not is_bash and text.startswith("<#", index):
+            comment_end = text.find("#>", index + 2)
+            next_index = len(text) if comment_end == -1 else comment_end + 2
+            mark(index, next_index, COMMENT)
+        elif is_bash and text.startswith("<<", index) and not text.startswith("<<<", index):
+            heredoc = read_heredoc_delimiter(text, index + 2)
+            if heredoc is not None:
+                delimiter, strips_tabs, next_index = heredoc
+                pending_heredocs.append((delimiter, strips_tabs))
+        elif character == "\n" and pending_heredocs:
+            body_start = index + 1
+            body_end = body_start
+            for delimiter, strips_tabs in pending_heredocs:
+                body_end = min(find_heredoc_body_end(text, body_end, delimiter, strips_tabs) + 1, len(text))
+            pending_heredocs.clear()
+            mark(body_start, body_end, HEREDOC_BODY)
+            next_index = body_end
         elif character in dialect.single_quotes:
             open_quote, open_quote_start = "single", index
         elif character in dialect.double_quotes:
             open_quote, open_quote_start = "double", index
-        if skips_next_character and index + 1 < len(text):
-            index += 1
-            quote_before.append(open_quote)
-        index += 1
+        if skips_next_character and next_index < len(text):
+            quote_before[next_index] = open_quote
+            next_index += 1
+        index = next_index
     return QuoteScan(quote_before, open_quote_start if open_quote is not None else None)
 
 
@@ -268,6 +391,11 @@ def quoting_errors(rule: dict, script_texts: list[ShellText]) -> list[str]:
                 errors.append(
                     f"{rule_id}: {placeholder(name)} is declared {required_quoting} "
                     f"but sits in a quote that is never closed{location} in: {line}"
+                )
+            elif scan.quote_before[match.start()] in UNMODELLED_STATES:
+                errors.append(
+                    f"{rule_id}: {placeholder(name)} is declared {required_quoting} "
+                    f"but sits in a {scan.quote_before[match.start()]}, which is not checked{location} in: {line}"
                 )
             elif scan.quote_before[match.start()] != required_quoting:
                 errors.append(

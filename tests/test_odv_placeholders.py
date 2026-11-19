@@ -256,6 +256,83 @@ def test_ansi_c_quoted_placeholder_reported():
     assert any("$ODV_v" in error for error in placeholder_errors(rule))
 
 
+def build_script_rule(script_path: str, quoting: str) -> dict:
+    rule = build_rule(None, [build_odv(quoting=quoting)])
+    rule["check"]["macos"]["default"] = {"shell_file": script_path}
+    return rule
+
+
+def test_apostrophe_in_comment_does_not_open_a_quote():
+    rule = build_rule("# don't\necho $ODV_v", [build_odv(quoting="single")])
+    assert any("$ODV_v" in error for error in placeholder_errors(rule))
+
+
+def test_placeholder_in_comment_is_error():
+    rule = build_rule("echo ok # '$ODV_v'", [build_odv(quoting="single")])
+    assert any("comment" in error for error in placeholder_errors(rule))
+
+
+def test_hash_inside_a_word_is_not_a_bash_comment():
+    rule = build_rule("echo a#b '$ODV_v'", [build_odv(quoting="single")])
+    assert placeholder_errors(rule) == []
+
+
+def test_hash_inside_quotes_is_not_a_comment():
+    rule = build_rule("echo '# $ODV_v'", [build_odv(quoting="single")])
+    assert placeholder_errors(rule) == []
+
+
+def test_powershell_hash_mid_word_starts_a_comment():
+    rule = build_script_rule("check.ps1", "single")
+    assert placeholder_errors(rule, lambda path: "$x = 1#it's\n$y = '$ODV_v'") == []
+
+
+def test_powershell_block_comment():
+    rule = build_script_rule("check.ps1", "single")
+    assert any("$ODV_v" in error for error in placeholder_errors(rule, lambda path: "<# it's #>\n$x = $ODV_v"))
+    assert placeholder_errors(rule, lambda path: "<# it's #>\n$x = '$ODV_v'") == []
+
+
+def test_heredoc_body_placeholder_is_error():
+    rule = build_rule("cat <<EOF\n'$ODV_v'\nEOF", [build_odv(quoting="single")])
+    assert any("heredoc" in error for error in placeholder_errors(rule))
+
+
+@pytest.mark.parametrize(
+    "heredoc",
+    ["cat <<EOF\n'$ODV_v'\nEOF", "cat <<-EOF\n'$ODV_v'\n\tEOF", "cat <<'EOF'\n'$ODV_v'\nEOF", 'cat <<"EOF"\n\'$ODV_v\'\nEOF'],
+)
+def test_heredoc_forms_are_skipped_and_the_text_after_is_checked(heredoc):
+    errors = placeholder_errors(build_rule(heredoc + "\nx='$ODV_v'", [build_odv(quoting="single")]))
+    assert len(errors) == 1
+    assert "heredoc" in errors[0]
+
+
+def test_lone_quote_in_heredoc_does_not_open_a_quote():
+    rule = build_rule("cat <<EOF\nit's\nEOF\necho $ODV_v", [build_odv(quoting="single")])
+    assert any("outside single quotes" in error for error in placeholder_errors(rule))
+
+
+def test_placeholder_in_command_substitution_inside_double_quotes_is_error():
+    rule = build_rule("x=\"$(printf '%s' \"$ODV_v\")\"", [build_odv(quoting="double")])
+    assert any("command substitution" in error for error in placeholder_errors(rule))
+
+
+def test_placeholder_in_backtick_substitution_inside_double_quotes_is_error():
+    rule = build_rule("x=\"`printf '%s' \"$ODV_v\"`\"", [build_odv(quoting="double")])
+    assert any("command substitution" in error for error in placeholder_errors(rule))
+
+
+def test_placeholder_after_substitution_inside_double_quotes_is_still_in_quotes():
+    rule = build_rule('x="$(date) $ODV_v"', [build_odv(quoting="double")])
+    assert placeholder_errors(rule) == []
+
+
+def test_substitution_outside_double_quotes_keeps_quoted_placeholder_valid():
+    rule = build_rule("login_banner_text=$(echo \"$ODV_v\" | sed 's/a/b/')", [build_odv(quoting="double")])
+    assert placeholder_errors(rule) == []
+
+
 def build_rule_with_payload_file(payload_path: str, odvs: list[dict]) -> dict:
     rule = build_rule(None, odvs)
     rule["remediation"] = {"windows": {"steps": [], "payloads": [{"data_file": payload_path}]}}
