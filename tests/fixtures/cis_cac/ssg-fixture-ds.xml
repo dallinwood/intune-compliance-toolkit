@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ds:data-stream-collection xmlns:ds="http://scap.nist.gov/schema/scap/source/1.2" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:ocil="http://scap.nist.gov/schema/ocil/2.0" xmlns:xccdf-1.2="http://checklists.nist.gov/xccdf/1.2" id="fixture_collection">
+  <ds:component id="fixture_xccdf">
+    <xccdf-1.2:Benchmark id="xccdf_org.ssgproject.content_benchmark_FIXTURE">
+      <xccdf-1.2:Profile id="xccdf_org.ssgproject.content_profile_p_l1s">
+        <xccdf-1.2:title>Fixture L1 Server</xccdf-1.2:title>
+        <xccdf-1.2:refine-value idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" selector="14"/>
+      </xccdf-1.2:Profile>
+      <xccdf-1.2:Profile id="xccdf_org.ssgproject.content_profile_p_l2s">
+        <xccdf-1.2:title>Fixture L2 Server</xccdf-1.2:title>
+        <xccdf-1.2:refine-value idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" selector="14"/>
+      </xccdf-1.2:Profile>
+      <xccdf-1.2:Profile id="xccdf_org.ssgproject.content_profile_p_l1w">
+        <xccdf-1.2:title>Fixture L1 Workstation</xccdf-1.2:title>
+        <xccdf-1.2:refine-value idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" selector="14"/>
+      </xccdf-1.2:Profile>
+      <xccdf-1.2:Profile id="xccdf_org.ssgproject.content_profile_p_l2w">
+        <xccdf-1.2:title>Fixture L2 Workstation</xccdf-1.2:title>
+        <xccdf-1.2:refine-value idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" selector="14"/>
+      </xccdf-1.2:Profile>
+      <xccdf-1.2:Profile id="xccdf_org.ssgproject.content_profile_p_no_refine">
+        <xccdf-1.2:title>Fixture profile that refines nothing</xccdf-1.2:title>
+      </xccdf-1.2:Profile>
+      <xccdf-1.2:Value id="xccdf_org.ssgproject.content_value_var_password_pam_minlen" type="number">
+        <xccdf-1.2:title>minlen</xccdf-1.2:title>
+        <xccdf-1.2:value>12</xccdf-1.2:value>
+        <xccdf-1.2:value selector="14">14</xccdf-1.2:value>
+      </xccdf-1.2:Value>
+      <xccdf-1.2:Value id="xccdf_org.ssgproject.content_value_login_banner_text" type="string">
+        <xccdf-1.2:title>Login banner</xccdf-1.2:title>
+        <xccdf-1.2:value>Authorized use only</xccdf-1.2:value>
+      </xccdf-1.2:Value>
+      <xccdf-1.2:Value id="xccdf_org.ssgproject.content_value_var_ocil_only" type="number">
+        <xccdf-1.2:title>ocil only</xccdf-1.2:title>
+        <xccdf-1.2:value>3</xccdf-1.2:value>
+      </xccdf-1.2:Value>
+      <xccdf-1.2:Value id="xccdf_org.ssgproject.content_value_var_boolean_flag" type="boolean">
+        <xccdf-1.2:title>flag</xccdf-1.2:title>
+        <xccdf-1.2:value>true</xccdf-1.2:value>
+      </xccdf-1.2:Value>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_accounts_password_pam_minlen" severity="medium">
+        <xccdf-1.2:title>Ensure PAM Enforces Password Requirements - Minimum Length</xccdf-1.2:title>
+        <xccdf-1.2:description>The <html:code>minlen</html:code> parameter sets the minimum length.<html:br/>Example:<html:pre>minlen=<xccdf-1.2:sub idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" use="legacy"/></html:pre>Set it to <xccdf-1.2:sub idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" use="legacy"/> or more.</xccdf-1.2:description>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/controls/">12</xccdf-1.2:reference>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/benchmark/fixture/">1.2.1</xccdf-1.2:reference>
+        <xccdf-1.2:rationale>Longer passwords resist guessing.</xccdf-1.2:rationale>
+        <xccdf-1.2:ident system="https://ncp.nist.gov/cce">CCE-00000-1</xccdf-1.2:ident>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:sh" id="accounts_password_pam_minlen">var_password_pam_minlen='<xccdf-1.2:sub idref="xccdf_org.ssgproject.content_value_var_password_pam_minlen" use="legacy"/>'
+printf '%s\n' "$var_password_pam_minlen" &gt;&gt; /etc/security/pwquality.conf
+</xccdf-1.2:fix>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:ansible">- name: fixture</xccdf-1.2:fix>
+        <xccdf-1.2:check system="http://scap.nist.gov/schema/ocil/2">
+          <xccdf-1.2:check-content-ref href="ssg-fixture-ocil.xml" name="ocil:ssg-accounts_password_pam_minlen_ocil:questionnaire:1"/>
+        </xccdf-1.2:check>
+      </xccdf-1.2:Rule>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_banner_etc_issue" severity="medium">
+        <xccdf-1.2:title>Modify the System Login Banner</xccdf-1.2:title>
+        <xccdf-1.2:description>Set the banner text.</xccdf-1.2:description>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/benchmark/fixture/">5.1</xccdf-1.2:reference>
+        <xccdf-1.2:ident system="https://ncp.nist.gov/cce">CCE-00000-2</xccdf-1.2:ident>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:sh" id="banner_etc_issue">login_banner_text=$(echo "<xccdf-1.2:sub idref="xccdf_org.ssgproject.content_value_login_banner_text" use="legacy"/>" | sed 's/x/y/')
+</xccdf-1.2:fix>
+      </xccdf-1.2:Rule>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_rule_without_fix_or_ocil" severity="low">
+        <xccdf-1.2:title>A rule with neither fix nor audit text</xccdf-1.2:title>
+        <xccdf-1.2:description>Nothing to run.</xccdf-1.2:description>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/benchmark/fixture/">3.1</xccdf-1.2:reference>
+      </xccdf-1.2:Rule>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_kernel_module_cramfs_disabled" severity="low">
+        <xccdf-1.2:title>Disable cramfs</xccdf-1.2:title>
+        <xccdf-1.2:description>The cramfs module should not be loadable.</xccdf-1.2:description>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/benchmark/fixture/">1.1.1</xccdf-1.2:reference>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/benchmark/fixture/">1.2.2</xccdf-1.2:reference>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:sh" id="kernel_module_cramfs_disabled">echo "install cramfs /bin/false" &gt; /etc/modprobe.d/cramfs.conf
+</xccdf-1.2:fix>
+      </xccdf-1.2:Rule>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_sshd_disable_root_login" severity="medium">
+        <xccdf-1.2:title>Disable SSH Root Login</xccdf-1.2:title>
+        <xccdf-1.2:description>Root should not log in over SSH.</xccdf-1.2:description>
+        <xccdf-1.2:reference href="https://www.cisecurity.org/benchmark/fixture/">3.1</xccdf-1.2:reference>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:sh" id="sshd_disable_root_login">sed -i 's/^PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+</xccdf-1.2:fix>
+      </xccdf-1.2:Rule>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_sshd_disable_root_password_login" severity="medium">
+        <xccdf-1.2:title>Disable SSH Root Password Login</xccdf-1.2:title>
+        <xccdf-1.2:description>Root should not use a password over SSH.</xccdf-1.2:description>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:sh" id="sshd_disable_root_password_login">sed -i 's/^PermitRootLogin.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config
+</xccdf-1.2:fix>
+      </xccdf-1.2:Rule>
+      <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_dconf_db_up_to_date" severity="medium">
+        <xccdf-1.2:title>Make sure that the dconf databases are up-to-date</xccdf-1.2:title>
+        <xccdf-1.2:description>Update the dconf databases.</xccdf-1.2:description>
+        <xccdf-1.2:fix system="urn:xccdf:fix:script:sh" id="dconf_db_up_to_date">dconf update
+</xccdf-1.2:fix>
+      </xccdf-1.2:Rule>
+    </xccdf-1.2:Benchmark>
+  </ds:component>
+  <ds:component id="fixture_ocil">
+    <ocil:ocil>
+      <ocil:questions>
+        <ocil:boolean_question id="ocil:ssg-accounts_password_pam_minlen_question:question:1">
+          <ocil:question_text>Verify minlen with:
+
+$ grep minlen /etc/security/pwquality.conf
+
+minlen =
+      Is it the case that minlen is less than "&lt;sub idref="var_password_pam_minlen" /&gt;" or retries exceed "&lt;sub idref="var_ocil_only" /&gt;"?
+      </ocil:question_text>
+        </ocil:boolean_question>
+      </ocil:questions>
+    </ocil:ocil>
+  </ds:component>
+</ds:data-stream-collection>

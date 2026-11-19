@@ -342,3 +342,4 @@ For the maintainer to check while reading:
 
 - 2026-11-19: Added the `openscap` manual reason (schema enum, web UI shape check, vocabulary) and reworded the mSCP-specific manual reason descriptions neutrally. Commit: 79ec4ee9 feat: add the openscap manual reason
 - 2026-11-19: Added the benchmark table and the control file reader with its fixture and tests. Commit: 9cff5923 feat: read ComplianceAsCode CIS control files
+- 2026-11-19: Added the datastream reader (rules, values, profile refinements, OCIL text, fix quoting) with a fixture datastream and tests. Commit: pending (see git log: feat: read rules, values and audit text from a CaC datastream)
