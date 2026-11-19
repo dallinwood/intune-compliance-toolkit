@@ -85,7 +85,7 @@
   "discussion": "The ability to submit diagnostic data to Apple _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling the submission of diagnostic and usage information will mitigate the risk of unwanted data being sent to Apple.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_diagnostics_reports_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -202,7 +202,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

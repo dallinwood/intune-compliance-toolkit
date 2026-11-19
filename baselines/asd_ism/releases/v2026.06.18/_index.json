@@ -49875,6 +49875,6 @@
       "title": "All prompts and outputs associated with chat sessions are securely deleted when chat sessions are removed from AI applications."
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "asd_ism"
 }

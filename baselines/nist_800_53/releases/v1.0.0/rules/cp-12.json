@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nWhen [Assignment: organization-defined conditions] are detected, enter a safe mode of operation with [Assignment: organization-defined restrictions of safe mode of operation].\n\n## Discussion\n\nFor systems that support critical mission and business functions—including military operations, civilian space operations, nuclear power plant operations, and air traffic control operations (especially real-time operational environments)—organizations can identify certain conditions under which those systems revert to a predefined safe mode of operation. The safe mode of operation, which can be activated either automatically or manually, restricts the operations that systems can execute when those conditions are encountered. Restriction includes allowing only selected functions to execute that can be carried out under limited power or with reduced communications bandwidth.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-2",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-12 Safe Mode"

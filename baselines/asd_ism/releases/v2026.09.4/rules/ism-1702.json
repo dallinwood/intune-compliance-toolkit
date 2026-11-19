@@ -48,10 +48,10 @@
   "discussion": "To ensure that patches or updates are being applied to applications, operating systems, drivers and firmware, it is essential that an organisation regularly identify all assets within their environment using an automated method of asset discovery, such as an asset discovery tool or a vulnerability scanner with equivalent functionality. To maximise the effectiveness of these activities, asset discovery and vulnerability scanning should be conducted from both internal and external perspectives, where applicable, to identify vulnerabilities based on how assets are exposed to malicious actors.\n\nFollowing asset discovery, identified assets can be scanned for missing patches or updates using a vulnerability scanner with an up-to-date vulnerability database. Ideally, vulnerability scanning should be conducted in an automated manner and take place at twice the frequency at which patches or updates need to be applied. For example, if patches or updates are to be applied within two weeks of release, then vulnerability scanning should be undertaken at least weekly.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1702",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security assessments",

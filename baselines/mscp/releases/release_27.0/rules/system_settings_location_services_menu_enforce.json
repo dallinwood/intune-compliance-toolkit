@@ -53,7 +53,7 @@
   "discussion": "Location Services menu item _MUST_ be enabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_location_services_menu_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -106,7 +106,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

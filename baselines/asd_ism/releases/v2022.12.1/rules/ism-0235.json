@@ -32,10 +32,10 @@
   "discussion": "As speakerphones are designed to pick up and transmit conversations in the vicinity of the device, using speakerphones in TOP SECRET areas presents a number of security risks and they should not be used. However, if personnel are able to reduce security risks through the use of an audio secure room that is secure during any conversations then they may be used.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0235",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Telephone systems",

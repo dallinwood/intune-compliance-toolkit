@@ -44,10 +44,10 @@
   "discussion": "Following a cybersecurity incident being identified, an organisation’s cybersecurity incident response plan should be enacted.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1819",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity incidents",
     "Responding to cybersecurity incidents",

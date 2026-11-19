@@ -36,10 +36,10 @@
   "discussion": "Sanitising media before first use can assist in reducing cyber supply chain risks, such as new media containing malicious code. In addition, sanitising media before first use in a different security domain can prevent potential data spills from occurring.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1600",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media usage",

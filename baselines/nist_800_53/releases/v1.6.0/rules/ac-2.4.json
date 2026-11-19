@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nAutomatically audit account creation, modification, enabling, disabling, and removal actions.\n\n## Discussion\n\nAccount management audit records are defined in accordance with AU-02 and reviewed, analyzed, and reported in accordance with AU-06.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-2.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -32,7 +32,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-02 Account Management"

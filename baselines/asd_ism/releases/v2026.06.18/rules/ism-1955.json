@@ -36,10 +36,10 @@
   "discussion": "Generally, credentials should not need to be changed; however, some events may necessitate a requirement for individual user accounts, or groups of user accounts, to change their credentials. This can include credentials being compromised (such as appearing in an online data breach database), being suspected of being compromised (such as when malicious actors gain access to a network), being discovered stored on networks in the clear, being transferred across networks in the clear, or when membership of shared user accounts change.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1955",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "Authentication hardening",

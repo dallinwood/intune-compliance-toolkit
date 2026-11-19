@@ -12,7 +12,7 @@ import {
 import { ODV_VARIABLE_ALLOWLIST } from './odv'
 import { createSelectionEntry, refKey, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
 import type { SupportingCheckChoices } from './supportingChecks'
-import { macosCheck } from './testRuleFixtures'
+import { macosCheck, numberOdv as numberOdvFixture } from './testRuleFixtures'
 
 const REF_A: RuleRef = { id: 'mscp.os_gatekeeper_enable', path: 'mscp/rules/os_gatekeeper_enable.json' }
 const REF_B: RuleRef = { id: 'mscp.os_firewall_enable', path: 'mscp/rules/os_firewall_enable.json' }
@@ -22,23 +22,23 @@ const GENERATED_AT = '2026-10-20T00:00:00.000Z'
 describe('buildSettingsFile', () => {
   it('wraps every selection entry with a schema version, timestamp and library releases', () => {
     const selections: SelectionMap = {
-      [refKey(REF_A)]: { ...createSelectionEntry(REF_A), enabled: true, odvValue: 15 },
+      [refKey(REF_A)]: { ...createSelectionEntry(REF_A), enabled: true, odvValues: { value: 15 } },
     }
 
     expect(buildSettingsFile(selections, GENERATED_AT, RELEASES)).toEqual({
-      schemaVersion: 2,
+      schemaVersion: 3,
       generatedAt: GENERATED_AT,
       libraryReleases: RELEASES,
-      selections: [{ ref: REF_A, enabled: true, odvValue: 15 }],
+      selections: [{ ref: REF_A, enabled: true, odvValues: { value: 15 } }],
     })
   })
 })
 
 describe('validateSettingsFile', () => {
-  it('round-trips a v2 file through JSON', () => {
+  it('round-trips a v3 file through JSON', () => {
     const file = buildSettingsFile(
       {
-        [refKey(REF_A)]: { ...createSelectionEntry(REF_A), enabled: true, odvValue: 'text' },
+        [refKey(REF_A)]: { ...createSelectionEntry(REF_A), enabled: true, odvValues: { value: 'text', other: 3 } },
         [refKey(REF_B)]: createSelectionEntry(REF_B),
       },
       GENERATED_AT,
@@ -68,28 +68,98 @@ describe('validateSettingsFile', () => {
   })
 
   it('rejects a missing libraryReleases', () => {
-    const result = validateSettingsFile({ schemaVersion: 2, generatedAt: 'x', selections: [] })
+    const result = validateSettingsFile({ schemaVersion: 3, generatedAt: 'x', selections: [] })
     expect(result.valid).toBe(false)
   })
 
   it('rejects a selection whose ref lacks a path', () => {
     const result = validateSettingsFile({
-      schemaVersion: 2,
+      schemaVersion: 3,
       generatedAt: 'x',
       libraryReleases: RELEASES,
-      selections: [{ ref: { id: 'mscp.x' }, enabled: true, odvValue: null }],
+      selections: [{ ref: { id: 'mscp.x' }, enabled: true, odvValues: {} }],
     })
     expect(result.valid).toBe(false)
   })
 
-  it('rejects an odvValue that is not a string, number or null', () => {
+  it('rejects an odvValues value that is not a string or number', () => {
     const result = validateSettingsFile({
-      schemaVersion: 2,
+      schemaVersion: 3,
       generatedAt: 'x',
       libraryReleases: RELEASES,
-      selections: [{ ref: REF_A, enabled: true, odvValue: true }],
+      selections: [{ ref: REF_A, enabled: true, odvValues: { value: true } }],
     })
     expect(result.valid).toBe(false)
+  })
+
+  it('rejects odvValues that is not an object', () => {
+    for (const odvValues of [null, [], 5, undefined]) {
+      const result = validateSettingsFile({
+        schemaVersion: 3,
+        generatedAt: 'x',
+        libraryReleases: RELEASES,
+        selections: [{ ref: REF_A, enabled: true, odvValues }],
+      })
+      expect(result.valid).toBe(false)
+    }
+  })
+
+  it('rejects a v3 file whose entries still use odvValue', () => {
+    const result = validateSettingsFile({
+      schemaVersion: 3,
+      generatedAt: 'x',
+      libraryReleases: RELEASES,
+      selections: [{ ref: REF_A, enabled: true, odvValue: 5 }],
+    })
+    expect(result.valid).toBe(false)
+  })
+})
+
+describe('validateSettingsFile with a v2 file', () => {
+  function version2File(selections: unknown[]) {
+    return { schemaVersion: 2, generatedAt: GENERATED_AT, libraryReleases: RELEASES, selections }
+  }
+
+  it('converts each odvValue to the ODV named value', () => {
+    const result = validateSettingsFile(
+      version2File([
+        { ref: REF_A, enabled: true, odvValue: 15 },
+        { ref: REF_B, enabled: false, odvValue: 'text' },
+        { ref: { id: 'mscp.c', path: 'mscp/c.json' }, enabled: true, odvValue: null },
+      ]),
+    )
+
+    expect(result).toEqual({
+      valid: true,
+      file: {
+        schemaVersion: 3,
+        generatedAt: GENERATED_AT,
+        libraryReleases: RELEASES,
+        selections: [
+          { ref: REF_A, enabled: true, odvValues: { value: 15 } },
+          { ref: REF_B, enabled: false, odvValues: { value: 'text' } },
+          { ref: { id: 'mscp.c', path: 'mscp/c.json' }, enabled: true, odvValues: {} },
+        ],
+      },
+      warnings: [],
+    })
+  })
+
+  it('rejects a v2 entry whose odvValue is not a string, number or null', () => {
+    expect(validateSettingsFile(version2File([{ ref: REF_A, enabled: true, odvValue: true }])).valid).toBe(false)
+  })
+
+  it('rejects a v2 entry that already uses odvValues', () => {
+    expect(validateSettingsFile(version2File([{ ref: REF_A, enabled: true, odvValues: {} }])).valid).toBe(false)
+  })
+
+  it('keeps supporting check choices', () => {
+    const result = validateSettingsFile({
+      ...version2File([]),
+      supportingChecks: { includeSupporting: true, overrides: {} },
+    })
+
+    expect(result).toMatchObject({ valid: true, file: { schemaVersion: 3, supportingChecks: { includeSupporting: true, overrides: {} } } })
   })
 })
 
@@ -111,17 +181,17 @@ describe('supporting check choices in a settings file', () => {
 
   it('imports a file exported before supporting checks existed, without the field or a warning', () => {
     const oldFormatFile = {
-      schemaVersion: 2,
+      schemaVersion: 3,
       generatedAt: '2026-10-20T00:00:00.000Z',
       libraryReleases: { mscp: 'release_27.0' },
-      selections: [{ ref: REF_A, enabled: true, odvValue: 15 }],
+      selections: [{ ref: REF_A, enabled: true, odvValues: { value: 15 } }],
     }
     expect(validateSettingsFile(oldFormatFile)).toEqual({ valid: true, file: oldFormatFile, warnings: [] })
   })
 
   it('drops malformed choices with a warning and still accepts the file', () => {
     const result = validateSettingsFile({
-      schemaVersion: 2,
+      schemaVersion: 3,
       generatedAt: GENERATED_AT,
       libraryReleases: RELEASES,
       selections: [],
@@ -129,21 +199,20 @@ describe('supporting check choices in a settings file', () => {
     })
     expect(result).toEqual({
       valid: true,
-      file: { schemaVersion: 2, generatedAt: GENERATED_AT, libraryReleases: RELEASES, selections: [] },
+      file: { schemaVersion: 3, generatedAt: GENERATED_AT, libraryReleases: RELEASES, selections: [] },
       warnings: [UNREADABLE_WARNING],
     })
   })
 
   it('keeps a disabled entry with an organization-defined value through export, validate and sanitize', () => {
     const passwordRef: RuleRef = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
-    const numberOdv: Odv = { datatype: 'number', description: 'Length', validation: { min: 1 }, recommended: 6, by_benchmark: {} }
     const rule = {
       id: passwordRef.id,
-      odv: numberOdv,
-      check: macosCheck({ shell: 'test $ODV -gt 0', result: null, additional_info: null }),
+      odvs: [numberOdvFixture()],
+      check: macosCheck({ shell: 'test $ODV_value -gt 0', result: null, additional_info: null }),
     } as unknown as Rule
     const exported = buildSettingsFile(
-      { [refKey(passwordRef)]: { ref: passwordRef, enabled: false, odvValue: 12 } },
+      { [refKey(passwordRef)]: { ref: passwordRef, enabled: false, odvValues: { value: 12 } } },
       GENERATED_AT,
       RELEASES,
       SUPPORTING_CHOICES,
@@ -157,7 +226,7 @@ describe('supporting check choices in a settings file', () => {
       new Map([[passwordRef.id, rule]]),
     )
 
-    expect(result.selections[refKey(passwordRef)]).toEqual({ ref: passwordRef, enabled: false, odvValue: 12 })
+    expect(result.selections[refKey(passwordRef)]).toEqual({ ref: passwordRef, enabled: false, odvValues: { value: 12 } })
     expect(result.droppedValues).toEqual([])
   })
 })
@@ -233,78 +302,95 @@ describe('sanitizeImportedSelections', () => {
     return { ref } as RuleRow
   }
 
-  function ruleWith(id: string, odv: Odv | null, checkShell: string): Rule {
+  function ruleWith(id: string, odvs: Odv[], checkShell: string): Rule {
     return {
       id,
-      odv,
+      odvs,
       check: macosCheck({ shell: checkShell, result: null, additional_info: null }),
     } as unknown as Rule
   }
 
-  const numberOdv: Odv = { datatype: 'number', description: 'Length', validation: { min: 1 }, recommended: 6, by_benchmark: {} }
-  const bannerOdv: Odv = { datatype: 'string', description: 'Banner', validation: null, recommended: 'x', by_benchmark: {} }
+  const numberOdv = numberOdvFixture({ description: 'Length' })
+  const bannerOdv = numberOdvFixture({ datatype: 'string', description: 'Banner', validation: null, recommended: 'x' })
 
   const rowsById = new Map([REF_A, PASSWORD_REF, BANNER_REF].map((ref) => [ref.id, rowFor(ref)]))
   const rulesById = new Map<string, Rule>([
-    [REF_A.id, ruleWith(REF_A.id, null, 'echo pass')],
-    [PASSWORD_REF.id, ruleWith(PASSWORD_REF.id, numberOdv, 'test $ODV -gt 0')],
-    [BANNER_REF.id, ruleWith(BANNER_REF.id, bannerOdv, ODV_VARIABLE_ALLOWLIST[BANNER_REF.id])],
+    [REF_A.id, ruleWith(REF_A.id, [], 'echo pass')],
+    [PASSWORD_REF.id, ruleWith(PASSWORD_REF.id, [numberOdv], 'test $ODV_value -gt 0')],
+    [BANNER_REF.id, ruleWith(BANNER_REF.id, [bannerOdv], ODV_VARIABLE_ALLOWLIST[`${BANNER_REF.id}:value`])],
   ])
 
-  function entry(ref: RuleRef, enabled: boolean, odvValue: SelectionEntry['odvValue']): SelectionEntry {
-    return { ref, enabled, odvValue }
+  function entry(ref: RuleRef, enabled: boolean, odvValues: SelectionEntry['odvValues'] = {}): SelectionEntry {
+    return { ref, enabled, odvValues }
   }
 
   it('rebuilds each ref from the loaded library instead of trusting the imported path', () => {
-    const tampered = entry({ id: REF_A.id, path: '../../../evil.json' }, true, null)
+    const tampered = entry({ id: REF_A.id, path: '../../../evil.json' }, true)
 
     const result = sanitizeImportedSelections([tampered], rowsById, rulesById)
 
-    expect(result.selections).toEqual({ [REF_A.id]: { ref: REF_A, enabled: true, odvValue: null } })
+    expect(result.selections).toEqual({ [REF_A.id]: { ref: REF_A, enabled: true, odvValues: {} } })
   })
 
-  it('keeps only ref, enabled and odvValue', () => {
-    const withExtras = { ...entry(REF_A, true, null), injected: 'x' } as SelectionEntry
+  it('keeps only ref, enabled and odvValues', () => {
+    const withExtras = { ...entry(REF_A, true), injected: 'x' } as SelectionEntry
 
     const result = sanitizeImportedSelections([withExtras], rowsById, rulesById)
 
-    expect(Object.keys(result.selections[REF_A.id]).sort()).toEqual(['enabled', 'odvValue', 'ref'])
+    expect(Object.keys(result.selections[REF_A.id]).sort()).toEqual(['enabled', 'odvValues', 'ref'])
   })
 
   it('reports unknown ids and leaves them out', () => {
-    const removed = entry({ id: 'mscp.removed_rule', path: 'mscp/rules/removed_rule.json' }, true, null)
+    const removed = entry({ id: 'mscp.removed_rule', path: 'mscp/rules/removed_rule.json' }, true)
 
-    const result = sanitizeImportedSelections([removed, entry(REF_A, true, null)], rowsById, rulesById)
+    const result = sanitizeImportedSelections([removed, entry(REF_A, true)], rowsById, rulesById)
 
     expect(Object.keys(result.selections)).toEqual([REF_A.id])
     expect(result.unknownIds).toEqual(['mscp.removed_rule'])
   })
 
   it('stores a valid value in canonical form', () => {
-    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, '015')], rowsById, rulesById)
+    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, { value: '015' })], rowsById, rulesById)
 
-    expect(result.selections[PASSWORD_REF.id].odvValue).toBe(15)
+    expect(result.selections[PASSWORD_REF.id].odvValues).toEqual({ value: 15 })
     expect(result.droppedValues).toEqual([])
   })
 
   it('drops an invalid value with the reason and keeps the selection', () => {
-    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, '$(reboot)')], rowsById, rulesById)
+    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, { value: '$(reboot)' })], rowsById, rulesById)
 
-    expect(result.selections[PASSWORD_REF.id]).toEqual({ ref: PASSWORD_REF, enabled: true, odvValue: null })
+    expect(result.selections[PASSWORD_REF.id]).toEqual({ ref: PASSWORD_REF, enabled: true, odvValues: {} })
     expect(result.droppedValues).toEqual([{ id: PASSWORD_REF.id, reason: 'Value must be a whole number.' }])
   })
 
-  it('drops a value for a rule that has no organization-defined value', () => {
-    const result = sanitizeImportedSelections([entry(REF_A, true, 'anything')], rowsById, rulesById)
+  it('drops a value for a rule that has no organization-defined value of that name', () => {
+    const result = sanitizeImportedSelections([entry(REF_A, true, { value: 'anything' })], rowsById, rulesById)
 
-    expect(result.selections[REF_A.id].odvValue).toBeNull()
-    expect(result.droppedValues).toEqual([{ id: REF_A.id, reason: 'This rule has no organization-defined value.' }])
+    expect(result.selections[REF_A.id].odvValues).toEqual({})
+    expect(result.droppedValues).toEqual([{ id: REF_A.id, reason: 'This rule has no organization-defined value named value.' }])
+  })
+
+  it('drops an unknown ODV name but keeps the valid ones, naming it in the reason', () => {
+    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, { value: 12, length: 3 })], rowsById, rulesById)
+
+    expect(result.selections[PASSWORD_REF.id].odvValues).toEqual({ value: 12 })
+    expect(result.droppedValues).toEqual([{ id: PASSWORD_REF.id, reason: 'This rule has no organization-defined value named length.' }])
+  })
+
+  it('validates each name against its own ODV', () => {
+    const labelOdv = numberOdvFixture({ name: 'label', datatype: 'string', validation: null, recommended: 'ab' })
+    const twoOdvRules = new Map([[PASSWORD_REF.id, ruleWith(PASSWORD_REF.id, [numberOdv, labelOdv], 'test $ODV_value -gt 0')]])
+
+    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, { value: '015', label: 'x y' })], rowsById, twoOdvRules)
+
+    expect(result.selections[PASSWORD_REF.id].odvValues).toEqual({ value: 15, label: 'x y' })
+    expect(result.droppedValues).toEqual([])
   })
 
   it('drops a value whose rule details could not be loaded', () => {
-    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, 12)], rowsById, new Map())
+    const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, { value: 12 })], rowsById, new Map())
 
-    expect(result.selections[PASSWORD_REF.id].odvValue).toBeNull()
+    expect(result.selections[PASSWORD_REF.id].odvValues).toEqual({})
     expect(result.droppedValues).toEqual([{ id: PASSWORD_REF.id, reason: 'The rule details could not be loaded.' }])
   })
 
@@ -313,17 +399,17 @@ describe('sanitizeImportedSelections', () => {
       id: 'mscp.system_settings_softwareupdate_current',
       path: 'mscp/rules/system_settings_softwareupdate_current.json',
     }
-    const deferralOdv: Odv = { datatype: 'string', description: 'Deferral', validation: null, recommended: '30d', by_benchmark: {} }
+    const deferralOdv = numberOdvFixture({ datatype: 'string', description: 'Deferral', validation: null, recommended: '30d' })
     const deferralRows = new Map([[deferralRef.id, rowFor(deferralRef)]])
-    const deferralRules = new Map([[deferralRef.id, ruleWith(deferralRef.id, deferralOdv, 'date -v -$ODV "+%s"')]])
+    const deferralRules = new Map([[deferralRef.id, ruleWith(deferralRef.id, [deferralOdv], 'date -v -$ODV_value "+%s"')]])
 
     const result = sanitizeImportedSelections(
-      [entry(deferralRef, true, '30')],
+      [entry(deferralRef, true, { value: '30' })],
       deferralRows,
       deferralRules,
     )
 
-    expect(result.selections[deferralRef.id].odvValue).toBeNull()
+    expect(result.selections[deferralRef.id].odvValues).toEqual({})
     expect(result.droppedValues).toEqual([
       {
         id: deferralRef.id,
@@ -333,19 +419,19 @@ describe('sanitizeImportedSelections', () => {
   })
 
   it('trims trailing newlines from a variable-mode banner', () => {
-    const result = sanitizeImportedSelections([entry(BANNER_REF, true, "It's ours\n")], rowsById, rulesById)
+    const result = sanitizeImportedSelections([entry(BANNER_REF, true, { value: "It's ours\n" })], rowsById, rulesById)
 
-    expect(result.selections[BANNER_REF.id].odvValue).toBe("It's ours")
+    expect(result.selections[BANNER_REF.id].odvValues).toEqual({ value: "It's ours" })
   })
 
   it('lets the last entry win for a duplicated id and reports the duplicate', () => {
     const result = sanitizeImportedSelections(
-      [entry(PASSWORD_REF, false, 10), entry(PASSWORD_REF, true, 20)],
+      [entry(PASSWORD_REF, false, { value: 10 }), entry(PASSWORD_REF, true, { value: 20 })],
       rowsById,
       rulesById,
     )
 
-    expect(result.selections[PASSWORD_REF.id]).toEqual({ ref: PASSWORD_REF, enabled: true, odvValue: 20 })
+    expect(result.selections[PASSWORD_REF.id]).toEqual({ ref: PASSWORD_REF, enabled: true, odvValues: { value: 20 } })
     expect(result.duplicateIds).toEqual([PASSWORD_REF.id])
   })
 })
@@ -354,9 +440,10 @@ describe('importedIdsWithOdvValues', () => {
   it('lists known ids that carry a value, once each', () => {
     const rowsById = new Map([[REF_A.id, { ref: REF_A } as RuleRow]])
     const entries: SelectionEntry[] = [
-      { ref: REF_A, enabled: true, odvValue: 1 },
-      { ref: REF_A, enabled: true, odvValue: 2 },
-      { ref: REF_B, enabled: true, odvValue: 3 },
+      { ref: REF_A, enabled: true, odvValues: { value: 1 } },
+      { ref: REF_A, enabled: true, odvValues: { value: 2 } },
+      { ref: REF_B, enabled: true, odvValues: { value: 3 } },
+      { ref: REF_A, enabled: true, odvValues: {} },
     ]
 
     expect(importedIdsWithOdvValues(entries, rowsById)).toEqual([REF_A.id])

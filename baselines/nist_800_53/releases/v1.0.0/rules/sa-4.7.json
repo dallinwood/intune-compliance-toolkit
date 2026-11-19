@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Limit the use of commercially provided information assurance and information assurance-enabled information technology products to those products that have been successfully evaluated against a National Information Assurance partnership (NIAP)-approved Protection Profile for a specific technology type, if such a profile exists; and\n- (b) Require, if no NIAP-approved Protection Profile exists for a specific technology type but a commercially provided information technology product relies on cryptographic functionality to enforce its security policy, that the cryptographic module is FIPS-validated or NSA-approved.\n\n## Discussion\n\nSee [NIAP CCEVS](https://www.niap-ccevs.org) for additional information on NIAP. See [NIST CMVP](https://csrc.nist.gov/projects/cryptographic-module-validation-program) for additional information on FIPS-validated cryptographic modules.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-4.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IA-7",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-04 Acquisition Process"

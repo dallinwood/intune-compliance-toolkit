@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Employ the following tools and techniques to analyze the characteristics and behavior of malicious code: [Assignment: organization-defined tools and techniques]; and\n- (b) Incorporate the results from malicious code analysis into organizational incident response and flaw remediation processes.\n\n## Discussion\n\nThe use of malicious code analysis tools provides organizations with a more in-depth understanding of adversary tradecraft (i.e., tactics, techniques, and procedures) and the functionality and purpose of specific instances of malicious code. Understanding the characteristics of malicious code facilitates effective organizational responses to current and future threats. Organizations can conduct malicious code analyses by employing reverse engineering techniques or by monitoring the behavior of executing code.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-3.10",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-03 Malicious Code Protection"

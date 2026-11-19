@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nLimit personally identifiable information contained in visitor access records to the following elements identified in the privacy risk assessment: [Assignment: organization-defined elements].\n\n## Discussion\n\nOrganizations may have requirements that specify the contents of visitor access records. Limiting personally identifiable information in visitor access records when such information is not needed for operational purposes helps reduce the level of privacy risk created by a system.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-8.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "RA-3",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-08 Visitor Access Records"

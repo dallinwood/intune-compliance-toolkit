@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnforce configurable network communications traffic volume thresholds reflecting limits on audit log storage capacity and [Selection: reject; delay] network traffic above those thresholds.\n\n## Discussion\n\nOrganizations have the capability to reject or delay the processing of network communications traffic if audit logging information about such traffic is determined to exceed the storage capacity of the system audit logging function. The rejection or delay response is triggered by the established organizational traffic volume thresholds that can be adjusted based on changes to audit log storage capacity.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-5.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-05 Response to Audit Logging Process Failures"

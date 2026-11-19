@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nReview and resolve input validation errors within [Assignment: organization-defined time period].\n\n## Discussion\n\nResolution of input validation errors includes correcting systemic causes of errors and resubmitting transactions with corrected input. Input validation errors are those related to the information inputs defined by the organization in the base control ( SI-10).",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-10.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-10 Information Input Validation"

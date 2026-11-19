@@ -15,14 +15,14 @@
   "discussion": "## Control\n\n- (a) Allow the use of [Assignment: organization-defined authentication factors] that are different from the primary authentication factors after the number of organization-defined consecutive invalid logon attempts have been exceeded; and\n- (b) Enforce a limit of [Assignment: organization-defined number] consecutive invalid logon attempts through use of the alternative factors by a user during a [Assignment: organization-defined time period].\n\n## Discussion\n\nThe use of alternate authentication factors supports the objective of availability and allows a user who has inadvertently been locked out to use additional authentication factors to bypass the lockout.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-7.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IA-3"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-07 Unsuccessful Logon Attempts"

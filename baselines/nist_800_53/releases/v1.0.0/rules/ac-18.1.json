@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nProtect wireless access to the system using authentication of [Selection (one or more): users; devices] and encryption.\n\n## Discussion\n\nWireless networking capabilities represent a significant potential vulnerability that can be exploited by adversaries. To protect systems with wireless access points, strong authentication of users and devices along with strong encryption can reduce susceptibility to threats by adversaries involving wireless technologies.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-18.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-8",
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-18 Wireless Access"

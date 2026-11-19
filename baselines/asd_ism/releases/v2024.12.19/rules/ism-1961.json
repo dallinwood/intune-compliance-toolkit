@@ -36,10 +36,10 @@
   "discussion": "Event log monitoring is critical to maintaining the security posture of systems. Notably, such activities involve analysing event logs in a timely manner to detect cyber security events, thereby, leading to the identification of cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1961",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Monitoring",
     "Event logging and monitoring",

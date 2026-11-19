@@ -36,10 +36,10 @@
   "discussion": "System owners are responsible for ensuring the secure operation of their systems. However, system owners may delegate the day-to-day management and operation of their systems to system managers. It is recommended that system owners collaborate with their organisation’s internal cybersecurity teams or engage external cybersecurity specialists to assist them with their cybersecurity responsibilities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1071",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity roles",
     "System owners",

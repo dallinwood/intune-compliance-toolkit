@@ -30,7 +30,7 @@
   "discussion": "Unsupported software and systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.\n\nSoftware and systems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.\n\nWhen maintenance updates and patches are no longer available, software is no longer considered supported and should be upgraded or decommissioned.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_supported_operating_system",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -73,7 +73,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

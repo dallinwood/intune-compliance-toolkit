@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Validate the binding of the information producer identity to the information at [Assignment: organization-defined frequency]; and\n- (b) Perform [Assignment: organization-defined actions] in the event of a validation error.\n\n## Discussion\n\nValidating the binding of the information producer identity to the information prevents the modification of information between production and review. The validation of bindings can be achieved by, for example, using cryptographic checksums. Organizations determine if validations are in response to user requests or generated automatically.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-10.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-10 Non-repudiation"

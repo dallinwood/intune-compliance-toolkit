@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProhibit the direct connection of [Assignment: organization-defined system] to a public network.\n\n## Discussion\n\nA direct connection is a dedicated physical or virtual connection between two or more systems. A public network is a network accessible to the public, including the Internet and organizational extranets with public access.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.28",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

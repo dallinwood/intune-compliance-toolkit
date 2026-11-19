@@ -36,10 +36,10 @@
   "discussion": "Since information technology (IT) equipment can process, store or communicate sensitive or classified data, it is important that an IT equipment management policy is developed, implemented and maintained to ensure that IT equipment, and the data it processes, stores or communicates, is protected in an appropriate manner.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1551",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for information technology equipment",
     "IT equipment usage",

@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nEstablish, maintain, and update [Assignment: organization-defined frequency] an inventory of all systems, applications, and projects that process personally identifiable information.\n\n## Discussion\n\nAn inventory of systems, applications, and projects that process personally identifiable information supports the mapping of data actions, providing individuals with privacy notices, maintaining accurate personally identifiable information, and limiting the processing of personally identifiable information when such information is not needed for operational purposes. Organizations may use this inventory to ensure that systems only process the personally identifiable information for authorized purposes and that this processing is still relevant and necessary for the purpose specified therein.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-5.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -36,7 +36,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-05 System Inventory"

@@ -48959,6 +48959,6 @@
       "title": "Organisational data generated, collected or processed by artificial intelligence applications is not used for training, fine-tuning or improving artificial intelligence models unless informed and explicit consent has been obtained from data owners in advance."
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "asd_ism"
 }

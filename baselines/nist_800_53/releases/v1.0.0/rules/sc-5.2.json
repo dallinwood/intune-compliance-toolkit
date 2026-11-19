@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nManage capacity, bandwidth, or other redundancy to limit the effects of information flooding denial-of-service attacks.\n\n## Discussion\n\nManaging capacity ensures that sufficient capacity is available to counter flooding attacks. Managing capacity includes establishing selected usage priorities, quotas, partitioning, or load balancing.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-5.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-05 Denial-of-service Protection"

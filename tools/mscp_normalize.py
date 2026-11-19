@@ -6,6 +6,7 @@ import re
 import yaml
 
 from tools.library_output import SCHEMA_VERSION, UnsupportedUpstreamData
+from tools.odv_placeholders import placeholder, placeholder_errors
 from tools.source_lock import SourceLock
 
 MANUAL_TAG_PRIORITY = ("manual", "inherent", "permanent", "n_a", "not_applicable", "supplemental")
@@ -21,6 +22,9 @@ MACOS_TARGET = "macOS"
 MSCP_SCRIPT_LANGUAGE = "bash"
 VERSION_KEY_PATTERN = re.compile(r"^\d+\.\d+$")
 ODV_PLACEHOLDER = "$ODV"
+ODV_NAME = "value"
+ODV_QUOTING = "unquoted"
+UPSTREAM_ODV_TOKEN_PATTERN = re.compile(r"\$ODV(?![A-Za-z0-9_])")
 VENDOR_DESCRIPTION_MARKER = "Vendor Description"
 UPSTREAM_DATA_DIRECTORY = "src/mscp/data/"
 
@@ -88,6 +92,16 @@ def _iter_strings(value):
     elif isinstance(value, list):
         for child in value:
             yield from _iter_strings(child)
+
+
+def _rename_odv_tokens(value):
+    if isinstance(value, str):
+        return UPSTREAM_ODV_TOKEN_PATTERN.sub(placeholder(ODV_NAME), value)
+    if isinstance(value, dict):
+        return {key: _rename_odv_tokens(child) for key, child in value.items()}
+    if isinstance(value, list):
+        return [_rename_odv_tokens(child) for child in value]
+    return value
 
 
 def _normalize_result(result, where: str, rule_id: str) -> dict | None:
@@ -247,9 +261,9 @@ def _architecture(tags: list, rule_id: str):
     return present[0] if present else None
 
 
-def _normalize_odv(odv, macos_benchmark_names: set, rule_id: str):
+def _normalize_odvs(odv, macos_benchmark_names: set, rule_id: str) -> list[dict]:
     if odv is None:
-        return None
+        return []
     if not isinstance(odv, dict):
         raise UnsupportedUpstreamData(f"{rule_id}: odv must be a mapping")
     hint = odv.get("hint")
@@ -257,7 +271,8 @@ def _normalize_odv(odv, macos_benchmark_names: set, rule_id: str):
         raise UnsupportedUpstreamData(f"{rule_id}: odv needs a hint mapping and a recommended value")
     if hint.get("datatype") not in ODV_DATATYPES:
         raise UnsupportedUpstreamData(f"{rule_id}: odv datatype {hint.get('datatype')!r} is unsupported")
-    return {
+    return [{
+        "name": ODV_NAME,
         "datatype": hint["datatype"],
         "description": hint.get("description"),
         "validation": hint.get("validation"),
@@ -267,7 +282,8 @@ def _normalize_odv(odv, macos_benchmark_names: set, rule_id: str):
             for name, value in odv.items()
             if name not in ODV_NON_BENCHMARK_KEYS and name in macos_benchmark_names
         },
-    }
+        "quoting": ODV_QUOTING,
+    }]
 
 
 def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict | None:
@@ -394,7 +410,7 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         "tags": tags,
         "references": upstream.get("references") or {},
         "check": check,
-        "odv": _normalize_odv(upstream.get("odv"), macos_benchmark_names, rule_id),
+        "odvs": _normalize_odvs(upstream.get("odv"), macos_benchmark_names, rule_id),
         "remediation": _remediation(
             default_fix,
             fix_by_version,
@@ -404,12 +420,12 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
             upstream.get("ddm_info"),
         ),
     }
-    if normalized["odv"] is None and any(
-        ODV_PLACEHOLDER in text for text in _iter_strings(normalized)
-    ):
-        raise UnsupportedUpstreamData(
-            f"{rule_id}: uses {ODV_PLACEHOLDER} but the rule has no odv block"
-        )
+    odvs = normalized.pop("odvs")
+    normalized = _rename_odv_tokens(normalized)
+    normalized["odvs"] = odvs
+    problems = placeholder_errors(normalized)
+    if problems:
+        raise UnsupportedUpstreamData("; ".join(problems))
     return normalized
 
 

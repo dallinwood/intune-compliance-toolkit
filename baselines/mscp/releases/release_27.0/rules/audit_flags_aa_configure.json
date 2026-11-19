@@ -65,7 +65,7 @@
   "discussion": "The auditing system _MUST_ be configured to flag authorization and authentication (aa) events.\n\nAuthentication events contain information about the identity of a user, server, or client. Authorization events contain information about permissions, rights, and rules. If audit records do not include aa events, it is difficult to identify incidents and to correlate incidents to subsequent events.\n\nAudit records can be generated from various components within the information system (e.g., via a module or policy filter).\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_flags_aa_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -178,7 +178,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

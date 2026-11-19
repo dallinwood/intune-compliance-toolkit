@@ -36,10 +36,10 @@
   "discussion": "When personnel send and receive files via unauthorised online services, such as messaging apps and social media, they often bypass controls put in place to detect and quarantine malicious code. Advising personnel to send and receive files via authorised online services instead will ensure files are appropriately protected and scanned for malicious code.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0824",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Cyber security awareness training",

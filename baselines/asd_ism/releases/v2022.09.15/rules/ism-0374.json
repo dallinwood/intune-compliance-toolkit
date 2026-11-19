@@ -36,10 +36,10 @@
   "discussion": "Documenting processes and procedures for media disposal will ensure that an organisation carries out media disposal in an appropriate and consistent manner.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0374",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Media",
     "Media disposal",

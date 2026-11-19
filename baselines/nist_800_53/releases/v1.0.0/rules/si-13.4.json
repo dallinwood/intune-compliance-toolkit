@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nIf system component failures are detected:\n\n- (a) Ensure that the standby components are successfully and transparently installed within [Assignment: organization-defined time period]; and\n- (b)  [Selection (one or more): Activate [Assignment: organization-defined alarm]; Automatically shut down the system; [Assignment: organization-defined action]].\n\n## Discussion\n\nAutomatic or manual transfer of components from standby to active mode can occur upon the detection of component failures.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-13.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-13 Predictable Failure Prevention"

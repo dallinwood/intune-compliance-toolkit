@@ -81,7 +81,7 @@
   "discussion": "Open \"safe\" files after downloading _MUST_ be disabled in Safari.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_safari_open_safe_downloads_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -147,7 +147,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

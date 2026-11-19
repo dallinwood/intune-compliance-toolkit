@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDisable feedback to senders on protocol format validation failure.\n\n## Discussion\n\nDisabling feedback to senders when there is a failure in protocol validation format prevents adversaries from obtaining information that would otherwise be unavailable.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.23",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

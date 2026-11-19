@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide visibility into network traffic at external and key internal system interfaces to optimize the effectiveness of monitoring devices.\n\n## Discussion\n\nEncrypted traffic, asymmetric routing architectures, capacity and latency limitations, and transitioning from older to newer technologies (e.g., IPv4 to IPv6 network protocol transition) may result in blind spots for organizations when analyzing network traffic. Collecting, decrypting, pre-processing, and distributing only relevant traffic to monitoring devices can streamline the efficiency and use of devices and optimize traffic analysis.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.25",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

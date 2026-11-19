@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide a logout capability for user-initiated communications sessions whenever authentication is used to gain access to [Assignment: organization-defined information resources].\n\n## Discussion\n\nInformation resources to which users gain access via authentication include local workstations, databases, and password-protected websites or web-based services.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-12.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-12 Session Termination"

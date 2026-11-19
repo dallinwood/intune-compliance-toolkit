@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nImplement a configurable capability to automatically disable the system if [Assignment: organization-defined security violations] are detected.\n\n## Discussion\n\nOrganizations consider whether the capability to automatically disable the system conflicts with continuity of operations requirements specified as part of CP-2 or IR-4(3) . Security violations include cyber-attacks that have compromised the integrity of the system or exfiltrated organizational information and serious errors in software programs that could adversely impact organizational missions or functions or jeopardize the safety of individuals.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-4.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-04 Incident Handling"

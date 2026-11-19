@@ -5,7 +5,7 @@ import type { PulledInOutcome } from '../../logic/generateReview'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { chainAccessibleText, chainText, type SupportingCheckOffer } from '../../logic/supportingChecks'
 import { odvSubstitutionMode } from '../../logic/odv'
-import type { OrgDefinedValue, RuleRef } from '../../logic/selectionEntry'
+import type { OdvValues, RuleRef } from '../../logic/selectionEntry'
 import type { SupportingCheckValueSummary } from '../../logic/supportingCheckValue'
 import { useSelectionStore } from '../../state/selectionStore'
 import type { Rule } from '../../types/library'
@@ -42,7 +42,7 @@ export function SupportingCheckRow({
   offer,
   ruleRef,
   rule,
-  storedValue,
+  storedValues,
   title,
   checked,
   toggleDisabled,
@@ -55,7 +55,7 @@ export function SupportingCheckRow({
   ruleRef: RuleRef
   // Known once the offered rules are fetched (the option is on); the quick editor needs it.
   rule: Rule | null
-  storedValue: OrgDefinedValue | null
+  storedValues: OdvValues
   title: string
   checked: boolean
   toggleDisabled: boolean
@@ -100,21 +100,25 @@ export function SupportingCheckRow({
           needsValue && <p className="text-xs text-muted-foreground">Has an organization value</p>
         )}
         {outcome?.kind === 'manual' && <p className="break-words text-xs text-muted-foreground">Not scripted: {outcome.reason}</p>}
-        {editing && rule?.odv && (
-          <div id={editorId} className="pt-2">
-            <OrgDefinedValueInput
-              ruleId={rule.id}
-              odv={rule.odv}
-              mode={odvSubstitutionMode(rule)}
-              storedValue={storedValue}
-              onCommit={(value) => setOdvValue(ruleRef, value)}
-              onClear={() => clearOdvValue(ruleRef)}
-            />
+        {editing && rule !== null && rule.odvs.length > 0 && (
+          <div id={editorId} className="space-y-3 pt-2">
+            {rule.odvs.map((odv) => (
+              <OrgDefinedValueInput
+                key={odv.name}
+                ruleId={rule.id}
+                odvName={odv.name}
+                odv={odv}
+                mode={odvSubstitutionMode(rule, odv)}
+                storedValue={Object.hasOwn(storedValues, odv.name) ? storedValues[odv.name] : null}
+                onCommit={(value) => setOdvValue(ruleRef, odv.name, value)}
+                onClear={() => clearOdvValue(ruleRef, odv.name)}
+              />
+            ))}
           </div>
         )}
       </div>
       <div className="flex shrink-0 gap-1">
-        {rule?.odv && (
+        {rule !== null && rule.odvs.length > 0 && (
           <Button type="button" size="xs" variant="ghost" aria-expanded={editing} aria-controls={editorId} onClick={() => setEditing(!editing)}>
             Change
           </Button>

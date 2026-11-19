@@ -40,7 +40,7 @@
   "discussion": "# Principle\n\nPersonnel are provided with ongoing cyber security awareness training, including operational security considerations, tailored to their duties, access levels and current cyber threats.\n\n# Indicators of Good Practice\n\nNot effective:\n- No requirement exists for personnel to complete cyber security awareness training before being granted access to critical, privileged or business systems.\n- No training completion records are maintained.\n\nPartially effective:\n- A training program exists but is not tailored to the specific risks of the systems in-scope.\n- A requirement to complete training before access is granted exists but is not consistently enforced.\n- Completion records are maintained but show significant gaps in coverage.\n\nFully effective:\n- Role-tailored training programs address the specific risks, data handling obligations and incident reporting requirements relevant to in-scope systems.\n- All personnel complete role-tailored training before being granted access to organisational systems and data, with refresher training mandated within a cycle defined by the organisation.\n- Completion records are maintained and demonstrate full coverage.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-14.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -69,7 +69,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-14 - Cyber security awareness training"

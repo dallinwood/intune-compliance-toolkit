@@ -36,10 +36,10 @@
   "discussion": "Credentials are changed if:\n\n- they are compromised\n- they are suspected of being compromised\n- they are discovered stored on networks in the clear\n- they are discovered being transferred across networks in the clear\n- membership of a shared account changes\n- they have not been changed in the past 12 months.\n\nGenerally, credentials should not need to be changed on a frequent basis. However, some events may necessitate the requirement for individual accounts, or groups of accounts, to change their credentials. This can include credentials being compromised (such as appearing in an online data breach database), being suspected of being compromised (such as when malicious actors gain access to a network), being discovered stored on networks in the clear, being transferred across networks in the clear, when membership of shared accounts change and if they have not been changed in the past 12 months.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1590",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

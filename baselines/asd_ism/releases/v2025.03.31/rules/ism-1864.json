@@ -36,10 +36,10 @@
   "discussion": "To allow an organisation to be capable of holding personnel accountable for the actions they perform on their systems, it is important that the organisation develops, implements and maintains a system usage policy governing the use of their systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1864",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Access to systems and their resources",

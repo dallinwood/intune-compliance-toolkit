@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nVulnerabilities in systems (infrastructure, operating systems, applications and data) are identified, documented, validated and prioritised for remediation or mitigation in a timely manner, with all remediation and mitigation actions verified for effectiveness.\n\n# Indicators of Good Practice\n\nNot effective:\n- No risk thresholds are defined for vulnerability remediation.\n- Vulnerabilities exceeding acceptable risk levels are not tracked or remediated.\n\nPartially effective:\n- Risk thresholds are defined but vulnerabilities exceeding them are not consistently remediated within defined timeframes.\n- Compensating controls are applied in some cases but are not formally documented or approved.\n\nFully effective:\n- Risk thresholds defined by the organisation exist, and vulnerabilities exceeding them are remediated or have approved compensating controls within organisationally defined timeframes.\n- Remediation and mitigation actions are tracked to closure with verification that actions reduced the risk as intended.\n- The process is sustained, with historical data demonstrating consistent performance across organisationally defined reporting periods.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-06.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -85,7 +85,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-06 - Vulnerability management"

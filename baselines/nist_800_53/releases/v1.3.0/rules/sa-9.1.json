@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Conduct an organizational assessment of risk prior to the acquisition or outsourcing of information security services; and\n- (b) Verify that the acquisition or outsourcing of dedicated information security services is approved by [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nInformation security services include the operation of security devices, such as firewalls or key management services as well as incident monitoring, analysis, and response. Risks assessed can include system, mission or business, security, privacy, or supply chain risks.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-9.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-6",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-09 External System Services"

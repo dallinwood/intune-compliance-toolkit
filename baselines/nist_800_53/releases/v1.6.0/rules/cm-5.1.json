@@ -20,7 +20,7 @@
   "discussion": "## Control\n\n- (a) Enforce access restrictions using [Assignment: organization-defined automated mechanisms] ; and\n- (b) Automatically generate audit records of the enforcement actions.\n\n## Discussion\n\nOrganizations log system accesses associated with applying configuration changes to ensure that configuration change control is implemented and to support after-the-fact actions should organizations discover any unauthorized changes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-5.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-05 Access Restrictions for Change"

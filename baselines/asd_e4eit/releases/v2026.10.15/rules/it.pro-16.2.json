@@ -40,7 +40,7 @@
   "discussion": "# Principle\n\nCyber supply chains supporting systems (infrastructure, operating systems, applications and data) are secure, resilient and support effective and coordinated cyber security incident response.\n\n# Indicators of Good Practice\n\nNot effective:\n- No monitoring is performed for indicators of supply chain compromise affecting software, components or services in use.\n- Vendor security notifications and threat advisories are not reviewed or actioned.\n- When supply chain compromise is identified, neither containment nor investigation is performed.\n- Supply chain compromise events are integrated into neither incident response nor risk management.\n\nPartially effective:\n- Monitoring occurs but does not draw on relevant threat intelligence sources or does not cover all in-scope systems.\n- Notifications and advisories are reviewed but exposure assessment and response are not conducted in a timely manner.\n- Containment occurs but investigation for evidence of exploitation is not consistently undertaken.\n- Some integration exists but findings are not reflected in the risk register or incident response procedures.\n\nFully effective:\n- Monitoring covers software, components and services in use, drawing on relevant threat intelligence sources.\n- Vendor security notifications and threat advisories are reviewed, exposure is assessed and response actions are initiated within defined timeframes.\n- Identified supply chain compromises are responded to in timeframes defined by the organisation.\n- Supply chain compromise events are integrated with incident response and reflected in the risk register.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-16.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -65,7 +65,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-16 - Cyber supply chain security"

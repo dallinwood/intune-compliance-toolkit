@@ -24,10 +24,10 @@
   "discussion": "The sanitisation of mobile devices in emergency situations can assist in reducing the potential for compromise of data by malicious actors. This may be achieved through the use of a remote wipe capability or a cryptographic key zeroise or sanitisation function if present.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0702",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device usage",

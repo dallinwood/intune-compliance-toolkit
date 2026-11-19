@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nMaintain a separate execution domain for each thread in [Assignment: organization-defined multi-threaded processing].\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-39.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-39 Process Isolation"

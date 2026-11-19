@@ -36,10 +36,10 @@
   "discussion": "Content checking, such as keyword checks, metadata checks and protective marking checks, aims to ensure that files do not contain any content that could cause a data spill or facilitate unauthorised export of data from systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1965",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Content filtering",

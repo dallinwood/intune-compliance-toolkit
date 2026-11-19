@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nImplement the following security responses automatically if baseline configurations are changed in an unauthorized manner: [Assignment: organization-defined security responses].\n\n## Discussion\n\nAutomated security responses include halting selected system functions, halting system processing, and issuing alerts or notifications to organizational personnel when there is an unauthorized modification of a configuration item.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-3.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-03 Configuration Change Control"

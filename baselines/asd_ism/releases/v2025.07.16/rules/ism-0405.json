@@ -36,10 +36,10 @@
   "discussion": "Personnel seeking access to systems and their resources should have a genuine business requirement validated by their manager or another appropriate authority.\n\nIn addition, centrally logging and analysing unprivileged access events can assist in monitoring the security posture of systems and their resources, detecting malicious behaviour and contributing to investigations following cybersecurity incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0405",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Access to systems and their resources",

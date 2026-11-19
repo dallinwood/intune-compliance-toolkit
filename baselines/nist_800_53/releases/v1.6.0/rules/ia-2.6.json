@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nImplement multi-factor authentication for [Selection (one or more): local; network; remote] access to [Selection (one or more): privileged accounts; non-privileged accounts] such that:\n\n- (a) One of the factors is provided by a device separate from the system gaining access; and\n- (b) The device meets [Assignment: organization-defined strength of mechanism requirements].\n\n## Discussion\n\nThe purpose of requiring a device that is separate from the system to which the user is attempting to gain access for one of the factors during multi-factor authentication is to reduce the likelihood of compromising authenticators or credentials stored on the system. Adversaries may be able to compromise such authenticators or credentials and subsequently impersonate authorized users. Implementing one of the factors on a separate device (e.g., a hardware token), provides a greater strength of mechanism and an increased level of assurance in the authentication process.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-2.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-6"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-02 Identification and Authentication (Organizational Users)"

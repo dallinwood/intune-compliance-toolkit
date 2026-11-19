@@ -36,10 +36,10 @@
   "discussion": "Flashing network devices with trusted firmware, obtained from vendors via trusted means, before network devices are used for the first time can assist in reducing cyber supply chain risks, such as the introduction of malicious firmware resulting from a cyber supply chain interdiction attack or a compromised vendor development environment or authoritative source for software. Furthermore, to maintain the ongoing integrity of network devices, their firmware and running configurations should be verified against an approved known-good baseline following patching, on detection of anomalous behaviour and at least monthly. This is especially important for internet-facing network devices.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1800",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Network design and configuration",

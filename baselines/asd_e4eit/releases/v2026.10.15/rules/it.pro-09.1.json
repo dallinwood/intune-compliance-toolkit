@@ -48,7 +48,7 @@
   "discussion": "# Principle\n\nData communicated between different security domains for systems (infrastructure and applications) is controlled and subject to inspection and verification.\n\n# Indicators of Good Practice\n\nNot effective:\n- No outbound content inspection is deployed.\n- Sensitive data can leave the organisation through any egress path without detection or control.\n\nPartially effective:\n- Outbound inspection is deployed but does not cover all applicable egress paths.\n- Rules are configured but do not cover all classified, regulated or high-value data types.\n- Alerts are generated but are not triaged or acted upon in a timely manner.\n\nFully effective:\n- Outbound content inspection is deployed covering all applicable egress paths.\n- Rules are configured to detect unauthorised transfer of classified, regulated and high-value data.\n- Alerts are triaged and responded to within accepted risk timeframes defined by the organisation.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-09.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -79,7 +79,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-09 - Content filtering"

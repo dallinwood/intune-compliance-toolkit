@@ -20,10 +20,10 @@
   "discussion": "## Control\n\n- (a) Employ fire suppression systems that activate automatically and notify [Assignment: organization-defined personnel or roles] and [Assignment: organization-defined emergency responders]; and\n- (b) Employ an automatic fire suppression capability when the facility is not staffed on a continuous basis.\n\n## Discussion\n\nOrganizations can identify specific personnel, roles, and emergency responders if individuals on the notification list need to have appropriate access authorizations and/or clearances (e.g., to enter to facilities where access is restricted due to the impact level or classification of information within the facility). Notification mechanisms may require independent energy sources to ensure that the notification capability is not adversely affected by the fire.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-13.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-13 Fire Protection"

@@ -36,10 +36,10 @@
   "discussion": "MFD event logs, including metadata and shadow copies of documents printed, scanned or copied by users, can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cyber security incidents. To facilitate such activities, MFD event logs should be captured and stored centrally.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1855",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Fax machines and multifunction devices",

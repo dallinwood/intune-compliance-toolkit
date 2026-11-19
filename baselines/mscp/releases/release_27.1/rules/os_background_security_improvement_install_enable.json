@@ -28,7 +28,7 @@
   "discussion": "Background Security Improvements _MUST_ be configured to enforce automatic installation and that the user cannot modify the setting within Settings.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_background_security_improvement_install_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -79,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -36,10 +36,10 @@
   "discussion": "Before IT equipment can be released into the public domain, it needs to be sanitised, destroyed or declassified. As sanitised, destroyed or declassified IT equipment still presents a security risk, albeit very minor, an appropriate authority needs to formally authorise its release into the public domain. Furthermore, as part of disposal processes, removing labels and markings indicating the owner, sensitivity, classification or any other marking that can associate IT equipment with its prior use will ensure it does not draw undue attention following its disposal.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1217",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for information technology equipment",
     "IT equipment disposal",

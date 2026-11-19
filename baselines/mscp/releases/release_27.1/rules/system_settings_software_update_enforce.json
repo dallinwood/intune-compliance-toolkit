@@ -47,7 +47,7 @@
   "discussion": "Software Update _MUST_ be configured to enforce automatic update is enabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_software_update_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -111,7 +111,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

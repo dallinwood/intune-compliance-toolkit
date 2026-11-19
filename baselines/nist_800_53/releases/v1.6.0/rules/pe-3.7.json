@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nLimit access using physical barriers.\n\n## Discussion\n\nPhysical barriers include bollards, concrete slabs, jersey walls, and hydraulic active vehicle barriers.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-3.7",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-03 Physical Access Control"

@@ -1,7 +1,7 @@
 import { nestListItems, parseDiscussionIn, parseInline, type DiscussionFormat, type InlineSegment, type ListNode } from '../../logic/discussionMarkup'
 import { sourceAttributeHighlightLanguage } from '../../logic/codeLanguage'
-import { displayWithOdv, type CodeOdvValues } from '../../logic/odv'
-import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import { displayWithOdvs, type CodeOdvValues } from '../../logic/odv'
+import type { OdvValues } from '../../logic/selectionEntry'
 import { OdvCodeBlock } from './CodeBlock'
 
 function InlineText({ text, format }: { text: string; format: DiscussionFormat }) {
@@ -34,20 +34,20 @@ function InlineText({ text, format }: { text: string; format: DiscussionFormat }
 function NestedList({
   nodes,
   format,
-  odvValue,
+  odvValues,
   isNested = false,
 }: {
   nodes: ListNode[]
   format: DiscussionFormat
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   isNested?: boolean
 }) {
   return (
     <ul className={`${isNested ? 'mt-1 list-[circle]' : 'list-disc'} space-y-1 pl-5 break-words`}>
       {nodes.map((node, nodeIndex) => (
         <li key={nodeIndex}>
-          <InlineText text={displayWithOdv(node.text, odvValue)} format={format} />
-          {node.children.length > 0 && <NestedList nodes={node.children} format={format} odvValue={odvValue} isNested />}
+          <InlineText text={displayWithOdvs(node.text, odvValues)} format={format} />
+          {node.children.length > 0 && <NestedList nodes={node.children} format={format} odvValues={odvValues} isNested />}
         </li>
       ))}
     </ul>
@@ -59,19 +59,19 @@ function NestedList({
 export function DiscussionText({
   text,
   format,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   text: string
   format: DiscussionFormat
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   return (
     <div className="space-y-2 text-foreground/90">
       {parseDiscussionIn(format, text).map((block, blockIndex) => {
         if (block.kind === 'list') {
-          return <NestedList key={blockIndex} nodes={nestListItems(block.items)} format={format} odvValue={odvValue} />
+          return <NestedList key={blockIndex} nodes={nestListItems(block.items)} format={format} odvValues={odvValues} />
         }
         if (block.kind === 'code') {
           return (
@@ -79,12 +79,12 @@ export function DiscussionText({
               key={blockIndex}
               code={block.text}
               language={sourceAttributeHighlightLanguage(block.sourceLanguage)}
-              odvValue={odvValue}
+              odvValues={odvValues}
               codeOdv={codeOdv}
             />
           )
         }
-        const blockText = displayWithOdv(block.text, odvValue)
+        const blockText = displayWithOdvs(block.text, odvValues)
         if (block.kind === 'heading') {
           return (
             <p key={blockIndex} className="font-semibold text-foreground">

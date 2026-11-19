@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nReport the results of security and privacy function verification to [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nOrganizational personnel with potential interest in the results of the verification of security and privacy functions include systems security officers, senior agency information security officers, and senior agency officials for privacy.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-6.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-4",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-06 Security and Privacy Function Verification"

@@ -36,10 +36,10 @@
   "discussion": "Users’ ability to change the security settings of email clients can be exploited by malicious actors using social engineering. To prevent users from removing security functionality, or breaking security functionality, users should not have the ability to change security settings for email clients.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1748",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "User application hardening",

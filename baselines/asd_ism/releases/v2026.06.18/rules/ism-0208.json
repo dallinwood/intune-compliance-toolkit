@@ -36,10 +36,10 @@
   "discussion": "A cable register contains the following for each cable:\n\n- cable identifier\n- cable colour\n- sensitivity/classification\n- source\n- destination\n- location\n- seal numbers (if applicable).\n\nDeveloping, implementing, maintaining and regularly verifying cable registers assists installers and inspectors, with the help of floor plan diagrams, to trace cables for malicious or accidental changes or damage. In doing so, cable registers should track all cabling changes throughout the life of a system.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0208",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nVerify that the system is configured so that data or information collected by the [Assignment: organization-defined sensors] is only reported to authorized individuals or roles.\n\n## Discussion\n\nIn situations where sensors are activated by authorized individuals, it is still possible that the data or information collected by the sensors will be sent to unauthorized entities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-42.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-42 Sensor Capability and Data"

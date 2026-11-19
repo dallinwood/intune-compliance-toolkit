@@ -36,10 +36,10 @@
   "discussion": "It is important that connectivity between an organisation and their cloud service providers meets requirements for bandwidth, latency and availability. In support of this, an organisation and their cloud service providers should discuss the ability to scale resources dynamically in response to genuine spikes in demand. This should include any authorised activities that can be undertaken to verify measures implemented to support such requirements, especially where high availability is required. For example, an organisation and their cloud service providers may discuss whether dedicated communication links or internet connections will be used, and whether secondary communications links will provide sufficient capacity to maintain operational requirements if the primary communication link becomes unavailable.\n\nFurthermore, capacity and availability monitoring should be performed to manage workloads and monitor the health of online services. This can be achieved through continuous real-time monitoring of metrics, such as latency, jitter, packet loss, throughput and availability. In addition, feedback should be provided to cloud service providers when performance does not meet service level agreement targets. To assist with this, anomaly detection can be performed through network telemetry that is integrated into security monitoring tools.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1579",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Service continuity for online services",

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProvide [Assignment: organization-defined personnel or roles] with initial and [Assignment: organization-defined frequency] training in the employment and operation of environmental controls.\n\n## Discussion\n\nEnvironmental controls include fire suppression and detection devices or systems, sprinkler systems, handheld fire extinguishers, fixed fire hoses, smoke detectors, temperature or humidity, heating, ventilation, air conditioning, and power within the facility.",
   "discussion_format": "markdown",
   "id": "nist_800_53.at-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PE-1",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Awareness and Training",
     "AT-03 Role-based Training"

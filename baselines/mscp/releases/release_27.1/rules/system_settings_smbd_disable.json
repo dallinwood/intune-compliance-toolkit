@@ -89,7 +89,7 @@
   "discussion": "Support for Server Message Block (SMB) file sharing is non-essential and _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_smbd_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -189,7 +189,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

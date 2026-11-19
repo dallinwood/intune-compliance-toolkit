@@ -28,7 +28,7 @@ const CLEAN_RULE_ID =
     (ruleId) =>
       newestReleaseChange(mscpHistory, ruleId) === null &&
       mscpHistory.rules[ruleId].versions.every((version) => version !== null) &&
-      !mscpHistory.rules[ruleId].title.includes('$ODV') &&
+      !mscpHistory.rules[ruleId].title.includes('$ODV_value') &&
       !ruleId.startsWith('mscp.pwpolicy'),
   ) ?? ''
 
@@ -38,9 +38,9 @@ async function selectRules(page: Page, selections: { ruleId: string; odvValue: s
     for (const { ruleId, odvValue } of entries) {
       const upstreamId = ruleId.slice(ruleId.indexOf('.') + 1)
       const ref = { id: ruleId, path: `mscp/rules/${upstreamId}.json` }
-      persistedSelections[ruleId] = { ref, enabled: true, odvValue }
+      persistedSelections[ruleId] = { ref, enabled: true, odvValues: odvValue === null ? {} : { value: odvValue } }
     }
-    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections: persistedSelections }, version: 2 }))
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections: persistedSelections }, version: 3 }))
   }, selections)
   await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(`${selections.length} selected`)).toBeVisible({ timeout: 10_000 })
@@ -65,7 +65,7 @@ test('a blocked rule shows the organization-value error and disables download', 
 
 test('a rule changed between the last two mSCP releases shows a closed changed-in-newest-release note that opens', async ({ page }) => {
   expect(CHANGED_RULE_ID).not.toBe('')
-  await selectRules(page, [{ ruleId: CHANGED_RULE_ID, odvValue: null }])
+  await selectRules(page, [{ ruleId: CHANGED_RULE_ID, odvValues: {} }])
 
   const noteRow = checkRow(page, 'changed-in-newest-release')
   await expect(noteRow).toBeVisible({ timeout: 15_000 })
@@ -84,7 +84,7 @@ test('a rule changed between the last two mSCP releases shows a closed changed-i
 
 test('a failing history index shows history-unavailable and the download still works', async ({ page }) => {
   await page.route('**/baselines/_history/mscp.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
-  await selectRules(page, [{ ruleId: 'mscp.os_gatekeeper_enable', odvValue: null }])
+  await selectRules(page, [{ ruleId: 'mscp.os_gatekeeper_enable', odvValues: {} }])
 
   const unavailableRow = checkRow(page, 'history-unavailable')
   await expect(unavailableRow).toContainText('Release history could not be loaded for', { timeout: 15_000 })
@@ -93,7 +93,7 @@ test('a failing history index shows history-unavailable and the download still w
 
 test('a clean selection shows no issues found', async ({ page }) => {
   expect(CLEAN_RULE_ID).not.toBe('')
-  await selectRules(page, [{ ruleId: CLEAN_RULE_ID, odvValue: null }])
+  await selectRules(page, [{ ruleId: CLEAN_RULE_ID, odvValues: {} }])
 
   await expect(checksPanel(page)).toContainText('No issues found with this selection.', { timeout: 15_000 })
   await expect(checksPanel(page).locator('[data-check-id]')).toHaveCount(0)

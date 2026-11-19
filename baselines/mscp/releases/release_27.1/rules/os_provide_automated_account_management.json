@@ -40,7 +40,7 @@
   "discussion": "The organization should employ automated mechanisms to support the management of information system accounts.\n\nThe use of automated mechanisms prevents against human error and provide a faster and more efficient means of relaying time-sensitive information and account management.\n\nTo employ automated mechanisms for account management functions, many operating systems can be integrated with an enterprise-level directory service that meets or exceeds this requirement.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_provide_automated_account_management",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -74,7 +74,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

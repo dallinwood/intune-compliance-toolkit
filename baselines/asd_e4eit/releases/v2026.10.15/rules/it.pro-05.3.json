@@ -40,7 +40,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are administered in a secure, accountable and auditable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Administrative or management actions that modify systems, configurations or controls are not logged.\n- Logs do not capture sufficient detail to identify who made a change, when and to what target.\n\nPartially effective:\n- Logging is enabled and provides useful coverage, but does not cover all applicable administrative or management platforms.\n- Logs capture the administrator identity and action but lack detail on the target or change nature.\n\nFully effective:\n- Comprehensive audit logging to capture all administrative or management actions is enabled on all platforms in scope.\n- Logs capture administrator identity, timestamp, target object and nature of change.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-05.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -72,7 +72,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-05 - Secure administration"

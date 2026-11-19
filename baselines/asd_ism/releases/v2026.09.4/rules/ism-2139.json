@@ -36,10 +36,10 @@
   "discussion": "Malicious actors can abuse legitimate Open Authorization (OAuth) flows to obtain enduring access to data without stealing credentials. In an illicit consent grant attack, a human user is tricked into granting a malicious third-party application consent to access data, after which the application holds OAuth tokens that operate independently of the human user’s credentials and survive credential resets. Separately, the device code authentication flow can be abused so that a human user, believing they are signing themselves in, authorises a malicious actor’s session.\n\nImportantly, malicious actors do not need to establish new consent grants if they can compromise an existing third-party application that has already been granted access, such as via a cyber supply chain attack against the application’s vendor. As such, in addition to controlling how new consent is granted, an organisation should regularly review existing consent grants, revoke those that are unused or hold excessive permissions, and centrally log consent and token issuance activity to support the detection of anomalous use.\n\nFinally, while the device code authentication flow should be disabled by default, an organisation may have a legitimate business requirement for its use, such as for input-constrained devices. In such cases, its use should be restricted to the specific user accounts and managed devices that require it.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2139",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

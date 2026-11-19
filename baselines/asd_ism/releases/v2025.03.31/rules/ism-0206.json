@@ -36,10 +36,10 @@
   "discussion": "Well documented cable labelling processes and procedures can make cable verification and fault finding easier.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0206",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nCoordinate incident response testing with organizational elements responsible for related plans.\n\n## Discussion\n\nOrganizational plans related to incident response testing include business continuity plans, disaster recovery plans, continuity of operations plans, contingency plans, crisis communications plans, critical infrastructure plans, and occupant emergency plans.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-3.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-03 Incident Response Testing"

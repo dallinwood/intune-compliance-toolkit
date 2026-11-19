@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nEmploy automated mechanisms to monitor and control remote access methods.\n\n## Discussion\n\nMonitoring and control of remote access methods allows organizations to detect attacks and help ensure compliance with remote access policies by auditing the connection activities of remote users on a variety of system components, including servers, notebook computers, workstations, smart phones, and tablets. Audit logging for remote access is enforced by AU-2. Audit events are defined in AU-2a.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-17.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -34,7 +34,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-17 Remote Access"

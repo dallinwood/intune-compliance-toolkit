@@ -32,10 +32,10 @@
   "discussion": "Fixed sites outside Australia, and deployed military platforms, are more vulnerable to emanation security threats. Failing to address emanation security threats could result in systems or military platforms emanating compromising signals, which if intercepted and analysed, could lead to serious consequences.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0249",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Infrastructure",
     "Emanation security",

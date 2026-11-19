@@ -85,7 +85,7 @@
   "discussion": "The system _MUST_ be configured to prevent access to other user's home folders.\n\nThe default behavior of macOS is to allow all valid users access to the top level of every other user's home folder while restricting access only to the Apple default folders within.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_home_folders_secure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -184,7 +184,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nWhen transferring information between different security domains, examine the information for the presence of [Assignment: organization-defined unsanctioned information] and prohibit the transfer of such information in accordance with the [Assignment: organization-defined security or privacy policy].\n\n## Discussion\n\nUnsanctioned information includes malicious code, information that is inappropriate for release from the source network, or executable code that could disrupt or harm the services or systems on the destination network.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-3"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

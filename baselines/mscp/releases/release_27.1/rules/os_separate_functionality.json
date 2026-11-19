@@ -25,7 +25,7 @@
   "discussion": "The information system _IS_ configured to separate user and system functionality.\n\nOperating system management functionality includes functions necessary for administration and requires privileged user access. Allowing non-privileged users to access operating system management functionality capabilities increases the risk that non-privileged users may obtain elevated privileges. Operating system management functionality includes functions necessary to administer console, network components, workstations, or servers and typically requires privileged user access.\n\nThe inherent configuration of the macOS allows only privileged users to access operating system management functionalities.\n\nlink:https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/DesigningDaemons.html[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_separate_functionality",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -81,7 +81,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

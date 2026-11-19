@@ -36,10 +36,10 @@
   "discussion": "By developing a security monitoring policy, taking into consideration any shared responsibilities between service providers and their customers, an organisation can improve their ability to detect malicious behaviour on their systems. In doing so, the security monitoring policy should cover the types of events to be logged, the event logging facilities to be used, how event logs will be monitored and how long event logs will be retained.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0580",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security monitoring",

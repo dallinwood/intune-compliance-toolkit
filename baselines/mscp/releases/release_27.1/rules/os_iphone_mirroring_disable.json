@@ -53,7 +53,7 @@
   "discussion": "iPhone Mirroring _MUST_ be disabled to prevent file transfers to or from unauthorized devices. On macOS, disabling iPhone Mirroring prevents potentially unauthorized applications from appearing as if they are installed on the device.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_iphone_mirroring_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -177,7 +177,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

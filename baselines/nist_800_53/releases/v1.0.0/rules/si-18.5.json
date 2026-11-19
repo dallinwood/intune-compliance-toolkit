@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nNotify [Assignment: organization-defined recipients of personally identifiable information] and individuals that the personally identifiable information has been corrected or deleted.\n\n## Discussion\n\nWhen personally identifiable information is corrected or deleted, organizations take steps to ensure that all authorized recipients of such information, and the individual with whom the information is associated or their designated representatives, are informed of the corrected or deleted information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-18.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-18 Personally Identifiable Information Quality Operations"

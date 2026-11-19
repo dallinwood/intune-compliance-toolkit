@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProtect system preproduction environments commensurate with risk throughout the system development life cycle for the system, system component, or system service.\n\n## Discussion\n\nThe preproduction environment includes development, test, and integration environments. The program protection planning processes established by the Department of Defense are examples of managing the preproduction environment for defense contractors. Criticality analysis and the application of controls on developers also contribute to a more secure system development environment.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-2",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-03 System Development Life Cycle"

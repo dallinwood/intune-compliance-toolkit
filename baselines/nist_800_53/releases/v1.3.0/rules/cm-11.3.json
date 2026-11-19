@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnforce and monitor compliance with software installation policies using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nOrganizations enforce and monitor compliance with software installation policies using automated mechanisms to more quickly detect and respond to unauthorized software installation which can be an indicator of an internal or external hostile attack.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-11.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-11 User-installed Software"

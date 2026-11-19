@@ -36,10 +36,10 @@
   "discussion": "As media can be easily misplaced or stolen, measures should be put in place to protect data stored on it. In some cases, applying encryption to media may change the manner in which it needs to be handled. Any change in handling needs to be based on the original sensitivity or classification of the media and the level of assurance in the cryptographic equipment or software being used to encrypt it.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1059",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media usage",

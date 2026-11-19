@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nRobust and secure identity, credential and access management is used to establish, maintain and control access to systems (infrastructure, operating systems, applications and data) and to support effective detection of identity and credential misuse.\n\n# Indicators of Good Practice\n\nNot effective:\n- No review of default or unused accounts has been conducted within the review period defined by the organisation.\n- Default vendor accounts remain enabled on production systems without appropriate documentation, justification, hardening and monitoring in place for their use.\n- No process exists to identify accounts that have not authenticated within a defined period.\n\nPartially effective:\n- A review has been conducted but does not cover all assets.\n- Default accounts have been identified but some remain enabled without documented justification.\n- Unused accounts are identified but remediation is incomplete or delayed beyond defined timeframes.\n\nFully effective:\n- A review of accounts has been completed within the defined review period covering all assets.\n- Default accounts are disabled or have approved justification for remaining active, with appropriate monitoring and compensating controls for their use in place.\n- Accounts that show no evidence of use, other than approved emergency access accounts, are identified and either disabled or removed in accordance with defined timeframes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-13.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -80,7 +80,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-13 - Identity, credential and access management"

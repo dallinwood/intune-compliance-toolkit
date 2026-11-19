@@ -82,7 +82,7 @@
   "discussion": "SSH service _MUST_ be disabled for remote access.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_ssh_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -162,7 +162,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

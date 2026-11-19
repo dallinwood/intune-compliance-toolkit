@@ -12,6 +12,7 @@ function readBaselinesJson<T>(relativePath: string): T {
 
 // Pinned on purpose: a mode decides which characters may reach a script,
 // so an upstream change to any rule's check shell must be reviewed here.
+// Keyed `${upstreamRuleId}:${odvName}`; every mSCP ODV is named "value".
 const EXPECTED_ODV_SUBSTITUTION_MODES: Record<string, OdvSubstitutionMode> = {
   audit_configure_capacity_notify: 'none',
   audit_retention_configure: 'none',
@@ -56,10 +57,10 @@ const EXPECTED_ODV_SUBSTITUTION_MODES: Record<string, OdvSubstitutionMode> = {
 // osascript's trailing newline is piped into base64 (see checkPlan.ts).
 const PINNED_CHECK_SHELLS: Record<string, Record<string, string>> = {
   pwpolicy_custom_regex_enforce: {
-    "default": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath 'boolean(//*[contains(text(),\"policyAttributePassword matches '\\''$ODV'\\''\")])' -",
+    "default": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath 'boolean(//*[contains(text(),\"policyAttributePassword matches '\\''$ODV_value'\\''\")])' -",
   },
   system_settings_softwareupdate_current: {
-    "default": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi",
+    "default": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV_value \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi",
     "15.0": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -30d \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi",
   },
   system_settings_loginwindow_loginwindowtext_enable: {
@@ -75,7 +76,7 @@ describe('committed library data', () => {
     const index = readBaselinesJson<RuleIndex>(source.index_path)
     const indexDirectory = source.index_path.slice(0, source.index_path.lastIndexOf('/') + 1)
     const rules = index.rules.map((entry) => readBaselinesJson<Rule>(`${indexDirectory}${entry.file}`))
-    const rulesWithOdv = rules.filter((rule) => rule.odv !== null)
+    const rulesWithOdv = rules.filter((rule) => rule.odvs.length > 0)
 
     describe(source.name, () => {
       it('has a label in the sources vocabulary, so its per-rule credit never shows a raw code', () => {
@@ -94,11 +95,18 @@ describe('committed library data', () => {
 
       // The pins below describe mSCP's check shells; other sources have no ODVs.
       it.runIf(source.name === 'mscp')('pins the substitution mode of every rule that has an ODV', () => {
-        const actualModes = Object.fromEntries(rulesWithOdv.map((rule) => [rule.id, odvSubstitutionMode(rule)]))
+        const actualModes = Object.fromEntries(
+          rulesWithOdv.flatMap((rule) => rule.odvs.map((odv) => [`${rule.id}:${odv.name}`, odvSubstitutionMode(rule, odv)])),
+        )
         const expectedModes = Object.fromEntries(
-          Object.entries(EXPECTED_ODV_SUBSTITUTION_MODES).map(([upstreamId, mode]) => [`mscp.${upstreamId}`, mode]),
+          Object.entries(EXPECTED_ODV_SUBSTITUTION_MODES).map(([upstreamId, mode]) => [`mscp.${upstreamId}:value`, mode]),
         )
         expect(actualModes).toEqual(expectedModes)
+      })
+
+      it.runIf(source.name === 'mscp')('names every mSCP ODV "value", unquoted', () => {
+        const odvs = rulesWithOdv.flatMap((rule) => rule.odvs)
+        expect(odvs.map((odv) => [odv.name, odv.quoting])).toEqual(odvs.map(() => ['value', 'unquoted']))
       })
 
       it.runIf(source.name === 'mscp')('pins the exact check shells whose ODV placement or output format the generator depends on', () => {
@@ -114,21 +122,22 @@ describe('committed library data', () => {
         expect(actualShells).toEqual(PINNED_CHECK_SHELLS)
       })
 
-      it('passes validateOdvValue for every recommended and by_benchmark value', () => {
+      it('passes validateOdvValue for every recommended and by_benchmark value of every ODV', () => {
         const failures: string[] = []
         for (const rule of rulesWithOdv) {
-          const odv = rule.odv!
-          const mode = odvSubstitutionMode(rule)
-          const candidates: [string, number | string][] = [
-            ['recommended', odv.recommended],
-            ...Object.entries(odv.by_benchmark).map(([benchmark, value]): [string, number | string] => [
-              `by_benchmark.${benchmark}`,
-              value,
-            ]),
-          ]
-          for (const [location, value] of candidates) {
-            const reason = validateOdvValue(odv, value, mode, rule.id)
-            if (reason) failures.push(`${rule.id} ${location}=${JSON.stringify(value)}: ${reason}`)
+          for (const odv of rule.odvs) {
+            const mode = odvSubstitutionMode(rule, odv)
+            const candidates: [string, number | string][] = [
+              ['recommended', odv.recommended],
+              ...Object.entries(odv.by_benchmark).map(([benchmark, value]): [string, number | string] => [
+                `by_benchmark.${benchmark}`,
+                value,
+              ]),
+            ]
+            for (const [location, value] of candidates) {
+              const reason = validateOdvValue(odv, value, mode, rule.id)
+              if (reason) failures.push(`${rule.id}:${odv.name} ${location}=${JSON.stringify(value)}: ${reason}`)
+            }
           }
         }
         expect(failures).toEqual([])

@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nCyber security event detection capabilities are regularly evaluated for effectiveness and continuously refined, including by using current strategic and sector-specific cyber threat intelligence, to improve the detection of cyber security events.\n\n# Indicators of Good Practice\n\nNot effective:\n- No review of detection coverage has been conducted within the period defined by the organisation.\n- No process exists to assess new assets and services for log coverage or detection applicability.\n\nPartially effective:\n- A review of detection coverage has been conducted but does not cover all recently deployed assets or services.\n- Detection gaps have been identified and remediation is planned, but remediation has not been executed within timeframes defined by the organisation.\n\nFully effective:\n- A detection coverage review has been completed within the cycle defined by the organisation.\n- New assets and services are assessed for log coverage and detection rule applicability.\n- Identified detection gaps are remediated within risk-based timeframes defined by the organisation.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.det-05.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Detect principles",
     "DET-05 - Detection capability efficacy"

@@ -32,7 +32,7 @@
   "discussion": "## Control\n\nTrack and document incidents.\n\n## Discussion\n\nDocumenting incidents includes maintaining records about each incident, the status of the incident, and other pertinent information necessary for forensics as well as evaluating incident details, trends, and handling. Incident information can be obtained from a variety of sources, including network monitoring, incident reports, incident response teams, user complaints, supply chain partners, audit monitoring, physical access monitoring, and user and administrator reports. IR-4 provides information on the types of incidents that are appropriate for monitoring.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-61"
@@ -53,7 +53,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-05 Incident Monitoring"

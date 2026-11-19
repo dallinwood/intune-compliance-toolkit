@@ -91,31 +91,35 @@
         "additional_info": null,
         "result": {
           "type": "string",
-          "value": "$ODV"
+          "value": "$ODV_value"
         },
         "shell": "/usr/bin/awk -F: '/expire-after/{print $2}' /etc/security/audit_control"
       },
       "language": "bash"
     }
   },
-  "discussion": "The audit service _MUST_ be configured to require records be kept for a organizational defined value before deletion, unless the system uses a central audit record storage facility.\n\nWhen \"expire-after\" is set to \"$ODV\", the audit service will not delete audit logs until the log data criteria is met.\n",
+  "discussion": "The audit service _MUST_ be configured to require records be kept for a organizational defined value before deletion, unless the system uses a central audit record storage facility.\n\nWhen \"expire-after\" is set to \"$ODV_value\", the audit service will not delete audit logs until the log data criteria is met.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_retention_configure",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": "60d OR 5G",
-      "cis_lvl2": "60d OR 5G",
-      "disa_stig": "7d",
-      "nlmapgov_base": "180d",
-      "nlmapgov_plus": "180d"
-    },
-    "datatype": "string",
-    "description": "Time or disk size, e.g. 60d OR 5G, see the man page for audit_control",
-    "recommended": "7d",
-    "validation": {
-      "regex": "^\\d+[shdyBKMG](\\s(AND|OR)\\s\\d+[shdyBKMG])?$"
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": "60d OR 5G",
+        "cis_lvl2": "60d OR 5G",
+        "disa_stig": "7d",
+        "nlmapgov_base": "180d",
+        "nlmapgov_plus": "180d"
+      },
+      "datatype": "string",
+      "description": "Time or disk size, e.g. 60d OR 5G, see the man page for audit_control",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": "7d",
+      "validation": {
+        "regex": "^\\d+[shdyBKMG](\\s(AND|OR)\\s\\d+[shdyBKMG])?$"
+      }
     }
-  },
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -200,13 +204,13 @@
           "additional_info": null,
           "language": "bash",
           "name": null,
-          "shell": "/usr/bin/sed -i.bak 's/^expire-after.*/expire-after:$ODV/' /etc/security/audit_control; /usr/sbin/audit -s",
+          "shell": "/usr/bin/sed -i.bak 's/^expire-after.*/expire-after:$ODV_value/' /etc/security/audit_control; /usr/sbin/audit -s",
           "versions": null
         }
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],
@@ -238,5 +242,5 @@
     "cnssi-1253_low",
     "cnssi-1253_moderate"
   ],
-  "title": "Configure Audit Retention to $ODV"
+  "title": "Configure Audit Retention to $ODV_value"
 }

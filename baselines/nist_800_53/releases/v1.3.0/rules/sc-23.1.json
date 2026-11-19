@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nInvalidate session identifiers upon user logout or other session termination.\n\n## Discussion\n\nInvalidating session identifiers at logout curtails the ability of adversaries to capture and continue to employ previously valid session IDs.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-23.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-23 Session Authenticity"

@@ -25,7 +25,7 @@
   "discussion": "The information system implements remote disconnect verification at the termination of non-local maintenance and diagnostic sessions.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_verify_remote_disconnection",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -72,7 +72,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

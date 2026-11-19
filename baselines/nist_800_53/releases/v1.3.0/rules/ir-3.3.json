@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nUse qualitative and quantitative data from testing to:\n\n- (a) Determine the effectiveness of incident response processes;\n- (b) Continuously improve incident response processes; and\n- (c) Provide incident response measures and metrics that are accurate, consistent, and in a reproducible format.\n\n## Discussion\n\nTo help incident response activities function as intended, organizations may use metrics and evaluation criteria to assess incident response programs as part of an effort to continually improve response performance. These efforts facilitate improvement in incident response efficacy and lessen the impact of incidents.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-03 Incident Response Testing"

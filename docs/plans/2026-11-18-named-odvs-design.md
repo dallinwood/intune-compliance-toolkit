@@ -1,7 +1,7 @@
 # Design: named organization-defined values (several per rule)
 
 Date: 2026-11-18
-Status: Approved 2026-11-18, not yet implemented
+Status: Implemented
 
 ## 1. Intent
 
@@ -191,3 +191,4 @@ overlays already do) may need its own values.
 
 - 2026-11-18: Added `tools/odv_placeholders.py`, the shared placeholder and quoting rules, with tests (this commit).
 - 2026-11-19: Extended `placeholder_errors` with an optional script reader so `shell_file` scripts get the same placeholder and quoting checks (this commit).
+- 2026-11-19: Implemented end to end: rule schema 6 with `odvs` on every release of every source, the importers and overlays on named ODVs (`$ODV_<name>`, mSCP's is `$ODV_value`), the web UI logic and components (one input per ODV, `useStoredOdvValues` / `useUsableOdvValues`, per-placeholder code block notes), saved selections at version 3 with version 2 converted, and settings files at version 3 with version 2 converted on import. Playwright covers the renamed mSCP behaviour, version 2 saved selections and a two-ODV rule (a pwpolicy rule given a second ODV by a route in the spec, since no committed rule has two yet); screenshots at 375px and 1440px checked. Commit: `feat: support several named organization-defined values per rule`.

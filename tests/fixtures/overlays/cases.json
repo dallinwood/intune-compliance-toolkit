@@ -1,5 +1,5 @@
 {
-  "description": "Shared overlay merge cases, run by tests/test_overlays.py and webui/src/logic/overlays.test.ts so the Python and TypeScript merges cannot drift. A merge case applies `fields` to `rule` (only `known_fields` when given) and expects `expected` or, with `error: true`, a rejected overlay. An index case applies `fields` to the index `entry` and recomputes `section` and `has_odv`. A file reference case checks one check entry or step (`kind` script, with its `language`) or one payload (`kind` payload) for the path, extension and exactly-one rules of `shell_file` and `data_file`; whether the file exists is checked by the Python side only.",
+  "description": "Shared overlay merge cases, run by tests/test_overlays.py and webui/src/logic/overlays.test.ts so the Python and TypeScript merges cannot drift. A merge case applies `fields` to `rule` (only `known_fields` when given) and expects `expected` or, with `error: true`, a rejected overlay. An index case applies `fields` to the index `entry` and recomputes `section` and `has_odv` (`odvs` is replace-only: `$merge`, `$append` and a bare list are rejected). A file reference case checks one check entry or step (`kind` script, with its `language`) or one payload (`kind` payload) for the path, extension and exactly-one rules of `shell_file` and `data_file`; whether the file exists is checked by the Python side only.",
   "merge_cases": [
     {
       "name": "empty fields leave the rule unchanged",
@@ -141,8 +141,32 @@
     {
       "name": "$replace onto an absent field sets it",
       "rule": { "id": "x.rule" },
-      "fields": { "odv": { "$replace": null } },
-      "expected": { "id": "x.rule", "odv": null }
+      "fields": { "references": { "$replace": null } },
+      "expected": { "id": "x.rule", "references": null }
+    },
+    {
+      "name": "$replace on odvs sets the whole list",
+      "rule": { "id": "x.rule", "odvs": [] },
+      "fields": { "odvs": { "$replace": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] } },
+      "expected": { "id": "x.rule", "odvs": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] }
+    },
+    {
+      "name": "$merge on odvs is rejected",
+      "rule": { "id": "x.rule", "odvs": [] },
+      "fields": { "odvs": { "$merge": { "recommended": 7 } } },
+      "error": true
+    },
+    {
+      "name": "$append on odvs is rejected",
+      "rule": { "id": "x.rule", "odvs": [] },
+      "fields": { "odvs": { "$append": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] } },
+      "error": true
+    },
+    {
+      "name": "a bare list on odvs is rejected",
+      "rule": { "id": "x.rule", "odvs": [] },
+      "fields": { "odvs": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] },
+      "error": true
     },
     {
       "name": "$replace takes its value literally, wrapper-like keys included",
@@ -282,9 +306,9 @@
     },
     {
       "name": "$merge onto null merges as onto an absent field",
-      "rule": { "id": "x.rule", "odv": null },
-      "fields": { "odv": { "$merge": { "recommended": 5 } } },
-      "expected": { "id": "x.rule", "odv": { "recommended": 5 } }
+      "rule": { "id": "x.rule", "references": null },
+      "fields": { "references": { "$merge": { "nist": ["AC-1"] } } },
+      "expected": { "id": "x.rule", "references": { "nist": ["AC-1"] } }
     },
     {
       "name": "an object merges into a nested null",
@@ -401,7 +425,7 @@
     },
     {
       "name": "the protected field schema_version cannot be overlaid",
-      "rule": { "id": "x.rule", "schema_version": 5 },
+      "rule": { "id": "x.rule", "schema_version": 6 },
       "fields": { "schema_version": 6 },
       "error": true
     },
@@ -501,51 +525,8 @@
       }
     },
     {
-      "name": "an odv set by $replace turns has_odv on",
+      "name": "an odvs list set by $replace turns has_odv on",
       "entry": {
-        "id": "x.rule",
-        "title": "Rule",
-        "file": "rules/rule.json",
-        "section": "os",
-        "section_path": ["os"],
-        "assessment": { "status": "manual", "manual_reason": "manual" },
-        "architecture": null,
-        "applicability": [],
-        "tags": [],
-        "has_odv": false
-      },
-      "fields": {
-        "odv": { "$replace": { "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {} } }
-      },
-      "expected": {
-        "id": "x.rule",
-        "title": "Rule",
-        "file": "rules/rule.json",
-        "section": "os",
-        "section_path": ["os"],
-        "assessment": { "status": "manual", "manual_reason": "manual" },
-        "architecture": null,
-        "applicability": [],
-        "tags": [],
-        "has_odv": true
-      }
-    },
-    {
-      "name": "an odv set to null turns has_odv off",
-      "entry": {
-        "id": "x.rule",
-        "title": "Rule",
-        "file": "rules/rule.json",
-        "section": "os",
-        "section_path": ["os"],
-        "assessment": { "status": "automated", "manual_reason": null },
-        "architecture": null,
-        "applicability": [],
-        "tags": [],
-        "has_odv": true
-      },
-      "fields": { "odv": null },
-      "expected": {
         "id": "x.rule",
         "title": "Rule",
         "file": "rules/rule.json",
@@ -556,23 +537,8 @@
         "applicability": [],
         "tags": [],
         "has_odv": false
-      }
-    },
-    {
-      "name": "a partial odv merge keeps has_odv on when the rule has one",
-      "entry": {
-        "id": "x.rule",
-        "title": "Rule",
-        "file": "rules/rule.json",
-        "section": "os",
-        "section_path": ["os"],
-        "assessment": { "status": "automated", "manual_reason": null },
-        "architecture": null,
-        "applicability": [],
-        "tags": [],
-        "has_odv": true
       },
-      "fields": { "odv": { "recommended": 7 } },
+      "fields": { "odvs": { "$replace": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] } },
       "expected": {
         "id": "x.rule",
         "title": "Rule",
@@ -587,7 +553,7 @@
       }
     },
     {
-      "name": "a partial odv onto a rule without one is invalid, since has_odv would promise a value",
+      "name": "an empty odvs list set by $replace turns has_odv off",
       "entry": {
         "id": "x.rule",
         "title": "Rule",
@@ -598,13 +564,58 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": true
       },
-      "fields": { "odv": { "recommended": 7 } },
+      "fields": { "odvs": { "$replace": [] } },
+      "expected": {
+        "id": "x.rule",
+        "title": "Rule",
+        "file": "rules/rule.json",
+        "section": "os",
+        "section_path": ["os"],
+        "assessment": { "status": "automated", "manual_reason": null },
+        "architecture": null,
+        "applicability": [],
+        "tags": [],
+        "has_odv": false
+      }
+    },
+    {
+      "name": "$merge on odvs is rejected, only $replace is allowed",
+      "entry": {
+        "id": "x.rule",
+        "title": "Rule",
+        "file": "rules/rule.json",
+        "section": "os",
+        "section_path": ["os"],
+        "assessment": { "status": "automated", "manual_reason": null },
+        "architecture": null,
+        "applicability": [],
+        "tags": [],
+        "has_odv": true
+      },
+      "fields": { "odvs": { "$merge": { "recommended": 7 } } },
       "error": true
     },
     {
-      "name": "a complete odv object onto a rule without one turns has_odv on",
+      "name": "$append on odvs is rejected, only $replace is allowed",
+      "entry": {
+        "id": "x.rule",
+        "title": "Rule",
+        "file": "rules/rule.json",
+        "section": "os",
+        "section_path": ["os"],
+        "assessment": { "status": "automated", "manual_reason": null },
+        "architecture": null,
+        "applicability": [],
+        "tags": [],
+        "has_odv": true
+      },
+      "fields": { "odvs": { "$append": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] } },
+      "error": true
+    },
+    {
+      "name": "a bare list on odvs is rejected, only $replace is allowed",
       "entry": {
         "id": "x.rule",
         "title": "Rule",
@@ -617,19 +628,8 @@
         "tags": [],
         "has_odv": false
       },
-      "fields": { "odv": { "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {} } },
-      "expected": {
-        "id": "x.rule",
-        "title": "Rule",
-        "file": "rules/rule.json",
-        "section": "os",
-        "section_path": ["os"],
-        "assessment": { "status": "automated", "manual_reason": null },
-        "architecture": null,
-        "applicability": [],
-        "tags": [],
-        "has_odv": true
-      }
+      "fields": { "odvs": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] },
+      "error": true
     },
     {
       "name": "an overlay cannot set the derived index fields directly",

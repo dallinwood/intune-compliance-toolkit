@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nTest a subset of the identified covert channels to determine the channels that are exploitable.\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-31.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-31 Covert Channel Analysis"

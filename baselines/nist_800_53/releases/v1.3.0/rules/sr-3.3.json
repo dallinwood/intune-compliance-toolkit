@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEnsure that the controls included in the contracts of prime contractors are also included in the contracts of subcontractors.\n\n## Discussion\n\nTo manage supply chain risk effectively and holistically, it is important that organizations ensure that supply chain risk management controls are included at all tiers in the supply chain. This includes ensuring that Tier 1 (prime) contractors have implemented processes to facilitate the \"flow down\" of supply chain risk management controls to sub-tier contractors. The controls subject to flow down are identified in SR-3b.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sr-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SR-5",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-03 Supply Chain Controls and Processes"

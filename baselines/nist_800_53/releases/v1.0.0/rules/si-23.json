@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nBased on [Assignment: organization-defined circumstances]:\n\n- a. Fragment the following information: [Assignment: organization-defined information]; and\n- b. Distribute the fragmented information across the following systems or system components: [Assignment: organization-defined systems or system components].\n\n## Discussion\n\nOne objective of the advanced persistent threat is to exfiltrate valuable information. Once exfiltrated, there is generally no way for the organization to recover the lost information. Therefore, organizations may consider dividing the information into disparate elements and distributing those elements across multiple systems or system components and locations. Such actions will increase the adversary’s work factor to capture and exfiltrate the desired information and, in so doing, increase the probability of detection. The fragmentation of information impacts the organization’s ability to access the information in a timely manner. The extent of the fragmentation is dictated by the impact or classification level (and value) of the information, threat intelligence information received, and whether data tainting is used (i.e., data tainting-derived information about the exfiltration of some information could result in the fragmentation of the remaining information).",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-23",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-160-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-23 Information Fragmentation"

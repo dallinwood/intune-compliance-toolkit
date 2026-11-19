@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nVerify that individuals accessing a system processing, storing, or transmitting information requiring special protection:\n\n- (a) Have valid access authorizations that are demonstrated by assigned official government duties; and\n- (b) Satisfy [Assignment: organization-defined additional personnel screening criteria].\n\n## Discussion\n\nOrganizational information that requires special protection includes controlled unclassified information. Personnel security criteria include position sensitivity background screening requirements.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-03 Personnel Screening"

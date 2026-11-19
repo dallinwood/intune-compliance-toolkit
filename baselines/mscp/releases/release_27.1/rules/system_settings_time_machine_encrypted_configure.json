@@ -77,7 +77,7 @@
   "discussion": "Time Machine volumes _MUST_ be encrypted.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_time_machine_encrypted_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -137,7 +137,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

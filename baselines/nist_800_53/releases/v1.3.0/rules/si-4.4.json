@@ -24,10 +24,10 @@
   "discussion": "## Control\n\n- (a) Determine criteria for unusual or unauthorized activities or conditions for inbound and outbound communications traffic;\n- (b) Monitor inbound and outbound communications traffic [Assignment: organization-defined frequency] for [Assignment: organization-defined unusual or unauthorized activities or conditions].\n\n## Discussion\n\nUnusual or unauthorized activities or conditions related to system inbound and outbound communications traffic includes internal traffic that indicates the presence of malicious code or unauthorized use of legitimate code or credentials within organizational systems or propagating among system components, signaling to external systems, and the unauthorized exporting of information. Evidence of malicious code or unauthorized use of legitimate code or credentials is used to identify potentially compromised systems or system components.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

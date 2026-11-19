@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nPartition privileged functions into separate physical domains.\n\n## Discussion\n\nPrivileged functions that operate in a single physical domain may represent a single point of failure if that domain becomes compromised or experiences a denial of service.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-32.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-32 System Partitioning"

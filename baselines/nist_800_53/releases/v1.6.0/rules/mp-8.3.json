@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDowngrade system media containing controlled unclassified information prior to public release.\n\n## Discussion\n\nThe downgrading of controlled unclassified information uses approved sanitization tools, techniques, and procedures.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-8.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-08 Media Downgrading"

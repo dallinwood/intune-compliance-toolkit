@@ -24,10 +24,10 @@
   "discussion": "Due to the extra sensitivities associated with AUSTEO, AGAO and REL data, foreign access to such data is strictly controlled.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0411",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Access to systems and their resources",

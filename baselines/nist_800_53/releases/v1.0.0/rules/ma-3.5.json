@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nMonitor the use of maintenance tools that execute with increased privilege.\n\n## Discussion\n\nMaintenance tools that execute with increased system privilege can result in unauthorized access to organizational information and assets that would otherwise be inaccessible.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-3.5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-03 Maintenance Tools"

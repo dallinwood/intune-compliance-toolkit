@@ -28,7 +28,7 @@
   "discussion": "If SSH is used then it _MUST_ be configured for a hybrid Post Quantum Cryptographic (PQC) key exchange.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_ssh_pqc_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -76,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

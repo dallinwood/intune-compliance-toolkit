@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nProtect authenticators commensurate with the security category of the information to which use of the authenticator permits access.\n\n## Discussion\n\nFor systems that contain multiple security categories of information without reliable physical or logical separation between categories, authenticators used to grant access to the systems are protected commensurate with the highest security category of information on the systems. Security categories of information are determined as part of the security categorization process.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-5.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "RA-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-05 Authenticator Management"

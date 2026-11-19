@@ -36,10 +36,10 @@
   "discussion": "Systems have a change and configuration management plan that includes:\n\n- the establishment and maintenance of authorised baseline configurations for systems\n- what constitutes routine and urgent changes to the configuration of systems\n- how changes to the configuration of systems will be requested, tracked and documented\n- who needs to be consulted prior to routine and urgent changes to the configuration of systems\n- who needs to approve routine and urgent changes to the configuration of systems\n- who needs to be notified of routine and urgent changes to the configuration of systems\n- what additional change management and configuration management processes and procedures need to be followed before, during and after routine and urgent changes to the configuration of systems.\n\nHaving a change and configuration management plan ensures that changes to the configuration of systems can be made in an accountable manner, with appropriate consultation, consideration and approvals, to maintain the security of such systems. Furthermore, change management and configuration management processes and procedures provide an opportunity for the security impact of changes to configuration of systems to be considered and, if necessary, additional risk management activities to be undertaken.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0912",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security documentation",
     "System-specific cyber security documentation",

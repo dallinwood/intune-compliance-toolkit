@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement the indicated fail-safe procedures when the indicated failures occur: [Assignment: organization-defined list of failure conditions and associated fail-safe procedures].\n\n## Discussion\n\nFailure conditions include the loss of communications among critical system components or between system components and operational facilities. Fail-safe procedures include alerting operator personnel and providing specific instructions on subsequent steps to take. Subsequent steps may include doing nothing, reestablishing system settings, shutting down processes, restarting the system, or contacting designated organizational personnel.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-17",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-12",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-17 Fail-safe Procedures"

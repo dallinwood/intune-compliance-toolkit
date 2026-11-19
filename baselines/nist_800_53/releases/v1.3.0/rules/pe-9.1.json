@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy redundant power cabling paths that are physically separated by [Assignment: organization-defined distance].\n\n## Discussion\n\nPhysically separate and redundant power cables ensure that power continues to flow in the event that one of the cables is cut or otherwise damaged.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-9.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-09 Power Equipment and Cabling"

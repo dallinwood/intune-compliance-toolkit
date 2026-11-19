@@ -32,7 +32,7 @@
   "discussion": "## Control\n\nProvide an incident response support resource, integral to the organizational incident response capability, that offers advice and assistance to users of the system for the handling and reporting of incidents.\n\n## Discussion\n\nIncident response support resources provided by organizations include help desks, assistance groups, automated ticketing systems to open and track incident response tickets, and access to forensics services or consumer redress services, when required.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130",
@@ -51,7 +51,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-07 Incident Response Assistance"

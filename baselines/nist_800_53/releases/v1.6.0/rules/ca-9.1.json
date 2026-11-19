@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nPerform security and privacy compliance checks on constituent system components prior to the establishment of the internal connection.\n\n## Discussion\n\nCompliance checks include verification of the relevant baseline configuration.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ca-9.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-6"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Assessment, Authorization, and Monitoring",
     "CA-09 Internal System Connections"

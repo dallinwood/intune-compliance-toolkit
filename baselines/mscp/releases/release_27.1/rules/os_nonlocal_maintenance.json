@@ -25,7 +25,7 @@
   "discussion": "Non-local maintenance and diagnostic activities are those activities conducted by individuals communicating through a network, either an external network or an internal network.\n\nNOTE: This requirement is NA for this technology.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_nonlocal_maintenance",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -74,7 +74,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

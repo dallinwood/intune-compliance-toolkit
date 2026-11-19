@@ -36,10 +36,10 @@
   "discussion": "Misconfigured user accounts and computer accounts within Microsoft AD DS can pose a significant threat to the security of a system. For example, when malicious actors obtain credentials for a user account, along with associated system access, they may further compromise the system by querying Microsoft AD DS to assist in gaining an understanding of the environment, moving laterally through the network and escalating privileges by compromising privileged user accounts. Furthermore, malicious actors with this level of access can become difficult to detect and remove, as they may not need to use exploits for vulnerabilities to achieve their goals. Malicious activities performed by compromised user accounts or computer accounts may also appear very similar to legitimate system activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1842",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "Server application hardening",

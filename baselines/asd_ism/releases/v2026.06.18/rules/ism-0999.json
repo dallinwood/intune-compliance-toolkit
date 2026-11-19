@@ -36,10 +36,10 @@
   "discussion": "A sufficiently large DH modulus provides greater security for key exchanges when establishing IPsec connections.\n\nTaking into account projected technological advances in quantum computing, DH and ECDH will not be approved beyond 2030.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0999",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Internet Protocol Security",

@@ -65,7 +65,7 @@
   "discussion": "Folders in /System/Volumes/Data/System _MUST_ not be world-writable.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_world_writable_system_folder_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -117,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

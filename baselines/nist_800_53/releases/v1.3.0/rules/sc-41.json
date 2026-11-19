@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n[Selection: physically; logically] disable or remove [Assignment: organization-defined connection ports or input/output devices] on the following systems or system components: [Assignment: organization-defined systems or system components].\n\n## Discussion\n\nConnection ports include Universal Serial Bus (USB), Thunderbolt, and Firewire (IEEE 1394). Input/output (I/O) devices include compact disc and digital versatile disc drives. Disabling or removing such connection ports and I/O devices helps prevent the exfiltration of information from systems and the introduction of malicious code from those ports or devices. Physically disabling or removing ports and/or devices is the stronger action.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-41",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-20",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-41 Port and I/O Device Access"

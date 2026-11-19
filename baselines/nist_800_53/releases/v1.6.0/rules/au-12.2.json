@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProduce a system-wide (logical or physical) audit trail composed of audit records in a standardized format.\n\n## Discussion\n\nAudit records that follow common standards promote interoperability and information exchange between devices and systems. Promoting interoperability and information exchange facilitates the production of event information that can be readily analyzed and correlated. If logging mechanisms do not conform to standardized formats, systems may convert individual audit records into standardized formats when compiling system-wide audit trails.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-12.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-12 Audit Record Generation"

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nWhen transferring information between different security domains, parse incoming data into an internal normalized format and regenerate the data to be consistent with its intended specification.\n\n## Discussion\n\nConverting data into normalized forms is one of most of effective mechanisms to stop malicious attacks and large classes of data exfiltration.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.24",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Employ only government off-the-shelf or commercial off-the-shelf information assurance and information assurance-enabled information technology products that compose an NSA-approved solution to protect classified information when the networks used to transmit the information are at a lower classification level than the information being transmitted; and\n- (b) Ensure that these products have been evaluated and/or validated by NSA or in accordance with NSA-approved procedures.\n\n## Discussion\n\nCommercial off-the-shelf IA or IA-enabled information technology products used to protect classified information by cryptographic means may be required to use NSA-approved key management. See [NSA CSFC](https://www.nsa.gov/resources/everyone/csfc).",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-4.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-8",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-04 Acquisition Process"

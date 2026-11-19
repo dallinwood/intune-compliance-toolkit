@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nNotify the user, upon successful logon, of the number of [Selection: successful logons; unsuccessful logon attempts; both] during [Assignment: organization-defined time period].\n\n## Discussion\n\nInformation about the number of successful and unsuccessful logon attempts within a specified time period allows the user to recognize if the number and type of logon attempts are consistent with the user’s actual logon attempts.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-9.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-09 Previous Logon Notification"

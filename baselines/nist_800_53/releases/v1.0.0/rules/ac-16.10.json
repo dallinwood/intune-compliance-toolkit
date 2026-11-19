@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide authorized individuals the capability to define or change the type and value of security and privacy attributes available for association with subjects and objects.\n\n## Discussion\n\nThe content or assigned values of security and privacy attributes can directly affect the ability of individuals to access organizational information. Thus, it is important for systems to be able to limit the ability to create or modify the type and value of attributes available for association with subjects and objects to authorized individuals only.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-16.10",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-16 Security and Privacy Attributes"

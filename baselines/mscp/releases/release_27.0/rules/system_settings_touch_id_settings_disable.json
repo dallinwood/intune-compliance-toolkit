@@ -38,7 +38,7 @@
   "discussion": "The System Settings pane for Touch ID _MUST_ be disabled.\n\nDisabling the System Settings pane prevents the users from configuring Touch ID.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_touch_id_settings_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -112,7 +112,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nImplement [Assignment: organization-defined tools or mechanisms] for individuals to revoke consent to the processing of their personally identifiable information.\n\n## Discussion\n\nRevocation of consent enables individuals to exercise control over their initial consent decision when circumstances change. Organizations consider usability factors in enabling easy-to-use revocation capabilities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pt-4.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PT-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personally Identifiable Information Processing and Transparency",
     "PT-04 Consent"

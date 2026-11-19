@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Prohibit the use of unclassified mobile devices in facilities containing systems processing, storing, or transmitting classified information unless specifically permitted by the authorizing official; and\n- (b) Enforce the following restrictions on individuals permitted by the authorizing official to use unclassified mobile devices in facilities containing systems processing, storing, or transmitting classified information:\n  - (1) Connection of unclassified mobile devices to classified systems is prohibited;\n  - (2) Connection of unclassified mobile devices to unclassified systems requires approval from the authorizing official;\n  - (3) Use of internal or external modems or wireless interfaces within the unclassified mobile devices is prohibited; and\n  - (4) Unclassified mobile devices and the information stored on those devices are subject to random reviews and inspections by [Assignment: organization-defined security officials], and if classified information is found, the incident handling policy is followed.\n- (c) Restrict the connection of classified mobile devices to classified systems in accordance with [Assignment: organization-defined security policies].\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-19.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-8",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-19 Access Control for Mobile Devices"

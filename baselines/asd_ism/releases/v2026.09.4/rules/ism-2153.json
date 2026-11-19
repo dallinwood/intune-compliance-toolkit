@@ -36,10 +36,10 @@
   "discussion": "Threat hunting activities can assist in identifying malicious actors who have established persistent access to systems but have not triggered event log monitoring capabilities. Threat hunting complements event log monitoring activities by actively searching for indicators of compromise and adversary tradecraft using current strategic and sector-specific cyber threat intelligence. Threat hunting activities may be scoped to specific cyber threats, such as searching systems for indicators of compromise or adversary tradecraft identified in current ASD alerts and advisories. In doing so, threat hunting activities should be conducted by personnel with sufficient skills and tools, with any findings documented, actioned and used to improve automated event log monitoring capabilities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2153",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security monitoring",

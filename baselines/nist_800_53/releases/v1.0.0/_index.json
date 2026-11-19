@@ -28200,6 +28200,6 @@
       "title": "Component Disposal"
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "nist_800_53"
 }

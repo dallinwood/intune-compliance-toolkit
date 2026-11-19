@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProhibit the use of [Assignment: organization-defined network-accessible storage devices] in external systems.\n\n## Discussion\n\nNetwork-accessible storage devices in external systems include online storage devices in public, hybrid, or community cloud-based systems.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-20.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-20 Use of External Systems"

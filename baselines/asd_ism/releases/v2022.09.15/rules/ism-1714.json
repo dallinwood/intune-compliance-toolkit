@@ -36,10 +36,10 @@
   "discussion": "Personnel seeking access to systems, applications and data repositories should have a genuine business requirement validated by their manager or another appropriate authority.\n\nFinally, to assist with incident response activities, it is important that unprivileged access event logs are centrally stored and protected from unauthorised modification and deletion, monitored for signs of compromise, and actioned when cyber security events are detected.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1714",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Personnel Security",
     "Access to systems and their resources",

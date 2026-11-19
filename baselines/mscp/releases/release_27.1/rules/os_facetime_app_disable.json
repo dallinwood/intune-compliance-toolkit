@@ -33,7 +33,7 @@
   "discussion": "The macOS built-in FaceTime.app _MUST_ be disabled, unless FaceTime is an approved collaboration tool.\n\nThe FaceTime.app establishes a connection to Apple's iCloud service, even when security controls have been put in place to disable iCloud access.\n\n[IMPORTANT]\n====\nPreventing the launch of any application using the DeniedBinaries key will also prevent the launching of ad-hoc signed binaries and unsigned binaries.\n====\n\n[NOTE]\n=====\nApple officially supports installation through DDM of this configuration, however installation using a mobileconfig profile with the domain of com.apple.alr will also block the launching of binaries.\n=====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_facetime_app_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -121,7 +121,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

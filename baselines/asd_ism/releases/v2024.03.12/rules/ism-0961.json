@@ -36,10 +36,10 @@
   "discussion": "Effective web content filters can greatly reduce the likelihood of malicious code, or other inappropriate content, being accessed by users. Furthermore, web content filters can disrupt or prevent malicious actors from communicating with their malicious code if they manage to deploy it on an organisation’s networks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0961",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Web content filters",

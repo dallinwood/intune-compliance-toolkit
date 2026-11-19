@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nThe source and integrity of identity assertions and access tokens are verified before granting access to system and information resources.\n\n## Discussion\n\nThis includes verification of digital signatures protecting identity assertions and access tokens, as well as included metadata. Metadata includes information about the access request such as information unique to user, system or information resource being accessed, or the transaction itself such as time. Protected system and information resources could include connected networks, applications, and APIs.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-13.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-13 Identity Providers and Authorization Servers"

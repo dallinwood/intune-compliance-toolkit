@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nFor PKI-based authentication, employ an organization-wide methodology for managing the content of PKI trust stores installed across all platforms, including networks, operating systems, browsers, and applications.\n\n## Discussion\n\nAn organization-wide methodology for managing the content of PKI trust stores helps improve the accuracy and currency of PKI-based authentication credentials across the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-5.14",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-05 Authenticator Management"

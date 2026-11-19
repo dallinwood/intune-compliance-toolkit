@@ -85,7 +85,7 @@
   "discussion": "The macOS Application Firewall is the built-in firewall that comes with macOS, and it _MUST_ be enabled.\n\nWhen the macOS Application Firewall is enabled, the flow of information within the information system and between interconnected systems will be controlled by approved authorizations.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_firewall_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -206,7 +206,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

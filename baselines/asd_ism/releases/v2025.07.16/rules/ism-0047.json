@@ -36,10 +36,10 @@
   "discussion": "If cybersecurity documentation is not reviewed and approved by an appropriate authority, system owners risk failing in their duty to ensure that appropriate controls have been identified and implemented for systems and their operating environments. In doing so, it is important that a system’s security architecture, as outlined within the system security plan and supported by the cybersecurity incident response plan, change and configuration management plan, and continuous monitoring plan, is approved by the system’s authorising officer prior to the development of the system.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0047",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity documentation",
     "Development and maintenance of cybersecurity documentation",

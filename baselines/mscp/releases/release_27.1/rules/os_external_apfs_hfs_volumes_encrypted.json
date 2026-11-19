@@ -65,7 +65,7 @@
   "discussion": "All APFS and HFS+ external user storage volumes _MUST_ be encrypted.\n\nWhile FileVault protects the boot volume, data may be copied to attached external storage and reduce the protection afforded by FileVault. All external user data volumes (APFS or HFS+) _MUST_ be encrypted to protect user data from loss or tampering. CoreStorage has been deprecated and replaced with APFS for volume encryption.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_external_apfs_hfs_volumes_encrypted",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -110,7 +110,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

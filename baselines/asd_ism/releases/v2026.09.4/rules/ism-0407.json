@@ -36,10 +36,10 @@
   "discussion": "A secure record is maintained for the life of systems and their resources that covers the following for each human user:\n\n- their unique identifier\n- their signed agreement to abide by system usage policies\n- who authorised their access\n- when their access was granted\n- the level of access they were granted\n- when their access, and their level of access, was last reviewed\n- when their level of access was changed, and to what extent (if applicable)\n- when their access was withdrawn (if applicable).\n\nRetaining records of account requests for systems and their resources will assist in maintaining personnel accountability. Such records should include each human user’s unique identifier, their agreement to abide by system usage policies, who provided the authorisation for their access, when their authorisation was granted and when their access was last reviewed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0407",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

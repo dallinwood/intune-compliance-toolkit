@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement hardware-enforced separation and policy enforcement mechanisms between [Assignment: organization-defined security domains].\n\n## Discussion\n\nSystem owners may require additional strength of mechanism and robustness to ensure domain separation and policy enforcement for specific types of threats and environments of operation. Hardware-enforced separation and policy enforcement provide greater strength of mechanism than software-enforced separation and policy enforcement.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-49",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-160-1"
@@ -27,7 +27,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-49 Hardware-enforced Separation and Policy Enforcement"

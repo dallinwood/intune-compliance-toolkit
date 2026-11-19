@@ -36,10 +36,10 @@
   "discussion": "Software security testing can assist software developers in identifying vulnerabilities in their software. In doing so, testing should be designed to be repeatable and scalable while ensuring vulnerabilities in software are identified and remediated as early as possible. Such software security testing should include SAST, DAST and SCA in order to achieve comprehensive test coverage. As part of software security testing, software developers may also wish to replicate testing within typical consumer environments. Furthermore, software developers may choose to use independent testing to assist with removing any potential for bias that might occur when they test their own software. Finally, software needs to be comprehensively tested for vulnerabilities during development, prior to all releases and periodically in order to attempt to identify any previously unidentified vulnerabilities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2060",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

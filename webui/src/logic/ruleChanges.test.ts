@@ -130,9 +130,9 @@ describe('fieldChanges', () => {
   })
 
   it('shows a changed number as a plain value', () => {
-    const changes = fieldChanges(withOverrides({ odv: numberOdv() }), withOverrides({ odv: numberOdv({ recommended: 8 }) }))
+    const changes = fieldChanges(withOverrides({ odvs: [numberOdv()] }), withOverrides({ odvs: [numberOdv({ recommended: 8 })] }))
 
-    expect(changes).toEqual([{ kind: 'behaviour', path: ['odv', 'recommended'], display: 'value', before: 6, after: 8 }])
+    expect(changes).toEqual([{ kind: 'behaviour', path: ['odvs', '0', 'recommended'], display: 'value', before: 6, after: 8 }])
   })
 
   it('spells out a whole object that appeared, so each part is drawn as its own kind of change', () => {
@@ -143,10 +143,10 @@ describe('fieldChanges', () => {
   })
 
   it('spells out a whole object that disappeared, with the new side undefined', () => {
-    const changes = fieldChanges(withOverrides({ odv: numberOdv() }), withOverrides({ odv: null }))
+    const changes = fieldChanges(withOverrides({ odvs: [numberOdv()] }), withOverrides({ odvs: [] }))
 
-    expect(changes).toContainEqual({ kind: 'behaviour', path: ['odv', 'recommended'], display: 'value', before: 6, after: undefined })
-    expect(changes.every((change) => change.path[0] === 'odv' && change.after === undefined)).toBe(true)
+    expect(changes).toContainEqual({ kind: 'behaviour', path: ['odvs', '0', 'recommended'], display: 'value', before: 6, after: undefined })
+    expect(changes.every((change) => change.path[0] === 'odvs' && change.after === undefined)).toBe(true)
   })
 
   it('draws a whole remediation step that was added as its parts', () => {

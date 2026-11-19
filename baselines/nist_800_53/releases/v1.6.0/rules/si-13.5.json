@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProvide [Selection: real-time; near real-time] [Assignment: organization-defined failover capability] for the system.\n\n## Discussion\n\nFailover refers to the automatic switchover to an alternate system upon the failure of the primary system. Failover capability includes incorporating mirrored system operations at alternate processing sites or periodic data mirroring at regular intervals defined by the recovery time periods of organizations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-13.5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-6",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-13 Predictable Failure Prevention"

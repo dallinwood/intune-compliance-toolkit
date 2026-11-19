@@ -48,7 +48,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are segmented into network zones based on business criticality and trust levels, with only authorised, controlled and monitored inbound and outbound communication paths between network zones permitted.\n\n# Indicators of Good Practice\n\nNot effective:\n- No controls limit lateral movement between or within network segments.\n- Lateral movement is permitted by default across the environment, with restrictions applied only on an exception basis.\n- Approved pathways are not documented.\n- Lateral movement controls have not been validated through technical assessment.\n- Pathways and services are not reviewed after initial approval.\n\nPartially effective:\n- Controls limit lateral movement between segments but no controls operate within segments.\n- Restrictions are applied to some pathways, but the default position remains permissive in parts of the environment.\n- Approved pathways are documented but documentation is out of date or incomplete.\n- Validation has been performed but does not cover all in-scope segments, or is out of date.\n- Pathways are reviewed, but findings are not actioned, or the review cycle is not defined by the organisation.\n\nFully effective:\n- Controls limit lateral movement both between and within segments, with deny-by-default applied at each boundary.\n- Pathways and services are explicitly approved based on documented business requirements and trust levels, with all other lateral movement denied.\n- Approved pathways are documented, reflect the current configuration and identify the business requirement and trust relationship justifying each.\n- Lateral movement controls have been validated through technical assessment with results documented and gaps remediated.\n- Pathways and services are reviewed on a regular cycle defined by the organisation, with unjustified pathways removed and the configuration updated to reflect approved changes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-18.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -77,7 +77,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-18 - Network segmentation and segregation"

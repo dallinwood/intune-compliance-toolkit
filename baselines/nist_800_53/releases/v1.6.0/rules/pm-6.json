@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nDevelop, monitor, and report on the results of information security and privacy measures of performance.\n\n## Discussion\n\nMeasures of performance are outcome-based metrics used by an organization to measure the effectiveness or efficiency of the information security and privacy programs and the controls employed in support of the program. To facilitate security and privacy risk management, organizations consider aligning measures of performance with the organizational risk tolerance as defined in the risk management strategy.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130",
@@ -35,7 +35,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-06 Measures of Performance"

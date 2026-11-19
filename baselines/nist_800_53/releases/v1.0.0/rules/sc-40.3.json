@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement cryptographic mechanisms to identify and reject wireless transmissions that are deliberate attempts to achieve imitative or manipulative communications deception based on signal parameters.\n\n## Discussion\n\nThe implementation of cryptographic mechanisms to identify and reject imitative or manipulative communications ensures that the signal parameters of wireless transmissions are not predictable by unauthorized individuals. Such unpredictability reduces the probability of imitative or manipulative communications deception based on signal parameters alone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-40.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-12",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-40 Wireless Link Protection"

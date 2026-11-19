@@ -36,10 +36,10 @@
   "discussion": "Managed service providers will need to undergo regular security assessments by an Infosec Registered Assessor Program (IRAP) assessor to determine their security posture and security risks associated with their use. Following an initial security assessment by an IRAP assessor, subsequent security assessments should focus on any new services that are being offered as well as any security-related changes that have occurred since the previous security assessment.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1793",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Procurement and Outsourcing",
     "Managed services and cloud services",

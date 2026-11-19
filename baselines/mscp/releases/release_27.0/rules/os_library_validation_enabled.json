@@ -38,7 +38,7 @@
   "discussion": "Library validation  _MUST_ be enabled.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_library_validation_enabled",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -84,7 +84,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

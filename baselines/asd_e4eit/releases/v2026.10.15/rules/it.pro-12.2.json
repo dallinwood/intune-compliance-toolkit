@@ -40,7 +40,7 @@
   "discussion": "# Principle\n\nUsers are granted the minimum access to systems (infrastructure, operating systems, applications and data) required to undertake their duties or functions.\n\n# Indicators of Good Practice\n\nNot effective:\n- Non-administrative users can create, modify or delete accounts or roles.\n- Delegated permissions are broad and have not been audited.\n\nPartially effective:\n- Permissions are restricted to administrative roles but some delegated permissions are broader than required.\n- Approval workflows exist for some high-impact changes but not all.\n\nFully effective:\n- Only designated administrative roles can create, modify or delete accounts and roles.\n- Delegated permissions are audited and scoped to the minimum required.\n- Approval workflows are enforced for high-impact identity and access changes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-12.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -70,7 +70,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-12 - Least privilege access"

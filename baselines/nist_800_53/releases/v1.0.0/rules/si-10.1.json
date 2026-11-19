@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Provide a manual override capability for input validation of the following information inputs: [Assignment: organization-defined inputs defined in the base control (SI-10)];\n- (b) Restrict the use of the manual override capability to only [Assignment: organization-defined authorized individuals]; and\n- (c) Audit the use of the manual override capability.\n\n## Discussion\n\nIn certain situations, such as during events that are defined in contingency plans, a manual override capability for input validation may be needed. Manual overrides are used only in limited circumstances and with the inputs defined by the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-10.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-10 Information Input Validation"

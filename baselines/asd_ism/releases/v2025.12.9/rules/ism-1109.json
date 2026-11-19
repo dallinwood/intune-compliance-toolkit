@@ -36,10 +36,10 @@
   "discussion": "Transparent wall outlet box covers allow for inspection of cable cross-patching and tampering.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1109",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

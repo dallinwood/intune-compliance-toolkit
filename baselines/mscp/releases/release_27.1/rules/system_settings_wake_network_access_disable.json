@@ -65,7 +65,7 @@
   "discussion": "Wake for network access _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_wake_network_access_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -117,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

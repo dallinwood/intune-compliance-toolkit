@@ -89,7 +89,7 @@
   "discussion": "Support for Network File Systems (NFS) services is non-essential and, therefore, _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_nfsd_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -187,7 +187,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

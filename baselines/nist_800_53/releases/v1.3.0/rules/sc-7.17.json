@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nEnforce adherence to protocol formats.\n\n## Discussion\n\nSystem components that enforce protocol formats include deep packet inspection firewalls and XML gateways. The components verify adherence to protocol formats and specifications at the application layer and identify vulnerabilities that cannot be detected by devices operating at the network or transport layers.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.17",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-4"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nProvide an alert within [Assignment: organization-defined real-time period] to [Assignment: organization-defined personnel, roles, and/or locations] when the following audit failure events occur: [Assignment: organization-defined audit logging failure events requiring real-time alerts].\n\n## Discussion\n\nAlerts provide organizations with urgent messages. Real-time alerts provide these messages at information technology speed (i.e., the time from event detection to alert occurs in seconds or less).",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-5.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-05 Response to Audit Logging Process Failures"

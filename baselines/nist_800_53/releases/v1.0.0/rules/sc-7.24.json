@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nFor systems that process personally identifiable information:\n\n- (a) Apply the following processing rules to data elements of personally identifiable information: [Assignment: organization-defined processing rules];\n- (b) Monitor for permitted processing at the external interfaces to the system and at key internal boundaries within the system;\n- (c) Document each processing exception; and\n- (d) Review and remove exceptions that are no longer supported.\n\n## Discussion\n\nManaging the processing of personally identifiable information is an important aspect of protecting an individual’s privacy. Applying, monitoring for, and documenting exceptions to processing rules ensure that personally identifiable information is processed only in accordance with established privacy requirements.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.24",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PT-2",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

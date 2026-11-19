@@ -36,10 +36,10 @@
   "discussion": "A significant threat to the compromise of accounts is credential cracking tools. When an adversary gains access to a list of usernames and hashed credentials from a system they can attempt to recover username and credential pairs by comparing the hashes of known credentials with the hashed credentials they have gained access to. By finding a match an adversary will know the credential associated with a given username.\n\nIn order to reduce this security risk, an organisation should implement multi-factor authentication. Note, while single-factor authentication is no longer considered suitable for protecting sensitive or classified data, it may not be possible to implement multi-factor authentication on some systems. In such cases, an organisation will need to increase the time on average it takes an adversary to compromise a credential by continuing to increase its length over time. Such increases in length can be balanced against useability through the use of passphrases rather than passwords. In cases where systems do not support passphrases, and as an absolute last resort, the strongest password length and complexity supported by a system will need to be implemented.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0417",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

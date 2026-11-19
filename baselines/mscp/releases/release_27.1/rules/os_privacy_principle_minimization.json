@@ -25,7 +25,7 @@
   "discussion": "Implement the privacy principle of minimization using organization-defined processes.\n\nThe principle of minimization states that organizations should only process personally identifiable information that is directly relevant and necessary to accomplish an authorized purpose and should only maintain personally identifiable information for as long as is necessary to accomplish the purpose. Organizations have processes in place, consistent with applicable laws and policies, to implement the principle of minimization.\n\nNOTE: This requirement is NA for this technology.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_privacy_principle_minimization",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "800-53r5": [
@@ -61,7 +61,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

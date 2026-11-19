@@ -24,10 +24,10 @@
   "discussion": "As CDSs can be complex to implement and manage securely, it is critical that when an organisation is planning, designing, implementing or introducing additional connectivity to CDSs that ASD is consulted and any directions provided by ASD are complied with.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0597",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Cross Domain Solutions",

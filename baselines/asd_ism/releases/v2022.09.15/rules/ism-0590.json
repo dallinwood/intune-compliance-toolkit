@@ -36,10 +36,10 @@
   "discussion": "As networked MFDs are considered to be devices that reside on networks, they should have controls of a similar strength to other devices on networks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0590",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Fax machines and multifunction devices",

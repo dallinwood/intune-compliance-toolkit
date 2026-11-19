@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nTrack incidents and collect and analyze incident information using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms for tracking incidents and collecting and analyzing incident information include Computer Incident Response Centers or other electronic databases of incidents and network monitoring devices.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-5.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-05 Incident Monitoring"

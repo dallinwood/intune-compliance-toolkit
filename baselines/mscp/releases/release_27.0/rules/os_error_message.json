@@ -25,7 +25,7 @@
   "discussion": "The information system _IS_ configured to generate error messages that provide the information necessary for corrective actions without revealing information that could be exploited by adversaries.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_error_message",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "cce": {
@@ -58,7 +58,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

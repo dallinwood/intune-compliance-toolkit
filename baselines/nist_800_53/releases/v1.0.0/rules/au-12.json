@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Provide audit record generation capability for the event types the system is capable of auditing as defined in AU-2a on [Assignment: organization-defined system components];\n- b. Allow [Assignment: organization-defined personnel or roles] to select the event types that are to be logged by specific components of the system; and\n- c. Generate audit records for the event types defined in AU-2c that include the audit record content defined in AU-3.\n\n## Discussion\n\nAudit records can be generated from many different system components. The event types specified in AU-2d are the event types for which audit logs are to be generated and are a subset of all event types for which the system can generate audit records.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-6",
@@ -53,7 +53,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-12 Audit Record Generation"

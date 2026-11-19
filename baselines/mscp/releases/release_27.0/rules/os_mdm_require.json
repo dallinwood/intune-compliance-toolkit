@@ -77,7 +77,7 @@
   "discussion": "You _MUST_ enroll your Mac in a Mobile Device Management (MDM) software.\n\nUser Approved MDM (UAMDM) enrollment or enrollment via Apple Business/Apple School Manager (ASM) is required to manage certain security settings. Currently these include:\n\n* Allowed Kernel Extensions\n* Allowed Approved System Extensions\n* Privacy Preferences Policy Control Payload\n* ExtensibleSingleSignOn\n* FDEFileVault\n\nIn macOS 11, UAMDM grants Supervised status on a Mac, unlocking the following MDM features, which were previously locked behind ABM:\n\n* Activation Lock Bypass\n* Access to Bootstrap Tokens\n* Scheduling Software Updates\n* Query list and delete local users\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_mdm_require",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -170,7 +170,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

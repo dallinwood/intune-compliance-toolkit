@@ -36,10 +36,10 @@
   "discussion": "All IT equipment used by systems will need to meet industry and government standards relating to electromagnetic interference/electromagnetic compatibility.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0250",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Emanation security",

@@ -36,10 +36,10 @@
   "discussion": "Suitably encrypting the internal storage, and any removable media, for mobile devices will help prevent malicious actors from gaining easy access to any sensitive or classified data stored on them if they are lost or stolen. As such, it is critical that ASD-approved cryptography is used.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0869",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for enterprise mobility",
     "Mobile device management",

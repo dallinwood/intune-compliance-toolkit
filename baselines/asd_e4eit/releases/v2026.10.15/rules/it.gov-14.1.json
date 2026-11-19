@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) that are not capable of meeting cyber security requirements are managed using compensating security controls, along with enhanced monitoring and assurance activities, to maintain an acceptable level of residual risk until they can be decommissioned or replaced.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented or approved governance process exists for identifying or managing legacy systems.\n- Legacy systems are not formally identified within the environment.\n- Cyber security risks associated with legacy systems are not assessed or are assessed informally.\n- There are no interim compensating controls to manage identified cyber security risks associated with legacy systems.\n- Legacy systems remain in operation indefinitely with no documented decommissioning, replacement or migration path.\n\nPartially effective:\n- A process exists but the criteria for classifying a system as legacy are not documented or are inconsistently applied.\n- Some legacy systems are identified but the inventory is incomplete or is not maintained.\n- Risk assessments are conducted for some legacy systems but treatment decisions are not documented or approved.\n- Some compensating controls are in place to address risks associated with legacy systems, but coverage is not complete.\n- A path exists for some legacy systems but is not tracked to completion.\n\nFully effective:\n- A documented and approved governance process exists with clear criteria for classifying systems as legacy.\n- Legacy systems are formally identified, inventoried and reviewed on a cycle defined by the organisation.\n- Cyber security risks associated with legacy systems are assessed, treated and approved by an appropriate authority.\n- Compensating controls are applied to manage cyber security risks for legacy systems while decommissioning or migration efforts are in progress.\n- A documented decommissioning, replacement or migration path exists for retained legacy systems and is tracked to completion.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-14.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -57,7 +57,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-14 - Legacy system management"

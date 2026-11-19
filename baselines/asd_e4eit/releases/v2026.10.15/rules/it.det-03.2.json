@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nCyber security events are analysed in a timely manner to identify cyber security incidents.\n\n# Indicators of Good Practice\n\nNot effective:\n- Investigation relies on single-source alerts with no cross-source correlation.\n- Correlation rules do not consider signals from multiple data sources.\n\nPartially effective:\n- Some correlation exists but is limited to specific data source pairs.\n- Cross-source investigation is performed manually but not supported by automated correlation.\n\nFully effective:\n- Correlation rules and investigation procedures consider signals across identities, applications, data and infrastructure.\n- Automated correlation supports detection of multi-stage adversary activity.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.det-03.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Detect principles",
     "DET-03 - Cyber security incident identification"

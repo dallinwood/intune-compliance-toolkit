@@ -36,10 +36,10 @@
   "discussion": "The ability to inspect cabling infrastructure is necessary to detect illicit tampering or degradation. Note, this does not necessarily mean that cables need to be fully visible all the time. Rather, cable inspectability can still be achieved as long as cables can be viewed and inspected through the easy removal of ceiling, floor or wall panels or manholes.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1119",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy automated patch management tools to facilitate flaw remediation to the following system components: [Assignment: organization-defined components].\n\n## Discussion\n\nUsing automated tools to support patch management helps to ensure the timeliness and completeness of system patching operations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-2.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-02 Flaw Remediation"

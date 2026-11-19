@@ -24,7 +24,7 @@
   "discussion": "## Control\n\n- a. Employ spam protection mechanisms at system entry and exit points to detect and act on unsolicited messages; and\n- b. Update spam protection mechanisms when new releases are available in accordance with organizational configuration management policy and procedures.\n\n## Discussion\n\nSystem entry and exit points include firewalls, remote-access servers, electronic mail servers, web servers, proxy servers, workstations, notebook computers, and mobile devices. Spam can be transported by different means, including email, email attachments, and web accesses. Spam protection mechanisms include signature definitions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-8",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-45",
@@ -40,7 +40,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-08 Spam Protection"

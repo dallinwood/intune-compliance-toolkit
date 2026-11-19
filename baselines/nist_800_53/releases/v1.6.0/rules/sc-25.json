@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy minimal functionality and information storage on the following system components: [Assignment: organization-defined system components].\n\n## Discussion\n\nThe deployment of system components with minimal functionality reduces the need to secure every endpoint and may reduce the exposure of information, systems, and services to attacks. Reduced or minimal functionality includes diskless nodes and thin client technologies.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-25",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-30",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-25 Thin Nodes"

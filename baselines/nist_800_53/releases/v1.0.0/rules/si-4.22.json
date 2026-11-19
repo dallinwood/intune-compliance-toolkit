@@ -20,14 +20,14 @@
   "discussion": "## Control\n\n- (a) Detect network services that have not been authorized or approved by [Assignment: organization-defined authorization or approval processes]; and\n- (b)  [Selection (one or more): Audit; Alert [Assignment: organization-defined personnel or roles]] when detected.\n\n## Discussion\n\nUnauthorized or unapproved network services include services in service-oriented architectures that lack organizational verification or validation and may therefore be unreliable or serve as malicious rogues for valid services.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.22",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

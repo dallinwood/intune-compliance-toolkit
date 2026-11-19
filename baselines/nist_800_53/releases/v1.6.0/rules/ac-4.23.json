@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nWhen transferring information between different security domains, modify non-releasable information by implementing [Assignment: organization-defined modification action].\n\n## Discussion\n\nModifying non-releasable information can help prevent a data spill or attack when information is transferred across security domains. Modification actions include masking, permutation, alteration, removal, or redaction.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.23",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

@@ -36,10 +36,10 @@
   "discussion": "Failure to suitably encrypt mobile device communications, including those of mobile applications, when communicating sensitive or classified data presents an unacceptable security risk. As such, when encrypting data in transit, it is critical that ASD-approved cryptography is used.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1085",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for enterprise mobility",
     "Mobile device management",

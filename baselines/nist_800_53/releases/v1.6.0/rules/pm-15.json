@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEstablish and institutionalize contact with selected groups and associations within the security and privacy communities:\n\n- a. To facilitate ongoing security and privacy education and training for organizational personnel;\n- b. To maintain currency with recommended security and privacy practices, techniques, and technologies; and\n- c. To share current security and privacy information, including threats, vulnerabilities, and incidents.\n\n## Discussion\n\nOngoing contact with security and privacy groups and associations is important in an environment of rapidly changing technologies and threats. Groups and associations include special interest groups, professional associations, forums, news groups, users’ groups, and peer groups of security and privacy professionals in similar organizations. Organizations select security and privacy groups and associations based on mission and business functions. Organizations share threat, vulnerability, and incident information as well as contextual insights, compliance techniques, and privacy problems consistent with applicable laws, executive orders, directives, policies, regulations, standards, and guidelines.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130"
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-15 Security and Privacy Groups and Associations"

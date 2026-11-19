@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProhibit privileged access to the system by non-organizational users.\n\n## Discussion\n\nAn organizational user is an employee or an individual considered by the organization to have the equivalent status of an employee. Organizational users include contractors, guest researchers, or individuals detailed from other organizations. A non-organizational user is a user who is not an organizational user. Policies and procedures for granting equivalent status of employees to individuals include a need-to-know, citizenship, and the relationship to the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-6.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-18",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-06 Least Privilege"

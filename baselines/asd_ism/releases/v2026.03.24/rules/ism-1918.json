@@ -36,10 +36,10 @@
   "discussion": "The CISO is responsible for reporting cyber security matters to their organisation’s board of directors or executive committee, as well as their organisation’s audit, risk and compliance committee (or equivalent). In doing so, it is important that reporting is done directly by the CISO rather than via other senior executives within their organisation. This ensures reporting remains accurate and free of any conflicts of interest.\n\nReporting should cover:\n\n- the organisation’s security risk profile\n- the status of key systems and any outstanding security risks\n- any planned cyber security uplift activities\n- any recent cyber security incidents\n- expected returns on cyber security investments.\n\nReporting on cyber security matters should be structured by business functions, regions or legal entities and support a consolidated view of an organisation’s security risks.\n\nIt is important that the CISO is able to translate security risks into operational risks for their organisation, including financial and legal risks, in order to enable more holistic conversations about their organisation’s risks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1918",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "Chief information security officer",

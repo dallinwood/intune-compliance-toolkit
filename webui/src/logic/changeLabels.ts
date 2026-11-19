@@ -16,7 +16,7 @@ const FIELD_LABELS: Readonly<Record<string, string>> = {
   discussion_format: 'Discussion format',
   check: 'Check',
   remediation: 'Fix',
-  odv: 'Organization-defined value',
+  odvs: 'Organization-defined values',
   assessment: 'Assessment',
   architecture: 'Architecture',
   applicability: 'Benchmarks',
@@ -66,8 +66,12 @@ function scriptFieldParts(field: string, rest: string[], vocabularyIndex: Vocabu
 export function changeLabel(path: string[], vocabularyIndex: VocabularyIndex): string {
   const [field, ...rest] = path
   const parts = [FIELD_LABELS[field] ?? field]
-  if ((field === 'assessment' || field === 'odv') && rest.length > 0) {
+  if (field === 'assessment' && rest.length > 0) {
     parts.push(sentenceCase(rest[0]))
+  } else if (field === 'odvs' && rest.length > 0) {
+    const [position, ...inOdv] = rest
+    parts.push(`Value ${Number(position) + 1}`)
+    if (inOdv.length > 0) parts.push(sentenceCase(inOdv[0]))
   } else if (field === 'applicability' && rest.length > 0) {
     parts.push(scopeLabel(rest[0], vocabularyIndex))
   } else if ((field === 'check' || field === 'remediation') && rest.length > 0) {

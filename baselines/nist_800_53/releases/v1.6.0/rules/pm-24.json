@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nEstablish a Data Integrity Board to:\n\n- a. Review proposals to conduct or participate in a matching program; and\n- b. Conduct an annual review of all matching programs in which the agency has participated.\n\n## Discussion\n\nA Data Integrity Board is the board of senior officials designated by the head of a federal agency and is responsible for, among other things, reviewing the agency’s proposals to conduct or participate in a matching program and conducting an annual review of all matching programs in which the agency has participated. As a general matter, a matching program is a computerized comparison of records from two or more automated [PRIVACT](https://www.govinfo.gov/content/pkg/STATUTE-88/pdf/STATUTE-88-Pg1896.pdf) systems of records or an automated system of records and automated records maintained by a non-federal agency (or agent thereof). A matching program either pertains to Federal benefit programs or Federal personnel or payroll records. At a minimum, the Data Integrity Board includes the Inspector General of the agency, if any, and the senior agency official for privacy.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-24",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "PRIVACT",
@@ -36,7 +36,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-24 Data Integrity Board"

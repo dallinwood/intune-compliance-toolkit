@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- a. Conduct root cause analysis to identify underlying causes of issues or failures.\n- b. Develop actions to address the root cause of the issue or failure.\n- c. Implement the actions and monitor the implementation for effectiveness.\n\n## Discussion\n\nRoot cause analysis includes a wide range of approaches, tools, and techniques to systematically identify the underlying cause of issues or failures to systems and systems components (hardware, software, and firmware). Organizations consider the severity of the incident to determine what root cause analysis method is used and how quickly implementation of the remediation actions. The root cause analysis includes a timeline, missed warning signs, key decisions, gaps, mitigations, and verification of effectiveness. The actions identified to address the source of the issue are implemented and integrated into applicable organizational policy, procedures, and control implementation.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-2.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-1",
@@ -50,7 +50,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-02 Flaw Remediation"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProtect the system from information leakage due to electromagnetic signals emanations.\n\n## Discussion\n\nInformation leakage is the intentional or unintentional release of data or information to an untrusted environment from electromagnetic signals emanations. The security categories or classifications of systems (with respect to confidentiality), organizational security policies, and risk tolerance guide the selection of controls employed to protect systems against information leakage due to electromagnetic signals emanations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-19",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FIPS 199"
@@ -27,7 +27,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-19 Information Leakage"

@@ -36,10 +36,10 @@
   "discussion": "If using logins without a passphrase for automated purposes, a number of security risks may arise, specifically:\n\n- if access from unknown Internet Protocol (IP) addresses is not restricted, malicious actors could automatically authenticate to systems without needing to know any passphrases\n- if port forwarding is not disabled, or it is not configured securely, access may be gained to forwarded ports, thereby, creating a communication channel between malicious actors and a host\n- if agent credential forwarding is enabled, malicious actors could connect to the stored authentication credentials and use them to connect to other trusted hosts, or even intranet hosts if port forwarding has been allowed as well\n- if X11 forwarding is not disabled, malicious actors could gain control of displays as well as keyboard and mouse control functions\n- if console access is allowed, every user who logs into the console could run programs that are normally restricted to authenticated users.\n\nTo assist in mitigating these security risks, it is essential that the ‘forced command’ option is used to specify what command is executed and parameter checking is enabled.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0488",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Secure Shell",

@@ -24,10 +24,10 @@
   "discussion": "As privileged user accounts often have the ability to bypass a system’s controls, it is strongly encouraged that foreign nationals are not given privileged access to systems that process, store or communicate AUSTEO, AGAO or REL data.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0447",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Access to systems and their resources",

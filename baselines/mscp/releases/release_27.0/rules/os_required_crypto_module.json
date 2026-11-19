@@ -25,7 +25,7 @@
   "discussion": "The inherent configuration of the macOS _IS_ in compliance by implementing mechanisms for authentication to a cryptographic module that meet the requirements of all applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance for such authentication\n\nmacOS contains many open source projects that may use their own cryptographic libraries typically for the purposes of maintaining platform independence. These services are not covered by the Apple FIPS Validation of the CoreCrypto and CoreCrypto Kernel modules.\n\nApple is committed to the FIPS validation process and historically has always submitted and validated the cryptographic modules in their operating systems.\n\nlink:https://csrc.nist.gov/Projects/cryptographic-module-validation-program/validated-modules[]\n\nlink:https://support.apple.com/guide/certifications/about-apple-security-certifications-apc30d0ed034/web[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_required_crypto_module",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -67,7 +67,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

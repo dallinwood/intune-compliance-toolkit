@@ -36,10 +36,10 @@
   "discussion": "To ensure personnel are actively contributing to the security culture of their organisation, a cyber security awareness training program should be developed, implemented and maintained. As the CISO is responsible for cyber security within their organisation, they should oversee the development, implementation and maintenance of the cyber security awareness training program.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0735",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cyber Security Roles",
     "Chief Information Security Officer",

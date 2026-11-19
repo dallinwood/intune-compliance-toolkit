@@ -36,10 +36,10 @@
   "discussion": "Having data backup and restoration processes and procedures is an important part of business continuity and disaster recovery planning. Such activities will also form an integral part of an overarching digital preservation policy.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1547",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Management",
     "Data backup and restoration",

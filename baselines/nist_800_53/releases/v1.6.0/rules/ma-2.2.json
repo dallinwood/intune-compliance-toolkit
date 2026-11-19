@@ -20,14 +20,14 @@
   "discussion": "## Control\n\n- (a) Schedule, conduct, and document maintenance, repair, and replacement actions for the system using [Assignment: organization-defined automated mechanisms] ; and\n- (b) Produce up-to date, accurate, and complete records of all maintenance, repair, and replacement actions requested, scheduled, in process, and completed.\n\n## Discussion\n\nThe use of automated mechanisms to manage and control system maintenance programs and activities helps to ensure the generation of timely, accurate, complete, and consistent maintenance records.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-2.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "MA-3"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-02 Controlled Maintenance"

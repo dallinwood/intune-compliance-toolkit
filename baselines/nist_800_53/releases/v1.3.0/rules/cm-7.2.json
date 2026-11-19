@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nPrevent program execution in accordance with [Selection (one or more): [Assignment: organization-defined policies, rules of behavior, and/or access agreements regarding software program usage and restrictions]; rules authorizing the terms and conditions of software program usage].\n\n## Discussion\n\nPrevention of program execution addresses organizational policies, rules of behavior, and/or access agreements that restrict software usage and the terms and conditions imposed by the developer or manufacturer, including software licensing and copyrights. Restrictions include prohibiting auto-execute features, restricting roles allowed to approve program execution, permitting or prohibiting specific software programs, or restricting the number of program instances executed at the same time.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-7.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-8",
@@ -35,7 +35,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-07 Least Functionality"

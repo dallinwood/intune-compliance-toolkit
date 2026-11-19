@@ -36,10 +36,10 @@
   "discussion": "When an organisation provides a public wireless network for public use, connecting the public wireless network to, or sharing infrastructure with, any other organisation networks can create an entry point for malicious actors enabling them to target organisation networks to steal data or disrupt services.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0536",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Wireless networks",

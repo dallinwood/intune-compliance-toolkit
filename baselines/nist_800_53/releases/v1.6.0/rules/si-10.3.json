@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nVerify that the system behaves in a predictable and documented manner when invalid inputs are received.\n\n## Discussion\n\nA common vulnerability in organizational systems is unpredictable behavior when invalid inputs are received. Verification of system predictability helps ensure that the system behaves as expected when invalid inputs are received. This occurs by specifying system responses that allow the system to transition to known states without adverse, unintended side effects. The invalid inputs are those related to the information inputs defined by the organization in the base control ( SI-10).",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-10.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-10 Information Input Validation"

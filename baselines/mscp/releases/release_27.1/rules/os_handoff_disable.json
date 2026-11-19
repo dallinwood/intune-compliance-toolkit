@@ -53,7 +53,7 @@
   "discussion": "Handoff _MUST_ be disabled.\n\nHandoff allows you to continue working on a document or project when the user switches from one Apple device to another. Disabling Handoff prevents data transfers to unauthorized devices.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_handoff_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -213,7 +213,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nCompile audit records from [Assignment: organization-defined system components] into a system-wide (logical or physical) audit trail that is time-correlated to within [Assignment: organization-defined level of tolerance].\n\n## Discussion\n\nAudit trails are time-correlated if the time stamps in the individual audit records can be reliably related to the time stamps in other audit records to achieve a time ordering of the records within organizational tolerances.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-12.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-8",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-12 Audit Record Generation"

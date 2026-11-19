@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Maintain visitor access records to the facility where the system resides for [Assignment: organization-defined time period];\n- b. Review visitor access records [Assignment: organization-defined frequency] ; and\n- c. Report anomalies in visitor access records to [Assignment: organization-defined personnel].\n\n## Discussion\n\nVisitor access records include the names and organizations of individuals visiting, visitor signatures, forms of identification, dates of access, entry and departure times, purpose of visits, and the names and organizations of individuals visited. Access record reviews determine if access authorizations are current and are still required to support organizational mission and business functions. Access records are not required for publicly accessible areas.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-8",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PE-2",
@@ -37,7 +37,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-08 Visitor Access Records"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement cryptographic mechanisms to detect unauthorized changes to software, firmware, and information.\n\n## Discussion\n\nCryptographic mechanisms used to protect integrity include digital signatures and the computation and application of signed hashes using asymmetric cryptography, protecting the confidentiality of the key used to generate the hash, and using the public key to verify the hash information. Organizations that employ cryptographic mechanisms also consider cryptographic key management solutions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-7.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-12",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-07 Software, Firmware, and Information Integrity"

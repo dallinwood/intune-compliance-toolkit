@@ -61,7 +61,7 @@
   "discussion": "Hot corners _MUST_ be secured.\n\nThe information system conceals, via the session lock, information previously visible on the display with a publicly viewable image. Although hot corners can be used to initiate a session lock or to launch useful applications, they can also be configured to disable an automatic session lock from initiating. Such a configuration introduces the risk that a user might forget to manually lock the screen before stepping away from the computer.\n\n[NOTE]\n====\nThe check and fix are for the last logged in user. To get the last logged in user, run the following.\n[source,bash]\n-  CURRENT_USER=$( /usr/bin/defaults read /Library/Preferences/com.apple.loginwindow lastUserName )\n-  ====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_hot_corners_secure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -124,7 +124,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

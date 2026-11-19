@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide the capability to dynamically isolate [Assignment: organization-defined system components] from other system components.\n\n## Discussion\n\nThe capability to dynamically isolate certain internal system components is useful when it is necessary to partition or separate system components of questionable origin from components that possess greater trustworthiness. Component isolation reduces the attack surface of organizational systems. Isolating selected system components can also limit the damage from successful attacks when such attacks occur.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.20",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing, maintaining and regularly verifying a register of removable media can assist an organisation in tracking and accounting for authorised removable media as well as identifying any non-authorised removal media in use within their organisation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1713",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media usage",

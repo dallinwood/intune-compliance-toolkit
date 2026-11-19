@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nPrevent or restrict changes to the configuration of the system under the following circumstances: [Assignment: organization-defined circumstances].\n\n## Discussion\n\nSystem configuration changes can adversely affect critical system security and privacy functionality. Change restrictions can be enforced through automated mechanisms.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-3.8",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-03 Configuration Change Control"

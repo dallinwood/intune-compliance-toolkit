@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy a penetration testing process that includes [Assignment: organization-defined frequency] [Selection (one or more): announced; unannounced] attempts to bypass or circumvent controls associated with physical access points to the facility.\n\n## Discussion\n\nPenetration testing of physical access points can provide information on critical vulnerabilities in the operating environments of organizational systems. Such information can be used to correct weaknesses or deficiencies in physical controls that are necessary to protect organizational systems.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ca-8.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-2",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Assessment, Authorization, and Monitoring",
     "CA-08 Penetration Testing"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to:\n\n- (a) Define security-relevant hardware, software, and firmware; and\n- (b) Provide a rationale that the definition for security-relevant hardware, software, and firmware is complete.\n\n## Discussion\n\nThe security-relevant hardware, software, and firmware represent the portion of the system, component, or service that is trusted to perform correctly to maintain required security properties.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-17.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-25",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-17 Developer Security and Privacy Architecture and Design"

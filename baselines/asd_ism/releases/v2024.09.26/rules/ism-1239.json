@@ -36,10 +36,10 @@
   "discussion": "Web application frameworks can be leveraged by software developers to enhance the security of web applications while decreasing development time. These resources can assist in securely implementing complex software functions, such as session management, input handling and cryptographic operations.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1239",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

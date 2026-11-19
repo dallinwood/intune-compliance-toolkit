@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDowngrade system media containing classified information prior to release to individuals without required access authorizations.\n\n## Discussion\n\nDowngrading of classified information uses approved sanitization tools, techniques, and procedures to transfer information confirmed to be unclassified from classified systems to unclassified media.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-8.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-08 Media Downgrading"

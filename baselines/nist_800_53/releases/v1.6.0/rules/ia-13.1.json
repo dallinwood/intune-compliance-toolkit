@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nCryptographic keys that protect access tokens are generated, managed, and protected from disclosure and misuse.\n\n## Discussion\n\nIdentity assertions and access tokens are typically digitally signed. The private keys used to sign these assertions and tokens are protected commensurate with the impact of the system and information resources that can be accessed.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-13.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-12",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-13 Identity Providers and Authorization Servers"

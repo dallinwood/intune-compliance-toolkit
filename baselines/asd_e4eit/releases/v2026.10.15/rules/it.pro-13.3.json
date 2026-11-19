@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nRobust and secure identity, credential and access management is used to establish, maintain and control access to systems (infrastructure, operating systems, applications and data) and to support effective detection of identity and credential misuse.\n\n# Indicators of Good Practice\n\nNot effective:\n- No secret scanning capability is deployed.\n- No process exists to identify credentials exposed in codebases, configuration files, file shares or user collaboration platforms.\n- Unsecured keys, secrets and credentials found exposed in codebases, configuration files, scripts, file shares or user collaboration platforms are left in place with no action taken.\n\nPartially effective:\n- Secret scanning is deployed but does not cover all repositories, pipelines or user collaboration platforms.\n- Scanning runs but discovered credentials are not assessed in a timely manner.\n- Unsecured keys, secrets and credentials that are discovered are assessed, but are not rotated or revoked in a timely manner.\n\nFully effective:\n- Secret scanning tooling is deployed across codebases, configuration files, file shares and user collaboration platforms.\n- Scans to identify unsecured keys, secrets and credentials run on a regular schedule defined by the organisation.\n- Unsecured keys, secrets and credentials that are discovered are assessed, then rotated and/or revoked within timeframes defined by the organisation.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-13.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -61,7 +61,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-13 - Identity, credential and access management"

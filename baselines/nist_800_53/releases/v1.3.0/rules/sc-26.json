@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nInclude components within organizational systems specifically designed to be the target of malicious attacks for detecting, deflecting, and analyzing such attacks.\n\n## Discussion\n\nDecoys (i.e., honeypots, honeynets, or deception nets) are established to attract adversaries and deflect attacks away from the operational systems that support organizational mission and business functions. Use of decoys requires some supporting isolation measures to ensure that any deflected malicious code does not infect organizational systems. Depending on the specific usage of the decoy, consultation with the Office of the General Counsel before deployment may be needed.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-26",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "RA-5",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-26 Decoys"

@@ -3,14 +3,14 @@ import { versionsForTarget } from './applicability'
 import type { IntuneDataType } from './operatorMap'
 import {
   canonicalOdvValue,
-  containsOdvPlaceholder,
   effectiveOdvValue,
+  odvPlaceholder,
+  odvPlaceholderNames,
   odvSubstitutionMode,
-  substituteOdv,
+  substituteOdvs,
   validateOdvValue,
-  type OdvSubstitutionMode,
 } from './odv'
-import type { OrgDefinedValue } from './selectionEntry'
+import type { OdvValues } from './selectionEntry'
 
 export interface ExpectedResult {
   type: CheckResult['type']
@@ -39,11 +39,11 @@ export interface RuleCheckPlan {
   branches: CheckBranch[]
   newerThan: string
   newerBranch: NewerBranch | null
-  // The canonical effective ODV, for display (titles, descriptions).
-  odvValue: OrgDefinedValue | null
-  // Set only for variable-mode rules: the script exports it as ODV before
-  // running the check, whose shell then still contains $ODV on purpose.
-  exportedOdv: string | null
+  // The canonical effective value of every ODV, for display (titles, descriptions).
+  odvValues: OdvValues
+  // Only the variable-mode ODVs: the script exports each as ODV_<name> before
+  // running the check, whose shell then still contains $ODV_<name> on purpose.
+  exportedOdvs: Record<string, string>
 }
 
 // The one target the generator writes scripts for; applicability entries for
@@ -85,9 +85,8 @@ function base64ExpectedValue(text: string): string {
   return btoa(binary)
 }
 
-function resolveExpected(result: CheckResult, odvValue: OrgDefinedValue | null): ExpectedResult | { problem: string } {
-  const substituted =
-    typeof result.value === 'string' && odvValue !== null ? substituteOdv(result.value, odvValue) : result.value
+function resolveExpected(result: CheckResult, odvValues: OdvValues): ExpectedResult | { problem: string } {
+  const substituted = typeof result.value === 'string' ? substituteOdvs(result.value, odvValues) : result.value
 
   if (result.type === 'integer') {
     if (typeof substituted === 'number' && Number.isSafeInteger(substituted)) return { type: 'integer', value: substituted }
@@ -104,35 +103,45 @@ function sameExpected(left: ExpectedResult, right: ExpectedResult): boolean {
   return left.type === right.type && left.value === right.value
 }
 
-function ruleUsesOdv(rule: Rule): boolean {
+function generatedCheckTexts(rule: Rule): string[] {
   const targetCheck = generatedTargetCheck(rule)
   const checks = [targetCheck?.default, ...Object.values(targetCheck?.by_version ?? {})]
-  return checks.some(
-    (check) =>
-      (check?.shell != null && containsOdvPlaceholder(check.shell)) ||
-      (typeof check?.result?.value === 'string' && containsOdvPlaceholder(check.result.value)),
-  )
+  return checks.flatMap((check) => [check?.shell, check?.result?.value]).filter((text): text is string => typeof text === 'string')
 }
 
-interface ResolvedOdv {
-  value: OrgDefinedValue | null
-  mode: OdvSubstitutionMode
+interface ResolvedOdvs {
+  values: OdvValues
+  // The values the script exports instead of text-replacing.
+  exported: Record<string, string>
+  // The values text-replaced into each check shell.
+  textValues: OdvValues
 }
 
-function resolveOdv(rule: Rule, selectedValue: OrgDefinedValue | null): ResolvedOdv | { problem: string } {
-  if (!rule.odv) {
-    if (ruleUsesOdv(rule)) return { problem: 'This rule uses $ODV but defines no organization-defined value.' }
-    return { value: null, mode: 'none' }
+function resolveOdvs(rule: Rule, selected: OdvValues): ResolvedOdvs | { problem: string } {
+  const declaredNames = new Set(rule.odvs.map((odv) => odv.name))
+  for (const name of generatedCheckTexts(rule).flatMap(odvPlaceholderNames)) {
+    if (!declaredNames.has(name)) {
+      return { problem: `This rule uses ${odvPlaceholder(name)} but defines no organization-defined value named ${name}.` }
+    }
   }
 
-  const mode = odvSubstitutionMode(rule)
-  const effective = effectiveOdvValue(rule.odv, selectedValue)
-  if (effective === null) return { problem: 'This rule needs an organization-defined value.' }
+  const resolved: ResolvedOdvs = { values: {}, exported: {}, textValues: {} }
+  for (const odv of rule.odvs) {
+    const mode = odvSubstitutionMode(rule, odv)
+    const storedValue = Object.hasOwn(selected, odv.name) ? selected[odv.name] : null
+    const effective = effectiveOdvValue(odv, storedValue)
+    const label = rule.odvs.length > 1 ? ` "${odv.name}"` : ''
+    if (effective === null) return { problem: `This rule needs an organization-defined value${label}.` }
 
-  const canonical = canonicalOdvValue(rule.odv, effective)
-  const invalidReason = validateOdvValue(rule.odv, canonical, mode, rule.id)
-  if (invalidReason) return { problem: `The organization-defined value is invalid: ${invalidReason}` }
-  return { value: canonical, mode }
+    const canonical = canonicalOdvValue(odv, effective)
+    const invalidReason = validateOdvValue(odv, canonical, mode, rule.id)
+    if (invalidReason) return { problem: `The organization-defined value${label} is invalid: ${invalidReason}` }
+
+    resolved.values[odv.name] = canonical
+    if (mode === 'variable') resolved.exported[odv.name] = String(canonical)
+    if (mode === 'text') resolved.textValues[odv.name] = canonical
+  }
+  return resolved
 }
 
 interface VersionCheck {
@@ -141,16 +150,16 @@ interface VersionCheck {
   expected: ExpectedResult
 }
 
-function resolveVersionCheck(rule: Rule, version: string, odv: ResolvedOdv): VersionCheck | { problem: string } {
+function resolveVersionCheck(rule: Rule, version: string, odvs: ResolvedOdvs): VersionCheck | { problem: string } {
   const targetCheck = generatedTargetCheck(rule)
   const check: RuleCheck | null = targetCheck?.by_version[version] ?? targetCheck?.default ?? null
   if (!check?.shell) return { problem: `mSCP has no check for macOS ${version}.` }
   if (!check.result) return { problem: `mSCP gives no expected result for macOS ${version}.` }
 
-  const expected = resolveExpected(check.result, odv.value)
+  const expected = resolveExpected(check.result, odvs.values)
   if ('problem' in expected) return expected
 
-  const shell = odv.mode === 'text' && odv.value !== null ? substituteOdv(check.shell, odv.value) : check.shell
+  const shell = substituteOdvs(check.shell, odvs.textValues)
   return { major: majorOf(version), shell, expected }
 }
 
@@ -174,19 +183,19 @@ function intuneComparison(expected: ExpectedResult): { dataType: IntuneDataType;
 export function planRuleCheck(
   rule: Rule,
   coveredVersions: string[],
-  odvValue: OrgDefinedValue | null,
+  selected: OdvValues,
 ): RuleCheckPlanResult {
   if (rule.assessment.status !== 'automated') return { problem: 'This rule is assessed manually.' }
 
   const listedVersions = versionsForTarget(rule.applicability, GENERATED_TARGET).sort(byMajorAscending)
   if (listedVersions.length === 0) return { problem: 'mSCP does not map this rule to any macOS version.' }
 
-  const odv = resolveOdv(rule, odvValue)
-  if ('problem' in odv) return odv
+  const odvs = resolveOdvs(rule, selected)
+  if ('problem' in odvs) return odvs
 
   const versionChecks: VersionCheck[] = []
   for (const version of listedVersions) {
-    const versionCheck = resolveVersionCheck(rule, version, odv)
+    const versionCheck = resolveVersionCheck(rule, version, odvs)
     if ('problem' in versionCheck) return versionCheck
     const sameMajor = versionChecks.find((existing) => existing.major === versionCheck.major)
     if (sameMajor) {
@@ -219,7 +228,7 @@ export function planRuleCheck(
     branches,
     newerThan,
     newerBranch,
-    odvValue: odv.value,
-    exportedOdv: odv.mode === 'variable' && odv.value !== null ? String(odv.value) : null,
+    odvValues: odvs.values,
+    exportedOdvs: odvs.exported,
   }
 }

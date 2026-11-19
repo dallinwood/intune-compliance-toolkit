@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nRemove previous versions of [Assignment: organization-defined software and firmware components] after updated versions have been installed.\n\n## Discussion\n\nPrevious versions of software or firmware components that are not removed from the system after updates have been installed may be exploited by adversaries. Some products may automatically remove previous versions of software and firmware from the system.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-2.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-02 Flaw Remediation"

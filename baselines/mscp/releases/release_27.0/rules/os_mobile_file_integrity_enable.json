@@ -65,7 +65,7 @@
   "discussion": "Mobile file integrity _MUST_ be enabled.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_mobile_file_integrity_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -118,7 +118,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

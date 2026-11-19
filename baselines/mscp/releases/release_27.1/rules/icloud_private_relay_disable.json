@@ -53,7 +53,7 @@
   "discussion": "Enterprise networks may be required to audit all network traffic by policy, therefore, iCloud Private Relay _MUST_ be disabled.\n\nNetwork administrators can also prevent the use of this feature by blocking DNS resolution of mask.icloud.com and mask-h2.icloud.com.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.icloud_private_relay_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -150,7 +150,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "icloud"
   ],

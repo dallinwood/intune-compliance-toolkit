@@ -53,7 +53,7 @@
   "discussion": "The audit service _MUST_ be configured to immediately print messages to the console or email administrator users when an auditing failure occurs.\n\nIt is critical for the appropriate personnel to be made aware immediately if a system is at risk of failing to process audit logs as required. Without a real-time alert, security personnel may be unaware of a potentially harmful failure in the auditing system's capability, and system operation may be adversely affected.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_settings_failure_notify",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -120,7 +120,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

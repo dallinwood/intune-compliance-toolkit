@@ -36,10 +36,10 @@
   "discussion": "As networked MFDs are capable of sending scanned or copied documents across connected networks, personnel should be aware that if they scan or copy documents at a level higher than that of networks that devices are connected to it will cause a data spill.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0589",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Fax machines and multifunction devices",

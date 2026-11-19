@@ -36,10 +36,10 @@
   "discussion": "AI agents can be rapidly created and deployed across an organisation’s systems, often by personnel operating outside of traditional software deployment processes. Each AI agent may be configured with its own instructions, AI models, tools, permissions, credentials and access to data repositories. Without visibility of the AI agents operating across its systems, an organisation cannot effectively restrict AI agents to the minimum permissions they require, review their continued need, identify unauthorised or abandoned AI agents, or investigate cyber security incidents involving them. As such, an organisation should develop, implement, maintain and regularly verify an AI agent register. An AI agent register may also record additional details, such as the AI models used by each AI agent and their versions, to support change management and cyber supply chain risk management activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2134",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

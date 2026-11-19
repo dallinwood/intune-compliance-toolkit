@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nTest the contingency plan using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms facilitate thorough and effective testing of contingency plans by providing more complete coverage of contingency issues, selecting more realistic test scenarios and environments, and effectively stressing the system and supported mission and business functions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-4.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-04 Contingency Plan Testing"

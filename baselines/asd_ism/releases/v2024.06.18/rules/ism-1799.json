@@ -36,10 +36,10 @@
   "discussion": "DMARC enables a domain owner to specify what action receiving email servers should take as a result of domain alignment, SPF and DKIM checks. For emails that do not pass DMARC checks, this includes ‘reject’ (emails are rejected), ‘quarantine’ (emails are marked as spam) or ‘none’ (no action is taken).\n\nDMARC also provides a reporting feature which enables a domain owner to receive reports on the actions taken by receiving email servers. While this feature does not mitigate malicious emails sent to the domain owner’s organisation, it can give the domain owner some visibility of attempts by malicious actors to spoof their organisation’s domains.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1799",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Email",
     "Email gateways and servers",

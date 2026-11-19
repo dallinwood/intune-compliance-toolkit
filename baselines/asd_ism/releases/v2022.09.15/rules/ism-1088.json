@@ -36,10 +36,10 @@
   "discussion": "Personnel report the potential compromise of mobile devices, removable media or credentials to their organisation as soon as possible, especially if they:\n\n* provide credentials to foreign government officials\n* decrypt mobile devices for foreign government officials\n* have mobile devices taken out of sight by foreign government officials\n* have mobile devices or removable media stolen that are later returned\n* lose mobile devices or removable media that are later found\n* observe unusual behaviour of mobile devices.\n\nPersonnel lose control of mobile devices and removable media any time they are not on their person. This includes when placing mobile devices and removable media in checked-in luggage or leaving them in hotel rooms (including hotel room safes). In addition, allowing untrusted people to access mobile devices provides an opportunity for them to be tampered with.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1088",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device usage",

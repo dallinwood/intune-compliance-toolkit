@@ -32,10 +32,10 @@
   "discussion": "If an organisation chooses to issue personnel with organisation-owned mobile devices or desktop computers to access their organisation’s classified systems or data, they should ensure that it does not present an unacceptable security risk. This can be achieved in part by enforcing the separation of classified data and personal data.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1482",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for enterprise mobility",
     "Enterprise mobility",

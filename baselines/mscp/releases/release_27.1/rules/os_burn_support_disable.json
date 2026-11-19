@@ -38,7 +38,7 @@
   "discussion": "Burn support _MUST_ be disabled.\n\n[IMPORTANT]\n====\nSome organizations rely on the use of removable media for storing and sharing data. Information System Security Officers (ISSOs) may make the risk-based decision not to disable external hard drives to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_burn_support_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -98,7 +98,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

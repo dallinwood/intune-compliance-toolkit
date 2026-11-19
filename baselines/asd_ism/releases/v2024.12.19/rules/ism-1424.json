@@ -36,10 +36,10 @@
   "discussion": "Web browser-based controls, such as Content-Security-Policy, Hypertext Transfer Protocol Strict Transport Security (HSTS) and X-Frame-Options, can be used by web applications to help protect themselves and their users. This is achieved via setting security policy in response headers from web applications which web browsers then apply. Note, since the controls are applied via response headers, they can be applied to legacy or proprietary web applications where changes to their source code may be impractical.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1424",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

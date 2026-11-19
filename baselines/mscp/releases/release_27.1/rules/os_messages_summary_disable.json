@@ -28,7 +28,7 @@
   "discussion": "Apple Intelligence features such as Apple Messages Summary that use off device AI _MUST_ be disabled. Apple will not give a guarantee that the Apple Intelligence feature will stay on device, so it _MUST_ be disabled.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_messages_summary_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -85,7 +85,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

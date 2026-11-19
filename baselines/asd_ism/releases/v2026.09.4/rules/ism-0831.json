@@ -36,10 +36,10 @@
   "discussion": "As media can be easily misplaced or stolen, physical handling measures should be put in place to protect the data stored on it.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0831",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media usage",

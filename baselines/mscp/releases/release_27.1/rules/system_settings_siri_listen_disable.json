@@ -33,7 +33,7 @@
   "discussion": "Siri has the ability to listen for \"Hey Siri\" or \"Siri\". Listen for _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_siri_listen_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -76,7 +76,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

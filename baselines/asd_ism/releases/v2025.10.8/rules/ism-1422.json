@@ -36,10 +36,10 @@
   "discussion": "Software developers need to ensure that they are using a secure authoritative source for software as part of their development environment, as doing so can reduce the security risks related to unauthorised access to source code, source code tampering and other possible cyber supply chain attacks on software artefacts. In doing so, the authoritative source for software should be able to provide sufficient access control and event logging for access to, and modification of, any source code and software artefacts.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1422",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

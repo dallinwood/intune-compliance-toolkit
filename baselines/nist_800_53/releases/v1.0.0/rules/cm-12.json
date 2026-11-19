@@ -24,7 +24,7 @@
   "discussion": "## Control\n\n- a. Identify and document the location of [Assignment: organization-defined information] and the specific system components on which the information is processed and stored;\n- b. Identify and document the users who have access to the system and system components where the information is processed and stored; and\n- c. Document changes to the location (i.e., system or system components) where the information is processed and stored.\n\n## Discussion\n\nInformation location addresses the need to understand where information is being processed and stored. Information location includes identifying where specific information types and information reside in system components and how information is being processed so that information flow can be understood and adequate protection and policy management provided for such information and system components. The security category of the information is also a factor in determining the controls necessary to protect the information and the system component where the information resides (see [FIPS 199](https://doi.org/10.6028/NIST.FIPS.199)). The location of the information and system components is also a factor in the architecture and design of the system (see SA-4, SA-8, SA-17).",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FIPS 199",
@@ -51,7 +51,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-12 Information Location"

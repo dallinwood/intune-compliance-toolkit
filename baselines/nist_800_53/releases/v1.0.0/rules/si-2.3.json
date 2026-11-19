@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Measure the time between flaw identification and flaw remediation; and\n- (b) Establish the following benchmarks for taking corrective actions: [Assignment: organization-defined benchmarks].\n\n## Discussion\n\nOrganizations determine the time it takes on average to correct system flaws after such flaws have been identified and subsequently establish organizational benchmarks (i.e., time frames) for taking corrective actions. Benchmarks can be established by the type of flaw or the severity of the potential vulnerability if the flaw can be exploited.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-2.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-02 Flaw Remediation"

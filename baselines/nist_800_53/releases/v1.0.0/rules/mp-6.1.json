@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nReview, approve, track, document, and verify media sanitization and disposal actions.\n\n## Discussion\n\nOrganizations review and approve media to be sanitized to ensure compliance with records retention policies. Tracking and documenting actions include listing personnel who reviewed and approved sanitization and disposal actions, types of media sanitized, files stored on the media, sanitization methods used, date and time of the sanitization actions, personnel who performed the sanitization, verification actions taken and personnel who performed the verification, and the disposal actions taken. Organizations verify that the sanitization of the media was effective prior to disposal.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-6.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-06 Media Sanitization"

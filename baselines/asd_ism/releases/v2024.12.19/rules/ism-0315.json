@@ -24,10 +24,10 @@
   "discussion": "Due to the nature of high assurance IT equipment, and many of the protective mechanisms it employs, sanitisation alone is not sufficient prior to its disposal. As such, all high assurance IT equipment should be destroyed prior to its disposal.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0315",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Information Technology Equipment",
     "IT equipment sanitisation and destruction",

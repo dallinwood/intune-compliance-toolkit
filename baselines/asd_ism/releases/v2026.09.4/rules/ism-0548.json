@@ -36,10 +36,10 @@
   "discussion": "Video conferencing and IP telephony traffic can be vulnerable to eavesdropping, denial-of-service, adversary-in-the-middle and call spoofing attacks. To mitigate this security risk, video conferencing and IP telephony signalling and audio/video data can be protected with the use of Transport Layer Security. This is achieved by using the Session Initiation Protocol Secure protocol and the Secure Real-time Transport Protocol.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0548",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Video conferencing and Internet Protocol telephony",

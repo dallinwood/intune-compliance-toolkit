@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDisplay an explicit message to users indicating that the session will end in [Assignment: organization-defined time until end of session].\n\n## Discussion\n\nTo increase usability, notify users of pending session termination and prompt users to continue the session. The pending session termination time period is based on the parameters defined in the AC-12 base control.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-12.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-12 Session Termination"

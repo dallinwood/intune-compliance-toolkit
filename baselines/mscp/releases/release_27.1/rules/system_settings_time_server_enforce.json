@@ -101,7 +101,7 @@
   "discussion": "Time synchronization _MUST_ be enforced on all networked systems.\n\nThis rule ensures the uniformity of time stamps for information systems with multiple system clocks and systems connected over a network.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_time_server_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -204,7 +204,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

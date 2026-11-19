@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy the following controls for personnel exposed to information not within assigned access authorizations: [Assignment: organization-defined controls].\n\n## Discussion\n\nControls include ensuring that personnel who are exposed to spilled information are made aware of the laws, executive orders, directives, regulations, policies, standards, and guidelines regarding the information and the restrictions imposed based on exposure to such information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-9.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-09 Information Spillage Response"

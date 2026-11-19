@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nDevelop and update [Assignment: organization-defined frequency] an inventory of organizational systems.\n\n## Discussion\n\n[OMB A-130](https://www.whitehouse.gov/sites/whitehouse.gov/files/omb/circulars/A130/a130revised.pdf) provides guidance on developing systems inventories and associated reporting requirements. System inventory refers to an organization-wide inventory of systems, not system components as described in CM-8.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-05 System Inventory"

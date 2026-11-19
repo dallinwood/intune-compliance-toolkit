@@ -36,10 +36,10 @@
   "discussion": "Successful detection of cybersecurity incidents requires trained cybersecurity personnel with access to sufficient data sources, such as event logs, that are complemented by tools that support manual and automated analysis. As such, it is important that during system design and development activities, functionality is added to systems to ensure that sufficient data sources can be captured and provided to cybersecurity personnel.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0120",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity incidents",
     "Managing cybersecurity incidents",

@@ -36,10 +36,10 @@
   "discussion": "Credentials for computer accounts are changed if:\n\n- they are compromised\n- they are suspected of being compromised\n- they have not been changed in the past 30 days.\n\nGenerally, credentials should not need to be changed on a frequent basis. However, some events may necessitate the requirement for individual user accounts, or groups of user accounts, to change their credentials. This can include credentials being compromised (such as appearing in an online data breach database), being suspected of being compromised (such as when malicious actors gain access to a network), being discovered stored on networks in the clear, being transferred across networks in the clear, when membership of shared user accounts change and if they have not been changed in the past 12 months.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1955",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

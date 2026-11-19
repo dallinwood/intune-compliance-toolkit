@@ -36,10 +36,10 @@
   "discussion": "Blocking unauthorised or unauthenticated devices by default will reduce the likelihood of unauthorised access to a video conferencing or IP telephony network.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0555",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Video conferencing and Internet Protocol telephony",

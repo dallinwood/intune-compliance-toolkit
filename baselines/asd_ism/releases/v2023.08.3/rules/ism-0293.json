@@ -36,10 +36,10 @@
   "discussion": "The purpose of classifying ICT equipment is to acknowledge the sensitivity or classification of data that it is approved for processing, storing or communicating.\n\nClassifying ICT equipment also assists in ensuring that the appropriate sanitisation, destruction and disposal processes are followed at the end of its life.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0293",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for ICT Equipment",
     "ICT equipment usage",

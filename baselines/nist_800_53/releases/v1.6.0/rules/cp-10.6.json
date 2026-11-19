@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProtect system components used for recovery and reconstitution.\n\n## Discussion\n\nProtection of system recovery and reconstitution components (i.e., hardware, firmware, and software) includes physical and technical controls. Backup and restoration components used for recovery and reconstitution include router tables, compilers, and other system software.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-10.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -27,7 +27,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-10 System Recovery and Reconstitution"

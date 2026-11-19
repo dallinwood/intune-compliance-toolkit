@@ -36,10 +36,10 @@
   "discussion": "SQL injection attacks are a significant threat to the confidentiality, integrity and availability of database contents. Specifically, SQL injection attacks can allow an adversary to steal database contents, modify database contents, delete an entire database or even in some circumstances gain control of the underlying database server. Furthermore, when database queries from web applications fail they may display detailed error information about the structure of databases. This can be used by an adversary to further tailor SQL injection attacks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1275",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Database Systems",
     "Databases",

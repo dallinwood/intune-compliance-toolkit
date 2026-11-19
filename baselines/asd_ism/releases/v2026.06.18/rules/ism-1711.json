@@ -36,10 +36,10 @@
   "discussion": "WPA3-Enterprise uses 802.1X authentication that requires the use of an Extensible Authentication Protocol (EAP). Multiple EAP methods supported by WPA2 and WPA3 are available.\n\nExtensible Authentication Protocol-Transport Layer Security (EAP-TLS) is considered one of the most secure EAP methods and is widely supported. It uses a Public Key Infrastructure to secure communications between devices and a Remote Access Dial-In User Service (RADIUS) server by using X.509 certificates. While EAP-TLS provides strong mutual authentication, it requires an organisation to have established a Public Key Infrastructure. This involves deploying their own certificate authority and issuing certificates, or sourcing certificates from a commercial certificate authority, for every device that accesses their wireless networks. While this introduces additional costs and management overheads, the security advantages are significant.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1711",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Wireless networks",

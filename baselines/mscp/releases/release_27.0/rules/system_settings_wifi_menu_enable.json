@@ -42,7 +42,7 @@
   "discussion": "The WiFi menu _MUST_ be enabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_wifi_menu_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -93,7 +93,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

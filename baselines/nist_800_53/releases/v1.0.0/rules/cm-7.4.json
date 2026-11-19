@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Identify [Assignment: organization-defined software programs not authorized to execute on the system];\n- (b) Employ an allow-all, deny-by-exception policy to prohibit the execution of unauthorized software programs on the system; and\n- (c) Review and update the list of unauthorized software programs [Assignment: organization-defined frequency].\n\n## Discussion\n\nUnauthorized software programs can be limited to specific versions or from a specific source. The concept of prohibiting the execution of unauthorized software may also be applied to user actions, system ports and protocols, IP addresses/ranges, websites, and MAC addresses.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-7.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-6",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-07 Least Functionality"

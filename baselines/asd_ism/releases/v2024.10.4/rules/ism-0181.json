@@ -36,10 +36,10 @@
   "discussion": "Cabling infrastructure should be installed by an endorsed cable installer to the relevant Australian Standards to ensure personnel safety and system availability.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0181",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Infrastructure",
     "Cabling infrastructure",

@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nReport incidents using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nThe recipients of incident reports are specified in IR-6b . Automated reporting mechanisms include email, posting on websites (with automatic updates), and automated incident response tools and programs.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-6.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IR-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-06 Incident Reporting"

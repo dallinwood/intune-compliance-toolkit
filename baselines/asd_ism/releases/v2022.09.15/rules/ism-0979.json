@@ -36,10 +36,10 @@
   "discussion": "Displaying a logon banner to users before access is granted to a system reminds them of their security responsibilities. Logon banners may cover topics such as:\n\n* the sensitivity or classification of the system\n* access to the system being restricted to authorised users\n* acceptable usage and security policies for the system\n* an agreement to abide by acceptable usage and security policies for the system\n* legal ramifications of violating acceptable usage and security policies for the system\n* details of any monitoring activities for the system.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0979",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

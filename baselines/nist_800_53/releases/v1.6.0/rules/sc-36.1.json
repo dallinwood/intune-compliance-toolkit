@@ -15,14 +15,14 @@
   "discussion": "## Control\n\n- (a) Employ polling techniques to identify potential faults, errors, or compromises to the following processing and storage components: [Assignment: organization-defined distributed processing and storage components] ; and\n- (b) Take the following actions in response to identified faults, errors, or compromises: [Assignment: organization-defined actions].\n\n## Discussion\n\nDistributed processing and/or storage may be used to reduce opportunities for adversaries to compromise the confidentiality, integrity, or availability of organizational information and systems. However, the distribution of processing and storage components does not prevent adversaries from compromising one or more of the components. Polling compares the processing results and/or storage content from the distributed components and subsequently votes on the outcomes. Polling identifies potential faults, compromises, or errors in the distributed processing and storage components.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-36.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-4"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-36 Distributed Processing and Storage"

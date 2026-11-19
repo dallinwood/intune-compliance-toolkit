@@ -35,7 +35,7 @@
   "discussion": "The system _MUST_ be configured to prevent access to other user's home folders.\n\nConfiguring the operating system to use the most restrictive permissions possible for user home directories helps to protect against inadvertent disclosures.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_home_folders_default",
-  "odv": null,
+  "odvs": [],
   "references": {
     "hhs": {
       "hicp": [
@@ -80,7 +80,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

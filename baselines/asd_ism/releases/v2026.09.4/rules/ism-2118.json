@@ -36,10 +36,10 @@
   "discussion": "Security assessment activities designed to identify and triage vulnerabilities in systems can provide an organisation with a wealth of valuable information about their exposure to cyber threats, as well as assisting them to determine security risks associated with the operation of their systems. The use of suitable AI models to augment such activities is encouraged.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2118",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security assessments",

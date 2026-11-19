@@ -77,7 +77,7 @@
   "discussion": "Show full website address _MUST_ be enabled in Safari.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_safari_show_full_website_address_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -142,7 +142,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

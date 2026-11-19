@@ -28,10 +28,10 @@
   "discussion": "## Control\n\n- (a) Accept only external authenticators that are NIST-compliant; and\n- (b) Document and maintain a list of accepted external authenticators.\n\n## Discussion\n\nAcceptance of only NIST-compliant external authenticators applies to organizational systems that are accessible to the public (e.g., public-facing websites). External authenticators are issued by nonfederal government entities and are compliant with [SP 800-63B](https://doi.org/10.6028/NIST.SP.800-63b) . Approved external authenticators meet or exceed the minimum Federal Government-wide technical, security, privacy, and organizational maturity requirements. Meeting or exceeding Federal requirements allows Federal Government relying parties to trust external authenticators in connection with an authentication transaction at a specified authenticator assurance level.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-8.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-08 Identification and Authentication (Non-organizational Users)"

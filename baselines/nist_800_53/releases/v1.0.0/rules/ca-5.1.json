@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnsure the accuracy, currency, and availability of the plan of action and milestones for the system using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nUsing automated tools helps maintain the accuracy, currency, and availability of the plan of action and milestones and facilitates the coordination and sharing of security and privacy information throughout the organization. Such coordination and information sharing help to identify systemic weaknesses or deficiencies in organizational systems and ensure that appropriate resources are directed at the most critical system vulnerabilities in a timely manner.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ca-5.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Assessment, Authorization, and Monitoring",
     "CA-05 Plan of Action and Milestones"

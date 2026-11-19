@@ -77,7 +77,7 @@
   "discussion": "Secure keyboard entry _MUST_ be enabled in Terminal.app.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_terminal_secure_keyboard_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -142,7 +142,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

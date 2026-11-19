@@ -89,10 +89,10 @@ function seedSelection(page: Page, selectedRuleIds: string[]) {
       ruleIds.map((ruleId) => {
         const source = ruleId.slice(0, ruleId.indexOf('.'))
         const ref = { id: ruleId, path: `${source}/rules/${ruleId.slice(ruleId.indexOf('.') + 1)}.json` }
-        return [ruleId, { ref, enabled: true, odvValue: null }]
+        return [ruleId, { ref, enabled: true, odvValues: {} }]
       }),
     )
-    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 2 }))
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 3 }))
   }, selectedRuleIds)
 }
 
@@ -314,10 +314,10 @@ test.describe('coverage through supporting rules', () => {
         const selections = Object.fromEntries(
           selectedRuleIds.map((ruleId) => {
             const ref = { id: ruleId, path: `mscp/rules/${ruleId.slice('mscp.'.length)}.json` }
-            return [ruleId, { ref, enabled: true, odvValue: null }]
+            return [ruleId, { ref, enabled: true, odvValues: {} }]
           }),
         )
-        window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 2 }))
+        window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 3 }))
         window.localStorage.removeItem('intune-toolkit:supporting-checks')
       },
       { selectedRuleIds: [AUTOMATED_SUPPORTER, MANUAL_SUPPORTER], seededKey: 'intune-toolkit:supporting-coverage-seeded' },

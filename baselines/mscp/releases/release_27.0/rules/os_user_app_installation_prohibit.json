@@ -53,7 +53,7 @@
   "discussion": "Users _MUST_ not be allowed to install software.\n\nAllowing regular users to install software, without explicit privileges, presents the risk of untested and potentially malicious software being installed on the system. Explicit privileges (escalated or administrative privileges) provide the regular user with explicit capabilities and control that exceeds the rights of a regular user.\n\nOn macOS, restrict users from installing and running software from the /Users/ folder.\n\n[IMPORTANT]\n====\nFor macOS, Apple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.applicationaccess.new.yaml#L67-L70[application restriction controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_user_app_installation_prohibit",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -133,7 +133,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -36,10 +36,10 @@
   "discussion": "Device access control software can be used to prevent removable media and mobile devices from being connected to workstations and servers via external communication interfaces. This can assist in preventing the introduction of malicious code or the exfiltration of data by malicious actors.\n\nIn addition, malicious actors can connect to locked workstations and servers via external communication interfaces that allow Direct Memory Access (DMA). In doing so, malicious actors can gain access to encryption keys in memory or write malicious code to memory. The best defence against this security risk is to disable access to external communication interfaces that allow DMA, such as FireWire, ExpressCard and Thunderbolt.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0345",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Operating system hardening",

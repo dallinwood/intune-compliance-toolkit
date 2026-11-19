@@ -24,10 +24,10 @@
   "discussion": "Cables from different cable groups can share common cable reticulation systems and conduits to reduce costs.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0187",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Infrastructure",
     "Cabling infrastructure",

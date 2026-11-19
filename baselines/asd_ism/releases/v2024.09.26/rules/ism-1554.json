@@ -36,10 +36,10 @@
   "discussion": "If travelling overseas with mobile devices to high or extreme risk countries, personnel are:\n\n- issued with newly provisioned accounts, mobile devices and removable media from a pool of dedicated travel devices which are used solely for work-related activities\n- advised on how to apply and inspect tamper seals to key areas of mobile devices\n- advised to avoid taking any personal mobile devices, especially if rooted or jailbroken.\n\nPersonnel travelling overseas with mobile devices face additional security risks compared to travelling domestically, especially when travelling to high or extreme risk countries. As such, appropriate precautions should be taken. Personnel should also be aware that when they leave Australian borders they also leave behind any expectations of privacy.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1554",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device usage",

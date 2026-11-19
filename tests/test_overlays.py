@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from tools import overlays
+from tools.library_output import SCHEMA_VERSION
 from tools.overlays import (
     InvalidOverlay,
     OverlayWarning,
@@ -248,3 +249,87 @@ def test_switching_an_entry_to_a_file_needs_replace(tmp_path):
 
     write_overlay(tmp_path, "b-plain-merge.json", ism_1622_overlay("plain-merge", {"check": {"Windows": {"default": {"$replace": {"shell_file": script, "result": None, "additional_info": None}}}}}))
     assert validate_overlays(tmp_path, BASELINES_DIR) == ([], [])
+
+
+def mini_repository_with_ism_1622(repository_root: Path) -> Path:
+    """A small repository holding only ISM-1622, so a test can add script files under its own baselines/."""
+    source_index_path = next(BASELINES_DIR.glob(f"asd_ism/releases/{ISM_1622_RELEASE}/_index.json"))
+    entry = next(
+        index_entry
+        for index_entry in json.loads(source_index_path.read_text(encoding="utf-8"))["rules"]
+        if index_entry["id"] == ISM_1622
+    )
+    baselines_dir = repository_root / "baselines"
+    release_dir = baselines_dir / "asd_ism" / "releases" / ISM_1622_RELEASE
+    (release_dir / entry["file"]).parent.mkdir(parents=True)
+    shutil.copy(source_index_path.parent / entry["file"], release_dir / entry["file"])
+    (release_dir / "_index.json").write_text(
+        json.dumps({"schema_version": SCHEMA_VERSION, "source": "asd_ism", "rules": [entry]}), encoding="utf-8"
+    )
+    (baselines_dir / "_manifest.json").write_text(
+        json.dumps({"sources": [{"name": "asd_ism", "index_path": f"asd_ism/releases/{ISM_1622_RELEASE}/_index.json"}]}),
+        encoding="utf-8",
+    )
+    return baselines_dir
+
+
+def overlay_with_own_script_and_odvs(script_text: str, tmp_path: Path) -> tuple[Path, Path]:
+    baselines_dir = mini_repository_with_ism_1622(tmp_path / "repository")
+    script_path = baselines_dir / "_overlays" / "scripts" / "SetMaxAge.ps1"
+    script_path.parent.mkdir(parents=True)
+    script_path.write_text(script_text, encoding="utf-8", newline="\n")
+    fields = {
+        "odvs": {
+            "$replace": [
+                {
+                    "name": "max_age",
+                    "datatype": "number",
+                    "description": "Maximum age in days",
+                    "validation": None,
+                    "recommended": 30,
+                    "by_benchmark": {},
+                    "quoting": "single",
+                }
+            ]
+        },
+        "remediation": {
+            "Windows": {
+                "steps": [
+                    {
+                        "name": "Set the maximum age",
+                        "language": "powershell",
+                        "shell_file": "baselines/_overlays/scripts/SetMaxAge.ps1",
+                        "additional_info": None,
+                        "versions": None,
+                    }
+                ],
+                "payloads": [],
+            }
+        },
+    }
+    overlays_dir = tmp_path / "overlays"
+    write_overlay(overlays_dir, "max-age.json", ism_1622_overlay("max-age", fields))
+    return overlays_dir, baselines_dir
+
+
+def test_overlay_with_own_script_and_odvs_is_valid(tmp_path):
+    overlays_dir, baselines_dir = overlay_with_own_script_and_odvs("$MaxAge = '$ODV_max_age'\n", tmp_path)
+
+    assert validate_overlays(overlays_dir, baselines_dir) == ([], [])
+
+
+def test_overlay_placeholder_outside_quotes_is_rejected(tmp_path):
+    overlays_dir, baselines_dir = overlay_with_own_script_and_odvs("$MaxAge = $ODV_max_age\n", tmp_path)
+
+    errors, _ = validate_overlays(overlays_dir, baselines_dir)
+
+    assert len(errors) == 1
+    assert "max-age.json" in errors[0] and "$ODV_max_age" in errors[0] and "single" in errors[0]
+
+
+def test_overlay_odv_that_no_text_uses_is_rejected(tmp_path):
+    overlays_dir, baselines_dir = overlay_with_own_script_and_odvs("$MaxAge = 30\n", tmp_path)
+
+    errors, _ = validate_overlays(overlays_dir, baselines_dir)
+
+    assert len(errors) == 1 and "max_age" in errors[0] and "never used" in errors[0]

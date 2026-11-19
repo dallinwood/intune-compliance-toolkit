@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are delivered and supported by trustworthy suppliers whose cyber security practices are regularly verified or otherwise risk-assessed.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented or approved governance process exists for evaluating the cyber security trustworthiness of suppliers.\n- No cyber security evaluation is performed before suppliers are onboarded.\n- Evaluation outcomes are not documented.\n- Findings from supplier evaluation outcomes are not used to inform supplier approval, contractual requirements or risk treatment decisions where concerns are identified.\n\nPartially effective:\n- An evaluation process exists but is not consistently applied to all suppliers within scope.\n- Evaluation is performed for some suppliers, but criteria are not documented or are inconsistently applied.\n- Outcomes are documented but contractual arrangements do not reflect identified risks or required controls.\n\nFully effective:\n- A documented and approved governance process is in place and consistently applied.\n- Cyber security trustworthiness evaluations are performed for all suppliers within scope prior to onboarding.\n- Evaluation criteria are documented, approved and proportionate to the criticality of what the supplier delivers.\n- Evaluation outcomes are documented, reflected in contractual arrangements and recorded in the organisation’s risk register where residual risk remains.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-11.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -64,7 +64,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-11 - Supplier cyber security assurance"

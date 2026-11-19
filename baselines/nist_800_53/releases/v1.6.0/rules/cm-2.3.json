@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nRetain [Assignment: organization-defined number] of previous versions of baseline configurations of the system to support rollback.\n\n## Discussion\n\nRetaining previous versions of baseline configurations to support rollback include hardware, software, firmware, configuration files, configuration records, and associated documentation.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-2.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-02 Baseline Configuration"

@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nRestrict the use of organization-controlled portable storage devices by authorized individuals on external systems using [Assignment: organization-defined restrictions].\n\n## Discussion\n\nLimits on the use of organization-controlled portable storage devices in external systems include restrictions on how the devices may be used and under what conditions the devices may be used.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-20.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "MP-7",
@@ -32,7 +32,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-20 Use of External Systems"

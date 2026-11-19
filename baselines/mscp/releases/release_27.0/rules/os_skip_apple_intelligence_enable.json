@@ -43,7 +43,7 @@
   "discussion": "The prompt for setting up Apple Intelligence during Setup Assistant _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_skip_apple_intelligence_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -119,7 +119,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nInclude [Assignment: organization-defined Privacy Act requirements] in the acquisition contract for the operation of a system of records on behalf of an organization to accomplish an organizational mission or function.\n\n## Discussion\n\nWhen, by contract, an organization provides for the operation of a system of records to accomplish an organizational mission or function, the organization, consistent with its authority, causes the requirements of the [PRIVACT](https://www.govinfo.gov/content/pkg/STATUTE-88/pdf/STATUTE-88-Pg1896.pdf) to be applied to the system of records.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-4.11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PT-6"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-04 Acquisition Process"

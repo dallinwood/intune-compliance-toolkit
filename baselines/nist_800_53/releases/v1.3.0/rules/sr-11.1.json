@@ -28,14 +28,14 @@
   "discussion": "## Control\n\nTrain [Assignment: organization-defined personnel or roles] to detect counterfeit system components (including hardware, software, and firmware).\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sr-11.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-3"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-11 Component Authenticity"

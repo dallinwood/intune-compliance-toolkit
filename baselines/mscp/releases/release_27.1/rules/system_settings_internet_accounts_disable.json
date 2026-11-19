@@ -38,7 +38,7 @@
   "discussion": "The Internet Accounts System Setting _MUST_ be disabled to prevent the addition of unauthorized internet accounts.\n\n[IMPORTANT]\n====\nSome organizations may allow the use and configuration of the built-in Mail.app, Calendar.app, and Contacts.app for organizational communication. Information System Security Officers (ISSOs) may make the risk-based decision not to disable the Internet Accounts System Preference pane to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_internet_accounts_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -112,7 +112,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

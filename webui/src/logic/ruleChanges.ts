@@ -26,7 +26,7 @@ export const IGNORED_FIELDS: ReadonlySet<string> = new Set(changeIgnoreFile.igno
 export const FIELD_CHANGE_KIND: Readonly<Record<string, ChangeKind>> = {
   check: 'behaviour',
   remediation: 'behaviour',
-  odv: 'behaviour',
+  odvs: 'behaviour',
   assessment: 'behaviour',
   architecture: 'behaviour',
   applicability: 'scope',

@@ -36,10 +36,10 @@
   "discussion": "Without knowledge of all the databases in an organisation, and their contents, an organisation will be unable to appropriately protect their assets. As such, it is important that a database register is developed, implemented, maintained and verified on a regular basis.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1243",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for database systems",
     "Databases",

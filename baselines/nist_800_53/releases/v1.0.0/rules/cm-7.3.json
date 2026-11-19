@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnsure compliance with [Assignment: organization-defined registration requirements for functions, ports, protocols, and services].\n\n## Discussion\n\nOrganizations use the registration process to manage, track, and provide oversight for systems and implemented functions, ports, protocols, and services.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-7.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-07 Least Functionality"

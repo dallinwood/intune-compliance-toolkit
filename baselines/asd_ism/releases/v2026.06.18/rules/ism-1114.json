@@ -36,10 +36,10 @@
   "discussion": "When cable reticulation systems are used for more than one cable bundle or conduit, it is important that there is a dividing partition or visible gap between cable bundles and conduits to facilitate easier cable inspection.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1114",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

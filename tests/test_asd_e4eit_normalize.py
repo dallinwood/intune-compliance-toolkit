@@ -165,7 +165,7 @@ def test_constants_match_the_design():
 
 def test_full_action_has_exact_field_values():
     rule = rules_by_id()[FULL_ACTION_ID]
-    assert rule["schema_version"] == 5
+    assert rule["schema_version"] == 6
     assert rule["id"] == FULL_ACTION_ID
     assert rule["title"] == "Require multi-factor authentication for all remote access."
     assert rule["discussion_format"] == "markdown"
@@ -207,7 +207,8 @@ def test_full_action_has_exact_field_values():
         "nist": {"800-171r3": ["03.05.03"], "csf_2.0": ["PR.AA-01", "PR.AA-03"]},
     }
     assert rule["tags"] == []
-    for null_field in ("architecture", "check", "odv", "remediation"):
+    assert rule["odvs"] == []
+    for null_field in ("architecture", "check", "remediation"):
         assert rule[null_field] is None
 
 

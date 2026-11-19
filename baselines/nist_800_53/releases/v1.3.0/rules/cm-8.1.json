@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nUpdate the inventory of system components as part of component installations, removals, and system updates.\n\n## Discussion\n\nOrganizations can improve the accuracy, completeness, and consistency of system component inventories if the inventories are updated as part of component installations or removals or during general system updates. If inventories are not updated at these key times, there is a greater likelihood that the information will not be appropriately captured and documented. System updates include hardware, software, and firmware components.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-8.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PM-16"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-08 System Component Inventory"

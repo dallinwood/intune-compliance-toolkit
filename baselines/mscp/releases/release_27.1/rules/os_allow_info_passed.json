@@ -25,7 +25,7 @@
   "discussion": "The information system _IS_ configured to allow the transfer of information to and from other operating systems and users.\n\nThe macOS is a UNIX 03-compliant operating system, which allows owners of object to have discretion over who should be authorized to access information.\n\nlink:https://developer.apple.com/library/archive/documentation/Security/Conceptual/AuthenticationAndAuthorizationGuide/Permissions/Permissions.html[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_allow_info_passed",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -66,7 +66,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

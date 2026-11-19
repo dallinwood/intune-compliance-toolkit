@@ -102,7 +102,7 @@
           "type": "integer",
           "value": 1
         },
-        "shell": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi"
+        "shell": "softwareupdate_date_epoch=$(/bin/date -j -f \"%Y-%m-%d\" \"$(/usr/bin/defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist LastFullSuccessfulDate | /usr/bin/awk '{print $1}')\" \"+%s\")\nthirty_days_epoch=$(/bin/date -v -$ODV_value \"+%s\")\nif [[ $softwareupdate_date_epoch -lt $thirty_days_epoch ]]; then\n  /bin/echo \"0\"\nelse\n  /bin/echo \"1\"\nfi"
       },
       "language": "bash"
     }
@@ -110,19 +110,23 @@
   "discussion": "Make sure Software Update is updated and current.\n\nlink:https://support.apple.com/en-us/108382[Update macOS on Mac] or if enrolled in an MDM consult your MDM's documentation for automated methods.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_softwareupdate_current",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": "30d",
-      "cis_lvl2": "30d",
-      "disa_stig": "30d",
-      "nlmapgov_base": "7d",
-      "nlmapgov_plus": "7d"
-    },
-    "datatype": "string",
-    "description": "Maximum Days of Deferral (e.g. 30d)",
-    "recommended": "30d",
-    "validation": null
-  },
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": "30d",
+        "cis_lvl2": "30d",
+        "disa_stig": "30d",
+        "nlmapgov_base": "7d",
+        "nlmapgov_plus": "7d"
+      },
+      "datatype": "string",
+      "description": "Maximum Days of Deferral (e.g. 30d)",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": "30d",
+      "validation": null
+    }
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -224,7 +228,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

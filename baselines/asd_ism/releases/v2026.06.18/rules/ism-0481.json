@@ -36,10 +36,10 @@
   "discussion": "When encryption is applied to data in transit, it provides an additional layer of defence against unauthorised access or manipulation by malicious actors. In doing so, it is critical that an AACP or high assurance cryptographic protocol is used. Furthermore, if cryptographic equipment, applications or libraries implement unapproved cryptographic protocols, it is possible that these cryptographic protocols could be used without a user’s knowledge. In combination with an assumed level of security confidence, this can represent a security risk. As such, an organisation should ensure that only AACPs or high assurance cryptographic protocols can be used by disabling all unapproved cryptographic protocols (preferred) or by advising users not to use the unapproved cryptographic protocols via usage policies.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0481",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Cryptographic protocols",

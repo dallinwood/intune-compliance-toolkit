@@ -25,7 +25,7 @@
   "discussion": "Previous versions of software components that are not removed from the information system after updates have been installed may be exploited by adversaries. Some information technology products may remove older versions of software automatically from the information system.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_remove_software_components_after_updates",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -66,7 +66,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

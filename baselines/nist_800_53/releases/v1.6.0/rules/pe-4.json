@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nControl physical access to [Assignment: organization-defined system distribution and transmission lines] within organizational facilities using [Assignment: organization-defined security controls].\n\n## Discussion\n\nSecurity controls applied to system distribution and transmission lines prevent accidental damage, disruption, and physical tampering. Such controls may also be necessary to prevent eavesdropping or modification of unencrypted transmissions. Security controls used to control physical access to system distribution and transmission lines include disconnected or locked spare jacks, locked wiring closets, protection of cabling by conduit or cable trays, and wiretapping sensors.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-3",
@@ -40,7 +40,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-04 Access Control for Transmission"

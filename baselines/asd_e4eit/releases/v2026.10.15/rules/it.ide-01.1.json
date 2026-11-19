@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications, identities, credentials and data) are continually and centrally identified and documented.\n\n# Indicators of Good Practice\n\nNot effective:\n- No approved asset inventory mechanism is in place.\n- Asset inventory records are maintained manually with no automated discovery capability.\n\nPartially effective:\n- An approved asset inventory mechanism is deployed but does not cover all network segments or asset types.\n- Automated discovery scans to detect new and changed physical and non-physical assets occur on a schedule but reconciliation with the approved inventory is manual or inconsistent.\n\nFully effective:\n- An approved asset inventory mechanism which supports automated discovery is deployed to cover all applicable assets and network segments.\n- Discovery runs on a regular schedule defined by the organisation and new or changed physical or non-physical assets that are detected are reconciled with the approved inventory.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.ide-01.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identify principles",
     "IDE-01 - Asset identification"

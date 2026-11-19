@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nProvide the capability to restore system components within [Assignment: organization-defined restoration time periods] from configuration-controlled and integrity-protected information representing a known, operational state for the components.\n\n## Discussion\n\nRestoration of system components includes reimaging, which restores the components to known, operational states.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-10.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-2",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-10 System Recovery and Reconstitution"

@@ -36,10 +36,10 @@
   "discussion": "SSH-agent and similar key caching applications manage private keys stored on workstations and servers. Once a private key has been unlocked and loaded into a key cache, subsequent access to remote systems can occur without the private key being unlocked again. When such functionality is used, screen locks, where applicable, and expiring cached private keys can be used to ensure that private keys are not available for use for extended periods.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0489",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Secure Shell",

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDisplay an explicit logout message to users indicating the termination of authenticated communications sessions.\n\n## Discussion\n\nLogout messages for web access can be displayed after authenticated sessions have been terminated. However, for certain types of sessions, including file transfer protocol (FTP) sessions, systems typically send logout messages as final messages prior to terminating sessions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-12.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-12 Session Termination"

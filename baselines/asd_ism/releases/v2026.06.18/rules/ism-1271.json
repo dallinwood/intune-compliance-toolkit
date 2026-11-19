@@ -36,10 +36,10 @@
   "discussion": "Placing database servers on the same network segment as user workstations can increase the likelihood of database servers being compromised by malicious actors. Additionally, in cases where databases will only be accessed from their own database server, allowing remote access to the database server poses an unnecessary security risk.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1271",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for database systems",
     "Database servers",

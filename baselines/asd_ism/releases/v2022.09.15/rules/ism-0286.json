@@ -24,10 +24,10 @@
   "discussion": "It is important that an organisation ensures that products they purchase are the actual products that are delivered. In the case of evaluated products, if the product delivered differs from an evaluated version then the assurance gained from the evaluation may not necessarily apply.\n\nPackaging and delivery practices can vary greatly from product to product. For most evaluated products, standard commercial packaging and delivery practices are likely to be sufficient. However, in some cases more secure packaging and delivery practices, including tamper-evident seals and secure transportation, may be required. In the case of the digital delivery of evaluated products, vendor-supplied checksums can often be used to ensure the integrity of software that was delivered.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0286",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Evaluated Products",
     "Evaluated product procurement",

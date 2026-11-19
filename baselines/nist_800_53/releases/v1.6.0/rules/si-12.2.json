@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nUse the following techniques to minimize the use of personally identifiable information for research, testing, or training: [Assignment: organization-defined techniques].\n\n## Discussion\n\nOrganizations can minimize the risk to an individual’s privacy by employing techniques such as de-identification or synthetic data. Limiting the use of personally identifiable information throughout the information life cycle when the information is not needed for research, testing, or training helps reduce the level of privacy risk created by a system. Risk assessments as well as applicable laws, regulations, and policies can provide useful inputs to determining the techniques to use and when to use them.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-12.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PM-22",
@@ -29,7 +29,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-12 Information Management and Retention"

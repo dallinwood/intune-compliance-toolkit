@@ -15,14 +15,14 @@
   "discussion": "## Control\n\n- (a) Limit privileges to change system components and system-related information within a production or operational environment; and\n- (b) Review and reevaluate privileges [Assignment: organization-defined frequency].\n\n## Discussion\n\nIn many organizations, systems support multiple mission and business functions. Limiting privileges to change system components with respect to operational systems is necessary because changes to a system component may have far-reaching effects on mission and business processes supported by the system. The relationships between systems and mission/business processes are, in some cases, unknown to developers. System-related information includes operational procedures.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-5.5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-05 Access Restrictions for Change"

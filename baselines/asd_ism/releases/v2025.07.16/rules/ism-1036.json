@@ -36,10 +36,10 @@
   "discussion": "Placing fax machines and MFDs in public areas can help reduce the likelihood of any suspicious use going unnoticed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1036",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Fax machines and multifunction devices",

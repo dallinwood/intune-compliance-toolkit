@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nGenerate a unique session identifier for each session with [Assignment: organization-defined randomness requirements] and recognize only session identifiers that are system-generated.\n\n## Discussion\n\nGenerating unique session identifiers curtails the ability of adversaries to reuse previously valid session IDs. Employing the concept of randomness in the generation of unique session identifiers protects against brute-force attacks to determine future session identifiers.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-23.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-10",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-23 Session Authenticity"

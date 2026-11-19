@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Assign system components to a system; and\n- (b) Receive an acknowledgement from [Assignment: organization-defined personnel or roles] of this assignment.\n\n## Discussion\n\nSystem components that are not assigned to a system may be unmanaged, lack the required protection, and become an organizational vulnerability.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-8.9",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-08 System Component Inventory"

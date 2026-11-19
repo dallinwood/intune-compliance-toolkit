@@ -192,15 +192,27 @@ const odvValidation: Check = (value, path) => {
   return null
 }
 
-const odv = orNull(
-  objectWith({
-    datatype: oneOf('number', 'string', 'enum', 'regex'),
-    description: text,
-    validation: odvValidation,
-    recommended: (value, path) => expect(isNumberOrString(value), path, 'a number or a string'),
-    by_benchmark: mapOf((value, path) => expect(isNumberOrString(value), path, 'a number or a string')),
-  }),
-)
+const ODV_NAME_PATTERN = /^[a-z][a-z0-9_]*$/
+
+const odvItem = objectWith({
+  name: (value, path) => expect(typeof value === 'string' && ODV_NAME_PATTERN.test(value), path, 'a name matching ^[a-z][a-z0-9_]*$'),
+  datatype: oneOf('number', 'string', 'enum', 'regex'),
+  description: text,
+  validation: odvValidation,
+  recommended: (value, path) => expect(isNumberOrString(value), path, 'a number or a string'),
+  by_benchmark: mapOf((value, path) => expect(isNumberOrString(value), path, 'a number or a string')),
+  quoting: oneOf('unquoted', 'single', 'double'),
+})
+
+const odvs: Check = (value, path) =>
+  firstProblem(
+    () => listOf(odvItem)(value, path),
+    () => {
+      const names = (value as JsonObject[]).map((item) => item.name)
+      const duplicate = names.find((name, position) => names.indexOf(name) !== position)
+      return duplicate === undefined ? null : `${path} has more than one odv named ${String(duplicate)}`
+    },
+  )
 
 const remediationStep: Check = (value, path) =>
   firstProblem(
@@ -237,7 +249,7 @@ const ruleFields: Record<string, Check> = {
   discussion_format: oneOf('asciidoc', 'markdown'),
   references: (value, path) => expect(isObject(value), path, 'an object'),
   check,
-  odv,
+  odvs,
   remediation,
 }
 

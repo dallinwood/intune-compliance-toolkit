@@ -36,10 +36,10 @@
   "discussion": "A software bill of materials is a list of open source and commercial software components used in software development. This can assist software developers in ensuring they are not using software components with known vulnerabilities. It can also assist in providing greater cyber supply chain transparency for consumers of software by allowing for easier identification and management of security risks associated with individual software components used by software.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1730",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

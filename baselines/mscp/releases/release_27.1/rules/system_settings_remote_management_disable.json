@@ -89,7 +89,7 @@
   "discussion": "Remote Management _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_remote_management_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -189,7 +189,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

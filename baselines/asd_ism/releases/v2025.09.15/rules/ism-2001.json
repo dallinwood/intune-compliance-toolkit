@@ -36,10 +36,10 @@
   "discussion": "To provide cybersecurity leadership within an organisation, it is important that the board of directors or executive committee champions a positive cybersecurity culture, including through leading by example.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2001",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity roles",
     "Board of directors and executive committee",

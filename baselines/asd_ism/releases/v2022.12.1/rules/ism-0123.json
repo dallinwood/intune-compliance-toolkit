@@ -36,10 +36,10 @@
   "discussion": "Reporting cyber security incidents, including unplanned outages, to an organisation’s Chief Information Security Officer, or one of their delegates, as soon as possible after they occur or are discovered provides senior management with the opportunity to assess the impact to their organisation and to take remediation actions if necessary. Note, an organisation should also be cognisant of any legislative obligations in regards to reporting cyber security incidents to authorities, customers or the public.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0123",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cyber Security Incidents",
     "Reporting cyber security incidents",

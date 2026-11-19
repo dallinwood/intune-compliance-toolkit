@@ -36,10 +36,10 @@
   "discussion": "Web application programming interfaces (APIs) can facilitate the exchange of data between computing devices. As such, common security risks associated with their use should be mitigated during their development. In particular, this includes mitigating poorly secured web APIs that facilitate unauthorised modification of data or access to data not authorised for release into the public domain. In such cases, ensuring authentication and authorisation of clients is performed when clients call web APIs can assist in mitigating unauthorised modification of, or access to, data. Finally, centrally logging and analysing web API use can assist in detecting malicious behaviour and contributing to investigations following cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1910",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

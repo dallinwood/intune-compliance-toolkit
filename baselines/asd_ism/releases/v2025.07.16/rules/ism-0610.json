@@ -24,10 +24,10 @@
   "discussion": "To assist in preventing cybersecurity incidents, it is important that users know how to use CDSs securely. This can be achieved by training users on the secure use of CDSs before access is granted.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0610",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Cross Domain Solutions",

@@ -93,7 +93,7 @@
   "discussion": "Gatekeeper _MUST_ be enabled.\n\nGatekeeper is a security feature that ensures that applications are digitally signed by an Apple-issued certificate before they are permitted to run. Digital signatures allow the macOS host to verify that the application has not been modified by a malicious third party.\n\nAdministrator users will still have the option to override these settings on a case-by-case basis.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_gatekeeper_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -209,7 +209,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

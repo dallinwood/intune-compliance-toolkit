@@ -25,7 +25,7 @@
   "discussion": "The information system _IS_ configured to implement cryptographic mechanisms to protect the integrity of audit information and audit tools.\n\nThe Apple Secure Enclave includes a dedicated Advanced Encryption Standard (AES) crypto engine built into the direct memory access (DMA) path between the flash storage and main system memory, which powers line-speed encrypted storage with FileVault and makes internal volume highly efficient.\n\nlink:https://support.apple.com/guide/security/the-secure-enclave-sec59b0b31ff/web[]\n\nNOTE: This will only apply to a Mac that includes a Secure Enclave security chip.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_crypto_audit",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -66,7 +66,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

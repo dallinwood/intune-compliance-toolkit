@@ -25,7 +25,7 @@
   "discussion": "The macOS is able to be configured to set an automated termination for 72 hours or less for all temporary accounts upon account creation.\n\nIf temporary user accounts remain active when no longer needed or for an excessive period, these accounts may be targeted by attackers to gain unauthorized access. To mitigate this risk, automated termination of all temporary accounts _MUST_ be set to 72 hours (or less) when the temporary account is created.\n\nIf no policy is enforced by a directory service, a password policy can be set with the \"pwpolicy\" utility. The variable names may vary depending on how the policy was set.\n\nIf there are no temporary accounts defined on the system, this is Not Applicable.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_temporary_accounts_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -67,7 +67,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "pwpolicy"
   ],

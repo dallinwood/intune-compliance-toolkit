@@ -36,10 +36,10 @@
   "discussion": "S/MIME version 2.0 required the use of weaker cryptography than approved for use in these guidelines. As such, S/MIME version 3.0 was the first version to be approved for use as an AACP.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0490",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "Secure/Multipurpose Internet Mail Extension",

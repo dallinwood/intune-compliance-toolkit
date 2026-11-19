@@ -36,10 +36,10 @@
   "discussion": "DH is vulnerable to different types of attacks than ECDH while offering more effective security per bit increase. This leads to smaller data requirements which in turn means that the elliptic curve variant has become a de facto global standard. For reduced data cost, and to promote interoperability, ECDH should be used in preference to DH where possible.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0994",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "ASD-Approved Cryptographic Algorithms",

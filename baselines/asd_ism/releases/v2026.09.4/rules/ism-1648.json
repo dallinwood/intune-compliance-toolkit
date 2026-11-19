@@ -44,10 +44,10 @@
   "discussion": "Removing or suspending access to systems and their resources, ideally using an automatic mechanism, can prevent them from being accessed when there is no longer a legitimate business requirement for their use, such as when users change duties or functions, or are detected undertaking malicious activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1648",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

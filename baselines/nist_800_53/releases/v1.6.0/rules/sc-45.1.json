@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Compare the internal system clocks [Assignment: organization-defined frequency] with [Assignment: organization-defined authoritative time source] ; and\n- (b) Synchronize the internal system clocks to the authoritative time source when the time difference is greater than [Assignment: organization-defined time period].\n\n## Discussion\n\nSynchronization of internal system clocks with an authoritative source provides uniformity of time stamps for systems with multiple system clocks and systems connected over a network.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-45.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-45 System Time Synchronization"

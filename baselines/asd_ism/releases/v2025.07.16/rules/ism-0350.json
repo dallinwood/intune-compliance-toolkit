@@ -36,10 +36,10 @@
   "discussion": "The following media types are destroyed prior to their disposal:\n\n- microfiche and microfilm\n- optical discs\n- programmable read-only memory\n- read-only memory\n- other types of media that cannot be sanitised.\n\nSome media types are incapable of being sanitised. As such, they will need to be destroyed prior to their disposal.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0350",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media destruction",

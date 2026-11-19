@@ -36,10 +36,10 @@
   "discussion": "If DBMS software operating as a local administrator or root account is compromised by an adversary, it can present a significant security risk to the underlying database server. In addition, DBMS software is often capable of accessing files that it has read access to on the database server. Therefore, disabling the ability of the DBMS software to read local files from its database server will prevent such SQL injection attacks from succeeding.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1250",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Database Systems",
     "Database management system software",

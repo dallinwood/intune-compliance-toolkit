@@ -32,10 +32,10 @@
   "discussion": "The Australian Signals Directorate (ASD) specifies emanation security requirements in its Emanation security manual and Australian Communications Security Instructions that must be complied with. Such requirements supplement these guidelines and, where conflicts occur, take precedence.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1884",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Emanation security",

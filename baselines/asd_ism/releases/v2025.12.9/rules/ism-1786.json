@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing and maintaining a supplier relationship management policy can assist an organisation in identifying, prioritising and maintaining strong relationships with suppliers that have demonstrated a commitment to the security of their products and services. In doing so, these suppliers should be documented on an approved supplier list.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1786",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for procurement and outsourcing",
     "Cyber supply chain risk management",

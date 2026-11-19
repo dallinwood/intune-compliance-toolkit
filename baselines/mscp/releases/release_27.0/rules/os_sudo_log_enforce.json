@@ -93,7 +93,7 @@
   "discussion": "Sudo _MUST_ be configured to log privilege escalation.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_sudo_log_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -172,7 +172,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

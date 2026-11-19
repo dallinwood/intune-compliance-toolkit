@@ -24,7 +24,7 @@
   "discussion": "## Control\n\n- (a) Authorize the execution of privileged commands and access to security-relevant information via remote access only in a format that provides assessable evidence and for the following needs: [Assignment: organization-defined needs]; and\n- (b) Document the rationale for remote access in the security plan for the system.\n\n## Discussion\n\nRemote access to systems represents a significant potential vulnerability that can be exploited by adversaries. As such, restricting the execution of privileged commands and access to security-relevant information via remote access reduces the exposure of the organization and the susceptibility to threats by adversaries to the remote access capability.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-17.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-6",
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-17 Remote Access"

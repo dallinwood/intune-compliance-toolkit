@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nTest the incident response capability using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nOrganizations use automated mechanisms to more thoroughly and effectively test incident response capabilities. This can be accomplished by providing more complete coverage of incident response issues, selecting realistic test scenarios and environments, and stressing the response capability.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-03 Incident Response Testing"

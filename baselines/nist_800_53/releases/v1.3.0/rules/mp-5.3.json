@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy an identified custodian during transport of system media outside of controlled areas.\n\n## Discussion\n\nIdentified custodians provide organizations with specific points of contact during the media transport process and facilitate individual accountability. Custodial responsibilities can be transferred from one individual to another if an unambiguous custodian is identified.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-5.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-05 Media Transport"

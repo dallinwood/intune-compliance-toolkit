@@ -36,10 +36,10 @@
   "discussion": "The CISO within an organisation is responsible for overseeing their organisation’s cybersecurity program and ensuring compliance with cybersecurity policy, standards, regulations and legislation. They are likely to work with a chief security officer, a chief information officer and other senior executives within their organisation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1966",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity roles",
     "Chief information security officer",

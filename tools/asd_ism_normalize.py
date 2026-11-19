@@ -193,7 +193,7 @@ def _normalize_control(
         "tags": [],
         "references": {},
         "check": None,
-        "odv": None,
+        "odvs": [],
         "remediation": None,
     }
 

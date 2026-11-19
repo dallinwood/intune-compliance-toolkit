@@ -36,10 +36,10 @@
   "discussion": "Poorly configured DBMS software could provide an opportunity for an adversary to gain unauthorised access to database contents. To assist an organisation in deploying DBMS software, vendors often provide guidance on how to securely configure their products.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1247",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Database Systems",
     "Database management system software",

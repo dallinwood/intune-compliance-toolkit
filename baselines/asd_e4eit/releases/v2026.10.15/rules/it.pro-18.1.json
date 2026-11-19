@@ -48,7 +48,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are segmented into network zones based on business criticality and trust levels, with only authorised, controlled and monitored inbound and outbound communication paths between network zones permitted.\n\n# Indicators of Good Practice\n\nNot effective:\n- Systems are deployed on shared or flat network segments with no segregation between functions or trust levels.\n- No access controls restrict network access from external or general user networks to in-scope systems.\n- Segmentation is documented or administratively defined but not enforced by technical controls.\n- Segmentation has not been validated through technical assessment.\n\nPartially effective:\n- Network segmentation has been implemented but does not cover all in-scope systems, or segments are defined inconsistently.\n- Access controls exist between segments, but deny-by-default is not enforced, or some pathways are permitted without documented approval.\n- Technical enforcement is in place for some segments but relies on a single mechanism that does not provide meaningful isolation.\n- Validation has been performed for some segments but not consistently across in-scope systems, or validation is out of date.\n- Pathways are reviewed, but findings are not actioned, or the review cycle is not defined by the organisation.\n\nFully effective:\n- Systems within scope are deployed in network segments defined according to function, criticality and trust level, with segmentation applied consistently.\n- Deny-by-default access controls are enforced between segments, with access from external and general user networks limited to documented and approved pathways.\n- Segmentation is enforced through network-layer technical controls that provide meaningful isolation.\n- Segmentation has been validated through technical assessment with results documented and gaps remediated.\n- Approved pathways are reviewed on a regular cycle defined by the organisation, with unjustified pathways removed and changes reflected in the access control configuration.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-18.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -77,7 +77,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-18 - Network segmentation and segregation"

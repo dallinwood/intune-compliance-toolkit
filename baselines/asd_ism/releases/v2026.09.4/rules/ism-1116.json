@@ -20,10 +20,10 @@
   "discussion": "Physical separation between TOP SECRET systems and non-TOP SECRET systems reduces the chance of cross-patching. This reduces the possibility of unauthorised personnel gaining access to TOP SECRET systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1116",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

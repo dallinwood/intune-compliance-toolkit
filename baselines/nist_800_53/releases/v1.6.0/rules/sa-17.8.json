@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDesign [Assignment: organization-defined critical systems] with coordinated behavior to implement the following capabilities: [Assignment: organization-defined capabilities].\n\n## Discussion\n\nSecurity resources that are distributed, located at different layers or in different system elements, or are implemented to support different aspects of trustworthiness can interact in unforeseen or incorrect ways. Adverse consequences can include cascading failures, interference, or coverage gaps. Coordination of the behavior of security resources (e.g., by ensuring that one patch is installed across all resources before making a configuration change that assumes that the patch is propagated) can avert such negative interactions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-17.8",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-17 Developer Security and Privacy Architecture and Design"

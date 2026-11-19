@@ -36,10 +36,10 @@
   "discussion": "If cryptographic equipment or software implements unapproved algorithms, it is possible that these algorithms could be used without a user’s knowledge. In combination with an assumed level of security confidence, this can represent a security risk. As such, an organisation can ensure that only AACAs or high assurance cryptographic algorithms can be used by disabling all unapproved algorithms (preferred) or by advising users not to use the unapproved algorithms via usage policies.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0471",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "ASD-Approved Cryptographic Algorithms",

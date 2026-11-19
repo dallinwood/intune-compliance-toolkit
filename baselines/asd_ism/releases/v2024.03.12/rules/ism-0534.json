@@ -36,10 +36,10 @@
   "discussion": "Disabling unused physical ports on network devices reduces the opportunity for malicious actors to connect to networks if they can gain physical access to network devices.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0534",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Network design and configuration",

@@ -62,7 +62,7 @@
   "discussion": "The prompt to set up iCloud storage services during Setup Assistant _MUST_ be disabled.\n\nThe default behavior of macOS is to prompt new users to set up storage in iCloud. Disabling the iCloud storage setup prompt provides organizations more control over the storage of their data.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_icloud_storage_prompt_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -161,7 +161,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

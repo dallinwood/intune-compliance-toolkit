@@ -36,10 +36,10 @@
   "discussion": "OWASP provides comprehensive resources for software developers that should be followed when developing artificial intelligence applications. In addition, artificial intelligence applications should be designed to reduce their attack surface with artificial intelligence models being stored in a file formats that does not allow arbitrary code execution.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2072",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

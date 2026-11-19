@@ -20,10 +20,10 @@
   "discussion": "When implementing passwords as an authentication factor, it is important that suitably robust and secure passwords are used. In doing so, the degree of password security required will depend on the sensitivity or classification of the system involved and whether passwords are implemented as part of multi-factor authentication or single-factor authentication.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1557",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Credential management",

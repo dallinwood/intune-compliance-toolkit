@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nProvide the capability to check the integrity of information while it resides in the external system.\n\n## Discussion\n\nStorage of organizational information in an external system could limit visibility into the security status of its data. The ability of the organization to verify and validate the integrity of its stored data without transferring it out of the external system provides such visibility.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-9.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-09 External System Services"

@@ -36,10 +36,10 @@
   "discussion": "Once a fax machine or MFD has been connected to cryptographic equipment and used to send a sensitive or classified fax message, it can no longer be trusted when connected directly to unsecured telecommunications infrastructure. For example, if a fax machine fails to send a sensitive or classified fax message the device will continue attempting to send the fax message even if it has been disconnected from cryptographic equipment and re-connected directly to the telecommunications infrastructure. In such cases, the fax machine could send the sensitive or classified fax message in the clear causing a data spill.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1092",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Fax machines and multifunction devices",

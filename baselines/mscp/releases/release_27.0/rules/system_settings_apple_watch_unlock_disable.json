@@ -53,7 +53,7 @@
   "discussion": "Apple Watches are not an approved authenticator and their use _MUST_ be disabled.\n\nDisabling Apple watches is a necessary step to ensuring that the information system retains a session lock until the user reestablishes access using an authorized identification and authentication procedures.\n\nNOTE: Unlocking the system with an Apple Watch is not an approved authenticator for US Federal Government usage as it has not been verified to meet the strength requirements outlined in NIST SP 800-63.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_apple_watch_unlock_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -130,7 +130,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

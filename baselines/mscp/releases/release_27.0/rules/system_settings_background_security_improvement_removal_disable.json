@@ -38,7 +38,7 @@
   "discussion": "The ability for the user to roll back Background Security Improvements _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_background_security_improvement_removal_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -104,7 +104,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

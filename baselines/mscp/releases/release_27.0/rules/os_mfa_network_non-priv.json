@@ -25,7 +25,7 @@
   "discussion": "The information system implements multifactor authentication for network access to non-privileged accounts.\n\nNOTE: For directory bound systems:\nThe technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_mfa_network_non-priv",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "cce": {
@@ -58,7 +58,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

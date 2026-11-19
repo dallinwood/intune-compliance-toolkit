@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nScan for counterfeit system components [Assignment: organization-defined frequency].\n\n## Discussion\n\nThe type of component determines the type of scanning to be conducted (e.g., web application scanning if the component is a web application).",
   "discussion_format": "markdown",
   "id": "nist_800_53.sr-11.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "RA-5"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-11 Component Authenticity"

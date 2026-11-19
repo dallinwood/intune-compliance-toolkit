@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nImplement cryptographic mechanisms to authenticate the following software or firmware components prior to installation: [Assignment: organization-defined software or firmware components].\n\n## Discussion\n\nCryptographic authentication includes verifying that software or firmware components have been digitally signed using certificates recognized and approved by organizations. Code signing is an effective method to protect against malicious code. Organizations that employ cryptographic mechanisms also consider cryptographic key management solutions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-7.15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-5",
@@ -29,7 +29,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-07 Software, Firmware, and Information Integrity"

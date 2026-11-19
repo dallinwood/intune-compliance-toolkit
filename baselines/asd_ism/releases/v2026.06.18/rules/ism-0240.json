@@ -36,10 +36,10 @@
   "discussion": "As paging, messaging services and many messaging apps do not sufficiently encrypt data in transit, they cannot be relied upon for the communication of sensitive or classified data.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0240",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for enterprise mobility",
     "Mobile device usage",

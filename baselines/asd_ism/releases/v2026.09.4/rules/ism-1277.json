@@ -36,10 +36,10 @@
   "discussion": "Data communicated between database servers and web servers, especially over the internet, is susceptible to capture by malicious actors. As such, it is important that all data communicated between database servers and web servers is suitably encrypted using Australian Signals Directorate-approved cryptography.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1277",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for database systems",
     "Database servers",

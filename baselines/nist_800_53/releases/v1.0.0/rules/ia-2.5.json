@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nWhen shared accounts or authenticators are employed, require users to be individually authenticated before granting access to the shared accounts or resources.\n\n## Discussion\n\nIndividual authentication prior to shared group authentication mitigates the risk of using group accounts or authenticators.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-2.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-02 Identification and Authentication (organizational Users)"

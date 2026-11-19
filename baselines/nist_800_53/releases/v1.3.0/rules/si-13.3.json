@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nManually initiate transfers between active and standby system components when the use of the active component reaches [Assignment: organization-defined percentage] of the mean time to failure.\n\n## Discussion\n\nFor example, if the MTTF for a system component is 100 days and the MTTF percentage defined by the organization is 90 percent, the manual transfer would occur after 90 days.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-13.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-13 Predictable Failure Prevention"

@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Screen individuals prior to authorizing access to the system; and\n- b. Rescreen individuals in accordance with [Assignment: organization-defined conditions requiring rescreening and, where rescreening is so indicated, the frequency of rescreening].\n\n## Discussion\n\nPersonnel screening and rescreening activities reflect applicable laws, executive orders, directives, regulations, policies, standards, guidelines, and specific criteria established for the risk designations of assigned positions. Examples of personnel screening include background investigations and agency checks. Organizations may define different rescreening conditions and frequencies for personnel accessing systems based on types of information processed, stored, or transmitted by the systems.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "EO 13526",
@@ -54,7 +54,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-03 Personnel Screening"

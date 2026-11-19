@@ -36,10 +36,10 @@
   "discussion": "Legitimate remote monitoring and management (RMM) tools and remote access tools are frequently abused by malicious actors as they are digitally signed, often permitted by application control rulesets and provide interactive access that blends with normal system administration activities. As such, an organisation should develop, enforce and maintain a list of authorised RMM tools and remote access tools, to prevent the execution of those that are not authorised, to the extent possible, and monitor for any unusual or unexpected network activity associated with their use.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2149",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system management",
     "System administration",

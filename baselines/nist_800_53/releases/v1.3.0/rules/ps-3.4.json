@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nVerify that individuals accessing a system processing, storing, or transmitting [Assignment: organization-defined information types] meet [Assignment: organization-defined citizenship requirements].\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-3.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-03 Personnel Screening"

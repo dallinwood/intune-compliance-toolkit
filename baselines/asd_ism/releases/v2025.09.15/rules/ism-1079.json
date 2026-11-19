@@ -24,10 +24,10 @@
   "discussion": "Due to the nature of high assurance IT equipment, it is important that ASD’s approval is sought before any maintenance or repairs are undertaken.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1079",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for information technology equipment",
     "IT equipment maintenance and repairs",

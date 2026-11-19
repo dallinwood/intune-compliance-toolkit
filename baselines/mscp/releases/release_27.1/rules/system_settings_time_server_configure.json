@@ -91,7 +91,7 @@
         "additional_info": null,
         "result": {
           "type": "string",
-          "value": "$ODV"
+          "value": "$ODV_value"
         },
         "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('timeServer').js\nEOS"
       },
@@ -101,19 +101,23 @@
   "discussion": "Approved time server _MUST_ be the only server configured for use.\n\nThis rule ensures the uniformity of time stamps for information systems with multiple system clocks and systems connected over a network.\n\nNOTE: As of macOS 10.13 only one time server is supported.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_time_server_configure",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": "time.apple.com",
-      "cis_lvl2": "time.apple.com",
-      "disa_stig": "time.nist.gov",
-      "nlmapgov_base": "time.apple.com",
-      "nlmapgov_plus": "time.apple.com"
-    },
-    "datatype": "string",
-    "description": "The time server used by your organization, e.g. time.apple.com",
-    "recommended": "time.nist.gov",
-    "validation": null
-  },
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": "time.apple.com",
+        "cis_lvl2": "time.apple.com",
+        "disa_stig": "time.nist.gov",
+        "nlmapgov_base": "time.apple.com",
+        "nlmapgov_plus": "time.apple.com"
+      },
+      "datatype": "string",
+      "description": "The time server used by your organization, e.g. time.apple.com",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": "time.nist.gov",
+      "validation": null
+    }
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -202,7 +206,7 @@
             {
               "PayloadContent": [
                 {
-                  "timeServer": "$ODV"
+                  "timeServer": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.MCX"
@@ -215,7 +219,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

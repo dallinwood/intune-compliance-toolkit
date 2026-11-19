@@ -19,7 +19,7 @@ function check(shell: string | null, result: CheckResult | null): RuleCheck {
 function inlineRule(overrides: Partial<Rule> = {}): Rule {
   const upstreamId = (overrides.id ?? 'mscp.example_rule').replace(/^mscp\./, '')
   return {
-    schema_version: 5,
+    schema_version: 6,
     id: `mscp.${upstreamId}`,
     title: 'Example rule',
     discussion: 'First paragraph.\n\nSecond paragraph.',
@@ -42,14 +42,23 @@ function inlineRule(overrides: Partial<Rule> = {}): Rule {
     tags: [],
     references: {},
     check: macosCheck(check('echo PASS', { type: 'string', value: 'PASS' })),
-    odv: null,
+    odvs: [],
     remediation: null,
     ...overrides,
   }
 }
 
 function stringOdv(overrides: Partial<Odv> = {}): Odv {
-  return { datatype: 'string', description: 'Example', validation: null, recommended: 'Recommended', by_benchmark: {}, ...overrides }
+  return {
+    name: 'value',
+    datatype: 'string',
+    description: 'Example',
+    validation: null,
+    recommended: 'Recommended',
+    by_benchmark: {},
+    quoting: 'unquoted',
+    ...overrides,
+  }
 }
 
 function expectPlan(result: ReturnType<typeof planRuleCheck>): RuleCheckPlan {
@@ -72,7 +81,7 @@ describe('settingNameFor', () => {
 describe('planRuleCheck with real committed rules', () => {
   it('reports os_gatekeeper_enable raw as the String "PASS"', () => {
     const rule = realRule('os_gatekeeper_enable')
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan).toMatchObject({
       id: 'mscp.os_gatekeeper_enable',
@@ -83,8 +92,8 @@ describe('planRuleCheck with real committed rules', () => {
       dataType: 'String',
       operand: 'PASS',
       newerThan: '27',
-      odvValue: null,
-      exportedOdv: null,
+      odvValues: {},
+      exportedOdvs: {},
     })
     expect(plan.branches).toEqual([
       { majors: ['15', '26', '27'], shell: rule.check!.macOS.default!.shell, expected: { type: 'string', value: 'PASS' } },
@@ -94,7 +103,7 @@ describe('planRuleCheck with real committed rules', () => {
 
   it('reports os_tftpd_disable as boolean because its 15.0 override changes the result type', () => {
     const rule = realRule('os_tftpd_disable')
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.reporting).toBe('boolean')
     expect(plan.dataType).toBe('Boolean')
@@ -109,21 +118,21 @@ describe('planRuleCheck with real committed rules', () => {
   it('substitutes the ODV into the integer result of audit_configure_capacity_notify', () => {
     const rule = realRule('audit_configure_capacity_notify')
 
-    const recommendedPlan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
-    expect(recommendedPlan).toMatchObject({ reporting: 'raw', dataType: 'Int64', operand: 25, odvValue: 25, exportedOdv: null })
+    const recommendedPlan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
+    expect(recommendedPlan).toMatchObject({ reporting: 'raw', dataType: 'Int64', operand: 25, odvValues: { value: 25 }, exportedOdvs: {} })
     expect(recommendedPlan.branches[0].expected).toEqual({ type: 'integer', value: 25 })
 
-    const customPlan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, '40'))
-    expect(customPlan).toMatchObject({ dataType: 'Int64', operand: 40, odvValue: 40 })
+    const customPlan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { value: '40' }))
+    expect(customPlan).toMatchObject({ dataType: 'Int64', operand: 40, odvValues: { value: 40 } })
   })
 
   it('refuses a system_settings_softwareupdate_current value that BSD date -v cannot use', () => {
     const rule = realRule('system_settings_softwareupdate_current')
 
-    expect(expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null)).odvValue).toBe('30d')
-    expect(expectPlan(planRuleCheck(rule, COVERED_VERSIONS, '7d')).odvValue).toBe('7d')
+    expect(expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {})).odvValues).toEqual({ value: '30d' })
+    expect(expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { value: '7d' })).odvValues).toEqual({ value: '7d' })
     for (const unusable of ['30', 'abc']) {
-      expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, unusable))).toMatch(
+      expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, { value: unusable }))).toMatch(
         /^The organization-defined value is invalid: Value must be a whole number followed by one unit letter/,
       )
     }
@@ -131,7 +140,7 @@ describe('planRuleCheck with real committed rules', () => {
 
   it('gives os_messages_app_disable_familycontrols no branch for 27 and a newer branch from 26', () => {
     const rule = realRule('os_messages_app_disable_familycontrols')
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.newerThan).toBe('27')
     expect(plan.branches.flatMap((branch) => branch.majors)).toEqual(['15', '26'])
@@ -141,33 +150,33 @@ describe('planRuleCheck with real committed rules', () => {
   it('exports a variable-mode ODV and leaves $ODV in the shell for os_policy_banner_ssh_configure', () => {
     const rule = realRule('os_policy_banner_ssh_configure')
     const banner = "Authorised use only.\nIt's monitored."
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, banner))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { value: banner }))
 
-    expect(plan.exportedOdv).toBe(banner)
+    expect(plan.exportedOdvs).toEqual({ value: banner })
     expect(plan.branches[0].shell).toBe(rule.check!.macOS.default!.shell)
-    expect(plan.branches[0].shell).toContain('$ODV')
+    expect(plan.branches[0].shell).toContain('$ODV_value')
   })
 
   it('text-replaces the ODV into the shell of a text-mode rule', () => {
     const rule = realRule('pwpolicy_minimum_length_enforce')
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, 20))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { value: 20 }))
 
-    expect(plan.exportedOdv).toBeNull()
+    expect(plan.exportedOdvs).toEqual({})
     for (const branch of plan.branches) {
-      expect(branch.shell).not.toContain('$ODV')
+      expect(branch.shell).not.toContain('$ODV_')
       expect(branch.shell).toContain('20')
     }
   })
 
   it.each(['os_gatekeeper_rearm', 'os_firewall_log_enable'])('refuses %s, which mSCP maps to no macOS version', (upstreamId) => {
-    expect(expectProblem(planRuleCheck(realRule(upstreamId), COVERED_VERSIONS, null))).toBe(
+    expect(expectProblem(planRuleCheck(realRule(upstreamId), COVERED_VERSIONS, {}))).toBe(
       'mSCP does not map this rule to any macOS version.',
     )
   })
 
   it('base64-encodes system_settings_loginwindow_loginwindowtext_enable with the trailing newline osascript prints', () => {
     const rule = realRule('system_settings_loginwindow_loginwindowtext_enable')
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     const encoded = Buffer.from('Center for Internet Security Test Message\n', 'utf8').toString('base64')
     expect(plan).toMatchObject({ reporting: 'raw', dataType: 'String', operand: encoded })
@@ -178,22 +187,22 @@ describe('planRuleCheck with inline rules', () => {
   it('blocks a macOS rule with no listed version', () => {
     const rule = inlineRule({ applicability: [{ target: 'macOS', version: null, benchmarks: [] }] })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('mSCP does not map this rule to any macOS version.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP does not map this rule to any macOS version.')
   })
 
   it('ignores entries for other targets', () => {
     const macOnly = inlineRule({ applicability: applicabilityOfVersions({ 'macOS 15.0': [] }) })
     const withWindows = inlineRule({ applicability: applicabilityOfVersions({ 'macOS 15.0': [], 'Windows 27.0': [] }) })
 
-    expect(expectPlan(planRuleCheck(withWindows, COVERED_VERSIONS, null))).toEqual(expectPlan(planRuleCheck(macOnly, COVERED_VERSIONS, null)))
+    expect(expectPlan(planRuleCheck(withWindows, COVERED_VERSIONS, {}))).toEqual(expectPlan(planRuleCheck(macOnly, COVERED_VERSIONS, {})))
   })
 
   it('base64-encodes the UTF-8 of a substituted $ODV result', () => {
     const rule = inlineRule({
-      check: macosCheck(check('printf x | base64', { type: 'base64', value: '$ODV' })),
-      odv: stringOdv(),
+      check: macosCheck(check('printf x | base64', { type: 'base64', value: '$ODV_value' })),
+      odvs: [stringOdv()],
     })
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, 'Café-1'))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { value: 'Café-1' }))
 
     expect(plan.branches[0].expected).toEqual({ type: 'base64', value: Buffer.from('Café-1\n', 'utf8').toString('base64') })
     expect(plan.operand).toBe(Buffer.from('Café-1\n', 'utf8').toString('base64'))
@@ -201,10 +210,10 @@ describe('planRuleCheck with inline rules', () => {
 
   it('uses the recommended ODV when none is selected', () => {
     const rule = inlineRule({
-      check: macosCheck(check('echo $ODV', { type: 'string', value: '$ODV' })),
-      odv: stringOdv(),
+      check: macosCheck(check('echo $ODV_value', { type: 'string', value: '$ODV_value' })),
+      odvs: [stringOdv()],
     })
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.operand).toBe('Recommended')
     expect(plan.branches[0].shell).toBe('echo Recommended')
@@ -212,56 +221,56 @@ describe('planRuleCheck with inline rules', () => {
 
   it('refuses a rule whose ODV is missing', () => {
     const rule = inlineRule({
-      check: macosCheck(check('echo $ODV', { type: 'string', value: '$ODV' })),
-      odv: stringOdv({ recommended: null as unknown as string }),
+      check: macosCheck(check('echo $ODV_value', { type: 'string', value: '$ODV_value' })),
+      odvs: [stringOdv({ recommended: null as unknown as string })],
     })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('This rule needs an organization-defined value.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('This rule needs an organization-defined value.')
   })
 
   it('refuses an invalid stored ODV instead of falling back to the recommended one', () => {
     const rule = inlineRule({
-      check: macosCheck(check('echo $ODV', { type: 'string', value: '$ODV' })),
-      odv: stringOdv(),
+      check: macosCheck(check('echo $ODV_value', { type: 'string', value: '$ODV_value' })),
+      odvs: [stringOdv()],
     })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, '$(reboot)'))).toBe(
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, { value: '$(reboot)' }))).toBe(
       'The organization-defined value is invalid: Value must not contain "$(".',
     )
   })
 
   it('refuses a number ODV beyond the safe integer range', () => {
     const rule = inlineRule({
-      check: macosCheck(check('echo 1', { type: 'integer', value: '$ODV' })),
-      odv: { datatype: 'number', description: 'n', validation: null, recommended: 5, by_benchmark: {} },
+      check: macosCheck(check('echo 1', { type: 'integer', value: '$ODV_value' })),
+      odvs: [stringOdv({ datatype: 'number', recommended: 5 })],
     })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, '99999999999999999999'))).toMatch(/^The organization-defined value is invalid: /)
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, { value: '99999999999999999999' }))).toMatch(/^The organization-defined value is invalid: /)
   })
 
   it('refuses a manual rule', () => {
     const rule = inlineRule({ assessment: { status: 'manual', manual_reason: 'manual' } })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('This rule is assessed manually.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('This rule is assessed manually.')
   })
 
   it('refuses a rule whose listed version resolves to no check', () => {
     const rule = inlineRule({ check: macosCheck(null, { '15.0': check('echo PASS', { type: 'string', value: 'PASS' }) }) })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('mSCP has no check for macOS 26.0.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP has no check for macOS 26.0.')
   })
 
   it('treats a rule whose checks are all for other targets as having no macOS check', () => {
     const windowsCheck = { language: 'powershell' as const, default: check('Get-Thing', { type: 'string', value: 'ok' }), by_version: {} }
     const rule = inlineRule({ check: { Windows: windowsCheck } })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('mSCP has no check for macOS 15.0.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP has no check for macOS 15.0.')
   })
 
   it('plans only the macOS check when the rule also has a check for another target', () => {
-    const windowsCheck = { language: 'powershell' as const, default: check('Write-Output $ODV', { type: 'string', value: '$ODV' }), by_version: {} }
+    const windowsCheck = { language: 'powershell' as const, default: check('Write-Output $ODV_value', { type: 'string', value: '$ODV_value' }), by_version: {} }
     const rule = inlineRule({ check: { ...macosCheck(check('echo PASS', { type: 'string', value: 'PASS' })), Windows: windowsCheck } })
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.branches).toEqual([{ majors: ['15', '26', '27'], shell: 'echo PASS', expected: { type: 'string', value: 'PASS' } }])
   })
@@ -269,17 +278,19 @@ describe('planRuleCheck with inline rules', () => {
   it('refuses a rule whose listed version resolves to a check with a null result', () => {
     const rule = inlineRule({ check: macosCheck(check('echo PASS', null)) })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('mSCP gives no expected result for macOS 15.0.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP gives no expected result for macOS 15.0.')
   })
 
-  it('refuses $ODV in a rule that defines no ODV', () => {
-    const rule = inlineRule({ check: macosCheck(check('echo $ODV', { type: 'string', value: 'PASS' })) })
+  it('refuses a placeholder in a rule that defines no ODV of that name', () => {
+    const rule = inlineRule({ check: macosCheck(check('echo $ODV_value', { type: 'string', value: 'PASS' })) })
 
-    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, null))).toBe('This rule uses $ODV but defines no organization-defined value.')
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe(
+      'This rule uses $ODV_value but defines no organization-defined value named value.',
+    )
   })
 
   it('carries the rule architecture', () => {
-    const plan = expectPlan(planRuleCheck(inlineRule({ architecture: 'arm64' }), COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(inlineRule({ architecture: 'arm64' }), COVERED_VERSIONS, {}))
 
     expect(plan.architecture).toBe('arm64')
   })
@@ -289,7 +300,7 @@ describe('planRuleCheck with inline rules', () => {
       applicability: applicabilityOfVersions({ 'macOS 15.0': [] }),
       check: macosCheck(check('echo PASS', { type: 'string', value: 'PASS' })),
     })
-    const plan = expectPlan(planRuleCheck(rule, ['9.0', '26.0', '15.0'], null))
+    const plan = expectPlan(planRuleCheck(rule, ['9.0', '26.0', '15.0'], {}))
 
     expect(plan.newerThan).toBe('26')
     expect(plan.branches).toEqual([{ majors: ['15'], shell: 'echo PASS', expected: { type: 'string', value: 'PASS' } }])
@@ -300,8 +311,55 @@ describe('planRuleCheck with inline rules', () => {
     const rule = inlineRule({
       check: macosCheck(check('echo 1', { type: 'integer', value: 1 }), { '15.0': check('echo 1', { type: 'integer', value: 0 }) }),
     })
-    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, null))
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.reporting).toBe('boolean')
+  })
+})
+
+describe('planRuleCheck with several ODVs', () => {
+  const lengthOdv = stringOdv({ name: 'length', datatype: 'number', recommended: 8 })
+  const prefixedOdv = stringOdv({ name: 'length_max', datatype: 'number', recommended: 64 })
+
+  it('replaces each placeholder with its own value, whole names only', () => {
+    const rule = inlineRule({
+      check: macosCheck(check('test $ODV_length -le $ODV_length_max', { type: 'string', value: '$ODV_length-$ODV_length_max' })),
+      odvs: [lengthOdv, prefixedOdv],
+    })
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { length: 12 }))
+
+    expect(plan.odvValues).toEqual({ length: 12, length_max: 64 })
+    expect(plan.branches[0].shell).toBe('test 12 -le 64')
+    expect(plan.operand).toBe('12-64')
+  })
+
+  it('names the ODV in the problem when a rule has several', () => {
+    const rule = inlineRule({
+      check: macosCheck(check('test $ODV_length -le $ODV_length_max', { type: 'string', value: 'PASS' })),
+      odvs: [lengthOdv, prefixedOdv],
+    })
+
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, { length_max: 'x' }))).toBe(
+      'The organization-defined value "length_max" is invalid: Value must be a whole number.',
+    )
+  })
+
+  it('refuses a placeholder naming an ODV the rule does not declare', () => {
+    const rule = inlineRule({ check: macosCheck(check('echo $ODV_other', { type: 'string', value: 'PASS' })), odvs: [lengthOdv] })
+
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe(
+      'This rule uses $ODV_other but defines no organization-defined value named other.',
+    )
+  })
+
+  it('does not put an ODV that is not in the shell into the exports', () => {
+    const rule = inlineRule({
+      check: macosCheck(check('echo $ODV_length', { type: 'string', value: 'PASS' })),
+      odvs: [lengthOdv, prefixedOdv],
+    })
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
+
+    expect(plan.exportedOdvs).toEqual({})
+    expect(plan.odvValues).toEqual({ length: 8, length_max: 64 })
   })
 })

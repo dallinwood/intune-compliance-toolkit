@@ -36,10 +36,10 @@
   "discussion": "The CISO is responsible for ensuring the alignment of cyber security and business objectives within their organisation. To achieve this, they should facilitate communication between cyber security and business stakeholders. This includes translating cyber security concepts and language into business concepts and language, as well as ensuring that business teams consult with cyber security teams to determine appropriate security controls when planning new business projects. Additionally, as the CISO is responsible for the development of their organisation’s cyber security program, they are best placed to advise projects on the strategic direction of cyber security within their organisation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0725",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "Chief information security officer",

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { versionKey, versionsForTarget } from '../../logic/applicability'
 import { GENERATED_TARGET } from '../../logic/checkPlan'
-import { displayWithOdv, type CodeOdvValues } from '../../logic/odv'
+import { displayWithOdvs, type CodeOdvValues } from '../../logic/odv'
 import { scriptHighlightLanguage } from '../../logic/codeLanguage'
 import { assessmentLabel } from '../../logic/ruleDisplay'
-import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import type { OdvValues } from '../../logic/selectionEntry'
 import { scriptLanguageLabel } from '../../logic/targetDisplay'
 import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
@@ -20,13 +20,13 @@ function CheckEntry({
   label,
   check,
   language,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   label: string
   check: RuleCheck
   language: ScriptLanguage
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const highlightLanguage = scriptHighlightLanguage(language)
@@ -34,9 +34,9 @@ function CheckEntry({
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
       {check.shell_file !== undefined ? (
-        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
+        <ScriptFile path={check.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       ) : check.shell ? (
-        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
+        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       ) : (
         <p className="text-xs text-muted-foreground">No check script.</p>
       )}
@@ -44,11 +44,11 @@ function CheckEntry({
         <p className="text-xs text-foreground/80">
           Expected result ({check.result.type}):{' '}
           <code className="rounded bg-foreground/10 px-1 font-mono break-all">
-            {displayWithOdv(String(check.result.value), odvValue)}
+            {displayWithOdvs(String(check.result.value), odvValues)}
           </code>
         </p>
       )}
-      {check.additional_info && <DiscussionText text={check.additional_info} format="asciidoc" odvValue={odvValue} codeOdv={codeOdv} />}
+      {check.additional_info && <DiscussionText text={check.additional_info} format="asciidoc" odvValues={odvValues} codeOdv={codeOdv} />}
     </div>
   )
 }
@@ -62,12 +62,12 @@ function versionCheckKey(version: string): string {
 function TargetCheckPanel({
   target,
   targetCheck,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   target: string
   targetCheck: TargetCheck
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const index = useVocabularyIndex()
@@ -81,7 +81,7 @@ function TargetCheckPanel({
         label="Check (all listed versions)"
         check={targetCheck.default}
         language={targetCheck.language}
-        odvValue={odvValue}
+        odvValues={odvValues}
         codeOdv={codeOdv}
       />
     ) : (
@@ -102,7 +102,7 @@ function TargetCheckPanel({
           label={termLabel(index, 'versions', versionKey(target, selectedVersionCheck[0]))}
           check={selectedVersionCheck[1]}
           language={targetCheck.language}
-          odvValue={odvValue}
+          odvValues={odvValues}
           codeOdv={codeOdv}
         />
       ) : targetCheck.default ? (
@@ -110,7 +110,7 @@ function TargetCheckPanel({
           label="Default check (versions without their own)"
           check={targetCheck.default}
           language={targetCheck.language}
-          odvValue={odvValue}
+          odvValues={odvValues}
           codeOdv={codeOdv}
         />
       ) : (
@@ -122,12 +122,12 @@ function TargetCheckPanel({
 
 export function RuleCheckSection({
   rule,
-  odvValue,
+  odvValues,
   codeOdv,
   custom = false,
 }: {
   rule: Rule
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
   custom?: boolean
 }) {
@@ -167,7 +167,7 @@ export function RuleCheckSection({
                 {scriptLanguageLabel(targetCheck.language)}
               </>
             ),
-            panel: <TargetCheckPanel target={target} targetCheck={targetCheck} odvValue={odvValue} codeOdv={codeOdv} />,
+            panel: <TargetCheckPanel target={target} targetCheck={targetCheck} odvValues={odvValues} codeOdv={codeOdv} />,
           }))}
         />
       )}

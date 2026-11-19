@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nImplement privileged access authorization to [Assignment: organization-defined system components] for [Assignment: organization-defined vulnerability scanning activities].\n\n## Discussion\n\nIn certain situations, the nature of the vulnerability scanning may be more intrusive, or the system component that is the subject of the scanning may contain classified or controlled unclassified information, such as personally identifiable information. Privileged access authorization to selected system components facilitates more thorough vulnerability scanning and protects the sensitive nature of such scanning.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ra-5.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Risk Assessment",
     "RA-05 Vulnerability Monitoring and Scanning"

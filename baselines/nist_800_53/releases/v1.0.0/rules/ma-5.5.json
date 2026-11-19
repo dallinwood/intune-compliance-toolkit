@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnsure that non-escorted personnel performing maintenance activities not directly associated with the system but in the physical proximity of the system, have required access authorizations.\n\n## Discussion\n\nPersonnel who perform maintenance activities in other capacities not directly related to the system include physical plant personnel and custodial personnel.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-5.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-05 Maintenance Personnel"

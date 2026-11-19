@@ -2432,7 +2432,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure Audit Retention to $ODV"
+      "title": "Configure Audit Retention to $ODV_value"
     },
     {
       "applicability": [
@@ -7154,7 +7154,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure Install.log Retention to $ODV"
+      "title": "Configure Install.log Retention to $ODV_value"
     },
     {
       "applicability": [
@@ -12215,7 +12215,7 @@
         "os"
       ],
       "tags": [],
-      "title": "Ensure Software Update Deferment Is Less Than or Equal to $ODV Days"
+      "title": "Ensure Software Update Deferment Is Less Than or Equal to $ODV_value Days"
     },
     {
       "applicability": [
@@ -12362,7 +12362,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Set SSH Active Server Alive Maximum to $ODV"
+      "title": "Set SSH Active Server Alive Maximum to $ODV_value"
     },
     {
       "applicability": [
@@ -12418,7 +12418,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure SSH ServerAliveInterval option set to $ODV"
+      "title": "Configure SSH ServerAliveInterval option set to $ODV_value"
     },
     {
       "applicability": [
@@ -12474,7 +12474,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure SSHD All Inactive Channel Timeout to $ODV"
+      "title": "Configure SSHD All Inactive Channel Timeout to $ODV_value"
     },
     {
       "applicability": [
@@ -12530,7 +12530,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure SSHD ClientAliveCountMax to $ODV"
+      "title": "Configure SSHD ClientAliveCountMax to $ODV_value"
     },
     {
       "applicability": [
@@ -12586,7 +12586,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure SSHD ClientAliveInterval to $ODV"
+      "title": "Configure SSHD ClientAliveInterval to $ODV_value"
     },
     {
       "applicability": [
@@ -12698,7 +12698,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Set Login Grace Time to $ODV"
+      "title": "Set Login Grace Time to $ODV_value"
     },
     {
       "applicability": [
@@ -12881,7 +12881,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Configure SSHD Unused Connection Timeout to $ODV"
+      "title": "Configure SSHD Unused Connection Timeout to $ODV_value"
     },
     {
       "applicability": [
@@ -13120,7 +13120,7 @@
         "800-53r5_moderate",
         "cisv8"
       ],
-      "title": "Configure Sudo Timeout Period to $ODV"
+      "title": "Configure Sudo Timeout Period to $ODV_value"
     },
     {
       "applicability": [
@@ -14315,7 +14315,7 @@
         "cnssi-1253_high",
         "cnssi-1253_moderate"
       ],
-      "title": "Disable Accounts after $ODV Days of Inactivity"
+      "title": "Disable Accounts after $ODV_value Days of Inactivity"
     },
     {
       "applicability": [
@@ -14399,7 +14399,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Limit Consecutive Failed Login Attempts to $ODV"
+      "title": "Limit Consecutive Failed Login Attempts to $ODV_value"
     },
     {
       "applicability": [
@@ -14457,7 +14457,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Set Account Lockout Time to $ODV Minutes"
+      "title": "Set Account Lockout Time to $ODV_value Minutes"
     },
     {
       "applicability": [
@@ -14732,7 +14732,7 @@
         "cnssi-1253_moderate",
         "hicp_lp"
       ],
-      "title": "Prohibit Password Reuse for a Minimum of $ODV Generations"
+      "title": "Prohibit Password Reuse for a Minimum of $ODV_value Generations"
     },
     {
       "applicability": [
@@ -14854,7 +14854,7 @@
         "cnssi-1253_moderate",
         "hicp_lp"
       ],
-      "title": "Restrict Maximum Password Lifetime to $ODV Days"
+      "title": "Restrict Maximum Password Lifetime to $ODV_value Days"
     },
     {
       "applicability": [
@@ -14962,7 +14962,7 @@
         "cnssi-1253_moderate",
         "hicp_lp"
       ],
-      "title": "Require a Minimum Password Length of $ODV Characters"
+      "title": "Require a Minimum Password Length of $ODV_value Characters"
     },
     {
       "applicability": [
@@ -15021,7 +15021,7 @@
         "cnssi-1253_moderate",
         "hicp_lp"
       ],
-      "title": "Set Minimum Password Lifetime to $ODV Hours"
+      "title": "Set Minimum Password Lifetime to $ODV_value Hours"
     },
     {
       "applicability": [
@@ -15958,7 +15958,7 @@
         "cnssi-1253_low",
         "cnssi-1253_moderate"
       ],
-      "title": "Enforce Auto Logout After $ODV Seconds of Inactivity"
+      "title": "Enforce Auto Logout After $ODV_value Seconds of Inactivity"
     },
     {
       "applicability": [
@@ -20837,6 +20837,6 @@
       "title": "Disable Wi-Fi When Connected to Ethernet"
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "mscp"
 }

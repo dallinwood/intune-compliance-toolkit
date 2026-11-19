@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement the following cryptographic mechanisms to protect the integrity and confidentiality of nonlocal maintenance and diagnostic communications: [Assignment: organization-defined cryptographic mechanisms].\n\n## Discussion\n\nFailure to protect nonlocal maintenance and diagnostic communications can result in unauthorized individuals gaining access to organizational information. Unauthorized access during remote maintenance sessions can result in a variety of hostile actions, including malicious code insertion, unauthorized changes to system parameters, and exfiltration of organizational information. Such actions can result in the loss or degradation of mission or business capabilities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-4.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-8",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-04 Nonlocal Maintenance"

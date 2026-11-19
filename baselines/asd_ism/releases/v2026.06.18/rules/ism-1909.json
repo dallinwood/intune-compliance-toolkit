@@ -36,10 +36,10 @@
   "discussion": "Following the identification of vulnerabilities in software, via either internal software security testing or external security researchers, it is important that they are publicly disclosed in a responsible and timely manner. This allows users of impacted software to determine their risk exposure as part of their own cyber supply chain risk management activities. In doing so, such vulnerabilities should be resolved in a timely manner. In support of this, root cause analysis should be performed and, to the greatest extent possible, entire vulnerability classes should be remediated.\n\nIf vulnerabilities cannot be resolved in a timely manner via patches or updates, advice should be provided on how, to the greatest extent possible, the likelihood of vulnerabilities being exploited can be reduced, the impact of vulnerabilities being exploited can be reduced or both.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1909",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

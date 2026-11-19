@@ -32,10 +32,10 @@
   "discussion": "The application of the defence-in-depth principle to the protection of systems is enhanced through the use of successive layers of physical security. The first layer of physical security being the use of a security zone for facilities containing systems.\n\nDeployable platforms should also meet physical security requirements. Notably, physical security certification authorities dealing with deployable platforms may have specific requirements that supersede the controls in these guidelines. This may include perimeter controls, building standards and staffing levels. As such, an organisation implementing deployable platforms should contact their physical security certification authority to seek additional guidance.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0810",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Physical Security",
     "Facilities and systems",

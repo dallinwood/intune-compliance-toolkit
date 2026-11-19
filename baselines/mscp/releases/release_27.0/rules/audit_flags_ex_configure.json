@@ -65,7 +65,7 @@
   "discussion": "The audit system _MUST_ be configured to record enforcement actions of access restrictions, including failed program execute (-ex) attempts.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized access and/or changes to configuration settings. One common and effective enforcement action method is using program execution restrictions (e.g., denying users access to execute certain processes).\n\nThis configuration ensures that audit lists include events in which program execution has failed.\nWithout auditing the enforcement of program execution, it is difficult to identify attempted attacks, as there is no audit trail available for forensic investigation.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_flags_ex_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -167,7 +167,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

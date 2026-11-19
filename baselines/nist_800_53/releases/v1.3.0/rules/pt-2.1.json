@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nAttach data tags containing [Assignment: organization-defined authorized processing] to [Assignment: organization-defined elements of personally identifiable information].\n\n## Discussion\n\nData tags support the tracking and enforcement of authorized processing by conveying the types of processing that are authorized along with the relevant elements of personally identifiable information throughout the system. Data tags may also support the use of automated tools.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pt-2.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-16",
@@ -32,7 +32,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personally Identifiable Information Processing and Transparency",
     "PT-02 Authority to Process Personally Identifiable Information"

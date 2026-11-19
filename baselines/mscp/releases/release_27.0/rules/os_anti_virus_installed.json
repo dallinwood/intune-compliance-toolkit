@@ -81,7 +81,7 @@
   "discussion": "An approved antivirus product _MUST_ be installed and configured to run.\n\nMalicious software can establish a base on individual desktops and servers. Employing an automated mechanism to detect this type of software will aid in elimination of the software from the operating system.'\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_anti_virus_installed",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -150,7 +150,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

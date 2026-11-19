@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire the developer of the system or system component to minimize the use of personally identifiable information in development and test environments.\n\n## Discussion\n\nOrganizations can minimize the risk to an individual’s privacy by using techniques such as de-identification or synthetic data. Limiting the use of personally identifiable information in development and test environments helps reduce the level of privacy risk created by a system.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15.12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PM-25",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

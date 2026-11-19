@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nInclude a full recovery and reconstitution of the system to a known state as part of contingency plan testing.\n\n## Discussion\n\nRecovery is executing contingency plan activities to restore organizational mission and business functions. Reconstitution takes place following recovery and includes activities for returning systems to fully operational states. Organizations establish a known state for systems that includes system state information for hardware, software programs, and data. Preserving system state information facilitates system restart and return to the operational mode of organizations with less disruption of mission and business processes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-4.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-10",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-04 Contingency Plan Testing"

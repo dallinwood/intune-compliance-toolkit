@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nProvide an incident response training environment using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms can provide a more thorough and realistic incident response training environment. This can be accomplished, for example, by providing more complete coverage of incident response issues, selecting more realistic training scenarios and environments, and stressing the response capability.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-2.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-02 Incident Response Training"

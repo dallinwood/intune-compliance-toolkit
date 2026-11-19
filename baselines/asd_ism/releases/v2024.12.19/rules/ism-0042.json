@@ -36,10 +36,10 @@
   "discussion": "A key component of system administration is ensuring that administrative activities are undertaken in a repeatable and accountable manner using system administration processes and procedures. In doing so, requirements for administrative activities may cover:\n\n- configuring applications, operating systems, network devices or networked information technology (IT) equipment\n- applying patches, updates or vendor mitigations to applications, drivers, operating systems or firmware\n- installing or removing applications, operating systems, network devices or networked IT equipment\n- implementing system changes or enhancements\n- resolving problems identified by users.\n\nFurthermore, in support of change management processes and procedures, system administrators should document requirements for administrative activities, consider potential security impacts, obtain any necessary approvals, notify users of any disruptions or outages, and maintain system and security documentation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0042",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Management",
     "System administration",

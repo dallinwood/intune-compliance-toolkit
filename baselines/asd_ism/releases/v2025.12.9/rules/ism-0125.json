@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing and maintaining a cyber security incident register can assist with ensuring that appropriate remediation activities are undertaken in response to cyber security incidents. In addition, the types and frequency of cyber security incidents, along with the costs of any remediation activities, can be used as an input to future risk assessment activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0125",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security incidents",
     "Managing cyber security incidents",

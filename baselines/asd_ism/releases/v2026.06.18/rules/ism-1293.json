@@ -36,10 +36,10 @@
   "discussion": "As encryption can be used to bypass content filtering checks, this poses a security risk in that malicious code could enter networks, or data could be exfiltrated from networks, undetected. In addition, encrypted files could mask data at a higher classification than that authorised to pass through gateways or CDSs, which could result in a data spill. As such, encrypted files should be decrypted to undergo content filtering checks.\n\nWhere a requirement to preserve the confidentiality of encrypted files exists, an organisation may also consider a dedicated system to enable encrypted files to be decrypted in an appropriately secure environment before being subjected to all applicable content filtering checks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1293",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Content filtering",

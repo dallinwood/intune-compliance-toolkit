@@ -93,7 +93,7 @@
   "discussion": "The audit log files _MUST_ not contain access control lists (ACLs).\n\nThis rule ensures that audit information and audit files are configured to be readable and writable only by system administrators, thereby preventing unauthorized access, modification, and deletion of files.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_acls_files_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -193,7 +193,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

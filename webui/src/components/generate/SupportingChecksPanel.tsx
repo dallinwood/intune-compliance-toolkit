@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { PulledInOutcome } from '../../logic/generateReview'
-import { displayWithOdv, odvSubstitutionMode, usableOdvValue } from '../../logic/odv'
+import { displayWithOdvs, usableOdvValues } from '../../logic/odv'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import type { SelectionMap } from '../../logic/selectionEntry'
 import {
@@ -15,7 +15,7 @@ import {
   type SupportingCheckOffer,
   type SupportingCheckOffers,
 } from '../../logic/supportingChecks'
-import { supportingCheckValueSummary } from '../../logic/supportingCheckValue'
+import { supportingCheckValueSummaryForRule } from '../../logic/supportingCheckValue'
 import { useSupportingChecksStore } from '../../state/supportingChecksStore'
 import type { Rule } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
@@ -72,9 +72,8 @@ export function SupportingChecksPanel({
 
   function titleOf(offer: SupportingCheckOffer): string {
     const rule = fetchedRules.get(offer.ruleId)
-    if (rule === undefined) return displayWithOdv(rowsById.get(offer.ruleId)?.title ?? offer.ruleId, null)
-    const valueInTitle = usableOdvValue(rule.odv, odvSubstitutionMode(rule), selections[offer.ruleId]?.odvValue ?? null, rule.id)
-    return displayWithOdv(rule.title, valueInTitle)
+    if (rule === undefined) return displayWithOdvs(rowsById.get(offer.ruleId)?.title ?? offer.ruleId, {})
+    return displayWithOdvs(rule.title, usableOdvValues(rule, selections[offer.ruleId]?.odvValues ?? {}))
   }
 
   function matchesFilter(offer: SupportingCheckOffer): boolean {
@@ -93,10 +92,10 @@ export function SupportingChecksPanel({
 
   function renderRow(offer: SupportingCheckOffer) {
     const rule = fetchedRules.get(offer.ruleId)
-    const storedValue = selections[offer.ruleId]?.odvValue ?? null
+    const storedValues = selections[offer.ruleId]?.odvValues ?? {}
     const ruleRef = rowsById.get(offer.ruleId)?.ref
     if (ruleRef === undefined) return null
-    const valueSummary = rule?.odv ? supportingCheckValueSummary(rule.odv, odvSubstitutionMode(rule), storedValue, rule.id) : null
+    const valueSummary = rule ? supportingCheckValueSummaryForRule(rule, storedValues) : null
     // Shown as it will be once the option is on, so the choices can be read while it is off.
     const checked = isSupportingCheckIncluded(offer, { ...choices, includeSupporting: true })
     return (
@@ -105,7 +104,7 @@ export function SupportingChecksPanel({
         offer={offer}
         ruleRef={ruleRef}
         rule={rule ?? null}
-        storedValue={storedValue}
+        storedValues={storedValues}
         title={titleOf(offer)}
         checked={checked}
         toggleDisabled={!toggleOn}

@@ -36,10 +36,10 @@
   "discussion": "At the conclusion of a security assessment for a system, a security assessment report is produced by the assessor and covers:\n\n- the scope of the security assessment\n- the system’s strengths and weaknesses\n- security risks associated with the operation of the system\n- the effectiveness of the implementation of controls\n- any recommended remediation actions.\n\nAt the conclusion of a security assessment for a system, a security assessment report should be produced by the assessor. This will assist the system owner in performing any initial remediation actions as well as guiding the development of the system’s plan of action and milestones.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1563",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Security Documentation",
     "System-specific security documentation",

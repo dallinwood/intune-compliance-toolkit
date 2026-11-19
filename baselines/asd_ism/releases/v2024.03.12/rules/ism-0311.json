@@ -36,10 +36,10 @@
   "discussion": "When sanitising ICT equipment, any media within the ICT equipment should be removed or sanitised. Once any media has been removed or sanitised, ICT equipment can be considered sanitised. However, if media cannot be removed or sanitised, the ICT equipment should be destroyed as per media destruction requirements.\n\nMedia typically found in ICT equipment includes:\n\n- electrostatic memory devices, such as laser printer cartridges used in multifunction devices (MFDs)\n- non-volatile magnetic memory, such as hard disks\n- non-volatile semiconductor memory, such as flash cards and solid-state drives\n- volatile memory, such as random-access memory sticks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0311",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for ICT Equipment",
     "ICT equipment sanitisation and destruction",

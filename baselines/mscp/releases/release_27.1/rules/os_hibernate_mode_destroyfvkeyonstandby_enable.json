@@ -33,7 +33,7 @@
   "discussion": "DestroyFVKeyOnStandby on hibernate _MUST_ be enabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_hibernate_mode_destroyfvkeyonstandby_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "cce": {
@@ -70,7 +70,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -81,7 +81,7 @@
           "type": "string",
           "value": "Yes"
         },
-        "shell": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= $ODV) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'"
+        "shell": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= $ODV_value) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'"
       },
       "language": "bash"
     }
@@ -89,20 +89,24 @@
   "discussion": "The install.log _MUST_ be configured to require records be kept for a organizational defined value before deletion, unless the system uses a central audit record storage facility.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_install_log_retention_configure",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": 365,
-      "cis_lvl2": 365,
-      "disa_stig": 365,
-      "nlmapgov_plus": 365
-    },
-    "datatype": "number",
-    "description": "Number of days, e.g. 365",
-    "recommended": 365,
-    "validation": {
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": 365,
+        "cis_lvl2": 365,
+        "disa_stig": 365,
+        "nlmapgov_plus": 365
+      },
+      "datatype": "number",
+      "description": "Number of days, e.g. 365",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 365,
+      "validation": {
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -187,13 +191,13 @@
           "additional_info": "NOTE: If there are multiple configuration files in /etc/asl that are set to process the file /var/log/install.log, these files will have to be manually removed.",
           "language": "bash",
           "name": null,
-          "shell": "/usr/bin/sed -i '' \"s/\\* file \\/var\\/log\\/install.log.*/\\* file \\/var\\/log\\/install.log format='\\$\\(\\(Time\\)\\(JZ\\)\\) \\$Host \\$\\(Sender\\)\\[\\$\\(PID\\\\)\\]: \\$Message' rotate=utc compress file_max=50M size_only ttl=$ODV/g\" /etc/asl/com.apple.install",
+          "shell": "/usr/bin/sed -i '' \"s/\\* file \\/var\\/log\\/install.log.*/\\* file \\/var\\/log\\/install.log format='\\$\\(\\(Time\\)\\(JZ\\)\\) \\$Host \\$\\(Sender\\)\\[\\$\\(PID\\\\)\\]: \\$Message' rotate=utc compress file_max=50M size_only ttl=$ODV_value/g\" /etc/asl/com.apple.install",
           "versions": null
         }
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],
@@ -221,5 +225,5 @@
     "cnssi-1253_low",
     "cnssi-1253_moderate"
   ],
-  "title": "Configure Install.log Retention to $ODV"
+  "title": "Configure Install.log Retention to $ODV_value"
 }

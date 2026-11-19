@@ -36,10 +36,10 @@
   "discussion": "In some cases, sanitisation processes will be unsuccessful due to faulty or damaged media. In such cases, the faulty or damage media will need to be destroyed prior to its disposal.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1735",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Media",
     "Media sanitisation",

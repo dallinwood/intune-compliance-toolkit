@@ -36,10 +36,10 @@
   "discussion": "When sanitising non-volatile erasable programmable read-only memory (EPROM), three times the manufacturer’s specification for ultraviolet erasure time should be applied to provide additional certainty in sanitisation processes. Subsequently, the non-volatile EPROM media should be overwritten at least once in its entirety with a random pattern followed by a read back for verification.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0357",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media sanitisation",

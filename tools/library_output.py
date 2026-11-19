@@ -10,7 +10,7 @@ from tools.json_output import write_json
 from tools.source_lock import SourceLock
 from tools.validate_library import manifest_consistency_errors, schema_errors, validate_library
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 MANIFEST_SCHEMA_VERSION = 6
 MANIFEST_FILE_NAME = "_manifest.json"
 BUILD_DIR_NAME = ".build"
@@ -31,7 +31,7 @@ def index_entry(rule: dict, file: str) -> dict:
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],
         "tags": rule["tags"],
-        "has_odv": rule["odv"] is not None,
+        "has_odv": len(rule["odvs"]) > 0,
     }
 
 

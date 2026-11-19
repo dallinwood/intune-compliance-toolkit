@@ -36,10 +36,10 @@
   "discussion": "Segregating development, testing, staging and production environments, and their associated data, can minimise the likelihood of faulty or malicious code being introduced into a production environment. Furthermore, protecting the authoritative source for software is critical to preventing malicious code being surreptitiously introduced into software.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1420",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

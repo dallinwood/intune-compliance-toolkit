@@ -36,10 +36,10 @@
   "discussion": "Before access to a system and its resources is granted to a user, it is essential that they are authenticated. This can be achieved via multi-factor authentication, such as a username along with a passphrase and security key, or via single-factor authentication, such as a username and a passphrase.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1546",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

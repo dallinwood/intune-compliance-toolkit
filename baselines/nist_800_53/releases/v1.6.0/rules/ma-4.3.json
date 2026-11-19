@@ -20,7 +20,7 @@
   "discussion": "## Control\n\n- (a) Require that nonlocal maintenance and diagnostic services be performed from a system that implements a security capability comparable to the capability implemented on the system being serviced; or\n- (b) Remove the component to be serviced from the system prior to nonlocal maintenance or diagnostic services; sanitize the component (for organizational information); and after the service is performed, inspect and sanitize the component (for potentially malicious software) before reconnecting the component to the system.\n\n## Discussion\n\nComparable security capability on systems, diagnostic tools, and equipment providing maintenance services implies that the implemented controls on those systems, tools, and equipment are at least as comprehensive as the controls on the system being serviced.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-4.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "MP-6",
@@ -29,7 +29,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-04 Nonlocal Maintenance"

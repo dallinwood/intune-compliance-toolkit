@@ -36,10 +36,10 @@
   "discussion": "Credentials that are no longer required should be revoked to prevent their subsequent use to gain unauthorised access to systems and their resources. This includes credentials associated with user accounts that are no longer required, as well as static credentials used by applications and workloads that have been decommissioned or are no longer required for access.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2146",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Credential management",

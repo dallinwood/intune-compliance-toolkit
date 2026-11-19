@@ -25,7 +25,7 @@
   "discussion": "The inherent configuration of the macOS _IS_ in compliance as Apple has implemented multiple features Mandatory access controls (MAC), System Integrity Protection (SIP), and application sandboxing.\n\nlink:https://support.apple.com/guide/security/system-integrity-protection-secb7ea06b49/web[]\n\nlink:https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/AboutAppSandbox/AboutAppSandbox.html[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_application_sandboxing",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "800-53r5": [
@@ -61,7 +61,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

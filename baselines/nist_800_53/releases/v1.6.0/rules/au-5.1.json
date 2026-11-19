@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nProvide a warning to [Assignment: organization-defined personnel, roles, and/or locations] within [Assignment: organization-defined time period] when allocated audit log storage volume reaches [Assignment: organization-defined percentage] of repository maximum audit log storage capacity.\n\n## Discussion\n\nOrganizations may have multiple audit log storage repositories distributed across multiple system components with each repository having different storage volume capacities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-5.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-05 Response to Audit Logging Process Failures"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProvide [Assignment: organization-defined personnel or roles] with initial and [Assignment: organization-defined frequency] training in the employment and operation of physical security controls.\n\n## Discussion\n\nPhysical security controls include physical access control devices, physical intrusion and detection alarms, operating procedures for facility security guards, and monitoring or surveillance equipment.",
   "discussion_format": "markdown",
   "id": "nist_800_53.at-3.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PE-2",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Awareness and Training",
     "AT-03 Role-based Training"

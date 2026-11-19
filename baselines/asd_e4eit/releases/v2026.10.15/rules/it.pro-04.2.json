@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are securely configured to approved and maintained baselines, including by reducing attack surfaces and attack paths, with configurations continually monitored and consistently enforced.\n\n# Indicators of Good Practice\n\nNot effective:\n- Approved baselines have not been applied to assets.\n- Baseline deployment has not been validated through technical assessment.\n\nPartially effective:\n- Approved baselines have been implemented where available, but some relevant asset types are not covered by an approved baseline.\n- Deployment has occurred but validation through technical assessment is incomplete or not current.\n- Approved baselines have been deployed, but coverage for all applicable assets is inconsistent.\n\nFully effective:\n- Approved baselines have been applied to all applicable assets.\n- Deployment has been validated through technical assessment.\n- Coverage metrics are available demonstrating deployment completeness.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-04.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -84,7 +84,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-04 - Secure configuration management"

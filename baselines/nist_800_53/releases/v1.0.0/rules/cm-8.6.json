@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nInclude assessed component configurations and any approved deviations to current deployed configurations in the system component inventory.\n\n## Discussion\n\nAssessed configurations and approved deviations focus on configuration settings established by organizations for system components, the specific components that have been assessed to determine compliance with the required configuration settings, and any approved deviations from established configuration settings.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-8.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-08 System Component Inventory"

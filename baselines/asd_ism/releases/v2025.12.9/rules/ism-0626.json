@@ -24,10 +24,10 @@
   "discussion": "As there are significant security risks associated with connecting SECRET or TOP SECRET networks to other networks in different security domains, CDSs will need to be implemented.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0626",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Cross Domain Solutions",

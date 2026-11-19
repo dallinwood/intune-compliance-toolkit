@@ -36,10 +36,10 @@
   "discussion": "A managed service register contains the following for each managed service:\n\n* managed service provider’s name\n* managed service’s name\n* purpose for using the managed service\n* sensitivity or classification of data involved\n* due date for the next security assessment of the managed service\n* contractual arrangements for the managed service\n* point of contact for users of the managed service\n* 24/7 contact details for the managed service provider.\n\nManaged service providers manage the services of an organisation on their behalf. This may include application services, authentication services, backup services, desktop services, enterprise mobility services, gateway services, hosting services, network services, procurement services, security services, support services, and many other business-related services. In doing so, managed service providers may manage services from their customers’ premises or their own premises. In considering security risks associated with managed services, an organisation should consider all managed service providers that have access to their facilities, systems or data.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1737",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Procurement and Outsourcing",
     "Managed services and cloud services",

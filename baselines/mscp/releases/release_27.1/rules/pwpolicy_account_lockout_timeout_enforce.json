@@ -45,25 +45,29 @@
           "type": "string",
           "value": "pass"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"autoEnableInSeconds\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1/60 >= $ODV ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
+        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"autoEnableInSeconds\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1/60 >= $ODV_value ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
       },
       "language": "bash"
     }
   },
-  "discussion": "The macOS _MUST_ be configured to enforce a lockout time period of at least $ODV minutes when the maximum number of failed logon attempts is reached.\n\nThis rule protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
+  "discussion": "The macOS _MUST_ be configured to enforce a lockout time period of at least $ODV_value minutes when the maximum number of failed logon attempts is reached.\n\nThis rule protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_account_lockout_timeout_enforce",
-  "odv": {
-    "by_benchmark": {
-      "disa_stig": 15
-    },
-    "datatype": "number",
-    "description": "Number of minutes, e.g. 15",
-    "recommended": 15,
-    "validation": {
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "disa_stig": 15
+      },
+      "datatype": "number",
+      "description": "Number of minutes, e.g. 15",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 15,
+      "validation": {
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "cis": {
       "controls_v8": [
@@ -128,7 +132,7 @@
             {
               "PayloadContent": [
                 {
-                  "minutesUntilFailedLoginReset": "$ODV"
+                  "minutesUntilFailedLoginReset": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.mobiledevice.passwordpolicy"
@@ -140,7 +144,7 @@
         {
           "data": {
             "ddm_key": "FailedAttemptsResetInMinutes",
-            "ddm_value": "$ODV",
+            "ddm_value": "$ODV_value",
             "declarationtype": "com.apple.configuration.passcode.settings"
           },
           "kind": "ddm",
@@ -150,7 +154,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "pwpolicy"
   ],
@@ -181,5 +185,5 @@
     "cnssi-1253_low",
     "cnssi-1253_moderate"
   ],
-  "title": "Set Account Lockout Time to $ODV Minutes"
+  "title": "Set Account Lockout Time to $ODV_value Minutes"
 }

@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSuitable and sufficient personnel and resources are identified, acquired and maintained in support of cyber security activities.\n\n# Indicators of Good Practice\n\nNot effective:\n- Cyber security functions are staffed on an ad hoc basis without reference to required skills or capacity.\n- Critical cyber security roles are unfilled with no approved recruitment plan.\n- No resourcing plan for cyber security personnel exists.\n\nPartially effective:\n- Some critical roles are filled but identified skills gaps have no plan for remediation.\n- While assigned personnel provide some capability, there are gaps in capacity, resources, or expertise that hinder the operation, monitoring, maintenance, and lifecycle management of controls.\n- A resourcing plan exists but does not cover all required cyber security functions.\n- Outstanding cyber security positions are being actively recruited, but capacity or skills gaps remain.\n\nFully effective:\n- Sufficient cyber security personnel are assigned to operate, monitor, maintain and manage the lifecycle of controls across the organisation.\n- Skills gaps are identified and addressed through recruitment, training or contracted services.\n- A resourcing plan identifies all required cyber security personnel, roles, skills, resources and capacity.\n- Cyber security responsibilities are defined within applicable role descriptions.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-04.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -55,7 +55,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-04 - Cyber security resourcing"

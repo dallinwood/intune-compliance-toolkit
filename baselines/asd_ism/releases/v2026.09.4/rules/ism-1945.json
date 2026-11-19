@@ -36,10 +36,10 @@
   "discussion": "Microsoft AD CS is responsible for the management of public key infrastructure certificates used to secure authentication and communication protocols for systems, and presents significant opportunities for privilege escalation and persistence by malicious actors. As such, particular care should be taken to secure servers that perform this role. For example, in addition to baseline configuration hardening, web-based enrolment interfaces should be disabled or hardened against authentication-relay attacks, certificate templates should be periodically audited, and certificate enrolment activity should be centrally logged.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1945",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "Server application hardening",

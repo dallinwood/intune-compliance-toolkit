@@ -36,10 +36,10 @@
   "discussion": "Content conversion can be an effective method to render malicious code harmless by converting one file type to another file type. However, some file types will not benefit from content conversion. Examples of content conversion include:\n\n- converting Microsoft Word documents to PDF files\n- converting Microsoft PowerPoint presentations to image files\n- converting Microsoft Excel spreadsheets to comma-separated values files\n- converting PDF documents to plain text files.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1286",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Content filtering",

@@ -36,10 +36,10 @@
   "discussion": "When IT equipment displays, processes, stores or communicates sensitive or classified data, it will need to be handled as per the sensitivity or classification of that data. However, applying encryption to media within the IT equipment may change the manner in which it needs to be handled. Any change in handling needs to be based on the original sensitivity or classification of data residing on media within the IT equipment and the level of assurance in the cryptographic equipment or software being used to encrypt it.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1599",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for information technology equipment",
     "IT equipment usage",

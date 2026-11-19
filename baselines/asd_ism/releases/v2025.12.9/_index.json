@@ -48603,6 +48603,6 @@
       "title": "Content filtering is implemented by artificial intelligence applications to detect and block sensitive data exposure and improper output."
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "asd_ism"
 }

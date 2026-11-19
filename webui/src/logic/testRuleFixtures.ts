@@ -30,7 +30,7 @@ export function inlineRule({
   overrides = {},
 }: InlineRuleOptions = {}): Rule {
   return {
-    schema_version: 5,
+    schema_version: 6,
     id: `mscp.${upstreamId}`,
     title: `Rule ${upstreamId}`,
     discussion: 'First paragraph.\n\nSecond paragraph.',
@@ -53,12 +53,25 @@ export function inlineRule({
     tags: [],
     references: {},
     check: macosCheck(ruleCheck('echo PASS', { type: 'string', value: 'PASS' })),
-    odv: null,
+    odvs: [],
     remediation: null,
     ...overrides,
   }
 }
 
 export function numberOdv(overrides: Partial<Odv> = {}): Odv {
-  return { datatype: 'number', description: 'Example length', validation: { min: 1 }, recommended: 6, by_benchmark: {}, ...overrides }
+  return {
+    name: 'value',
+    datatype: 'number',
+    description: 'Example length',
+    validation: { min: 1 },
+    recommended: 6,
+    by_benchmark: {},
+    quoting: 'unquoted',
+    ...overrides,
+  }
+}
+
+export function ruleWithOdvs(odvs: Odv[], overrides: Partial<Rule> = {}): Rule {
+  return inlineRule({ overrides: { odvs, ...overrides } })
 }

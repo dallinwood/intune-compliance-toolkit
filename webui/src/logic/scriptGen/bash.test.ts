@@ -44,8 +44,8 @@ function rawStringPlan(overrides: Partial<RuleCheckPlan> = {}): RuleCheckPlan {
     branches: [{ majors: ['15', '26'], shell: 'echo LISTED', expected: { type: 'string', value: 'PASS' } }],
     newerThan: '27',
     newerBranch: { shell: 'echo NEWER', expected: { type: 'string', value: 'PASS' } },
-    odvValue: null,
-    exportedOdv: null,
+    odvValues: {},
+    exportedOdvs: {},
     ...overrides,
   }
 }
@@ -94,16 +94,32 @@ describe('generateBashScript structure', () => {
     expect(script).toContain("__result_raw_rule=$( __run_check 'echo LISTED\n' )")
   })
 
-  it('throws when a shell or expected value still contains $ODV', () => {
-    expect(() => generateBashScript([rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo $ODV', expected: { type: 'string', value: 'PASS' } }] })])).toThrow(/\$ODV/)
-    expect(() => generateBashScript([rawStringPlan({ newerBranch: { shell: 'echo $ODV', expected: { type: 'string', value: 'PASS' } } })])).toThrow(/\$ODV/)
-    expect(() => generateBashScript([rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo x', expected: { type: 'string', value: '$ODV' } }] })])).toThrow(/\$ODV/)
+  it('throws when a shell or expected value still contains $ODV_value', () => {
+    expect(() => generateBashScript([rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo $ODV_value', expected: { type: 'string', value: 'PASS' } }] })])).toThrow(/\$ODV/)
+    expect(() => generateBashScript([rawStringPlan({ newerBranch: { shell: 'echo $ODV_value', expected: { type: 'string', value: 'PASS' } } })])).toThrow(/\$ODV/)
+    expect(() => generateBashScript([rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo x', expected: { type: 'string', value: '$ODV_value' } }] })])).toThrow(/\$ODV/)
   })
 
-  it('allows $ODV in the shell of a plan that exports the ODV as a variable', () => {
-    const plan = rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo "$ODV"', expected: { type: 'string', value: 'PASS' } }], exportedOdv: 'x' })
+  it('allows a placeholder in the shell of a plan that exports that ODV as a variable', () => {
+    const plan = rawStringPlan({ branches: [{ majors: ['15'], shell: 'echo "$ODV_value"', expected: { type: 'string', value: 'PASS' } }], exportedOdvs: { value: 'x' } })
 
     expect(() => generateBashScript([plan])).not.toThrow()
+  })
+
+  it('throws when a shell has a placeholder for an ODV the plan does not export, or a bare $ODV_value', () => {
+    const branchWith = (shell: string) => [{ majors: ['15'], shell, expected: { type: 'string' as const, value: 'PASS' } }]
+    expect(() => generateBashScript([rawStringPlan({ branches: branchWith('echo "$ODV_other"'), exportedOdvs: { value: 'x' } })])).toThrow(/\$ODV/)
+    expect(() => generateBashScript([rawStringPlan({ branches: branchWith('echo "$ODV"'), exportedOdvs: { value: 'x' } })])).toThrow(/\$ODV/)
+  })
+
+  it('refuses to export an ODV whose name could break out of the export line', () => {
+    expect(() => generateBashScript([rawStringPlan({ exportedOdvs: { 'x=1; id #': 'v' } })])).toThrow(/ODV name/)
+  })
+
+  it('exports each ODV on its own, single-quoted, before the check', () => {
+    const script = generateBashScript([rawStringPlan({ exportedOdvs: { value: "it's", other_one: 'b' } })])
+
+    expect(script).toContain("export ODV_value='it'\\''s' ; export ODV_other_one='b' ; __run_check")
   })
 
   it('keeps a title with a newline on its comment line', () => {
@@ -198,20 +214,20 @@ describe('generateBashScript executed through bash', () => {
         dataType: 'Boolean',
         operand: true,
         branches: [
-          { majors: ['15'], shell: 'printf \'%s\' "$ODV"', expected: { type: 'string', value: 'PASS' } },
-          { majors: ['26'], shell: 'bannerText="$ODV"\ntest "$(printf \'%s\' "$ODV")" = "$bannerText" && echo "1" || echo "0"', expected: { type: 'integer', value: 1 } },
+          { majors: ['15'], shell: 'printf \'%s\' "$ODV_value"', expected: { type: 'string', value: 'PASS' } },
+          { majors: ['26'], shell: 'bannerText="$ODV_value"\ntest "$(printf \'%s\' "$ODV_value")" = "$bannerText" && echo "1" || echo "0"', expected: { type: 'integer', value: 1 } },
         ],
         newerBranch: null,
-        exportedOdv: odvValue,
+        exportedOdvs: { value: odvValue },
       }),
     ])
-    expect(odvScript).toContain('export ODV=')
+    expect(odvScript).toContain('export ODV_value=')
     expect(runScript(odvScript, { osMajor: '26' })).toEqual({ raw_rule: true })
 
     const echoScript = generateBashScript([
       rawStringPlan({
-        branches: [{ majors: ['15'], shell: 'printf \'%s\' "$ODV"', expected: { type: 'string', value: 'PASS' } }],
-        exportedOdv: odvValue,
+        branches: [{ majors: ['15'], shell: 'printf \'%s\' "$ODV_value"', expected: { type: 'string', value: 'PASS' } }],
+        exportedOdvs: { value: odvValue },
       }),
     ])
     expect(runScript(echoScript, { osMajor: '15' })).toEqual({ raw_rule: odvValue })
@@ -219,8 +235,8 @@ describe('generateBashScript executed through bash', () => {
 
   it('does not leak a variable-mode ODV into other checks', () => {
     const leakScript = generateBashScript([
-      rawStringPlan({ settingName: 'with_odv', branches: [{ majors: ['15'], shell: 'echo "$ODV"', expected: { type: 'string', value: 'PASS' } }], exportedOdv: 'secret' }),
-      rawStringPlan({ settingName: 'without_odv', branches: [{ majors: ['15'], shell: 'echo "[${ODV}]"', expected: { type: 'string', value: 'PASS' } }] }),
+      rawStringPlan({ settingName: 'with_odv', branches: [{ majors: ['15'], shell: 'echo "$ODV_value"', expected: { type: 'string', value: 'PASS' } }], exportedOdvs: { value: 'secret' } }),
+      rawStringPlan({ settingName: 'without_odv', branches: [{ majors: ['15'], shell: 'echo "[${ODV_value}]"', expected: { type: 'string', value: 'PASS' } }] }),
     ])
     expect(runScript(leakScript, { osMajor: '15' })).toEqual({ with_odv: 'secret', without_odv: '[]' })
   }, REAL_SHELL_TIMEOUT_MILLISECONDS)

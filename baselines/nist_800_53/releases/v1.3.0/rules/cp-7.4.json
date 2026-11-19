@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nPrepare the alternate processing site so that the site can serve as the operational site supporting essential mission and business functions.\n\n## Discussion\n\nSite preparation includes establishing configuration settings for systems at the alternate processing site consistent with the requirements for such settings at the primary site and ensuring that essential supplies and logistical considerations are in place.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-7.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-2",
@@ -29,7 +29,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-07 Alternate Processing Site"

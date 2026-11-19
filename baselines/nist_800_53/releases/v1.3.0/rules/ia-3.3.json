@@ -15,14 +15,14 @@
   "discussion": "## Control\n\n- (a) Where addresses are allocated dynamically, standardize dynamic address allocation lease information and the lease duration assigned to devices in accordance with [Assignment: organization-defined lease information and lease duration] ; and\n- (b) Audit lease information when assigned to a device.\n\n## Discussion\n\nThe Dynamic Host Configuration Protocol (DHCP) is an example of a means by which clients can dynamically receive network address assignments.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-03 Device Identification and Authentication"

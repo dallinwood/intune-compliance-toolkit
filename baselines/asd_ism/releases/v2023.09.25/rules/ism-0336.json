@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing, maintaining and regularly verifying registers of authorised ICT equipment can assist an organisation in tracking legitimate ICT equipment as well as determining whether unauthorised ICT equipment, such as workstations, servers and network devices, have been introduced into their organisation. In doing so, an organisation may choose to split their ICT equipment register into two by focusing on whether ICT equipment is connected to their network or not.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0336",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for ICT Equipment",
     "ICT equipment usage",

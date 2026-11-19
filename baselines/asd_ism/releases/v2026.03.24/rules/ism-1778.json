@@ -36,10 +36,10 @@
   "discussion": "When manually importing data to systems, such as via the use of removable media, the data should be scanned for malicious and active content to reduce the likelihood of causing a malicious code infection. In cases where security checks fail, data should be quarantined until it can be reviewed and subsequently approved or not approved for release.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1778",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for data transfers",
     "Data transfers",

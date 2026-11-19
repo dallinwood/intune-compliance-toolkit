@@ -36,10 +36,10 @@
   "discussion": "Microsoft AD CS is responsible for the management of public key infrastructure certificates used to secure authentication and communication protocols for systems. As such, particular care should be taken to secure servers that perform this role, such as Certification Authorities (CAs).",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1948",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Server application hardening",

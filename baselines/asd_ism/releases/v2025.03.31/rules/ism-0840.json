@@ -28,10 +28,10 @@
   "discussion": "While media storing accountable material cannot be outsourced, media storing non-accountable material can be outsourced when using a National Association for Information Destruction AAA certified destruction service with endorsements, as specified in ASIO’s Protective Security Circular-167, External destruction of security classified information. This publication is available from the Protective Security Policy GovTEAMS community or ASIO by email.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0840",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media destruction",

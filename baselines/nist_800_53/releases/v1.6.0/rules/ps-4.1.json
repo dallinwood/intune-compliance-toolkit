@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Notify terminated individuals of applicable, legally binding post-employment requirements for the protection of organizational information; and\n- (b) Require terminated individuals to sign an acknowledgment of post-employment requirements as part of the organizational termination process.\n\n## Discussion\n\nOrganizations consult with the Office of the General Counsel regarding matters of post-employment requirements on terminated individuals.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-04 Personnel Termination"

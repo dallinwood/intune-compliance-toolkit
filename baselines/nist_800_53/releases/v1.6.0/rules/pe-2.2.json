@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire two forms of identification from the following forms of identification for visitor access to the facility where the system resides: [Assignment: organization-defined list of acceptable forms of identification].\n\n## Discussion\n\nAcceptable forms of identification include passports, REAL ID-compliant drivers’ licenses, and Personal Identity Verification (PIV) cards. For gaining access to facilities using automated mechanisms, organizations may use PIV cards, key cards, PINs, and biometrics.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-2.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IA-2",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-02 Physical Access Authorizations"

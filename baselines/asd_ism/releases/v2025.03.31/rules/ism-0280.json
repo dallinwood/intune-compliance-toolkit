@@ -36,10 +36,10 @@
   "discussion": "A Common Criteria evaluation is traditionally conducted at a specified EAL. However, evaluations against a PP exist outside of this scale. Notably, while products evaluated against a PP will fulfil the Common Criteria EAL requirements, the EAL number will not be published. In addition, PP modules contain additional requirements that are complementary to or extend upon collaborative PPs. For example, a stateful traffic filtering PP module for a firewall evaluated against a network device collaborative PP. Note, when procuring an evaluated product that has completed a PP-based evaluation, it is important to ensure that all applicable PP modules were included as part of the product’s evaluation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0280",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for evaluated products",
     "Evaluated product procurement",

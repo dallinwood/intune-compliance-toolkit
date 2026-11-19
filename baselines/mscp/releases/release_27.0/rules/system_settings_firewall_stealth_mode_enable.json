@@ -73,7 +73,7 @@
   "discussion": "Firewall Stealth Mode _MUST_ be enabled.\n\nWhen stealth mode is enabled, the Mac will not respond to any probing requests, and only requests from authorized applications will still be authorized.\n\n[IMPORTANT]\n====\nEnabling firewall stealth mode may prevent certain remote mechanisms used for maintenance and compliance scanning from properly functioning. Information System Security Officers (ISSOs) are advised to first fully weigh the potential risks posed to their organization before opting not to enable stealth mode.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_firewall_stealth_mode_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -174,7 +174,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

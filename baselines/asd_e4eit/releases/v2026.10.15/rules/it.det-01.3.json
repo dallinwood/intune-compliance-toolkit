@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSecurity-relevant event logs and configuration changes for systems (infrastructure, operating systems, applications and data) are centrally collected, protected against unauthorised modification or deletion, and retained to support effective cyber security event detection and investigation.\n\n# Indicators of Good Practice\n\nNot effective:\n- No centralised capability exists for storing event logs collected from systems across the environment.\n- Stored logs have no protection against modification or deletion by administrators of the systems generating them.\n- Access to the centralised capability is not restricted, or access is granted to roles without a documented need.\n- Log retention requirements are not defined.\n\nPartially effective:\n- A centralised capability exists but does not receive logs from in-scope systems, or coverage is inconsistent.\n- Stored logs are protected from modification, but the controls do not consistently prevent deletion, or controls are not applied to all log types.\n- Access is restricted to a defined set of roles but access is not logged or monitored.\n- A retention period is defined but is inconsistently applied, or some log types are retained for shorter periods than required.\n\nFully effective:\n- A centralised event log storage capability is in place for logs collected from in-scope systems.\n- Stored logs are protected against unauthorised access, modification and deletion through technical controls including access restrictions, encryption at rest and integrity protection.\n- Access to the centralised capability is restricted to security operations personnel and other roles with a documented need, with access logged and monitored.\n- Log retention requirements are defined and aligned to investigative, regulatory and contractual obligations, with retention applied consistently across log types.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.det-01.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -61,7 +61,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Detect principles",
     "DET-01 - Centralised event logging"

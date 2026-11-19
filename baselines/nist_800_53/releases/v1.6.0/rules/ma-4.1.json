@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Log [Assignment: organization-defined audit events] for nonlocal maintenance and diagnostic sessions; and\n- (b) Review the audit records of the maintenance and diagnostic sessions to detect anomalous behavior.\n\n## Discussion\n\nAudit logging for nonlocal maintenance is enforced by AU-2 . Audit events are defined in AU-2a.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-6",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-04 Nonlocal Maintenance"

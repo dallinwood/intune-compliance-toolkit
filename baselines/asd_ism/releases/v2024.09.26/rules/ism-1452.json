@@ -36,10 +36,10 @@
   "discussion": "Cyber supply chain risk management activities should be conducted during the earliest possible stage of procurement of applications, information technology (IT) equipment, operational technology (OT) equipment and services. In particular, an organisation should consider the security risks that may arise as systems, software and hardware are being designed, built, stored, delivered, installed, operated, maintained and decommissioned. This includes identifying and managing jurisdictional, governance, privacy and security risks associated with the use of suppliers, such as application developers, IT equipment manufacturers, OT equipment manufacturers, service providers and other organisations involved in distribution channels. For example, outsourced cloud services may be located offshore and subject to lawful and covert data collection without their customers’ knowledge. Additionally, use of offshore services introduces jurisdictional risks as foreign countries’ laws could change with little warning. Finally, foreign owned suppliers operating in Australia may be subject to a foreign government’s lawful access to data belonging to their customers.\n\nIn managing cyber supply chain risks, it is important that an organisation chooses suppliers that have demonstrated a commitment to security and transparency for their products and services. In addition, suppliers should also have a strong track record of maintaining the security of their own systems and cyber supply chains. In support of this, suppliers should openly provide evidence of their implementation of such commitments, especially when requested by their customers. Finally, a shared responsibly model which clearly defines the responsibilities of suppliers and their customers can be highly beneficial and should be created and shared between both parties.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1452",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Procurement and Outsourcing",
     "Cyber supply chain risk management",

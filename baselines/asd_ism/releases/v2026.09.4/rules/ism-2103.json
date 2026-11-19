@@ -36,10 +36,10 @@
   "discussion": "To ensure organisational data is not used to train AI models without explicit data owner consent, organisational data generated, collected or processed by AI applications should not be used for training, fine-tuning or improving AI models unless informed and explicit consent has been obtained in advance. Furthermore, to prevent excessive retention of data, all prompts and outputs associated with chat sessions should be securely deleted when chat sessions are removed from AI applications.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2103",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nProvide [Assignment: organization-defined mechanisms] to allow individuals to tailor processing permissions to selected elements of personally identifiable information.\n\n## Discussion\n\nWhile some processing may be necessary for the basic functionality of the product or service, other processing may not. In these circumstances, organizations allow individuals to select how specific personally identifiable information elements may be processed. More tailored consent may help reduce privacy risk, increase individual satisfaction, and avoid adverse behaviors, such as abandonment of the product or service.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pt-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PT-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personally Identifiable Information Processing and Transparency",
     "PT-04 Consent"

@@ -53,7 +53,7 @@
   "discussion": "USB devices connected to a Mac _MUST_ be authorized and USB devices _MUST_ not be allowed to connect while the device is locked.\n\n[IMPORTANT]\n====\nThis feature is removed if a smartcard is paired or smartcard attribute mapping is configured.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_usb_restricted_mode",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -178,7 +178,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

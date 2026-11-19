@@ -36,10 +36,10 @@
   "discussion": "Maintaining accurate software registers assists an organisation in managing its systems and maintaining awareness of the software installed on them, including applications, drivers, firmware and operating systems. Software registers can support change and configuration management, vulnerability management, cyber security incident response and software lifecycle management. This includes monitoring trustworthy sources for information about relevant vulnerabilities, patches, updates and cessation of support.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1643",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system management",
     "System administration",

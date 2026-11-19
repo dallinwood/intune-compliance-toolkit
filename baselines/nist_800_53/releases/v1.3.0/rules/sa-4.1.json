@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to provide a description of the functional properties of the controls to be implemented.\n\n## Discussion\n\nFunctional properties of security and privacy controls describe the functionality (i.e., security or privacy capability, functions, or mechanisms) visible at the interfaces of the controls and specifically exclude functionality and data structures internal to the operation of the controls.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-04 Acquisition Process"

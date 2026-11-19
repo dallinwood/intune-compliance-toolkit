@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nAutomatically update spam protection mechanisms [Assignment: organization-defined frequency].\n\n## Discussion\n\nUsing automated mechanisms to update spam protection mechanisms helps to ensure that updates occur on a regular basis and provide the latest content and protection capabilities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-8.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-08 Spam Protection"

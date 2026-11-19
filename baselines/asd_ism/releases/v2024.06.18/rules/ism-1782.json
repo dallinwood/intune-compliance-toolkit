@@ -36,10 +36,10 @@
   "discussion": "A protective Domain Name System (DNS) service can be an effective way of blocking requests made by an organisation’s users, or malicious actors on an organisation’s network, to known malicious domain names – either as part of an initial compromise or subsequent command and control activities. DNS event logs captured by a protective DNS service can also be useful for investigating any exploitation attempt or successful compromise of a network by malicious actors.\n\nIn selecting a protective DNS service, many commercial offerings exist. In addition, the Australian Signals Directorate (ASD) also offers a free protective DNS service for all levels of government.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1782",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Network design and configuration",

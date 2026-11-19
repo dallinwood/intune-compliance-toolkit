@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nSupport the tracking of system components by geographic location using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nThe use of automated mechanisms to track the location of system components can increase the accuracy of component inventories. Such capability may help organizations rapidly identify the location and responsible individuals of system components that have been compromised, breached, or are otherwise in need of mitigation actions. The use of tracking mechanisms can be coordinated with senior agency officials for privacy if there are implications that affect individual privacy.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-8.8",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-08 System Component Inventory"

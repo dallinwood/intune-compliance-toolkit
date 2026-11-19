@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nCyber security events are analysed in a timely manner to identify cyber security incidents.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented triage process exists.\n- Alerts are routinely ignored or left unreviewed.\n- No incident severity thresholds are defined.\n\nPartially effective:\n- A triage process exists but response times are not defined or consistently met.\n- Severity thresholds are defined but escalation procedures are informal.\n\nFully effective:\n- A documented triage process with defined severity thresholds and response timeframes is in place.\n- Alerts are triaged within the timeframes defined by the organisation and escalated where cyber security incident thresholds are met.\n- Triage performance is tracked and reported.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.det-03.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Detect principles",
     "DET-03 - Cyber security incident identification"

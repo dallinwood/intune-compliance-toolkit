@@ -44,10 +44,10 @@
   "discussion": "The Australian Signals Directorate (ASD) uses the cybersecurity incident reports it receives as the basis for providing assistance to organisations. In addition, cybersecurity incident reports are used to identify trends and maintain an accurate threat environment picture. Finally, ASD utilises this understanding to assist in the development of new and updated cybersecurity advice, capabilities, and techniques to better prevent and respond to evolving cyberthreats. Note, under ASD’s limited use obligation, information voluntarily provided to ASD about cybersecurity incidents, or potential cybersecurity incidents, cannot be used for regulatory purposes.\n\nAn organisation is recommended to internally coordinate their reporting of cybersecurity incidents to ASD. In doing so, the organisation should be cognisant of any legislative obligations regarding the reporting of cybersecurity incidents to ASD.\n\nThe types of cybersecurity incidents that should be reported to ASD include:\n\n- suspicious privileged user account lockouts\n- suspicious remote access authentication events\n- service accounts suspiciously communicating with internet-based infrastructure\n- compromise of sensitive or classified data\n- unauthorised access or attempts to access a system\n- emails with suspicious attachments or links\n- denial-of-service attacks\n- ransomware attacks\n- suspected tampering of electronic devices.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0140",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity incidents",
     "Managing cybersecurity incidents",

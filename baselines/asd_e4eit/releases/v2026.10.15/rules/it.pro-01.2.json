@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are planned, designed, developed, tested, deployed, maintained and decommissioned according to their business criticality ratings and security and resilience requirements using Secure by Design and Secure by Default principles and practices.\n\n# Indicators of Good Practice\n\nNot effective:\n- No controlled build or deployment process exists for applicable assets.\n- Changes to systems are applied ad hoc, without any version control, testing or approval.\n\nPartially effective:\n- A controlled deployment process exists but is not consistently followed for all changes.\n- Version control is in place but pre-deployment security verification is not performed.\n\nFully effective:\n- A controlled build and deployment process is in place and consistently followed.\n- Configuration changes are subject to version control, testing and approval before deployment.\n- Security controls are confirmed to be implemented consistently across systems following deployment processes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-01.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -78,7 +78,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-01 - Secure system lifecycle"

@@ -3,10 +3,10 @@ import { serializeRulesJson } from './bundleFiles'
 import { planRuleCheck, type RuleCheckPlan } from './checkPlan'
 import { GENERATION_LIMITS } from './limitsConfig'
 import { additionalInfoFor, manualReasonText } from './manualAttestationReport'
-import { canonicalOdvValue, displayWithOdv, effectiveOdvValue, odvSubstitutionMode, usableOdvValue, validateOdvValue } from './odv'
+import { canonicalOdvValue, displayWithOdvs, effectiveOdvValue, odvSubstitutionMode, usableOdvValues, validateOdvValue } from './odv'
 import { buildRuleEntry, type IntuneRuleEntry } from './rulesJsonGen'
 import { generateBashScript } from './scriptGen/bash'
-import type { SelectionEntry } from './selectionEntry'
+import type { OdvValues, SelectionEntry } from './selectionEntry'
 import { compareGroupKeys, termGroupKey, type VocabularyIndex } from './vocabulary'
 
 export interface GeneratableRule {
@@ -58,45 +58,46 @@ export function classifyRule(
   coveredVersions: string[],
   index: VocabularyIndex,
 ): ClassificationResult {
-  const odvMode = odvSubstitutionMode(rule)
   const manual = (reason: string): ClassificationResult => {
-    const displayOdv = usableOdvValue(rule.odv, odvMode, selection.odvValue, rule.id)
+    const displayOdvs = usableOdvValues(rule, selection.odvValues)
     return {
       kind: 'manual',
       entry: {
         id: rule.id,
-        title: displayWithOdv(rule.title, displayOdv),
+        title: displayWithOdvs(rule.title, displayOdvs),
         reason,
-        additionalInfo: additionalInfoFor(rule, displayOdv),
+        additionalInfo: additionalInfoFor(rule, displayOdvs),
         automatedSupportRuleIds: [],
       },
     }
   }
   const blocked = (reason: string): ClassificationResult => ({
     kind: 'blocked',
-    entry: { id: rule.id, title: displayWithOdv(rule.title, null), reason, supportingCheck: false },
+    entry: { id: rule.id, title: displayWithOdvs(rule.title, {}), reason, supportingCheck: false },
   })
 
   if (rule.assessment.status === 'manual') return manual(manualReasonText(rule.assessment.manual_reason, index))
 
-  let odvValue = null
-  if (rule.odv) {
-    const effective = effectiveOdvValue(rule.odv, selection.odvValue)
-    if (effective === null) return blocked('Needs an organization value')
-    const canonical = canonicalOdvValue(rule.odv, effective)
-    const invalidReason = validateOdvValue(rule.odv, canonical, odvMode, rule.id)
-    if (invalidReason) return blocked(`Organization value is invalid: ${invalidReason}`)
-    odvValue = canonical
+  const odvValues: OdvValues = {}
+  for (const odv of rule.odvs) {
+    const label = rule.odvs.length > 1 ? ` "${odv.name}"` : ''
+    const stored = Object.hasOwn(selection.odvValues, odv.name) ? selection.odvValues[odv.name] : null
+    const effective = effectiveOdvValue(odv, stored)
+    if (effective === null) return blocked(`Needs an organization value${label}`)
+    const canonical = canonicalOdvValue(odv, effective)
+    const invalidReason = validateOdvValue(odv, canonical, odvSubstitutionMode(rule, odv), rule.id)
+    if (invalidReason) return blocked(`Organization value${label} is invalid: ${invalidReason}`)
+    odvValues[odv.name] = canonical
   }
 
-  const plan = planRuleCheck(rule, coveredVersions, odvValue)
+  const plan = planRuleCheck(rule, coveredVersions, odvValues)
   if ('problem' in plan) return manual(plan.problem)
 
   return {
     kind: 'generatable',
     rule: {
       id: rule.id,
-      title: displayWithOdv(rule.title, plan.odvValue),
+      title: displayWithOdvs(rule.title, plan.odvValues),
       section: sectionOf(rule),
       sourceName: rule.source.name,
       releaseTag: rule.source.release_tag,

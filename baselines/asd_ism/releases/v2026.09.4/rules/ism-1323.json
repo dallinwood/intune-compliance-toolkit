@@ -36,10 +36,10 @@
   "discussion": "When issuing X.509 certificates to devices to access networks, an organisation should be aware that they could be stolen by malicious code. Once compromised, X.509 certificates could be used on other devices to gain unauthorised access to networks. An organisation should also be aware that in only issuing X.509 certificates to devices, any actions taken by human users will only be attributable to specific devices.\n\nWhen issuing X.509 certificates to human users to access networks, they can either be stored on devices or stored on smart cards. While issuing X.509 certificates that are stored on smart cards provides increased security, it comes at a higher cost. However, human users are more likely to notice missing smart cards and alert their security team, who are then able to revoke their credentials, which can minimise the time malicious actors have access to networks. In addition, to reduce the likelihood of stolen smart cards from being used to gain unauthorised access to networks, multi-factor authentication can be implemented by requiring the use of passwords to access X.509 certificates stored on smart cards. This is particularly important when smart cards grant human users any form of administrative access.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1323",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Network design and configuration",

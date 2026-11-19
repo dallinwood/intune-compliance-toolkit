@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to select and employ security and privacy tracking tools for use during the development process.\n\n## Discussion\n\nSystem development teams select and deploy security and privacy tracking tools, including vulnerability or work item tracking systems that facilitate assignment, sorting, filtering, and tracking of completed work items or tasks associated with development processes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SA-11"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

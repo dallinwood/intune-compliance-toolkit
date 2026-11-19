@@ -36,10 +36,10 @@
   "discussion": "Due to fax machines, and associated communications protocols, being legacy information technology, they should not be used for sending or receiving fax messages. Instead, more secure communications methods, such as scanning documents and attaching them to emails, should be used.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2075",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Fax machines and services",

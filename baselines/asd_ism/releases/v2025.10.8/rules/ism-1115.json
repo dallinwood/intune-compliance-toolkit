@@ -36,10 +36,10 @@
   "discussion": "Cables run correctly in walls allow for neater installations while maintaining separation and inspection requirements.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1115",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

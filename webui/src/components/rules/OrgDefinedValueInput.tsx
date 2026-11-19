@@ -37,6 +37,7 @@ function constraintHint(odv: Odv): string | null {
 
 export function OrgDefinedValueInput({
   ruleId,
+  odvName,
   odv,
   mode,
   storedValue,
@@ -44,6 +45,7 @@ export function OrgDefinedValueInput({
   onClear,
 }: {
   ruleId: string
+  odvName: string
   odv: Odv
   mode: OdvSubstitutionMode
   storedValue: OrgDefinedValue | null
@@ -147,7 +149,7 @@ export function OrgDefinedValueInput({
   return (
     <div className="space-y-1.5">
       <Label htmlFor={inputId} className="text-sm font-normal text-foreground/90">
-        {odv.description}
+        {odv.description === '' ? odvName : odv.description}
       </Label>
       {field}
       <div id={messageId} className="space-y-0.5 text-xs">

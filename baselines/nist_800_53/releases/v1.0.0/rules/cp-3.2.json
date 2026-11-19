@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy mechanisms used in operations to provide a more thorough and realistic contingency training environment.\n\n## Discussion\n\nOperational mechanisms refer to processes that have been established to accomplish an organizational goal or a system that supports a particular organizational mission or business objective. Actual mission and business processes, systems, and/or facilities may be used to generate simulated events and enhance the realism of simulated events during contingency training.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-3.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-03 Contingency Training"

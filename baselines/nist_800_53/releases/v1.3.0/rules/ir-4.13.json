@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nAnalyze anomalous or suspected adversarial behavior in or related to [Assignment: organization-defined environments or resources].\n\n## Discussion\n\nIf the organization maintains a deception environment, an analysis of behaviors in that environment, including resources targeted by the adversary and timing of the incident or event, can provide insight into adversarial tactics, techniques, and procedures. External to a deception environment, the analysis of anomalous adversarial behavior (e.g., changes in system performance or usage patterns) or suspected behavior (e.g., changes in searches for the location of specific resources) can give the organization such insight.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-4.13",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-04 Incident Handling"

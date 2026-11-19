@@ -32,7 +32,7 @@
   "discussion": "## Control\n\nRetain audit records for [Assignment: organization-defined time period consistent with records retention policy] to provide support for after-the-fact investigations of incidents and to meet regulatory and organizational information retention requirements.\n\n## Discussion\n\nOrganizations retain audit records until it is determined that the records are no longer needed for administrative, legal, audit, or other operational purposes. This includes the retention and availability of audit records relative to Freedom of Information Act (FOIA) requests, subpoenas, and law enforcement actions. Organizations develop standard categories of audit records relative to such types of actions and standard response processes for each type of action. The National Archives and Records Administration (NARA) General Records Schedules provide federal policy on records retention.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130"
@@ -50,7 +50,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-11 Audit Record Retention"

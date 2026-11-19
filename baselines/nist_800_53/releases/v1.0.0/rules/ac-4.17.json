@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nUniquely identify and authenticate source and destination points by [Selection (one or more): organization; system; application; service; individual] for information transfer.\n\n## Discussion\n\nAttribution is a critical component of a security and privacy concept of operations. The ability to identify source and destination points for information flowing within systems allows the forensic reconstruction of events and encourages policy compliance by attributing policy violations to specific organizations or individuals. Successful domain authentication requires that system labels distinguish among systems, organizations, and individuals involved in preparing, sending, receiving, or disseminating information. Attribution also allows organizations to better maintain the lineage of personally identifiable information processing as it flows through systems and can facilitate consent tracking, as well as correction, deletion, or access requests from individuals.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.17",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IA-2",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy hardware separation mechanisms to implement security function isolation.\n\n## Discussion\n\nHardware separation mechanisms include hardware ring architectures that are implemented within microprocessors and hardware-enforced address segmentation used to support logically distinct storage objects with separate attributes (i.e., readable, writeable).",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-03 Security Function Isolation"

@@ -57,26 +57,30 @@
           "type": "string",
           "value": "true"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('enforcedSoftwareUpdateDelay')) || 0\n  if ( timeout <= $ODV ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
+        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('enforcedSoftwareUpdateDelay')) || 0\n  if ( timeout <= $ODV_value ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
       },
       "language": "bash"
     }
   },
-  "discussion": "Software updates _MUST_ be deferred for $ODV days or less.\n\nIf you need to defer software updates, create a Restrictions profile using the com.apple.applicationaccess domain and the key enforcedSoftwareUpdateDelay.\n",
+  "discussion": "Software updates _MUST_ be deferred for $ODV_value days or less.\n\nIf you need to defer software updates, create a Restrictions profile using the com.apple.applicationaccess domain and the key enforcedSoftwareUpdateDelay.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_software_update_deferral",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": 30,
-      "cis_lvl2": 30
-    },
-    "datatype": "number",
-    "description": "Number of days, e.g. 30",
-    "recommended": 30,
-    "validation": {
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": 30,
+        "cis_lvl2": 30
+      },
+      "datatype": "number",
+      "description": "Number of days, e.g. 30",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 30,
+      "validation": {
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "cis": {
       "benchmark": {
@@ -123,7 +127,7 @@
             {
               "PayloadContent": [
                 {
-                  "enforcedSoftwareUpdateDelay": "$ODV"
+                  "enforcedSoftwareUpdateDelay": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.applicationaccess"
@@ -138,7 +142,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],
@@ -159,5 +163,5 @@
     "upstream_url": "https://github.com/usnistgov/macos_security/blob/c1e6cf9c41d518d0456ab6a7f12a1a4d1f227715/src/mscp/data/rules/os/os_software_update_deferral.yaml"
   },
   "tags": [],
-  "title": "Ensure Software Update Deferment Is Less Than or Equal to $ODV Days"
+  "title": "Ensure Software Update Deferment Is Less Than or Equal to $ODV_value Days"
 }

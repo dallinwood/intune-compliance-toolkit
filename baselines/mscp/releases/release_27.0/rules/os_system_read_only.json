@@ -38,7 +38,7 @@
   "discussion": "The System volume _MUST_ be mounted as read-only in order to ensure that configurations critical to the integrity of the macOS have not been compromised. System Integrity Protection (SIP) will prevent the system volume from being mounted as writable.\n\nNOTE: The system volume is read only by default in macOS.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_system_read_only",
-  "odv": null,
+  "odvs": [],
   "references": {
     "hhs": {
       "hicp": [
@@ -81,7 +81,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

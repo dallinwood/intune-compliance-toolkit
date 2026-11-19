@@ -36,10 +36,10 @@
   "discussion": "Centrally logging and analysing security-relevant events, including configuration changes, for network devices, especially internet-facing network devices, can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cybersecurity incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1963",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Network design and configuration",

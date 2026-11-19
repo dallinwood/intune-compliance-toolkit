@@ -36,10 +36,10 @@
   "discussion": "Databases can be protected from unauthorised copying, and subsequent offline analysis, by applying file-based access controls to database files.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1256",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Database Systems",
     "Databases",

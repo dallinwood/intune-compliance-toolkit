@@ -33,7 +33,7 @@
   "discussion": "The system _MUST_ be configured to not display sensitive information at the LoginWindow. The key AdminHostInfo when configured will allow the HostName, IP Address, and operating system version and build to be displayed.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_loginwindow_adminhostinfo_undefined",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -69,7 +69,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

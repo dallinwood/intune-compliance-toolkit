@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nIncorporate simulated events into incident response training to facilitate the required response by personnel in crisis situations.\n\n## Discussion\n\nOrganizations establish requirements for responding to incidents in incident response plans. Incorporating simulated events into incident response training helps to ensure that personnel understand their individual responsibilities and what specific actions to take in crisis situations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-2.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-02 Incident Response Training"

@@ -77,7 +77,7 @@
   "discussion": "Media sharing _MUST_ be disabled.\n\nWhen Media Sharing is enabled, the computer starts a network listening service that shares the contents of the user's music collection with other users in the same subnet.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling Media Sharing helps prevent the unauthorized connection of devices and the unauthorized transfer of information. Disabling Media Sharing mitigates this risk.\n\nNote: On macOS versions prior to 15, the Media Sharing settings panel may still allow you to check \"Home Sharing\" and \"Share media with guests,\" but the service itself will not be activated.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_media_sharing_disabled",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -183,7 +183,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

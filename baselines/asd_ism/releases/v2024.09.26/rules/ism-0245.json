@@ -36,10 +36,10 @@
   "discussion": "When an MFD is simultaneously connected to a network and a digital telephone system, the MFD can act as a bridge between the two. The digital telephone system therefore needs to operate at the same sensitivity or classification as the network.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0245",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Fax machines and multifunction devices",

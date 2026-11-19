@@ -43,7 +43,7 @@
         "additional_info": null,
         "result": {
           "type": "integer",
-          "value": "$ODV"
+          "value": "$ODV_value"
         },
         "shell": "/usr/bin/awk -F: '/^minfree/{print $2}' /etc/security/audit_control"
       },
@@ -53,18 +53,22 @@
   "discussion": "The audit service _MUST_ be configured to notify the system administrator when the amount of free disk space remaining reaches an organization defined value.\n\nThis rule ensures that the system administrator is notified in advance that action is required to free up more disk space for audit logs.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_configure_capacity_notify",
-  "odv": {
-    "by_benchmark": {
-      "disa_stig": 25
-    },
-    "datatype": "number",
-    "description": "Percentage of free space, e.g. 25",
-    "recommended": 25,
-    "validation": {
-      "max": 100,
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "disa_stig": 25
+      },
+      "datatype": "number",
+      "description": "Percentage of free space, e.g. 25",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 25,
+      "validation": {
+        "max": 100,
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "disa": {
       "cci": [
@@ -118,13 +122,13 @@
           "additional_info": null,
           "language": "bash",
           "name": null,
-          "shell": "/usr/bin/sed -i.bak 's/.*minfree.*/minfree:$ODV/' /etc/security/audit_control; /usr/sbin/audit -s",
+          "shell": "/usr/bin/sed -i.bak 's/.*minfree.*/minfree:$ODV_value/' /etc/security/audit_control; /usr/sbin/audit -s",
           "versions": null
         }
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

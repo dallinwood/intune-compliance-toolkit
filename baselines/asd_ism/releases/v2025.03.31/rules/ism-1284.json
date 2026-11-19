@@ -36,10 +36,10 @@
   "discussion": "Content validation, such as file format checks, aims to ensure that files conform to defined file format specifications. In performing content validation, any malformed content may indicate the presence of unauthorised content or malicious code, such as that designed to exploit known vulnerabilities in operating systems or applications.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1284",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Content filtering",

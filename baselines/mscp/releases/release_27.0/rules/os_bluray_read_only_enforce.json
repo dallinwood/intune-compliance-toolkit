@@ -33,7 +33,7 @@
   "discussion": "Blu Ray media _MUST_ be set to read only.\n\n[IMPORTANT]\n====\nSome organizations rely on the use of removable media for storing and sharing data. Information System Security Officers (ISSOs) may make the risk-based decision not to disable external hard drives to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n\n[IMPORTANT]\n====\nApple has deprecated the use of link:https://github.com/apple/device-management/blob/eb51fb0cb9626cac4717858556912c257a734ce0/mdm/profiles/com.apple.systemuiserver.yaml#L4-L8[media mount controls], using these controls may not work as expected. Third party software may be required to fulfill the compliance requirements.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_bluray_read_only_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -86,7 +86,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

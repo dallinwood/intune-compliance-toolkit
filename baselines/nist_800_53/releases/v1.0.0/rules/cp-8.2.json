@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nObtain alternate telecommunications services to reduce the likelihood of sharing a single point of failure with primary telecommunications services.\n\n## Discussion\n\nIn certain circumstances, telecommunications service providers or services may share the same physical lines, which increases the vulnerability of a single failure point. It is important to have provider transparency for the actual physical transmission capability for telecommunication services.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-8.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-08 Telecommunications Services"

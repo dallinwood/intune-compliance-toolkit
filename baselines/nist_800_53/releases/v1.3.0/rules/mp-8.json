@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- a. Establish [Assignment: organization-defined system media downgrading process] that includes employing downgrading mechanisms with strength and integrity commensurate with the security category or classification of the information;\n- b. Verify that the system media downgrading process is commensurate with the security category and/or classification level of the information to be removed and the access authorizations of the potential recipients of the downgraded information;\n- c. Identify [Assignment: organization-defined system media requiring downgrading] ; and\n- d. Downgrade the identified system media using the established process.\n\n## Discussion\n\nMedia downgrading applies to digital and non-digital media subject to release outside of the organization, whether the media is considered removable or not. When applied to system media, the downgrading process removes information from the media, typically by security category or classification level, such that the information cannot be retrieved or reconstructed. Downgrading of media includes redacting information to enable wider release and distribution. Downgrading ensures that empty space on the media is devoid of information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-8",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "32 CFR 2002",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-08 Media Downgrading"

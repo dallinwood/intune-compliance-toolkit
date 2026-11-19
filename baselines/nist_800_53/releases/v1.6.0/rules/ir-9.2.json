@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProvide information spillage response training [Assignment: organization-defined frequency].\n\n## Discussion\n\nOrganizations establish requirements for responding to information spillage incidents in incident response plans. Incident response training on a regular basis helps to ensure that organizational personnel understand their individual responsibilities and what specific actions to take when spillage incidents occur.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-9.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-2",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-09 Information Spillage Response"

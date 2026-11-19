@@ -106,7 +106,7 @@
   "discussion": "Software Update _MUST_ be configured to enforce automatic installation of macOS updates is enabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_install_macos_updates_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -227,7 +227,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

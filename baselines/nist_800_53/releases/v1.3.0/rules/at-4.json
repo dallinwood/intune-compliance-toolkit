@@ -32,7 +32,7 @@
   "discussion": "## Control\n\n- a. Document and monitor information security and privacy training activities, including security and privacy awareness training and specific role-based security and privacy training; and\n- b. Retain individual training records for [Assignment: organization-defined time period].\n\n## Discussion\n\nDocumentation for specialized training may be maintained by individual supervisors at the discretion of the organization. The National Archives and Records Administration provides guidance on records retention for federal agencies.",
   "discussion_format": "markdown",
   "id": "nist_800_53.at-4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130"
@@ -47,7 +47,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Awareness and Training",
     "AT-04 Training Records"

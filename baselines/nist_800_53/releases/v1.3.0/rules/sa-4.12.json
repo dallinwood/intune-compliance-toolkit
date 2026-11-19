@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Include organizational data ownership requirements in the acquisition contract; and\n- (b) Require all data to be removed from the contractor’s system and returned to the organization within [Assignment: organization-defined time frame].\n\n## Discussion\n\nContractors who operate a system that contains data owned by an organization initiating the contract have policies and procedures in place to remove the data from their systems and/or return the data in a time frame defined by the contract.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-4.12",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-04 Acquisition Process"

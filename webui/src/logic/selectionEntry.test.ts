@@ -4,6 +4,7 @@ import {
   getSelection,
   isEnabled,
   migratePersistedSelections,
+  PERSIST_VERSION,
   partitionSelectionsByLibrary,
   refKey,
   removeSelections,
@@ -25,8 +26,8 @@ describe('refKey', () => {
 })
 
 describe('createSelectionEntry', () => {
-  it('defaults to not enabled with no ODV value', () => {
-    expect(createSelectionEntry(REF_A)).toEqual({ ref: REF_A, enabled: false, odvValue: null })
+  it('defaults to not enabled with no ODV values', () => {
+    expect(createSelectionEntry(REF_A)).toEqual({ ref: REF_A, enabled: false, odvValues: {} })
   })
 })
 
@@ -41,9 +42,9 @@ describe('upsertSelection', () => {
     const existingB = createSelectionEntry(REF_B)
     const initial = { [refKey(REF_A)]: createSelectionEntry(REF_A), [refKey(REF_B)]: existingB }
 
-    const result = upsertSelection(initial, REF_A, (entry) => ({ ...entry, odvValue: 15 }))
+    const result = upsertSelection(initial, REF_A, (entry) => ({ ...entry, odvValues: { value: 15 } }))
 
-    expect(result[refKey(REF_A)].odvValue).toBe(15)
+    expect(result[refKey(REF_A)].odvValues).toEqual({ value: 15 })
     expect(result[refKey(REF_B)]).toBe(existingB)
   })
 })
@@ -66,9 +67,9 @@ describe('getSelection', () => {
   })
 
   it('returns the stored entry when one exists', () => {
-    const selections = upsertSelection({}, REF_A, (entry) => ({ ...entry, odvValue: 'abc' }))
+    const selections = upsertSelection({}, REF_A, (entry) => ({ ...entry, odvValues: { value: 'abc' } }))
 
-    expect(getSelection(selections, REF_A).odvValue).toBe('abc')
+    expect(getSelection(selections, REF_A).odvValues).toEqual({ value: 'abc' })
   })
 })
 
@@ -95,7 +96,40 @@ describe('migratePersistedSelections', () => {
   it('keeps current-version state unchanged', () => {
     const currentState = { selections: { [refKey(REF_A)]: createSelectionEntry(REF_A) } }
 
-    expect(migratePersistedSelections(currentState, 2)).toBe(currentState)
+    expect(migratePersistedSelections(currentState, PERSIST_VERSION)).toBe(currentState)
+  })
+
+  it('moves a version 2 odvValue to the ODV named value', () => {
+    const version2State = {
+      selections: {
+        [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 5 },
+        [REF_B.id]: { ref: REF_B, enabled: false, odvValue: 'abc' },
+      },
+    }
+
+    expect(migratePersistedSelections(version2State, 2)).toEqual({
+      selections: {
+        [REF_A.id]: { ref: REF_A, enabled: true, odvValues: { value: 5 } },
+        [REF_B.id]: { ref: REF_B, enabled: false, odvValues: { value: 'abc' } },
+      },
+    })
+  })
+
+  it('turns a version 2 null odvValue into no values', () => {
+    const version2State = { selections: { [REF_A.id]: { ref: REF_A, enabled: true, odvValue: null } } }
+
+    expect(migratePersistedSelections(version2State, 2)).toEqual({
+      selections: { [REF_A.id]: { ref: REF_A, enabled: true, odvValues: {} } },
+    })
+  })
+
+  it('treats version 2 state with no selections as empty', () => {
+    expect(migratePersistedSelections({}, 2)).toEqual({ selections: {} })
+    expect(migratePersistedSelections(null, 2)).toEqual({ selections: {} })
+  })
+
+  it('is at version 3', () => {
+    expect(PERSIST_VERSION).toBe(3)
   })
 })
 
@@ -106,21 +140,21 @@ describe('partitionSelectionsByLibrary', () => {
 
   it('keeps enabled selections whose id is in the library and lists the rest as unknown, sorted', () => {
     const selections: SelectionMap = {
-      [renamedRef.id]: { ref: renamedRef, enabled: true, odvValue: null },
-      [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 'x' },
-      [removedRef.id]: { ref: removedRef, enabled: true, odvValue: 12 },
+      [renamedRef.id]: { ref: renamedRef, enabled: true, odvValues: {} },
+      [REF_A.id]: { ref: REF_A, enabled: true, odvValues: { value: 'x' } },
+      [removedRef.id]: { ref: removedRef, enabled: true, odvValues: { value: 12 } },
     }
 
     const result = partitionSelectionsByLibrary(selections, rowsById)
 
-    expect(result.known).toEqual([{ ref: REF_A, enabled: true, odvValue: 'x' }])
+    expect(result.known).toEqual([{ ref: REF_A, enabled: true, odvValues: { value: 'x' } }])
     expect(result.unknownIds).toEqual([removedRef.id, renamedRef.id])
   })
 
   it('ignores disabled selections, known or not', () => {
     const selections: SelectionMap = {
-      [REF_A.id]: { ref: REF_A, enabled: false, odvValue: 5 },
-      [removedRef.id]: { ref: removedRef, enabled: false, odvValue: 5 },
+      [REF_A.id]: { ref: REF_A, enabled: false, odvValues: { value: 5 } },
+      [removedRef.id]: { ref: removedRef, enabled: false, odvValues: { value: 5 } },
     }
 
     expect(partitionSelectionsByLibrary(selections, rowsById)).toEqual({ known: [], unknownIds: [] })
@@ -128,9 +162,9 @@ describe('partitionSelectionsByLibrary', () => {
 
   it("replaces a persisted ref with the library row's ref, so a stale path is never fetched", () => {
     const stalePath: RuleRef = { id: REF_B.id, path: 'mscp/rules/old_location.json' }
-    const selections: SelectionMap = { [REF_B.id]: { ref: stalePath, enabled: true, odvValue: null } }
+    const selections: SelectionMap = { [REF_B.id]: { ref: stalePath, enabled: true, odvValues: {} } }
 
-    expect(partitionSelectionsByLibrary(selections, rowsById).known).toEqual([{ ref: REF_B, enabled: true, odvValue: null }])
+    expect(partitionSelectionsByLibrary(selections, rowsById).known).toEqual([{ ref: REF_B, enabled: true, odvValues: {} }])
   })
 })
 
@@ -138,19 +172,19 @@ describe('removeSelections', () => {
   it('removes only the given ids and keeps every other entry, ODV values included', () => {
     const removedRef: RuleRef = { id: 'mscp.removed_rule', path: 'mscp/rules/removed_rule.json' }
     const selections: SelectionMap = {
-      [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 'kept' },
-      [REF_B.id]: { ref: REF_B, enabled: false, odvValue: 7 },
-      [removedRef.id]: { ref: removedRef, enabled: true, odvValue: null },
+      [REF_A.id]: { ref: REF_A, enabled: true, odvValues: { value: 'kept' } },
+      [REF_B.id]: { ref: REF_B, enabled: false, odvValues: { value: 7 } },
+      [removedRef.id]: { ref: removedRef, enabled: true, odvValues: {} },
     }
 
     expect(removeSelections(selections, [removedRef.id])).toEqual({
-      [REF_A.id]: { ref: REF_A, enabled: true, odvValue: 'kept' },
-      [REF_B.id]: { ref: REF_B, enabled: false, odvValue: 7 },
+      [REF_A.id]: { ref: REF_A, enabled: true, odvValues: { value: 'kept' } },
+      [REF_B.id]: { ref: REF_B, enabled: false, odvValues: { value: 7 } },
     })
   })
 
   it('returns the same map when none of the ids are present', () => {
-    const selections: SelectionMap = { [REF_A.id]: { ref: REF_A, enabled: true, odvValue: null } }
+    const selections: SelectionMap = { [REF_A.id]: { ref: REF_A, enabled: true, odvValues: {} } }
 
     expect(removeSelections(selections, ['mscp.not_there'])).toBe(selections)
   })

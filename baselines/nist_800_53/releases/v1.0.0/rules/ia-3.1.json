@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nAuthenticate [Assignment: organization-defined devices and/or types of devices] before establishing [Selection (one or more): local; remote; network] connection using bidirectional authentication that is cryptographically based.\n\n## Discussion\n\nA local connection is a connection with a device that communicates without the use of a network. A network connection is a connection with a device that communicates through a network. A remote connection is a connection with a device that communicates through an external network. Bidirectional authentication provides stronger protection to validate the identity of other devices for connections that are of greater risk.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-8",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-03 Device Identification and Authentication"

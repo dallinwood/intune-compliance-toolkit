@@ -36,10 +36,10 @@
   "discussion": "Excessive agency vulnerabilities allow for damaging actions to be performed in response to unexpected, ambiguous or manipulated output from AI applications, regardless of the cause of the malfunction. Furthermore, agentic AI applications that can autonomously invoke tools, browse external content, execute code or call other systems introduce risks beyond those of conversational AI applications. In particular, untrusted content retrieved by an agentic AI application, whether via web browsing, email, document processing or retrieval-augmented generation, may contain instructions that the underlying AI model treats as legitimate, allowing malicious actors to indirectly control the agentic AI application’s actions. Validation, sanitisation and delimitation can reduce this security risk but cannot be relied upon to make retrieved content trustworthy or eliminate indirect prompt injection. As such, agentic AI applications should treat retrieved content as untrusted throughout processing and prevent it from modifying or overriding system instructions, security policies, access controls, tool permissions or human approval requirements.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2158",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

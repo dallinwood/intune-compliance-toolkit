@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide [Selection (one or more): physical; logical] disconnect of collaborative computing devices in a manner that supports ease of use.\n\n## Discussion\n\nFailing to disconnect from collaborative computing devices can result in subsequent compromises of organizational information. Providing easy methods to disconnect from such devices after a collaborative computing session ensures that participants carry out the disconnect activity without having to go through complex and tedious procedures. Disconnect from collaborative computing devices can be manual or automatic.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-15.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-15 Collaborative Computing Devices and Applications"

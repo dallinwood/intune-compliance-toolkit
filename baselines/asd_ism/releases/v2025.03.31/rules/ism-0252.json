@@ -36,10 +36,10 @@
   "discussion": "Cybersecurity awareness training is undertaken annually by all personnel and covers:\n\n- the purpose of the cybersecurity awareness training\n- security appointments and contacts\n- authorised use of systems and their resources\n- protection of systems and their resources\n- reporting of cybersecurity incidents and suspected compromises of systems and their resources.\n\nAn organisation should ensure that cybersecurity awareness training is provided to all personnel in order to assist them in understanding their security responsibilities. Furthermore, the content of cybersecurity awareness training should be tailored to the needs of specific groups of personnel. For example, personnel with responsibilities beyond that of a normal user will require tailored privileged user training.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0252",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Cybersecurity awareness training",

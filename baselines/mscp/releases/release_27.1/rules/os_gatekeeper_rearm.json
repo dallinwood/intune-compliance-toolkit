@@ -28,7 +28,7 @@
   "discussion": "Gatekeeper _MUST_ be configured to automatically rearm after 30 days if disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_gatekeeper_rearm",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -80,7 +80,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

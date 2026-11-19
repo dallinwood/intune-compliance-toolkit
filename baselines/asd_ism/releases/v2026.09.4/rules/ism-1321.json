@@ -36,10 +36,10 @@
   "discussion": "802.1X authentication requires the use of an Extensible Authentication Protocol (EAP), of which multiple EAP methods are available.\n\nExtensible Authentication Protocol-Transport Layer Security (EAP-TLS) is considered one of the most secure EAP methods for 802.1X authentication and is widely supported. It uses a public key infrastructure to secure communications between devices and a Remote Authentication Dial-In User Service (RADIUS) server by using X.509 certificates. While EAP-TLS provides strong mutual authentication, it requires an organisation to have established a public key infrastructure. This involves deploying their own certificate authority and issuing X.509 certificates, or sourcing them from a commercial certificate authority, for every device that accesses their network. While this introduces additional costs and management overheads, the security advantages are significant.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1321",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Network design and configuration",

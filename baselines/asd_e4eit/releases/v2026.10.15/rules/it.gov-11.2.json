@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are delivered and supported by trustworthy suppliers whose cyber security practices are regularly verified or otherwise risk-assessed.\n\n# Indicators of Good Practice\n\nNot effective:\n- No process exists to obtain and risk-assess current supplier assurance evidence proportionate to supplier criticality and risk.\n- No documented and approved governance process exists for maintaining assurance that suppliers meet their cyber security commitments.\n- No actions are taken when supplier cyber security assurance lapses or supplier risk changes.\n\nPartially effective:\n- Supplier assurance evidence is obtained for some suppliers, but coverage is incomplete or the evidence is not reviewed and actioned.\n- Some findings are actioned but the response process is informal or inconsistent.\n- A process exists but acceptable forms and currency of assurance evidence are not defined or applied consistently.\n\nFully effective:\n- Current assurance evidence is obtained from suppliers in proportion to their criticality and risk, and is reviewed for findings that affect the organisation.\n- Material concerns are addressed through contractual remediation, compensating controls or supplier substitution within defined timeframes.\n- A documented and approved governance process specifies the acceptable forms, scope and currency of supplier assurance evidence.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-11.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -57,7 +57,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-11 - Supplier cyber security assurance"

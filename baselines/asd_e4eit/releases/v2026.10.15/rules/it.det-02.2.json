@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nAnomalous or unexpected events and behaviours for systems (infrastructure, operating systems, applications and data) are analysed in a timely manner to detect cyber security events.\n\n# Indicators of Good Practice\n\nNot effective:\n- No detection logic is deployed to identify unauthorised changes, anomalous authentication activity or suspicious software execution events originating from assets.\n- Detection relies entirely on manual log review with no automated rules or alerting.\n\nPartially effective:\n- Detection logic exists but does not cover all three categories (unauthorised changes, anomalous authentication, suspicious execution).\n- Rules are deployed but are not tested or tuned on a regular cycle defined by the organisation.\n\nFully effective:\n- Detection logic is deployed, and unauthorised configuration changes, anomalous authentication patterns and suspicious process execution events are captured and produce alerts.\n- Detection logic is tested and tuned on a regular cycle defined by the organisation to maintain effectiveness.\n- Detection coverage is reviewed following cyber security incidents or significant environmental changes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.det-02.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -57,7 +57,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Detect principles",
     "DET-02 - Cyber security event detection"

@@ -36,10 +36,10 @@
   "discussion": "DKIM enables the detection of spoofed email contents. This is achieved by DKIM records specifying the public key used to verify the digital signature in an email. Specifically, if the signed digest in an email header does not match the signed contents of the email, verification will not pass.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1026",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for email",
     "Email gateways and servers",

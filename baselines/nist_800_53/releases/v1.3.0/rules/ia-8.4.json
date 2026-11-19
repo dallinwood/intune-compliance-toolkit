@@ -28,10 +28,10 @@
   "discussion": "## Control\n\nConform to the following profiles for identity management [Assignment: organization-defined identity management profiles].\n\n## Discussion\n\nOrganizations define profiles for identity management based on open identity management standards. To ensure that open identity management standards are viable, robust, reliable, sustainable, and interoperable as documented, the Federal Government assesses and scopes the standards and technology implementations against applicable laws, executive orders, directives, policies, regulations, standards, and guidelines.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-8.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-08 Identification and Authentication (Non-organizational Users)"

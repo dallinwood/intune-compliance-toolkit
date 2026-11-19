@@ -24,10 +24,10 @@
   "discussion": "When sanitising volatile media, the specified time to wait following the removal of power is based on applying a safety factor to the time recommended by research into preventing the recovery of data. If read back cannot be achieved following the overwriting of volatile media, or data persists, it will need to be destroyed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0352",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Media",
     "Media sanitisation",

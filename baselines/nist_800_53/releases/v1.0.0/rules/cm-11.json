@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Establish [Assignment: organization-defined policies] governing the installation of software by users;\n- b. Enforce software installation policies through the following methods: [Assignment: organization-defined methods]; and\n- c. Monitor policy compliance [Assignment: organization-defined frequency].\n\n## Discussion\n\nIf provided the necessary privileges, users can install software in organizational systems. To maintain control over the software installed, organizations identify permitted and prohibited actions regarding software installation. Permitted software installations include updates and security patches to existing software and downloading new applications from organization-approved \"app stores.\" Prohibited software installations include software with unknown or suspect pedigrees or software that organizations consider potentially malicious. Policies selected for governing user-installed software are organization-developed or provided by some external entity. Policy enforcement methods can include procedural methods and automated methods.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -45,7 +45,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-11 User-installed Software"

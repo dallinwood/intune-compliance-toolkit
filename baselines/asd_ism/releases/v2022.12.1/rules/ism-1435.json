@@ -36,10 +36,10 @@
   "discussion": "An organisation should perform automated monitoring of online services with real-time alerting to ensure that a denial-of-service attack is detected and responded to as soon as possible.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1435",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Service continuity for online services",

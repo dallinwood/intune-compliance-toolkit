@@ -53,7 +53,7 @@
   "discussion": "The macOS built-in Mail.app connection to Apple's iCloud service _MUST_ be disabled, unless the organization has explicitly authorized the use of iCloud as a approved mail management service.\n\nApple's iCloud service does not provide an organization with enough control over the storage and access of data and, therefore, automated mail synchronization _MUST_ be controlled by an organization approved service.\n\nThis requirement helps ensure that organizational contact data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.icloud_mail_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -146,7 +146,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "icloud"
   ],

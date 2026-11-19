@@ -36,10 +36,10 @@
   "discussion": "To ensure the CISO is able to accurately report to their organisation’s board of directors or executive committee on cyber security matters, it is important they are fully aware of all cyber security incidents within their organisation.\n\nThe CISO is also responsible for overseeing their organisation’s response to cyber security incidents, including how internal teams respond and communicate with each other during cyber security incidents. In the event of a major cyber security incident, the CISO should be prepared to step into a crisis management role. They should understand how to bring clarity to the situation and communicate effectively with internal and external stakeholders.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0733",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "Chief information security officer",

@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nSystems (operating systems and applications) only permit the execution of software that is supported, verified and authorised.\n\n# Indicators of Good Practice\n\nNot effective:\n- Unsupported, unverified or unauthorised software can execute without restriction.\n- The list of approved software does not exist.\n\nPartially effective:\n- Execution restriction controls are deployed but do not cover all applicable assets.\n- The organisation maintains a list of approved software, but it has not been reviewed within timeframes defined by the organisation.\n- Execution restrictions are in place but integrity verification of approved software is not performed.\n- Exceptions to execution restrictions are granted without formal approval or time-bounding.\n\nFully effective:\n- Controls restrict execution to supported, organisation-authorised and integrity-verified software on all applicable assets.\n- The organisation maintains a list of approved software and reviews it within the timeframes defined by the organisation.\n- Integrity of permitted software is verified using trusted mechanisms appropriate to the software and its source.\n- Exceptions are formally approved, documented, time-bound and reviewed on a regular cycle defined by the organisation.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-07.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -86,7 +86,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-07 - Trustworthy software"

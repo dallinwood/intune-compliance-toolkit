@@ -8,12 +8,14 @@ function overlay(id: string, fields: Record<string, unknown>, rules: string[] = 
   return { schema_version: 1, id, targets: rules.map((rule) => ({ rule, release: 'v1' })), fields }
 }
 
-const COMPLETE_ODV = {
-  by_benchmark: {},
-  datatype: 'integer',
+const ODV_ITEM = {
+  name: 'value',
+  datatype: 'number',
   description: 'd',
+  validation: { min: 0, max: 9 },
   recommended: 1,
-  validation: { type: 'range', min: 0, max: 9 },
+  by_benchmark: {},
+  quoting: 'unquoted',
 }
 
 const ENTRY: IndexEntry = {
@@ -100,26 +102,30 @@ describe('buildOverlayIndex', () => {
   })
 })
 
-describe('odv in the index', () => {
-  it('reduces every value to true and keeps the wrapper', () => {
-    expect(reduceOdv(COMPLETE_ODV)).toEqual({ by_benchmark: true, datatype: true, description: true, recommended: true, validation: true })
-    expect(reduceOdv({ $replace: COMPLETE_ODV })).toEqual({ $replace: { by_benchmark: true, datatype: true, description: true, recommended: true, validation: true } })
-    expect(reduceOdv({ $merge: { recommended: 2 } })).toEqual({ $merge: { recommended: true } })
-    expect(reduceOdv({ $replace: null })).toEqual({ $replace: null })
-    expect(indexFieldsOf({ odv: null })).toEqual({ odv: null })
+describe('odvs in the index', () => {
+  it('keeps only whether the replacing list is empty', () => {
+    expect(reduceOdv({ $replace: [ODV_ITEM, { ...ODV_ITEM, name: 'other' }] })).toEqual({ $replace: [true] })
+    expect(reduceOdv({ $replace: [] })).toEqual({ $replace: [] })
+    expect(indexFieldsOf({ odvs: { $replace: [ODV_ITEM] } })).toEqual({ odvs: { $replace: [true] } })
+  })
+
+  it('passes through what is not a replaced list, for the merge to reject', () => {
+    expect(reduceOdv({ $merge: { recommended: 2 } })).toEqual({ $merge: { recommended: 2 } })
+    expect(reduceOdv([ODV_ITEM])).toEqual([ODV_ITEM])
+    expect(reduceOdv(null)).toBeNull()
   })
 
   // has_odv must match what the full merge gives, so the reduced value has
   // to behave like the original on both a rule with an odv and one without.
   const CASES: [string, unknown][] = [
-    ['a complete odv', COMPLETE_ODV],
-    ['a replace with a complete odv', { $replace: COMPLETE_ODV }],
-    ['a replace with null', { $replace: null }],
-    ['a partial merge', { $merge: { recommended: 2 } }],
-    ['a partial plain object', { description: 'only' }],
-    ['null', null],
+    ['a replace with one ODV', { $replace: [ODV_ITEM] }],
+    ['a replace with two ODVs', { $replace: [ODV_ITEM, { ...ODV_ITEM, name: 'other' }] }],
+    ['a replace with an empty list', { $replace: [] }],
+    ['a merge', { $merge: { recommended: 2 } }],
+    ['an append', { $append: [ODV_ITEM] }],
+    ['a bare list', [ODV_ITEM]],
   ]
-  it.each(CASES)('gives the same has_odv and error as the full overlay for %s', (_name, odv) => {
+  it.each(CASES)('gives the same has_odv and error as the full overlay for %s', (_name, odvs) => {
     for (const hasOdv of [false, true]) {
       const entry = { ...ENTRY, has_odv: hasOdv }
       const outcome = (fields: Record<string, unknown>) => {
@@ -129,12 +135,17 @@ describe('odv in the index', () => {
           return (error as Error).message
         }
       }
-      expect(outcome({ odv: reduceOdv(odv) })).toEqual(outcome({ odv }))
+      expect(outcome({ odvs: reduceOdv(odvs) })).toEqual(outcome({ odvs }))
     }
   })
 
-  it('applyOverlayToIndexEntry sees the reduced odv like the full one', () => {
-    expect(applyOverlayToIndexEntry(ENTRY, { odv: reduceOdv({ $replace: COMPLETE_ODV }) }).has_odv).toBe(true)
+  it('applyOverlayToIndexEntry sees the reduced list like the full one', () => {
+    expect(applyOverlayToIndexEntry(ENTRY, { odvs: reduceOdv({ $replace: [ODV_ITEM] }) }).has_odv).toBe(true)
+    expect(applyOverlayToIndexEntry({ ...ENTRY, has_odv: true }, { odvs: reduceOdv({ $replace: [] }) }).has_odv).toBe(false)
+  })
+
+  it('leaves has_odv as it was when an overlay does not set odvs', () => {
+    expect(applyOverlayToIndexEntry({ ...ENTRY, has_odv: true }, { title: 'New' }).has_odv).toBe(true)
   })
 })
 

@@ -71,7 +71,7 @@ def stub_rule(upstream_rule_id: str, lock: SourceLock) -> dict:
         "tags": [],
         "references": {},
         "check": None,
-        "odv": None,
+        "odvs": [],
         "remediation": None,
     }
 

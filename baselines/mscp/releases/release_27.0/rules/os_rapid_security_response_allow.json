@@ -28,7 +28,7 @@
   "discussion": "Rapid security response mechanism _MUST_ be enabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_rapid_security_response_allow",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -78,7 +78,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nRequire personnel to associate and maintain the association of [Assignment: organization-defined security and privacy attributes] with [Assignment: organization-defined subjects and objects] in accordance with [Assignment: organization-defined security and privacy policies].\n\n## Discussion\n\nMaintaining attribute association requires individual users (as opposed to the system) to maintain associations of defined security and privacy attributes with subjects and objects.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-16.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-16 Security and Privacy Attributes"

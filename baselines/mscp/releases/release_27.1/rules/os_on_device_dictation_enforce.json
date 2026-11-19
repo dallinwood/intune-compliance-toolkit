@@ -89,7 +89,7 @@
   "discussion": "The system _MUST_ be configured for on device dictation.\n\nBy enforcing on device dictation this will mitigate the risk of unwanted data being sent to Apple.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_on_device_dictation_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -253,7 +253,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

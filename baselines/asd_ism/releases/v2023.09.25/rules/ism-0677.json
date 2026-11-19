@@ -36,10 +36,10 @@
   "discussion": "If files passing through gateways or CDSs contain a form of integrity protection, such as a digital signature or cryptographic checksum, content filters should verify their integrity. In doing so, the failure of any integrity checks may indicate that files have been tampered with.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0677",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Content filtering",

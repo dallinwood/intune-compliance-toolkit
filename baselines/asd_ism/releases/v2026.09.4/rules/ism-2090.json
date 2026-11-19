@@ -36,10 +36,10 @@
   "discussion": "Cyber attacks designed to disrupt services, deplete a target’s financial resources or steal intellectual property by cloning an AI model’s behaviour depend on unbounded consumption vulnerabilities to succeed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2090",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

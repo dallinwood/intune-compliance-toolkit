@@ -36,10 +36,10 @@
   "discussion": "AI applications, especially when embedded in other applications, risk exposing sensitive data, proprietary algorithms or confidential details through their output. This can result in unauthorised data access, privacy violations and intellectual property breaches. In addition, improper output handling vulnerabilities can occur when output from AI applications is not sufficiently validated, sanitised or handled before being passed downstream to other applications.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2094",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

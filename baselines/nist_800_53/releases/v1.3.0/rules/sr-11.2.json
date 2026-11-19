@@ -28,7 +28,7 @@
   "discussion": "## Control\n\nMaintain configuration control over the following system components awaiting service or repair and serviced or repaired components awaiting return to service: [Assignment: organization-defined system components].\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sr-11.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-3",
@@ -38,7 +38,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-11 Component Authenticity"

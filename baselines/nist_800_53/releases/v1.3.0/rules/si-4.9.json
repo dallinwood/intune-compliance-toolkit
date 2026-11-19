@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nTest intrusion-monitoring tools and mechanisms [Assignment: organization-defined frequency].\n\n## Discussion\n\nTesting intrusion-monitoring tools and mechanisms is necessary to ensure that the tools and mechanisms are operating correctly and continue to satisfy the monitoring objectives of organizations. The frequency and depth of testing depends on the types of tools and mechanisms used by organizations and the methods of deployment.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.9",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

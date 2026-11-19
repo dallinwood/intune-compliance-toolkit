@@ -2,15 +2,24 @@ import type { Rule } from '../types/library'
 import type { RuleRow } from '../types/rule-row'
 import { odvSubstitutionMode, prepareOdvValue } from './odv'
 import type { SupportingCheckChoices } from './supportingChecks'
-import { refKey, type OrgDefinedValue, type RuleRef, type SelectionEntry, type SelectionMap } from './selectionEntry'
+import {
+  refKey,
+  selectionEntryFromVersion2,
+  type OdvValues,
+  type OrgDefinedValue,
+  type RuleRef,
+  type SelectionEntry,
+  type SelectionEntryVersion2,
+  type SelectionMap,
+} from './selectionEntry'
 
-export const SETTINGS_SCHEMA_VERSION = 2
+export const SETTINGS_SCHEMA_VERSION = 3
 
 // A rule is referenced by identity only, never by embedding its content, so
 // exporting never duplicates anything already in the repo. libraryReleases
 // records which library release the selections were made against.
-export interface SettingsFileV2 {
-  schemaVersion: 2
+export interface SettingsFileV3 {
+  schemaVersion: 3
   generatedAt: string
   libraryReleases: Record<string, string>
   selections: SelectionEntry[]
@@ -23,8 +32,8 @@ export function buildSettingsFile(
   generatedAt: string,
   libraryReleases: Record<string, string>,
   supportingChecks?: SupportingCheckChoices,
-): SettingsFileV2 {
-  const file: SettingsFileV2 = {
+): SettingsFileV3 {
+  const file: SettingsFileV3 = {
     schemaVersion: SETTINGS_SCHEMA_VERSION,
     generatedAt,
     libraryReleases,
@@ -34,7 +43,7 @@ export function buildSettingsFile(
   return file
 }
 
-export function serializeSettingsFile(file: SettingsFileV2): string {
+export function serializeSettingsFile(file: SettingsFileV3): string {
   return JSON.stringify(file, null, 2)
 }
 
@@ -49,6 +58,16 @@ function isOrgDefinedValue(value: unknown): value is OrgDefinedValue {
 }
 
 function isSelectionEntry(value: unknown): value is SelectionEntry {
+  if (typeof value !== 'object' || value === null) return false
+  const entry = value as Record<string, unknown>
+  if (!isRuleRef(entry.ref)) return false
+  if (typeof entry.enabled !== 'boolean') return false
+  const odvValues = entry.odvValues
+  if (typeof odvValues !== 'object' || odvValues === null || Array.isArray(odvValues)) return false
+  return Object.values(odvValues).every(isOrgDefinedValue)
+}
+
+function isSelectionEntryVersion2(value: unknown): value is SelectionEntryVersion2 {
   if (typeof value !== 'object' || value === null) return false
   const entry = value as Record<string, unknown>
   if (!isRuleRef(entry.ref)) return false
@@ -81,7 +100,7 @@ export function parseSupportingCheckChoices(raw: unknown): SupportingCheckChoice
 const UNREADABLE_SUPPORTING_CHECKS_WARNING = 'Supporting check choices in this file were not readable and were reset to the defaults.'
 
 export type SettingsFileValidation =
-  | { valid: true; file: SettingsFileV2; warnings: string[] }
+  | { valid: true; file: SettingsFileV3; warnings: string[] }
   | { valid: false; error: string }
 
 // Validates untrusted, user-uploaded JSON before it ever touches the
@@ -93,7 +112,8 @@ export function validateSettingsFile(raw: unknown): SettingsFileValidation {
   }
   const candidate = raw as Record<string, unknown>
 
-  if (candidate.schemaVersion !== SETTINGS_SCHEMA_VERSION) {
+  const isVersion2 = candidate.schemaVersion === 2
+  if (candidate.schemaVersion !== SETTINGS_SCHEMA_VERSION && !isVersion2) {
     return { valid: false, error: `Unsupported settings schema version: ${JSON.stringify(candidate.schemaVersion)}.` }
   }
   if (typeof candidate.generatedAt !== 'string') {
@@ -102,15 +122,21 @@ export function validateSettingsFile(raw: unknown): SettingsFileValidation {
   if (!isStringRecord(candidate.libraryReleases)) {
     return { valid: false, error: "Settings file's libraryReleases is missing or malformed." }
   }
-  if (!Array.isArray(candidate.selections) || !candidate.selections.every(isSelectionEntry)) {
+  const rawSelections: unknown = candidate.selections
+  let selections: SelectionEntry[]
+  if (isVersion2 && Array.isArray(rawSelections) && rawSelections.every(isSelectionEntryVersion2)) {
+    selections = rawSelections.map(selectionEntryFromVersion2)
+  } else if (!isVersion2 && Array.isArray(rawSelections) && rawSelections.every(isSelectionEntry)) {
+    selections = rawSelections
+  } else {
     return { valid: false, error: "Settings file's selections list is missing or malformed." }
   }
 
-  const file: SettingsFileV2 = {
+  const file: SettingsFileV3 = {
     schemaVersion: SETTINGS_SCHEMA_VERSION,
     generatedAt: candidate.generatedAt,
     libraryReleases: candidate.libraryReleases,
-    selections: candidate.selections,
+    selections,
   }
   const warnings: string[] = []
   if (candidate.supportingChecks !== undefined) {
@@ -131,7 +157,7 @@ export interface ImportResolution {
 // currently-loaded rule and ones that don't (a rule renamed/removed since
 // export) - the latter are reported to the admin rather than silently
 // dropped, per the settings-import contract.
-export function resolveImportedSelections(file: SettingsFileV2, knownIds: ReadonlySet<string>): ImportResolution {
+export function resolveImportedSelections(file: SettingsFileV3, knownIds: ReadonlySet<string>): ImportResolution {
   const selections: SelectionMap = {}
   const unresolvedRefs: RuleRef[] = []
 
@@ -167,23 +193,33 @@ export function importedIdsWithOdvValues(
 ): string[] {
   const ids = new Set<string>()
   for (const entry of entries) {
-    if (entry.odvValue !== null && rowsById.has(entry.ref.id)) ids.add(entry.ref.id)
+    if (Object.keys(entry.odvValues).length > 0 && rowsById.has(entry.ref.id)) ids.add(entry.ref.id)
   }
   return Array.from(ids)
 }
 
-function sanitizeOdvValue(
+function sanitizeOdvValues(
   id: string,
-  value: OrgDefinedValue | null,
+  values: OdvValues,
   rule: Rule | undefined,
-): { odvValue: OrgDefinedValue | null; dropped: DroppedImportValue | null } {
-  if (value === null) return { odvValue: null, dropped: null }
-  if (!rule) return { odvValue: null, dropped: { id, reason: 'The rule details could not be loaded.' } }
-  if (!rule.odv) return { odvValue: null, dropped: { id, reason: 'This rule has no organization-defined value.' } }
+): { odvValues: OdvValues; dropped: DroppedImportValue[] } {
+  const odvValues: OdvValues = {}
+  const dropped: DroppedImportValue[] = []
+  const entries = Object.entries(values)
+  if (entries.length === 0) return { odvValues, dropped }
+  if (!rule) return { odvValues, dropped: [{ id, reason: 'The rule details could not be loaded.' }] }
 
-  const preparation = prepareOdvValue(rule.odv, value, odvSubstitutionMode(rule), rule.id)
-  if (!preparation.valid) return { odvValue: null, dropped: { id, reason: preparation.error } }
-  return { odvValue: preparation.value, dropped: null }
+  for (const [name, value] of entries) {
+    const odv = rule.odvs.find((candidate) => candidate.name === name)
+    if (!odv) {
+      dropped.push({ id, reason: `This rule has no organization-defined value named ${name}.` })
+      continue
+    }
+    const preparation = prepareOdvValue(odv, value, odvSubstitutionMode(rule, odv), rule.id)
+    if (preparation.valid) odvValues[name] = preparation.value
+    else dropped.push({ id, reason: preparation.error })
+  }
+  return { odvValues, dropped }
 }
 
 // A settings file is untrusted input: only the rule id is taken from it to
@@ -213,9 +249,9 @@ export function sanitizeImportedSelections(
   const selections: SelectionMap = {}
   const droppedValues: DroppedImportValue[] = []
   for (const [id, { row, entry }] of lastEntryById) {
-    const { odvValue, dropped } = sanitizeOdvValue(id, entry.odvValue, rulesById.get(id))
-    if (dropped) droppedValues.push(dropped)
-    selections[refKey(row.ref)] = { ref: { id: row.ref.id, path: row.ref.path }, enabled: entry.enabled, odvValue }
+    const { odvValues, dropped } = sanitizeOdvValues(id, entry.odvValues, rulesById.get(id))
+    droppedValues.push(...dropped)
+    selections[refKey(row.ref)] = { ref: { id: row.ref.id, path: row.ref.path }, enabled: entry.enabled, odvValues }
   }
 
   return { selections, unknownIds: Array.from(unknownIds), duplicateIds: Array.from(duplicateIds), droppedValues }

@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Review and confirm ongoing operational need for current logical and physical access authorizations to systems and facilities when individuals are reassigned or transferred to other positions within the organization;\n- b. Initiate [Assignment: organization-defined transfer or reassignment actions] within [Assignment: organization-defined time period following the formal transfer action];\n- c. Modify access authorization as needed to correspond with any changes in operational need due to reassignment or transfer; and\n- d. Notify [Assignment: organization-defined personnel or roles] within [Assignment: organization-defined time period].\n\n## Discussion\n\nPersonnel transfer applies when reassignments or transfers of individuals are permanent or of such extended duration as to make the actions warranted. Organizations define actions appropriate for the types of reassignments or transfers, whether permanent or extended. Actions that may be required for personnel transfers or reassignments to other positions within organizations include returning old and issuing new keys, identification cards, and building passes; closing system accounts and establishing new accounts; changing system access authorizations (i.e., privileges); and providing for access to official records to which individuals had access at previous work locations and in previous system accounts.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-2",
@@ -40,7 +40,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-05 Personnel Transfer"

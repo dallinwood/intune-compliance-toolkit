@@ -36,10 +36,10 @@
   "discussion": "Ensuring users are uniquely identifiable enables their access and activities to be attributed to them. Furthermore, where systems process, store or communicate Australian Eyes Only (AUSTEO), Australian Government Access Only (AGAO) or Releasable To (REL) data, and foreign nationals have access, it is important that the foreign nationals are identified as such.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0415",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

@@ -20,10 +20,10 @@
   "discussion": "Following the destruction of SECRET and TOP SECRET media, normal accounting and verification processes and procedures do not apply. However, if a destruction method is used that results in the generation of media waste particles, such as a hammer mill, disintegrator, grinder/sander or by cutting, it may still need to be stored and handled as classified waste.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1728",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media destruction",

@@ -36,10 +36,10 @@
   "discussion": "To assist in facilitating cyber security cultural change and awareness within their organisation, across their organisation’s cyber supply chain and among their organisation’s customers, the CISO should act as a cyber security leader and continually communicate the cyber security vision and strategy for their organisation. In doing so, a cyber security communications strategy can be helpful in achieving this outcome. As part of this, communication styles and content should be tailored to different target audiences.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0720",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cyber Security Roles",
     "Chief Information Security Officer",

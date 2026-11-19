@@ -36,10 +36,10 @@
   "discussion": "Poorly secured mobile devices are more vulnerable to compromise and can provide malicious actors with a potential access point into any connected systems. Although an organisation may initially provide secure mobile devices, their security posture may degrade over time if personnel can install non-approved applications and disable or modify security functionality. Furthermore, it is important that security updates are applied to mobile devices as soon as they become available to maintain their security posture.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1886",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for enterprise mobility",
     "Mobile device management",

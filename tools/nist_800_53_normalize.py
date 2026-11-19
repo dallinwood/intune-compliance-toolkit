@@ -535,7 +535,7 @@ def normalize_catalog(
             "tags": [],
             "references": _references(entry, lookup, control_id),
             "check": None,
-            "odv": None,
+            "odvs": [],
             "remediation": None,
         }
         rules.append((sort_id, rule))

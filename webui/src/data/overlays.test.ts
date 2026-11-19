@@ -120,9 +120,11 @@ function ism1622Rule(overrides: Partial<Rule> = {}): Rule {
 // ones when the rule is opened.
 const INDEX_LEVEL_MISFITS: Record<string, Record<string, unknown>> = {
   'applicability-without-benchmarks': { applicability: [{ target: null, version: null }] },
-  'incomplete-odv': { odv: { description: 'only a description' } },
 }
 const RULE_LEVEL_MISFITS: Record<string, Record<string, unknown>> = {
+  'odv-with-unknown-quoting': {
+    odvs: { $replace: [{ name: 'value', datatype: 'number', description: 'd', validation: null, recommended: 1, by_benchmark: {}, quoting: 'backtick' }] },
+  },
   'empty-remediation': { remediation: { $replace: { Windows: {} } } },
   'check-without-by-version': { check: { $replace: { Windows: { language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } } } } },
 }
@@ -140,7 +142,7 @@ function serveLibrary(overlays: Record<string, Record<string, unknown>>) {
     vi.fn(async (url: string) => {
       fetched.push(url)
       if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 6, sources: [ISM_SOURCE] })
-      if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 5, source: 'asd_ism', rules: [ENTRY] })
+      if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 6, source: 'asd_ism', rules: [ENTRY] })
       if (url.endsWith('/baselines/asd_ism/rules/ism-1622.json')) return jsonResponse(rule)
       if (url.endsWith('/baselines/_overlays/_index.json')) return jsonResponse(index)
       const path = url.slice(url.indexOf('/baselines/_overlays/') + '/baselines/_overlays/'.length)

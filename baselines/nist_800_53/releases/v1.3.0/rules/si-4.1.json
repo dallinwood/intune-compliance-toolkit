@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nConnect and configure individual intrusion detection tools into a system-wide intrusion detection system.\n\n## Discussion\n\nLinking individual intrusion detection tools into a system-wide intrusion detection system provides additional coverage and effective detection capabilities. The information contained in one intrusion detection tool can be shared widely across the organization, making the system-wide detection capability more robust and powerful.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

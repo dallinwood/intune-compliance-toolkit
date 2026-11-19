@@ -36,10 +36,10 @@
   "discussion": "Following the identification of vulnerabilities, either via internal application security testing or external security researchers, software developers should ensure that such vulnerabilities are reported and resolved in a timely manner. In doing so, software developers should perform root cause analysis and, to the greatest extent possible, seek to remediate entire vulnerability classes.\n\nIf vulnerabilities cannot be resolved by software developers in a timely manner via patches or updates, software developers should provide advice on how, to the greatest extent possible, the likelihood of vulnerabilities being exploited can be reduced, the impact of vulnerabilities being exploited can be reduced or both.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1754",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Application development",

@@ -36,10 +36,10 @@
   "discussion": "Implementing measures to terminate user sessions and restart workstations on a daily basis, outside of business hours and after an appropriate period of inactivity, can assist in system maintenance activities and removing malicious actors that may have compromised a system but failed to gain persistence.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0853",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "Authentication hardening",

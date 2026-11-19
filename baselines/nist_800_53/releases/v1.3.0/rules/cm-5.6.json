@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nLimit privileges to change software resident within software libraries.\n\n## Discussion\n\nSoftware libraries include privileged programs.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-5.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-05 Access Restrictions for Change"

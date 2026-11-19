@@ -36,10 +36,10 @@
   "discussion": "Systems have a continuous monitoring plan that includes:\n\n- conducting security assessment activities to identify vulnerabilities\n- analysing identified vulnerabilities to determine their potential impact\n- implementing mitigations based on risk, effectiveness and cost.\n\nA continuous monitoring plan can assist an organisation in proactively identifying, prioritising and responding to vulnerabilities in systems. Furthermore, undertaking security assessment activities as part of continuous monitoring is important as cyber threats and the effectiveness of controls change over time.\n\nThree types of security assessment activities are vulnerability scans, vulnerability assessments and penetration tests. A vulnerability scan involves using tools to conduct automated checks for known vulnerabilities whereas a vulnerability assessment typically consists of a review of a system’s architecture or an in-depth hands-on assessment. In each case, the goal is to identify as many vulnerabilities as possible. A penetration test however is designed to exercise real-world scenarios to achieve a specific goal, such as compromising critical system components or data.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1163",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security documentation",
     "System-specific cyber security documentation",

@@ -36,10 +36,10 @@
   "discussion": "A cybersecurity strategy articulates an organisation’s vision, guiding principles, objectives and priorities for cybersecurity, typically over a five-year period. In addition, a cybersecurity strategy may also cover an organisation’s threat environment, cybersecurity initiatives or investments the organisation plans to make as part of its cybersecurity program. Without a cybersecurity strategy, an organisation risks failing to adequately plan for and manage security and business risks within their organisation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0039",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity documentation",
     "Development and maintenance of cybersecurity documentation",

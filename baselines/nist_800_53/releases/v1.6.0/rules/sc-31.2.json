@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nReduce the maximum bandwidth for identified covert [Selection (one or more): storage; timing] channels to [Assignment: organization-defined values].\n\n## Discussion\n\nThe complete elimination of covert channels, especially covert timing channels, is usually not possible without significant performance impacts.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-31.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-31 Covert Channel Analysis"

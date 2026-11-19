@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nLog the execution of privileged functions.\n\n## Discussion\n\nThe misuse of privileged functions, either intentionally or unintentionally by authorized users or by unauthorized external entities that have compromised system accounts, is a serious and ongoing concern and can have significant adverse impacts on organizations. Logging and analyzing the use of privileged functions is one way to detect such misuse and, in doing so, help mitigate the risk from insider threats and the advanced persistent threat.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-6.9",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-06 Least Privilege"

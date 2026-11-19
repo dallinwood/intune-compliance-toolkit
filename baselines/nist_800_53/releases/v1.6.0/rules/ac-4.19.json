@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nWhen transferring information between different security domains, implement [Assignment: organization-defined security or privacy policy filters] on metadata.\n\n## Discussion\n\nAll information (including metadata and the data to which the metadata applies) is subject to filtering and inspection. Some organizations distinguish between metadata and data payloads (i.e., only the data to which the metadata is bound). Other organizations do not make such distinctions and consider metadata and the data to which the metadata applies to be part of the payload.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.19",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

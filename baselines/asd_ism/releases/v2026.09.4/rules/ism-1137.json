@@ -24,10 +24,10 @@
   "discussion": "Obtaining advice from ASD on emanation security risks is vital to protecting SECRET and TOP SECRET systems, inside and outside of Australian borders. This can assist in preventing SECRET and TOP SECRET systems from emanating compromising signals, which if intercepted and analysed, could lead to serious consequences. The implementation of such advice is in addition to, and not a replacement for, industry and government standards relating to electromagnetic interference/electromagnetic compatibility.\n\nIn conducting emanation security risk assessments, it is important that they are sought by system owners as early as possible in a system’s life cycle as development timeframes and costs will be much greater if changes need to be made to systems once they have been designed and implemented.\n\nOn completion of emanation security risk assessments, system owners will receive emanation security mitigation advice that contains recommended actions to be taken to reduce emanation security risks. In doing so, any recommendations not implemented by system owners will need to be accepted by a system’s authorising officer.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1137",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Emanation security",

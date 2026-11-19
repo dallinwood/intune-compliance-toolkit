@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide the capability to purge or wipe information from [Assignment: organization-defined systems or system components] [Selection: remotely; under [Assignment: organization-defined conditions]].\n\n## Discussion\n\nRemote purging or wiping of information protects information on organizational systems and system components if systems or components are obtained by unauthorized individuals. Remote purge or wipe commands require strong authentication to help mitigate the risk of unauthorized individuals purging or wiping the system, component, or device. The purge or wipe function can be implemented in a variety of ways, including by overwriting data or information multiple times or by destroying the key necessary to decrypt encrypted data.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-6.8",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-06 Media Sanitization"

@@ -24,10 +24,10 @@
   "discussion": "Medical devices are devices approved by the Therapeutic Goods Administration under the [Therapeutic Goods (Medical Devices) Regulations 2002](https://www.legislation.gov.au/F2002B00237/latest/text) for diagnostic or therapeutic purposes. The use of medical devices in SECRET and TOP SECRET areas requires active management, similar to RF devices, as they may contain communications functionality that could compromise the security of SECRET or TOP SECRET areas or systems within such areas.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2007",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for physical security",
     "Facilities and systems",

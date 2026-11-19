@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnsure the accuracy, currency, and availability of monitoring results for the system using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nUsing automated tools for monitoring helps to maintain the accuracy, currency, and availability of monitoring information which in turns helps to increase the level of ongoing awareness of the system security and privacy posture in support of organizational risk management decisions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ca-7.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Assessment, Authorization, and Monitoring",
     "CA-07 Continuous Monitoring"

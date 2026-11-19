@@ -36,10 +36,10 @@
   "discussion": "Credentials for the Kerberos Key Distribution Center’s service account (KRBTGT) are changed twice, allowing for replication to all Microsoft Active Directory Domain Services domain controllers in-between each change, if:\n\n* the domain has been directly compromised\n* the domain is suspected of being compromised\n* they have not been changed in the past 12 months.\n\nGenerally, credentials should not need to be changed on a frequent basis. However, some events may necessitate the requirement for individual accounts, or groups of accounts, to change their credentials. This can include direct or suspected compromises of credentials, credentials appearing in online data breach databases, credentials being discovered stored on networks in the clear, credentials being transferred across networks in the clear, when membership of shared accounts change, and if credentials haven’t been changed in the past 12 months.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1847",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

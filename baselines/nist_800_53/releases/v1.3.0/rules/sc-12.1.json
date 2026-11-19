@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nMaintain availability of information in the event of the loss of cryptographic keys by users.\n\n## Discussion\n\nEscrowing of encryption keys is a common practice for ensuring availability in the event of key loss. A forgotten passphrase is an example of losing a cryptographic key.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-12.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-12 Cryptographic Key Establishment and Management"

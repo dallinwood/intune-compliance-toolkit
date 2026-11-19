@@ -33,7 +33,7 @@
   "discussion": "Infrared (IR) support _MUST_ be disabled to prevent users from controlling the system with IR devices.\n\nBy default, if IR is enabled, the system will accept IR control from any remote device.\n\nNOTE: This is applicable only to models of Mac Mini systems earlier than Mac Mini8,1.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_ir_support_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -102,7 +102,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

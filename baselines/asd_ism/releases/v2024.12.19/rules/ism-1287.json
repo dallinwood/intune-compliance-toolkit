@@ -36,10 +36,10 @@
   "discussion": "Content sanitisation is the process of rendering files safe by removing or altering active content while leaving the original content as intact as possible, such as by removing macros from Microsoft Office files or removing JavaScript sections from PDF files.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1287",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Content filtering",

@@ -20,14 +20,14 @@
   "discussion": "## Control\n\nManage, apply, and verify configuration settings for [Assignment: organization-defined system components] using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated tools (e.g., hardening tools, baseline configuration tools) can improve the accuracy, consistency, and availability of configuration settings information. Automation can also provide data aggregation and data correlation capabilities, alerting mechanisms, and dashboards to support risk-based decision-making within the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-6.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-06 Configuration Settings"

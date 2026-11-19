@@ -36,10 +36,10 @@
   "discussion": "All non-secure telephone systems are subject to interception. Personnel accidentally or maliciously communicating sensitive or classified information over a public telephone network can lead to its compromise.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1078",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Telephone systems",

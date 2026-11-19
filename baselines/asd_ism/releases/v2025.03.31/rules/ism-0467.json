@@ -24,10 +24,10 @@
   "discussion": "When data is communicated over network infrastructure, encryption should be used to protect the data from unauthorised access or manipulation. When selecting cryptographic equipment or software for this purpose, the level of assurance required will depend on the sensitivity or classification of the data and the environment in which it is being applied.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0467",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Cryptographic fundamentals",

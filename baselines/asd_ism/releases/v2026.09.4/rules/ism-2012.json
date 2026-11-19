@@ -36,10 +36,10 @@
   "discussion": "Systems are configured with a screen lock that:\n\n- activates after a maximum of 15 minutes of human user inactivity, or when manually activated\n- conceals all content on the screen\n- ensures that the screen does not enter a power saving state before the screen lock is activated\n- requires re-authentication by human users using all authentication factors to unlock the system\n- denies human users the ability to disable the screen locking mechanism.\n\nScreen locking prevents unauthorised access to a system that a human user has already authenticated to.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2012",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

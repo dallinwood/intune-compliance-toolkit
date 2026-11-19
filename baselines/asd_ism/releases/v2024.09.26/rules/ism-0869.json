@@ -36,10 +36,10 @@
   "discussion": "Encrypting the internal storage, and any removable media, for mobile devices will prevent malicious actors from gaining easy access to any sensitive or classified data stored on them if they are lost or stolen.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0869",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device management",

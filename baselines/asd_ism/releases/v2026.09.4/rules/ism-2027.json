@@ -36,10 +36,10 @@
   "discussion": "Software artefacts can include compiled code, third-party libraries, configuration files and any other files consumed by the software development process. Software artefacts, whether developed internally or externally, may include malicious content or weaknesses designed for exploitation at a later stage. To assist in preventing the introduction of malicious content or weak software artefacts into an authoritative source for software, all software artefacts should be scanned for malicious content and undergo security testing (where appropriate) before being stored in the authoritative source for software. Software artefact dependencies should also be pinned to approved versions to prevent unexpected changes, while being periodically tested for known weaknesses and updated where necessary to address identified vulnerabilities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2027",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- a. Establish and maintain a cyber threat hunting capability to:\n  - 1. Search for indicators of compromise in organizational systems; and\n  - 2. Detect, track, and disrupt threats that evade existing controls; and\n- b. Employ the threat hunting capability [Assignment: organization-defined frequency].\n\n## Discussion\n\nThreat hunting is an active means of cyber defense in contrast to traditional protection measures, such as firewalls, intrusion detection and prevention systems, quarantining malicious code in sandboxes, and Security Information and Event Management technologies and systems. Cyber threat hunting involves proactively searching organizational systems, networks, and infrastructure for advanced threats. The objective is to track and disrupt cyber adversaries as early as possible in the attack sequence and to measurably improve the speed and accuracy of organizational responses. Indications of compromise include unusual network traffic, unusual file changes, and the presence of malicious code. Threat hunting teams leverage existing threat intelligence and may create new threat intelligence, which is shared with peer organizations, Information Sharing and Analysis Organizations (ISAO), Information Sharing and Analysis Centers (ISAC), and relevant government departments and agencies.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ra-10",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-30"
@@ -31,7 +31,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Risk Assessment",
     "RA-10 Threat Hunting"

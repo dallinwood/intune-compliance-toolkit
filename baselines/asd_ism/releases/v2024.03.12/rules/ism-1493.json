@@ -36,10 +36,10 @@
   "discussion": "To assist with monitoring information sources for details of relevant patches or updates, an organisation should develop, implement, maintain and regularly verify software registers for workstations, servers, network devices and other ICT equipment.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1493",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Management",
     "System patching",

@@ -36,10 +36,10 @@
   "discussion": "The successful destruction of media storing accountable material is more important than for other media. As such, its destruction should be supervised by at least two cleared personnel who sign a destruction certificate afterwards.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0372",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Media",
     "Media destruction",

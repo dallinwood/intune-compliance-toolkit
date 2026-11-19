@@ -24,10 +24,10 @@
   "discussion": "Data exported from SECRET and TOP SECRET systems should be reviewed and authorised by a trustworthy source beforehand, such as the chief information security officer or one of their delegates. In doing so, all data authorised for export should be digitally signed by the trustworthy source.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0675",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for data transfers",
     "Data transfers",

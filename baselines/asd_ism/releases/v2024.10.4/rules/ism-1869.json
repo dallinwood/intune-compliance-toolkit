@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing, maintaining and regularly verifying registers of authorised IT equipment can assist an organisation in tracking legitimate IT equipment as well as determining whether unauthorised IT equipment, such as workstations, servers and network devices, have been introduced into their organisation. In doing so, an organisation may choose to split their IT equipment register into two by focusing on whether IT equipment is connected to their network or not.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1869",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Information Technology Equipment",
     "IT equipment usage",

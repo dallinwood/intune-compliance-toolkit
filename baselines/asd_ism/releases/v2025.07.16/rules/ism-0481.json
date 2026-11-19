@@ -36,10 +36,10 @@
   "discussion": "If cryptographic equipment or applications implement unapproved protocols, it is possible that these protocols could be used without a user’s knowledge. In combination with an assumed level of security confidence, this can represent a security risk. As such, an organisation can ensure that only AACPs or high assurance cryptographic protocols can be used by disabling unapproved protocols (preferred) or by advising users not to use unapproved protocols via usage policies.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0481",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "ASD-Approved Cryptographic Protocols",

@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nSystems (operating systems and applications) only permit the execution of software that is supported, verified and authorised.\n\n# Indicators of Good Practice\n\nNot effective:\n- No approved administrative toolset is defined.\n- No restrictions are placed on the location administrative tooling can be executed from.\n- No controls prevent unapproved administrative tools, including tools commonly used in post-compromise activity, from executing on managed assets.\n\nPartially effective:\n- An approved toolset is defined but not consistently enforced across all assets.\n- Administrative tooling is configured to execute from known locations, but privileged users can still run tooling from unapproved locations.\n- Some unapproved administrative tools are blocked but enforcement gaps exist.\n\nFully effective:\n- A defined and enforced approved toolset exists for administrative and management activities, and execution is limited to authorised, known locations.\n- Administrative and management tooling outside the approved set is blocked from execution, including from unauthorised locations.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-07.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -87,7 +87,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-07 - Trustworthy software"

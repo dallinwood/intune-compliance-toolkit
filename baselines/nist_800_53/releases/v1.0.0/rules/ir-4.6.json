@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nImplement an incident handling capability for incidents involving insider threats.\n\n## Discussion\n\nExplicit focus on handling incidents involving insider threats provides additional emphasis on this type of threat and the need for specific incident handling capabilities to provide appropriate and timely responses.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-4.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-04 Incident Handling"

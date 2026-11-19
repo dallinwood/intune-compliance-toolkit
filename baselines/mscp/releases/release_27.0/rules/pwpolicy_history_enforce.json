@@ -57,26 +57,30 @@
           "type": "string",
           "value": "pass"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributePasswordHistoryDepth\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 >= $ODV ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
+        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributePasswordHistoryDepth\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 >= $ODV_value ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
       },
       "language": "bash"
     }
   },
-  "discussion": "The device _MUST_ be configured to enforce a password history of at least $ODV previous passwords when a password is created.\n\nThis rule ensures that users are not allowed to re-use a password that was used in any of the $ODV previous password generations.\n\nLimiting password reuse protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
+  "discussion": "The device _MUST_ be configured to enforce a password history of at least $ODV_value previous passwords when a password is created.\n\nThis rule ensures that users are not allowed to re-use a password that was used in any of the $ODV_value previous password generations.\n\nLimiting password reuse protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_history_enforce",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": 24,
-      "cis_lvl2": 24
-    },
-    "datatype": "number",
-    "description": "Number of previous passwords, e.g. 5",
-    "recommended": 5,
-    "validation": {
-      "min": 0
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": 24,
+        "cis_lvl2": 24
+      },
+      "datatype": "number",
+      "description": "Number of previous passwords, e.g. 5",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 5,
+      "validation": {
+        "min": 0
+      }
     }
-  },
+  ],
   "references": {
     "bsi": {
       "indigo": {
@@ -199,7 +203,7 @@
             {
               "PayloadContent": [
                 {
-                  "pinHistory": "$ODV"
+                  "pinHistory": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.mobiledevice.passwordpolicy"
@@ -211,7 +215,7 @@
         {
           "data": {
             "ddm_key": "PasscodeReuseLimit",
-            "ddm_value": "$ODV",
+            "ddm_value": "$ODV_value",
             "declarationtype": "com.apple.configuration.passcode.settings"
           },
           "kind": "ddm",
@@ -221,7 +225,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "pwpolicy"
   ],
@@ -254,5 +258,5 @@
     "cnssi-1253_moderate",
     "hicp_lp"
   ],
-  "title": "Prohibit Password Reuse for a Minimum of $ODV Generations"
+  "title": "Prohibit Password Reuse for a Minimum of $ODV_value Generations"
 }

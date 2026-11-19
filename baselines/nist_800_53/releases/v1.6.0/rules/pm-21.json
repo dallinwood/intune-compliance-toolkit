@@ -20,7 +20,7 @@
   "discussion": "## Control\n\n- a. Develop and maintain an accurate accounting of disclosures of personally identifiable information, including:\n  - 1. Date, nature, and purpose of each disclosure; and\n  - 2. Name and address, or other contact information of the individual or organization to which the disclosure was made;\n- b. Retain the accounting of disclosures for the length of the time the personally identifiable information is maintained or five years after the disclosure is made, whichever is longer; and\n- c. Make the accounting of disclosures available to the individual to whom the personally identifiable information relates upon request.\n\n## Discussion\n\nThe purpose of accounting of disclosures is to allow individuals to learn to whom their personally identifiable information has been disclosed, to provide a basis for subsequently advising recipients of any corrected or disputed personally identifiable information, and to provide an audit trail for subsequent reviews of organizational compliance with conditions for disclosures. For federal agencies, keeping an accounting of disclosures is required by the [PRIVACT](https://www.govinfo.gov/content/pkg/STATUTE-88/pdf/STATUTE-88-Pg1896.pdf) ; agencies should consult with their senior agency official for privacy and legal counsel on this requirement and be aware of the statutory exceptions and OMB guidance relating to the provision.\n\nOrganizations can use any system for keeping notations of disclosures, if it can construct from such a system, a document listing of all disclosures along with the required information. Automated mechanisms can be used by organizations to determine when personally identifiable information is disclosed, including commercial services that provide notifications and alerts. Accounting of disclosures may also be used to help organizations verify compliance with applicable privacy statutes and policies governing the disclosure or dissemination of information and dissemination restrictions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-21",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "PRIVACT",
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-21 Accounting of Disclosures"

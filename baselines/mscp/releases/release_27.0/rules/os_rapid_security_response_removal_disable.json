@@ -33,7 +33,7 @@
   "discussion": "Rapid security response (RSR) mechanism _MUST_ be enabled and the ability for the user to disable RSR _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_rapid_security_response_removal_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -88,7 +88,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

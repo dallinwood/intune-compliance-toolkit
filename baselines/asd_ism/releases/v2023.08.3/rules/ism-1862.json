@@ -36,10 +36,10 @@
   "discussion": "When using a web application firewall (WAF), care should be taken with their configuration to ensure that the Internet Protocol (IP) addresses of an organisation’s web servers (referred to as origin servers) are not identifiable by an adversary, as knowledge of origin server IP addresses could allow for protections provided by a WAF to be bypassed. Additionally, appropriate controls should be applied to only allow communication between origin servers, the WAF and authorised management networks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1862",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

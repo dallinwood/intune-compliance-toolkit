@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nIncorporate simulated events into contingency training to facilitate effective response by personnel in crisis situations.\n\n## Discussion\n\nThe use of simulated events creates an environment for personnel to experience actual threat events, including cyber-attacks that disable websites, ransomware attacks that encrypt organizational data on servers, hurricanes that damage or destroy organizational facilities, or hardware or software failures.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-03 Contingency Training"

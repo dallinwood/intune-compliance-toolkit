@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy automated tools and mechanisms to integrate intrusion detection tools and mechanisms into access control and flow control mechanisms.\n\n## Discussion\n\nUsing automated tools and mechanisms to integrate intrusion detection tools and mechanisms into access and flow control mechanisms facilitates a rapid response to attacks by enabling the reconfiguration of mechanisms in support of attack isolation and elimination.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PM-23",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

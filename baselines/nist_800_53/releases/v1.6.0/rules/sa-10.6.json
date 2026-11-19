@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to execute procedures for ensuring that security-relevant hardware, software, and firmware updates distributed to the organization are exactly as specified by the master copies.\n\n## Discussion\n\nThe trusted distribution of security-relevant hardware, software, and firmware updates help to ensure that the updates are correct representations of the master copies maintained by the developer and have not been tampered with during distribution.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-10.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-10 Developer Configuration Management"

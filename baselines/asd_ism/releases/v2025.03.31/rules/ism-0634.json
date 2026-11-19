@@ -36,10 +36,10 @@
   "discussion": "Security-relevant events for gateways are centrally logged, including:\n\n- data packets and data flows permitted through gateways\n- data packets and data flows attempting to leave gateways\n- real-time alerts for attempted intrusions.\n\nCentrally logging and analysing security-relevant events for gateways can assist in monitoring the security posture of gateways, detecting malicious behaviour and contributing to investigations following cybersecurity incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0634",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Gateways",

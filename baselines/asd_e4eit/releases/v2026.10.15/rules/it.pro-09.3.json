@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nData communicated between different security domains for systems (infrastructure and applications) is controlled and subject to inspection and verification.\n\n# Indicators of Good Practice\n\nNot effective:\n- No inbound content inspection is deployed.\n\nPartially effective:\n- Inbound inspection is deployed but does not cover all applicable content channels.\n- Inspection is in place but detection signatures or rules are not maintained or updated.\n\nFully effective:\n- Inbound content inspection covers all applicable content channels.\n- Detection signatures and rules are maintained and updated on a regular cycle defined by the organisation.\n- Blocked content is logged and available for review.\n- Current cyber threat intelligence is considered when implementing controls to prevent the delivery of malicious or unsafe content.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-09.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -62,7 +62,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-09 - Content filtering"

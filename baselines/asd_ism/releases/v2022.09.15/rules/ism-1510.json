@@ -36,10 +36,10 @@
   "discussion": "Developing and implementing a digital preservation policy, as part of digital continuity planning, can assist in ensuring the long term integrity and availability of important data is maintained, especially when taking into account the potential for data degradation and removable media, hardware and software obsolesce.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1510",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Management",
     "Data backup and restoration",

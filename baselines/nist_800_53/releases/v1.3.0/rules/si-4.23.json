@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement the following host-based monitoring mechanisms at [Assignment: organization-defined system components]: [Assignment: organization-defined host-based monitoring mechanisms].\n\n## Discussion\n\nHost-based monitoring collects information about the host (or system in which it resides). System components in which host-based monitoring can be implemented include servers, notebook computers, and mobile devices. Organizations may consider employing host-based monitoring mechanisms from multiple product developers or vendors.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.23",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-18",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

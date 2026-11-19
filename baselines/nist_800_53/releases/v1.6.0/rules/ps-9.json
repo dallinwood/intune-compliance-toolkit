@@ -28,14 +28,14 @@
   "discussion": "## Control\n\nIncorporate security and privacy roles and responsibilities into organizational position descriptions.\n\n## Discussion\n\nSpecification of security and privacy roles in individual organizational position descriptions facilitates clarity in understanding the security or privacy responsibilities associated with the roles and the role-based security and privacy training requirements for the roles.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-9",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-181"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-09 Position Descriptions"

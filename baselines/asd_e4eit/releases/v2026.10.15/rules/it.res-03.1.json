@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nCyber security incidents are contained, eradicated and recovered from in a timely manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- No documented cyber security incident response plan or procedures exist.\n- Incident response activities are conducted on an ad hoc basis without any defined roles, escalation paths, procedures or response objectives.\n- Available incident records demonstrate systemic failures to contain, eradicate or recover from cyber security incidents within organisationally defined timeframes, and the causes of these failures are not addressed.\n\nPartially effective:\n- A cyber security incident response plan exists but has not been exercised or invoked within the organisationally defined test cycle.\n- The cyber security incident response plan defines roles, escalation paths, and response procedures, but target timeframes or intended response outcomes are not clearly defined.\n- Incident records or exercise results demonstrate that response activities do not consistently meet organisationally defined timeframes or intended outcomes, but identified deficiencies are documented and subject to improvement actions.\n\nFully effective:\n- An approved cyber security incident response plan is in place and defines roles, escalation paths, response procedures, target timeframes and intended containment, eradication and recovery outcomes.\n- The incident response plan and associated procedures have been exercised or invoked within the organisationally defined test cycle.\n- Incident records demonstrate that cyber security incidents are contained, eradicated and recovered from within organisationally defined target timeframes and achieve the intended response outcomes, taking into account incident severity, complexity and business impact.\n- Where target timeframes or intended outcomes are not achieved, the causes are analysed, improvement actions are assigned and tracked, and relevant plans, procedures and controls are updated.\n- Where no relevant cyber security incident has occurred during the assessment period, appropriately scoped exercises demonstrate the organisation’s capability to achieve its target timeframes and intended response outcomes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.res-03.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Respond principles",
     "RES-03 - Cyber security incident response"

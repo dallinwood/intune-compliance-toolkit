@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { fetchImportedRule, fetchOverlaidRule } from '../data/ruleDetail'
-import { odvSubstitutionMode, usableOdvValue } from '../logic/odv'
+import { usableOdvValues } from '../logic/odv'
 import type { OverlaidRule } from '../logic/overlays'
-import type { OrgDefinedValue, RuleRef } from '../logic/selectionEntry'
+import type { OdvValues, RuleRef } from '../logic/selectionEntry'
 import { useSelectionStore } from '../state/selectionStore'
 import type { Rule } from '../types/library'
 
@@ -59,14 +59,17 @@ function useRuleFrom(ruleRef: RuleRef | null, load: (ref: RuleRef) => Promise<Ov
   return loaded !== null && loaded.id === id ? loaded.state : LOADING
 }
 
-export function useStoredOdvValue(ruleRef: RuleRef): OrgDefinedValue | null {
-  return useSelectionStore((store) => store.selections[ruleRef.id]?.odvValue ?? null)
+const NO_STORED_VALUES: OdvValues = {}
+
+export function useStoredOdvValues(ruleRef: RuleRef): OdvValues {
+  return useSelectionStore((store) => store.selections[ruleRef.id]?.odvValues ?? NO_STORED_VALUES)
 }
 
-// The value shown in place of $ODV: the admin's value when it validates,
-// else the recommended value, else null (shown as a placeholder).
-export function useUsableOdvValue(rule: Rule | null, ruleRef: RuleRef): OrgDefinedValue | null {
-  const stored = useStoredOdvValue(ruleRef)
-  if (!rule) return null
-  return usableOdvValue(rule.odv, odvSubstitutionMode(rule), stored, rule.id)
+// The values shown in place of each $ODV_<name>: the admin's value when it
+// validates, else the recommended value; a name with neither is left out
+// (shown as a placeholder).
+export function useUsableOdvValues(rule: Rule | null, ruleRef: RuleRef): OdvValues {
+  const stored = useStoredOdvValues(ruleRef)
+  if (!rule) return NO_STORED_VALUES
+  return usableOdvValues(rule, stored)
 }

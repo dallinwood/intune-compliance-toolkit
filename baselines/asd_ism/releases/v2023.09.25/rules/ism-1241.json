@@ -36,10 +36,10 @@
   "discussion": "The likelihood of cross-site scripting and other content injection attacks can be reduced through the use of output encoding. In particular, output encoding is useful when external data sources, which may not be subject to the same level of input filtering, are output to users. The most common example of output encoding is the conversion of potentially dangerous HTML characters into their encoded equivalents, such as ‘\\<’, ‘\\>’ and ‘\\&’ into ‘\\<’, ‘\\>’ and ‘\\&’.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1241",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

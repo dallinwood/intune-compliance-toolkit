@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nIsolate [Assignment: organization-defined information security tools, mechanisms, and support components] from other internal system components by implementing physically separate subnetworks with managed interfaces to other components of the system.\n\n## Discussion\n\nPhysically separate subnetworks with managed interfaces are useful in isolating computer network defenses from critical operational processing networks to prevent adversaries from discovering the analysis and forensics techniques employed by organizations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.13",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-2",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

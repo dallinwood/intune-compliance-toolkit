@@ -106,7 +106,7 @@
   "discussion": "Ensure that security updates are installed as soon as they are available from Apple.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_critical_update_install_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -242,7 +242,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

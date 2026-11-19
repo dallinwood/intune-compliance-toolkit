@@ -28,7 +28,7 @@
   "discussion": "## Control\n\nImplement mechanisms for authentication to a cryptographic module that meet the requirements of applicable laws, executive orders, directives, policies, regulations, standards, and guidelines for such authentication.\n\n## Discussion\n\nAuthentication mechanisms may be required within a cryptographic module to authenticate an operator accessing the module and to verify that the operator is authorized to assume the requested role and perform services within that role.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FIPS 140-3"
@@ -42,7 +42,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-07 Cryptographic Module Authentication"

@@ -36,10 +36,10 @@
   "discussion": "An implementation of Media Access Control Security (MACsec) that fully conforms to its standard must implement at least the GCM-AES-128 cipher suite and may optionally implement the GCM-AES-256, GCM-AES-XPN-128 and GCM-AES-XPN-256 cipher suites, with 256-bit key sizes providing more bits of effective security. These cipher suites may be used to provide only data integrity (integrity-only mode) or both data integrity and data confidentiality (confidentiality protection mode).\n\nUsing a connectivity association lifetime of less than 24 hours (86400 seconds) and a secure association lifetime of less than four hours (14400 seconds) can provide a balance between security and usability.\n\nThe use of a Pre-Shared Key as a fallback authentication method if EAP-TLS authentication attempts fail can limit the effective strength of the EAP authentication.\n\nFor interoperability and maintainability reasons, the GCM-AES-128 and GCM-AES-XPN-128 cipher suites will not be approved beyond 2030.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2166",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Wired networks",

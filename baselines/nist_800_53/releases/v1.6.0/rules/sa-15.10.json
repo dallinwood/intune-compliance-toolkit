@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to provide, implement, and test an incident response plan.\n\n## Discussion\n\nThe incident response plan provided by developers may provide information not readily available to organizations and be incorporated into organizational incident response plans. Developer information may also be extremely helpful, such as when organizations respond to vulnerabilities in commercial off-the-shelf products.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15.10",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IR-8"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

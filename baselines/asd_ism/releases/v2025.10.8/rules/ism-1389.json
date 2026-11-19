@@ -36,10 +36,10 @@
   "discussion": "Analysing executable files in a sandbox can be an effective method to detect suspicious behaviour upon file execution, such as network traffic, creation or modification of files, or system configuration changes.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1389",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for gateways",
     "Content filtering",

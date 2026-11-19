@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide an explicit indication of current participants in [Assignment: organization-defined online meetings and teleconferences].\n\n## Discussion\n\nExplicitly indicating current participants prevents unauthorized individuals from participating in collaborative computing sessions without the explicit knowledge of other participants.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-15.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-15 Collaborative Computing Devices and Applications"

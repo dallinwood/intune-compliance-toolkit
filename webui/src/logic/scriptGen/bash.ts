@@ -1,5 +1,5 @@
 import type { ExpectedResult, RuleCheckPlan } from '../checkPlan'
-import { containsOdvPlaceholder } from '../odv'
+import { containsOdvPlaceholder, odvPlaceholderNames } from '../odv'
 import type { IntuneDataType } from '../operatorMap'
 
 const HEADER_LINES = [
@@ -105,6 +105,9 @@ const JSON_HELPER_LINES = [
 ]
 
 const SETTING_NAME_PATTERN = /^[A-Za-z0-9_]+$/
+const ODV_NAME_PATTERN = /^[a-z][a-z0-9_]*$/
+// $ODV not followed by _<name>: no ODV can fill it in.
+const BARE_ODV_PATTERN = /\$ODV(?!_[a-z])/
 const MAJOR_VERSION_PATTERN = /^[0-9]+$/
 const FIRST_PRINTABLE_CODE = 0x20
 const DELETE_CODE = 0x7f
@@ -136,14 +139,22 @@ function assertMajor(major: string, plan: RuleCheckPlan): void {
   if (!MAJOR_VERSION_PATTERN.test(major)) throw new Error(`${plan.id}: "${major}" is not a macOS major version.`)
 }
 
+// A shell may keep a placeholder only for an ODV the script exports as a variable.
+function everyOdvPlaceholderIsExported(shell: string, plan: RuleCheckPlan): boolean {
+  return odvPlaceholderNames(shell).every((name) => Object.hasOwn(plan.exportedOdvs, name)) && !BARE_ODV_PATTERN.test(shell)
+}
+
 function assertPlanIsSafe(plan: RuleCheckPlan): void {
   if (!SETTING_NAME_PATTERN.test(plan.settingName)) {
     throw new Error(`${plan.id}: SettingName "${plan.settingName}" must contain only letters, digits and underscores.`)
   }
+  for (const name of Object.keys(plan.exportedOdvs)) {
+    if (!ODV_NAME_PATTERN.test(name)) throw new Error(`${plan.id}: ODV name "${name}" must match ${ODV_NAME_PATTERN.source}.`)
+  }
   assertMajor(plan.newerThan, plan)
   const checks = [...plan.branches, ...(plan.newerBranch ? [plan.newerBranch] : [])]
   for (const check of checks) {
-    if (containsOdvPlaceholder(check.shell) && plan.exportedOdv === null) {
+    if (containsOdvPlaceholder(check.shell) && !everyOdvPlaceholderIsExported(check.shell, plan)) {
       throw new Error(`${plan.id}: a check shell still contains $ODV.`)
     }
     if (typeof check.expected.value === 'string' && containsOdvPlaceholder(check.expected.value)) {
@@ -155,10 +166,12 @@ function assertPlanIsSafe(plan: RuleCheckPlan): void {
 
 function checkLines(plan: RuleCheckPlan, shell: string, expected: ExpectedResult): string[] {
   const variable = resultVariable(plan)
-  const exportOdv = plan.exportedOdv === null ? '' : `export ODV=${bashSingleQuote(plan.exportedOdv)} ; `
+  const exportOdvs = Object.entries(plan.exportedOdvs)
+    .map(([name, value]) => `export ODV_${name}=${bashSingleQuote(value)} ; `)
+    .join('')
   // The trailing newline matches mSCP's `$( check\n)`, e.g. for a heredoc
   // terminator on the check's last line.
-  const lines = [`  ${variable}=$( ${exportOdv}__run_check ${bashSingleQuote(`${shell}\n`)} )`]
+  const lines = [`  ${variable}=$( ${exportOdvs}__run_check ${bashSingleQuote(`${shell}\n`)} )`]
   if (plan.reporting === 'boolean') {
     lines.push(
       `  if [ "$${variable}" = ${bashSingleQuote(String(expected.value))} ]; then ${variable}='true'; else ${variable}='false'; fi`,

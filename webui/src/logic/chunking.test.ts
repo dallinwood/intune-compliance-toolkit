@@ -17,12 +17,12 @@ function realRule(upstreamId: string): Rule {
   return JSON.parse(readFileSync(new URL(`${upstreamId}.json`, RULES_DIRECTORY), 'utf8')) as Rule
 }
 
-function selectionFor(rule: Rule, odvValue: OrgDefinedValue | null = null): SelectionEntry {
-  return { ...createSelectionEntry({ id: rule.id, path: `mscp/rules/${rule.source.upstream_rule_id}.json` }), enabled: true, odvValue }
+function selectionFor(rule: Rule, odvValues: Record<string, OrgDefinedValue> = {}): SelectionEntry {
+  return { ...createSelectionEntry({ id: rule.id, path: `mscp/rules/${rule.source.upstream_rule_id}.json` }), enabled: true, odvValues }
 }
 
-function classify(rule: Rule, odvValue: OrgDefinedValue | null = null): ClassificationResult {
-  return classifyRule(rule, selectionFor(rule, odvValue), COVERED_VERSIONS, vocabularyIndex)
+function classify(rule: Rule, odvValues: Record<string, OrgDefinedValue> = {}): ClassificationResult {
+  return classifyRule(rule, selectionFor(rule, odvValues), COVERED_VERSIONS, vocabularyIndex)
 }
 
 function expectGeneratable(result: ClassificationResult): GeneratableRule {
@@ -30,14 +30,14 @@ function expectGeneratable(result: ClassificationResult): GeneratableRule {
   return result.rule
 }
 
-function odvRule(odv: Odv, title = 'Require a Minimum Password Length of $ODV Characters'): Rule {
+function odvRule(odv: Odv, title = 'Require a Minimum Password Length of $ODV_value Characters'): Rule {
   return inlineRule({
     upstreamId: 'pwpolicy_example_length',
     section: 'pwpolicy',
     overrides: {
       title,
-      odv,
-      check: macosCheck(ruleCheck('echo $ODV', { type: 'integer', value: '$ODV' })),
+      odvs: [odv],
+      check: macosCheck(ruleCheck('echo $ODV_value', { type: 'integer', value: '$ODV_value' })),
     },
   })
 }
@@ -94,22 +94,22 @@ describe('classifyRule', () => {
 
   it('classifies a manual rule before looking at its ODV, so a manual rule is never blocked', () => {
     const rule = inlineRule({
-      overrides: { assessment: { status: 'manual', manual_reason: 'manual' }, odv: numberOdv({ recommended: null as unknown as number }) },
+      overrides: { assessment: { status: 'manual', manual_reason: 'manual' }, odvs: [numberOdv({ recommended: null as unknown as number })] },
     })
 
-    expect(classify(rule, "12'").kind).toBe('manual')
+    expect(classify(rule, { value: "12'" }).kind).toBe('manual')
   })
 
   it('generates an ODV rule from the recommended value when the admin has entered nothing', () => {
     const rule = expectGeneratable(classify(odvRule(numberOdv({ recommended: 6 }))))
 
-    expect(rule.plan.odvValue).toBe(6)
+    expect(rule.plan.odvValues).toEqual({ value: 6 })
     expect(rule.ruleEntry).toMatchObject({ DataType: 'Int64', Operand: 6 })
     expect(rule.title).toBe('Require a Minimum Password Length of 6 Characters')
   })
 
   it("generates an ODV rule from the admin's stored value over the recommended one", () => {
-    const rule = expectGeneratable(classify(odvRule(numberOdv({ recommended: 6 })), 15))
+    const rule = expectGeneratable(classify(odvRule(numberOdv({ recommended: 6 })), { value: 15 }))
 
     expect(rule.ruleEntry.Operand).toBe(15)
   })
@@ -126,7 +126,7 @@ describe('classifyRule', () => {
   it('blocks an ODV rule whose stored value is invalid instead of falling back to the recommended value', () => {
     const rule = odvRule(numberOdv({ recommended: 6 }))
 
-    expect(classify(rule, "12'")).toEqual({
+    expect(classify(rule, { value: "12'" })).toEqual({
       kind: 'blocked',
       entry: {
         id: rule.id,
@@ -140,9 +140,9 @@ describe('classifyRule', () => {
   it('blocks system_settings_softwareupdate_current on a stored value that date -v cannot use', () => {
     const rule = realRule('system_settings_softwareupdate_current')
 
-    expect(classify(rule, '30d').kind).toBe('generatable')
+    expect(classify(rule, { value: '30d' }).kind).toBe('generatable')
     for (const unusable of ['30', 'abc']) {
-      const result = classify(rule, unusable)
+      const result = classify(rule, { value: unusable })
       expect(result.kind).toBe('blocked')
       expect(result.kind === 'blocked' && result.entry.reason).toBe(
         'Organization value is invalid: Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
@@ -264,5 +264,46 @@ describe('packChunks', () => {
     const rules = [generatable({ upstreamId: 'os_a-b' }), generatable({ upstreamId: 'os_a_b' })]
 
     expect(() => packChunks(rules, vocabularyIndex)).toThrow(/Duplicate SettingName.*os_a_b/)
+  })
+})
+
+describe('classifyRule with several ODVs', () => {
+  const lengthOdv = numberOdv({ name: 'length', recommended: 8 })
+  const prefixedOdv = numberOdv({ name: 'length_max', recommended: 64 })
+  const twoOdvRule = inlineRule({
+    upstreamId: 'pwpolicy_two_values',
+    section: 'pwpolicy',
+    overrides: {
+      title: 'Between $ODV_length and $ODV_length_max characters',
+      odvs: [lengthOdv, prefixedOdv],
+      check: macosCheck(ruleCheck('test $ODV_length -le $ODV_length_max', { type: 'string', value: 'PASS' })),
+    },
+  })
+
+  it('generates from each ODV own stored value, falling back to its recommended value', () => {
+    const rule = expectGeneratable(classify(twoOdvRule, { length_max: 100 }))
+
+    expect(rule.plan.odvValues).toEqual({ length: 8, length_max: 100 })
+    expect(rule.title).toBe('Between 8 and 100 characters')
+    expect(rule.plan.branches[0].shell).toBe('test 8 -le 100')
+  })
+
+  it('blocks on the first ODV whose stored value is invalid, naming it', () => {
+    expect(classify(twoOdvRule, { length_max: "1'" })).toEqual({
+      kind: 'blocked',
+      entry: {
+        id: twoOdvRule.id,
+        title: 'Between [value] and [value] characters',
+        reason: 'Organization value "length_max" is invalid: Value must be a whole number.',
+        supportingCheck: false,
+      },
+    })
+  })
+
+  it('shows the recommended value for an ODV whose stored value is invalid when the rule is manual', () => {
+    const manualRule = { ...twoOdvRule, assessment: { status: 'manual' as const, manual_reason: 'manual' as const } }
+    const result = classify(manualRule, { length: 12, length_max: "1'" })
+
+    expect(result.kind === 'manual' && result.entry.title).toBe('Between 12 and 64 characters')
   })
 })

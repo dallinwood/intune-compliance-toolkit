@@ -110,7 +110,7 @@
   "discussion": "The macOS time synchronization daemon (timed) _MUST_ be enabled for proper time synchronization to an authorized time server.\n\nNOTE: The time synchronization daemon is enabled by default on macOS.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_time_server_enabled",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -205,7 +205,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

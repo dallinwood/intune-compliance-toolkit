@@ -38,7 +38,7 @@
   "discussion": "Enhanced Visual Search _MUST_ be disabled in the Photos app.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling Enhanced Visual Search will mitigate the risk of unwanted data being sent to Apple.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_photos_enhanced_search_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -100,7 +100,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

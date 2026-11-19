@@ -36,10 +36,10 @@
   "discussion": "Online services, such as email, internet forums, messaging apps and direct messaging on social media, can be used by an adversary in an attempt to elicit sensitive or classified information from personnel. As such, personnel should be advised of what suspicious contact via online services is and how to report it.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0817",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Personnel Security",
     "Cyber security awareness training",

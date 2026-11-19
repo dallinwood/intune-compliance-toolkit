@@ -47913,6 +47913,6 @@
       "title": "A post-quantum cryptography transition plan is developed, implemented and maintained."
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "asd_ism"
 }

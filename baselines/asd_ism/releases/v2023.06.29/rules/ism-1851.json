@@ -36,10 +36,10 @@
   "discussion": "Web application programming interfaces (APIs) can facilitate the exchange of data between computing devices. However, poorly-secured web APIs might facilitate unauthorised access to data not authorised for release into the public domain. In addition, poorly-secured web APIs might facilitate unauthorised modification of data. In such cases, ensuring authentication and authorisation of clients is performed when clients call web APIs can assist in mitigating unauthorised access to, or modification of, data.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1851",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

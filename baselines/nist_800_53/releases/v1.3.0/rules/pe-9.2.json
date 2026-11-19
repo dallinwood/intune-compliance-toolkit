@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy automatic voltage controls for [Assignment: organization-defined critical system components].\n\n## Discussion\n\nAutomatic voltage controls can monitor and control voltage. Such controls include voltage regulators, voltage conditioners, and voltage stabilizers.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-9.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-09 Power Equipment and Cabling"

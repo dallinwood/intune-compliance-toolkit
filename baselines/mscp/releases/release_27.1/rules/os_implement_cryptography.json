@@ -25,7 +25,7 @@
   "discussion": "The information system _IS_ configured to implement approved cryptography to protect information.\n\nUse of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The operating system must implement cryptographic modules that adhere to the higher standards that have been tested, validated, and approved by the federal government.\n\nApple is committed to the FIPS validation process and historically has always submitted and validated the cryptographic modules in macOS.\n\nlink:https://csrc.nist.gov/Projects/cryptographic-module-validation-program/validated-modules[]\n\nlink:https://support.apple.com/en-us/HT201159[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement using FIPS Validated Cryptographic Modules.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_implement_cryptography",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -80,7 +80,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

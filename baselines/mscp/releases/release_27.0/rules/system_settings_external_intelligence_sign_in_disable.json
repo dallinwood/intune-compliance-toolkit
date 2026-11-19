@@ -73,7 +73,7 @@
   "discussion": "The ability to sign into an external intelligence systems _MUST_ be disabled unless approved by the organization. Disabling external intelligence integration will mitigate the risk of data being sent to unapproved third party.\n\nThe information system _MUST_ be configured to provide only essential capabilities.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_external_intelligence_sign_in_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -220,7 +220,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

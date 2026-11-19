@@ -36,10 +36,10 @@
   "discussion": "Implementing measures to restart network devices on at least a monthly basis can assist in maintaining network device performance as well as removing malicious actors that may have compromised a network device but failed to gain persistence.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1801",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Network design and configuration",

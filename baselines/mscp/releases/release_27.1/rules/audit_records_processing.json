@@ -25,7 +25,7 @@
   "discussion": "The macOS should be configured to provide and implement the capability to process, sort, and search audit records for events of interest based on organizationally defined fields.\n\nEvents of interest can be identified by the content of audit records, including system resources involved, information objects accessed, identities of individuals, event types, event locations, event dates and times, Internet Protocol addresses involved, or event success or failure. Organizations may define event criteria to any degree of granularity required, such as locations selectable by a general networking location or by specific system component.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_records_processing",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -57,7 +57,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

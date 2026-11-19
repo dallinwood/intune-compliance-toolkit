@@ -36,10 +36,10 @@
   "discussion": "The CISO is responsible for contributing to the development and maintenance of their organisation’s business continuity and disaster recovery plans, with the aim to improve business resilience and ensure the continued operation of critical business processes.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0734",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cyber Security Roles",
     "Chief Information Security Officer",

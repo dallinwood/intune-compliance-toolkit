@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProtect system components, associated data communications, and networks in accordance with national Emissions Security policies and procedures based on the security category or classification of the information.\n\n## Discussion\n\nEmissions Security (EMSEC) policies include the former TEMPEST policies.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-19.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-19 Information Leakage"

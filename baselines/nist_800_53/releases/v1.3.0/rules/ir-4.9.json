@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy [Assignment: organization-defined dynamic response capabilities] to respond to incidents.\n\n## Discussion\n\nThe dynamic response capability addresses the timely deployment of new or replacement organizational capabilities in response to incidents. This includes capabilities implemented at the mission and business process level and at the system level.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-4.9",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-04 Incident Handling"

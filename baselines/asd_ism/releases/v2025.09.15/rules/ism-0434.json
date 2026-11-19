@@ -36,10 +36,10 @@
   "discussion": "Documenting access requirements for systems and their resources, such as applications and data repositories, can assist in determining if personnel meet the appropriate authorisation, security clearance, briefing and need-to-know requirements for access. Types of users for which access requirements should be documented include unprivileged users, privileged users, foreign nationals and contractors.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0434",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Access to systems and their resources",

@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nTake the following actions in response to unauthorized changes to [Assignment: organization-defined configuration settings]: [Assignment: organization-defined actions].\n\n## Discussion\n\nResponses to unauthorized changes to configuration settings include alerting designated organizational personnel, restoring established configuration settings, or—in extreme cases—halting affected system processing.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-6.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IR-4",
@@ -29,7 +29,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-06 Configuration Settings"

@@ -36,10 +36,10 @@
   "discussion": "When MFDs are connected to both a network and a digital telephone system, they can act as a bridge between the two. As such, and to avoid potential data spills, MFDs should not be connected to digital telephone systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0245",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Multifunction devices",

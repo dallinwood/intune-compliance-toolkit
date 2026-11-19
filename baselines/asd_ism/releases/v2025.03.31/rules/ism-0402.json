@@ -36,10 +36,10 @@
   "discussion": "Software security testing can assist software developers in identifying vulnerabilities in software. In doing so, static application security testing and dynamic application security testing should be performed in order to achieve comprehensive test coverage. Furthermore, software developers may choose to use an additional independent party to assist with removing any potential for bias that might occur when they test their own software.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0402",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

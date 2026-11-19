@@ -97,7 +97,7 @@ def test_controls_become_v5_rules():
 def test_rule_fields_follow_the_mapping():
     rule = rules_by_id()["asd_ism.ism-1667"]
 
-    assert rule["schema_version"] == 5
+    assert rule["schema_version"] == 6
     assert rule["id"] == "asd_ism.ism-1667"
     assert rule["title"] == "Microsoft Office is blocked from creating child processes."
     assert rule["discussion_format"] == "markdown"
@@ -138,7 +138,8 @@ def test_rule_fields_follow_the_mapping():
     assert rule["assessment"] == {"status": "manual", "manual_reason": "no_check"}
     assert rule["tags"] == []
     assert rule["references"] == {}
-    for absent_field in ("check", "odv", "remediation", "architecture"):
+    assert rule["odvs"] == []
+    for absent_field in ("check", "remediation", "architecture"):
         assert rule[absent_field] is None
 
 

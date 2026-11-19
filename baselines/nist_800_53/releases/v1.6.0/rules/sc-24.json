@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nFail to a [Assignment: organization-defined known system state] for the following failures on the indicated components while preserving [Assignment: organization-defined system state information] in failure: [Assignment: organization-defined types of system failures on system components].\n\n## Discussion\n\nFailure in a known state addresses security concerns in accordance with the mission and business needs of organizations. Failure in a known state prevents the loss of confidentiality, integrity, or availability of information in the event of failures of organizational systems or system components. Failure in a known safe state helps to prevent systems from failing to a state that may cause injury to individuals or destruction to property. Preserving system state information facilitates system restart and return to the operational mode with less disruption of mission and business processes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-24",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-2",
@@ -34,7 +34,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-24 Fail in Known State"

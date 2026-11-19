@@ -36,10 +36,10 @@
   "discussion": "The second layer of physical security is the use of an additional security zone for a server room or communications room. This is then further supplemented by security containers for the protection of servers, network devices and cryptographic equipment.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1074",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for physical security",
     "Facilities and systems",

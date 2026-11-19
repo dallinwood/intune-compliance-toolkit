@@ -24,10 +24,10 @@
   "discussion": "Photographic and video recording devices, such as cameras, video cameras and smart glasses, can pose a security risk to an organisation, especially when they can record photographs or videos in an inconspicuous manner. In SECRET and TOP SECRET areas, it is important that an organisation understands the security risks associated with the introduction of photographic and video recording devices and develop, implement, maintain and regularly verify a register of those that have been authorised for use in such environments.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2069",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for physical security",
     "Facilities and systems",

@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nEmploy the following measures so that data or information collected by [Assignment: organization-defined sensors] is only used for authorized purposes: [Assignment: organization-defined measures].\n\n## Discussion\n\nInformation collected by sensors for a specific authorized purpose could be misused for some unauthorized purpose. For example, GPS sensors that are used to support traffic navigation could be misused to track the movements of individuals. Measures to mitigate such activities include additional training to help ensure that authorized individuals do not abuse their authority and, in the case where sensor data is maintained by external parties, contractual restrictions on the use of such data.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-42.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PT-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-42 Sensor Capability and Data"

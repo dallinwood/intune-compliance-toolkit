@@ -93,7 +93,7 @@
   "discussion": "Automatic logon _MUST_ be disabled.\n\nWhen automatic logons are enabled, the default user account is automatically logged on at boot time without prompting the user for a password. Even if the screen is later locked, a malicious user would be able to reboot the computer and find it already logged in. Disabling automatic logons mitigates this risk.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_automatic_login_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -193,7 +193,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

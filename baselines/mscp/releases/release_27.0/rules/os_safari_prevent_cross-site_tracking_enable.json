@@ -73,7 +73,7 @@
   "discussion": "Prevent cross-site tracking _MUST_ be enabled in Safari.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_safari_prevent_cross-site_tracking_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -145,7 +145,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

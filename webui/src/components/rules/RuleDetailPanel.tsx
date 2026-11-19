@@ -1,6 +1,6 @@
 import { Tabs } from '@base-ui/react/tabs'
 import { Component, useEffect, useState, type ReactNode } from 'react'
-import { useImportedRule, useRule, useStoredOdvValue, type RuleLoadState } from '@/hooks/useRule'
+import { useImportedRule, useRule, useStoredOdvValues, type RuleLoadState } from '@/hooks/useRule'
 import { useRuleHistory } from '@/hooks/useRuleHistory'
 import { useCustomChangeNotice } from '@/hooks/useCustomChangeNotice'
 import { useSourceReleaseCount } from '@/hooks/useSourceReleaseCount'
@@ -8,7 +8,7 @@ import { changeCount } from '../../logic/historyIndex'
 import { historyTabLabel } from '../../logic/changeLabels'
 import { distinctMappedRuleCount } from '../../logic/mappedRuleView'
 import { termLabel } from '../../logic/vocabulary'
-import { displayWithOdv, odvSubstitutionMode, codeOdvValues, usableOdvValue, validateOdvValue } from '../../logic/odv'
+import { displayWithOdvs, odvSubstitutionMode, codeOdvValues, usableOdvValues, validateOdvValue } from '../../logic/odv'
 import type { OverlaidRule, OverlayApplication } from '../../logic/overlays'
 import { macosReferences } from '../../logic/references'
 import { BREADCRUMB_SEPARATOR } from '../../logic/ruleDisplay'
@@ -117,7 +117,7 @@ function RuleDetailFor({
 // any other overlaid field is listed on the "Custom:" line instead.
 function fieldsWithOwnSection(rule: Rule): Set<string> {
   const fields = new Set(['title', 'check', 'applicability'])
-  if (rule.odv) fields.add('odv')
+  if (rule.odvs.length > 0) fields.add('odvs')
   if (showsRemediationSection(rule)) fields.add('remediation')
   if (macosReferences(rule.references).length > 0) fields.add('references')
   return fields
@@ -227,17 +227,20 @@ function LoadedRuleDetail({
   const releaseCount = useSourceReleaseCount(mappedView ? rule.source.name : null)
   const showHistory = (releaseCount ?? 0) > 1
   const mappedRuleCount = mappedView ? distinctMappedRuleCount(byRule.get(rule.id) ?? [], rowsById) : 0
-  const storedValue = useStoredOdvValue(ruleRef)
+  const storedValues = useStoredOdvValues(ruleRef)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
   const clearOdvValue = useSelectionStore((store) => store.clearOdvValue)
   const vocabularyIndex = useVocabularyIndex()
-  const mode = odvSubstitutionMode(rule)
   // An invalid saved value blocks generation, so the details show the
   // placeholder rather than a recommended value that will not be used.
-  const storedValueIsInvalid =
-    rule.odv !== null && storedValue !== null && validateOdvValue(rule.odv, storedValue, mode, rule.id) !== null
-  const odvValue = storedValueIsInvalid ? null : usableOdvValue(rule.odv, mode, storedValue, rule.id)
-  const codeOdv = codeOdvValues(rule.odv, mode, odvValue, rule.id)
+  const odvValues = usableOdvValues(rule, storedValues)
+  for (const odv of rule.odvs) {
+    const storedValue = Object.hasOwn(storedValues, odv.name) ? storedValues[odv.name] : undefined
+    if (storedValue !== undefined && validateOdvValue(odv, storedValue, odvSubstitutionMode(rule, odv), rule.id) !== null) {
+      delete odvValues[odv.name]
+    }
+  }
+  const codeOdv = codeOdvValues(rule, odvValues)
   const { source } = rule
   const revision = revisionLine(source)
   // A one-level path (every mSCP rule) only repeats the table's group header
@@ -266,7 +269,7 @@ function LoadedRuleDetail({
 
       {isCustom('title') && (
         <p data-testid="custom-title" className="font-medium break-words text-foreground">
-          {displayWithOdv(rule.title, odvValue)} <CustomTag className="ml-1 align-text-bottom" />
+          {displayWithOdvs(rule.title, odvValues)} <CustomTag className="ml-1 align-text-bottom" />
         </p>
       )}
 
@@ -281,24 +284,28 @@ function LoadedRuleDetail({
         </div>
       )}
 
-      <DiscussionText text={rule.discussion} format={rule.discussion_format} odvValue={odvValue} codeOdv={codeOdv} />
+      <DiscussionText text={rule.discussion} format={rule.discussion_format} odvValues={odvValues} codeOdv={codeOdv} />
 
-      {rule.odv && (
-        <div className="space-y-1">
-          <SectionHeading custom={isCustom('odv')}>Organization-defined value</SectionHeading>
-          <OrgDefinedValueInput
-            ruleId={rule.id}
-            odv={rule.odv}
-            mode={mode}
-            storedValue={storedValue}
-            onCommit={(value) => setOdvValue(ruleRef, value)}
-            onClear={() => clearOdvValue(ruleRef)}
-          />
+      {rule.odvs.length > 0 && (
+        <div className="space-y-3">
+          <SectionHeading custom={isCustom('odvs')}>Organization-defined values</SectionHeading>
+          {rule.odvs.map((odv) => (
+            <OrgDefinedValueInput
+              key={odv.name}
+              ruleId={rule.id}
+              odvName={odv.name}
+              odv={odv}
+              mode={odvSubstitutionMode(rule, odv)}
+              storedValue={Object.hasOwn(storedValues, odv.name) ? storedValues[odv.name] : null}
+              onCommit={(value) => setOdvValue(ruleRef, odv.name, value)}
+              onClear={() => clearOdvValue(ruleRef, odv.name)}
+            />
+          ))}
         </div>
       )}
 
-      <RuleCheckSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('check')} />
-      <RuleRemediationSection rule={rule} odvValue={odvValue} codeOdv={codeOdv} custom={isCustom('remediation')} />
+      <RuleCheckSection rule={rule} odvValues={odvValues} codeOdv={codeOdv} custom={isCustom('check')} />
+      <RuleRemediationSection rule={rule} odvValues={odvValues} codeOdv={codeOdv} custom={isCustom('remediation')} />
       <RuleBenchmarks applicability={rule.applicability} custom={isCustom('applicability')} />
       <RuleReferences references={rule.references} custom={isCustom('references')} />
 

@@ -53,7 +53,7 @@
   "discussion": "Erase all contents and settings _MUST_ be disabled on institutionally owned devices.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_erase_contents_and_settings_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -191,7 +191,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -36,10 +36,10 @@
   "discussion": "Excessive agency vulnerabilities allow for damaging actions to be performed in response to unexpected, ambiguous or manipulated outputs from artificial intelligence applications, regardless of what is causing an artificial intelligence application to malfunction.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2093",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

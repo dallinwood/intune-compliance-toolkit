@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Require an independent agent satisfying [Assignment: organization-defined independence criteria] to verify the correct implementation of the developer security and privacy assessment plans and the evidence produced during testing and evaluation; and\n- (b) Verify that the independent agent is provided with sufficient information to complete the verification process or granted the authority to obtain such information.\n\n## Discussion\n\nIndependent agents have the qualifications—including the expertise, skills, training, certifications, and experience—to verify the correct implementation of developer security and privacy assessment plans.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-11.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-3",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-11 Developer Testing and Evaluation"

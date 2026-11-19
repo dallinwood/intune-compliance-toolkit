@@ -36,10 +36,10 @@
   "discussion": "To provide cybersecurity leadership and guidance within an organisation (for information technology and operational technology), it is important that the organisation appoints a CISO.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0714",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity roles",
     "Chief information security officer",

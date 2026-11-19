@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Prohibit remote activation of collaborative computing devices and applications with the following exceptions: [Assignment: organization-defined exceptions where remote activation is to be allowed] ; and\n- b. Provide an explicit indication of use to users physically present at the devices.\n\n## Discussion\n\nCollaborative computing devices and applications include remote meeting devices and applications, networked white boards, cameras, and microphones. The explicit indication of use includes signals to users when collaborative computing devices and applications are activated.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-21",
@@ -36,7 +36,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-15 Collaborative Computing Devices and Applications"

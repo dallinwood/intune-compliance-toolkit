@@ -102,7 +102,7 @@
   "discussion": "The information system _MUST_ be configured to generate audit records.\n\nAudit records establish what types of events have occurred, when they occurred, and which users were involved. These records aid an organization in their efforts to establish, correlate, and investigate the events leading up to an outage or attack.\n\nThe content required to be captured in an audit record varies based on the impact level of an organization's system. Content that may be necessary to satisfy this requirement includes, for example, time stamps, source addresses, destination addresses, user identifiers, event descriptions, success/fail indications, filenames involved, and access or flow control rules invoked.\n\nThe information system initiates session audits at system start-up.\n\nNOTE: Security auditing is NOT enabled by default on macOS 14 and later.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_auditd_enabled",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -256,7 +256,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

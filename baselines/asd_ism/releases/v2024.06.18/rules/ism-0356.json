@@ -24,10 +24,10 @@
   "discussion": "Due to concerns with the sanitisation processes for non-volatile magnetic media, SECRET and TOP SECRET non-volatile magnetic media retains its classification following sanitisation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0356",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Media",
     "Media sanitisation",

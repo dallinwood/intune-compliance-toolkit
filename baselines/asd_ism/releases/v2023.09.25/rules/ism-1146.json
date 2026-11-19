@@ -36,10 +36,10 @@
   "discussion": "Personnel should be advised to take special care not to post work information to online services unless authorised to do so, especially for chat services, internet forums, social media and artificial intelligence tools. Even information that appears to be benign in isolation could, along with other information, have a considerable security impact. In addition, to ensure that personal opinions of individuals are not misinterpreted, personnel should be advised to maintain separate work and personal accounts for online services, especially when using social media.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1146",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Personnel Security",
     "Cyber security awareness training",

@@ -36,10 +36,10 @@
   "discussion": "Using database servers across different environments, such as development, testing, staging and production environments, could result in accidental damage to their integrity or exposure of their hosted database contents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1273",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for database systems",
     "Database servers",

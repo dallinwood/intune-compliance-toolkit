@@ -36,10 +36,10 @@
   "discussion": "For each event logged, sufficient detail needs to be recorded in order for the event log to be useful.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0585",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Monitoring",
     "Event logging and monitoring",

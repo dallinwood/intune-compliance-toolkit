@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy [Assignment: organization-defined anti-tamper technologies] to [Selection (one or more): detect; prevent] physical tampering or alteration of [Assignment: organization-defined hardware components] within the system.\n\n## Discussion\n\nOrganizations can implement tamper detection and prevention at selected hardware components or implement tamper detection at some components and tamper prevention at other components. Detection and prevention activities can employ many types of anti-tamper technologies, including tamper-detection seals and anti-tamper coatings. Anti-tamper programs help to detect hardware alterations through counterfeiting and other supply chain-related risks.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-3.5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SA-16",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-03 Physical Access Control"

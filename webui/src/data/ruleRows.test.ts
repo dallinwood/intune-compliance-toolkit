@@ -18,7 +18,7 @@ const SOURCE: ManifestSource = {
 }
 
 const INDEX: RuleIndex = {
-  schema_version: 5,
+  schema_version: 6,
   source: 'mscp',
   rules: [
     {
@@ -39,7 +39,7 @@ const INDEX: RuleIndex = {
     },
     {
       id: 'mscp.pwpolicy_minimum_length_enforce',
-      title: 'Require a Minimum Password Length of $ODV Characters',
+      title: 'Require a Minimum Password Length of $ODV_value Characters',
       file: 'rules/pwpolicy_minimum_length_enforce.json',
       section: 'pwpolicy',
       section_path: ['pwpolicy'],
@@ -98,7 +98,7 @@ describe('buildRuleRows', () => {
 
   it('maps the remaining index fields', () => {
     expect(rows[1]).toMatchObject({
-      title: 'Require a Minimum Password Length of $ODV Characters',
+      title: 'Require a Minimum Password Length of $ODV_value Characters',
       section: 'pwpolicy',
       assessment: { status: 'manual', manual_reason: 'manual' },
       architecture: 'arm64',
@@ -179,10 +179,16 @@ describe('buildRuleRows with overlays', () => {
     expect(other).toEqual(buildRuleRows(SOURCE, INDEX)[1])
   })
 
-  it('turns hasOdv on when an overlay sets an odv', () => {
-    const odv = { datatype: 'number', description: 'Value', validation: null, recommended: 5, by_benchmark: {} }
-    const overlays = [{ id: 'odv', targets: [{ rule: 'mscp.os_gatekeeper_enable', release: 'release_27.0' }], fields: { odv: { $replace: odv } } }]
+  it('turns hasOdv on when an overlay replaces odvs with a list', () => {
+    const odv = { name: 'value', datatype: 'number', description: 'Value', validation: null, recommended: 5, by_benchmark: {}, quoting: 'unquoted' }
+    const overlays = [{ id: 'odv', targets: [{ rule: 'mscp.os_gatekeeper_enable', release: 'release_27.0' }], fields: { odvs: { $replace: [odv] } } }]
 
     expect(buildRuleRows(SOURCE, INDEX, overlays)[0].hasOdv).toBe(true)
+  })
+
+  it('turns hasOdv off when an overlay replaces odvs with an empty list', () => {
+    const overlays = [{ id: 'odv', targets: [{ rule: 'mscp.pwpolicy_minimum_length_enforce', release: 'release_27.0' }], fields: { odvs: { $replace: [] } } }]
+
+    expect(buildRuleRows(SOURCE, INDEX, overlays)[1].hasOdv).toBe(false)
   })
 })

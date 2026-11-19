@@ -36,10 +36,10 @@
   "discussion": "A denial of service response plan for video conferencing and IP telephony services contains the following:\n\n- how to identify signs of a denial-of-service attack\n- how to identify the source of a denial-of-service attack\n- how capabilities can be maintained during a denial-of-service attack\n- what actions can be taken to respond to a denial-of-service attack.\n\nVideo conferencing and IP telephony services may be a critical service for an organisation. In such cases, a denial of service response plan will assist in responding to denial-of-service attacks against these services.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1805",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Video conferencing and Internet Protocol telephony",

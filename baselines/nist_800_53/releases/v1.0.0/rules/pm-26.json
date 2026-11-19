@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nImplement a process for receiving and responding to complaints, concerns, or questions from individuals about the organizational security and privacy practices that includes:\n\n- a. Mechanisms that are easy to use and readily accessible by the public;\n- b. All information necessary for successfully filing complaints;\n- c. Tracking mechanisms to ensure all complaints received are reviewed and addressed within [Assignment: organization-defined time period];\n- d. Acknowledgement of receipt of complaints, concerns, or questions from individuals within [Assignment: organization-defined time period]; and\n- e. Response to complaints, concerns, or questions from individuals within [Assignment: organization-defined time period].\n\n## Discussion\n\nComplaints, concerns, and questions from individuals can serve as valuable sources of input to organizations and ultimately improve operational models, uses of technology, data collection practices, and controls. Mechanisms that can be used by the public include telephone hotline, email, or web-based forms. The information necessary for successfully filing complaints includes contact information for the senior agency official for privacy or other official designated to receive complaints. Privacy complaints may also include personally identifiable information which is handled in accordance with relevant policies and processes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-26",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130"
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-26 Complaint Management"

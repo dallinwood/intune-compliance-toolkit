@@ -20,14 +20,14 @@
   "discussion": "## Control\n\nLimit personally identifiable information contained in audit records to the following elements identified in the privacy risk assessment: [Assignment: organization-defined elements].\n\n## Discussion\n\nLimiting personally identifiable information in audit records when such information is not needed for operational purposes helps reduce the level of privacy risk created by a system.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "RA-3"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-03 Content of Audit Records"

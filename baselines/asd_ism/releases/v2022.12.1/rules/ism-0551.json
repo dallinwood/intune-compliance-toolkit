@@ -36,10 +36,10 @@
   "discussion": "IP telephony is configured such that:\n\n* IP phones authenticate themselves to the call controller upon registration\n* auto-registration is disabled and only authorised devices are allowed to access the network\n* unauthorised devices are blocked by default\n* all unused and prohibited functionality is disabled.\n\nBlocking unauthorised or unauthenticated devices by default will reduce the likelihood of unauthorised access to a video conferencing or IP telephony network.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0551",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Video conferencing and Internet Protocol telephony",

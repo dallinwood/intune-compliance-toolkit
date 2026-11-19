@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nAllow user installation of software only with explicit privileged status.\n\n## Discussion\n\nPrivileged status can be obtained, for example, by serving in the role of system administrator.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-11.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-5",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-11 User-installed Software"

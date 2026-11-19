@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- a. Establish usage restrictions and implementation guidelines for the following system components: [Assignment: organization-defined system components]; and\n- b. Authorize, monitor, and control the use of such components within the system.\n\n## Discussion\n\nUsage restrictions apply to all system components including but not limited to mobile code, mobile devices, wireless access, and wired and wireless peripheral components (e.g., copiers, printers, scanners, optical devices, and other similar technologies). The usage restrictions and implementation guidelines are based on the potential for system components to cause damage to the system and help to ensure that only authorized system use occurs.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-43",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130",
@@ -30,7 +30,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-43 Usage Restrictions"

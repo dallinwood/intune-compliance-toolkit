@@ -20,7 +20,7 @@
   "discussion": "## Control\n\n- (a) Monitor system accounts for [Assignment: organization-defined atypical usage] ; and\n- (b) Report atypical usage of system accounts to [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nAtypical usage includes accessing systems at certain times of the day or from locations that are not consistent with the normal usage patterns of individuals. Monitoring for atypical usage may reveal rogue behavior by individuals or an attack in progress. Account monitoring may inadvertently create privacy risks since data collected to identify atypical usage may reveal previously unknown information about the behavior of individuals. Organizations assess and document privacy risks from monitoring accounts for atypical usage in their privacy impact assessment and make determinations that are in alignment with their privacy program plan.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-2.12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-6",
@@ -31,7 +31,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-02 Account Management"

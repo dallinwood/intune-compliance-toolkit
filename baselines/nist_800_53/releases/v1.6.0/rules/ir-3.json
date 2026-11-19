@@ -28,7 +28,7 @@
   "discussion": "## Control\n\nTest the effectiveness of the incident response capability for the system [Assignment: organization-defined frequency] using the following tests: [Assignment: organization-defined tests].\n\n## Discussion\n\nOrganizations test incident response capabilities to determine their effectiveness and identify potential weaknesses or deficiencies. Incident response testing includes the use of checklists, walk-through or tabletop exercises, and simulations (parallel or full interrupt). Incident response testing can include a determination of the effects on organizational operations and assets and individuals due to incident response. The use of qualitative and quantitative data aids in determining the effectiveness of incident response processes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130",
@@ -45,7 +45,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-03 Incident Response Testing"

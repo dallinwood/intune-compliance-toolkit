@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire that the following user-installed software execute in a confined physical or virtual machine environment with limited privileges: [Assignment: organization-defined user-installed software].\n\n## Discussion\n\nOrganizations identify software that may be of concern regarding its origin or potential for containing malicious code. For this type of software, user installations occur in confined environments of operation to limit or contain damage from malicious code that may be executed.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-7.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-11",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-07 Least Functionality"

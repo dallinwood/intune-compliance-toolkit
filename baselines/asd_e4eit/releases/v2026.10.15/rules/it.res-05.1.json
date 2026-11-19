@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nCyber security incident roles and responsibilities are defined, documented and exercised to support the internal and external coordination and management of cyber security incidents, including responsibilities for declaring cyber security incidents and undertaking pre-approved response and recovery activities.\n\n# Indicators of Good Practice\n\nNot effective:\n- External coordination requirements for Cyber security incident response activities are neither identified nor documented.\n- No defined triggers, contacts or timeframes exist for external reporting.\n\nPartially effective:\n- External coordination requirements are documented but are not integrated into operational response procedures.\n- Contacts and triggers are defined for some but not all required external parties.\n\nFully effective:\n- Cyber security incident response procedures include documented external coordination requirements with defined triggers, contacts and timeframes.\n- Requirements cover all relevant external parties identified by applicable legal, regulatory, contractual and organisational obligations.\n- Coordination procedures have been exercised or invoked and lessons learnt have been incorporated.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.res-05.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Respond principles",
     "RES-05 - Cyber security incident coordination"

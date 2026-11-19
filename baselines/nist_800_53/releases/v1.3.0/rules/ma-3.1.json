@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nInspect the maintenance tools used by maintenance personnel for improper or unauthorized modifications.\n\n## Discussion\n\nMaintenance tools can be directly brought into a facility by maintenance personnel or downloaded from a vendor’s website. If, upon inspection of the maintenance tools, organizations determine that the tools have been modified in an improper manner or the tools contain malicious code, the incident is handled consistent with organizational policies and procedures for incident handling.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-03 Maintenance Tools"

@@ -89,7 +89,7 @@
   "discussion": "The ability for Apple to store and review audio of your Siri and Dictation interactions _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling the submission of Siri and Dictation information will mitigate the risk of unwanted data being sent to Apple.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_improve_siri_dictation_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -198,7 +198,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

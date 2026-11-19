@@ -36,10 +36,10 @@
   "discussion": "The retention of event logs is integral to security monitoring, threat hunting and cyber security incident response activities. As such, event logs should be retained for a suitable period to facilitate these activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1989",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security monitoring",

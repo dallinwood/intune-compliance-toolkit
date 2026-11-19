@@ -36,10 +36,10 @@
   "discussion": "A centralised event logging facility can be used to capture, protect and manage event logs from multiple sources in a coordinated manner. This may be achieved by using a security information and event management (SIEM) platform, a security orchestration, automation and response (SOAR) platform, or both. Furthermore, in support of a centralised event logging facility, it is important that an accurate and consistent time source is used to assist with identifying connections between events.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0988",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security monitoring",

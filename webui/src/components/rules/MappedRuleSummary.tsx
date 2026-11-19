@@ -1,6 +1,6 @@
 import { useDisplayTitle } from '../../hooks/useDisplayTitle'
-import { useRule, useUsableOdvValue } from '../../hooks/useRule'
-import { displayWithOdv } from '../../logic/odv'
+import { useRule, useUsableOdvValues } from '../../hooks/useRule'
+import { displayWithOdvs } from '../../logic/odv'
 import { discussionExcerpt } from '../../logic/mappedRuleView'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { targetStatus } from '../../logic/ruleStatusIcons'
@@ -21,7 +21,7 @@ export function MappedRuleSummary({ row }: { row: RuleRow }) {
   const vocabularyIndex = useVocabularyIndex()
   const title = useDisplayTitle(row)
   const ruleState = useRule(row.ref)
-  const odvValue = useUsableOdvValue(ruleState.status === 'ready' ? ruleState.rule : null, row.ref)
+  const odvValues = useUsableOdvValues(ruleState.status === 'ready' ? ruleState.rule : null, row.ref)
 
   const statusByTarget = Object.fromEntries(row.targetKeys.map((targetKey) => [targetKey, targetStatus(row, targetKey)]))
 
@@ -43,7 +43,7 @@ export function MappedRuleSummary({ row }: { row: RuleRow }) {
             <span>Check: {yesOrNo(ruleState.rule.check !== null)}</span>
             <span>Fix: {yesOrNo(ruleState.rule.remediation !== null)}</span>
           </p>
-          <p>{discussionExcerpt(displayWithOdv(ruleState.rule.discussion, odvValue), EXCERPT_CHARACTERS)}</p>
+          <p>{discussionExcerpt(displayWithOdvs(ruleState.rule.discussion, odvValues), EXCERPT_CHARACTERS)}</p>
         </>
       )}
     </div>

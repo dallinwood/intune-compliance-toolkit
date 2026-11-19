@@ -36,10 +36,10 @@
   "discussion": "Database events can assist in monitoring the security posture of databases, detecting malicious behaviour and contributing to investigations following cyber security incidents. To facilitate such activities, database event logs should be captured and stored centrally.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1758",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Database Systems",
     "Databases",

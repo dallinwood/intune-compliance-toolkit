@@ -36,10 +36,10 @@
   "discussion": "Implementing protective markings for emails helps to prevent data spills, such as unauthorised data being released into the public domain. In doing so, it is important that protective markings reflect the highest sensitivity or classification of the subject, body and attachments of emails.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0270",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for email",
     "Email usage",

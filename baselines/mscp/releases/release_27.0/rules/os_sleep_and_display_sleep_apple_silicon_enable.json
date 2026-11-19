@@ -62,7 +62,7 @@
   "discussion": "Apple Silicon MacBooks should set sleep timeout to 15 minutes (900 seconds) or less and the display sleep timeout should be 10 minutes (600 seconds) or less but less than the sleep setting.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_sleep_and_display_sleep_apple_silicon_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -114,7 +114,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -36,10 +36,10 @@
   "discussion": "Upon returning from travelling overseas with mobile devices, personnel take the following actions:\n\n* sanitise and reset mobile devices, including all removable media\n* decommission any credentials that left their possession during their travel\n* report if significant doubt exists as to the integrity of any mobile devices or removable media.\n\nFollowing overseas travel with mobile devices, personnel should take appropriate precautions to ensure that they do not pose an undue security risk to their organisation’s systems and data. In most cases, sanitising and resetting mobile devices, including all removable media, will be sufficient. However, upon returning from high or extreme risk countries, additional precautions will likely be needed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1300",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device usage",

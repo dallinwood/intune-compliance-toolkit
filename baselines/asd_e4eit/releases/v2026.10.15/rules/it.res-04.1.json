@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nLessons learnt from cyber security incidents are captured, and areas for improvement are identified, prioritised and actioned in a timely manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Post-incident reviews are not conducted.\n\nPartially effective:\n- Post-incident reviews are conducted for some incidents but not all that meet the severity threshold defined by the organisation.\n- Reviews are conducted but findings are not documented or actioned.\n\nFully effective:\n- Post-incident reviews are conducted for all incidents meeting the severity threshold defined by the organisation.\n- Findings identify the specific gaps that enabled each stage of the incident.\n- Remediation actions arising from findings are implemented and tracked to closure.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.res-04.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Respond principles",
     "RES-04 - Cyber security incident insights"

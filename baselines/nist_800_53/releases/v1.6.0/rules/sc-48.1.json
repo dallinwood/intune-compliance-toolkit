@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nDynamically relocate [Assignment: organization-defined sensors and monitoring capabilities] to [Assignment: organization-defined locations] under the following conditions or circumstances: [Assignment: organization-defined conditions or circumstances].\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-48.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-48 Sensor Relocation"

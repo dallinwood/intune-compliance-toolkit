@@ -36,10 +36,10 @@
   "discussion": "Virtual Local Area Networks (VLANs) can be used to implement network segmentation and segregation when networks belong to the same security domain. In such cases, if a data spill occurs the impact will be less than if a data spill occurred between two networks of different classifications or between an organisation’s network and public network infrastructure. Should an organisation choose to risk manage implementing VLANs between networks belonging to different security domains, such as at the same classification, additional controls for network devices will apply, such as not sharing VLAN trunks and terminating VLANs on separate physical network interfaces.\n\nFor the purposes of this topic, Multiprotocol Label Switching is considered equivalent to VLANs and subject to the same controls.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1532",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Network design and configuration",

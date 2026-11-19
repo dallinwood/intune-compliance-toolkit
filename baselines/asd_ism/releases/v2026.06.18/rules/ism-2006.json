@@ -36,10 +36,10 @@
   "discussion": "For the board of directors or executive committee to fulfil both their fiduciary duties and any legislative or regulatory obligations, it is important that they plan for major cyber security incidents, including by participating in exercises, and understand their duties in relation to such cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2006",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "Board of directors and executive committee",

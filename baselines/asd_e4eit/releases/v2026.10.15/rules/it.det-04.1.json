@@ -40,7 +40,7 @@
   "discussion": "# Principle\n\nBaseline patterns of identity and credential access activities, privileged access activities, and remote access activities are established and maintained for systems (infrastructure, operating systems, applications and data) to enable the detection of anomalous or unexpected behaviour.\n\n# Indicators of Good Practice\n\nNot effective:\n- No monitoring or equivalent analysis is used to identify anomalous or unexpected use of legitimate tools and utilities on applicable systems.\n- Existing controls do not provide a reasonable capability to detect security-relevant patterns of legitimate software being used for malicious purposes.\n\nPartially effective:\n- Monitoring or equivalent analysis covers some priority tools, execution behaviours or applicable systems, but risk-significant coverage gaps exist.\n- Security-relevant execution telemetry is collected, but detection rules, behavioural analytics or equivalent analysis are incomplete or not consistently operational.\n- Alerts relating to anomalous or unexpected software execution are generated, but they are not consistently triaged and investigated within organisationally defined timeframes.\n\nFully effective:\n- The organisation identifies the legitimate tools, utilities and execution behaviours that present heightened risk of malicious use within applicable systems.\n- Security-relevant telemetry and contextual information are analysed using detection rules, behavioural analytics or equivalent methods to identify anomalous or unexpected use of priority tools and utilities.\n- Detection coverage is periodically reviewed and adjusted in response to changes in applicable systems, threat intelligence, observed activity and the organisation’s risk profile.\n- Alerts are prioritised, triaged and investigated within timeframes defined according to their assessed security risk.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.det-04.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -68,7 +68,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Detect principles",
     "DET-04 - Baseline high-risk access activities"

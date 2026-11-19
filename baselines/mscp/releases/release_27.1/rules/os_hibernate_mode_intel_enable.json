@@ -42,7 +42,7 @@
   "discussion": "Hibernate mode _MUST_ be enabled.\n\nThis will store a copy of memory to persistent storage, and will remove power to memory. This setting will stop the potential for a cold-boot attack.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_hibernate_mode_intel_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "cce": {
@@ -72,7 +72,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

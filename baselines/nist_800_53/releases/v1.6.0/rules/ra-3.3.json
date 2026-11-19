@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nDetermine the current cyber threat environment on an ongoing basis using [Assignment: organization-defined means].\n\n## Discussion\n\nThe threat awareness information that is gathered feeds into the organization’s information security operations to ensure that procedures are updated in response to the changing threat environment. For example, at higher threat levels, organizations may change the privilege or authentication thresholds required to perform certain operations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ra-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Risk Assessment",
     "RA-03 Risk Assessment"

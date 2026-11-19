@@ -57,7 +57,7 @@
   "discussion": "Dictation _MUST_ be disabled on Intel based Macs as the feature On Device Dictation is only available on Apple Silicon devices. When enabled on Apple Silicon Macs, on device dictation _MUST_ be enabled as well to prevent data from being sent off device.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_dictation_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -177,7 +177,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

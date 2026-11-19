@@ -38,7 +38,7 @@
   "discussion": "A default screen saver _MUST_ be configured to display at the login window and _MUST_ not display any sensitive information.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_screensaver_loginwindow_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -111,7 +111,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

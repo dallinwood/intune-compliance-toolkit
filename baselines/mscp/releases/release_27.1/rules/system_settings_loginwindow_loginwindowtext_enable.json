@@ -79,7 +79,7 @@
         "additional_info": null,
         "result": {
           "type": "base64",
-          "value": "$ODV"
+          "value": "$ODV_value"
         },
         "shell": "/usr/bin/osascript -l JavaScript << EOS | /usr/bin/base64\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.objectForKey('LoginwindowText').js\nEOS"
       },
@@ -89,18 +89,22 @@
   "discussion": "The login window _MUST_ be configured to show a custom access warning message.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_loginwindow_loginwindowtext_enable",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": "Center for Internet Security Test Message",
-      "cis_lvl2": "Center for Internet Security Test Message",
-      "nlmapgov_base": "NLMAPGOV Test Message",
-      "nlmapgov_plus": "NLMAPGOV Test Message"
-    },
-    "datatype": "string",
-    "description": "Text to be displayed at the loginwindow. The visible characters are limited at the loginwindow screen. Avoid special characters and complex formatting for best results.",
-    "recommended": "Center for Internet Security Test Message",
-    "validation": null
-  },
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": "Center for Internet Security Test Message",
+        "cis_lvl2": "Center for Internet Security Test Message",
+        "nlmapgov_base": "NLMAPGOV Test Message",
+        "nlmapgov_plus": "NLMAPGOV Test Message"
+      },
+      "datatype": "string",
+      "description": "Text to be displayed at the loginwindow. The visible characters are limited at the loginwindow screen. Avoid special characters and complex formatting for best results.",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": "Center for Internet Security Test Message",
+      "validation": null
+    }
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -152,7 +156,7 @@
             {
               "PayloadContent": [
                 {
-                  "LoginwindowText": "$ODV"
+                  "LoginwindowText": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.loginwindow"
@@ -165,7 +169,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

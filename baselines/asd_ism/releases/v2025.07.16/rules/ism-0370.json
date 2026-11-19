@@ -36,10 +36,10 @@
   "discussion": "To verify that media is appropriately destroyed, destruction processes need to be supervised by at least one cleared person.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0370",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for media",
     "Media destruction",

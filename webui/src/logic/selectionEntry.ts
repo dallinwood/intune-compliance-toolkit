@@ -10,24 +10,36 @@ export interface RuleRef {
 
 export type OrgDefinedValue = string | number
 
+// Keyed by ODV name.
+export type OdvValues = Record<string, OrgDefinedValue>
+
 export interface SelectionEntry {
   ref: RuleRef
   enabled: boolean
-  // null = the admin has not chosen a value; the effective value then falls
-  // back to mSCP's recommended value (see logic/odv.ts).
+  // A name missing here means the admin has not chosen a value for that ODV;
+  // its effective value then falls back to the recommended one (see
+  // logic/odv.ts).
+  odvValues: OdvValues
+}
+
+// The shape before a rule could have several ODVs: its one value was
+// `odvValue`, and mSCP's single ODV is now named "value".
+export interface SelectionEntryVersion2 {
+  ref: RuleRef
+  enabled: boolean
   odvValue: OrgDefinedValue | null
 }
 
 export type SelectionMap = Record<string, SelectionEntry>
 
-export const PERSIST_VERSION = 2
+export const PERSIST_VERSION = 3
 
 export function refKey(ref: RuleRef): string {
   return ref.id
 }
 
 export function createSelectionEntry(ref: RuleRef): SelectionEntry {
-  return { ref, enabled: false, odvValue: null }
+  return { ref, enabled: false, odvValues: {} }
 }
 
 // A rule only gets an entry in the map once the user first interacts with
@@ -99,9 +111,22 @@ export function removeSelections(selections: SelectionMap, ids: readonly string[
   return remaining
 }
 
+export function selectionEntryFromVersion2(entry: SelectionEntryVersion2): SelectionEntry {
+  const { odvValue, ...rest } = entry
+  return { ...rest, odvValues: odvValue === null || odvValue === undefined ? {} : { value: odvValue } }
+}
+
 // Selections persisted by the CIS-era app (version 1) reference rules that
-// no longer exist, so they are discarded rather than converted.
+// no longer exist, so they are discarded rather than converted. Version 2
+// entries are converted.
 export function migratePersistedSelections(persistedState: unknown, version: number): { selections: SelectionMap } {
-  if (version < PERSIST_VERSION) return { selections: {} }
-  return persistedState as { selections: SelectionMap }
+  if (version < 2) return { selections: {} }
+  if (version >= PERSIST_VERSION) return persistedState as { selections: SelectionMap }
+
+  const persistedSelections = (persistedState as { selections?: Record<string, SelectionEntryVersion2> } | null)?.selections
+  const selections: SelectionMap = {}
+  for (const [key, entry] of Object.entries(persistedSelections ?? {})) {
+    selections[key] = selectionEntryFromVersion2(entry)
+  }
+  return { selections }
 }

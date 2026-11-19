@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nRequire that the presented identity evidence be validated and verified through [Assignment: organization-defined methods of validation and verification].\n\n## Discussion\n\nValidation and verification of identity evidence increases the assurance that accounts and identifiers are being established for the correct user and authenticators are being bound to that user. Validation refers to the process of confirming that the evidence is genuine and authentic, and the data contained in the evidence is correct, current, and related to an individual. Verification confirms and establishes a linkage between the claimed identity and the actual existence of the user presenting the evidence. Acceptable methods for validating and verifying identity evidence are consistent with the risks to the systems, roles, and privileges associated with the users account.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-12.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-12 Identity Proofing"

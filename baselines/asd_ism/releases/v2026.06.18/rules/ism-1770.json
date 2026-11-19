@@ -20,10 +20,10 @@
   "discussion": "When using AES, a key size of 128 bits provides 128 bits of effective security strength, with larger key sizes providing more bits of effective security strength.\n\nThe use of Electronic Codebook Mode with block ciphers allows repeated patterns in plaintext to appear as repeated patterns in ciphertext. Most plaintext, including written language and formatted files, contains significant repeated patterns. As such, malicious actors can use this to deduce possible meanings of ciphertext. The use of other modes, such as Cipher Block Chaining, Cipher Feedback, Galois/Counter Mode or Output Feedback, can prevent such attacks, although each has different properties that can make them inappropriate for certain use cases. AES is the only approved symmetric cryptographic algorithm.\n\nFor interoperability and maintainability reasons, AES-128 and AES-192 will not be approved beyond 2030.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1770",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Cryptographic algorithms",

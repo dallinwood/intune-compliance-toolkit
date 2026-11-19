@@ -36,10 +36,10 @@
   "discussion": "Documenting access requirements for systems and their resources can assist in determining whether users meet requirements for access. In doing so, requirements should account for whether access is unprivileged or privileged and, for personnel, whether additional requirements apply because they are foreign nationals or contractors.\n\nTo reinforce personnel’s agreement to abide by system usage policies as a condition of being granted access to a system and its resources, displaying a logon banner each time they log on to the system can provide a continual reminder of their security responsibilities. Logon banners may cover topics such as:\n\n- the sensitivity or classification of the system\n- access requirements for the system\n- usage policies for the system and its resources\n- details of any monitoring activities for the system.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0408",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

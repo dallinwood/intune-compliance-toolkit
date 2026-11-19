@@ -20,10 +20,10 @@
   "discussion": "Broadly, the risk management framework defined by the [Information security manual](https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/ism) has six steps: define the system, select controls, implement controls, assess controls, authorise the system and monitor the system. System owners are responsible for the implementation of this six-step risk management framework for each of their systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1967",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "System owners",

@@ -69,27 +69,31 @@
           "type": "string",
           "value": "pass"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeMaximumFailedAuthentications\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1 <= $ODV) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
+        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeMaximumFailedAuthentications\"]/following-sibling::integer[1]/text()' - | /usr/bin/awk '{ if ($1 <= $ODV_value) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
       },
       "language": "bash"
     }
   },
-  "discussion": "The system _MUST_ be configured to limit the number of failed login attempts to a maximum of $ODV. When the maximum number of failed attempts is reached, the system _MUST_ prevent logins for a period of time after.\n\nThis rule protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
+  "discussion": "The system _MUST_ be configured to limit the number of failed login attempts to a maximum of $ODV_value. When the maximum number of failed attempts is reached, the system _MUST_ prevent logins for a period of time after.\n\nThis rule protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_account_lockout_enforce",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": 5,
-      "cis_lvl2": 5,
-      "disa_stig": 3
-    },
-    "datatype": "number",
-    "description": "Number of failed attempts, e.g. 3",
-    "recommended": 6,
-    "validation": {
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": 5,
+        "cis_lvl2": 5,
+        "disa_stig": 3
+      },
+      "datatype": "number",
+      "description": "Number of failed attempts, e.g. 3",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 6,
+      "validation": {
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "bsi": {
       "indigo": {
@@ -227,7 +231,7 @@
             {
               "PayloadContent": [
                 {
-                  "maxFailedAttempts": "$ODV"
+                  "maxFailedAttempts": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.mobiledevice.passwordpolicy"
@@ -239,7 +243,7 @@
         {
           "data": {
             "ddm_key": "MaximumFailedAttempts",
-            "ddm_value": "$ODV",
+            "ddm_value": "$ODV_value",
             "declarationtype": "com.apple.configuration.passcode.settings"
           },
           "kind": "ddm",
@@ -249,7 +253,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "pwpolicy"
   ],
@@ -282,5 +286,5 @@
     "cnssi-1253_low",
     "cnssi-1253_moderate"
   ],
-  "title": "Limit Consecutive Failed Login Attempts to $ODV"
+  "title": "Limit Consecutive Failed Login Attempts to $ODV_value"
 }

@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nTransfer system backup information to the alternate storage site [Assignment: organization-defined time period and transfer rate consistent with the recovery time and recovery point objectives].\n\n## Discussion\n\nSystem backup information can be transferred to alternate storage sites either electronically or by the physical shipment of storage media.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-9.5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-7",
@@ -30,7 +30,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-09 System Backup"

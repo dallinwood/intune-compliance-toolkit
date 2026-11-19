@@ -36,10 +36,10 @@
   "discussion": "A modulus of 2048 bits for correctly implemented RSA provides 112 bits of effective security strength, with larger modulus sizes providing more bits of effective security strength. However, taking into account projected technological advances in quantum computing, RSA will not be approved for use beyond 2030.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0477",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "ASD-Approved Cryptographic Algorithms",

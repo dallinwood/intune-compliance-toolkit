@@ -32,10 +32,10 @@
   "discussion": "## Control\n\nEnsure risk monitoring is an integral part of the continuous monitoring strategy that includes the following:\n\n- (a) Effectiveness monitoring;\n- (b) Compliance monitoring; and\n- (c) Change monitoring.\n\n## Discussion\n\nRisk monitoring is informed by the established organizational risk tolerance. Effectiveness monitoring determines the ongoing effectiveness of the implemented risk response measures. Compliance monitoring verifies that required risk response measures are implemented. It also verifies that security and privacy requirements are satisfied. Change monitoring identifies changes to organizational systems and environments of operation that may affect security and privacy risk.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ca-7.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Assessment, Authorization, and Monitoring",
     "CA-07 Continuous Monitoring"

@@ -36,10 +36,10 @@
   "discussion": "Poorly configured server applications could provide an opportunity for an adversary to gain unauthorised access to the underlying server. To assist an organisation in deploying server applications, vendors often provide guidance on how to securely configure their products. In addition, server applications will often leave behind temporary installation files and logs during their installation process in case an administrator needs to troubleshoot a failed installation. These files, which can include credentials, could be valuable to an adversary and should be removed following the installation of server applications.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1260",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Server application hardening",

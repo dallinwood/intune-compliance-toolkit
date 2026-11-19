@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nTest downgrading equipment and procedures [Assignment: organization-defined frequency] to ensure that downgrading actions are being achieved.\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.mp-8.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Media Protection",
     "MP-08 Media Downgrading"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProhibit the use of system account identifiers that are the same as public identifiers for individual accounts.\n\n## Discussion\n\nProhibiting account identifiers as public identifiers applies to any publicly disclosed account identifier used for communication such as, electronic mail and instant messaging. Prohibiting the use of systems account identifiers that are the same as some public identifier, such as the individual identifier section of an electronic mail address, makes it more difficult for adversaries to guess user identifiers. Prohibiting account identifiers as public identifiers without the implementation of other supporting controls only complicates guessing of identifiers. Additional protections are required for authenticators and credentials to protect the account.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-2",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-04 Identifier Management"

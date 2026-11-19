@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nUse [Assignment: organization-defined automated mechanisms] to:\n\n- (a) Document proposed changes to the system;\n- (b) Notify [Assignment: organization-defined approval authorities] of proposed changes to the system and request change approval;\n- (c) Highlight proposed changes to the system that have not been approved or disapproved within [Assignment: organization-defined time period];\n- (d) Prohibit changes to the system until designated approvals are received;\n- (e) Document all changes to the system; and\n- (f) Notify [Assignment: organization-defined personnel] when approved changes to the system are completed.\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-3.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-03 Configuration Change Control"

@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSecurity risk management activities for an organisation and their systems (infrastructure, operating systems, applications and data) are embedded into organisational risk management frameworks and subject to ongoing monitoring and assurance activities by the board of directors or executive committee.\n\n# Indicators of Good Practice\n\nNot effective:\n- No risk management methodology approved by the organisation is in place.\n- No current organisational risk register exists, or the register has not been reviewed within the cycle defined by the organisation.\n- Risk treatment decisions are not documented.\n\nPartially effective:\n- An approved risk management methodology exists but risk assessments have not been conducted within the defined cycle.\n- A risk register exists but treatment plans are incomplete or have not been actioned.\n- Risk assessments have been conducted but do not cover all in-scope assets.\n\nFully effective:\n- An approved risk management methodology and plan are in place and used to assess and treat security risks.\n- A current risk register exists with documented and implemented treatment plans for all identified risks.\n- Risk assessments have been conducted or reviewed within the assessment cycle defined by the organisation.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-03.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -59,7 +59,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-03 - Security risk management assurance"

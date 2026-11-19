@@ -53,7 +53,7 @@
   "discussion": "The audit system _MUST_ be configured to record enforcement actions of failed attempts to modify file attributes (-fm).\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. One common and effective enforcement action method is using access restrictions (i.e., denying modifications to a file by applying file permissions).\n\nThis configuration ensures that audit lists include events in which enforcement actions prevent attempts to modify a file.\n\nWithout auditing the enforcement of access restrictions, it is difficult to identify attempted attacks, as there is no audit trail available for forensic investigation.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_flags_fm_failed_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -146,7 +146,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

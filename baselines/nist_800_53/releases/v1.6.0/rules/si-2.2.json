@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nDetermine if system components have applicable security-relevant software and firmware updates installed using [Assignment: organization-defined automated mechanisms] [Assignment: organization-defined frequency].\n\n## Discussion\n\nAutomated mechanisms can track and determine the status of known flaws for system components.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-2.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-7",
@@ -32,7 +32,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-02 Flaw Remediation"

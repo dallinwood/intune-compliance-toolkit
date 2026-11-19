@@ -85,7 +85,7 @@
   "discussion": "The built-in web server which is managed by launchd is a non-essential service built into macOS and _MUST_ be disabled and not running.\n\nNOTE: The built in web server service is disabled at startup by default macOS.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_httpd_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -182,7 +182,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

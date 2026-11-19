@@ -20,7 +20,7 @@
   "discussion": "## Control\n\n- a. Establish policy and procedures to ensure that requirements for the protection of controlled unclassified information that is processed, stored or transmitted on external systems, are implemented in accordance with applicable laws, executive orders, directives, policies, regulations, and standards; and\n- b. Review and update the policy and procedures [Assignment: organization-defined frequency].\n\n## Discussion\n\nControlled unclassified information is defined by the National Archives and Records Administration along with the safeguarding and dissemination requirements for such information and is codified in [32 CFR 2002](https://www.federalregister.gov/documents/2016/09/14/2016-21665/controlled-unclassified-information) and, specifically for systems external to the federal organization, [32 CFR 2002.14h](https://www.govinfo.gov/content/pkg/CFR-2017-title32-vol6/xml/CFR-2017-title32-vol6-part2002.xml) . The policy prescribes the specific use and conditions to be implemented in accordance with organizational procedures, including via its contracting processes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-17",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "32 CFR 2002",
@@ -34,7 +34,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-17 Protecting Controlled Unclassified Information on External Systems"

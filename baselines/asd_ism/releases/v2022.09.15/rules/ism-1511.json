@@ -44,10 +44,10 @@
   "discussion": "When performing backups, all important data, software and configuration settings should be captured in a coordinated and resilient manner on a regular basis in accordance with business continuity requirements. This will ensure that should a system fall victim to a ransomware attack, important data will not be lost and, if necessary, systems can be quickly restored.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1511",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Management",
     "Data backup and restoration",

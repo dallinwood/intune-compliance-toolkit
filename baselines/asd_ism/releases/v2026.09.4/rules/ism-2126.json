@@ -36,10 +36,10 @@
   "discussion": "Advances in artificial intelligence (AI) now allow malicious actors to convincingly impersonate executives, employees and customers using synthetic voice and video. As such, personnel dealing with user account details, banking details or financial transactions should not rely on voice or video alone to authenticate requests to modify user account details, modify banking details or conduct financial transactions. Instead, individuals should first be positively identified using a pre-established authentication method or independent trusted communications channel. Such mechanisms may include digitally signed approvals or in-built system approval mechanisms protected by phishing-resistant multi-factor authentication.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2126",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Cyber security awareness training",

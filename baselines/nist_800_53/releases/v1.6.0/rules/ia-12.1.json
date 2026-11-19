@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nRequire that the registration process to receive an account for logical access includes supervisor or sponsor authorization.\n\n## Discussion\n\nIncluding supervisor or sponsor authorization as part of the registration process provides an additional level of scrutiny to ensure that the user’s management chain is aware of the account, the account is essential to carry out organizational missions and functions, and the user’s privileges are appropriate for the anticipated responsibilities and authorities within the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-12.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-12 Identity Proofing"

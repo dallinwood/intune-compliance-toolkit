@@ -24,7 +24,7 @@
   "discussion": "## Control\n\n- a. Identity proof users that require accounts for logical access to systems based on appropriate identity assurance level requirements as specified in applicable standards and guidelines;\n- b. Resolve user identities to a unique individual; and\n- c. Collect, validate, and verify identity evidence.\n\n## Discussion\n\nIdentity proofing is the process of collecting, validating, and verifying a user’s identity information for the purposes of establishing credentials for accessing a system. Identity proofing is intended to mitigate threats to the registration of users and the establishment of their accounts. Standards and guidelines specifying identity assurance levels for identity proofing include [SP 800-63-3](https://doi.org/10.6028/NIST.SP.800-63-3) and [SP 800-63A](https://doi.org/10.6028/NIST.SP.800-63a). Organizations may be subject to laws, executive orders, directives, regulations, or policies that address the collection of identity evidence. Organizational personnel consult with the senior agency official for privacy and legal counsel regarding such requirements.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FIPS 201-2",
@@ -44,7 +44,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-12 Identity Proofing"

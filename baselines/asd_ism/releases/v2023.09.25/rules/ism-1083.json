@@ -36,10 +36,10 @@
   "discussion": "Mobile devices can have both a voice and data communications component. In such cases, personnel should know the sensitivity or classification of voice and data that mobile devices have been approved to process, store and communicate. In addition, personnel should be made aware of common security practices for mobile device usage.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1083",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device usage",

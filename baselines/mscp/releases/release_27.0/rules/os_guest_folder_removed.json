@@ -65,7 +65,7 @@
   "discussion": "The guest folder _MUST_ be deleted if present.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_guest_folder_removed",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -117,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nPrevent the discovery of specific system components that represent a managed interface.\n\n## Discussion\n\nPreventing the discovery of system components representing a managed interface helps protect network addresses of those components from discovery through common tools and techniques used to identify devices on networks. Network addresses are not available for discovery and require prior knowledge for access. Preventing the discovery of components and devices can be accomplished by not publishing network addresses, using network address translation, or not entering the addresses in domain name systems. Another prevention technique is to periodically change network addresses.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.16",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

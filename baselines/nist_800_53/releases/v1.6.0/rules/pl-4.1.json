@@ -32,7 +32,7 @@
   "discussion": "## Control\n\nInclude in the rules of behavior, restrictions on:\n\n- (a) Use of social media, social networking sites, and external sites/applications;\n- (b) Posting organizational information on public websites; and\n- (c) Use of organization-provided identifiers (e.g., email addresses) and authentication secrets (e.g., passwords) for creating accounts on external sites/applications.\n\n## Discussion\n\nSocial media, social networking, and external site/application usage restrictions address rules of behavior related to the use of social media, social networking, and external sites when organizational personnel are using such sites for official duties or in the conduct of official business, when organizational information is involved in social media and social networking transactions, and when personnel access social media and networking sites from organizational systems. Organizations also address specific rules that prevent unauthorized entities from obtaining non-public organizational information from social media and networking sites either directly or through inference. Non-public information includes personally identifiable information and system account information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pl-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-22",
@@ -40,7 +40,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Planning",
     "PL-04 Rules of Behavior"

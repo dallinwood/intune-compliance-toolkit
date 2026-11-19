@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nOnly permit the use of shared and group accounts that meet [Assignment: organization-defined conditions for establishing shared and group accounts].\n\n## Discussion\n\nBefore permitting the use of shared or group accounts, organizations consider the increased risk due to the lack of accountability with such accounts.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-2.9",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-02 Account Management"

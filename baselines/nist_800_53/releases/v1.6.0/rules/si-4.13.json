@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Analyze communications traffic and event patterns for the system;\n- (b) Develop profiles representing common traffic and event patterns; and\n- (c) Use the traffic and event profiles in tuning system-monitoring devices.\n\n## Discussion\n\nIdentifying and understanding common communications traffic and event patterns help organizations provide useful information to system monitoring devices to more effectively identify suspicious or anomalous traffic and events when they occur. Such information can help reduce the number of false positives and false negatives during system monitoring.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.13",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

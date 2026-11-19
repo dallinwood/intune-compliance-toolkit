@@ -37,7 +37,7 @@
   "discussion": "Show all filename extensions _MUST_ be enabled in the Finder.\n\n[NOTE]\n====\nThe check and fix are for the currently logged in user. To get the currently logged in user, run the following.\n[source,bash]\n-  CURRENT_USER=$( /usr/bin/defaults read /Library/Preferences/com.apple.loginwindow lastUserName )\n-  ====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_show_filename_extensions_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -77,7 +77,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

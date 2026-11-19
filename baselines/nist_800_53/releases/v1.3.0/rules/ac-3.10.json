@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy an audited override of automated access control mechanisms under [Assignment: organization-defined conditions] by [Assignment: organization-defined roles].\n\n## Discussion\n\nIn certain situations, such as when there is a threat to human life or an event that threatens the organization’s ability to carry out critical missions or business functions, an override capability for access control mechanisms may be needed. Override conditions are defined by organizations and used only in those limited circumstances. Audit events are defined in AU-2 . Audit records are generated in AU-12.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-3.10",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-03 Access Enforcement"

@@ -48,7 +48,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are regularly backed up in a secure and proven manner, including through the validation of restoration capabilities.\n\n# Indicators of Good Practice\n\nNot effective:\n- Backup repositories are accessible from the production environment or by production administrators.\n- Compromise of a system would provide a direct path to access, modify or delete its own backups.\n\nPartially effective:\n- Backup repositories are logically separated but use credentials managed by the same identity platform as production.\n- Isolation is implemented but has not been tested or validated.\n\nFully effective:\n- Backup repositories are isolated from production environments and general user access.\n- Access is controlled through credentials and administrative paths isolated from compromise of the primary identity environment.\n- Isolation has been validated to confirm that compromise of a system does not provide access to backups.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-10.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -79,7 +79,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-10 - Regular and proven backups"

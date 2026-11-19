@@ -2,21 +2,23 @@ import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
 import {
   canonicalOdvValue,
-  codeTextWithOdv,
+  codeOdvValues,
+  codeTextWithOdvs,
   containsOdvPlaceholder,
-  displayWithOdv,
+  displayWithOdvs,
   effectiveOdvValue,
+  odvPlaceholder,
   odvQuickPicks,
   odvSubstitutionMode,
-  codeOdvValues,
   ODV_RULE_VALUE_CHECKS,
   ODV_VARIABLE_ALLOWLIST,
   prepareOdvValue,
-  substituteOdv,
-  substituteOdvInJson,
-  usableOdvValue,
+  substituteOdvs,
+  substituteOdvsInJson,
+  usableOdvValues,
   validateOdvValue,
 } from './odv'
+import { ruleWithOdvs } from './testRuleFixtures'
 import { committedVocabularyIndex, vocabularyIndexOf } from './testVocabularyFixtures'
 
 const GENERIC_RULE_ID = 'mscp.example_rule'
@@ -24,23 +26,27 @@ const vocabularyIndex = committedVocabularyIndex()
 
 function odv(overrides: Partial<Odv> = {}): Odv {
   return {
+    name: 'value',
     datatype: 'number',
     description: 'Example',
     validation: null,
     recommended: 6,
     by_benchmark: {},
+    quoting: 'unquoted',
     ...overrides,
   }
 }
 
 describe('odvSubstitutionMode', () => {
   const allowlistedId = 'mscp.os_policy_banner_ssh_configure'
-  const allowlistedShell = ODV_VARIABLE_ALLOWLIST[allowlistedId]
+  const allowlistedShell = ODV_VARIABLE_ALLOWLIST[`${allowlistedId}:value`]
+  const valueOdv = odv()
 
   function ruleWithChecks(id: string, defaultShell: string | null, byVersionShells: Record<string, string> = {}): Rule {
     const checkOf = (shell: string) => ({ shell, result: null, additional_info: null })
     return {
       id,
+      odvs: [valueOdv],
       check: {
         macOS: {
           language: 'bash',
@@ -48,55 +54,78 @@ describe('odvSubstitutionMode', () => {
           by_version: Object.fromEntries(Object.entries(byVersionShells).map(([version, shell]) => [version, checkOf(shell)])),
         },
       },
-      discussion: 'Mentions $ODV here but that is ignored',
+      discussion: 'Mentions $ODV_value here but that is ignored',
     } as unknown as Rule
   }
 
   it('is variable for the admin group membership rule with its reviewed shell', () => {
     const adminGroupRuleId = 'mscp.system_settings_admin_group_membership_defined'
-    expect(odvSubstitutionMode(ruleWithChecks(adminGroupRuleId, ODV_VARIABLE_ALLOWLIST[adminGroupRuleId]))).toBe('variable')
+    const rule = ruleWithChecks(adminGroupRuleId, ODV_VARIABLE_ALLOWLIST[`${adminGroupRuleId}:value`])
+    expect(odvSubstitutionMode(rule, valueOdv)).toBe('variable')
   })
 
-  it('is none when no check shell mentions $ODV', () => {
-    expect(odvSubstitutionMode(ruleWithChecks('mscp.x', '/usr/bin/defaults read com.apple.foo'))).toBe('none')
+  it('is none when no check shell mentions the placeholder', () => {
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.x', '/usr/bin/defaults read com.apple.foo'), valueOdv)).toBe('none')
   })
 
   it('is none when the rule has no check', () => {
-    expect(odvSubstitutionMode({ id: 'mscp.x', check: null } as unknown as Rule)).toBe('none')
-    expect(odvSubstitutionMode(ruleWithChecks('mscp.x', null))).toBe('none')
+    expect(odvSubstitutionMode({ id: 'mscp.x', check: null } as unknown as Rule, valueOdv)).toBe('none')
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.x', null), valueOdv)).toBe('none')
+  })
+
+  it('looks only at the placeholder of the ODV asked about, never a longer name it is a prefix of', () => {
+    const rule = ruleWithChecks('mscp.x', 'echo $ODV_value_extra')
+    expect(odvSubstitutionMode(rule, valueOdv)).toBe('none')
+    expect(odvSubstitutionMode(rule, odv({ name: 'value_extra' }))).toBe('text')
   })
 
   it('is variable for an allowlisted rule whose shell is exactly the reviewed text', () => {
-    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell))).toBe('variable')
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell), valueOdv)).toBe('variable')
   })
 
   it('is text for an allowlisted rule whose shell was modified', () => {
-    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, `${allowlistedShell}; id`))).toBe('text')
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, `${allowlistedShell}; id`), valueOdv)).toBe('text')
   })
 
-  it('is text when any by_version shell with $ODV differs from the reviewed text', () => {
-    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell, { '26.0': 'echo $ODV' }))).toBe('text')
+  it('is text when any by_version shell with the placeholder differs from the reviewed text', () => {
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell, { '26.0': 'echo $ODV_value' }), valueOdv)).toBe('text')
   })
 
   it('is variable when the same reviewed text is repeated in a by_version shell', () => {
-    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell, { '26.0': allowlistedShell }))).toBe('variable')
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell, { '26.0': allowlistedShell }), valueOdv)).toBe('variable')
   })
 
   it('is text for a non-allowlisted rule even if it looks safe', () => {
-    expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', 'bannerText="$ODV"'))).toBe('text')
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', 'bannerText="$ODV_value"'), valueOdv)).toBe('text')
   })
 
-  it('ignores $ODV in a check for a target the generator does not write', () => {
+  it('is text for an allowlisted rule when the ODV asked about has another name', () => {
+    expect(odvSubstitutionMode(ruleWithChecks(allowlistedId, allowlistedShell), odv({ name: 'other' }))).toBe('none')
+  })
+
+  it('keys the allowlist and the rule value checks by rule id and ODV name', () => {
+    expect(Object.keys(ODV_VARIABLE_ALLOWLIST).sort()).toEqual([
+      'mscp.os_policy_banner_ssh_configure:value',
+      'mscp.system_settings_admin_group_membership_defined:value',
+    ])
+    expect(Object.keys(ODV_RULE_VALUE_CHECKS).sort()).toEqual([
+      'mscp.system_settings_admin_group_membership_defined:value',
+      'mscp.system_settings_softwareupdate_current:value',
+    ])
+    for (const shell of Object.values(ODV_VARIABLE_ALLOWLIST)) expect(shell).toContain('$ODV_value')
+  })
+
+  it('ignores the placeholder in a check for a target the generator does not write', () => {
     const rule = ruleWithChecks(allowlistedId, allowlistedShell)
-    const windowsCheck = { language: 'powershell', default: { shell: 'Write-Output $ODV', result: null, additional_info: null }, by_version: {} }
+    const windowsCheck = { language: 'powershell', default: { shell: 'Write-Output $ODV_value', result: null, additional_info: null }, by_version: {} }
     const withWindows = { ...rule, check: { ...rule.check, Windows: windowsCheck } } as unknown as Rule
-    expect(odvSubstitutionMode(withWindows)).toBe('variable')
+    expect(odvSubstitutionMode(withWindows, valueOdv)).toBe('variable')
     const windowsOnly = { ...rule, check: { Windows: windowsCheck } } as unknown as Rule
-    expect(odvSubstitutionMode(windowsOnly)).toBe('none')
+    expect(odvSubstitutionMode(windowsOnly, valueOdv)).toBe('none')
   })
 
   it('is text for a non-allowlisted rule that reuses the allowlisted shell text', () => {
-    expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', allowlistedShell))).toBe('text')
+    expect(odvSubstitutionMode(ruleWithChecks('mscp.other_rule', allowlistedShell), valueOdv)).toBe('text')
   })
 })
 
@@ -254,9 +283,9 @@ describe('validateOdvValue hardening', () => {
 describe('validateOdvValue for the admin group membership rule', () => {
   const adminGroupRuleId = 'mscp.system_settings_admin_group_membership_defined'
   const adminGroupOdv = odv({ datatype: 'regex', recommended: '^(admin)$' })
-  const requirement = ODV_RULE_VALUE_CHECKS[adminGroupRuleId].requirement
+  const requirement = ODV_RULE_VALUE_CHECKS[`${adminGroupRuleId}:value`].requirement
 
-  // grep -vE "$ODV" runs inside found=$(...), so a pattern grep rejects (no
+  // grep -vE "$ODV_value" runs inside found=$(...), so a pattern grep rejects (no
   // output) or one matching every account makes the check pass for the wrong
   // reason.
   it.each(['^(admin)$', '^(admin|jdoe|asmith)$', 'admin|jdoe', '^(adm.n|j\\.doe)$', '^(svc-admin)$', 'admin'])('accepts %j', (value) => {
@@ -324,7 +353,7 @@ describe('validateOdvValue for the admin group membership rule', () => {
 describe('validateOdvValue rule-specific value patterns', () => {
   const softwareUpdateRuleId = 'mscp.system_settings_softwareupdate_current'
   const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
-  const deferralRequirement = ODV_RULE_VALUE_CHECKS[softwareUpdateRuleId].requirement
+  const deferralRequirement = ODV_RULE_VALUE_CHECKS[`${softwareUpdateRuleId}:value`].requirement
 
   it.each(['30d', '7d', '2w', '1m', '12H'])('accepts the BSD date -v offset %j', (value) => {
     expect(validateOdvValue(deferralOdv, value, 'text', softwareUpdateRuleId)).toBeNull()
@@ -349,12 +378,17 @@ describe('validateOdvValue rule-specific value patterns', () => {
     expect(validateOdvValue(deferralOdv, '30', 'text', GENERIC_RULE_ID)).toBeNull()
   })
 
-  it('is enforced by prepareOdvValue and usableOdvValue', () => {
+  it('is enforced by prepareOdvValue and usableOdvValues', () => {
     expect(prepareOdvValue(deferralOdv, 'abc', 'text', softwareUpdateRuleId)).toEqual({
       valid: false,
       error: deferralRequirement,
     })
-    expect(usableOdvValue(deferralOdv, 'text', '30', softwareUpdateRuleId)).toBe('30d')
+    const rule = ruleWithOdvs([deferralOdv], { id: softwareUpdateRuleId })
+    expect(usableOdvValues(rule, { value: '30' })).toEqual({ value: '30d' })
+  })
+
+  it('applies only to the ODV named in its key', () => {
+    expect(validateOdvValue(odv({ ...deferralOdv, name: 'other' }), '30', 'text', softwareUpdateRuleId)).toBeNull()
   })
 })
 
@@ -395,27 +429,48 @@ describe('effectiveOdvValue', () => {
   })
 })
 
-describe('substituteOdv and displayWithOdv', () => {
-  it('replaces every $ODV', () => {
-    expect(substituteOdv('a $ODV b $ODV', 15)).toBe('a 15 b 15')
+describe('odvPlaceholder', () => {
+  it('derives the placeholder from the name', () => {
+    expect(odvPlaceholder('value')).toBe('$ODV_value')
+  })
+})
+
+describe('substituteOdvs and displayWithOdvs', () => {
+  it('replaces every placeholder with its own value', () => {
+    expect(substituteOdvs('a $ODV_x b $ODV_y c $ODV_x', { x: 15, y: 'q' })).toBe('a 15 b q c 15')
   })
 
-  it('does not interpret replacement patterns in the value', () => {
-    expect(substituteOdv('x $ODV', '$&')).toBe('x $&')
+  it('never matches a placeholder inside a longer name that starts with it', () => {
+    expect(substituteOdvs('$ODV_a and $ODV_a_b and $ODV_ab', { a: 1, a_b: 2, ab: 3 })).toBe('1 and 2 and 3')
+    expect(substituteOdvs('$ODV_a_b', { a: 1 })).toBe('$ODV_a_b')
   })
 
-  it('shows a [value] placeholder when there is no value', () => {
-    expect(displayWithOdv('At Least $ODV Characters', null)).toBe('At Least [value] Characters')
+  it('leaves a name without a value as it is, or uses the given stand-in', () => {
+    expect(substituteOdvs('$ODV_a $ODV_b', { a: 1 })).toBe('1 $ODV_b')
+    expect(substituteOdvs('$ODV_a $ODV_b', { a: 1 }, '?')).toBe('1 ?')
+  })
+
+  it('does not read a name from the value object prototype', () => {
+    expect(substituteOdvs('$ODV_constructor', {})).toBe('$ODV_constructor')
+  })
+
+  it('does not interpret replacement patterns in the value, or replace again inside it', () => {
+    expect(substituteOdvs('x $ODV_a', { a: '$&' })).toBe('x $&')
+    expect(substituteOdvs('$ODV_a $ODV_b', { a: '$ODV_b', b: 2 })).toBe('$ODV_b 2')
+  })
+
+  it('shows a [value] placeholder for a name with no value', () => {
+    expect(displayWithOdvs('At Least $ODV_value Characters', {})).toBe('At Least [value] Characters')
   })
 
   it('shows the value when there is one', () => {
-    expect(displayWithOdv('At Least $ODV Characters', 15)).toBe('At Least 15 Characters')
+    expect(displayWithOdvs('At Least $ODV_value Characters', { value: 15 })).toBe('At Least 15 Characters')
   })
 })
 
 describe('containsOdvPlaceholder', () => {
-  it('detects $ODV in a script or serialized payload', () => {
-    expect(containsOdvPlaceholder('{"minLength": "$ODV"}')).toBe(true)
+  it('detects a placeholder in a script or serialized payload', () => {
+    expect(containsOdvPlaceholder('{"minLength": "$ODV_value"}')).toBe(true)
     expect(containsOdvPlaceholder('/usr/bin/true')).toBe(false)
   })
 })
@@ -481,24 +536,26 @@ describe('prepareOdvValue', () => {
   })
 })
 
-describe('usableOdvValue', () => {
-  const rule = odv({ recommended: 6, validation: { min: 1 } })
+describe('usableOdvValues', () => {
+  const lengthOdv = odv({ name: 'length', recommended: 6, validation: { min: 1 } })
+  const labelOdv = odv({ name: 'label', datatype: 'string', recommended: 'ab' })
+  const rule = ruleWithOdvs([lengthOdv, labelOdv])
 
-  it('uses a valid stored value', () => {
-    expect(usableOdvValue(rule, 'text', 12, GENERIC_RULE_ID)).toBe(12)
+  it('uses a valid stored value and the recommended value for a name not stored', () => {
+    expect(usableOdvValues(rule, { length: 12 })).toEqual({ length: 12, label: 'ab' })
   })
 
-  it('falls back to the recommended value when the stored value is invalid', () => {
-    expect(usableOdvValue(rule, 'text', "12'", GENERIC_RULE_ID)).toBe(6)
-    expect(usableOdvValue(rule, 'text', 0, GENERIC_RULE_ID)).toBe(6)
+  it('falls back to the recommended value when a stored value is invalid', () => {
+    expect(usableOdvValues(rule, { length: "12'" })).toEqual({ length: 6, label: 'ab' })
+    expect(usableOdvValues(rule, { length: 0 })).toEqual({ length: 6, label: 'ab' })
   })
 
-  it('falls back to the recommended value when nothing is stored', () => {
-    expect(usableOdvValue(rule, 'text', null, GENERIC_RULE_ID)).toBe(6)
+  it('ignores a stored name the rule does not define', () => {
+    expect(usableOdvValues(rule, { other: 1 })).toEqual({ length: 6, label: 'ab' })
   })
 
-  it('is null for a rule without an ODV', () => {
-    expect(usableOdvValue(null, 'none', 12, GENERIC_RULE_ID)).toBeNull()
+  it('is empty for a rule without ODVs', () => {
+    expect(usableOdvValues(ruleWithOdvs([]), { value: 12 })).toEqual({})
   })
 })
 
@@ -506,88 +563,141 @@ describe('codeOdvValues', () => {
   const numberOdv = odv({ recommended: 6, validation: { min: 1 } })
   const stringOdv = odv({ datatype: 'string', recommended: 'ab' })
   const injection = 'a"; rm -rf ~ #'
-  const none = { script: null, json: null, exported: null }
+  const none = { script: {}, json: {}, exported: {} }
+  const ruleOf = (odvValue: Odv, overrides: Partial<Rule> = {}) => ruleWithOdvs([odvValue], overrides)
+  const textModeCheck = {
+    macOS: { language: 'bash', default: { shell: 'echo $ODV_value', result: null, additional_info: null }, by_version: {} },
+  } as const
 
-  it('returns a valid value for scripts and JSON so code blocks show it in place of $ODV', () => {
-    expect(codeOdvValues(numberOdv, 'text', 12, GENERIC_RULE_ID)).toEqual({ script: 12, json: 12, exported: null })
-    expect(substituteOdv('minlen=$ODV and again $ODV', 12)).toBe('minlen=12 and again 12')
+  it('returns a valid value for scripts and JSON so code blocks show it in place of the placeholder', () => {
+    expect(codeOdvValues(ruleOf(numberOdv), { value: 12 })).toEqual({ script: { value: 12 }, json: { value: 12 }, exported: {} })
+    expect(substituteOdvs('minlen=$ODV_value and again $ODV_value', { value: 12 })).toBe('minlen=12 and again 12')
   })
 
-  it('returns nothing when there is no value or the rule has no ODV, keeping $ODV literal', () => {
-    expect(codeOdvValues(numberOdv, 'text', null, GENERIC_RULE_ID)).toEqual(none)
-    expect(codeOdvValues(null, 'text', 12, GENERIC_RULE_ID)).toEqual(none)
+  it('returns nothing when there is no value or the rule has no ODV, keeping the placeholder literal', () => {
+    expect(codeOdvValues(ruleOf(numberOdv), {})).toEqual(none)
+    expect(codeOdvValues(ruleWithOdvs([]), { value: 12 })).toEqual(none)
   })
 
   it('returns nothing for a value the generator would reject', () => {
-    expect(codeOdvValues(numberOdv, 'text', 0, GENERIC_RULE_ID)).toEqual(none)
-    expect(codeOdvValues(numberOdv, 'text', "12'", GENERIC_RULE_ID)).toEqual(none)
-    expect(codeOdvValues(stringOdv, 'text', 'a b', GENERIC_RULE_ID)).toEqual(none)
+    expect(codeOdvValues(ruleOf(numberOdv), { value: 0 })).toEqual(none)
+    expect(codeOdvValues(ruleOf(numberOdv), { value: "12'" })).toEqual(none)
+    expect(codeOdvValues(ruleOf(stringOdv, { check: textModeCheck }), { value: 'a b' })).toEqual(none)
   })
 
   it('applies the rule-specific value pattern', () => {
     const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
-    const softwareUpdateRuleId = 'mscp.system_settings_softwareupdate_current'
-    expect(codeOdvValues(deferralOdv, 'text', '30d', softwareUpdateRuleId).script).toBe('30d')
-    expect(codeOdvValues(deferralOdv, 'text', '30', softwareUpdateRuleId)).toEqual(none)
+    const softwareUpdateRule = ruleOf(deferralOdv, { id: 'mscp.system_settings_softwareupdate_current' })
+    expect(codeOdvValues(softwareUpdateRule, { value: '30d' }).script).toEqual({ value: '30d' })
+    expect(codeOdvValues(softwareUpdateRule, { value: '30' })).toEqual(none)
   })
 
   it('returns the canonical value the generator would substitute', () => {
-    expect(codeOdvValues(numberOdv, 'text', '007', GENERIC_RULE_ID).script).toBe(7)
+    expect(codeOdvValues(ruleOf(numberOdv), { value: '007' }).script).toEqual({ value: 7 })
   })
 
   it('never text-replaces in variable mode, offering the generator-validated value as the exported one', () => {
     const bannerOdv = odv({ datatype: 'string', recommended: 'Authorized use only' })
     const bannerRuleId = 'mscp.os_policy_banner_ssh_configure'
-    expect(codeOdvValues(bannerOdv, 'variable', "it's \"$HOME\" `x` \\ ok", bannerRuleId)).toEqual({
-      script: null,
-      json: null,
-      exported: "it's \"$HOME\" `x` \\ ok",
+    const bannerRule = ruleWithOdvs([bannerOdv], {
+      id: bannerRuleId,
+      check: {
+        macOS: {
+          language: 'bash',
+          default: { shell: ODV_VARIABLE_ALLOWLIST[`${bannerRuleId}:value`], result: null, additional_info: null },
+          by_version: {},
+        },
+      },
     })
-    expect(codeOdvValues(bannerOdv, 'variable', 'bad'+String.fromCharCode(13)+'value', bannerRuleId)).toEqual(none)
-    expect(codeOdvValues(bannerOdv, 'variable', null, bannerRuleId)).toEqual(none)
+    const value = "it's \"$HOME\" `x` \\ ok"
+    expect(codeOdvValues(bannerRule, { value })).toEqual({ script: {}, json: {}, exported: { value } })
+    expect(codeOdvValues(bannerRule, { value: 'bad' + String.fromCharCode(13) + 'value' })).toEqual(none)
+    expect(codeOdvValues(bannerRule, {})).toEqual(none)
   })
 
-  it('applies the strict shell-safe rules to scripts even when the generator never substitutes (none mode)', () => {
-    expect(codeOdvValues(stringOdv, 'none', injection, GENERIC_RULE_ID).script).toBeNull()
-    for (const unsafe of ["it's", 'a`b`', 'a$(id)', 'a${HOME}', 'a\\b', 'a\nb', 'two words']) {
-      expect(codeOdvValues(stringOdv, 'none', unsafe, GENERIC_RULE_ID).script).toBeNull()
+  it('applies the strict shell-safe rules to unquoted scripts even when the generator never substitutes (none mode)', () => {
+    expect(codeOdvValues(ruleOf(stringOdv), { value: injection }).script).toEqual({})
+    for (const unsafe of ["it's", 'a`b`', 'a$(id)', 'a${HOME}', 'a\\b', 'a\nb', 'two words', '/etc/x.conf']) {
+      expect(codeOdvValues(ruleOf(stringOdv), { value: unsafe }).script).toEqual({})
     }
-    expect(codeOdvValues(stringOdv, 'none', 'safe-value_1.2', GENERIC_RULE_ID).script).toBe('safe-value_1.2')
+    expect(codeOdvValues(ruleOf(stringOdv), { value: 'safe-value_1.2' }).script).toEqual({ value: 'safe-value_1.2' })
   })
 
   it('applies the strict rules to a numeric none-mode rule', () => {
-    expect(codeOdvValues(numberOdv, 'none', 12, GENERIC_RULE_ID).script).toBe(12)
-    expect(codeOdvValues(numberOdv, 'none', '12; id', GENERIC_RULE_ID)).toEqual(none)
+    expect(codeOdvValues(ruleOf(numberOdv), { value: 12 }).script).toEqual({ value: 12 })
+    expect(codeOdvValues(ruleOf(numberOdv), { value: '12; id' })).toEqual(none)
   })
 
   it('shows the same value as the generator for a text-mode rule', () => {
-    expect(codeOdvValues(stringOdv, 'text', 'safe-value', GENERIC_RULE_ID).script).toBe('safe-value')
-    expect(codeOdvValues(stringOdv, 'text', injection, GENERIC_RULE_ID).script).toBeNull()
+    const textRule = ruleOf(stringOdv, { check: textModeCheck })
+    expect(codeOdvValues(textRule, { value: 'safe-value' }).script).toEqual({ value: 'safe-value' })
+    expect(codeOdvValues(textRule, { value: injection }).script).toEqual({})
   })
 
-  it('lets JSON show a value that is only unsafe as shell text, still requiring the rule own validation', () => {
-    const jsonOnly = codeOdvValues(stringOdv, 'none', 'two words', GENERIC_RULE_ID)
-    expect(jsonOnly).toEqual({ script: null, json: 'two words', exported: null })
-    expect(codeOdvValues(numberOdv, 'none', 0, GENERIC_RULE_ID)).toEqual(none)
+  it('lets JSON show a value that is only unsafe as shell text, still requiring the ODV own validation', () => {
+    expect(codeOdvValues(ruleOf(stringOdv), { value: 'two words' })).toEqual({ script: {}, json: { value: 'two words' }, exported: {} })
+    expect(codeOdvValues(ruleOf(numberOdv), { value: 0 })).toEqual(none)
+  })
+
+  describe('by quoting', () => {
+    const singleOdv = odv({ datatype: 'string', quoting: 'single' })
+    const doubleOdv = odv({ datatype: 'string', quoting: 'double' })
+
+    it('shows a path for a single-quoted ODV but not for an unquoted one', () => {
+      expect(codeOdvValues(ruleOf(singleOdv), { value: '/etc/x.conf' }).script).toEqual({ value: '/etc/x.conf' })
+      expect(codeOdvValues(ruleOf(stringOdv), { value: '/etc/x.conf' }).script).toEqual({})
+    })
+
+    it('hides what ends single quotes, and a newline, carriage return or NUL', () => {
+      for (const unsafe of ["it's", 'a\nb', 'a\rb', 'a\0b']) {
+        expect(codeOdvValues(ruleOf(singleOdv), { value: unsafe }).script).toEqual({})
+      }
+      expect(codeOdvValues(ruleOf(singleOdv), { value: 'say "hi" $HOME `x` \\' }).script).toEqual({ value: 'say "hi" $HOME `x` \\' })
+    })
+
+    it('hides what ends or expands inside double quotes', () => {
+      for (const unsafe of ['say "hi"', 'a`b`', '$HOME', 'a\\b', 'a\nb', 'a\rb', 'a\0b']) {
+        expect(codeOdvValues(ruleOf(doubleOdv), { value: unsafe }).script).toEqual({})
+      }
+      expect(codeOdvValues(ruleOf(doubleOdv), { value: "it's a path /etc/x.conf" }).script).toEqual({ value: "it's a path /etc/x.conf" })
+    })
+
+    it('still applies the datatype and the ODV own validation', () => {
+      const quotedNumber = odv({ quoting: 'single', validation: { min: 1 } })
+      expect(codeOdvValues(ruleOf(quotedNumber), { value: 0 }).script).toEqual({})
+      expect(codeOdvValues(ruleOf(quotedNumber), { value: 3 }).script).toEqual({ value: 3 })
+    })
+
+    it('does not change the JSON gate', () => {
+      expect(codeOdvValues(ruleOf(singleOdv), { value: "it's" }).json).toEqual({ value: "it's" })
+    })
+  })
+
+  it('treats every ODV of a rule on its own', () => {
+    const lengthOdv = odv({ name: 'length' })
+    const pathOdv = odv({ name: 'path', datatype: 'string', quoting: 'single' })
+    const rule = ruleWithOdvs([lengthOdv, pathOdv])
+    expect(codeOdvValues(rule, { length: 12, path: '/etc/x' }).script).toEqual({ length: 12, path: '/etc/x' })
+    expect(codeOdvValues(rule, { length: '1;2', path: '/etc/x' }).script).toEqual({ path: '/etc/x' })
   })
 })
 
-describe('codeTextWithOdv', () => {
+describe('codeTextWithOdvs', () => {
   it('is the displayed and copied text: substituted when a value applies, untouched otherwise', () => {
-    expect(codeTextWithOdv('a $ODV b', 12, false)).toBe('a 12 b')
-    expect(codeTextWithOdv('a $ODV b', null, false)).toBe('a $ODV b')
-    expect(codeTextWithOdv('{"v": "$ODV"}', 'x"y', true)).toBe('{"v": "x\\"y"}')
+    expect(codeTextWithOdvs('a $ODV_value b', { value: 12 }, false)).toBe('a 12 b')
+    expect(codeTextWithOdvs('a $ODV_value b', {}, false)).toBe('a $ODV_value b')
+    expect(codeTextWithOdvs('{"v": "$ODV_value"}', { value: 'x"y' }, true)).toBe('{"v": "x\\"y"}')
   })
 })
 
 describe('substituting special characters into displayed code', () => {
   it('substitutes regex-special characters and replacement patterns literally', () => {
-    expect(substituteOdv('grep -E "$ODV"', '^a.*$&b$1')).toBe('grep -E "^a.*$&b$1"')
+    expect(substituteOdvs('grep -E "$ODV_value"', { value: '^a.*$&b$1' })).toBe('grep -E "^a.*$&b$1"')
   })
 
   it('escapes the value inside displayed JSON so the document stays valid', () => {
-    const json = JSON.stringify({ banner: '$ODV', other: ['$ODV'] }, null, 2)
-    const displayed = substituteOdvInJson(json, 'say "hi"\n')
+    const json = JSON.stringify({ banner: '$ODV_value', other: ['$ODV_value'] }, null, 2)
+    const displayed = substituteOdvsInJson(json, { value: 'say "hi"\n' })
     expect(JSON.parse(displayed)).toEqual({ banner: 'say "hi"\n', other: ['say "hi"\n'] })
   })
 })

@@ -36,10 +36,10 @@
   "discussion": "The retention of event logs is integral to system monitoring, hunt and cyber security incident response activities. As such, event logs for Cross Domain Solutions, databases, Domain Name System services, email servers, gateways, multifunction devices, operating systems, remote access services, security services, server applications, system access, user applications, web applications and web proxies should be retained for a suitable period of time to facilitate these activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0991",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Monitoring",
     "Event logging and monitoring",

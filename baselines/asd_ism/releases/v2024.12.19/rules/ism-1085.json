@@ -36,10 +36,10 @@
   "discussion": "If appropriate encryption is not available to protect data in transit, mobile devices communicating sensitive or classified data will present a security risk.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1085",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device management",

@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Establish configuration requirements, connection requirements, and implementation guidance for each type of wireless access; and\n- b. Authorize each type of wireless access to the system prior to allowing such connections.\n\n## Discussion\n\nWireless technologies include microwave, packet radio (ultra-high frequency or very high frequency), 802.11x, and Bluetooth. Wireless networks use authentication protocols that provide authenticator protection and mutual authentication.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-18",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-94",
@@ -51,7 +51,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-18 Wireless Access"

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a)  [Selection: Refresh [Assignment: organization-defined information] [Assignment: organization-defined frequency]; Generate [Assignment: organization-defined information] on demand]; and\n- (b) Delete information when no longer needed.\n\n## Discussion\n\nRetaining information longer than is needed makes the information a potential target for advanced adversaries searching for high value assets to compromise through unauthorized disclosure, unauthorized modification, or exfiltration. For system-related information, unnecessary retention provides advanced adversaries information that can assist in their reconnaissance and lateral movement through the system.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-14.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-14 Non-persistence"

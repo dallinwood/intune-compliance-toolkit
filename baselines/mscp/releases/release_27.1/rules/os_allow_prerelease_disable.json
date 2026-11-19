@@ -33,7 +33,7 @@
   "discussion": "Beta software may contain features that could lead to the compromise of sensitive information or provide a vector for the attack on a network.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_allow_prerelease_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -115,7 +115,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

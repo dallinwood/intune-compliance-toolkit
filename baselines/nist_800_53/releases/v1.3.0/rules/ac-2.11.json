@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nEnforce [Assignment: organization-defined circumstances and/or usage conditions] for [Assignment: organization-defined system accounts].\n\n## Discussion\n\nSpecifying and enforcing usage conditions helps to enforce the principle of least privilege, increase user accountability, and enable effective account monitoring. Account monitoring includes alerts generated if the account is used in violation of organizational parameters. Organizations can describe specific conditions or circumstances under which system accounts can be used, such as by restricting usage to certain days of the week, time of day, or specific durations of time.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-2.11",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-02 Account Management"

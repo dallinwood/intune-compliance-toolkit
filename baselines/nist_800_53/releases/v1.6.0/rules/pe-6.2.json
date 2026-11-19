@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nRecognize [Assignment: organization-defined classes or types of intrusions] and initiate [Assignment: organization-defined response actions] using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nResponse actions can include notifying selected organizational personnel or law enforcement personnel. Automated mechanisms implemented to initiate response actions include system alert notifications, email and text messages, and activating door locking mechanisms. Physical access monitoring can be coordinated with intrusion detection systems and system monitoring capabilities to provide integrated threat coverage for the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-6.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-4"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-06 Monitoring Physical Access"

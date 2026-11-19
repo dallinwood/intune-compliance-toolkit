@@ -32,10 +32,10 @@
   "discussion": "Allowing AI applications that process classified data to directly access external public data sources, such as by performing web searches, or accessing third-party cloud services or application programming interfaces, could lead to data spills involving classified prompts or responses. For this reason, AI applications processing classified data should not be granted direct access to external public data sources. Furthermore, allowing AI applications to perform risky actions without human oversight could result in unintended cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2112",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "User application hardening",

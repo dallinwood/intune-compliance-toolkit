@@ -36,10 +36,10 @@
   "discussion": "The integrity of evidence gathered during an investigation is maintained by investigators:\n\n- recording all of their actions\n- maintaining a proper chain of custody\n- following all instructions provided by relevant law enforcement agencies.\n\nWhen gathering evidence following a cyber security incident, it is important that it is gathered in an appropriate manner and that its integrity is maintained. In addition, if ASD is requested to assist with investigations, no actions which could affect the integrity of evidence should be carried out before ASD becomes involved.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0138",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cyber Security Incidents",
     "Responding to cyber security incidents",

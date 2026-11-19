@@ -36,10 +36,10 @@
   "discussion": "Undertaking unauthorised maintenance or repairs to ICT equipment could impact its integrity. As such, using appropriately cleared technicians to maintain and repair ICT equipment on site is considered the most secure approach. This ensures that if data is disclosed during the course of maintenance or repairs, the technicians are aware of the requirements to protect such data.\n\nAn organisation choosing to use uncleared technicians to maintain or repair ICT equipment should be aware of the requirement for cleared personnel to escort uncleared technicians during maintenance or repair activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0307",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for ICT Equipment",
     "ICT equipment maintenance and repairs",

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- (a) Test malicious code protection mechanisms [Assignment: organization-defined frequency] by introducing known benign code into the system; and\n- (b) Verify that the detection of the code and the associated incident reporting occur.\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-3.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-2",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-03 Malicious Code Protection"

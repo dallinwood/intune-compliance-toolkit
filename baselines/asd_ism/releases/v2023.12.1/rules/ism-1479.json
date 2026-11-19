@@ -36,10 +36,10 @@
   "discussion": "Implementing functional separation between servers reduces the likelihood that a server compromised by malicious actors will pose an increased security risk to other servers.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1479",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Network design and configuration",

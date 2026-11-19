@@ -36,10 +36,10 @@
   "discussion": "IKE version 2 requires the use of a PRF to generate random data for cryptographic operations. The approved hashing algorithms that can be used for the PRF are HMAC-SHA256, HMAC-SHA384 and HMAC-SHA512.\n\nFor interoperability and maintainability reasons, HMAC-SHA256 will not be approved beyond 2030.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1772",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cryptography",
     "Internet Protocol Security",

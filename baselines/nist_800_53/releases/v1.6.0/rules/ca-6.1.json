@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nEmploy a joint authorization process for the system that includes multiple authorizing officials from the same organization conducting the authorization.\n\n## Discussion\n\nAssigning multiple authorizing officials from the same organization to serve as co-authorizing officials for the system increases the level of independence in the risk-based decision-making process. It also implements the concepts of separation of duties and dual authorization as applied to the system authorization process. The intra-organization joint authorization process is most relevant for connected systems, shared systems, and systems with multiple information owners.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ca-6.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-6"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Assessment, Authorization, and Monitoring",
     "CA-06 Authorization"

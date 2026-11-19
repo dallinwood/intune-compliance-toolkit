@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nInitiate session audits automatically at system start-up.\n\n## Discussion\n\nThe automatic initiation of session audits at startup helps to ensure that the information being captured on selected individuals is complete and not subject to compromise through tampering by malicious threat actors.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-14.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-14 Session Audit"

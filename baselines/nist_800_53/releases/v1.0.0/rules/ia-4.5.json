@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nManage individual identifiers dynamically in accordance with [Assignment: organization-defined dynamic identifier policy].\n\n## Discussion\n\nIn contrast to conventional approaches to identification that presume static accounts for preregistered users, many distributed systems establish identifiers at runtime for entities that were previously unknown. When identifiers are established at runtime for previously unknown entities, organizations can anticipate and provision for the dynamic establishment of identifiers. Pre-established trust relationships and mechanisms with appropriate authorities to validate credentials and related identifiers are essential.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-4.5",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-16"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-04 Identifier Management"

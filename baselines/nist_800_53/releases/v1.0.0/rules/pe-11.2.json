@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide an alternate power supply for the system that is activated [Selection: manually; automatically] and that is:\n\n- (a) Self-contained;\n- (b) Not reliant on external power generation; and\n- (c) Capable of maintaining [Selection: minimally required operational capability; full operational capability] in the event of an extended loss of the primary power source.\n\n## Discussion\n\nThe provision of a long-term, self-contained power supply can be satisfied by using one or more generators with sufficient capacity to meet the needs of the organization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-11.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-11 Emergency Power"

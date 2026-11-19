@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Provide a trusted communications path that is irrefutably distinguishable from other communications paths; and\n- (b) Initiate the trusted communications path for communications between the [Assignment: organization-defined security functions] of the system and the user.\n\n## Discussion\n\nAn irrefutable communications path permits the system to initiate a trusted path, which necessitates that the user can unmistakably recognize the source of the communication as a trusted system component. For example, the trusted path may appear in an area of the display that other applications cannot access or be based on the presence of an identifier that cannot be spoofed.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-11.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-11 Trusted Path"

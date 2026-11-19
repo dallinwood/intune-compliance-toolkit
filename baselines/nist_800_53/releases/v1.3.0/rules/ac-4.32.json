@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nWhen transferring information between different security domains, the process that transfers information between filter pipelines:\n\n- (a) Does not filter message content;\n- (b) Validates filtering metadata;\n- (c) Ensures the content associated with the filtering metadata has successfully completed filtering; and\n- (d) Transfers the content to the destination filter pipeline.\n\n## Discussion\n\nThe processes transferring information between filter pipelines have minimum complexity and functionality to provide assurance that the processes operate correctly.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.32",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

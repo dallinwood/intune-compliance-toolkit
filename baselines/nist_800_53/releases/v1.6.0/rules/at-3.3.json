@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide practical exercises in security and privacy training that reinforce training objectives.\n\n## Discussion\n\nPractical exercises for security include training for software developers that addresses simulated attacks that exploit common software vulnerabilities or spear or whale phishing attacks targeted at senior leaders or executives. Practical exercises for privacy include modules with quizzes on identifying and processing personally identifiable information in various scenarios or scenarios on conducting privacy impact assessments.",
   "discussion_format": "markdown",
   "id": "nist_800_53.at-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Awareness and Training",
     "AT-03 Role-based Training"

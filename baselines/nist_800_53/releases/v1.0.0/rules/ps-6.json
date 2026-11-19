@@ -32,7 +32,7 @@
   "discussion": "## Control\n\n- a. Develop and document access agreements for organizational systems;\n- b. Review and update the access agreements [Assignment: organization-defined frequency]; and\n- c. Verify that individuals requiring access to organizational information and systems:\n  - 1. Sign appropriate access agreements prior to being granted access; and\n  - 2. Re-sign access agreements to maintain access to organizational systems when access agreements have been updated or [Assignment: organization-defined frequency].\n\n## Discussion\n\nAccess agreements include nondisclosure agreements, acceptable use agreements, rules of behavior, and conflict-of-interest agreements. Signed access agreements include an acknowledgement that individuals have read, understand, and agree to abide by the constraints associated with organizational systems to which access is authorized. Organizations can use electronic signatures to acknowledge access agreements unless specifically prohibited by organizational policy.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ps-6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-17",
@@ -48,7 +48,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personnel Security",
     "PS-06 Access Agreements"

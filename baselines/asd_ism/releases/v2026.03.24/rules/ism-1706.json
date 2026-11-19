@@ -40,10 +40,10 @@
   "discussion": "To mitigate the security risk of unauthorised access to backups, an organisation should ensure that access to backups is controlled through the use of appropriate access controls.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1706",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system management",
     "Data backup and restoration",

@@ -25,7 +25,7 @@
   "discussion": "The information system _IS_ configured to block standard users from executing privileged functions.\n\nPrivileged functions include disabling, circumventing, or altering implemented security safeguards and countermeasures.\n\nThe inherent configuration of the macOS does not allow for non-privileged users to be able to execute functions requiring privilege.\n\nlink:https://developer.apple.com/library/archive/documentation/Security/Conceptual/AuthenticationAndAuthorizationGuide/Introduction/Introduction.html[]\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_prevent_priv_functions",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -72,7 +72,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

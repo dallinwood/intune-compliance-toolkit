@@ -38,7 +38,7 @@
   "discussion": "macOS _MUST_ be configured to only allow authorized users to unlock FileVault upon startup.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_filevault_authorized_users",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "800-53r5": [
@@ -74,7 +74,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

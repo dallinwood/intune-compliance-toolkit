@@ -36,10 +36,10 @@
   "discussion": "Denial-of-service attacks are typically focused on highly visible online services, such as an organisation’s core website, in order to have a publicly noticeable impact. By segregating online services, such as using one internet connection for email and internet access, and a separate internet connection for web hosting services, the impact of a denial-of-service attack can be limited.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1436",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Service continuity for online services",

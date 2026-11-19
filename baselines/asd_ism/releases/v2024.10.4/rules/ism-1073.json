@@ -36,10 +36,10 @@
   "discussion": "To perform their contracted duties, service providers may need to access their customers’ systems, applications and data. However, without proper controls in place, this could leave systems, applications and data vulnerable – especially when access occurs from outside of Australian borders. As such, an organisation should ensure that their systems, applications and data are not accessed or administered by service providers unless such requirements, and associated measures to control such requirements, are documented in contractual arrangements with service providers. In doing so, it is important that sufficient measures are also in place to detect and record any unauthorised access, such as customer support representatives or platform engineers accessing encryption keys. In such cases, the service provider should immediately report the cyber security incident to their customer and make available all logs pertaining to the unauthorised access.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1073",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Procurement and Outsourcing",
     "Managed services and cloud services",

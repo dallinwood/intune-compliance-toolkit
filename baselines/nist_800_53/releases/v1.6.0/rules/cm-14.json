@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nPrevent the installation of [Assignment: organization-defined software and firmware components] without verification that the component has been digitally signed using a certificate that is recognized and approved by the organization.\n\n## Discussion\n\nSoftware and firmware components prevented from installation unless signed with recognized and approved certificates include software and firmware version updates, patches, service packs, device drivers, and basic input/output system updates. Organizations can identify applicable software and firmware components by type, by specific items, or a combination of both. Digital signatures and organizational verification of such signatures is a method of code authentication.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cm-14",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "IR 8062"
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Configuration Management",
     "CM-14 Signed Components"

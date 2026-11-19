@@ -36,10 +36,10 @@
   "discussion": "ICT equipment and media needs to be secured when not in use. This can be achieved by implementing one of the following approaches:\n\n* securing ICT equipment and media in an appropriate security container or secure room\n* using ICT equipment without hard drives and sanitising memory at shut down\n* encrypting hard drives of ICT equipment and sanitising memory at shut down\n* sanitising memory of ICT equipment at shut down and removing and securing any hard drives.\n\nIf none of the above approaches are feasible, an organisation may wish to minimise the potential impact of not securing ICT equipment when not in use. This can be achieved by preventing sensitive or classified data from being stored on hard drives, storing user profiles and documents on network shares, removing temporary user data at logoff, scrubbing virtual memory at shut down, and sanitising memory at shut down. It should be noted though that there is no guarantee that such measures will always work effectively or will not be bypassed due to unexpected circumstances, such as the loss of power. Therefore, hard drives in such cases will retain their sensitivity or classification for the purposes of reuse, reclassification, declassification, sanitisation, destruction and disposal.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0161",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Physical Security",
     "ICT equipment and media",

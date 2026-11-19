@@ -36,10 +36,10 @@
   "discussion": "Following the maintenance or repair of IT equipment, it is important that the IT equipment is inspected to ensure that it retains its approved configuration and that no unauthorised modifications have been made by technicians.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1598",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for information technology equipment",
     "IT equipment maintenance and repairs",

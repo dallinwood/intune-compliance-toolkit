@@ -36,10 +36,10 @@
   "discussion": "Network devices can come pre-configured with default credentials. For example, wireless access points with an account named ‘admin’ and a password of ‘admin’. Ensuring default accounts are disabled, renamed or have their credentials changed can assist in reducing the likelihood of their exploitation by an adversary.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1304",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Network design and configuration",

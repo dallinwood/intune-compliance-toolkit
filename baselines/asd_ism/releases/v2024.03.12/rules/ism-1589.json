@@ -36,10 +36,10 @@
   "discussion": "Emails can be intercepted anywhere between originating email servers and destination email servers. Implementing opportunistic Transport Layer Security (TLS) encryption can mitigate this security risk while ensuring email servers remain compatible with each other. However, opportunistic TLS encryption is susceptible to downgrade attacks. To mitigate this security risk, Mail Transfer Agent Strict Transport Security (MTA-STS) allows domain owners to indicate that email transfers should only occur if satisfactory TLS encryption is negotiated beforehand.\n\nImplementing MTA-STS reduces the opportunity for downgrade attacks during email transfers and provides visibility of when they are attempted. TLS reporting supports the implementation of MTA-STS by providing a mechanism for a domain owner to publish a location where reports can be submitted regarding the success or failure of attempts to initiate encrypted connections when sending emails to a specified domain.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1589",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Email",
     "Email gateways and servers",

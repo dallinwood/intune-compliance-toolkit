@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nImplement [Assignment: organization-defined mechanisms or techniques] to bind security and privacy attributes to transmitted information.\n\n## Discussion\n\nCryptographic mechanisms and techniques can provide strong security and privacy attribute binding to transmitted information to help ensure the integrity of such information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-16.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-16",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-16 Transmission of Security and Privacy Attributes"

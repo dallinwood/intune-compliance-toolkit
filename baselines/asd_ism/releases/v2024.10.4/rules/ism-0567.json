@@ -36,10 +36,10 @@
   "discussion": "An open relay email server (or open mail relay) is an email server that is configured to allow anyone on the internet to send emails through it. Such configurations are highly undesirable as spammers and worms can exploit them.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0567",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Email",
     "Email gateways and servers",

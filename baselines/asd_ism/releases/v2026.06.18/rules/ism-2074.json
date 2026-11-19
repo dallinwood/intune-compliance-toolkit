@@ -36,10 +36,10 @@
   "discussion": "As there are security risks associated with the use of general-purpose AI applications, it is important that an organisation develops, implements and maintains a general-purpose AI usage policy governing the use of such applications by their users.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2074",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Access to systems and their resources",

@@ -62,7 +62,7 @@
   "discussion": "The prompt for Screen Time setup during Setup Assistant _MUST_ be disabled.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_skip_screen_time_prompt_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -161,7 +161,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -36,10 +36,10 @@
   "discussion": "Fibre-optic cables do not produce electromagnetic emanations and are not influenced by them. As a result, they offer the highest degree of protection from electromagnetic emanation effects.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1111",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

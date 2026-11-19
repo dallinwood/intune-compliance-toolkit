@@ -36,10 +36,10 @@
   "discussion": "IP phones in public areas may give malicious actors the opportunity to access data networks or poorly protected voicemail and directory services. As such, any services accessible to IP phones in public areas should be restricted.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0558",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Video conferencing and Internet Protocol telephony",

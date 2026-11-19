@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nCoordinate contingency plan development with organizational elements responsible for related plans.\n\n## Discussion\n\nPlans that are related to contingency plans include Business Continuity Plans, Disaster Recovery Plans, Critical Infrastructure Plans, Continuity of Operations Plans, Crisis Communications Plans, Insider Threat Implementation Plans, Data Breach Response Plans, Cyber Incident Response Plans, Breach Response Plans, and Occupant Emergency Plans.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-2.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-02 Contingency Plan"

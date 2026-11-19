@@ -446,7 +446,7 @@ test('an ODV title shows the effective value instead of $ODV', async ({ page }) 
   const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
 
   await expect(row).toContainText(/Require a Minimum Password Length of \d+ Characters/)
-  await expect(row).not.toContainText('$ODV')
+  await expect(row).not.toContainText('$ODV_value')
 })
 
 test('an ODV value with an apostrophe is rejected and not stored', async ({ page }) => {
@@ -477,7 +477,7 @@ test('an ODV value with an apostrophe is rejected and not stored', async ({ page
 test('an invalid stored ODV value is reported as blocking generation until fixed or cleared', async ({ page }) => {
   await page.addInitScript(() => {
     const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
-    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValues: { value: "12'" } } } }, version: 3 }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
   await page.goto(ALL_RULES_PATH)
@@ -492,13 +492,13 @@ test('an invalid stored ODV value is reported as blocking generation until fixed
   )
   await expect(savedValueAlert).not.toContainText('still using')
   await expect(page.getByText('Using recommended value: 6')).toHaveCount(0)
-  await expect(page.getByText('$ODV stands for the organization-defined value, currently [value].').first()).toBeVisible()
+  await expect(page.getByText('$ODV_value stands for the organization-defined value, currently [value].').first()).toBeVisible()
   await expect(page.getByText('currently 6.')).toHaveCount(0)
 
   await savedValueAlert.getByRole('button', { name: 'Clear saved value' }).click()
   await expect(page.getByRole('alert')).toHaveCount(0)
   await expect(page.getByText('Using recommended value: 6')).toBeVisible()
-  await expect(page.getByText('Shown with the organization-defined value: 6').first()).toBeVisible()
+  await expect(page.getByText('Shown with $ODV_value as the organization-defined value: 6').first()).toBeVisible()
 })
 
 // An option that becomes unreachable stays visible, disabled, for a quiet
@@ -581,7 +581,7 @@ test('review & generate offers a download with defaults and lists an inherent ru
 test('review & generate blocks the download while a selected rule has an invalid organization value', async ({ page }) => {
   await page.addInitScript(() => {
     const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
-    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValues: { value: "12'" } } } }, version: 3 }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
   await page.goto(ALL_RULES_PATH)
@@ -601,7 +601,7 @@ test('review & generate blocks the download while a selected rule has an invalid
 test('review & generate downloads a manual-only selection as a zip holding manual-attestation.md', async ({ page }) => {
   await page.addInitScript(() => {
     const ref = { id: 'mscp.os_application_sandboxing', path: 'mscp/rules/os_application_sandboxing.json' }
-    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: null } } }, version: 2 }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValues: {} } } }, version: 3 }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
   await page.goto(ALL_RULES_PATH)
@@ -633,12 +633,12 @@ test('a saved selection that is no longer in the library is reported and removab
     const persisted = {
       state: {
         selections: {
-          [knownRef.id]: { ref: knownRef, enabled: true, odvValue: null },
-          [unknownRef.id]: { ref: unknownRef, enabled: true, odvValue: null },
-          [odvRef.id]: { ref: odvRef, enabled: false, odvValue: 12 },
+          [knownRef.id]: { ref: knownRef, enabled: true, odvValues: {} },
+          [unknownRef.id]: { ref: unknownRef, enabled: true, odvValues: {} },
+          [odvRef.id]: { ref: odvRef, enabled: false, odvValues: { value: 12 } },
         },
       },
-      version: 2,
+      version: 3,
     }
     window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
   })
@@ -665,7 +665,7 @@ test('a saved selection that is no longer in the library is reported and removab
     'mscp.os_gatekeeper_enable',
     'mscp.pwpolicy_minimum_length_enforce',
   ])
-  expect(stored.state.selections['mscp.pwpolicy_minimum_length_enforce'].odvValue).toBe(12)
+  expect(stored.state.selections['mscp.pwpolicy_minimum_length_enforce'].odvValues).toEqual({ value: 12 })
   expect(stored.state.selections['mscp.os_gatekeeper_enable'].enabled).toBe(true)
 })
 
@@ -1639,6 +1639,42 @@ test.describe('code block copy button', () => {
   })
 })
 
+test('version 2 saved selections still apply', async ({ page }) => {
+  await page.addInitScript(() => {
+    const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
+    const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: 14 } } }, version: 2 }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
+  })
+  await page.goto(ALL_RULES_PATH)
+  const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
+  await expect(row).toContainText('Require a Minimum Password Length of 14 Characters')
+  await row.getByRole('button', { name: /Expand/ }).click()
+  await expect(page.getByRole('textbox', { name: /Minimum password length/ })).toHaveValue('14')
+})
+
+test('a rule with two ODVs shows two inputs', async ({ page }) => {
+  // No committed rule has two ODVs yet, so the library's pwpolicy rule is given a second one in transit.
+  await page.route(/pwpolicy_minimum_length_enforce\.json/, async (route) => {
+    const response = await route.fetch()
+    const rule = await response.json()
+    rule.odvs.push({ ...rule.odvs[0], name: 'grace_days', description: 'Grace period in days', recommended: 3, by_benchmark: {} })
+    rule.discussion = `${rule.discussion}
+
+Users get $ODV_grace_days days to comply.`
+    await route.fulfill({ response, json: rule })
+  })
+  await page.goto(`${ALL_RULES_PATH}&q=pwpolicy_minimum_length_enforce&rule=mscp.pwpolicy_minimum_length_enforce`)
+  const minimumLength = page.getByRole('textbox', { name: /Minimum password length/ })
+  const graceDays = page.getByRole('textbox', { name: 'Grace period in days' })
+  await expect(minimumLength).toBeVisible()
+  await expect(graceDays).toBeVisible()
+  await expect(page.getByText('Users get 3 days to comply.')).toBeVisible()
+
+  await graceDays.fill('9')
+  await expect(page.getByText('Users get 9 days to comply.')).toBeVisible()
+  await expect(minimumLength).toHaveValue('')
+})
+
 test.describe('live organization-defined value in code blocks', () => {
   test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
 
@@ -1655,14 +1691,14 @@ test.describe('live organization-defined value in code blocks', () => {
   test('the check shows the recommended value, follows edits, and reverts on an invalid value', async ({ page }) => {
     const { detail, odvInput, checkBlock } = await openMinimumLengthRule(page)
 
-    await expect(checkBlock).not.toContainText('$ODV')
+    await expect(checkBlock).not.toContainText('$ODV_value')
     await expect(checkBlock).toContainText('-v ODV=6 ')
-    await expect(detail.getByText('Shown with the organization-defined value: 6').first()).toBeVisible()
+    await expect(detail.getByText('Shown with $ODV_value as the organization-defined value: 6').first()).toBeVisible()
 
     await odvInput.fill('14')
-    await expect(checkBlock).not.toContainText('$ODV')
+    await expect(checkBlock).not.toContainText('$ODV_value')
     await expect(checkBlock).toContainText('-v ODV=14 ')
-    await expect(detail.getByText('Shown with the organization-defined value: 14').first()).toBeVisible()
+    await expect(detail.getByText('Shown with $ODV_value as the organization-defined value: 14').first()).toBeVisible()
 
     await odvInput.fill("14'")
     await expect(page.getByRole('alert')).toContainText('Value must be a whole number.')
@@ -1676,15 +1712,15 @@ test.describe('live organization-defined value in code blocks', () => {
   test('an invalid stored value keeps the literal $ODV and the note', async ({ page }) => {
     await page.addInitScript(() => {
       const ref = { id: 'mscp.pwpolicy_minimum_length_enforce', path: 'mscp/rules/pwpolicy_minimum_length_enforce.json' }
-      const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValue: "12'" } } }, version: 2 }
+      const persisted = { state: { selections: { [ref.id]: { ref, enabled: true, odvValues: { value: "12'" } } } }, version: 3 }
       window.localStorage.setItem('intune-toolkit:selections', JSON.stringify(persisted))
     })
     await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'pwpolicy_minimum_length_enforce', /Minimum Password Length/)
     await row.getByRole('button', { name: /Expand/ }).click()
     const checkBlock = page.locator('[id^="rule-detail-"]').getByTestId('check-target').first().locator('pre').first()
-    await expect(checkBlock).toContainText('$ODV')
-    await expect(page.getByText('$ODV stands for the organization-defined value, currently [value].').first()).toBeVisible()
+    await expect(checkBlock).toContainText('$ODV_value')
+    await expect(page.getByText('$ODV_value stands for the organization-defined value, currently [value].').first()).toBeVisible()
   })
 
   test('a remediation script only shows a value that is safe to paste into a shell', async ({ page }) => {
@@ -1697,8 +1733,8 @@ test.describe('live organization-defined value in code blocks', () => {
     // "60d OR 5G" satisfies the rule's own pattern but has spaces, so it is not shell-safe.
     const odvInput = page.getByRole('textbox', { name: /Time or disk size/ })
     await odvInput.fill('60d OR 5G')
-    await expect(remediationBlock).toContainText('expire-after:$ODV')
-    await expect(page.getByText('$ODV stands for the organization-defined value').first()).toBeVisible()
+    await expect(remediationBlock).toContainText('expire-after:$ODV_value')
+    await expect(page.getByText('$ODV_value stands for the organization-defined value').first()).toBeVisible()
   })
 
   test('a variable-mode rule shows the export line the generated script runs, and Copy copies it', async ({ page }) => {
@@ -1706,11 +1742,11 @@ test.describe('live organization-defined value in code blocks', () => {
     const row = await searchForSingleRow(page, 'os_policy_banner_ssh_configure', /./)
     await row.getByRole('button').click()
     const checkBlock = page.getByTestId('check-target').first().locator('pre').first()
-    await expect(checkBlock).toContainText("export ODV='You are accessing")
-    await expect(page.getByText('Shown with the organization-defined value set as ODV, as the generated script does.').first()).toBeVisible()
+    await expect(checkBlock).toContainText("export ODV_value='You are accessing")
+    await expect(page.getByText('Shown with the organization-defined value set as ODV_value, as the generated script does.').first()).toBeVisible()
     const displayedText = await checkBlock.textContent()
-    expect(displayedText).toMatch(/^export ODV='You are accessing/)
-    expect(displayedText).toContain('bannerText="$ODV"')
+    expect(displayedText).toMatch(/^export ODV_value='You are accessing/)
+    expect(displayedText).toContain('bannerText="$ODV_value"')
 
     await checkBlock.locator('xpath=following-sibling::button').click()
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
@@ -1720,14 +1756,14 @@ test.describe('live organization-defined value in code blocks', () => {
   test('Copy puts the substituted text on the clipboard', async ({ page }) => {
     const { odvInput, checkBlock } = await openMinimumLengthRule(page)
     await odvInput.fill('14')
-    await expect(checkBlock).not.toContainText('$ODV')
+    await expect(checkBlock).not.toContainText('$ODV_value')
 
     const displayedText = await checkBlock.textContent()
     await checkBlock.locator('xpath=following-sibling::button').click()
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
     expect(clipboardText).toBe(displayedText)
     expect(clipboardText).toContain('-v ODV=14 ')
-    expect(clipboardText).not.toContain('$ODV')
+    expect(clipboardText).not.toContain('$ODV_value')
   })
 })
 
@@ -2101,7 +2137,7 @@ test.describe('rule mappings', () => {
     const summary = summaryTooltip(page, 'Check: ')
     await expect(summary).toBeVisible()
     await expect(summary).toContainText(/deferred for \d+ days/)
-    await expect(summary).not.toContainText('$ODV')
+    await expect(summary).not.toContainText('$ODV_value')
   })
 
   test('Go to this rule opens it in the main table, from either side', async ({ page }) => {
@@ -2340,7 +2376,7 @@ test.describe('rule mappings', () => {
     const passwordLink = mappedRulesPanel(page, ISM_1622).getByRole('button', { name: /pwpolicy_minimum_length_enforce/ })
     await expect(passwordLink).toContainText(/Require a Minimum Password Length of \d+ Characters/)
     await expect(passwordLink).toHaveAccessibleName(/Require a Minimum Password Length of \d+ Characters/)
-    await expect(passwordLink).not.toContainText('$ODV')
+    await expect(passwordLink).not.toContainText('$ODV_value')
   })
 
   // os_calendar_app_disable's id is part of

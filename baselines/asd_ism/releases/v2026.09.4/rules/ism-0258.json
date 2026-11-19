@@ -36,10 +36,10 @@
   "discussion": "As there are security risks associated with the use of web services, it is important that an organisation develops, implements and maintains a web usage policy governing its use by personnel.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0258",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Cyber security awareness training",

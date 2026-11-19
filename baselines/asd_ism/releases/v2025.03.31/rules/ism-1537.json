@@ -36,10 +36,10 @@
   "discussion": "Security-relevant events for databases are centrally logged, including:\n\n- access or modification of particularly important content\n- addition of new users, especially privileged users\n- changes to user roles or privileges\n- attempts to elevate user privileges\n- queries containing comments\n- queries containing multiple embedded queries\n- database and query alerts or failures\n- database structure changes\n- database administrator actions\n- use of executable commands\n- database logons and logoffs.\n\nCentrally logging and analysing security-relevant events for databases can assist in monitoring the security posture of databases, detecting malicious behaviour and contributing to investigations following cybersecurity incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1537",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for database systems",
     "Databases",

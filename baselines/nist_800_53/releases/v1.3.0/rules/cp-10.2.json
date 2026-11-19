@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nImplement transaction recovery for systems that are transaction-based.\n\n## Discussion\n\nTransaction-based systems include database management systems and transaction processing systems. Mechanisms supporting transaction recovery include transaction rollback and transaction journaling.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-10.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-10 System Recovery and Reconstitution"

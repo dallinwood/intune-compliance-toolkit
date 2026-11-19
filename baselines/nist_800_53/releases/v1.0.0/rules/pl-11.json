@@ -28,7 +28,7 @@
   "discussion": "## Control\n\nTailor the selected control baseline by applying specified tailoring actions.\n\n## Discussion\n\nThe concept of tailoring allows organizations to specialize or customize a set of baseline controls by applying a defined set of tailoring actions. Tailoring actions facilitate such specialization and customization by allowing organizations to develop security and privacy plans that reflect their specific mission and business functions, the environments where their systems operate, the threats and vulnerabilities that can affect their systems, and any other conditions or situations that can impact their mission or business success. Tailoring guidance is provided in [SP 800-53B](https://doi.org/10.6028/NIST.SP.800-53B). Tailoring a control baseline is accomplished by identifying and designating common controls, applying scoping considerations, selecting compensating controls, assigning values to control parameters, supplementing the control baseline with additional controls as needed, and providing information for control implementation. The general tailoring actions in [SP 800-53B](https://doi.org/10.6028/NIST.SP.800-53B) can be supplemented with additional actions based on the needs of organizations. Tailoring actions can be applied to the baselines in [SP 800-53B](https://doi.org/10.6028/NIST.SP.800-53B) in accordance with the security and privacy requirements from [FISMA](https://www.congress.gov/113/plaws/publ283/PLAW-113publ283.pdf), [PRIVACT](https://www.govinfo.gov/content/pkg/STATUTE-88/pdf/STATUTE-88-Pg1896.pdf), and [OMB A-130](https://www.whitehouse.gov/sites/whitehouse.gov/files/omb/circulars/A130/a130revised.pdf). Alternatively, other communities of interest adopting different control baselines can apply the tailoring actions in [SP 800-53B](https://doi.org/10.6028/NIST.SP.800-53B) to specialize or customize the controls that represent the specific needs and concerns of those entities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pl-11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FIPS 199",
@@ -51,7 +51,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Planning",
     "PL-11 Baseline Tailoring"

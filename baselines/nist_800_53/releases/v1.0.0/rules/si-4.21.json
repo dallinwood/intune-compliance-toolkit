@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nImplement the following additional monitoring of individuals during [Assignment: organization-defined probationary period]: [Assignment: organization-defined additional monitoring].\n\n## Discussion\n\nDuring probationary periods, employees do not have permanent employment status within organizations. Without such status or access to information that is resident on the system, additional monitoring can help identify any potentially malicious activity or inappropriate behavior.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.21",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-18"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

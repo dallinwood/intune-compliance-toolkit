@@ -18,8 +18,9 @@ from jsonschema import Draft202012Validator
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.file_references import file_reference_errors
+from tools.file_references import file_reference_errors, repository_script_reader
 from tools.library_output import SCHEMA_VERSION
+from tools.odv_placeholders import placeholder_errors
 from tools.validate_library import load_schema
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
@@ -44,8 +45,9 @@ RESERVED_KEYS = frozenset({"__proto__", "constructor", "prototype"})
 
 # Index entries are copies of these rule fields; every other overlay field
 # only exists on the full rule and is ignored at index level.
-ODV_REQUIRED_KEYS = frozenset({"datatype", "description", "validation", "recommended", "by_benchmark"})
 INDEX_OVERLAY_FIELDS = frozenset({"title", "section_path", "assessment", "architecture", "applicability", "tags"})
+# A list field with no sensible by-item merge: an overlay sets it whole.
+REPLACE_ONLY_FIELDS = frozenset({"odvs"})
 
 
 class InvalidOverlay(ValueError):
@@ -169,6 +171,8 @@ def apply_overlay_fields(rule: dict, fields: dict, known_fields: set[str] | None
     for field_name, value in fields.items():
         if known_fields is not None and field_name not in known_fields:
             continue
+        if field_name in REPLACE_ONLY_FIELDS and not (isinstance(value, dict) and value.keys() == {REPLACE_WRAPPER}):
+            raise InvalidOverlay(f"{field_name}: only {REPLACE_WRAPPER} is allowed")
         merged[field_name] = _merge_value(rule.get(field_name, ABSENT), value, field_name)
     return merged
 
@@ -176,19 +180,14 @@ def apply_overlay_fields(rule: dict, fields: dict, known_fields: set[str] | None
 def apply_overlay_to_index_entry(entry: dict, fields: dict) -> dict:
     """Apply an overlay to an index entry, then recompute the derived fields.
 
-    An index entry has no odv, only has_odv, so it is stood in for by an
-    empty object or null. An odv the rule did not have must arrive complete,
-    or has_odv would promise a value the rule cannot supply.
+    An index entry has no odvs, only has_odv; a replaced odvs list sets it.
     """
-    seeded = copy.deepcopy(entry)
-    seeded["odv"] = {} if entry["has_odv"] else None
-    merged = apply_overlay_fields(seeded, fields, INDEX_OVERLAY_FIELDS | {"odv"})
-    odv = merged.pop("odv")
-    if not entry["has_odv"] and odv is not None:
-        missing = sorted(ODV_REQUIRED_KEYS - odv.keys()) if isinstance(odv, dict) else sorted(ODV_REQUIRED_KEYS)
-        if missing:
-            raise InvalidOverlay(f"odv: a rule without an odv needs a complete one, missing {', '.join(missing)}")
-    merged["has_odv"] = odv is not None
+    merged = apply_overlay_fields(entry, fields, INDEX_OVERLAY_FIELDS | REPLACE_ONLY_FIELDS)
+    if "odvs" in merged:
+        replacing_odvs = merged.pop("odvs")
+        if not isinstance(replacing_odvs, list):
+            raise InvalidOverlay("odvs: must be a list")
+        merged["has_odv"] = len(replacing_odvs) > 0
     section_path = merged.get("section_path")
     if isinstance(section_path, list) and section_path:
         merged["section"] = section_path[0]
@@ -457,10 +456,14 @@ def _check_rule(
     overlay_names = ", ".join(applied_files)
     cleaned_rule, _ = drop_unknown_keys(merged_rule, rule_schema, rule_schema)
     rule_validator = Draft202012Validator(rule_schema)
-    for problem in sorted(rule_validator.iter_errors(cleaned_rule), key=lambda error: list(error.absolute_path)):
+    rule_schema_problems = sorted(rule_validator.iter_errors(cleaned_rule), key=lambda error: list(error.absolute_path))
+    for problem in rule_schema_problems:
         errors.append(f"{overlay_names}: {rule_id}: merged rule {problem.json_path}: {problem.message}")
     for problem in file_reference_errors(cleaned_rule, repository_root):
         errors.append(f"{overlay_names}: {rule_id}: merged rule {problem}")
+    if not rule_schema_problems:
+        for problem in placeholder_errors(cleaned_rule, repository_script_reader(repository_root)):
+            errors.append(f"{overlay_names}: {problem}")
 
     cleaned_entry, _ = drop_unknown_keys(merged_entry, entry_schema, index_schema)
     index_document = {"schema_version": SCHEMA_VERSION, "source": library_rule["source_name"], "rules": [cleaned_entry]}

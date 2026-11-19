@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEnforce dual authorization for the deletion or destruction of [Assignment: organization-defined backup information].\n\n## Discussion\n\nDual authorization ensures that deletion or destruction of backup information cannot occur unless two qualified individuals carry out the task. Individuals deleting or destroying backup information possess the skills or expertise to determine if the proposed deletion or destruction of information reflects organizational policies and procedures. Dual authorization may also be known as two-person control. To reduce the risk of collusion, organizations consider rotating dual authorization duties to other individuals.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-9.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-3",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-09 System Backup"

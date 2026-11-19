@@ -36,10 +36,10 @@
   "discussion": "Centrally logging and analysing MFD events, including metadata and shadow copies of documents printed, scanned or copied, can assist in monitoring the security posture of systems, detecting malicious behaviour and supporting investigations following cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1855",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Multifunction devices",

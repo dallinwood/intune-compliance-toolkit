@@ -20,14 +20,14 @@
   "discussion": "## Control\n\nPrevent encrypted information from bypassing [Assignment: organization-defined information flow control mechanisms] by [Selection (one or more): decrypting the information; blocking the flow of the encrypted information; terminating communications sessions attempting to pass encrypted information; [Assignment: organization-defined procedure or method]].\n\n## Discussion\n\nFlow control mechanisms include content checking, security policy filters, and data type identifiers. The term encryption is extended to cover encoded data not recognized by filtering mechanisms.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-4"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

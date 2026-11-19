@@ -38,7 +38,7 @@
   "discussion": "Apple Intelligence features such as Mail Smart Replies that use off device AI _MUST_ be disabled.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_mail_smart_reply_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -143,7 +143,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

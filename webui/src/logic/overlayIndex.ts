@@ -28,28 +28,18 @@ function isObject(value: unknown): value is JsonObject {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-// has_odv is the only thing an index entry knows about odv, and the merge
-// also needs which top-level keys an overlay supplies (a rule without an odv
-// must get a complete one). So odv keeps its wrapper and its top-level keys,
-// with every value replaced by true, and $replace: null stays as it is.
-function keysOnly(value: unknown): unknown {
-  if (!isObject(value)) return value
-  return Object.fromEntries(Object.keys(value).map((key) => [key, true]))
-}
-
+// has_odv is the only thing an index entry knows about odvs, and it follows
+// whether the replacing list is empty. So a $replace list keeps just that:
+// one placeholder item when it has any, nothing when it has none.
 export function reduceOdv(value: unknown): unknown {
-  if (!isObject(value)) return value
-  const keys = Object.keys(value)
-  if (keys.length === 1 && (keys[0] === '$replace' || keys[0] === '$merge')) {
-    return { [keys[0]]: keysOnly(value[keys[0]]) }
-  }
-  return keysOnly(value)
+  if (!isObject(value) || !Array.isArray(value.$replace)) return value
+  return { $replace: value.$replace.length > 0 ? [true] : [] }
 }
 
 export function indexFieldsOf(fields: Record<string, unknown>): Record<string, unknown> {
   const indexFields: Record<string, unknown> = {}
   for (const [name, value] of Object.entries(fields)) {
-    if (INDEX_OVERLAY_FIELDS.has(name)) indexFields[name] = name === 'odv' ? reduceOdv(value) : value
+    if (INDEX_OVERLAY_FIELDS.has(name)) indexFields[name] = name === 'odvs' ? reduceOdv(value) : value
   }
   return indexFields
 }

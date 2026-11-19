@@ -28,10 +28,10 @@
   "discussion": "## Control\n\nImplement replay-resistant authentication mechanisms for access to [Selection (one or more): privileged accounts; non-privileged accounts].\n\n## Discussion\n\nAuthentication processes resist replay attacks if it is impractical to achieve successful authentications by replaying previous authentication messages. Replay-resistant techniques include protocols that use nonces or challenges such as time synchronous or cryptographic authenticators.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-2.8",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-02 Identification and Authentication (organizational Users)"

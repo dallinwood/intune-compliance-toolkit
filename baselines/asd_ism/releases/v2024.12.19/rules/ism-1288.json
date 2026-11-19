@@ -36,10 +36,10 @@
   "discussion": "Antivirus scanning can be used to detect malicious files. In doing so, multiple different scanning engines should be used to increase the likelihood of identifying any malicious files.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1288",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Content filtering",

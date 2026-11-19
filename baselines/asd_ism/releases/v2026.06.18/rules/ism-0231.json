@@ -36,10 +36,10 @@
   "discussion": "As there is a potential for unintended disclosure of information when using telephone systems, personnel should be made aware of the sensitivity or classification of information that may be discussed used them. In addition, personnel should also be made aware of the security risks associated with the use of non-secure telephone systems in areas where sensitive or classified conversations may occur.\n\nWhen using cryptographic equipment to enable different levels of conversation for different kinds of connections, providing a visual indication to personnel as to the sensitivity or classification of information that can be discussed over the telephone system can assist in reducing the likelihood of unintended disclosure of information.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0231",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Telephone systems",

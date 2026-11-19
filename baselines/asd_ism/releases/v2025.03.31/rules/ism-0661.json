@@ -36,10 +36,10 @@
   "discussion": "When users transfer data to or from systems, they should understand the potential consequences of their actions. This could include transferring data onto systems not authorised to handle the data, or the unintended introduction of malicious code to systems. As such, users should be held accountable for all data transfers that they perform.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0661",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for data transfers",
     "Data transfers",

@@ -36,10 +36,10 @@
   "discussion": "Centrally logging and analysing security-relevant events, including configuration changes, for operating systems can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cyber security incidents.\n\nTypical security-relevant events for operating systems that can be logged include:\n\n- changes to security policies\n- failed user logons and account lockouts\n- failures, restarts and changes to important processes, services and scheduled tasks\n- operating system and application usage, error messages and crashes\n- security product-related events\n- successful process creations and terminations\n- successful user logons and logoffs\n- system startups and shutdowns.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1976",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "Operating system hardening",

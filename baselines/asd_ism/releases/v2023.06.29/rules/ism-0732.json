@@ -36,10 +36,10 @@
   "discussion": "Receiving and managing a dedicated cyber security budget will ensure the CISO has sufficient access to funding to support their cyber security program, including cyber security uplift activities and responding to cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0732",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cyber Security Roles",
     "Chief Information Security Officer",

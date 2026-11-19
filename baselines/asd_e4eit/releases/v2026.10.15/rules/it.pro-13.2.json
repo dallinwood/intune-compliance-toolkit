@@ -48,7 +48,7 @@
   "discussion": "# Principle\n\nRobust and secure identity, credential and access management is used to establish, maintain and control access to systems (infrastructure, operating systems, applications and data) and to support effective detection of identity and credential misuse.\n\n# Indicators of Good Practice\n\nNot effective:\n- Credentials are stored in plaintext, spreadsheets, shared drives or other unapproved locations as standard practice.\n- No approved secure repository is in use to store authentication keys, secrets and tokens.\n- Access to credential stores is neither controlled nor audited.\n- Access controls such as MFA are not enabled for authentication to secure repositories.\n\nPartially effective:\n- An approved secure repository is in use but does not cover all authentication keys, secrets and tokens within scope.\n- Access controls for secure repositories are in place but access logging is not enabled or not reviewed.\n- MFA is enforced for some, but not all, applicable users, repositories or authentication pathways, and the remaining exceptions are documented and subject to remediation.\n\nFully effective:\n- Authentication keys, secrets and tokens within scope are stored in approved secure repositories, with any authorised exceptions documented, risk-assessed and managed in accordance with organisationally defined requirements.\n- Access to secure repositories is restricted using attribute or role-based access controls, MFA is enforced for all applicable authentication pathways, and access is logged and reviewed and investigated where necessary.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-13.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -80,7 +80,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-13 - Identity, credential and access management"

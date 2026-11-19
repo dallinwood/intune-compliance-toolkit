@@ -36,10 +36,10 @@
   "discussion": "Hypertext Transfer Protocol Secure (HTTPS) is the Hypertext Transfer Protocol secured by Transport Layer Security (TLS) encryption. The use of HTTPS for web applications can assist in ensuring that interactions with web applications are confidential and that the integrity of such interactions are also maintained.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1552",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

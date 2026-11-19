@@ -12,7 +12,8 @@ from jsonschema import Draft202012Validator
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tools.file_references import file_reference_errors
+from tools.file_references import file_reference_errors, repository_script_reader
+from tools.odv_placeholders import placeholder_errors
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
@@ -99,7 +100,12 @@ def _validate_release(baselines_dir: Path, release: dict, errors: list[str]) -> 
                 f"does not match release {release['tag']!r}"
             )
         errors.extend(f"{rule_path}: {problem}" for problem in applicability_errors(rule))
-        errors.extend(f"{rule_path}: {problem}" for problem in file_reference_errors(rule, baselines_dir.resolve().parent))
+        repository_root = baselines_dir.resolve().parent
+        errors.extend(f"{rule_path}: {problem}" for problem in file_reference_errors(rule, repository_root))
+        errors.extend(
+            f"{rule_path}: {problem}"
+            for problem in placeholder_errors(rule, repository_script_reader(repository_root))
+        )
 
 
 def manifest_consistency_errors(manifest: dict) -> list[str]:

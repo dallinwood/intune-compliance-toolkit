@@ -36,10 +36,10 @@
   "discussion": "It is important that once security documentation has been approved, it is published and communicated to all stakeholders. If security documentation is not communicated to stakeholders they will be unaware of what policies and procedures have been implemented for systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1602",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Security Documentation",
     "Development and maintenance of security documentation",

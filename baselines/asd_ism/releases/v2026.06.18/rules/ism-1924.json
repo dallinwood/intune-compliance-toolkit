@@ -36,10 +36,10 @@
   "discussion": "Prompt injection vulnerabilities exist in how AI applications process user prompts, and how such input may force AI models to incorrectly pass prompt data to other parts of the model, potentially causing them to violate guidelines, generate harmful content, enable unauthorised access or influence critical decisions.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1924",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

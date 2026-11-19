@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n[Selection: Establish procedures; Implement mechanisms] to ensure [Assignment: organization-defined access control decisions] are applied to each access request prior to access enforcement.\n\n## Discussion\n\nAccess control decisions (also known as authorization decisions) occur when authorization information is applied to specific accesses. In contrast, access enforcement occurs when systems enforce access control decisions. While it is common to have access control decisions and access enforcement implemented by the same entity, it is not required, and it is not always an optimal implementation choice. For some architectures and distributed systems, different entities may make access control decisions and enforce access.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-24",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-162",
@@ -27,7 +27,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-24 Access Control Decisions"

@@ -24,14 +24,14 @@
   "discussion": "## Control\n\n- (a) Review [Assignment: organization-defined frequency] the privileges assigned to [Assignment: organization-defined roles or classes of users] to validate the need for such privileges; and\n- (b) Reassign or remove privileges, if necessary, to correctly reflect organizational mission and business needs.\n\n## Discussion\n\nThe need for certain assigned user privileges may change over time to reflect changes in organizational mission and business functions, environments of operation, technologies, or threats. A periodic review of assigned user privileges is necessary to determine if the rationale for assigning such privileges remains valid. If the need cannot be revalidated, organizations take appropriate corrective actions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-6.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-06 Least Privilege"

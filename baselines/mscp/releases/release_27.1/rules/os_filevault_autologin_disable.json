@@ -53,7 +53,7 @@
   "discussion": "If FileVault is enabled, automatic login _MUST_ be disabled, so that both FileVault and login window authentication are required.\n\nThe default behavior of macOS when FileVault is enabled is to automatically log in to the computer once successfully passing your FileVault credentials.\n\nNOTE: DisableFDEAutoLogin does not have to be set on Apple Silicon based macOS systems that are smartcard enforced as smartcards are available at pre-boot.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_filevault_autologin_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -133,7 +133,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

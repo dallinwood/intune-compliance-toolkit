@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nMaintain exclusive control of cryptographic keys for encrypted material stored or transmitted through an external system.\n\n## Discussion\n\nMaintaining exclusive control of cryptographic keys in an external system prevents decryption of organizational data by external system staff. Organizational control of cryptographic keys can be implemented by encrypting and decrypting data inside the organization as data is sent to and received from the external system or by employing a component that permits encryption and decryption functions to be local to the external system but allows exclusive organizational access to the encryption keys.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-9.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-12",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-09 External System Services"

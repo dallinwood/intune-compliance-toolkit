@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nImplement automated mechanisms to support the management of distributed security and privacy function testing.\n\n## Discussion\n\nThe use of automated mechanisms to support the management of distributed function testing helps to ensure the integrity, timeliness, completeness, and efficacy of such testing.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-6.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-2"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-06 Security and Privacy Function Verification"

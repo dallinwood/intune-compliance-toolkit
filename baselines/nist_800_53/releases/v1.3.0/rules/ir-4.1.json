@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nSupport the incident handling process using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms that support incident handling processes include online incident management systems and tools that support the collection of live response data, full network packet capture, and forensic analysis.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-4.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-04 Incident Handling"

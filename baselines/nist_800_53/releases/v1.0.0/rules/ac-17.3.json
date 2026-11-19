@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nRoute remote accesses through authorized and managed network access control points.\n\n## Discussion\n\nOrganizations consider the Trusted Internet Connections (TIC) initiative [DHS TIC](https://www.dhs.gov/trusted-internet-connections) requirements for external network connections since limiting the number of access control points for remote access reduces attack surfaces.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-17.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-17 Remote Access"

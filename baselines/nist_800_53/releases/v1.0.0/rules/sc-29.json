@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy a diverse set of information technologies for the following system components in the implementation of the system: [Assignment: organization-defined system components].\n\n## Discussion\n\nIncreasing the diversity of information technologies within organizational systems reduces the impact of potential exploitations or compromises of specific technologies. Such diversity protects against common mode failures, including those failures induced by supply chain attacks. Diversity in information technologies also reduces the likelihood that the means adversaries use to compromise one system component will be effective against other system components, thus further increasing the adversary work factor to successfully complete planned attacks. An increase in diversity may add complexity and management overhead that could ultimately lead to mistakes and unauthorized configurations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-29",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-9",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-29 Heterogeneity"

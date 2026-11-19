@@ -74,7 +74,7 @@
   "discussion": "If the system does not require Trivial File Transfer Protocol (TFTP), support it is non-essential and _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities. Disabling TFTP helps prevent the unauthorized connection of devices and the unauthorized transfer of information.\n\nNOTE: TFTP service is disabled at startup by default macOS.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_tftpd_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -179,7 +179,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

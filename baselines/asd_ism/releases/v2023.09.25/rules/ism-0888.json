@@ -36,10 +36,10 @@
   "discussion": "Threat environments are dynamic. If security documentation is not kept up-to-date to reflect the current threat environment, policies, processes and procedures may cease to be effective. In such a situation, resources could be devoted to cyber security initiatives or investments that have reduced effectiveness or are no longer relevant.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0888",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Security Documentation",
     "Development and maintenance of security documentation",

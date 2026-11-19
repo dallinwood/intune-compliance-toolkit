@@ -36,10 +36,10 @@
   "discussion": "CDSs should have comprehensive event logging capabilities to ensure accountability of users for all activities they undertake. Furthermore, effective event logging and monitoring practices can increase the likelihood that operational failures and unauthorised activities will be detected. In doing so, CDS event logs should be centrally stored and protected from unauthorised modification and deletion, monitored for signs of compromise, and actioned when cyber security events are detected.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1776",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Cross Domain Solutions",

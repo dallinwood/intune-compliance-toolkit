@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnforce [Assignment: organization-defined limitations] on embedding data types within other data types.\n\n## Discussion\n\nEmbedding data types within other data types may result in reduced flow control effectiveness. Data type embedding includes inserting files as objects within other files and using compressed or archived data types that may include multiple embedded data types. Limitations on data type embedding consider the levels of embedding and prohibit levels of data type embedding that are beyond the capability of the inspection tools.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

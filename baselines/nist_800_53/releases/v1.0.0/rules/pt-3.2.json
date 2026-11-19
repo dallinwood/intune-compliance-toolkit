@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nTrack processing purposes of personally identifiable information using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms augment tracking of the processing purposes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pt-3.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-6",
@@ -30,7 +30,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personally Identifiable Information Processing and Transparency",
     "PT-03 Personally Identifiable Information Processing Purposes"

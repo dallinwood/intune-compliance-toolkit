@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nSuitable and sufficient personnel and resources are identified, acquired and maintained in support of cyber security activities.\n\n# Indicators of Good Practice\n\nNot effective:\n- No review of cyber security resourcing has been conducted.\n- Resourcing has not been reassessed following significant organisational or threat landscape changes.\n\nPartially effective:\n- A review has been conducted but did not reference current threat trends, cyber security incident outcomes, or organisational changes.\n- Review outcomes have identified required adjustments, but those adjustments have not been made.\n\nFully effective:\n- A resourcing review has been completed within the review period defined by the organisation.\n- The review references current threat trends, cyber security incident outcomes and organisational changes.\n- Documented review outcomes include resourcing adjustments that are implemented within timeframes defined by the organisation, or formally risk accepted by an appropriate authority.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-04.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-04 - Cyber security resourcing"

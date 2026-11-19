@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProvide data origin and integrity protection artifacts for internal name/address resolution queries.\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-20.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-20 Secure Name/address Resolution Service (authoritative Source)"

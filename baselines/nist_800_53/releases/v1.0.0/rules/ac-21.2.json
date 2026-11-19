@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nImplement information search and retrieval services that enforce [Assignment: organization-defined information sharing restrictions].\n\n## Discussion\n\nInformation search and retrieval services identify information system resources relevant to an information need.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-21.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-21 Information Sharing"

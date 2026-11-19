@@ -36,10 +36,10 @@
   "discussion": "Since media is capable of storing sensitive or classified data, it is important that a media management policy is developed and implemented to ensure that all types of media, and the data it stores, is protected in an appropriate manner. In many cases, an organisation’s media management policy will be closely tied to their removable media usage policy.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1549",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Media",
     "Media usage",

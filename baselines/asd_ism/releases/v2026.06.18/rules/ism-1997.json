@@ -36,10 +36,10 @@
   "discussion": "To ensure that cyber security is embedded throughout an organisation, it is important that the board of directors or executive committee commits to defining clear roles and responsibilities for cyber security and integrating cyber security throughout all business functions within their organisation. They should also align their organisation’s cyber security strategy with their organisation’s overarching strategic direction and business strategy and seek regular briefings or reporting on the cyber security posture of their organisation and the threat environment in which it operates.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1997",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "Board of directors and executive committee",

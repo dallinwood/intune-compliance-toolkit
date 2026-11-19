@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to use [Assignment: organization-defined secure logging format(s)] to log [Assignment: organization-defined events types to log] at [Assignment: organization-defined level of detail to log].\n\n## Discussion\n\nIn support of better incident response and the ability to more quickly reconstruct security-related actions, identifying specific requirements for secure logging facilitates the ability to connect application-produced audit event logs with operational data. Event types are consistent with the event types defined in AU-02.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15.13",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

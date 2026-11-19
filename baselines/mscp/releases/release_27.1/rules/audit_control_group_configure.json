@@ -101,7 +101,7 @@
   "discussion": "/etc/security/audit_control _MUST_ have the group set to wheel.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_control_group_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -202,7 +202,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

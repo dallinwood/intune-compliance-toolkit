@@ -25,7 +25,7 @@
   "discussion": "The macOS system _MUST_ be configured to determine the state of system components with regard to flaw remediation.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_continuous_monitoring",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "srg": [
@@ -53,7 +53,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

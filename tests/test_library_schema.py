@@ -17,7 +17,7 @@ LICENSE = {
 }
 
 MINIMAL_RULE = {
-    "schema_version": 5,
+    "schema_version": 6,
     "id": "mscp.os_gatekeeper_enable",
     "title": "Enable Gatekeeper",
     "discussion": "Gatekeeper _MUST_ be enabled.",
@@ -69,7 +69,7 @@ MINIMAL_RULE = {
             },
         }
     },
-    "odv": None,
+    "odvs": [],
     "remediation": {
         "macOS": {
             "steps": [
@@ -104,7 +104,7 @@ def index_entry_for(rule, file_path):
         "architecture": rule["architecture"],
         "applicability": rule["applicability"],
         "tags": rule["tags"],
-        "has_odv": rule["odv"] is not None,
+        "has_odv": len(rule["odvs"]) > 0,
     }
 
 
@@ -154,7 +154,7 @@ def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeepe
     write_json(
         baselines_dir / MSCP_RELEASE_DIR / "_index.json",
         {
-            "schema_version": 5,
+            "schema_version": 6,
             "source": "mscp",
             "rules": [index_entry_for(rule, index_file)],
         },
@@ -187,10 +187,37 @@ def test_manual_with_reason_is_valid():
 
 def test_odv_placeholder_allowed_as_integer_value():
     rule = make_rule()
-    rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "$ODV"}
+    rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "$ODV_value"}
     assert schema_errors(rule) == []
-    rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "7"}
-    assert schema_errors(rule)
+    for bad_value in ("7", "$ODV", "$ODV_Value", "$ODV_value extra"):
+        rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": bad_value}
+        assert schema_errors(rule), bad_value
+
+
+def make_odv(**overrides):
+    odv = {
+        "name": "value",
+        "datatype": "number",
+        "description": "Minimum length",
+        "validation": None,
+        "recommended": 6,
+        "by_benchmark": {},
+        "quoting": "unquoted",
+    }
+    return {**odv, **overrides}
+
+
+def test_odvs_with_valid_items_are_accepted():
+    assert schema_errors(make_rule(odvs=[make_odv(), make_odv(name="max_age", quoting="single")])) == []
+
+
+@pytest.mark.parametrize("bad_name", ["Value", "1value", "va-lue", "", "value "])
+def test_bad_odv_name_rejected(bad_name):
+    assert schema_errors(make_rule(odvs=[make_odv(name=bad_name)]))
+
+
+def test_unknown_quoting_rejected():
+    assert schema_errors(make_rule(odvs=[make_odv(quoting="backtick")]))
 
 
 def test_accepts_unversioned_untargeted_rule():
@@ -341,7 +368,7 @@ def test_validate_library_rejects_null_rule_file(tmp_path):
 )
 def test_index_rejects_unsafe_file_path(unsafe_path):
     index = {
-        "schema_version": 5,
+        "schema_version": 6,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, unsafe_path)],
     }
@@ -350,7 +377,7 @@ def test_index_rejects_unsafe_file_path(unsafe_path):
 
 def test_index_accepts_safe_file_path():
     index = {
-        "schema_version": 5,
+        "schema_version": 6,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, "rules/os..x.json")],
     }
@@ -360,46 +387,46 @@ def test_index_accepts_safe_file_path():
 def test_index_rejects_platform_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["platform"] = "macOS"
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section"]
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section_path():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section_path"]
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("bad_section_path", [[], [""], ["os\nx"], "os"])
 def test_index_rejects_bad_section_path(bad_section_path):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section_path"] = bad_section_path
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("bad_section", ["", "os\n"])
 def test_index_rejects_bad_section(bad_section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = bad_section
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("section", ["os", "Access Control", "3.1 Policy"])
 def test_index_accepts_any_single_line_section(section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = section
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index") == []
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index") == []
 
 
 def test_index_rejects_entry_missing_required_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["has_odv"]
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 def read_manifest(baselines_dir: Path) -> dict:
@@ -434,7 +461,7 @@ def write_older_release(baselines_dir: Path, tag: str = "release_26.0") -> None:
     older_rule["source"]["release_tag"] = tag
     write_json(
         baselines_dir / "mscp" / "releases" / tag / "_index.json",
-        {"schema_version": 5, "source": "mscp", "rules": [index_entry_for(older_rule, "rules/os_gatekeeper_enable.json")]},
+        {"schema_version": 6, "source": "mscp", "rules": [index_entry_for(older_rule, "rules/os_gatekeeper_enable.json")]},
     )
     write_json(baselines_dir / "mscp" / "releases" / tag / "rules" / "os_gatekeeper_enable.json", older_rule)
 
@@ -590,7 +617,7 @@ def test_rule_and_index_schemas_accept_dotted_rule_ids(rule_id):
     assert schema_errors(make_rule(id=rule_id)) == []
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["id"] = rule_id
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index") == []
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index") == []
 
 
 @pytest.mark.parametrize("rule_id", REJECTED_RULE_IDS)
@@ -598,7 +625,7 @@ def test_rule_and_index_schemas_reject_empty_dot_segments_in_rule_ids(rule_id):
     assert schema_errors(make_rule(id=rule_id))
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["id"] = rule_id
-    assert schema_errors({"schema_version": 5, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent

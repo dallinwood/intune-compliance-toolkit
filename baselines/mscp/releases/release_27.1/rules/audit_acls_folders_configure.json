@@ -101,7 +101,7 @@
   "discussion": "The audit log folder _MUST_ not contain access control lists (ACLs).\n\nAudit logs contain sensitive data about the system and users. This rule ensures that the audit service is configured to create log folders that are readable and writable only by system administrators in order to prevent normal users from reading audit logs.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_acls_folders_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -201,7 +201,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

@@ -36,10 +36,10 @@
   "discussion": "To assist with embedding cybersecurity throughout an organisation, it is important that the board of directors or executive committee maintains a sufficient level of cybersecurity literacy to fulfil both their fiduciary duties and any legislative or regulatory obligations. In addition, the board of directors or executive committee should maintain awareness of key cybersecurity recruitment activities, retention rates for cybersecurity personnel, and cybersecurity skills and experience gaps for their organisation. Finally, the board of directors or executive committee should support the development of cybersecurity skills and experience for all personnel within their organisation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2003",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity roles",
     "Board of directors and executive committee",

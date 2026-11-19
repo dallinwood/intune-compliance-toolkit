@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProvide practical exercises in literacy training that simulate events and incidents.\n\n## Discussion\n\nPractical exercises include no-notice social engineering attempts to collect information, gain unauthorized access, or simulate the adverse impact of opening malicious email attachments or invoking, via spear phishing attacks, malicious web links.",
   "discussion_format": "markdown",
   "id": "nist_800_53.at-2.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-2",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Awareness and Training",
     "AT-02 Literacy Training and Awareness"

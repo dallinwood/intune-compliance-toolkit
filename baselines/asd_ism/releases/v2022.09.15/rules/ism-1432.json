@@ -36,10 +36,10 @@
   "discussion": "The use of domain name registrar locking can prevent a denial of service caused by unauthorised modification of a domain’s registration details or unauthorised deletion or transfer of a domain.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1432",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Service continuity for online services",

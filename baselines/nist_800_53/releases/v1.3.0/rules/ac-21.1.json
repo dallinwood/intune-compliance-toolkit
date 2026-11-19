@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy [Assignment: organization-defined automated mechanisms] to enforce information-sharing decisions by authorized users based on access authorizations of sharing partners and access restrictions on information to be shared.\n\n## Discussion\n\nAutomated mechanisms are used to enforce information sharing decisions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-21.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-21 Information Sharing"

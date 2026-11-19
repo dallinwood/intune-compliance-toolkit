@@ -36,10 +36,10 @@
   "discussion": "Due to the higher threat environment that web servers are typically exposed to, hosting database servers and web servers within the same operating environment increases the likelihood of database servers being compromise by an adversary. This security risk can be mitigated by ensuring that database servers are functionally separated from web servers.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1269",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Database Systems",
     "Database servers",

@@ -14,6 +14,8 @@ import json
 import re
 from pathlib import Path
 
+from tools.odv_placeholders import PLACEHOLDER_PATTERN
+
 REFERENCE_PREFIX = "baselines/"
 # Every segment after baselines/ is plain: no percent-encoding, query or
 # fragment characters a browser would reinterpret, no empty segment, and no
@@ -28,7 +30,6 @@ SCRIPT_EXTENSIONS_BY_LANGUAGE = {
 TEXT_PAYLOAD_EXTENSIONS = (".mobileconfig", ".plist", ".json", ".xml", ".reg", ".admx", ".adml")
 BINARY_PAYLOAD_EXTENSIONS = (".pol", ".intunewin")
 PAYLOAD_EXTENSIONS = TEXT_PAYLOAD_EXTENSIONS + BINARY_PAYLOAD_EXTENSIONS
-ODV_PLACEHOLDER = "$ODV"
 
 
 def _has_extension(path: str, extensions: tuple[str, ...]) -> bool:
@@ -97,6 +98,16 @@ def _read_text(path: str, repository_root: Path) -> tuple[str | None, str | None
     return text, None
 
 
+def repository_script_reader(repository_root: Path):
+    """A `read_script` for placeholder_errors; a missing or unreadable file reads as empty, since file_reference_errors reports it."""
+
+    def read_script(path: str) -> str:
+        text, _ = _read_text(path, repository_root)
+        return text or ""
+
+    return read_script
+
+
 def _script_content_problem(path: str, repository_root: Path, is_check: bool) -> str | None:
     text, problem = _read_text(path, repository_root)
     if problem:
@@ -106,8 +117,9 @@ def _script_content_problem(path: str, repository_root: Path, is_check: bool) ->
     # The details and settings export decide how $ODV is substituted from the
     # rule as stored, without reading script files, so a check script must
     # not depend on it until they do.
-    if is_check and ODV_PLACEHOLDER in text:
-        return f"{path} contains {ODV_PLACEHOLDER}, which a check script file cannot use yet; inline the check instead"
+    placeholder_match = PLACEHOLDER_PATTERN.search(text) if is_check else None
+    if placeholder_match:
+        return f"{path} contains {placeholder_match.group(0)}, which a check script file cannot use yet; inline the check instead"
     return None
 
 

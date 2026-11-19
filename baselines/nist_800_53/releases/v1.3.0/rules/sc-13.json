@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Determine the [Assignment: organization-defined cryptographic uses] ; and\n- b. Implement the following types of cryptography required for each specified cryptographic use: [Assignment: organization-defined types of cryptography].\n\n## Discussion\n\nCryptography can be employed to support a variety of security solutions, including the protection of classified information and controlled unclassified information, the provision and implementation of digital signatures, and the enforcement of information separation when authorized individuals have the necessary clearances but lack the necessary formal access approvals. Cryptography can also be used to support random number and hash generation. Generally applicable cryptographic standards include FIPS-validated cryptography and NSA-approved cryptography. For example, organizations that need to protect classified information may specify the use of NSA-approved cryptography. Organizations that need to provision and implement digital signatures may specify the use of FIPS-validated cryptography. Cryptography is implemented in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-13",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FIPS 140-3"
@@ -66,7 +66,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-13 Cryptographic Protection"

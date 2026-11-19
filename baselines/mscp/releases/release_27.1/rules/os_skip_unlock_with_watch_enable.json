@@ -62,7 +62,7 @@
   "discussion": "The prompt for Apple Watch unlock setup during Setup Assistant _MUST_ be disabled.\n\nDisabling Apple watches is a necessary step to ensuring that the information system retains a session lock until the user reestablishes access using an authorized identification and authentication procedures.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_skip_unlock_with_watch_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -160,7 +160,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

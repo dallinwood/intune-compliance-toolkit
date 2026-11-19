@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProtect information about remote access mechanisms from unauthorized use and disclosure.\n\n## Discussion\n\nRemote access to organizational information by non-organizational entities can increase the risk of unauthorized use and disclosure about remote access mechanisms. The organization considers including remote access requirements in the information exchange agreements with other organizations, as applicable. Remote access requirements can also be included in rules of behavior (see PL-4) and access agreements (see PS-6).",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-17.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-2",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-17 Remote Access"

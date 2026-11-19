@@ -38,7 +38,7 @@
   "discussion": "Remote access sessions _MUST_ use encrypted methods to protect unauthorized individuals from gaining access.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_ssh_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -97,7 +97,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

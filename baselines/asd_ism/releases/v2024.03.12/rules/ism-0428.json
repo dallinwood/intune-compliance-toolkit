@@ -36,10 +36,10 @@
   "discussion": "Systems are configured with a session or screen lock that:\n\n- activates after a maximum of 15 minutes of user inactivity, or if manually activated by users\n- conceals all session content on the screen\n- ensures that the screen does not enter a power saving state before the session or screen lock is activated\n- requires users to authenticate to unlock the session\n- denies users the ability to disable the session or screen locking mechanism.\n\nSession and screen locking prevents unauthorised access to a system which a user has already authenticated to.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0428",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

@@ -36,10 +36,10 @@
   "discussion": "Labelling cables with the correct source and destination details minimises the likelihood of cross-patching and aids in fault finding and configuration management.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1096",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

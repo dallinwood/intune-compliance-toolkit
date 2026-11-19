@@ -40,7 +40,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are administered in a secure, accountable and auditable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Privileged access is standing and does not require explicit activation or time-bound grants, excluding approved break-glass and emergency access accounts.\n- No re-authentication or step-up authentication is required before privileged sessions.\n\nPartially effective:\n- Time-bound access is implemented for some privileged roles but standing access remains for others.\n- Session duration limits exist but are not consistently enforced or are set excessively long.\n\nFully effective:\n- Time-bound privilege grants are enforced for applicable privileged roles, with defined maximum session durations and approved emergency access arrangements.\n- Re-authentication or step-up authentication is required before privilege activation.\n- All privilege activations are logged with activating user, role and timeframes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-05.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -70,7 +70,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-05 - Secure administration"

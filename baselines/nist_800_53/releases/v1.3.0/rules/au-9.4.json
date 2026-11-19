@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nAuthorize access to management of audit logging functionality to only [Assignment: organization-defined subset of privileged users or roles].\n\n## Discussion\n\nIndividuals or roles with privileged access to a system and who are also the subject of an audit by that system may affect the reliability of the audit information by inhibiting audit activities or modifying audit records. Requiring privileged access to be further defined between audit-related privileges and other privileges limits the number of users or roles with audit-related privileges.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-9.4",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-5"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-09 Protection of Audit Information"

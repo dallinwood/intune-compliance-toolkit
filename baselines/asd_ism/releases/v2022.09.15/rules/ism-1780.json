@@ -36,10 +36,10 @@
   "discussion": "Secure-by-design principles and secure programming practices, supported by agile software development practices and threat modelling, are an important part of application development as they can assist with the identification and mitigation of at risk software components and risky programming practices. In addition, providing mechanisms to assist in determining the authenticity and integrity of applications, while configuring them in a secure manner, can assist with software supply chain security activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1780",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Application development",

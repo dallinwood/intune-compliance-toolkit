@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nRequire that the validation and verification of identity evidence be conducted in person before a designated registration authority.\n\n## Discussion\n\nIn-person proofing reduces the likelihood of fraudulent credentials being issued because it requires the physical presence of individuals, the presentation of physical identity documents, and actual face-to-face interactions with designated registration authorities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-12.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-12 Identity Proofing"

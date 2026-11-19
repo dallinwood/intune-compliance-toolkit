@@ -28,7 +28,7 @@
   "discussion": "The iOS device _MUST_ be configured not use the spell check feature of the OS.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_definition_lookup_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -103,7 +103,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

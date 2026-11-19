@@ -36,10 +36,10 @@
   "discussion": "For the board of directors or executive committee to fulfil both their fiduciary duties and any legislative or regulatory obligations, it is important that they understand the business criticality of their organisation’s systems. This includes a basic understanding of what systems exist, their value, where they reside, who has access, who might seek access, how they are protected and how that protection is verified.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2005",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cyber security roles",
     "Board of directors and executive committee",

@@ -43,27 +43,31 @@
         "additional_info": null,
         "result": {
           "type": "integer",
-          "value": "$ODV"
+          "value": "$ODV_value"
         },
         "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('.GlobalPreferences')\\\n.objectForKey('com.apple.autologout.AutoLogOutDelay').js\nEOS"
       },
       "language": "bash"
     }
   },
-  "discussion": "Auto logout _MUST_ be configured to automatically terminate a user session and log out the after $ODV seconds of inactivity.\n\nNOTE:The maximum that macOS can be configured for autologoff is $ODV seconds.\n\n[IMPORTANT]\n====\nThe automatic logout may cause disruptions to an organization's workflow and/or loss of data. Information System Security Officers (ISSOs) are advised to first fully weigh the potential risks posed to their organization before opting to disable the automatic logout setting.\n====\n",
+  "discussion": "Auto logout _MUST_ be configured to automatically terminate a user session and log out the after $ODV_value seconds of inactivity.\n\nNOTE:The maximum that macOS can be configured for autologoff is $ODV_value seconds.\n\n[IMPORTANT]\n====\nThe automatic logout may cause disruptions to an organization's workflow and/or loss of data. Information System Security Officers (ISSOs) are advised to first fully weigh the potential risks posed to their organization before opting to disable the automatic logout setting.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_automatic_logout_enforce",
-  "odv": {
-    "by_benchmark": {
-      "disa_stig": 86400
-    },
-    "datatype": "number",
-    "description": "Number of seconds, e.g. 86400",
-    "recommended": 86400,
-    "validation": {
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "disa_stig": 86400
+      },
+      "datatype": "number",
+      "description": "Number of seconds, e.g. 86400",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 86400,
+      "validation": {
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "disa": {
       "cci": [
@@ -124,7 +128,7 @@
             {
               "PayloadContent": [
                 {
-                  "com.apple.autologout.AutoLogOutDelay": "$ODV"
+                  "com.apple.autologout.AutoLogOutDelay": "$ODV_value"
                 }
               ],
               "PayloadType": ".GlobalPreferences"
@@ -137,7 +141,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],
@@ -166,5 +170,5 @@
     "cnssi-1253_low",
     "cnssi-1253_moderate"
   ],
-  "title": "Enforce Auto Logout After $ODV Seconds of Inactivity"
+  "title": "Enforce Auto Logout After $ODV_value Seconds of Inactivity"
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Odv } from '../types/library'
-import { supportingCheckValueSummary } from './supportingCheckValue'
+import { supportingCheckValueSummary, supportingCheckValueSummaryForRule } from './supportingCheckValue'
+import { numberOdv as fixtureNumberOdv, ruleWithOdvs } from './testRuleFixtures'
 
 const numberOdv: Odv = {
   description: 'Minimum length',
@@ -32,5 +33,24 @@ describe('supportingCheckValueSummary', () => {
     const textOdv = { description: 'Banner', datatype: 'string', recommended: 'x'.repeat(100), by_benchmark: {} } as unknown as Odv
     const summary = supportingCheckValueSummary(textOdv, 'none', null, 'mscp.x')
     expect(summary.text).toBe(`Value: ${'x'.repeat(40)}... (recommended)`)
+  })
+})
+
+describe('supportingCheckValueSummaryForRule', () => {
+  it('has no summary for a rule without ODVs', () => {
+    expect(supportingCheckValueSummaryForRule(ruleWithOdvs([]), {})).toBeNull()
+  })
+
+  it('leaves the line unnamed for a single ODV', () => {
+    const rule = ruleWithOdvs([fixtureNumberOdv()])
+    expect(supportingCheckValueSummaryForRule(rule, {})?.text).toBe('Value: 6 (recommended)')
+  })
+
+  it('reports the most pressing ODV, named, when there are several', () => {
+    const rule = ruleWithOdvs([fixtureNumberOdv({ name: 'first' }), fixtureNumberOdv({ name: 'second' })])
+    expect(supportingCheckValueSummaryForRule(rule, { first: 20, second: 0 })).toEqual({
+      text: 'second: Value: 0 is invalid',
+      kind: 'invalid',
+    })
   })
 })

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy [Assignment: organization-defined system components] with no writeable storage that is persistent across component restart or power on/off.\n\n## Discussion\n\nDisallowing writeable storage eliminates the possibility of malicious code insertion via persistent, writeable storage within the designated system components. The restriction applies to fixed and removable storage, with the latter being addressed either directly or as specific restrictions imposed through access controls for mobile devices.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-34.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-19",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-34 Non-modifiable Executable Programs"

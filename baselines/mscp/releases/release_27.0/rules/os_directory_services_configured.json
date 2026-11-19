@@ -38,7 +38,7 @@
   "discussion": "The macOS system _MUST_ be integrated into a directory services infrastructure.\n\nA directory service infrastructure enables centralized user and rights management, as well as centralized control over computer and user configurations. Integrating the macOS systems used throughout an organization into a directory services infrastructure ensures more administrator oversight and security than allowing distinct user account databases to exist on each separate system.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_directory_services_configured",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -76,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

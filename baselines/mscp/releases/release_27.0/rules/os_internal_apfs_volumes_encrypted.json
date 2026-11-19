@@ -51,7 +51,7 @@
   "discussion": "All internal user storage APFS volumes _MUST_ be encrypted.\n\nWhile FileVault protects the boot volume, data may be copied to other attached internal storage and reduce the protection afforded by FileVault. All internal APFS volumes that carry user data and do not have a specific role (Preboot, Recovery, VM) _MUST_ be encrypted to protect user data from loss or tampering.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_internal_apfs_volumes_encrypted",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -92,7 +92,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

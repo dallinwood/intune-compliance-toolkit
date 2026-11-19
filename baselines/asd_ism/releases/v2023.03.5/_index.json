@@ -39379,6 +39379,6 @@
       "title": "The OWASP API Security Top 10 are mitigated in the development of web APIs."
     }
   ],
-  "schema_version": 5,
+  "schema_version": 6,
   "source": "asd_ism"
 }

@@ -89,7 +89,7 @@ def test_entries_become_v5_rules():
 def test_base_control_fields():
     rule = rules_by_id()["nist_800_53.ac-2"]
 
-    assert rule["schema_version"] == 5
+    assert rule["schema_version"] == 6
     assert rule["title"] == "Account Management"
     assert rule["discussion_format"] == "markdown"
     assert rule["section_path"] == ["Access Control", "AC-02 Account Management"]
@@ -121,7 +121,8 @@ def test_base_control_fields():
         "related_controls": ["PM-1", "AC-2(1)"],
         "publications": [SECURITY_PUBLICATION, "OMB Circular A-130"],
     }
-    for absent_field in ("check", "odv", "remediation", "architecture"):
+    assert rule["odvs"] == []
+    for absent_field in ("check", "remediation", "architecture"):
         assert rule[absent_field] is None
 
 
@@ -133,7 +134,8 @@ def test_enhancement_fields():
     assert rule["source"]["upstream_rule_id"] == "ac-2.1"
     assert rule["references"] == {"related_controls": ["AC-2"]}
     assert rule["applicability"][0]["target"] is None
-    for absent_field in ("check", "odv", "remediation", "architecture"):
+    assert rule["odvs"] == []
+    for absent_field in ("check", "remediation", "architecture"):
         assert rule[absent_field] is None
 
 

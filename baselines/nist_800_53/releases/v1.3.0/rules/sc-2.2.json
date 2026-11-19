@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nStore state information from applications and software separately.\n\n## Discussion\n\nIf a system is compromised, storing applications and software separately from state information about users’ interactions with an application may better protect individuals’ privacy.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-2.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-02 Separation of System and User Functionality"

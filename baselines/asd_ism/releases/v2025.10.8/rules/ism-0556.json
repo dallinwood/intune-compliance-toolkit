@@ -36,10 +36,10 @@
   "discussion": "Video conferencing and IP telephony traffic should be physically or logically separated from other data traffic to ensure its availability and quality of service.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0556",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Video conferencing and Internet Protocol telephony",

@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nDisable accounts within [Assignment: organization-defined time period] when the accounts:\n\n- (a) Have expired;\n- (b) Are no longer associated with a user or individual;\n- (c) Are in violation of organizational policy; or\n- (d) Have been inactive for [Assignment: organization-defined time period].\n\n## Discussion\n\nDisabling expired, inactive, or otherwise anomalous accounts supports the concepts of least privilege and least functionality which reduce the attack surface of the system.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-2.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-02 Account Management"

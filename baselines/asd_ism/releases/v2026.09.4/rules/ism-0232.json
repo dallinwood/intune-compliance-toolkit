@@ -36,10 +36,10 @@
   "discussion": "When sensitive or classified conversations are held using telephone systems, the conversation needs to be appropriately protected by using encryption.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0232",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications systems",
     "Telephone systems",

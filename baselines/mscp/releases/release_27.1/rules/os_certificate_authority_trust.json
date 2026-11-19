@@ -53,7 +53,7 @@
   "discussion": "The organization _MUST_ issue or obtain public key certificates from an organization-approved service provider and ensure only approved trust anchors are in the System Keychain.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_certificate_authority_trust",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -124,7 +124,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

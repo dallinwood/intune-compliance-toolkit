@@ -36,10 +36,10 @@
   "discussion": "An organisation choosing to have ICT equipment maintained or repaired off site should do so at facilities approved for handling the sensitivity or classification of the ICT equipment. However, an organisation may be able to sanitise the ICT equipment prior to transport, and subsequent maintenance or repair activities, to change how it needs to be handled.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0310",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for ICT Equipment",
     "ICT equipment maintenance and repairs",

@@ -36,10 +36,10 @@
   "discussion": "When connecting mobile devices to the internet, best practice involves establishing a Virtual Private Network (VPN) connection to an organisation’s internet gateway rather than a direct connection to the internet. In doing so, mobile devices will be protected by additional security functionality, such as web content filtering, provided by an organisation’s internet gateway.\n\nA split tunnel VPN can allow access into an organisation’s network from other networks, such as the internet. If split tunnelling is not disabled there is an increased security risk that the VPN connection will be susceptible to intrusions from other networks. An organisation can refer to the relevant ACSC security configuration guidance for mobile devices on how to mitigate this security risk.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0705",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Enterprise Mobility",
     "Mobile device management",

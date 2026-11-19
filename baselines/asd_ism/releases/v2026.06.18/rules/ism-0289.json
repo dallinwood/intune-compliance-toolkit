@@ -36,10 +36,10 @@
   "discussion": "Product evaluation provides assurance that a product and its security functionality will operate as expected when used in a clearly defined configuration. The scope of the evaluation specifies how the product is to be installed, configured, administered and operated, as well as the security functionality to be used. Using an evaluated product in an unevaluated configuration could introduce security risks that were not considered as part of the product’s evaluation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0289",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for evaluated products",
     "Evaluated product usage",

@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nVerify session and network connection termination after the completion of nonlocal maintenance and diagnostic sessions.\n\n## Discussion\n\nVerifying the termination of a connection once maintenance is completed ensures that connections established during nonlocal maintenance and diagnostic sessions have been terminated and are no longer available for use.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-4.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-12"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-04 Nonlocal Maintenance"

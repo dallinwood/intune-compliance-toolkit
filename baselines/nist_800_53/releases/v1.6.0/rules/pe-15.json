@@ -28,7 +28,7 @@
   "discussion": "## Control\n\nProtect the system from damage resulting from water leakage by providing master shutoff or isolation valves that are accessible, working properly, and known to key personnel.\n\n## Discussion\n\nThe provision of water damage protection primarily applies to organizational facilities that contain concentrations of system resources, including data centers, server rooms, and mainframe computer rooms. Isolation valves can be employed in addition to or in lieu of master shutoff valves to shut off water supplies in specific areas of concern without affecting entire organizations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AT-3",
@@ -36,7 +36,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-15 Water Damage Protection"

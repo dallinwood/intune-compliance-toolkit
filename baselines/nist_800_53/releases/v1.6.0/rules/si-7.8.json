@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nUpon detection of a potential integrity violation, provide the capability to audit the event and initiate the following actions: [Selection (one or more): generate an audit record; alert current user; alert [Assignment: organization-defined personnel or roles]; [Assignment: organization-defined other actions]].\n\n## Discussion\n\nOrganizations select response actions based on types of software, specific software, or information for which there are potential integrity violations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-7.8",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-07 Software, Firmware, and Information Integrity"

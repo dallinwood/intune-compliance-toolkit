@@ -53,7 +53,7 @@
   "discussion": "Smartcard authentication _MUST_ be enforced.\n\nThe use of smartcard credentials facilitates standardization and reduces the risk of unauthorized access.\n\nWhen enforceSmartCard is set to \"true\", the smartcard must be used for login, authorization, and unlocking the screensaver.\n\nCAUTION: enforceSmartCard will apply to the whole system. No users will be able to login with their password unless the profile is removed or a user is exempt from smartcard enforcement.\n\nNOTE: enforceSmartcard requires allowSmartcard to be set to true in order to work.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.auth_smartcard_enforce",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -166,7 +166,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "auth"
   ],

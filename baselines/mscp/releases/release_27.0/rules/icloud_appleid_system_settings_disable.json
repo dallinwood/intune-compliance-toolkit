@@ -38,7 +38,7 @@
   "discussion": "The system setting for Apple ID _MUST_ be disabled.\n\nDisabling the system setting prevents login to an Apple Account and synchronizing data to Apple's iCloud service.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.icloud_appleid_system_settings_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -111,7 +111,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "icloud"
   ],

@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are planned, designed, developed, tested, deployed, maintained and decommissioned according to their business criticality ratings and security and resilience requirements using Secure by Design and Secure by Default principles and practices.\n\n# Indicators of Good Practice\n\nNot effective:\n- Systems are deployed with default configurations and no evidence of security design considerations.\n- Unnecessary services, protocols or functionality remain enabled with no documented rationale.\n- Security telemetry is not enabled or is not considered as part of system design.\n\nPartially effective:\n- Security is considered during system design but not consistently applied across all assets.\n- Some unnecessary services have been disabled but a systematic review has not been completed.\n- Security telemetry is partially enabled but gaps in coverage exist.\n\nFully effective:\n- Systems are designed and deployed with exposed services limited, required and default permissions minimised, data protections in place, authorised access enforced, and only required functionality enabled.\n- Security telemetry is enabled by default.\n- Evidence exists that security design decisions are recorded and reviewed during system changes.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-01.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -88,7 +88,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-01 - Secure system lifecycle"

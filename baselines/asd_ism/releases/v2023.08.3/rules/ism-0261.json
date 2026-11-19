@@ -36,10 +36,10 @@
   "discussion": "The following details are logged for websites accessed via web proxies:\n\n- address\n- date and time\n- user\n- amount of data uploaded and downloaded\n- internal and external IP addresses.\n\nWeb proxy event logs can assist in monitoring the security posture of networks, detecting malicious behaviour and contributing to investigations following cyber security incidents. To facilitate such activities, web proxy event logs should be captured and stored centrally.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0261",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Web proxies",

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Identify a secondary authoritative time source that is in a different geographic region than the primary authoritative time source; and\n- (b) Synchronize the internal system clocks to the secondary authoritative time source if the primary authoritative time source is unavailable.\n\n## Discussion\n\nIt may be necessary to employ geolocation information to determine that the secondary authoritative time source is in a different geographic region.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-45.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-45 System Time Synchronization"

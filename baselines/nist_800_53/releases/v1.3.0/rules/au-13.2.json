@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nReview the list of open-source information sites being monitored [Assignment: organization-defined frequency].\n\n## Discussion\n\nReviewing the current list of open-source information sites being monitored on a regular basis helps to ensure that the selected sites remain relevant. The review also provides the opportunity to add new open-source information sites with the potential to provide evidence of unauthorized disclosure of organizational information. The list of sites monitored can be guided and informed by threat intelligence of other credible sources of information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-13.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-13 Monitoring for Information Disclosure"

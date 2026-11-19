@@ -28,7 +28,7 @@
   "discussion": "## Control\n\n- a. Develop and implement anti-counterfeit policy and procedures that include the means to detect and prevent counterfeit components from entering the system; and\n- b. Report counterfeit system components to [Selection (one or more): source of counterfeit component; [Assignment: organization-defined external reporting organizations]; [Assignment: organization-defined personnel or roles]].\n\n## Discussion\n\nSources of counterfeit components include manufacturers, developers, vendors, and contractors. Anti-counterfeiting policies and procedures support tamper resistance and provide a level of protection against the introduction of malicious code. External reporting organizations include CISA.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sr-11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "ISO 20243"
@@ -42,7 +42,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-11 Component Authenticity"

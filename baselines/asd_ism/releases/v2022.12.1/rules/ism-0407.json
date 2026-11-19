@@ -36,10 +36,10 @@
   "discussion": "A secure record is maintained for the life of each system covering:\n\n* all personnel authorised to access the system, and their user identification\n* who provided authorisation for access\n* when access was granted\n* the level of access that was granted\n* when access, and the level of access, was last reviewed\n* when the level of access was changed, and to what extent (if applicable)\n* when access was withdrawn (if applicable).\n\nRetaining records of system account requests will assist in maintaining personnel accountability. This is needed to ensure there is a record of all personnel authorised to access a system, their user identification, who provided the authorisation, when the authorisation was granted and when the access was last reviewed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0407",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Personnel Security",
     "Access to systems and their resources",

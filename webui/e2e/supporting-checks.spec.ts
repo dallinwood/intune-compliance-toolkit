@@ -63,10 +63,10 @@ async function seed(page: Page, selections: SeedSelection[], supportingChecks?: 
         selectionsToSeed.map(({ ruleId, odvValue, enabled }) => {
           const source = ruleId.slice(0, ruleId.indexOf('.'))
           const ref = { id: ruleId, path: `${source}/rules/${ruleId.slice(ruleId.indexOf('.') + 1)}.json` }
-          return [ruleId, { ref, enabled: enabled ?? true, odvValue: odvValue ?? null }]
+          return [ruleId, { ref, enabled: enabled ?? true, odvValues: odvValue === undefined || odvValue === null ? {} : { value: odvValue } }]
         }),
       )
-      window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections: persisted }, version: 2 }))
+      window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections: persisted }, version: 3 }))
       if (supportingToSeed) window.localStorage.setItem('intune-toolkit:supporting-checks', JSON.stringify({ state: supportingToSeed, version: 1 }))
     },
     { selectionsToSeed: selections, supportingToSeed: supportingChecks ?? null },
@@ -282,7 +282,7 @@ test('the quick editor takes a typed value or a recommended pick, rejects an inv
   await expect(row.getByRole('alert')).toContainText('Value must be a whole number.')
   await expect(row).toContainText('Value: 12 (set by you)')
   const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem('intune-toolkit:selections') ?? '{}').state.selections)
-  expect(stored[VALUE_SUPPORTER]).toMatchObject({ enabled: false, odvValue: 12 })
+  expect(stored[VALUE_SUPPORTER]).toMatchObject({ enabled: false, odvValues: { value: 12 } })
 
   await row.getByRole('button', { name: /^Recommended/ }).click()
   await expect(row).toContainText('Value: 6 (set by you)')

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nManage enforcement of the authorized processing of personally identifiable information using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms augment verification that only authorized processing is occurring.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pt-2.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CA-6",
@@ -31,7 +31,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Personally Identifiable Information Processing and Transparency",
     "PT-02 Authority to Process Personally Identifiable Information"

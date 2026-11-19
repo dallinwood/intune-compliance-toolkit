@@ -24,7 +24,7 @@
   "discussion": "## Control\n\n- a. Require the developer of the system, system component, or system service to follow a documented development process that:\n  - 1. Explicitly addresses security and privacy requirements;\n  - 2. Identifies the standards and tools used in the development process;\n  - 3. Documents the specific tool options and tool configurations used in the development process; and\n  - 4. Documents, manages, and ensures the integrity of changes to the process and/or tools used in development; and\n- b. Review the development process, standards, tools, tool options, and tool configurations [Assignment: organization-defined frequency] to determine if the process, standards, tools, tool options and tool configurations selected and employed can satisfy the following security and privacy requirements: [Assignment: organization-defined security and privacy requirements].\n\n## Discussion\n\nDevelopment tools include programming languages and computer-aided design systems. Reviews of development processes include the use of maturity models to determine the potential effectiveness of such processes. Maintaining the integrity of changes to tools and processes facilitates effective supply chain risk assessment and mitigation. Such integrity requires configuration control throughout the system development life cycle to track authorized changes and prevent unauthorized changes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-160-1",
@@ -45,7 +45,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

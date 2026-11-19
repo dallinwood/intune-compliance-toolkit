@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nDisable, when not intended for use, wireless networking capabilities embedded within system components prior to issuance and deployment.\n\n## Discussion\n\nWireless networking capabilities that are embedded within system components represent a significant potential vulnerability that can be exploited by adversaries. Disabling wireless capabilities when not needed for essential organizational missions or functions can reduce susceptibility to threats by adversaries involving wireless technologies.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-18.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-18 Wireless Access"

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nAnalyze outbound communications traffic at external interfaces to the system and at the following interior points to detect covert exfiltration of information: [Assignment: organization-defined interior points].\n\n## Discussion\n\nOrganization-defined interior points include subnetworks and subsystems. Covert means that can be used to exfiltrate information include steganography.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.18",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

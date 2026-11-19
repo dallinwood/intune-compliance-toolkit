@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to structure security-relevant hardware, software, and firmware to facilitate testing.\n\n## Discussion\n\nApplying the security design principles in [SP 800-160-1](https://doi.org/10.6028/NIST.SP.800-160v1) promotes complete, consistent, and comprehensive testing and evaluation of systems, system components, and services. The thoroughness of such testing contributes to the evidence produced to generate an effective assurance case or argument as to the trustworthiness of the system, system component, or service.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-17.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SA-5",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-17 Developer Security and Privacy Architecture and Design"

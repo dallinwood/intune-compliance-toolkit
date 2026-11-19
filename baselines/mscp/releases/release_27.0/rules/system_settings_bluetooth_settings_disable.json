@@ -53,7 +53,7 @@
   "discussion": "The Bluetooth System Setting pane _MUST_ be disabled to prevent access to the bluetooth configuration.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_bluetooth_settings_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -140,7 +140,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

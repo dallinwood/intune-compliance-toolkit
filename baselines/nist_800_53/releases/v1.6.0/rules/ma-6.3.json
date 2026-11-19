@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nTransfer predictive maintenance data to a maintenance management system using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nA computerized maintenance management system maintains a database of information about the maintenance operations of organizations and automates the processing of equipment condition data to trigger maintenance planning, execution, and reporting.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-6.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-06 Timely Maintenance"

@@ -1,6 +1,6 @@
 import { INLINE_PAYLOAD_LANGUAGE, scriptHighlightLanguage } from '../../logic/codeLanguage'
 import type { CodeOdvValues } from '../../logic/odv'
-import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import type { OdvValues } from '../../logic/selectionEntry'
 import {
   newestVersionsFirst,
   remediationItemButtonLabel,
@@ -20,12 +20,12 @@ import { TargetIcons } from './TargetIcons'
 function StepEntry({
   label,
   step,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   label: string
   step: RemediationStep
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const highlightLanguage = scriptHighlightLanguage(step.language)
@@ -33,10 +33,10 @@ function StepEntry({
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
       {step.shell_file !== undefined && (
-        <ScriptFile path={step.shell_file} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />
+        <ScriptFile path={step.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       )}
-      {step.shell && <OdvCodeBlock code={step.shell} language={highlightLanguage} odvValue={odvValue} codeOdv={codeOdv} />}
-      {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValue={odvValue} codeOdv={codeOdv} />}
+      {step.shell && <OdvCodeBlock code={step.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />}
+      {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValues={odvValues} codeOdv={codeOdv} />}
     </div>
   )
 }
@@ -44,19 +44,19 @@ function StepEntry({
 function JsonEntry({
   label,
   value,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   label: string
   value: unknown
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const json = JSON.stringify(value, null, 2)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
-      <OdvCodeBlock code={json} language={INLINE_PAYLOAD_LANGUAGE} odvValue={odvValue} codeOdv={codeOdv} isJson />
+      <OdvCodeBlock code={json} language={INLINE_PAYLOAD_LANGUAGE} odvValues={odvValues} codeOdv={codeOdv} isJson />
     </div>
   )
 }
@@ -71,34 +71,34 @@ function remediationItemsOf(targetRemediation: TargetRemediation): RemediationIt
 function RemediationItemPanel({
   target,
   item,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   target: string
   item: RemediationItem
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const index = useVocabularyIndex()
   if (item.type === 'step') {
-    return <StepEntry label={remediationStepLabel(index, target, item.step)} step={item.step} odvValue={odvValue} codeOdv={codeOdv} />
+    return <StepEntry label={remediationStepLabel(index, target, item.step)} step={item.step} odvValues={odvValues} codeOdv={codeOdv} />
   }
   const label = remediationPayloadLabel(index, target, item.payload)
   return item.payload.data_file !== undefined ? (
-    <PayloadFile label={label} path={item.payload.data_file} odvValue={odvValue} codeOdv={codeOdv} />
+    <PayloadFile label={label} path={item.payload.data_file} odvValues={odvValues} codeOdv={codeOdv} />
   ) : (
-    <JsonEntry label={label} value={item.payload.data} odvValue={odvValue} codeOdv={codeOdv} />
+    <JsonEntry label={label} value={item.payload.data} odvValues={odvValues} codeOdv={codeOdv} />
   )
 }
 
 export function RuleRemediationSection({
   rule,
-  odvValue,
+  odvValues,
   codeOdv,
   custom = false,
 }: {
   rule: Rule
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
   custom?: boolean
 }) {
@@ -113,7 +113,7 @@ export function RuleRemediationSection({
           {remediationItemButtonLabel(index, target, item)}
         </>
       ),
-      panel: <RemediationItemPanel target={target} item={item} odvValue={odvValue} codeOdv={codeOdv} />,
+      panel: <RemediationItemPanel target={target} item={item} odvValues={odvValues} codeOdv={codeOdv} />,
     })),
   )
 

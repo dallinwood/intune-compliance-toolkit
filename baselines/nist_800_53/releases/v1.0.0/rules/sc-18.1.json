@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nIdentify [Assignment: organization-defined unacceptable mobile code] and take [Assignment: organization-defined corrective actions].\n\n## Discussion\n\nCorrective actions when unacceptable mobile code is detected include blocking, quarantine, or alerting administrators. Blocking includes preventing the transmission of word processing files with embedded macros when such macros have been determined to be unacceptable mobile code.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-18.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-18 Mobile Code"

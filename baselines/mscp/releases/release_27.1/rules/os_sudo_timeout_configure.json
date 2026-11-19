@@ -81,28 +81,32 @@
           "type": "integer",
           "value": 1
         },
-        "shell": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Authentication timestamp timeout: $ODV.0 minutes\""
+        "shell": "/usr/bin/sudo /usr/bin/sudo -V | /usr/bin/grep -c \"Authentication timestamp timeout: $ODV_value.0 minutes\""
       },
       "language": "bash"
     }
   },
-  "discussion": "The file /etc/sudoers _MUST_ include a timestamp_timeout of $ODV.\n",
+  "discussion": "The file /etc/sudoers _MUST_ include a timestamp_timeout of $ODV_value.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_sudo_timeout_configure",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": 0,
-      "cis_lvl2": 0,
-      "disa_stig": 0,
-      "nlmapgov_plus": 0
-    },
-    "datatype": "number",
-    "description": "Number of minutes, e.g. 0",
-    "recommended": 0,
-    "validation": {
-      "min": 0
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": 0,
+        "cis_lvl2": 0,
+        "disa_stig": 0,
+        "nlmapgov_plus": 0
+      },
+      "datatype": "number",
+      "description": "Number of minutes, e.g. 0",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 0,
+      "validation": {
+        "min": 0
+      }
     }
-  },
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -176,7 +180,7 @@
           "additional_info": null,
           "language": "bash",
           "name": null,
-          "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV\" >> /etc/sudoers.d/mscp",
+          "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV_value\" >> /etc/sudoers.d/mscp",
           "versions": [
             "15.0",
             "27.0"
@@ -186,7 +190,7 @@
           "additional_info": null,
           "language": "bash",
           "name": null,
-          "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV\" >> /etc/sudoers.d/mscp\n/bin/chmod 440 /etc/sudoers.d/mscp",
+          "shell": "/usr/bin/find /etc/sudoers* -type f -exec sed -i '' '/timestamp_timeout/d' '{}' \\;\n/bin/echo \"Defaults timestamp_timeout=$ODV_value\" >> /etc/sudoers.d/mscp\n/bin/chmod 440 /etc/sudoers.d/mscp",
           "versions": [
             "26.0"
           ]
@@ -194,7 +198,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],
@@ -220,5 +224,5 @@
     "800-53r5_moderate",
     "cisv8"
   ],
-  "title": "Configure Sudo Timeout Period to $ODV"
+  "title": "Configure Sudo Timeout Period to $ODV_value"
 }

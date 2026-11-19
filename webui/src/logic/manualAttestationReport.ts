@@ -1,10 +1,10 @@
 import type { ManifestSource, ManualReason, Rule } from '../types/library'
 import { generatedTargetCheck } from './checkPlan'
 import type { ManualAttestationEntry } from './chunking'
-import { displayWithOdv } from './odv'
+import { displayWithOdvs } from './odv'
 import { upstreamRuleId } from './ruleDisplay'
 import { licenceLeadIn } from './licenceWording'
-import type { OrgDefinedValue } from './selectionEntry'
+import type { OdvValues } from './selectionEntry'
 import { termDescription, type VocabularyIndex } from './vocabulary'
 
 // The schema allows a manual rule without a reason even though no current
@@ -14,9 +14,9 @@ export function manualReasonText(manualReason: ManualReason | null, index: Vocab
   return termDescription(index, 'manual_reasons', reason) ?? `mSCP manual reason: ${reason}.`
 }
 
-export function additionalInfoFor(rule: Rule, odvValue: OrgDefinedValue | null): string | null {
+export function additionalInfoFor(rule: Rule, odvValues: OdvValues): string | null {
   const additionalInfo = generatedTargetCheck(rule)?.default?.additional_info?.trim()
-  return additionalInfo ? displayWithOdv(additionalInfo, odvValue) : null
+  return additionalInfo ? displayWithOdvs(additionalInfo, odvValues) : null
 }
 
 function attributionLine(source: ManifestSource): string {

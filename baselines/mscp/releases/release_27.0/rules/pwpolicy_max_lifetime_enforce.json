@@ -69,27 +69,31 @@
           "type": "string",
           "value": "pass"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeExpiresEveryNDays\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 <= $ODV ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
+        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeExpiresEveryNDays\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 <= $ODV_value ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
       },
       "language": "bash"
     }
   },
-  "discussion": "The system _MUST_ be configured to enforce a maximum password lifetime limit of $ODV days.\n\nThis rule ensures that users are forced to change their passwords frequently enough to prevent malicious users from gaining and maintaining access to the system.\n\nNOTE: To comply with Executive Order 14028, “Improving the Nation's Cybersecurity”, OMB M-22-09, “Moving the U.S. Government Toward Zero Trust Cybersecurity Principles”, and NIST SP-800-63b, “Digital Identity Guidelines: Authentication and Lifecycle Management” federal, military, and intelligence communities must adopt the following configuration settings. Password policies must not require the use of complexity policies such as upper characters, lower characters, or special characters. Password policies must also not require the use of regular rotation. Password policies should define a minimum length. Multifactor authentication should be used where ever possible.\n",
+  "discussion": "The system _MUST_ be configured to enforce a maximum password lifetime limit of $ODV_value days.\n\nThis rule ensures that users are forced to change their passwords frequently enough to prevent malicious users from gaining and maintaining access to the system.\n\nNOTE: To comply with Executive Order 14028, “Improving the Nation's Cybersecurity”, OMB M-22-09, “Moving the U.S. Government Toward Zero Trust Cybersecurity Principles”, and NIST SP-800-63b, “Digital Identity Guidelines: Authentication and Lifecycle Management” federal, military, and intelligence communities must adopt the following configuration settings. Password policies must not require the use of complexity policies such as upper characters, lower characters, or special characters. Password policies must also not require the use of regular rotation. Password policies should define a minimum length. Multifactor authentication should be used where ever possible.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.pwpolicy_max_lifetime_enforce",
-  "odv": {
-    "by_benchmark": {
-      "cis_lvl1": 365,
-      "cis_lvl2": 365,
-      "disa_stig": 180
-    },
-    "datatype": "number",
-    "description": "Number of days, e.g. 60",
-    "recommended": 60,
-    "validation": {
-      "min": 1
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_lvl1": 365,
+        "cis_lvl2": 365,
+        "disa_stig": 180
+      },
+      "datatype": "number",
+      "description": "Number of days, e.g. 60",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": 60,
+      "validation": {
+        "min": 1
+      }
     }
-  },
+  ],
   "references": {
     "cis": {
       "benchmark": {
@@ -175,7 +179,7 @@
             {
               "PayloadContent": [
                 {
-                  "maxPINAgeInDays": "$ODV"
+                  "maxPINAgeInDays": "$ODV_value"
                 }
               ],
               "PayloadType": "com.apple.mobiledevice.passwordpolicy"
@@ -187,7 +191,7 @@
         {
           "data": {
             "ddm_key": "MaximumPasscodeAgeInDays",
-            "ddm_value": "$ODV",
+            "ddm_value": "$ODV_value",
             "declarationtype": "com.apple.configuration.passcode.settings"
           },
           "kind": "ddm",
@@ -197,7 +201,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "pwpolicy"
   ],
@@ -229,5 +233,5 @@
     "cnssi-1253_moderate",
     "hicp_lp"
   ],
-  "title": "Restrict Maximum Password Lifetime to $ODV Days"
+  "title": "Restrict Maximum Password Lifetime to $ODV_value Days"
 }

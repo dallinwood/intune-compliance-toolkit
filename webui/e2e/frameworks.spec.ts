@@ -397,8 +397,8 @@ test('Generate opens the review in place of the framework page and Back returns 
   const ruleId = Object.keys(ismHistory.rules)[0]
   await page.addInitScript((selectedRuleId) => {
     const ref = { id: selectedRuleId, path: `asd_ism/rules/${selectedRuleId.slice(selectedRuleId.indexOf('.') + 1)}.json` }
-    const selections = { [selectedRuleId]: { ref, enabled: true, odvValue: null } }
-    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 2 }))
+    const selections = { [selectedRuleId]: { ref, enabled: true, odvValues: {} } }
+    window.localStorage.setItem('intune-toolkit:selections', JSON.stringify({ state: { selections }, version: 3 }))
   }, ruleId)
   await page.goto('/frameworks?framework=asd_ism&tab=rules')
   await expect(page.getByText('1 selected')).toBeVisible({ timeout: 10_000 })

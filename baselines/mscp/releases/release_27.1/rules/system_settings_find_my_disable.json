@@ -77,7 +77,7 @@
   "discussion": "The Find My service _MUST_ be disabled.\n\nA device management solution _MUST_ be used to carry out remote locking and wiping instead of Apple's Find My service.\n\nApple's Find My service uses a personal AppleID for authentication. Organizations should rely on MDM solutions, which have much more secure authentication requirements, to perform remote lock and remote wipe.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_find_my_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -185,7 +185,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

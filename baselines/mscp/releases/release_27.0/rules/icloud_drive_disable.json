@@ -61,7 +61,7 @@
   "discussion": "The macOS built-in iCloud document synchronization service _MUST_ be disabled to prevent organizational data from being synchronized to personal or non-approved storage.\n\nApple's iCloud service does not provide an organization with enough control over the storage and access of data, and, therefore, automated document synchronization _MUST_ be controlled by an organization approved service.\n\nThis requirement helps ensure that organizational contact data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.icloud_drive_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -220,7 +220,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "icloud"
   ],

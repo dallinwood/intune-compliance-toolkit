@@ -53,7 +53,7 @@
   "discussion": "Automatic backups _MUST_ be enabled when using Time Machine.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_time_machine_auto_backup_enable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -112,7 +112,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

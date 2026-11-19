@@ -14,7 +14,7 @@ import {
 } from '../../logic/generateChecks'
 import { classifyReview, scriptedSupportingCheckIds, type PulledInOutcome } from '../../logic/generateReview'
 import type { HistoryIndex } from '../../logic/historyIndex'
-import { displayWithOdv } from '../../logic/odv'
+import { displayWithOdvs } from '../../logic/odv'
 import type { OverlayApplication } from '../../logic/overlays'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
 import type { SelectionEntry, SelectionMap } from '../../logic/selectionEntry'
@@ -205,7 +205,7 @@ export function GenerateReviewScreen({
     const excludedEntries = includeSupporting
       ? allOffers
           .filter((offer) => !includedIds.includes(offer.ruleId))
-          .map((offer) => reportEntry(offer, displayWithOdv(rowsById.get(offer.ruleId)?.title ?? offer.ruleId, null)))
+          .map((offer) => reportEntry(offer, displayWithOdvs(rowsById.get(offer.ruleId)?.title ?? offer.ruleId, {})))
       : []
 
     const skippedCustomChanges: ReadyReview['skippedCustomChanges'] = []

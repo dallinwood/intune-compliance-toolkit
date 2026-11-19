@@ -36,10 +36,10 @@
   "discussion": "Clear labelling of wall outlet boxes diminishes the possibility of incorrectly attaching information technology (IT) equipment to the wrong wall outlet box. In cases where a wall outbox contains cables for different systems, each connector should be individually labelled.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1095",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Infrastructure",
     "Cabling infrastructure",

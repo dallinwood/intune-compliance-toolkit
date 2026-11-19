@@ -53,7 +53,7 @@
   "discussion": "Apple Intelligence features such as Image Playground _MUST_ be disabled due to the fact they use off device AI.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_image_playground_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -164,7 +164,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

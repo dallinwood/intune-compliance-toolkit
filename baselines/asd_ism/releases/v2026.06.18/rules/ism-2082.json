@@ -36,10 +36,10 @@
   "discussion": "A cryptographic bill of materials acts as an extension of a software bill of materials by communicating information about relevant cryptographic dependencies and implementations that are relied upon by software. At a high level, a cryptographic bill of materials will map the use of cryptography to the security function it performs and where it performs it. In practice, a cryptographic bill of materials will capture details on cryptographic libraries, algorithms, protocols, parameters and configurations. This can be used to ensure software components are providing support for standardised implementations of cryptographic algorithms that are approved by the Australian Signals Directorate (ASD).\n\nWhile the format for a cryptographic bill of materials is not yet subject to formal standardisation, there are emerging tools to assist with their generation and management. This is particularly important for software developers in managing their migration to post-quantum cryptographic standards as part of software development activities.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2082",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

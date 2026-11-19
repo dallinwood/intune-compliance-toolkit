@@ -36,10 +36,10 @@
   "discussion": "The build process for software can unintentionally allow vulnerabilities in software to make it into production environments. This security risk can be reduced by ensuring the build solution uses all available security features and that all automated testing is completed as part of the build process. Furthermore, software should be built in a manner that allows independent verification that release artefacts correspond to their source code.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2032",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Software development fundamentals",

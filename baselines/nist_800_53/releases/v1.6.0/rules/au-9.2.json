@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nStore audit records [Assignment: organization-defined frequency] in a repository that is part of a physically different system or system component than the system or component being audited.\n\n## Discussion\n\nStoring audit records in a repository separate from the audited system or system component helps to ensure that a compromise of the system being audited does not also result in a compromise of the audit records. Storing audit records on separate physical systems or components also preserves the confidentiality and integrity of audit records and facilitates the management of audit records as an organization-wide activity. Storing audit records on separate systems or components applies to initial generation as well as backup or long-term storage of audit records.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-9.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-4",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-09 Protection of Audit Information"

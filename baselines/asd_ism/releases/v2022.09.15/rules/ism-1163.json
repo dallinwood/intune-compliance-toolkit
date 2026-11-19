@@ -36,10 +36,10 @@
   "discussion": "Systems have a continuous monitoring plan that includes:\n\n* conducting vulnerability scans for systems at least monthly\n* conducting vulnerability assessments or penetration tests for systems at least annually\n* analysing identified security vulnerabilities to determine their potential impact\n* using a risk-based approach to prioritise the implementation of mitigations based on effectiveness and cost.\n\nA continuous monitoring plan can assist an organisation in proactively identifying, prioritising and responding to security vulnerabilities. Measures to monitor and manage security vulnerabilities in systems can also provide an organisation with a wealth of valuable information about their exposure to cyber threats, as well as assisting them to determine security risks associated with the operation of their systems. Undertaking continuous monitoring activities is important as cyber threats and the effectiveness of controls will change over time.\n\nThree types of continuous monitoring activities are vulnerability assessments, vulnerability scans and penetration tests. A vulnerability assessment typically consists of a review of a system’s architecture or an in-depth hands-on assessment while a vulnerability scan involves using software tools to conduct automated checks for known security vulnerabilities. In each case, the goal is to identify as many security vulnerabilities as possible. A penetration test however is designed to exercise real-world scenarios in an attempt to achieve a specific goal, such as compromising critical system components or data. Regardless of the continuous monitoring activities chosen, they should be conducted by suitably skilled personnel independent of the system being assessed. Such personnel can be internal to an organisation or from a third party. This ensures that there is no conflict of interest, perceived or otherwise, and that the activities are undertaken in an objective manner.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1163",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Security Documentation",
     "System-specific security documentation",

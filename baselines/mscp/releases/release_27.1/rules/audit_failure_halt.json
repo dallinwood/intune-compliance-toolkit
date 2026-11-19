@@ -43,7 +43,7 @@
   "discussion": "The audit service _MUST_ be configured to shut down the computer if it is unable to audit system events.\n\nOnce audit failure occurs, user and system activity are no longer recorded, and malicious activity could go undetected. Audit processing failures can occur due to software/hardware errors, failures in the audit capturing mechanisms, and audit storage capacity being reached or exceeded.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_failure_halt",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -101,7 +101,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

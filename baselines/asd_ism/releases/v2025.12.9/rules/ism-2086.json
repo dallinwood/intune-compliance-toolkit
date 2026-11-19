@@ -36,10 +36,10 @@
   "discussion": "Artificial intelligence applications, especially when embedded in other applications, risk exposing sensitive data, proprietary algorithms or confidential details through their output. This can result in unauthorised data access, privacy violations and intellectual property breaches.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2086",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for software development",
     "Artificial intelligence application development",

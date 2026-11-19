@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nIncorporate the detection of the following unauthorized changes into the organizational incident response capability: [Assignment: organization-defined changes].\n\n## Discussion\n\nIntegrating detection and response helps to ensure that detected events are tracked, monitored, corrected, and available for historical purposes. Maintaining historical records is important for being able to identify and discern adversary actions over an extended time period and for possible legal actions. Security-relevant changes include unauthorized changes to established configuration settings or the unauthorized elevation of system privileges.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-7.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -35,7 +35,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-07 Software, Firmware, and Information Integrity"

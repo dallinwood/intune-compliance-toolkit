@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nPrevent the removal of maintenance equipment containing organizational information by:\n\n- (a) Verifying that there is no organizational information contained on the equipment;\n- (b) Sanitizing or destroying the equipment;\n- (c) Retaining the equipment within the facility; or\n- (d) Obtaining an exemption from [Assignment: organization-defined personnel or roles] explicitly authorizing removal of the equipment from the facility.\n\n## Discussion\n\nOrganizational information includes all information owned by organizations and any information provided to organizations for which the organizations serve as information stewards.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "MP-6"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-03 Maintenance Tools"

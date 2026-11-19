@@ -36,10 +36,10 @@
   "discussion": "The following events are centrally logged for operating systems:\n\n- application and operating system crashes and error messages\n- changes to security policies and system configurations\n- successful user logons and logoffs, failed user logons and account lockouts\n- failures, restarts and changes to important processes and services\n- requests to access internet resources\n- security product-related events\n- system startups and shutdowns.\n\nCentrally logging and analysing operating system events can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cyber security incidents.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0582",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Operating system hardening",

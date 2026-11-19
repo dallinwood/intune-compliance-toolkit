@@ -24,10 +24,10 @@
   "discussion": "Wall outlet boxes are the main method of connecting cabling infrastructure to workstations. They enable the management of cables and the types of connectors allocated to various systems.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1105",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for communications infrastructure",
     "Cabling infrastructure",

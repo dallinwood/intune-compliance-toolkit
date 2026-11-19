@@ -36,10 +36,10 @@
   "discussion": "The SSH daemon is configured to:\n\n* only listen on the required interfaces (ListenAddress xxx.xxx.xxx.xxx)\n* have a suitable login banner (Banner x)\n* have a login authentication timeout of no more than 60 seconds (LoginGraceTime 60)\n* disable host-based authentication (HostbasedAuthentication no)\n* disable rhosts-based authentication (IgnoreRhosts yes)\n* disable the ability to login directly as root (PermitRootLogin no)\n* disable empty passwords (PermitEmptyPasswords no)\n* disable connection forwarding (AllowTCPForwarding no)\n* disable gateway ports (GatewayPorts no)\n* disable X11 forwarding (X11Forwarding no).\n\nSSH version 1 was found to have a number of security vulnerabilities, and was subsequently replaced by SSH version 2. As such, an organisation implementing SSH should disable the use of SSH version 1. In addition, a number of security risks exist when SSH is configured in an insecure manner. To mitigate these security risks, SSH should be configured as per the configuration settings below.\n\nThe configuration settings below are based on OpenSSH. An organisation using other implementations of SSH should adapt these settings to suit their SSH implementation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0484",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "Secure Shell",

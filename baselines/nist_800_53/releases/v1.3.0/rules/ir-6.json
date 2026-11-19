@@ -32,7 +32,7 @@
   "discussion": "## Control\n\n- a. Require personnel to report suspected incidents to the organizational incident response capability within [Assignment: organization-defined time period] ; and\n- b. Report incident information to [Assignment: organization-defined authorities].\n\n## Discussion\n\nThe types of incidents reported, the content and timeliness of the reports, and the designated reporting authorities reflect applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Incident information can inform risk assessments, control effectiveness assessments, security requirements for acquisitions, and selection criteria for technology products.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "FASC18",
@@ -50,7 +50,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-06 Incident Reporting"

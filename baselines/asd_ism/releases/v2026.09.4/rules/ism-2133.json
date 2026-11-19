@@ -36,10 +36,10 @@
   "discussion": "In addition to the general requirement for users to be uniquely identifiable, assigning each AI agent its own unique identity ensures that actions taken by an AI agent can be distinguished from actions taken directly by a user on whose behalf it acts, as well as from actions taken by other AI agents. In doing so, identities assigned to AI agents should be managed in a similar manner to service accounts, including being disabled or removed when no longer required. Where an AI agent is assigned multiple identities, such as across different environments or platforms, all identities should be recorded in an organisation’s AI agent register.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2133",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

@@ -36,10 +36,10 @@
   "discussion": "Application testing and maintenance activities can lessen the likelihood of security vulnerabilities in applications being introduced into a production environment. Robust application testing can be performed using both static testing, such as code analysis, as well as dynamic testing, such as input validation and fuzzing. Vulnerability scanning tools can also assist in the detection of known security vulnerabilities, such as out-of-date or vulnerable software components. Using an independent party for application testing will remove any bias that can occur when a software developer tests their own applications.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0402",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Application development",

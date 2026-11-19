@@ -36,10 +36,10 @@
   "discussion": "Cordless telephone systems have minimal transmission security and are susceptible to interception. Using cordless telephone systems can result in disclosure of information to an unauthorised party through interception.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0233",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Telephone systems",

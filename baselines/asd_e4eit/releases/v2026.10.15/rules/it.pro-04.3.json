@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems and applications) are securely configured to approved and maintained baselines, including by reducing attack surfaces and attack paths, with configurations continually monitored and consistently enforced.\n\n# Indicators of Good Practice\n\nNot effective:\n- No mechanism exists to detect configuration drift from approved baselines.\n- Assessments to detect configuration drift have not been conducted within the review period defined by the organisation.\n- Assessments do not systematically identify instances of configuration drift for assets.\n\nPartially effective:\n- Drift detection is in place but does not cover all applicable assets.\n- Drift is detected but the remediation process is informal or response timeframes are not defined.\n\nFully effective:\n- Automated configuration monitoring or regular technical assessments detect drift across the applicable assets, occurring at a frequency based on system criticality and change rate.\n- A documented remediation process exists with defined response timeframes aligned to severity.\n- Drift events are tracked to closure with evidence of remediation.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-04.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -81,7 +81,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-04 - Secure configuration management"

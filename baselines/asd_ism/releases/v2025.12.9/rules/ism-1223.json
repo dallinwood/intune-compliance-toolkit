@@ -36,10 +36,10 @@
   "discussion": "Memory in network devices is sanitised using the following processes, in order of preference:\n\n- following device-specific guidance provided in evaluation documentation\n- following vendor sanitisation guidance\n- loading a dummy configuration file, performing a factory reset and then reinstalling firmware.\n\nAs network devices can store network configuration data or credentials in their memory, the memory should be sanitised prior to the disposal of the network devices. The correct method to sanitise network devices will depend on their configuration and the type of memory they use. As such, device-specific guidance provided in evaluation documentation, or vendor sanitisation guidance, should be consulted to determine the most appropriate method to sanitise memory in network devices.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1223",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for information technology equipment",
     "IT equipment sanitisation and destruction",

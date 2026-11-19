@@ -36,10 +36,10 @@
   "discussion": "The Server Message Block (SMB) protocol is used to share files and printers across networks. Unfortunately, a number of weaknesses exist in SMB version 1 that can be used by malicious actors to gain access to resources on networks, including Microsoft Active Directory Domain Services domain controllers.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1962",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Networking",
     "Network design and configuration",

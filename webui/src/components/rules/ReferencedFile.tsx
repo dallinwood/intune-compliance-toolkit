@@ -2,18 +2,18 @@ import { useReferencedText } from '../../hooks/useReferencedText'
 import { payloadFileHighlightLanguage, type HighlightLanguage } from '../../logic/codeLanguage'
 import { fileNameOf, payloadFileDisplay } from '../../logic/fileReferences'
 import type { CodeOdvValues } from '../../logic/odv'
-import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import type { OdvValues } from '../../logic/selectionEntry'
 import { OdvCodeBlock } from './CodeBlock'
 
 function FileText({
   path,
   language,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   path: string
   language: HighlightLanguage | undefined
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const state = useReferencedText(path)
@@ -25,22 +25,22 @@ function FileText({
       </p>
     )
   }
-  return <OdvCodeBlock code={state.text} language={language} odvValue={odvValue} codeOdv={codeOdv} />
+  return <OdvCodeBlock code={state.text} language={language} odvValues={odvValues} codeOdv={codeOdv} />
 }
 
 // A script from shell_file, shown exactly like an inline one once loaded.
 export function ScriptFile({
   path,
   language,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   path: string
   language: HighlightLanguage | undefined
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
-  return <FileText path={path} language={language} odvValue={odvValue} codeOdv={codeOdv} />
+  return <FileText path={path} language={language} odvValues={odvValues} codeOdv={codeOdv} />
 }
 
 // A payload from data_file: a text file is shown in full and offered for
@@ -48,12 +48,12 @@ export function ScriptFile({
 export function PayloadFile({
   label,
   path,
-  odvValue,
+  odvValues,
   codeOdv,
 }: {
   label: string
   path: string
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const display = payloadFileDisplay(path, import.meta.env.BASE_URL, window.location.origin)
@@ -61,7 +61,7 @@ export function PayloadFile({
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
       {display.showsContent && (
-        <FileText path={path} language={payloadFileHighlightLanguage(path)} odvValue={odvValue} codeOdv={codeOdv} />
+        <FileText path={path} language={payloadFileHighlightLanguage(path)} odvValues={odvValues} codeOdv={codeOdv} />
       )}
       {display.url === null ? (
         <p data-testid="referenced-file-error" className="text-xs break-words text-destructive">

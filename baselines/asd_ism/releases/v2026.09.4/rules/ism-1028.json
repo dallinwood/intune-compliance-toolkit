@@ -36,10 +36,10 @@
   "discussion": "A network-based intrusion detection system (NIDS) or network-based intrusion prevention system (NIPS) can be an effective way of identifying and responding to network intrusions. In addition, generating event logs and alerts for network traffic that contravenes any rule in a firewall ruleset can help identify suspicious or malicious network traffic entering networks due to a failure of, or configuration change to, firewalls.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1028",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for networking",
     "Network design and configuration",

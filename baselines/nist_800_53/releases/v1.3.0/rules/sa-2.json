@@ -32,7 +32,7 @@
   "discussion": "## Control\n\n- a. Determine the high-level information security and privacy requirements for the system or system service in mission and business process planning;\n- b. Determine, document, and allocate the resources required to protect the system or system service as part of the organizational capital planning and investment control process; and\n- c. Establish a discrete line item for information security and privacy in organizational programming and budgeting documentation.\n\n## Discussion\n\nResource allocation for information security and privacy includes funding for system and services acquisition, sustainment, and supply chain-related risks throughout the system development life cycle.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB A-130",
@@ -49,7 +49,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-02 Allocation of Resources"

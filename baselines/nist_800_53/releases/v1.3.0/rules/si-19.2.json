@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProhibit archiving of personally identifiable information elements if those elements in a dataset will not be needed after the dataset is archived.\n\n## Discussion\n\nDatasets can be archived for many reasons. The envisioned purposes for the archived dataset are specified, and if personally identifiable information elements are not required, the elements are not archived. For example, social security numbers may have been collected for record linkage, but the archived dataset may include the required elements from the linked records. In this case, it is not necessary to archive the social security numbers.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-19.2",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-19 De-identification"

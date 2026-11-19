@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nImplement cryptographic mechanisms to protect the confidentiality and integrity of remote access sessions.\n\n## Discussion\n\nVirtual private networks can be used to protect the confidentiality and integrity of remote access sessions. Transport Layer Security (TLS) is an example of a cryptographic protocol that provides end-to-end communications security over networks and is used for Internet communications and online transactions.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-17.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-8",
@@ -33,7 +33,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-17 Remote Access"

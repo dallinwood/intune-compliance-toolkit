@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nRobust and secure identity, credential and access management is used to establish, maintain and control access to systems (infrastructure, operating systems, applications and data) and to support effective detection of identity and credential misuse.\n\n# Indicators of Good Practice\n\nNot effective:\n- Local administrator credentials are shared across the device fleet, or service or privileged account credentials are routinely reused across systems.\n- Credential uniqueness is not enforced for applicable user, machine, system or service identities.\n- Credential uniqueness has not been addressed in high-privilege contexts, including domain administration, cloud administration or automation platforms.\n- Where credential uniqueness cannot be enforced, neither compensating controls nor remediation paths are in place.\n\nPartially effective:\n- Local administrator credential uniqueness has been implemented for some device populations but coverage is incomplete across the device fleet.\n- A technical mechanism is in place but applies to only a subset of credential types or systems within scope.\n- Credential uniqueness has been addressed in some high-privilege contexts but gaps remain in others.\n- Compensating controls exist for some shared credentials but monitoring is inconsistent or remediation plans do not exist.\n\nFully effective:\n- Credentials for applicable local administrative accounts are unique to each system or account.\n- Credential uniqueness is consistently enforced for applicable user, machine, system and service identities.\n- Credential uniqueness is enforced consistently in high-privilege contexts, with managed identities or equivalent capabilities used in preference to shared static credentials wherever feasible.\n- Where uniqueness cannot be enforced, compensating controls are applied, the use of the shared credentials is monitored, and a remediation plan exists.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-13.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -81,7 +81,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-13 - Identity, credential and access management"

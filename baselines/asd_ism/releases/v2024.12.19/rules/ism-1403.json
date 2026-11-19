@@ -36,10 +36,10 @@
   "discussion": "Locking a user account after a specified number of failed logon attempts reduces the likelihood of successful forms of brute-force attacks, such as credential guessing attacks, credential spraying attacks and credential stuffing attacks by malicious actors. However, care should be taken as implementing account lockout functionality can increase the likelihood of a denial of service. Alternatively, some systems can be configured to automatically slowdown repeated failed logon attempts (known as rate limiting) rather than locking user accounts. Implementing multi-factor authentication is also an effective way of reducing the likelihood of successful credential spraying attacks.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1403",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for System Hardening",
     "Authentication hardening",

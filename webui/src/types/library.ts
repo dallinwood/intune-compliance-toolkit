@@ -65,12 +65,18 @@ export interface OdvValidation {
   enumValues?: string[]
 }
 
+// Where the placeholder sits in shell text, which decides when a value may be
+// shown inside a displayed command.
+export type OdvQuoting = 'unquoted' | 'single' | 'double'
+
 export interface Odv {
+  name: string
   datatype: OdvDatatype
   description: string
   validation: OdvValidation | null
   recommended: number | string
   by_benchmark: Record<string, number | string>
+  quoting: OdvQuoting
 }
 
 // versions: null applies to every version of the target.
@@ -113,7 +119,7 @@ export interface RuleSource {
 }
 
 export interface Rule {
-  schema_version: 5
+  schema_version: 6
   id: string
   title: string
   discussion: string
@@ -126,7 +132,7 @@ export interface Rule {
   tags: string[]
   references: Record<string, unknown>
   check: RuleChecks | null
-  odv: Odv | null
+  odvs: Odv[]
   remediation: Remediation | null
 }
 
@@ -144,7 +150,7 @@ export interface IndexEntry {
 }
 
 export interface RuleIndex {
-  schema_version: 5
+  schema_version: 6
   source: string
   rules: IndexEntry[]
 }

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nWhen transferring information between different security domains, prevent the transfer of failed content to the receiving domain.\n\n## Discussion\n\nContent that failed filtering checks can corrupt the system if transferred to the receiving domain.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.31",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

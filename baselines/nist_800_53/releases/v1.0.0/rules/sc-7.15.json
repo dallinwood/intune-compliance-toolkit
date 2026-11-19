@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRoute networked, privileged accesses through a dedicated, managed interface for purposes of access control and auditing.\n\n## Discussion\n\nPrivileged access provides greater accessibility to system functions, including security functions. Adversaries attempt to gain privileged access to systems through remote access to cause adverse mission or business impacts, such as by exfiltrating information or bringing down a critical system capability. Routing networked, privileged access requests through a dedicated, managed interface further restricts privileged access for increased access control and auditing.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-7.15",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-2",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-07 Boundary Protection"

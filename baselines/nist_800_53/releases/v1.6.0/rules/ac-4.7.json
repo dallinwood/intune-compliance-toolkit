@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEnforce one-way information flows through hardware-based flow control mechanisms.\n\n## Discussion\n\nOne-way flow mechanisms may also be referred to as a unidirectional network, unidirectional security gateway, or data diode. One-way flow mechanisms can be used to prevent data from being exported from a higher impact or classified domain or system while permitting data from a lower impact or unclassified domain or system to be imported.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-4.7",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-04 Information Flow Enforcement"

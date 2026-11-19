@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to implement an explicit process to continuously improve the development process.\n\n## Discussion\n\nDevelopers of systems, system components, and system services consider the effectiveness and efficiency of their development processes for meeting quality objectives and addressing the security and privacy capabilities in current threat environments.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15.6",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

@@ -2,13 +2,12 @@ import 'highlight.js/styles/github-dark.css'
 import './codeBlock.css'
 import type { HighlightLanguage } from '../../logic/codeLanguage'
 import { highlightedHtml } from '../../logic/highlighting'
-import { codeTextWithOdv, containsOdvPlaceholder, displayWithOdv, type CodeOdvValues } from '../../logic/odv'
+import { codeTextWithOdvs, containsOdvPlaceholder, displayWithOdvs, odvPlaceholder, odvPlaceholderNames, type CodeOdvValues } from '../../logic/odv'
 import { expandsOdvOnlyAsQuotedVariable, shellWithExportedOdv } from '../../logic/odvExportDisplay'
-import type { OrgDefinedValue } from '../../logic/selectionEntry'
+import type { OdvValues, OrgDefinedValue } from '../../logic/selectionEntry'
 import { CopyButton } from './CopyButton'
 import { CustomTag } from './CustomTag'
 
-const ODV_PLACEHOLDER = '$ODV'
 const MAX_NOTE_VALUE_LENGTH = 80
 
 // Long single-line check commands wrap (anywhere, since they rarely contain
@@ -33,63 +32,91 @@ function shortenedValue(text: string): string {
   return text.length > MAX_NOTE_VALUE_LENGTH ? `${text.slice(0, MAX_NOTE_VALUE_LENGTH)}...` : text
 }
 
-// Shown under a script or payload that is displayed raw with $ODV in it.
-export function OdvNote({ odvValue }: { odvValue: OrgDefinedValue | null }) {
+// Shown under a script or payload that is displayed raw with $ODV_<name> in it:
+// one line naming each placeholder left in it.
+export function OdvNote({ names, odvValues }: { names: string[]; odvValues: Partial<OdvValues> }) {
+  return (
+    <>
+      {names.map((name) => (
+        <p key={name} className="text-xs text-muted-foreground">
+          {odvPlaceholder(name)} stands for the organization-defined value, currently{' '}
+          {shortenedValue(displayWithOdvs(odvPlaceholder(name), odvValues))}.
+        </p>
+      ))}
+    </>
+  )
+}
+
+function shownValueNames(code: string, values: Partial<OdvValues>): string[] {
+  return odvPlaceholderNames(code).filter((name) => Object.hasOwn(values, name))
+}
+
+// Shown under a block whose $ODV_<name> placeholders have been replaced with values.
+function OdvSubstitutionNote({ code, values }: { code: string; values: Partial<OdvValues> }) {
+  return (
+    <>
+      {shownValueNames(code, values).map((name) => (
+        <p key={name} className="text-xs text-muted-foreground">
+          Shown with {odvPlaceholder(name)} as the organization-defined value: {shortenedValue(String(values[name] as OrgDefinedValue))}
+        </p>
+      ))}
+    </>
+  )
+}
+
+function OdvExportNote({ names }: { names: string[] }) {
   return (
     <p className="text-xs text-muted-foreground">
-      $ODV stands for the organization-defined value, currently{' '}
-      {shortenedValue(displayWithOdv(ODV_PLACEHOLDER, odvValue))}.
+      Shown with the organization-defined value set as {names.map((name) => `ODV_${name}`).join(', ')}, as the generated script does.
     </p>
   )
 }
 
-// Shown under a block whose $ODV has been replaced with the value.
-function OdvSubstitutionNote({ value }: { value: OrgDefinedValue }) {
-  return <p className="text-xs text-muted-foreground">Shown with the organization-defined value: {shortenedValue(String(value))}</p>
-}
-
-function OdvExportNote() {
-  return <p className="text-xs text-muted-foreground">Shown with the organization-defined value set as ODV, as the generated script does.</p>
-}
-
-// A block of shipped code that may contain $ODV. codeOdv holds the values safe to
-// show in its place, or null to keep the literal placeholder and explain it.
+// A block of shipped code that may contain $ODV_<name>. codeOdv holds the values safe
+// to show in place of each placeholder; a placeholder without one stays literal and is explained.
 export function OdvCodeBlock({
   code,
   language,
-  odvValue,
+  odvValues,
   codeOdv,
   isJson = false,
 }: {
   code: string
   language?: HighlightLanguage
-  odvValue: OrgDefinedValue | null
+  odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
   isJson?: boolean
 }) {
-  const codeOdvValue = isJson ? codeOdv.json : codeOdv.script
+  const codeOdvValuesForBlock = isJson ? codeOdv.json : codeOdv.script
   if (!containsOdvPlaceholder(code)) return <CodeBlock code={code} language={language} />
-  if (!isJson && codeOdv.exported !== null && language === 'bash' && expandsOdvOnlyAsQuotedVariable(code)) {
+
+  const exportedNames =
+    !isJson && language === 'bash'
+      ? shownValueNames(code, codeOdv.exported).filter((name) => expandsOdvOnlyAsQuotedVariable(code, name))
+      : []
+  if (exportedNames.length > 0) {
+    const exportedCode = exportedNames.reduceRight(
+      (shell, name) => shellWithExportedOdv(shell, name, codeOdv.exported[name] as OrgDefinedValue),
+      code,
+    )
+    const unexportedNames = odvPlaceholderNames(code).filter((name) => !exportedNames.includes(name))
     return (
       <>
-        <CodeBlock code={shellWithExportedOdv(code, codeOdv.exported)} language={language} />
-        <OdvExportNote />
+        <CodeBlock code={exportedCode} language={language} />
+        <OdvExportNote names={exportedNames} />
+        {unexportedNames.length > 0 && <OdvNote names={unexportedNames} odvValues={odvValues} />}
       </>
     )
   }
-  if (codeOdvValue === null) {
-    return (
-      <>
-        <CodeBlock code={code} language={language} />
-        <OdvNote odvValue={odvValue} />
-      </>
-    )
-  }
-  const displayedCode = codeTextWithOdv(code, codeOdvValue, isJson)
+
+  const shownNames = shownValueNames(code, codeOdvValuesForBlock)
+  const displayedCode = shownNames.length > 0 ? codeTextWithOdvs(code, codeOdvValuesForBlock, isJson) : code
+  const hiddenNames = odvPlaceholderNames(displayedCode)
   return (
     <>
       <CodeBlock code={displayedCode} language={language} />
-      <OdvSubstitutionNote value={codeOdvValue} />
+      <OdvSubstitutionNote code={code} values={codeOdvValuesForBlock} />
+      {hiddenNames.length > 0 && <OdvNote names={hiddenNames} odvValues={odvValues} />}
     </>
   )
 }

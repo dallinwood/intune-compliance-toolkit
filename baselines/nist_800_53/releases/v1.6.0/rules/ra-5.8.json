@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nReview historic audit logs to determine if a vulnerability identified in a [Assignment: organization-defined system] has been previously exploited within an [Assignment: organization-defined time period].\n\n## Discussion\n\nReviewing historic audit logs to determine if a recently detected vulnerability in a system has been previously exploited by an adversary can provide important information for forensic analyses. Such analyses can help identify, for example, the extent of a previous intrusion, the trade craft employed during the attack, organizational information exfiltrated or modified, mission or business capabilities affected, and the duration of the attack.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ra-5.8",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-6",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Risk Assessment",
     "RA-05 Vulnerability Monitoring and Scanning"

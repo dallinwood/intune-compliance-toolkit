@@ -36,10 +36,10 @@
   "discussion": "Suspicious requests to disclose or change user account details, such as changing mobile phone numbers or email addresses, could indicate a malicious actor attempting to access private user details, facilitate password resets or conduct multi-factor authentication bypass attacks against user accounts.\n\nIn dealing with such situations, personnel should have clear guidance to think critically before actioning unusual requests as well as a process to report threatening demands for immediate action, pressure for secrecy or requests to circumvent normal business processes and procedures.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2071",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for personnel security",
     "Cybersecurity awareness training",

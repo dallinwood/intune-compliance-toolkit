@@ -25,7 +25,7 @@
   "discussion": "The information system uniquely identifies and authenticates non-organizational users (or processes acting on behalf of non-organizational users).\n\nNOTE: This requirement is NA for this technology.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_identify_non-org_users",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "800-53r5": [
@@ -61,7 +61,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

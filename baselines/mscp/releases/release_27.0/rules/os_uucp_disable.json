@@ -62,7 +62,7 @@
   "discussion": "The system _MUST_ not have the Unix-to-Unix Copy Protocol (UUCP) service active.\n\nUUCP, a set of programs that enable the sending of files between different UNIX systems as well as sending commands to be executed on another system, is not essential and _MUST_ be disabled in order to prevent the unauthorized connection of devices, transfer of information, and tunneling.\n\nNOTE: UUCP service is disabled at startup by default macOS.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_uucp_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "controls_v8": [
@@ -152,7 +152,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

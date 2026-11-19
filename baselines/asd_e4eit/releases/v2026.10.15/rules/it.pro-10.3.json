@@ -48,7 +48,7 @@
   "discussion": "# Principle\n\nSystems (infrastructure, operating systems, applications and data) are regularly backed up in a secure and proven manner, including through the validation of restoration capabilities.\n\n# Indicators of Good Practice\n\nNot effective:\n- No restoration test has been conducted within the test cycle defined by the organisation.\n- No backup or restoration procedures exist.\n- Restoration testing demonstrates that backups cannot be restored, or consistently fail to meet defined recovery time or recovery point objectives.\n\nPartially effective:\n- Restoration testing has been conducted but does not cover all important assets.\n- Backup procedures exist but have never been tested.\n- Testing has been conducted but coverage is incomplete or some tests did not meet the expected recovery time or recovery point objectives.\n\nFully effective:\n- Restoration testing covering important assets is conducted within the test cycle defined by the organisation.\n- Testing validates that restoration meets the expected recovery time and recovery point objectives.\n- Test results are documented and gaps identified during testing are remediated.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-10.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -76,7 +76,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-10 - Regular and proven backups"

@@ -36,10 +36,10 @@
   "discussion": "The CISO is responsible for the cybersecurity workforce within their organisation, including plans to attract, train and retain cybersecurity personnel. The CISO should also delegate relevant tasks to cybersecurity managers and other personnel as required and provide them with adequate authority and resources to perform their duties.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0717",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for cybersecurity roles",
     "Chief information security officer",

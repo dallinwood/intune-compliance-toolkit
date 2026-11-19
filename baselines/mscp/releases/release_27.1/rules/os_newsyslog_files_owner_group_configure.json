@@ -53,7 +53,7 @@
   "discussion": "The system log files _MUST_ be owned by root.\n\nSystem logs contain sensitive data about the system and users. If log files are set to only be readable and writable by system administrators, the risk is mitigated.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_newsyslog_files_owner_group_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -113,7 +113,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

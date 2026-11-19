@@ -77,7 +77,7 @@
   "discussion": "Safari _MUST_ be configured to show the status bar.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_safari_show_status_bar_enabled",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -142,7 +142,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

@@ -36,10 +36,10 @@
   "discussion": "Services are configured with a session lock that:\n\n- activates after a maximum of 15 minutes of user inactivity, a maximum of 12 hours of overall session time or when manually activated by users\n- blocks access to all session content\n- requires users to re-authenticate using all authentication factors to unlock the session\n- denies users the ability to disable the session locking mechanism.\n\nSession locking prevents unauthorised access to services that a user has already authenticated to.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0428",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system hardening",
     "Authentication hardening",

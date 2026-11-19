@@ -237,6 +237,16 @@ enforcement_info:
       integer: $ODV
 """
 
+ODV_SHELL_PLATFORM = """
+'27.0':
+  benchmarks: []
+enforcement_info:
+  check:
+    shell: /usr/bin/awk -v ODV=$ODV '$1 > ODV' /etc/x
+    result:
+      integer: 1
+"""
+
 ODV_BLOCK = """odv:
   hint:
     datatype: number
@@ -252,20 +262,25 @@ ODV_BLOCK = """odv:
 
 def test_odv_by_benchmark_filtered_to_macos_benchmarks():
     result = normalize(rule_with(ODV_PLATFORM, ODV_BLOCK))
-    assert result["odv"] == {
-        "datatype": "number",
-        "description": "Minimum length",
-        "validation": {"min": 1},
-        "recommended": 6,
-        "by_benchmark": {"cis_lvl1": 15, "disa_stig": 14},
-    }
-    assert result["check"]["macOS"]["default"]["result"] == {"type": "integer", "value": "$ODV"}
+    assert result["odvs"] == [
+        {
+            "name": "value",
+            "datatype": "number",
+            "description": "Minimum length",
+            "validation": {"min": 1},
+            "recommended": 6,
+            "by_benchmark": {"cis_lvl1": 15, "disa_stig": 14},
+            "quoting": "unquoted",
+        }
+    ]
+    assert result["check"]["macOS"]["default"]["result"] == {"type": "integer", "value": "$ODV_value"}
+    assert result["check"]["macOS"]["default"]["shell"] == "test $ODV_value"
     assert schema_errors(result) == []
 
 
 def test_odv_validation_absent_is_null():
     block = ODV_BLOCK.replace("    validation:\n      min: 1\n", "")
-    assert normalize(rule_with(ODV_PLATFORM, block))["odv"]["validation"] is None
+    assert normalize(rule_with(ODV_PLATFORM, block))["odvs"][0]["validation"] is None
 
 
 def test_odv_unknown_datatype_raises():
@@ -277,6 +292,17 @@ def test_odv_unknown_datatype_raises():
 def test_odv_placeholder_without_odv_raises():
     with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
         normalize(rule_with(ODV_PLATFORM))
+
+
+def test_odv_token_rewritten_not_bare_name():
+    result = normalize(rule_with(ODV_SHELL_PLATFORM, ODV_BLOCK))
+    assert result["check"]["macOS"]["default"]["shell"] == "/usr/bin/awk -v ODV=$ODV_value '$1 > ODV' /etc/x"
+
+
+def test_unused_odv_raises():
+    platform = "enforcement_info:\n  check:\n    shell: x\n    result:\n      integer: 1\n"
+    with pytest.raises(UnsupportedUpstreamData, match="some_rule"):
+        normalize(rule_with(platform, ODV_BLOCK))
 
 
 def test_unknown_result_type_raises():
@@ -394,7 +420,7 @@ def test_index_entry_fields():
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
-    wrapped = {"schema_version": 5, "source": "mscp", "rules": [entry]}
+    wrapped = {"schema_version": 6, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
 
 
@@ -478,7 +504,7 @@ def test_source_and_format_fields():
     assert result["discussion_format"] == "asciidoc"
     assert result["source"]["upstream_revision"] is None
     assert result["source"]["upstream_updated"] is None
-    assert result["schema_version"] == 5
+    assert result["schema_version"] == 6
     assert result["section_path"] == ["os"]
     assert "platform" not in result
 
@@ -504,7 +530,7 @@ def test_empty_result_on_automated_rule_raises():
 def test_regex_odv_datatype_is_accepted():
     block = ODV_BLOCK.replace("datatype: number", "datatype: regex").replace("recommended: 6", "recommended: ^a$")
     result = normalize(rule_with(ODV_PLATFORM, block))
-    assert result["odv"]["datatype"] == "regex"
+    assert result["odvs"][0]["datatype"] == "regex"
     assert schema_errors(result) == []
 
 

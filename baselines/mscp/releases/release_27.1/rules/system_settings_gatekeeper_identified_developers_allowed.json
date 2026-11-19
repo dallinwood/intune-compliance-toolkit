@@ -77,7 +77,7 @@
   "discussion": "The information system implements cryptographic mechanisms to authenticate software prior to installation.\n\nGatekeeper settings must be configured correctly to only allow the system to run applications downloaded from the Mac App Store or applications signed with a valid Apple Developer ID code. Administrator users will still have the option to override these settings on a per-app basis. Gatekeeper is a security feature that ensures that applications must be digitally signed by an Apple-issued certificate in order to run. Digital signatures allow the macOS to verify that the application has not been modified by a malicious third party.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_gatekeeper_identified_developers_allowed",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -170,7 +170,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

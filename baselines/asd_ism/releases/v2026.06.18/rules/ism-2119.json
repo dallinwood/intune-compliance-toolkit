@@ -36,10 +36,10 @@
   "discussion": "Measures to monitor and manage vulnerabilities in systems can provide an organisation with a wealth of valuable information about their exposure to cyber threats, as well as assisting them to determine security risks associated with the operation of their systems. Regardless of the security assessment activity performed, they should be conducted by suitably skilled personnel augmented by AI models. In doing so, personnel can be internal to an organisation or from a third party, however, such personnel should be independent of the system being assessed. This ensures that there is no conflict of interest, perceived or otherwise, and that the activities are undertaken in an objective manner.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2119",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for security assurance",
     "Security assessments",

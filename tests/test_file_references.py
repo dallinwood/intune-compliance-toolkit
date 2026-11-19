@@ -142,13 +142,13 @@ def check_rule_with_file(path: str) -> dict:
 
 
 def test_a_check_script_file_using_odv_is_an_error_until_the_ui_resolves_files(tmp_path):
-    write_file(tmp_path, "baselines/x/scripts/check.sh", b'test "$(cat /etc/x)" = "$ODV" && echo 1\n')
+    write_file(tmp_path, "baselines/x/scripts/check.sh", b'test "$(cat /etc/x)" = "$ODV_value" && echo 1\n')
     errors = file_reference_errors(check_rule_with_file("baselines/x/scripts/check.sh"), tmp_path)
-    assert len(errors) == 1 and "$ODV" in errors[0] and "inline" in errors[0]
+    assert len(errors) == 1 and "$ODV_value" in errors[0] and "inline" in errors[0]
 
 
 def test_a_remediation_script_file_may_mention_odv(tmp_path):
-    write_file(tmp_path, "baselines/_overlays/scripts/Fix.ps1", b"Write-Output $ODV\n")
+    write_file(tmp_path, "baselines/_overlays/scripts/Fix.ps1", b"Write-Output $ODV_value\n")
     rule = rule_with_step(powershell_step(shell_file="baselines/_overlays/scripts/Fix.ps1"))
     assert file_reference_errors(rule, tmp_path) == []
 

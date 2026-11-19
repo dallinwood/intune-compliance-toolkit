@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEnforce dual authorization for [Assignment: organization-defined privileged commands and/or other actions].\n\n## Discussion\n\nDual authorization, also known as two-person control, reduces risk related to insider threats. Dual authorization mechanisms require the approval of two authorized individuals to execute. To reduce the risk of collusion, organizations consider rotating dual authorization duties. Organizations consider the risk associated with implementing dual authorization mechanisms when immediate responses are necessary to ensure public and environmental safety.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-3.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-9",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-03 Access Enforcement"

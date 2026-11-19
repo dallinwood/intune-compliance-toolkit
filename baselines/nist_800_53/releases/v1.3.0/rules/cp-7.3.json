@@ -24,10 +24,10 @@
   "discussion": "## Control\n\nDevelop alternate processing site agreements that contain priority-of-service provisions in accordance with availability requirements (including recovery time objectives).\n\n## Discussion\n\nPriority of service agreements refer to negotiated agreements with service providers that ensure that organizations receive priority treatment consistent with their availability requirements and the availability of information resources for logical alternate processing and/or at the physical alternate processing site. Organizations establish recovery time objectives as part of contingency planning.",
   "discussion_format": "markdown",
   "id": "nist_800_53.cp-7.3",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Contingency Planning",
     "CP-07 Alternate Processing Site"

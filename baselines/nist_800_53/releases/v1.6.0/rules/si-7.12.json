@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire that the integrity of the following user-installed software be verified prior to execution: [Assignment: organization-defined user-installed software].\n\n## Discussion\n\nOrganizations verify the integrity of user-installed software prior to execution to reduce the likelihood of executing malicious code or programs that contains errors from unauthorized modifications. Organizations consider the source of the software, ensuring the software and updates come from authorized sources and/or sites, and the practicality of approaches to verifying software integrity, including the availability of trustworthy checksums from software developers and vendors.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-7.12",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "SP 800-81-2"
@@ -26,7 +26,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-07 Software, Firmware, and Information Integrity"

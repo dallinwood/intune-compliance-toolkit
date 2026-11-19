@@ -25,7 +25,7 @@
   "discussion": "The macOS should be configured to automatically disable Wi-Fi when connected to ethernet.\n\nThe use of Wi-Fi to connect to unauthorized networks may facilitate the exfiltration of mission data. Therefore, wireless networking capabilities internally embedded within information system components should be disabled when not intended to be used.\n\nNOTE: If the system requires Wi-Fi to connect to an authorized network, this is not applicable.\n\nNOTE: The technology does not support this requirement. This is an applicable-does not meet finding.",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_wifi_disable_when_connected_to_ethernet",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cmmc": [
@@ -66,7 +66,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

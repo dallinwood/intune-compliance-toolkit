@@ -24,10 +24,10 @@
   "discussion": "Microphones (including headsets and Universal Serial Bus \\[USB\\] handsets) and webcams can pose a security risk in SECRET and TOP SECRET areas. Specifically, an adversary can email or host a malicious application on a compromised website and use social engineering techniques to convince users into installing the application on their workstation. Such malicious applications may then activate microphones or webcams that are attached to the workstation to act as remote listening and recording devices.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0559",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Communications Systems",
     "Video conferencing and Internet Protocol telephony",

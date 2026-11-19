@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy guards to control [Assignment: organization-defined physical access points] to the facility where the system resides 24 hours per day, 7 days per week.\n\n## Discussion\n\nEmploying guards at selected physical access points to the facility provides a more rapid response capability for organizations. Guards also provide the opportunity for human surveillance in areas of the facility not covered by video surveillance.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-3.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-6",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-03 Physical Access Control"

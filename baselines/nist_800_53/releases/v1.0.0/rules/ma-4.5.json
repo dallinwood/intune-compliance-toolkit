@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Require the approval of each nonlocal maintenance session by [Assignment: organization-defined personnel or roles]; and\n- (b) Notify the following personnel or roles of the date and time of planned nonlocal maintenance: [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nNotification may be performed by maintenance personnel. Approval of nonlocal maintenance is accomplished by personnel with sufficient information security and system knowledge to determine the appropriateness of the proposed maintenance.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-4.5",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-04 Nonlocal Maintenance"

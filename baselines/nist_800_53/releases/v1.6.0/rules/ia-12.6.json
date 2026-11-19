@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nAccept externally-proofed identities at [Assignment: organization-defined identity assurance level].\n\n## Discussion\n\nTo limit unnecessary re-proofing of identities, particularly of non-PIV users, organizations accept proofing conducted at a commensurate level of assurance by other agencies or organizations. Proofing is consistent with organizational security policy and the identity assurance level appropriate for the system, application, or information accessed. Accepting externally-proofed identities is a fundamental component of managing federated identities across agencies and organizations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-12.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "IA-3",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-12 Identity Proofing"

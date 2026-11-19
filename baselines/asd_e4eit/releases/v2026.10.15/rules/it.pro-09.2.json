@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nData communicated between different security domains for systems (infrastructure and applications) is controlled and subject to inspection and verification.\n\n# Indicators of Good Practice\n\nNot effective:\n- No controls are deployed to prevent systems from establishing outbound connections to known malicious or untrusted destinations.\n- Blocking decisions are not informed by current threat intelligence.\n- Destination categorisation is not used.\n\nPartially effective:\n- Controls to prevent outbound connections being established are deployed but cover only a subset of in-scope systems or egress paths.\n- Threat intelligence is used to inform block decisions for outbound connections, but updates are infrequent, manual or limited to a single source.\n- Categorisation is in place, but the categories blocked do not reflect the organisation’s risk position.\n\nFully effective:\n- Controls are deployed and applied across in-scope systems, egress paths, services, and network boundaries.\n- Blocking decisions draw on current threat intelligence, with destination lists updated on a cycle defined by the organisation.\n- Destination reputation, category and age are considered alongside threat intelligence, with category-based blocking aligned to the organisation’s risk position.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-09.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -64,7 +64,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-09 - Content filtering"

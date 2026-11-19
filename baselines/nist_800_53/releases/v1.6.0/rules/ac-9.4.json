@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nNotify the user, upon successful logon, of the following additional information: [Assignment: organization-defined additional information].\n\n## Discussion\n\nOrganizations can specify additional information to be provided to users upon logon, including the location of the last logon. User location is defined as information that can be determined by systems, such as Internet Protocol (IP) addresses from which network logons occurred, notifications of local logons, or device identifiers.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-9.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-09 Previous Logon Notification"

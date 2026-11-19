@@ -70,11 +70,11 @@ describe('manualReasonText', () => {
 
 describe('additionalInfoFor', () => {
   it('is null when the check has no additional_info', () => {
-    expect(additionalInfoFor(manualRule('inherent'), null)).toBeNull()
+    expect(additionalInfoFor(manualRule('inherent'), {})).toBeNull()
   })
 
   it('is the check additional_info, trimmed', () => {
-    expect(additionalInfoFor(manualRule('manual', 'Ask the ISSO.\n\nThen record it.\n'), null)).toBe('Ask the ISSO.\n\nThen record it.')
+    expect(additionalInfoFor(manualRule('manual', 'Ask the ISSO.\n\nThen record it.\n'), {})).toBe('Ask the ISSO.\n\nThen record it.')
   })
 
   it('reads only the macOS check, since the report ships with the macOS bundle', () => {
@@ -82,13 +82,15 @@ describe('additionalInfoFor', () => {
     rule.check = {
       Windows: { language: 'powershell', default: ruleCheck(null, null, 'Ask the Windows team.'), by_version: {} },
     }
-    expect(additionalInfoFor(rule, null)).toBeNull()
+    expect(additionalInfoFor(rule, {})).toBeNull()
     rule.check = { ...macosCheck(ruleCheck(null, null, 'Ask the ISSO.')), ...rule.check }
-    expect(additionalInfoFor(rule, null)).toBe('Ask the ISSO.')
+    expect(additionalInfoFor(rule, {})).toBe('Ask the ISSO.')
   })
 
-  it('shows the effective value instead of $ODV', () => {
-    expect(additionalInfoFor(manualRule('manual', 'Require $ODV characters.'), 15)).toBe('Require 15 characters.')
+  it('shows the effective value instead of its placeholder', () => {
+    expect(additionalInfoFor(manualRule('manual', 'Require $ODV_value characters.'), { value: 15 })).toBe('Require 15 characters.')
+    expect(additionalInfoFor(manualRule('manual', 'Use $ODV_a and $ODV_a_b.'), { a: 1, a_b: 2 })).toBe('Use 1 and 2.')
+    expect(additionalInfoFor(manualRule('manual', 'Require $ODV_value characters.'), {})).toBe('Require [value] characters.')
   })
 })
 

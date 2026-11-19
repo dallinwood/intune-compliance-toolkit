@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nProvide protected storage for cryptographic keys [Selection: [Assignment: organization-defined safeguards]; hardware-protected key store].\n\n## Discussion\n\nA Trusted Platform Module (TPM) is an example of a hardware-protected data store that can be used to protect cryptographic keys.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sc-28.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SC-12",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Communications Protection",
     "SC-28 Protection of Information at Rest"

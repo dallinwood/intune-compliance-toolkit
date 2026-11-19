@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nEmploy [Assignment: organization-defined asset location technologies] to track and monitor the location and movement of [Assignment: organization-defined assets] within [Assignment: organization-defined controlled areas].\n\n## Discussion\n\nAsset location technologies can help ensure that critical assets—including vehicles, equipment, and system components—remain in authorized locations. Organizations consult with the Office of the General Counsel and senior agency official for privacy regarding the deployment and use of asset location technologies to address potential privacy concerns.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-20",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-8",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-20 Asset Monitoring and Tracking"

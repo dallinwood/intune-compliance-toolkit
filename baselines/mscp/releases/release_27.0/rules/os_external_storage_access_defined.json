@@ -38,7 +38,7 @@
         "additional_info": null,
         "result": {
           "type": "string",
-          "value": "$ODV"
+          "value": "$ODV_value"
         },
         "shell": "/usr/bin/plutil -convert json /var/db/ManagedConfigurationFiles/DiskManagement/DiskManagement_Settings.plist -o - | /usr/bin/jq --raw-output '.Restrictions.ExternalStorage'"
       },
@@ -48,21 +48,25 @@
   "discussion": "Access to external storage _MUST_ be managed.\n\nNOTE: Apple's built in method using declarative device management method only allows you to set external storage management to Allowed, ReadOnly, and Disallowed.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_external_storage_access_defined",
-  "odv": {
-    "by_benchmark": {
-      "nlmapgov_plus": "ReadOnly"
-    },
-    "datatype": "enum",
-    "description": "Allowed|ReadOnly|Disallowed",
-    "recommended": "Allowed",
-    "validation": {
-      "enumValues": [
-        "Allowed",
-        "ReadOnly",
-        "Disallowed"
-      ]
+  "odvs": [
+    {
+      "by_benchmark": {
+        "nlmapgov_plus": "ReadOnly"
+      },
+      "datatype": "enum",
+      "description": "Allowed|ReadOnly|Disallowed",
+      "name": "value",
+      "quoting": "unquoted",
+      "recommended": "Allowed",
+      "validation": {
+        "enumValues": [
+          "Allowed",
+          "ReadOnly",
+          "Disallowed"
+        ]
+      }
     }
-  },
+  ],
   "references": {
     "bzk": {
       "bio": [
@@ -101,7 +105,7 @@
         {
           "data": {
             "ddm_key": "ExternalStorage",
-            "ddm_value": "$ODV",
+            "ddm_value": "$ODV_value",
             "declarationtype": "com.apple.configuration.diskmanagement.settings"
           },
           "kind": "ddm",
@@ -119,7 +123,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

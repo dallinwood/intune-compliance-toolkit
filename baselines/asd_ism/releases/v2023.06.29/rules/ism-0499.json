@@ -24,10 +24,10 @@
   "discussion": "In order to ensure interoperability and maintain trust, all High Assurance Cryptographic Equipment (HACE) that processes, stores or communicates SECRET or TOP SECRET data must be approved for use by the Australian Signals Directorate (ASD). In addition, the Australian Cyber Security Centre (ACSC) specifies additional requirements in Australian Communications Security Instructions and other cyber security-related publications for ASD-approved HACE that must be complied with. Such requirements supplement these guidelines and, where conflicts occur, take precedence.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0499",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "Cryptographic fundamentals",

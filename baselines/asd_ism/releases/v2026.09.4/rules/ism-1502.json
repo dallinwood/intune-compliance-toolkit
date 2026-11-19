@@ -36,10 +36,10 @@
   "discussion": "Blocking specific types of suspicious emails, such as where the email source address uses an internal domain, or internal subdomain, reduces the likelihood of phishing emails entering an organisation’s network.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1502",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for email",
     "Email gateways and servers",

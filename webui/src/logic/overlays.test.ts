@@ -142,7 +142,7 @@ describe('parseOverlay', () => {
   })
 
   it('accepts null where a field may be null and an object where it may be one', () => {
-    const fields = { check: null, odv: { $replace: null }, remediation: { $replace: { Windows: { steps: [], payloads: [] } } }, architecture: null }
+    const fields = { check: null, odvs: { $replace: [] }, remediation: { $replace: { Windows: { steps: [], payloads: [] } } }, architecture: null }
     expect(parseOverlay(overlayFile({ fields }), 'custom.json')).toHaveProperty('overlay')
   })
 })
@@ -152,7 +152,7 @@ function overlay(id: string, fields: Record<string, unknown>, release = CURRENT_
 }
 
 function odvWithValidation(validation: Record<string, unknown>) {
-  return { datatype: 'enum', description: 'Value', validation, recommended: '1', by_benchmark: {} }
+  return { name: 'value', datatype: 'enum', description: 'Value', validation, recommended: '1', by_benchmark: {}, quoting: 'unquoted' }
 }
 
 function ism1622Rule(overrides: Partial<Rule> = {}): Rule {
@@ -293,21 +293,55 @@ describe('applyOverlays', () => {
     ['a check under an empty target name', { check: { $replace: { '': { language: 'bash', default: null, by_version: {} } } } }, {}],
     ['a by_version check that is null', { check: { macOS: { by_version: { '14.0': null } } } }, { check: macosCheck(null) }],
     ['a tag that is not a string', { tags: [3] }, {}],
-    ['an incomplete odv', { odv: { recommended: 5 } }, {}],
+    ['an incomplete odv', { odvs: { $replace: [{ name: 'value', recommended: 5 }] } }, {}],
+    ['an odv with a bad name', { odvs: { $replace: [{ ...odvWithValidation(null as never), name: 'Bad-Name' }] } }, {}],
+    ['an odv with an unknown quoting', { odvs: { $replace: [{ ...odvWithValidation(null as never), quoting: 'backtick' }] } }, {}],
+    ['two odvs with the same name', { odvs: { $replace: [odvWithValidation(null as never), odvWithValidation(null as never)] } }, {}],
     ['an assessment with an unknown status', { assessment: { status: 'sometimes' } }, {}],
-    ['odv enumValues that are not a list', { odv: { $replace: odvWithValidation({ enumValues: { a: 1 } }) } }, {}],
-    ['odv enumValues that are not strings', { odv: { $replace: odvWithValidation({ enumValues: [1] }) } }, {}],
-    ['an odv min that is a string', { odv: { $replace: odvWithValidation({ min: '5' }) } }, {}],
-    ['an odv regex that is a number', { odv: { $replace: odvWithValidation({ regex: 5 }) } }, {}],
-    ['an unknown odv validation key', { odv: { $replace: odvWithValidation({ pattern: 'x' }) } }, {}],
+    ['odv enumValues that are not a list', { odvs: { $replace: [odvWithValidation({ enumValues: { a: 1 } })] } }, {}],
+    ['odv enumValues that are not strings', { odvs: { $replace: [odvWithValidation({ enumValues: [1] })] } }, {}],
+    ['an odv min that is a string', { odvs: { $replace: [odvWithValidation({ min: '5' })] } }, {}],
+    ['an odv regex that is a number', { odvs: { $replace: [odvWithValidation({ regex: 5 })] } }, {}],
+    ['an unknown odv validation key', { odvs: { $replace: [odvWithValidation({ pattern: 'x' })] } }, {}],
   ]
 
   it('accepts an odv validation with each known key', () => {
     const odv = odvWithValidation({ min: 1, max: 9, regex: '^[0-9]+$', enumValues: ['1', '2'] })
-    const result = applyOverlays(ism1622Rule(), [overlay('odv', { odv: { $replace: odv } })], CURRENT_RELEASE)
+    const result = applyOverlays(ism1622Rule(), [overlay('odv', { odvs: { $replace: [odv] } })], CURRENT_RELEASE)
 
     expect(result.skipped).toEqual([])
-    expect(result.rule.odv).toEqual(odv)
+    expect(result.rule.odvs).toEqual([odv])
+  })
+
+  it('accepts several ODVs, an empty list, and each quoting', () => {
+    for (const quoting of ['unquoted', 'single', 'double']) {
+      const odvs = [{ ...odvWithValidation(null as never), quoting }, { ...odvWithValidation(null as never), name: 'other_two' }]
+      const result = applyOverlays(ism1622Rule(), [overlay('odv', { odvs: { $replace: odvs } })], CURRENT_RELEASE)
+      expect(result.skipped).toEqual([])
+      expect(result.rule.odvs).toEqual(odvs)
+    }
+    const cleared = applyOverlays(ism1622Rule({ odvs: [odvWithValidation(null as never) as never] }), [overlay('odv', { odvs: { $replace: [] } })], CURRENT_RELEASE)
+    expect(cleared.rule.odvs).toEqual([])
+  })
+
+  it.each([
+    ['a $merge', { $merge: { recommended: 7 } }],
+    ['an $append', { $append: [odvWithValidation(null as never)] }],
+    ['a bare list', [odvWithValidation(null as never)]],
+  ])('skips an overlay that sets odvs with %s, since odvs are replace-only', (_description, odvs) => {
+    const result = applyOverlays(ism1622Rule(), [overlay('odv', { odvs })], CURRENT_RELEASE)
+
+    expect(result.rule.odvs).toEqual([])
+    expect(result.skipped).toEqual([{ overlayId: 'odv', message: expect.stringContaining('odvs: only $replace is allowed') }])
+  })
+
+  it.each([
+    ['a $merge', { $merge: { recommended: 7 } }],
+    ['an $append', { $append: [] }],
+    ['a bare list', []],
+    ['a $replace of null', { $replace: null }],
+  ])('rejects an overlay file that sets odvs with %s', (_description, odvs) => {
+    expect(parseOverlay(overlayFile({ fields: { odvs } }), 'custom.json')).toHaveProperty('error')
   })
 
   it.each(malformedResults)('skips an overlay whose result has %s', (_description, fields, overrides) => {
@@ -370,7 +404,7 @@ describe('applyOverlaysToIndexEntry', () => {
   })
 })
 
-describe('overlayable fields follow the v5 schemas', () => {
+describe('overlayable fields follow the v6 schemas', () => {
   const schemaProperties = (name: string, pick: (schema: any) => Record<string, unknown>) =>
     Object.keys(pick(JSON.parse(readFileSync(new URL(`../../../baselines/_${name}.schema.json`, import.meta.url), 'utf8')))).sort()
 
@@ -379,11 +413,11 @@ describe('overlayable fields follow the v5 schemas', () => {
     expect(Object.keys(FIELD_KINDS).sort()).toEqual(ruleFields)
   })
 
-  it('INDEX_OVERLAY_FIELDS lists every index field an overlay can set, plus odv standing in for has_odv', () => {
+  it('INDEX_OVERLAY_FIELDS lists every index field an overlay can set, plus odvs standing in for has_odv', () => {
     const derivedOrProtected = new Set(['id', 'file', 'section', 'has_odv'])
     const indexFields = schemaProperties('index', (schema) => schema.properties.rules.items.properties).filter(
       (field) => !derivedOrProtected.has(field),
     )
-    expect([...INDEX_OVERLAY_FIELDS].sort()).toEqual([...indexFields, 'odv'].sort())
+    expect([...INDEX_OVERLAY_FIELDS].sort()).toEqual([...indexFields, 'odvs'].sort())
   })
 })

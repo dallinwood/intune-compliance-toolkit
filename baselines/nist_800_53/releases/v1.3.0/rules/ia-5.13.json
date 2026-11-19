@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nProhibit the use of cached authenticators after [Assignment: organization-defined time period].\n\n## Discussion\n\nCached authenticators are used to authenticate to the local machine when the network is not available. If cached authentication information is out of date, the validity of the authentication information may be questionable.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-5.13",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-05 Authenticator Management"

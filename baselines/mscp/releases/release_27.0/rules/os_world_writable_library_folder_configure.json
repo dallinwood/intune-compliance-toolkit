@@ -62,7 +62,7 @@
   "discussion": "Folders in /System/Volumes/Data/Library _MUST_ not be world-writable.\n\nNOTE: Some vendors are known to create world-writable folders to the System Library folder. You may need to add more exclusions to this check and fix to match your environment.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_world_writable_library_folder_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -114,7 +114,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

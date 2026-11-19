@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing and maintaining processes and procedures for ICT equipment destruction will ensure that an organisation carries out ICT equipment destruction in an appropriate and consistent manner.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1741",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for ICT Equipment",
     "ICT equipment sanitisation and destruction",

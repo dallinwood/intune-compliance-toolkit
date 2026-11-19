@@ -53,7 +53,7 @@
   "discussion": "Location Services _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.  Disabling Location Services helps prevent the unauthorized connection of devices, unauthorized transfer of information, and unauthorized tunneling.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_location_services_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -138,7 +138,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

@@ -53,7 +53,7 @@
   "discussion": "Apple Intelligence features such as Genmoji that use off device AI _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_genmoji_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "disa": {
       "cci": [
@@ -162,7 +162,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

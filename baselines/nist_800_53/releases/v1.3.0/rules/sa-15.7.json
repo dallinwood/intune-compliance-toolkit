@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service [Assignment: organization-defined frequency] to:\n\n- (a) Perform an automated vulnerability analysis using [Assignment: organization-defined tools];\n- (b) Determine the exploitation potential for discovered vulnerabilities;\n- (c) Determine potential risk mitigations for delivered vulnerabilities; and\n- (d) Deliver the outputs of the tools and results of the analysis to [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nAutomated tools can be more effective at analyzing exploitable weaknesses or deficiencies in large and complex systems, prioritizing vulnerabilities by severity, and providing recommendations for risk mitigations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-15.7",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "RA-5",
@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-15 Development Process, Standards, and Tools"

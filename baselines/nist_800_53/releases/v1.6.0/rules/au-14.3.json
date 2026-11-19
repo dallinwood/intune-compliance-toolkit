@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nProvide and implement the capability for authorized users to remotely view and hear content related to an established user session in real time.\n\n## Discussion\n\nNone.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-14.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AC-17"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-14 Session Audit"

@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nAppoint a senior agency information security officer with the mission and resources to coordinate, develop, implement, and maintain an organization-wide information security program.\n\n## Discussion\n\nThe senior agency information security officer is an organizational official. For federal agencies (as defined by applicable laws, executive orders, regulations, directives, policies, and standards), this official is the senior agency information security officer. Organizations may also refer to this official as the senior information security officer or chief information security officer.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pm-2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "publications": [
       "OMB M-17-25",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Program Management",
     "PM-02 Information Security Program Leadership Role"

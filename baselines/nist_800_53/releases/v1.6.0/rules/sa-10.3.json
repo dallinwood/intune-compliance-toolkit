@@ -15,14 +15,14 @@
   "discussion": "## Control\n\nRequire the developer of the system, system component, or system service to enable integrity verification of hardware components.\n\n## Discussion\n\nHardware integrity verification allows organizations to detect unauthorized changes to hardware components using developer-provided tools, techniques, methods, and mechanisms. Organizations may verify the integrity of hardware components with hard-to-copy labels, verifiable serial numbers provided by developers, and by requiring the use of anti-tamper technologies. Delivered hardware components also include hardware and firmware updates to such components.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-10.3",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-7"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-10 Developer Configuration Management"

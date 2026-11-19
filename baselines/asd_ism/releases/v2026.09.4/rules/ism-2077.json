@@ -36,10 +36,10 @@
   "discussion": "Authentication methods need to resist theft, interception, duplication, forgery, unauthorised access and unauthorised modification. For example, LAN Manager authentication protects credentials with a weak hashing algorithm, while all versions of NT LAN Manager lack mutual authentication and rely on password-derived hashes. As such, malicious actors can exploit these authentication methods via relay attacks, pass-the-hash attacks and the offline cracking of captured authentication exchanges. Instead, an organisation should use Kerberos for authentication within Microsoft Windows environments.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-2077",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for system access",
     "Identity and access management",

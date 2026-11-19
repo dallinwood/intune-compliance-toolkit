@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nMonitor open-source information and information sites using [Assignment: organization-defined automated mechanisms].\n\n## Discussion\n\nAutomated mechanisms include commercial services that provide notifications and alerts to organizations and automated scripts to monitor new posts on websites.",
   "discussion_format": "markdown",
   "id": "nist_800_53.au-13.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Audit and Accountability",
     "AU-13 Monitoring for Information Disclosure"

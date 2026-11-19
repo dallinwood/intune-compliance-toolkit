@@ -36,10 +36,10 @@
   "discussion": "The following events are logged for gateways:\n\n- data packets and data flows permitted through gateways\n- data packets and data flows attempting to leave gateways\n- real-time alerts for attempted intrusions.\n\nGateway event logs can assist in monitoring the security posture of gateways, detecting malicious behaviour and contributing to investigations following cyber security incidents. To facilitate such activities, gateway event logs should be captured and stored centrally.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0634",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Gateways",
     "Gateways",

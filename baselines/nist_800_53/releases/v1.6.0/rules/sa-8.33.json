@@ -20,7 +20,7 @@
   "discussion": "## Control\n\nImplement the privacy principle of minimization using [Assignment: organization-defined processes].\n\n## Discussion\n\nThe principle of minimization states that organizations should only process personally identifiable information that is directly relevant and necessary to accomplish an authorized purpose and should only maintain personally identifiable information for as long as is necessary to accomplish the purpose. Organizations have processes in place, consistent with applicable laws and policies, to implement the principle of minimization.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-8.33",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "PE-8",
@@ -30,7 +30,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-08 Security and Privacy Engineering Principles"

@@ -36,10 +36,10 @@
   "discussion": "Developing, implementing and maintaining processes and procedures for IT equipment disposal will ensure that an organisation carries out IT equipment disposal in an appropriate and consistent manner.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1550",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Information Technology Equipment",
     "IT equipment disposal",

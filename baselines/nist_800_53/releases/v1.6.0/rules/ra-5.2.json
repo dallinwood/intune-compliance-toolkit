@@ -28,14 +28,14 @@
   "discussion": "## Control\n\nUpdate the system vulnerabilities to be scanned [Selection (one or more): [Assignment: organization-defined frequency]; prior to a new scan; when new vulnerabilities are identified and reported].\n\n## Discussion\n\nDue to the complexity of modern software, systems, and other factors, new vulnerabilities are discovered on a regular basis. It is important that newly discovered vulnerabilities are added to the list of vulnerabilities to be scanned to ensure that the organization can take steps to mitigate those vulnerabilities in a timely manner.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ra-5.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-5"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Risk Assessment",
     "RA-05 Vulnerability Monitoring and Scanning"

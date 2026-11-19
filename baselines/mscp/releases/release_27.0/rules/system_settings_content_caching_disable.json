@@ -65,7 +65,7 @@
   "discussion": "Content caching _MUST_ be disabled.\n\nContent caching is a macOS service that helps reduce Internet data usage and speed up software installation on Mac computers. It is not recommended for devices furnished to employees to act as a caching server.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.system_settings_content_caching_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark": {
@@ -162,7 +162,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "system_settings"
   ],

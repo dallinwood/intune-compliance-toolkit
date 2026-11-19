@@ -20,10 +20,10 @@
   "discussion": "## Control\n\nCorrelate incident information and individual incident responses to achieve an organization-wide perspective on incident awareness and response.\n\n## Discussion\n\nSometimes, a threat event, such as a hostile cyber-attack, can only be observed by bringing together information from different sources, including various reports and reporting procedures established by organizations.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ir-4.4",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Incident Response",
     "IR-04 Incident Handling"

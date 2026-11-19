@@ -6,10 +6,10 @@
   "required": [
     "schema_version", "id", "title", "discussion", "discussion_format", "section_path",
     "source", "assessment", "architecture", "applicability", "tags", "references",
-    "check", "odv", "remediation"
+    "check", "odvs", "remediation"
   ],
   "properties": {
-    "schema_version": { "const": 5 },
+    "schema_version": { "const": 6 },
     "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?:\\.[a-z0-9_-]+)*(?![\\s\\S])" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
@@ -87,39 +87,39 @@
       "propertyNames": { "$ref": "#/$defs/target_name" },
       "additionalProperties": { "$ref": "#/$defs/target_check" }
     },
-    "odv": {
-      "oneOf": [
-        { "type": "null" },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["datatype", "description", "validation", "recommended", "by_benchmark"],
-          "properties": {
-            "datatype": { "enum": ["number", "string", "enum", "regex"] },
-            "description": { "type": "string" },
-            "validation": {
-              "oneOf": [
-                { "type": "null" },
-                {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "min": { "type": "number" },
-                    "max": { "type": "number" },
-                    "regex": { "type": "string" },
-                    "enumValues": { "type": "array", "items": { "type": "string" } }
-                  }
+    "odvs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "datatype", "description", "validation", "recommended", "by_benchmark", "quoting"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "datatype": { "enum": ["number", "string", "enum", "regex"] },
+          "description": { "type": "string" },
+          "validation": {
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "min": { "type": "number" },
+                  "max": { "type": "number" },
+                  "regex": { "type": "string" },
+                  "enumValues": { "type": "array", "items": { "type": "string" } }
                 }
-              ]
-            },
-            "recommended": { "type": ["integer", "string"] },
-            "by_benchmark": {
-              "type": "object",
-              "additionalProperties": { "type": ["integer", "string"] }
-            }
-          }
+              }
+            ]
+          },
+          "recommended": { "type": ["integer", "string"] },
+          "by_benchmark": {
+            "type": "object",
+            "additionalProperties": { "type": ["integer", "string"] }
+          },
+          "quoting": { "enum": ["unquoted", "single", "double"] }
         }
-      ]
+      }
     },
     "remediation": {
       "type": ["object", "null"],
@@ -163,7 +163,7 @@
           "if": { "properties": { "type": { "const": "integer" } } },
           "then": {
             "properties": {
-              "value": { "oneOf": [{ "type": "integer" }, { "const": "$ODV" }] }
+              "value": { "oneOf": [{ "type": "integer" }, { "type": "string", "pattern": "^\\$ODV_[a-z][a-z0-9_]*$" }] }
             }
           },
           "else": {

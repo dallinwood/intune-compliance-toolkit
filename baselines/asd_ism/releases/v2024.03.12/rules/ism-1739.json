@@ -36,10 +36,10 @@
   "discussion": "If security documentation is not reviewed and approved by an appropriate authority, system owners risk failing in their duty to ensure that appropriate controls have been identified and implemented for systems and their operating environments. In doing so, it is important that a system’s security architecture, as outlined within the system security plan and supported by the cyber security incident response plan and continuous monitoring plan, is approved by the system’s authorising officer prior to the development of the system.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1739",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Security Documentation",
     "Development and maintenance of security documentation",

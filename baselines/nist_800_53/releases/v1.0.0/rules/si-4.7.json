@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Notify [Assignment: organization-defined incident response personnel (identified by name and/or by role)] of detected suspicious events; and\n- (b) Take the following actions upon detection: [Assignment: organization-defined least-disruptive actions to terminate suspicious events].\n\n## Discussion\n\nLeast-disruptive actions include initiating requests for human responses.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-4.7",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-04 System Monitoring"

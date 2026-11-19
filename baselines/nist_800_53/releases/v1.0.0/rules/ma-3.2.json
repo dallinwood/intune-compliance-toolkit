@@ -24,14 +24,14 @@
   "discussion": "## Control\n\nCheck media containing diagnostic and test programs for malicious code before the media are used in the system.\n\n## Discussion\n\nIf, upon inspection of media containing maintenance, diagnostic, and test programs, organizations determine that the media contains malicious code, the incident is handled consistent with organizational incident handling policies and procedures.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ma-3.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "SI-3"
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Maintenance",
     "MA-03 Maintenance Tools"

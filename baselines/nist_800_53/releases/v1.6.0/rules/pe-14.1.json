@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nEmploy the following automatic environmental controls in the facility to prevent fluctuations potentially harmful to the system: [Assignment: organization-defined automatic environmental controls].\n\n## Discussion\n\nThe implementation of automatic environmental controls provides an immediate response to environmental conditions that can damage, degrade, or destroy organizational systems or systems components.",
   "discussion_format": "markdown",
   "id": "nist_800_53.pe-14.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Physical and Environmental Protection",
     "PE-14 Environmental Controls"

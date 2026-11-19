@@ -60,9 +60,10 @@ const WRAPPER_KEYS: ReadonlySet<string> = new Set([REPLACE, APPEND, MERGE])
 // Assigning these keys on a plain object would reach its prototype.
 const RESERVED_KEYS: ReadonlySet<string> = new Set(['__proto__', 'constructor', 'prototype'])
 
-type FieldKind = 'string' | 'list' | 'object' | 'object-or-null' | 'string-or-null'
+// A replace-only list is set whole with $replace; $merge, $append and a bare list are rejected.
+type FieldKind = 'string' | 'list' | 'object' | 'object-or-null' | 'string-or-null' | 'replace-only-list'
 
-// The v5 rule fields an overlay may set, with the value kind the rule schema
+// The v6 rule fields an overlay may set, with the value kind the rule schema
 // allows. The shape of the merged result is checked in overlayShape.ts; full
 // schema validation is CI's job.
 export const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {
@@ -76,12 +77,12 @@ export const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {
   tags: 'list',
   references: 'object',
   check: 'object-or-null',
-  odv: 'object-or-null',
+  odvs: 'replace-only-list',
   remediation: 'object-or-null',
 }
 export const OVERLAYABLE_RULE_FIELDS: ReadonlySet<string> = new Set(Object.keys(FIELD_KINDS))
 
-// Index entries are copies of these rule fields (odv stands in for has_odv);
+// Index entries are copies of these rule fields (odvs stands in for has_odv);
 // every other overlay field only exists on the full rule and is ignored at
 // index level.
 export const INDEX_OVERLAY_FIELDS: ReadonlySet<string> = new Set([
@@ -91,9 +92,8 @@ export const INDEX_OVERLAY_FIELDS: ReadonlySet<string> = new Set([
   'architecture',
   'applicability',
   'tags',
-  'odv',
+  'odvs',
 ])
-const ODV_REQUIRED_KEYS = ['by_benchmark', 'datatype', 'description', 'recommended', 'validation']
 
 type JsonObject = Record<string, unknown>
 
@@ -180,6 +180,10 @@ function mergeValue(upstream: Upstream, value: unknown, path: string): unknown {
   return mergeObject(upstream, wrapped, path)
 }
 
+function isReplaceWrapper(value: unknown): boolean {
+  return isObject(value) && Object.keys(value).length === 1 && Object.hasOwn(value, REPLACE)
+}
+
 function protectedFieldError(fields: JsonObject): string | null {
   const protectedNames = Object.keys(fields).filter((name) => PROTECTED_FIELDS.has(name)).sort()
   return protectedNames.length > 0 ? `protected field(s) cannot be overlaid: ${protectedNames.join(', ')}` : null
@@ -197,27 +201,22 @@ export function applyOverlayFields<T>(target: T, fields: Record<string, unknown>
   const merged = structuredClone(source)
   for (const [fieldName, value] of Object.entries(fields)) {
     if (knownFields && !knownFields.has(fieldName)) continue
+    if (FIELD_KINDS[fieldName] === 'replace-only-list' && !isReplaceWrapper(value)) {
+      throw new InvalidOverlayError(`${fieldName}: only ${REPLACE} is allowed`)
+    }
     merged[fieldName] = mergeValue(Object.hasOwn(source, fieldName) ? source[fieldName] : ABSENT, value, fieldName)
   }
   return merged as T
 }
 
-// An index entry has no odv, only has_odv, so it is stood in for by an
-// empty object or null. An odv the rule did not have must arrive complete,
-// or has_odv would promise a value the rule cannot supply. section and
-// has_odv are derived, so they are recomputed.
+// An index entry has no odvs, only has_odv; a replaced odvs list sets it.
+// section and has_odv are derived, so they are recomputed.
 export function applyOverlayToIndexEntry(entry: IndexEntry, fields: Record<string, unknown>): IndexEntry {
-  const seeded = { ...entry, odv: entry.has_odv ? {} : null }
-  const { odv, ...merged } = applyOverlayFields(seeded, fields, INDEX_OVERLAY_FIELDS)
-  if (!entry.has_odv && odv !== null) {
-    const missing = ODV_REQUIRED_KEYS.filter((key) => !isObject(odv) || !Object.hasOwn(odv, key))
-    if (missing.length > 0) {
-      throw new InvalidOverlayError(`odv: a rule without an odv needs a complete one, missing ${missing.join(', ')}`)
-    }
-  }
+  const { odvs, ...merged } = applyOverlayFields<IndexEntry & { odvs?: unknown }>(entry, fields, INDEX_OVERLAY_FIELDS)
+  if (odvs !== undefined && !Array.isArray(odvs)) throw new InvalidOverlayError('odvs: must be a list')
   const sectionPath: unknown = merged.section_path
   const section = Array.isArray(sectionPath) && sectionPath.length > 0 ? sectionPath[0] : merged.section
-  return { ...merged, section, has_odv: odv !== null }
+  return { ...merged, section, has_odv: odvs === undefined ? entry.has_odv : odvs.length > 0 }
 }
 
 // The UI's single-overlay steps: merge, then check the result's shape so
@@ -300,6 +299,8 @@ function fitsKind(kind: string, fieldKind: FieldKind): boolean {
       return kind === 'object' || kind === 'null'
     case 'string-or-null':
       return kind === 'string' || kind === 'null'
+    case 'replace-only-list':
+      return kind === 'list'
     default:
       return kind === fieldKind
   }
@@ -368,6 +369,7 @@ function overlayProblem(value: unknown): string | null {
     if (shapeError) return shapeError
     const fieldKind = FIELD_KINDS[fieldName]
     if (fieldKind === undefined) continue
+    if (fieldKind === 'replace-only-list' && !isReplaceWrapper(fieldValue)) return `${fieldName}: only ${REPLACE} is allowed`
     const kind = effectiveKind(fieldValue)
     if (!fitsKind(kind, fieldKind)) return `${fieldName} must be a ${fieldKind.replaceAll('-', ' ')} value, got a ${kind}`
   }

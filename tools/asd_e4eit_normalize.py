@@ -612,7 +612,7 @@ def normalize_release(
                     control_id, parsed["techniques"], targets_by_description
                 ),
                 "check": None,
-                "odv": None,
+                "odvs": [],
                 "remediation": None,
             }
         )

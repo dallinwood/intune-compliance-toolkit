@@ -24,7 +24,7 @@
   "discussion": "## Control\n\n- a. Generate error messages that provide information necessary for corrective actions without revealing information that could be exploited; and\n- b. Reveal error messages only to [Assignment: organization-defined personnel or roles].\n\n## Discussion\n\nOrganizations consider the structure and content of error messages. The extent to which systems can handle error conditions is guided and informed by organizational policy and operational requirements. Exploitable information includes stack traces and implementation details; erroneous logon attempts with passwords mistakenly entered as the username; mission or business information that can be derived from, if not stated explicitly by, the information recorded; and personally identifiable information, such as account numbers, social security numbers, and credit card numbers. Error messages may also provide a covert channel for transmitting information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-2",
@@ -35,7 +35,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-11 Error Handling"

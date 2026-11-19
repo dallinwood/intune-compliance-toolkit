@@ -38,7 +38,7 @@
   "discussion": "If SSHD is enabled then it _MUST_ be configured with the Per Source Penalties configured.\n\nPer Source Penalties controls penalties for various conditions that may represent attacks on sshd.\n\nPenalties are enabled by default.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_sshd_per_source_penalties_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "hhs": {
       "hicp": [
@@ -88,7 +88,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

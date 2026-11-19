@@ -52,7 +52,7 @@ def example_rule(source_name: str = "example", tag: str = "v1") -> dict:
         "tags": [],
         "references": {},
         "check": None,
-        "odv": None,
+        "odvs": [],
         "remediation": None,
     }
 

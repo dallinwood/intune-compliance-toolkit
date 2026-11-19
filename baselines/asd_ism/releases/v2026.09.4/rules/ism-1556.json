@@ -36,10 +36,10 @@
   "discussion": "If returning from travelling overseas with mobile devices to high or extreme risk countries, personnel take the following additional actions:\n\n- reset credentials used with mobile devices, including those used for remote access to their organisation’s systems\n- monitor user accounts for any indicators of compromise, such as failed logon attempts.\n\nFollowing overseas travel with mobile devices, personnel should take appropriate precautions to ensure that they do not pose an undue security risk to their organisation’s systems. In most cases, sanitising and resetting mobile devices, including all removable media, will be sufficient. However, upon returning from high or extreme risk countries, additional precautions will likely be needed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1556",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for enterprise mobility",
     "Mobile device usage",

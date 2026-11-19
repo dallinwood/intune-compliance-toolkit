@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nCoordinate with the following external organizations for cross-organization management of identifiers: [Assignment: organization-defined external organizations].\n\n## Discussion\n\nCross-organization identifier management provides the capability to identify individuals, groups, roles, or devices when conducting cross-organization activities involving the processing, storage, or transmission of information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ia-4.6",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "AU-16",
@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Identification and Authentication",
     "IA-04 Identifier Management"

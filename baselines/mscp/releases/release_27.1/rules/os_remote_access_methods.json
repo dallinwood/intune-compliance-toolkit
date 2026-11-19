@@ -25,7 +25,7 @@
   "discussion": "The information system monitors and controls remote access methods.\n\nNOTE: The technology supports this requirement and cannot be configured to be out of compliance. The technology inherently meets this requirement.",
   "discussion_format": "asciidoc",
   "id": "mscp.os_remote_access_methods",
-  "odv": null,
+  "odvs": [],
   "references": {
     "nist": {
       "cce": {
@@ -58,7 +58,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

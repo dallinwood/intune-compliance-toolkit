@@ -53,7 +53,7 @@
   "discussion": "The system _MUST_ disable account modification.\n\nAccount modification includes adding additional or modifying internet accounts in Apple Mail, Calendar, Contacts, in the Internet Account System Setting Pane, or the Apple Account System Setting Pane.\n\nThis prevents the addition of unauthorized accounts.\n\n[IMPORTANT]\n====\nSome organizations may allow the use and configuration of the built-in Mail.app, Calendar.app, and Contacts.app for organizational communication. Information System Security Officers (ISSOs) may make the risk-based decision not to disable the Internet Accounts System Preference pane to avoid losing this functionality, but they are advised to first fully weigh the potential risks posed to their organization.\n====\n",
   "discussion_format": "asciidoc",
   "id": "mscp.os_account_modification_disable",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bsi": {
       "indigo": {
@@ -175,7 +175,7 @@
       "steps": []
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "os"
   ],

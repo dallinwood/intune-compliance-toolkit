@@ -1,6 +1,6 @@
 import type { Rule } from '../types/library'
 import type { RuleCheckPlan } from './checkPlan'
-import { displayWithOdv } from './odv'
+import { displayWithOdvs } from './odv'
 import type { IntuneDataType, IntuneOperator } from './operatorMap'
 
 export interface RemediationString {
@@ -36,8 +36,8 @@ export function buildRuleEntry(plan: RuleCheckPlan, rule: Rule): IntuneRuleEntry
     RemediationStrings: [
       {
         Language: 'en_US',
-        Title: displayWithOdv(rule.title, plan.odvValue),
-        Description: displayWithOdv(firstParagraph(rule.discussion), plan.odvValue),
+        Title: displayWithOdvs(rule.title, plan.odvValues),
+        Description: displayWithOdvs(firstParagraph(rule.discussion), plan.odvValues),
       },
     ],
   }

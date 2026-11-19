@@ -93,7 +93,7 @@
   "discussion": "Audit log folders _MUST_ be owned by root.\n\nThe audit service _MUST_ be configured to create log folders with the correct ownership to prevent normal users from reading audit logs.\n\nAudit logs contain sensitive data about the system and users. If log folders are set to only be readable and writable by system administrators, the risk is mitigated.\n",
   "discussion_format": "asciidoc",
   "id": "mscp.audit_folder_owner_configure",
-  "odv": null,
+  "odvs": [],
   "references": {
     "bzk": {
       "bio": [
@@ -192,7 +192,7 @@
       ]
     }
   },
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "audit"
   ],

@@ -15,10 +15,10 @@
   "discussion": "## Control\n\n- (a) Establish and administer privileged user accounts in accordance with [Selection: a role-based access scheme; an attribute-based access scheme];\n- (b) Monitor privileged role or attribute assignments;\n- (c) Monitor changes to roles or attributes; and\n- (d) Revoke access when privileged role or attribute assignments are no longer appropriate.\n\n## Discussion\n\nPrivileged roles are organization-defined roles assigned to individuals that allow those individuals to perform certain security-relevant functions that ordinary users are not authorized to perform. Privileged roles include key management, account management, database administration, system and network administration, and web administration. A role-based access scheme organizes permitted system access and privileges into roles. In contrast, an attribute-based access scheme specifies allowed system access and privileges based on attributes.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-2.7",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-02 Account Management"

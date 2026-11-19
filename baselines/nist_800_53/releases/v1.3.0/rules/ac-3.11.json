@@ -15,7 +15,7 @@
   "discussion": "## Control\n\nRestrict access to data repositories containing [Assignment: organization-defined information types].\n\n## Discussion\n\nRestricting access to specific information is intended to provide flexibility regarding access control of specific information types within a system. For example, role-based access could be employed to allow access to only a specific type of personally identifiable information within a database rather than allowing access to the database in its entirety. Other examples include restricting access to cryptographic keys, authentication information, and selected system information.",
   "discussion_format": "markdown",
   "id": "nist_800_53.ac-3.11",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-8",
@@ -25,7 +25,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Access Control",
     "AC-03 Access Enforcement"

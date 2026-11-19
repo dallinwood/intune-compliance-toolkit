@@ -36,10 +36,10 @@
   "discussion": "The Open Web Application Security Project (OWASP) provides comprehensive resources for software developers that should be followed when developing web applications.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1850",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Software Development",
     "Web application development",

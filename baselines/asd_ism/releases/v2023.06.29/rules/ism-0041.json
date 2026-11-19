@@ -36,10 +36,10 @@
   "discussion": "The system security plan provides a description of a system and includes an annex that describes the controls that have been identified for the system.\n\nThere can be many stakeholders involved in developing and maintaining a system security plan. This can include representatives from:\n\n* cyber security teams\n* project teams who deliver the capability (including contractors)\n* support teams who operate and support the capability\n* data owners for data processed, stored or communicated by the system\n* users for whom the capability is being developed.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0041",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Security Documentation",
     "System-specific security documentation",

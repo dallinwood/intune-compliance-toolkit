@@ -36,10 +36,10 @@
   "discussion": "Personnel seeking access to systems, applications and data repositories should have a genuine business requirement validated by their manager or another appropriate authority.\n\nIn addition, unprivileged access event logs can assist in monitoring the security posture of systems, detecting malicious behaviour and contributing to investigations following cyber security incidents. To facilitate such activities, unprivileged access event logs should be captured and stored centrally.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-0405",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Personnel Security",
     "Access to systems and their resources",

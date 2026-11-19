@@ -36,10 +36,10 @@
   "discussion": "SSH version 1 was found to have a number of vulnerabilities and was subsequently replaced by SSH version 2. As such, an organisation implementing SSH should disable the use of SSH version 1. In addition, a number of security risks exist when SSH is configured in an insecure manner. To mitigate these security risks, SSH should be configured as per the settings below.\n\nThe settings below are based on OpenSSH. An organisation using other implementations of SSH should adapt these settings to suit their SSH implementation.",
   "discussion_format": "markdown",
   "id": "asd_ism.ism-1506",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Guidelines for Cryptography",
     "Secure Shell",

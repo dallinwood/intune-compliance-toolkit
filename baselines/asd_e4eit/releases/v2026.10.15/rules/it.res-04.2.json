@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nLessons learnt from cyber security incidents are captured, and areas for improvement are identified, prioritised and actioned in a timely manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- Detection rules, monitoring coverage and response procedures are not reviewed following incidents.\n\nPartially effective:\n- Reviews are conducted but do not result in documented changes to detection or response capabilities.\n- Some improvements are made but not systematically tracked or validated.\n\nFully effective:\n- Detection rules, monitoring coverage and cyber security incident response procedures are reviewed following incidents, with identified lessons incorporated into updates.\n- Changes are documented, tested and validated for effectiveness.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.res-04.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -56,7 +56,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Respond principles",
     "RES-04 - Cyber security incident insights"

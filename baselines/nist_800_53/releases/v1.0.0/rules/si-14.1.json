@@ -15,10 +15,10 @@
   "discussion": "## Control\n\nObtain software and data employed during system component and service refreshes from the following trusted sources: [Assignment: organization-defined trusted sources].\n\n## Discussion\n\nTrusted sources include software and data from write-once, read-only media or from selected offline secure storage facilities.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-14.1",
-  "odv": null,
+  "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-14 Non-persistence"

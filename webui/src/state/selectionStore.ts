@@ -17,8 +17,8 @@ export interface SelectionState {
   // One store update for the whole list, so a select-all over thousands of
   // rules re-renders once.
   setEnabledMany: (refs: readonly RuleRef[], enabled: boolean) => void
-  setOdvValue: (ref: RuleRef, value: OrgDefinedValue) => void
-  clearOdvValue: (ref: RuleRef) => void
+  setOdvValue: (ref: RuleRef, name: string, value: OrgDefinedValue) => void
+  clearOdvValue: (ref: RuleRef, name: string) => void
   clearAll: () => void
   // Drops just these entries, e.g. saved selections whose rule is no longer
   // in the loaded library.
@@ -36,13 +36,19 @@ export const useSelectionStore = create<SelectionState>()(
         set((state) => ({ selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, enabled })) })),
       setEnabledMany: (refs, enabled) =>
         set((state) => ({ selections: upsertSelections(state.selections, refs, (entry) => ({ ...entry, enabled })) })),
-      setOdvValue: (ref, value) =>
+      setOdvValue: (ref, name, value) =>
         set((state) => ({
-          selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, odvValue: value })),
+          selections: upsertSelection(state.selections, ref, (entry) => ({
+            ...entry,
+            odvValues: { ...entry.odvValues, [name]: value },
+          })),
         })),
-      clearOdvValue: (ref) =>
+      clearOdvValue: (ref, name) =>
         set((state) => ({
-          selections: upsertSelection(state.selections, ref, (entry) => ({ ...entry, odvValue: null })),
+          selections: upsertSelection(state.selections, ref, (entry) => {
+            const { [name]: _cleared, ...remainingValues } = entry.odvValues
+            return { ...entry, odvValues: remainingValues }
+          }),
         })),
       clearAll: () => set({ selections: {} }),
       removeSelections: (ids) => set((state) => ({ selections: removeSelections(state.selections, ids) })),

@@ -32,7 +32,7 @@
   "discussion": "# Principle\n\nThe board of directors or executive committee is accountable for ensuring that artificial intelligence is secure, controllable, human-supervised and used in an ethical and accountable manner.\n\n# Indicators of Good Practice\n\nNot effective:\n- No named executive is accountable for the use, governance or risk management of artificial intelligence.\n- Artificial intelligence is used within the organisation with no approval, risk assessment or oversight.\n- Artificial intelligence related risks are not reflected in the organisation’s risk register.\n- Artificial intelligence use and governance arrangements have not been reviewed within the schedule defined by the organisation.\n\nPartially effective:\n- A named executive is accountable for artificial intelligence but the governance process is informal or undocumented.\n- Approval and risk assessment occur for some artificial intelligence use cases but coverage is inconsistent across internally developed, third-party and embedded artificial intelligence.\n- Some artificial intelligence related risks are recorded but the organisation’s risk register does not capture all known artificial intelligence use cases.\n- Reviews occur within the schedule defined by the organisation, but do not consistently address changes in artificial intelligence capability, threat environment or organisational use.\n\nFully effective:\n- A named executive has accountability for artificial intelligence, supported by an approved governance process that has evidence of being followed.\n- The governance process addresses approval, risk assessment and oversight for internally developed, third-party and embedded artificial intelligence use cases.\n- Artificial intelligence related risks are reflected in the organisation’s risk register and reported through standard governance channels.\n- Reviews of artificial intelligence use and governance arrangements are conducted on a schedule defined by the organisation and consistently address changes in artificial intelligence capability, threat environment or organisational use.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.gov-08.1",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -57,7 +57,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Govern principles",
     "GOV-08 - Executive artificial intelligence accountability"

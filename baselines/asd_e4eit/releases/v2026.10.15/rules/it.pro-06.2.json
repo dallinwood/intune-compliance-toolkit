@@ -52,7 +52,7 @@
   "discussion": "# Principle\n\nVulnerabilities in systems (infrastructure, operating systems, applications and data) are identified, documented, validated and prioritised for remediation or mitigation in a timely manner, with all remediation and mitigation actions verified for effectiveness.\n\n# Indicators of Good Practice\n\nNot effective:\n- No defined patching timeframes exist for applicable assets.\n- Patches are not applied or are applied on an ad hoc basis with no tracking.\n\nPartially effective:\n- Expected patching timeframes are defined by the organisation but are not consistently met.\n- Patches are applied but compensating controls are not documented where operational constraints prevent timely patching.\n- Patching coverage metrics exist but show significant gaps.\n\nFully effective:\n- Risk-based patching timeframes defined by the organisation are in place and consistently met.\n- Patching is prioritised based on vulnerability severity, exposure and exploit availability.\n- Where operational constraints prevent timely patching, compensating controls are documented and approved.\n- Patching coverage metrics account for all applicable assets, with any exclusions identified and formally risk accepted.\n- Automatic patching of assets is applied where available and the organisation has determined operational impact is low.",
   "discussion_format": "markdown",
   "id": "asd_e4eit.it.pro-06.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "aemo": {
       "aescsf_v2": [
@@ -84,7 +84,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "Protect principles",
     "PRO-06 - Vulnerability management"

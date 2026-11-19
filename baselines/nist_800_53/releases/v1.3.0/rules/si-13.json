@@ -15,7 +15,7 @@
   "discussion": "## Control\n\n- a. Determine mean time to failure (MTTF) for the following system components in specific environments of operation: [Assignment: organization-defined system components] ; and\n- b. Provide substitute system components and a means to exchange active and standby components in accordance with the following criteria: [Assignment: organization-defined mean time to failure (MTTF) substitution criteria].\n\n## Discussion\n\nWhile MTTF is primarily a reliability issue, predictable failure prevention is intended to address potential failures of system components that provide security capabilities. Failure rates reflect installation-specific consideration rather than the industry-average. Organizations define the criteria for the substitution of system components based on the MTTF value with consideration for the potential harm from component failures. The transfer of responsibilities between active and standby components does not compromise safety, operational readiness, or security capabilities. The preservation of system state variables is also critical to help ensure a successful transfer process. Standby components remain available at all times except for maintenance issues or recovery failures in progress.",
   "discussion_format": "markdown",
   "id": "nist_800_53.si-13",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CP-2",
@@ -28,7 +28,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Information Integrity",
     "SI-13 Predictable Failure Prevention"

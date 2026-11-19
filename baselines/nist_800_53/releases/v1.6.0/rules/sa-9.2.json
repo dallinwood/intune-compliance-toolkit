@@ -24,7 +24,7 @@
   "discussion": "## Control\n\nRequire providers of the following external system services to identify the functions, ports, protocols, and other services required for the use of such services: [Assignment: organization-defined external system services].\n\n## Discussion\n\nInformation from external service providers regarding the specific functions, ports, protocols, and services used in the provision of such services can be useful when the need arises to understand the trade-offs involved in restricting certain functions and services or blocking certain ports and protocols.",
   "discussion_format": "markdown",
   "id": "nist_800_53.sa-9.2",
-  "odv": null,
+  "odvs": [],
   "references": {
     "related_controls": [
       "CM-6",
@@ -32,7 +32,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 5,
+  "schema_version": 6,
   "section_path": [
     "System and Services Acquisition",
     "SA-09 External System Services"
