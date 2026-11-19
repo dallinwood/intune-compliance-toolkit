@@ -138,7 +138,10 @@ export function FrameworkCards({ sources, coverageBySource }: { sources: Manifes
           return (
             <li key={source.name} data-testid="framework-card" className="space-y-3 rounded-lg border border-border bg-panel p-4">
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-                <h2 className="text-base font-semibold">{source.display_name}</h2>
+                <div className="min-w-0 space-y-0.5">
+                  <h2 className="text-base font-semibold">{source.display_name}</h2>
+                  <SourceLine source={source} />
+                </div>
                 <div className="flex gap-2">
                   <FrameworkPageLink framework={source.name} tab="rules">
                     Rules
@@ -150,7 +153,6 @@ export function FrameworkCards({ sources, coverageBySource }: { sources: Manifes
                   )}
                 </div>
               </div>
-              <SourceLine source={source} />
               <p className="text-sm text-muted-foreground">
                 Current: {current.label} ({current.tag}) · {pluralize(source.rule_count, 'rule', 'rules')}
               </p>
