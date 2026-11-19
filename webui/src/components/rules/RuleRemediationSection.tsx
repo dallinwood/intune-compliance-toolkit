@@ -35,7 +35,9 @@ function StepEntry({
       {step.shell_file !== undefined && (
         <ScriptFile path={step.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       )}
-      {step.shell && <OdvCodeBlock code={step.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />}
+      {step.shell && (
+        <OdvCodeBlock code={step.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
+      )}
       {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValues={odvValues} codeOdv={codeOdv} />}
     </div>
   )

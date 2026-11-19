@@ -20,6 +20,15 @@ const NEWLINE: DeniedSequence = { sequence: '\n', description: 'a newline' }
 const DOLLAR: DeniedSequence = { sequence: '$', description: 'a dollar sign' }
 const COMMAND_SUBSTITUTION: DeniedSequence = { sequence: '$(', description: '"$("' }
 const PARAMETER_EXPANSION: DeniedSequence = { sequence: '${', description: '"${"' }
+// PowerShell also opens and closes strings with these typographic quotes.
+const TYPOGRAPHIC_SINGLE_QUOTES: DeniedSequence[] = ['\u2018', '\u2019', '\u201a', '\u201b'].map((sequence) => ({
+  sequence,
+  description: 'a typographic single quote',
+}))
+const TYPOGRAPHIC_DOUBLE_QUOTES: DeniedSequence[] = ['\u201c', '\u201d', '\u201e'].map((sequence) => ({
+  sequence,
+  description: 'a typographic double quote',
+}))
 
 const ALWAYS_DENIED: DeniedSequence[] = [CARRIAGE_RETURN, NUL]
 const TEXT_MODE_DENIED: DeniedSequence[] = [
@@ -38,13 +47,19 @@ const UNSAFE_REGEX_CHARACTER_PATTERN = /[\s;|&<>]/
 const UNSAFE_REGEX_DOLLAR_PATTERN = /\$[A-Za-z_{(]/
 const ODV_PLACEHOLDER_PREFIX = '$ODV'
 // A whole placeholder: the name is read greedily, so $ODV_a never matches
-// inside $ODV_ab.
-const ODV_PLACEHOLDER_PATTERN = /\$ODV_([a-z][a-z0-9_]*)/g
+// inside $ODV_ab, and it must not run on into another name character, so
+// $ODV_vX is malformed rather than $ODV_v followed by X. The same grammar as
+// tools/odv_placeholders.py, pinned by
+// tests/fixtures/odv_placeholders/grammar_cases.json.
+const ODV_PLACEHOLDER_PATTERN = /\$ODV_([a-z][a-z0-9_]*)(?![A-Za-z0-9_])/g
+const WHOLE_ODV_PLACEHOLDER_PATTERN = /^\$ODV_[a-z][a-z0-9_]*$/
+// Every $ODV occurrence, well formed or not, with the name characters after it.
+const ODV_OCCURRENCE_PATTERN = /\$ODV[A-Za-z0-9_]*/g
 
 // Beyond CR and NUL (always denied), what may not sit inside each quoting.
 const QUOTED_DISPLAY_DENIED: Readonly<Record<'single' | 'double', DeniedSequence[]>> = {
-  single: [SINGLE_QUOTE, NEWLINE],
-  double: [DOUBLE_QUOTE, BACKTICK, DOLLAR, BACKSLASH, NEWLINE],
+  single: [SINGLE_QUOTE, ...TYPOGRAPHIC_SINGLE_QUOTES, NEWLINE],
+  double: [DOUBLE_QUOTE, ...TYPOGRAPHIC_DOUBLE_QUOTES, BACKTICK, DOLLAR, BACKSLASH, NEWLINE],
 }
 
 export interface OdvRuleValueCheck {
@@ -118,6 +133,12 @@ export function odvPlaceholderNames(text: string): string[] {
   const names = new Set<string>()
   for (const match of text.matchAll(ODV_PLACEHOLDER_PATTERN)) names.add(match[1])
   return Array.from(names)
+}
+
+// Whether a text has a $ODV occurrence that is not exactly $ODV_<name>, which
+// no value ever replaces.
+export function hasMalformedOdvPlaceholder(text: string): boolean {
+  return Array.from(text.matchAll(ODV_OCCURRENCE_PATTERN)).some(([occurrence]) => !WHOLE_ODV_PLACEHOLDER_PATTERN.test(occurrence))
 }
 
 function odvKey(ruleId: string, odvName: string): string {
@@ -245,8 +266,13 @@ export function displayWithOdvs(text: string, values: Partial<OdvValues>): strin
 }
 
 export interface CodeOdvValues {
-  // For shell and file text: only values that are safe in a command.
-  script: Partial<OdvValues>
+  // For inline check and remediation shells and their shell_file scripts,
+  // whose quoting CI verifies: a quoted ODV's value only has to stay inside
+  // its quotes.
+  verifiedShell: Partial<OdvValues>
+  // For any other code text (discussion and additional_info blocks, data_file
+  // payloads), where nothing verified the quoting: the strict rules for every ODV.
+  strict: Partial<OdvValues>
   // For inline payload JSON, which is never run as a shell command.
   json: Partial<OdvValues>
   // Variable mode only: the values the generated script exports as ODV_<name>,
@@ -255,14 +281,18 @@ export interface CodeOdvValues {
   exported: Partial<OdvValues>
 }
 
-// Whether a value may be shown in place of its placeholder in a displayed
-// command. `unquoted` placeholders get the strict text-mode rules, even for a
-// rule whose generator never substitutes (and so never applies them): a
-// remediation block containing `a"; rm -rf ~ #` would otherwise be shown and
-// copied as a working command. A quoted placeholder only needs the characters
-// that would end that quoting kept out, on top of the datatype and rule checks.
-function passesScriptDisplayGate(odv: Odv, value: OrgDefinedValue, ruleId: string): boolean {
-  if (odv.quoting === 'unquoted') return validateOdvValue(odv, value, 'text', ruleId) === null
+// Whether a value may be shown in place of its placeholder in displayed code.
+// The strict text-mode rules apply even for a rule whose generator never
+// substitutes (and so never applies them): a remediation block containing
+// `a"; rm -rf ~ #` would otherwise be shown and copied as a working command.
+function passesStrictDisplayGate(odv: Odv, value: OrgDefinedValue, ruleId: string): boolean {
+  return validateOdvValue(odv, value, 'text', ruleId) === null
+}
+
+// In a verified shell, a quoted placeholder only needs the characters that
+// would end that quoting kept out, on top of the datatype and rule checks.
+function passesVerifiedShellDisplayGate(odv: Odv, value: OrgDefinedValue, ruleId: string): boolean {
+  if (odv.quoting === 'unquoted') return passesStrictDisplayGate(odv, value, ruleId)
   if (validateOdvValue(odv, value, 'none', ruleId) !== null) return false
   const text = String(value)
   return !QUOTED_DISPLAY_DENIED[odv.quoting].some(({ sequence }) => text.includes(sequence))
@@ -270,14 +300,14 @@ function passesScriptDisplayGate(odv: Odv, value: OrgDefinedValue, ruleId: strin
 
 // Code blocks are display-only, but a displayed command gets copied and run,
 // so a value is shown in place of its placeholder only if it is safe there
-// (passesScriptDisplayGate). JSON is escaped as a string, so it only needs the
+// (the verified shell or strict gate). JSON is escaped as a string, so it only needs the
 // ODV's own validation. In variable mode the script exports ODV_<name> and the
 // shell expands "$ODV_<name>" itself, so text-replacing it would show a script
 // that is not the one that runs; script and json leave that ODV out and the
 // value is offered as `exported` instead, validated and canonicalised exactly
 // as the generator does (resolveOdvs in checkPlan.ts).
 export function codeOdvValues(rule: Rule, values: OdvValues): CodeOdvValues {
-  const result: CodeOdvValues = { script: {}, json: {}, exported: {} }
+  const result: CodeOdvValues = { verifiedShell: {}, strict: {}, json: {}, exported: {} }
   for (const odv of rule.odvs) {
     const value = Object.hasOwn(values, odv.name) ? values[odv.name] : undefined
     if (value === undefined) continue
@@ -287,7 +317,8 @@ export function codeOdvValues(rule: Rule, values: OdvValues): CodeOdvValues {
       if (validateOdvValue(odv, canonicalValue, mode, rule.id) === null) result.exported[odv.name] = canonicalValue
       continue
     }
-    if (passesScriptDisplayGate(odv, canonicalValue, rule.id)) result.script[odv.name] = canonicalValue
+    if (passesVerifiedShellDisplayGate(odv, canonicalValue, rule.id)) result.verifiedShell[odv.name] = canonicalValue
+    if (passesStrictDisplayGate(odv, canonicalValue, rule.id)) result.strict[odv.name] = canonicalValue
     if (validateOdvValue(odv, canonicalValue, mode, rule.id) === null) result.json[odv.name] = canonicalValue
   }
   return result

@@ -1,0 +1,15 @@
+{
+  "grammar_cases": [
+    { "name": "plain placeholder", "text": "echo $ODV_a", "names": ["a"], "malformed": [], "display": "echo [value]" },
+    { "name": "prefix names stay apart", "text": "$ODV_a $ODV_a_b $ODV_ab", "names": ["a", "a_b", "ab"], "malformed": [], "display": "[value] [value] [value]" },
+    { "name": "digits and underscores in a name", "text": "x=$ODV_v2_max;", "names": ["v2_max"], "malformed": [], "display": "x=[value];" },
+    { "name": "ends at a non-name character", "text": "$ODV_v-x $ODV_v.y \"$ODV_v\"", "names": ["v"], "malformed": [], "display": "[value]-x [value].y \"[value]\"" },
+    { "name": "adjacent placeholders", "text": "$ODV_a$ODV_b", "names": ["a", "b"], "malformed": [], "display": "[value][value]" },
+    { "name": "bare $ODV", "text": "echo $ODV", "names": [], "malformed": ["$ODV"], "display": "echo $ODV" },
+    { "name": "$ODV followed by a letter", "text": "echo $ODVX", "names": [], "malformed": ["$ODVX"], "display": "echo $ODVX" },
+    { "name": "uppercase name", "text": "echo $ODV_Upper", "names": [], "malformed": ["$ODV_Upper"], "display": "echo $ODV_Upper" },
+    { "name": "underscore with no name", "text": "echo $ODV_ x", "names": [], "malformed": ["$ODV_"], "display": "echo $ODV_ x" },
+    { "name": "name starting with a digit", "text": "echo $ODV_1a", "names": [], "malformed": ["$ODV_1a"], "display": "echo $ODV_1a" },
+    { "name": "name directly followed by an uppercase letter", "text": "echo '$ODV_v'; echo $ODV_vX", "names": ["v"], "malformed": ["$ODV_vX"], "display": "echo '[value]'; echo $ODV_vX" }
+  ]
+}

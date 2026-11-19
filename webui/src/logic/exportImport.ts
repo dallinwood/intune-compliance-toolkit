@@ -217,7 +217,7 @@ function sanitizeOdvValues(
     }
     const preparation = prepareOdvValue(odv, value, odvSubstitutionMode(rule, odv), rule.id)
     if (preparation.valid) odvValues[name] = preparation.value
-    else dropped.push({ id, reason: preparation.error })
+    else dropped.push({ id, reason: `${name}: ${preparation.error}` })
   }
   return { odvValues, dropped }
 }

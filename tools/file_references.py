@@ -14,7 +14,7 @@ import json
 import re
 from pathlib import Path
 
-from tools.odv_placeholders import PLACEHOLDER_PATTERN
+from tools.odv_placeholders import ODV_OCCURRENCE_PATTERN
 
 REFERENCE_PREFIX = "baselines/"
 # Every segment after baselines/ is plain: no percent-encoding, query or
@@ -99,9 +99,15 @@ def _read_text(path: str, repository_root: Path) -> tuple[str | None, str | None
 
 
 def repository_script_reader(repository_root: Path):
-    """A `read_script` for placeholder_errors; a missing or unreadable file reads as empty, since file_reference_errors reports it."""
+    """A `read_script` for placeholder_errors, which reads scripts and text payloads.
+
+    A binary payload reads as empty, since it is never shown as text. So does a
+    missing or unreadable file, since file_reference_errors reports it.
+    """
 
     def read_script(path: str) -> str:
+        if is_binary_payload(path):
+            return ""
         text, _ = _read_text(path, repository_root)
         return text or ""
 
@@ -117,7 +123,7 @@ def _script_content_problem(path: str, repository_root: Path, is_check: bool) ->
     # The details and settings export decide how $ODV is substituted from the
     # rule as stored, without reading script files, so a check script must
     # not depend on it until they do.
-    placeholder_match = PLACEHOLDER_PATTERN.search(text) if is_check else None
+    placeholder_match = ODV_OCCURRENCE_PATTERN.search(text) if is_check else None
     if placeholder_match:
         return f"{path} contains {placeholder_match.group(0)}, which a check script file cannot use yet; inline the check instead"
     return None

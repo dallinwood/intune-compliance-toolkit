@@ -91,7 +91,12 @@ meaning "has at least one".
 - **CaC** (in its own plan): each XCCDF variable a fix uses becomes an ODV named after it
   (`var_password_pam_minlen`), and each `<xccdf-1.2:sub>` becomes `$ODV_<name>`.
 - **Every importer** fails loudly if a rule contains a `$ODV_` placeholder that names no declared
-  ODV, declares an ODV that no text uses, or contains a bare `$ODV` not followed by `_<name>`.
+  ODV, declares an ODV that no text uses, or contains a malformed placeholder.
+- **One grammar in Python and TypeScript:** a placeholder is `$ODV_` followed by a name matching
+  `[a-z][a-z0-9_]*`, read greedily, and not directly followed by `[A-Za-z0-9_]`. Any other `$ODV`
+  occurrence (bare `$ODV`, `$ODVX`, `$ODV_Upper`, `$ODV_`, `$ODV_vX`) is malformed: CI reports
+  it, and the web UI never substitutes into it. `tests/fixtures/odv_placeholders/grammar_cases.json`
+  pins the grammar for both test suites.
 
 ### 5.3 Quoting and validation
 
@@ -107,17 +112,45 @@ Two separate gates exist today, and both stay:
    only changes this gate:
    - `unquoted` (default, and every mSCP ODV): the strict text-mode rules, as today.
    - `single`: the placeholder only ever appears inside single quotes; the value is shown unless
-     it contains `'`, a newline, a carriage return or NUL.
-   - `double`: only inside double quotes; shown unless it contains `"`, `` ` ``, `$`, `\`, a
-     newline, a carriage return or NUL.
+     it contains `'`, one of the typographic single quotes PowerShell also reads as a single
+     quote (U+2018, U+2019, U+201A, U+201B), a newline, a carriage return or NUL.
+   - `double`: only inside double quotes; shown unless it contains `"`, one of the typographic
+     double quotes PowerShell also reads as a double quote (U+201C, U+201D, U+201E), `` ` ``,
+     `$`, `\`, a newline, a carriage return or NUL.
 
+   The typographic quotes are denied for every file language: simplest, and harmless for bash.
    A value that fails its gate is not shown in the command; the placeholder stays, as today.
+
+   **Where the relaxed gate applies.** The `single` and `double` gates are used only for the
+   code whose quoting CI verifies: inline check and remediation `shell` code blocks, and script
+   files referenced by `shell_file`. Every other code block (discussion and `additional_info`
+   blocks, and `data_file` payloads) uses the strict `unquoted` rules whatever the ODV's
+   `quoting`, and inline JSON payloads keep their JSON gate (the ODV's own validation, with the
+   value JSON-escaped). In `odv.ts`, `codeOdvValues` returns these as `verifiedShell`, `strict`
+   and `json`.
 
 The importer that sets `single` or `double` verifies every occurrence of the placeholder in the
 rule's check and remediation shell text sits inside that quoting, and fails otherwise; it also
 fails if the recommended value or any `by_benchmark` value would fail that ODV's display gate.
 An ODV whose placeholder appears in no shell text gets `unquoted` (it is never displayed in a
 command, so the gate never applies). The per-rule `variable` mode (mSCP allowlist) is unchanged.
+
+The quoting check (`placeholder_errors` in `tools/odv_placeholders.py`) works as follows:
+
+- **Only bash-like and PowerShell text may hold a quoted placeholder.** A `single` or `double`
+  placeholder is allowed in inline `shell` text whose language is bash or zsh, and in `.sh` and
+  `.ps1` script files. In a `.py` script (whose strings process backslash escapes and f-string
+  braces), inline text in any other language, or a file with any other extension, it is an
+  error naming where it appears. `unquoted` placeholders in `.py` scripts stay allowed.
+- **Quote state is tracked across the whole text,** as the shell does, not line by line, so a
+  multi-line quoted string is read correctly. A quote still open at the end of the text makes
+  any `single` or `double` placeholder after its opening quote an error.
+- In bash, a placeholder inside ANSI-C quoting (`$'...'`, where backslash escapes are active)
+  counts as outside single quotes, so it is an error. In `.ps1` scripts the escape character is
+  `` ` `` and the typographic quotes above open and close strings, as PowerShell reads them.
+- With a script reader (CI), the text of `data_file` payloads counts towards the unknown-name,
+  unused-ODV and malformed-placeholder checks, but is not quote-checked, since the web UI only
+  shows payloads with the strict or JSON gate. Binary payloads are not read.
 
 ### 5.4 Web UI
 
@@ -151,9 +184,13 @@ overlays already do) may need its own values.
 - **Overlaid rules get the same placeholder and quoting checks as imported rules,** in CI
   (`tools/overlays.py`, run by `tests/test_overlays.py`): `placeholder_errors` on every overlaid
   rule, including the text of script files the rule references through `shell_file` (check and
-  remediation). In a script file, double-quote escapes follow the file's language: `\` for
-  `.sh`/`.py`, `` ` `` for `.ps1`. The quoting rules themselves (5.3) hold for both bash and
-  PowerShell, since a value can contain neither quote character nor `$`, `` ` `` or `\`.
+  remediation) and of text `data_file` payloads (placeholder names only, no quoting check). In
+  a script file, quoting follows the file's language: `\` escapes and ASCII quotes for `.sh`;
+  `` ` `` escapes and ASCII plus typographic quotes for `.ps1`. Quoted (`single`/`double`) ODVs
+  are supported only in `.sh` and `.ps1` scripts (and inline bash or zsh), not in `.py` (5.3).
+  The display gates (5.3) hold for both bash and PowerShell, since a value can contain neither
+  the ASCII nor the typographic quote characters of its quoting, nor (for `double`) `$`, `` ` ``
+  or `\`.
 - **The browser** keeps its existing split (custom overlays design 3.4): it checks overlay
   shape and merge types only, now including that `odvs` is a `$replace`d list of objects; full
   rule validation, including these checks, stays CI's job. Overlays only come from the repo, so
@@ -189,6 +226,7 @@ overlays already do) may need its own values.
 
 ## Progress log
 
-- 2026-11-18: Added `tools/odv_placeholders.py`, the shared placeholder and quoting rules, with tests (this commit).
-- 2026-11-19: Extended `placeholder_errors` with an optional script reader so `shell_file` scripts get the same placeholder and quoting checks (this commit).
-- 2026-11-19: Implemented end to end: rule schema 6 with `odvs` on every release of every source, the importers and overlays on named ODVs (`$ODV_<name>`, mSCP's is `$ODV_value`), the web UI logic and components (one input per ODV, `useStoredOdvValues` / `useUsableOdvValues`, per-placeholder code block notes), saved selections at version 3 with version 2 converted, and settings files at version 3 with version 2 converted on import. Playwright covers the renamed mSCP behaviour, version 2 saved selections and a two-ODV rule (a pwpolicy rule given a second ODV by a route in the spec, since no committed rule has two yet); screenshots at 375px and 1440px checked. Commit: `feat: support several named organization-defined values per rule`.
+- 2026-11-18: Added `tools/odv_placeholders.py`, the shared placeholder and quoting rules, with tests. Commit: e28c19b7 `feat: add shared rules for named ODV placeholders`.
+- 2026-11-19: Extended `placeholder_errors` with an optional script reader so `shell_file` scripts get the same placeholder and quoting checks. Commit: 1cee23b3 `feat: check ODV placeholders in referenced script files`.
+- 2026-11-19: Implemented end to end: rule schema 6 with `odvs` on every release of every source, the importers and overlays on named ODVs (`$ODV_<name>`, mSCP's is `$ODV_value`), the web UI logic and components (one input per ODV, `useStoredOdvValues` / `useUsableOdvValues`, per-placeholder code block notes), saved selections at version 3 with version 2 converted, and settings files at version 3 with version 2 converted on import. Playwright covers the renamed mSCP behaviour, version 2 saved selections and a two-ODV rule (a pwpolicy rule given a second ODV by a route in the spec, since no committed rule has two yet); screenshots at 375px and 1440px checked. Commit: bb90069c `feat: support several named organization-defined values per rule`.
+- 2026-11-19: Hardened the quoted ODV display gate after the final review: the typographic quotes PowerShell reads as quotes are denied in the `single` and `double` gates; quoted placeholders are allowed only in inline bash/zsh and `.sh`/`.ps1` scripts; the relaxed gate is used only for check and remediation shells and their `shell_file` scripts (everything else uses the strict rules); Python and TypeScript share one placeholder grammar, with malformed `$ODV` occurrences reported and never substituted; quote state is tracked across the whole text (unterminated quotes and `$'...'` are errors); `data_file` payloads count towards the placeholder checks; dropped import values name their ODV. Commit: `fix: harden the quoted ODV display gate`.

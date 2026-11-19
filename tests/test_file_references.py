@@ -8,6 +8,7 @@ from tools.file_references import (
     exactly_one_problem,
     file_reference_errors,
     payload_file_problem,
+    repository_script_reader,
     script_file_problem,
 )
 from tools.validate_library import schema_errors
@@ -145,6 +146,20 @@ def test_a_check_script_file_using_odv_is_an_error_until_the_ui_resolves_files(t
     write_file(tmp_path, "baselines/x/scripts/check.sh", b'test "$(cat /etc/x)" = "$ODV_value" && echo 1\n')
     errors = file_reference_errors(check_rule_with_file("baselines/x/scripts/check.sh"), tmp_path)
     assert len(errors) == 1 and "$ODV_value" in errors[0] and "inline" in errors[0]
+
+
+def test_a_check_script_file_with_a_malformed_odv_is_an_error(tmp_path):
+    write_file(tmp_path, "baselines/x/scripts/check.sh", b"echo $ODVX\n")
+    errors = file_reference_errors(check_rule_with_file("baselines/x/scripts/check.sh"), tmp_path)
+    assert len(errors) == 1 and "$ODVX" in errors[0]
+
+
+def test_the_repository_reader_reads_text_and_skips_binary_payloads(tmp_path):
+    write_file(tmp_path, "baselines/x/payload.xml", b"<a>$ODV_value</a>\n")
+    write_file(tmp_path, "baselines/x/payload.pol", b"$ODV_value")
+    read_file = repository_script_reader(tmp_path)
+    assert read_file("baselines/x/payload.xml") == "<a>$ODV_value</a>\n"
+    assert read_file("baselines/x/payload.pol") == ""
 
 
 def test_a_remediation_script_file_may_mention_odv(tmp_path):

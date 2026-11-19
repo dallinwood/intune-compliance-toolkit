@@ -360,7 +360,7 @@ describe('sanitizeImportedSelections', () => {
     const result = sanitizeImportedSelections([entry(PASSWORD_REF, true, { value: '$(reboot)' })], rowsById, rulesById)
 
     expect(result.selections[PASSWORD_REF.id]).toEqual({ ref: PASSWORD_REF, enabled: true, odvValues: {} })
-    expect(result.droppedValues).toEqual([{ id: PASSWORD_REF.id, reason: 'Value must be a whole number.' }])
+    expect(result.droppedValues).toEqual([{ id: PASSWORD_REF.id, reason: 'value: Value must be a whole number.' }])
   })
 
   it('drops a value for a rule that has no organization-defined value of that name', () => {
@@ -413,7 +413,7 @@ describe('sanitizeImportedSelections', () => {
     expect(result.droppedValues).toEqual([
       {
         id: deferralRef.id,
-        reason: 'Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
+        reason: 'value: Value must be a whole number followed by one unit letter (y, m, w, d, H, M or S), for example 30d.',
       },
     ])
   })

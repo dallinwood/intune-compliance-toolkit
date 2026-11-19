@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Normalized rule (v5)",
+  "title": "Normalized rule (v6)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -94,7 +94,7 @@
         "additionalProperties": false,
         "required": ["name", "datatype", "description", "validation", "recommended", "by_benchmark", "quoting"],
         "properties": {
-          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(?![\\s\\S])" },
           "datatype": { "enum": ["number", "string", "enum", "regex"] },
           "description": { "type": "string" },
           "validation": {
@@ -163,7 +163,7 @@
           "if": { "properties": { "type": { "const": "integer" } } },
           "then": {
             "properties": {
-              "value": { "oneOf": [{ "type": "integer" }, { "type": "string", "pattern": "^\\$ODV_[a-z][a-z0-9_]*$" }] }
+              "value": { "oneOf": [{ "type": "integer" }, { "type": "string", "pattern": "^\\$ODV_[a-z][a-z0-9_]*(?![\\s\\S])" }] }
             }
           },
           "else": {

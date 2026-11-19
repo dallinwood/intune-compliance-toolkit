@@ -189,7 +189,7 @@ def test_odv_placeholder_allowed_as_integer_value():
     rule = make_rule()
     rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "$ODV_value"}
     assert schema_errors(rule) == []
-    for bad_value in ("7", "$ODV", "$ODV_Value", "$ODV_value extra"):
+    for bad_value in ("7", "$ODV", "$ODV_Value", "$ODV_value extra", "$ODV_value\n"):
         rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": bad_value}
         assert schema_errors(rule), bad_value
 
@@ -211,7 +211,7 @@ def test_odvs_with_valid_items_are_accepted():
     assert schema_errors(make_rule(odvs=[make_odv(), make_odv(name="max_age", quoting="single")])) == []
 
 
-@pytest.mark.parametrize("bad_name", ["Value", "1value", "va-lue", "", "value "])
+@pytest.mark.parametrize("bad_name", ["Value", "1value", "va-lue", "", "value ", "value\n"])
 def test_bad_odv_name_rejected(bad_name):
     assert schema_errors(make_rule(odvs=[make_odv(name=bad_name)]))
 

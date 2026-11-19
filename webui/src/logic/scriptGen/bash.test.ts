@@ -110,6 +110,7 @@ describe('generateBashScript structure', () => {
     const branchWith = (shell: string) => [{ majors: ['15'], shell, expected: { type: 'string' as const, value: 'PASS' } }]
     expect(() => generateBashScript([rawStringPlan({ branches: branchWith('echo "$ODV_other"'), exportedOdvs: { value: 'x' } })])).toThrow(/\$ODV/)
     expect(() => generateBashScript([rawStringPlan({ branches: branchWith('echo "$ODV"'), exportedOdvs: { value: 'x' } })])).toThrow(/\$ODV/)
+    expect(() => generateBashScript([rawStringPlan({ branches: branchWith('echo "$ODV_valueX"'), exportedOdvs: { value: 'x' } })])).toThrow(/\$ODV/)
   })
 
   it('refuses to export an ODV whose name could break out of the export line', () => {

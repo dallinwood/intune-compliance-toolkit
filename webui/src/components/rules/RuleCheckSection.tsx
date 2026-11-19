@@ -36,7 +36,7 @@ function CheckEntry({
       {check.shell_file !== undefined ? (
         <ScriptFile path={check.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       ) : check.shell ? (
-        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
+        <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
       ) : (
         <p className="text-xs text-muted-foreground">No check script.</p>
       )}

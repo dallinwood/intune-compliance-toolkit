@@ -74,20 +74,25 @@ function OdvExportNote({ names }: { names: string[] }) {
 
 // A block of shipped code that may contain $ODV_<name>. codeOdv holds the values safe
 // to show in place of each placeholder; a placeholder without one stays literal and is explained.
+// isVerifiedShell marks an inline check or remediation shell, or its shell_file
+// script: the only code whose quoting CI verifies, so the only code where a
+// quoted ODV may use its relaxed gate.
 export function OdvCodeBlock({
   code,
   language,
   odvValues,
   codeOdv,
   isJson = false,
+  isVerifiedShell = false,
 }: {
   code: string
   language?: HighlightLanguage
   odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
   isJson?: boolean
+  isVerifiedShell?: boolean
 }) {
-  const codeOdvValuesForBlock = isJson ? codeOdv.json : codeOdv.script
+  const codeOdvValuesForBlock = isJson ? codeOdv.json : isVerifiedShell ? codeOdv.verifiedShell : codeOdv.strict
   if (!containsOdvPlaceholder(code)) return <CodeBlock code={code} language={language} />
 
   const exportedNames =

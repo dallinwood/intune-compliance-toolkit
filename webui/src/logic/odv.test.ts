@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Odv, Rule } from '../types/library'
 import {
@@ -7,7 +8,9 @@ import {
   containsOdvPlaceholder,
   displayWithOdvs,
   effectiveOdvValue,
+  hasMalformedOdvPlaceholder,
   odvPlaceholder,
+  odvPlaceholderNames,
   odvQuickPicks,
   odvSubstitutionMode,
   ODV_RULE_VALUE_CHECKS,
@@ -468,6 +471,32 @@ describe('substituteOdvs and displayWithOdvs', () => {
   })
 })
 
+interface GrammarCase {
+  name: string
+  text: string
+  names: string[]
+  malformed: string[]
+  display: string
+}
+
+const GRAMMAR_CASES = (
+  JSON.parse(
+    readFileSync(new URL('../../../tests/fixtures/odv_placeholders/grammar_cases.json', import.meta.url), 'utf8'),
+  ) as { grammar_cases: GrammarCase[] }
+).grammar_cases
+
+describe('shared placeholder grammar cases', () => {
+  it.each(GRAMMAR_CASES.map((grammarCase) => [grammarCase.name, grammarCase] as const))('%s', (_name, grammarCase) => {
+    expect(odvPlaceholderNames(grammarCase.text)).toEqual(grammarCase.names)
+    expect(displayWithOdvs(grammarCase.text, {})).toBe(grammarCase.display)
+    expect(hasMalformedOdvPlaceholder(grammarCase.text)).toBe(grammarCase.malformed.length > 0)
+  })
+
+  it('never substitutes into a malformed occurrence, even when the name before it has a value', () => {
+    expect(substituteOdvs('echo $ODV_vX $ODV_v', { v: 'value' })).toBe('echo $ODV_vX value')
+  })
+})
+
 describe('containsOdvPlaceholder', () => {
   it('detects a placeholder in a script or serialized payload', () => {
     expect(containsOdvPlaceholder('{"minLength": "$ODV_value"}')).toBe(true)
@@ -563,14 +592,14 @@ describe('codeOdvValues', () => {
   const numberOdv = odv({ recommended: 6, validation: { min: 1 } })
   const stringOdv = odv({ datatype: 'string', recommended: 'ab' })
   const injection = 'a"; rm -rf ~ #'
-  const none = { script: {}, json: {}, exported: {} }
+  const none = { verifiedShell: {}, strict: {}, json: {}, exported: {} }
   const ruleOf = (odvValue: Odv, overrides: Partial<Rule> = {}) => ruleWithOdvs([odvValue], overrides)
   const textModeCheck = {
     macOS: { language: 'bash', default: { shell: 'echo $ODV_value', result: null, additional_info: null }, by_version: {} },
   } as const
 
   it('returns a valid value for scripts and JSON so code blocks show it in place of the placeholder', () => {
-    expect(codeOdvValues(ruleOf(numberOdv), { value: 12 })).toEqual({ script: { value: 12 }, json: { value: 12 }, exported: {} })
+    expect(codeOdvValues(ruleOf(numberOdv), { value: 12 })).toEqual({ verifiedShell: { value: 12 }, strict: { value: 12 }, json: { value: 12 }, exported: {} })
     expect(substituteOdvs('minlen=$ODV_value and again $ODV_value', { value: 12 })).toBe('minlen=12 and again 12')
   })
 
@@ -588,12 +617,12 @@ describe('codeOdvValues', () => {
   it('applies the rule-specific value pattern', () => {
     const deferralOdv = odv({ datatype: 'string', recommended: '30d' })
     const softwareUpdateRule = ruleOf(deferralOdv, { id: 'mscp.system_settings_softwareupdate_current' })
-    expect(codeOdvValues(softwareUpdateRule, { value: '30d' }).script).toEqual({ value: '30d' })
+    expect(codeOdvValues(softwareUpdateRule, { value: '30d' }).strict).toEqual({ value: '30d' })
     expect(codeOdvValues(softwareUpdateRule, { value: '30' })).toEqual(none)
   })
 
   it('returns the canonical value the generator would substitute', () => {
-    expect(codeOdvValues(ruleOf(numberOdv), { value: '007' }).script).toEqual({ value: 7 })
+    expect(codeOdvValues(ruleOf(numberOdv), { value: '007' }).strict).toEqual({ value: 7 })
   })
 
   it('never text-replaces in variable mode, offering the generator-validated value as the exported one', () => {
@@ -610,32 +639,32 @@ describe('codeOdvValues', () => {
       },
     })
     const value = "it's \"$HOME\" `x` \\ ok"
-    expect(codeOdvValues(bannerRule, { value })).toEqual({ script: {}, json: {}, exported: { value } })
+    expect(codeOdvValues(bannerRule, { value })).toEqual({ verifiedShell: {}, strict: {}, json: {}, exported: { value } })
     expect(codeOdvValues(bannerRule, { value: 'bad' + String.fromCharCode(13) + 'value' })).toEqual(none)
     expect(codeOdvValues(bannerRule, {})).toEqual(none)
   })
 
   it('applies the strict shell-safe rules to unquoted scripts even when the generator never substitutes (none mode)', () => {
-    expect(codeOdvValues(ruleOf(stringOdv), { value: injection }).script).toEqual({})
+    expect(codeOdvValues(ruleOf(stringOdv), { value: injection }).strict).toEqual({})
     for (const unsafe of ["it's", 'a`b`', 'a$(id)', 'a${HOME}', 'a\\b', 'a\nb', 'two words', '/etc/x.conf']) {
-      expect(codeOdvValues(ruleOf(stringOdv), { value: unsafe }).script).toEqual({})
+      expect(codeOdvValues(ruleOf(stringOdv), { value: unsafe }).strict).toEqual({})
     }
-    expect(codeOdvValues(ruleOf(stringOdv), { value: 'safe-value_1.2' }).script).toEqual({ value: 'safe-value_1.2' })
+    expect(codeOdvValues(ruleOf(stringOdv), { value: 'safe-value_1.2' }).strict).toEqual({ value: 'safe-value_1.2' })
   })
 
   it('applies the strict rules to a numeric none-mode rule', () => {
-    expect(codeOdvValues(ruleOf(numberOdv), { value: 12 }).script).toEqual({ value: 12 })
+    expect(codeOdvValues(ruleOf(numberOdv), { value: 12 }).strict).toEqual({ value: 12 })
     expect(codeOdvValues(ruleOf(numberOdv), { value: '12; id' })).toEqual(none)
   })
 
   it('shows the same value as the generator for a text-mode rule', () => {
     const textRule = ruleOf(stringOdv, { check: textModeCheck })
-    expect(codeOdvValues(textRule, { value: 'safe-value' }).script).toEqual({ value: 'safe-value' })
-    expect(codeOdvValues(textRule, { value: injection }).script).toEqual({})
+    expect(codeOdvValues(textRule, { value: 'safe-value' }).strict).toEqual({ value: 'safe-value' })
+    expect(codeOdvValues(textRule, { value: injection }).strict).toEqual({})
   })
 
   it('lets JSON show a value that is only unsafe as shell text, still requiring the ODV own validation', () => {
-    expect(codeOdvValues(ruleOf(stringOdv), { value: 'two words' })).toEqual({ script: {}, json: { value: 'two words' }, exported: {} })
+    expect(codeOdvValues(ruleOf(stringOdv), { value: 'two words' })).toEqual({ verifiedShell: {}, strict: {}, json: { value: 'two words' }, exported: {} })
     expect(codeOdvValues(ruleOf(numberOdv), { value: 0 })).toEqual(none)
   })
 
@@ -644,28 +673,43 @@ describe('codeOdvValues', () => {
     const doubleOdv = odv({ datatype: 'string', quoting: 'double' })
 
     it('shows a path for a single-quoted ODV but not for an unquoted one', () => {
-      expect(codeOdvValues(ruleOf(singleOdv), { value: '/etc/x.conf' }).script).toEqual({ value: '/etc/x.conf' })
-      expect(codeOdvValues(ruleOf(stringOdv), { value: '/etc/x.conf' }).script).toEqual({})
+      expect(codeOdvValues(ruleOf(singleOdv), { value: '/etc/x.conf' }).verifiedShell).toEqual({ value: '/etc/x.conf' })
+      expect(codeOdvValues(ruleOf(stringOdv), { value: '/etc/x.conf' }).verifiedShell).toEqual({})
     })
 
     it('hides what ends single quotes, and a newline, carriage return or NUL', () => {
       for (const unsafe of ["it's", 'a\nb', 'a\rb', 'a\0b']) {
-        expect(codeOdvValues(ruleOf(singleOdv), { value: unsafe }).script).toEqual({})
+        expect(codeOdvValues(ruleOf(singleOdv), { value: unsafe }).verifiedShell).toEqual({})
       }
-      expect(codeOdvValues(ruleOf(singleOdv), { value: 'say "hi" $HOME `x` \\' }).script).toEqual({ value: 'say "hi" $HOME `x` \\' })
+      expect(codeOdvValues(ruleOf(singleOdv), { value: 'say "hi" $HOME `x` \\' }).verifiedShell).toEqual({ value: 'say "hi" $HOME `x` \\' })
     })
 
     it('hides what ends or expands inside double quotes', () => {
       for (const unsafe of ['say "hi"', 'a`b`', '$HOME', 'a\\b', 'a\nb', 'a\rb', 'a\0b']) {
-        expect(codeOdvValues(ruleOf(doubleOdv), { value: unsafe }).script).toEqual({})
+        expect(codeOdvValues(ruleOf(doubleOdv), { value: unsafe }).verifiedShell).toEqual({})
       }
-      expect(codeOdvValues(ruleOf(doubleOdv), { value: "it's a path /etc/x.conf" }).script).toEqual({ value: "it's a path /etc/x.conf" })
+      expect(codeOdvValues(ruleOf(doubleOdv), { value: "it's a path /etc/x.conf" }).verifiedShell).toEqual({ value: "it's a path /etc/x.conf" })
     })
 
     it('still applies the datatype and the ODV own validation', () => {
       const quotedNumber = odv({ quoting: 'single', validation: { min: 1 } })
-      expect(codeOdvValues(ruleOf(quotedNumber), { value: 0 }).script).toEqual({})
-      expect(codeOdvValues(ruleOf(quotedNumber), { value: 3 }).script).toEqual({ value: 3 })
+      expect(codeOdvValues(ruleOf(quotedNumber), { value: 0 }).verifiedShell).toEqual({})
+      expect(codeOdvValues(ruleOf(quotedNumber), { value: 3 }).verifiedShell).toEqual({ value: 3 })
+    })
+
+    it('hides the typographic quotes PowerShell reads as quotes', () => {
+      for (const typographicQuote of ['\u2018', '\u2019', '\u201a', '\u201b']) {
+        expect(codeOdvValues(ruleOf(singleOdv), { value: `x${typographicQuote}; Write-Output INJECTED` }).verifiedShell).toEqual({})
+      }
+      for (const typographicQuote of ['\u201c', '\u201d', '\u201e']) {
+        expect(codeOdvValues(ruleOf(doubleOdv), { value: `x${typographicQuote}; Write-Output INJECTED` }).verifiedShell).toEqual({})
+      }
+    })
+
+    it('uses the strict rules outside verified shells, whatever the quoting', () => {
+      expect(codeOdvValues(ruleOf(singleOdv), { value: '/etc/x.conf' }).strict).toEqual({})
+      expect(codeOdvValues(ruleOf(doubleOdv), { value: 'a; id' }).strict).toEqual({})
+      expect(codeOdvValues(ruleOf(singleOdv), { value: 'safe-value' }).strict).toEqual({ value: 'safe-value' })
     })
 
     it('does not change the JSON gate', () => {
@@ -677,8 +721,8 @@ describe('codeOdvValues', () => {
     const lengthOdv = odv({ name: 'length' })
     const pathOdv = odv({ name: 'path', datatype: 'string', quoting: 'single' })
     const rule = ruleWithOdvs([lengthOdv, pathOdv])
-    expect(codeOdvValues(rule, { length: 12, path: '/etc/x' }).script).toEqual({ length: 12, path: '/etc/x' })
-    expect(codeOdvValues(rule, { length: '1;2', path: '/etc/x' }).script).toEqual({ path: '/etc/x' })
+    expect(codeOdvValues(rule, { length: 12, path: '/etc/x' }).verifiedShell).toEqual({ length: 12, path: '/etc/x' })
+    expect(codeOdvValues(rule, { length: '1;2', path: '/etc/x' }).verifiedShell).toEqual({ path: '/etc/x' })
   })
 })
 

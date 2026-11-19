@@ -1,5 +1,5 @@
 import type { ExpectedResult, RuleCheckPlan } from '../checkPlan'
-import { containsOdvPlaceholder, odvPlaceholderNames } from '../odv'
+import { containsOdvPlaceholder, hasMalformedOdvPlaceholder, odvPlaceholderNames } from '../odv'
 import type { IntuneDataType } from '../operatorMap'
 
 const HEADER_LINES = [
@@ -106,8 +106,6 @@ const JSON_HELPER_LINES = [
 
 const SETTING_NAME_PATTERN = /^[A-Za-z0-9_]+$/
 const ODV_NAME_PATTERN = /^[a-z][a-z0-9_]*$/
-// $ODV not followed by _<name>: no ODV can fill it in.
-const BARE_ODV_PATTERN = /\$ODV(?!_[a-z])/
 const MAJOR_VERSION_PATTERN = /^[0-9]+$/
 const FIRST_PRINTABLE_CODE = 0x20
 const DELETE_CODE = 0x7f
@@ -141,7 +139,7 @@ function assertMajor(major: string, plan: RuleCheckPlan): void {
 
 // A shell may keep a placeholder only for an ODV the script exports as a variable.
 function everyOdvPlaceholderIsExported(shell: string, plan: RuleCheckPlan): boolean {
-  return odvPlaceholderNames(shell).every((name) => Object.hasOwn(plan.exportedOdvs, name)) && !BARE_ODV_PATTERN.test(shell)
+  return odvPlaceholderNames(shell).every((name) => Object.hasOwn(plan.exportedOdvs, name)) && !hasMalformedOdvPlaceholder(shell)
 }
 
 function assertPlanIsSafe(plan: RuleCheckPlan): void {

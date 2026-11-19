@@ -10,11 +10,13 @@ function FileText({
   language,
   odvValues,
   codeOdv,
+  isVerifiedShell = false,
 }: {
   path: string
   language: HighlightLanguage | undefined
   odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
+  isVerifiedShell?: boolean
 }) {
   const state = useReferencedText(path)
   if (state.status === 'loading') return <p className="text-xs text-muted-foreground">Loading {fileNameOf(path)}…</p>
@@ -25,7 +27,7 @@ function FileText({
       </p>
     )
   }
-  return <OdvCodeBlock code={state.text} language={language} odvValues={odvValues} codeOdv={codeOdv} />
+  return <OdvCodeBlock code={state.text} language={language} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell={isVerifiedShell} />
 }
 
 // A script from shell_file, shown exactly like an inline one once loaded.
@@ -40,7 +42,7 @@ export function ScriptFile({
   odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
-  return <FileText path={path} language={language} odvValues={odvValues} codeOdv={codeOdv} />
+  return <FileText path={path} language={language} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
 }
 
 // A payload from data_file: a text file is shown in full and offered for
