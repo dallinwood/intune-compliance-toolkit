@@ -4,7 +4,9 @@ A rule declares ODVs by name and refers to each one in its text as `$ODV_<name>`
 """
 
 import re
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from dataclasses import dataclass
+from pathlib import PurePosixPath
 
 NAME_PATTERN = re.compile(r"^[a-z][a-z0-9_]*$")
 PLACEHOLDER_PATTERN = re.compile(r"\$ODV(?:_([a-z][a-z0-9_]*))?(?![A-Za-z0-9_])")
@@ -15,6 +17,7 @@ FORBIDDEN_DISPLAY_CHARACTERS = {
     "single": "'" + CONTROL_CHARACTERS,
     "double": '"`$\\' + CONTROL_CHARACTERS,
 }
+DOUBLE_QUOTE_ESCAPE_BY_EXTENSION = {".sh": "\\", ".py": "\\", ".ps1": "`"}
 
 
 def placeholder(name: str) -> str:
@@ -32,7 +35,7 @@ def display_gate_problem(quoting: str, value: str | int) -> str | None:
     return None
 
 
-def enclosing_quote_kind(line: str, position: int) -> str | None:
+def enclosing_quote_kind(line: str, position: int, double_quote_escape: str = "\\") -> str | None:
     """Return "single", "double" or None for the quotes around `position`, scanning from the line start."""
     open_quote: str | None = None
     index = 0
@@ -41,7 +44,7 @@ def enclosing_quote_kind(line: str, position: int) -> str | None:
         if open_quote == "single":
             if character == "'":
                 open_quote = None
-        elif character == "\\":
+        elif character == double_quote_escape:
             index += 1
         elif open_quote == "double":
             if character == '"':
@@ -79,6 +82,40 @@ def iter_shell_texts(rule: dict) -> Iterator[str]:
                 yield step["shell"]
 
 
+@dataclass(frozen=True)
+class ShellText:
+    text: str
+    description: str
+    double_quote_escape: str = "\\"
+
+
+def iter_script_paths(rule: dict) -> Iterator[str]:
+    for target_check in (rule.get("check") or {}).values():
+        default_check = target_check.get("default")
+        if default_check and default_check.get("shell_file"):
+            yield default_check["shell_file"]
+        for version_check in (target_check.get("by_version") or {}).values():
+            if version_check.get("shell_file"):
+                yield version_check["shell_file"]
+    for target_remediation in (rule.get("remediation") or {}).values():
+        for step in target_remediation.get("steps") or []:
+            if step.get("shell_file"):
+                yield step["shell_file"]
+
+
+def read_script_texts(rule: dict, read_script: Callable[[str], str]) -> tuple[list[ShellText], list[str]]:
+    script_texts = []
+    errors = []
+    for script_path in dict.fromkeys(iter_script_paths(rule)):
+        extension = PurePosixPath(script_path).suffix.lower()
+        double_quote_escape = DOUBLE_QUOTE_ESCAPE_BY_EXTENSION.get(extension)
+        if double_quote_escape is None:
+            errors.append(f"{rule['id']}: script {script_path} has unsupported extension {extension!r}")
+            double_quote_escape = "\\"
+        script_texts.append(ShellText(read_script(script_path), f"script {script_path}", double_quote_escape))
+    return script_texts, errors
+
+
 def declared_name_errors(rule_id: str, odvs: list[dict]) -> list[str]:
     errors = []
     seen_names: set[str] = set()
@@ -94,12 +131,12 @@ def declared_name_errors(rule_id: str, odvs: list[dict]) -> list[str]:
     return errors
 
 
-def usage_errors(rule: dict, declared_names: set[str]) -> list[str]:
+def usage_errors(rule: dict, declared_names: set[str], script_texts: list[ShellText]) -> list[str]:
     rule_id = rule["id"]
     rule_without_declarations = {key: value for key, value in rule.items() if key != "odvs"}
     errors = []
     used_names: set[str] = set()
-    for text in iter_strings(rule_without_declarations):
+    for text in [*iter_strings(rule_without_declarations), *(script.text for script in script_texts)]:
         for match in PLACEHOLDER_PATTERN.finditer(text):
             name = match.group(1)
             if name is None:
@@ -113,23 +150,25 @@ def usage_errors(rule: dict, declared_names: set[str]) -> list[str]:
     return errors
 
 
-def quoting_errors(rule: dict) -> list[str]:
+def quoting_errors(rule: dict, script_texts: list[ShellText]) -> list[str]:
     rule_id = rule["id"]
     quoting_by_name = {
         odv["name"]: odv["quoting"] for odv in rule["odvs"] if odv.get("quoting") in FORBIDDEN_DISPLAY_CHARACTERS
     }
     errors = []
-    for shell in iter_shell_texts(rule):
-        for line in shell.splitlines():
+    inline_texts = [ShellText(shell, "") for shell in iter_shell_texts(rule)]
+    for shell_text in [*inline_texts, *script_texts]:
+        location = f" ({shell_text.description})" if shell_text.description else ""
+        for line in shell_text.text.splitlines():
             for match in PLACEHOLDER_PATTERN.finditer(line):
                 name = match.group(1)
                 required_quoting = quoting_by_name.get(name)
                 if required_quoting is None:
                     continue
-                if enclosing_quote_kind(line, match.start()) != required_quoting:
+                if enclosing_quote_kind(line, match.start(), shell_text.double_quote_escape) != required_quoting:
                     errors.append(
                         f"{rule_id}: {placeholder(name)} is declared {required_quoting} "
-                        f"but appears outside {required_quoting} quotes in: {line.strip()}"
+                        f"but appears outside {required_quoting} quotes{location} in: {line.strip()}"
                     )
     return errors
 
@@ -153,12 +192,14 @@ def display_value_errors(rule: dict) -> list[str]:
     return errors
 
 
-def placeholder_errors(rule: dict) -> list[str]:
+def placeholder_errors(rule: dict, read_script: Callable[[str], str] | None = None) -> list[str]:
     odvs = rule.get("odvs") or []
     declared_names = {odv["name"] for odv in odvs if isinstance(odv.get("name"), str)}
+    script_texts, script_errors = read_script_texts(rule, read_script) if read_script else ([], [])
     return (
         declared_name_errors(rule["id"], odvs)
-        + usage_errors(rule, declared_names)
-        + quoting_errors({**rule, "odvs": odvs})
+        + script_errors
+        + usage_errors(rule, declared_names, script_texts)
+        + quoting_errors({**rule, "odvs": odvs}, script_texts)
         + display_value_errors({**rule, "odvs": odvs})
     )

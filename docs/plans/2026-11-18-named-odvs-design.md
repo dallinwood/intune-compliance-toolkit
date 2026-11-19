@@ -190,3 +190,4 @@ overlays already do) may need its own values.
 ## Progress log
 
 - 2026-11-18: Added `tools/odv_placeholders.py`, the shared placeholder and quoting rules, with tests (this commit).
+- 2026-11-19: Extended `placeholder_errors` with an optional script reader so `shell_file` scripts get the same placeholder and quoting checks (this commit).

@@ -107,3 +107,47 @@ def test_null_check_and_null_shell_are_tolerated():
     assert placeholder_errors(rule) == []
     rule["check"] = None
     assert placeholder_errors(rule) == []
+
+
+def build_rule_with_script_file(script_path: str, odvs: list[dict]) -> dict:
+    rule = build_rule(None, odvs)
+    rule["check"]["macos"]["default"] = {"shell_file": script_path}
+    return rule
+
+
+def build_reader(script_text_by_path: dict[str, str]):
+    return lambda script_path: script_text_by_path[script_path]
+
+
+def test_script_file_placeholder_counts_as_used():
+    rule = build_rule_with_script_file("scripts/check.sh", [build_odv()])
+    assert placeholder_errors(rule, build_reader({"scripts/check.sh": "echo $ODV_v"})) == []
+
+
+def test_script_file_single_quoted_ok():
+    rule = build_rule_with_script_file("scripts/fix.ps1", [build_odv(quoting="single")])
+    assert placeholder_errors(rule, build_reader({"scripts/fix.ps1": "$Value = '$ODV_v'"})) == []
+
+
+def test_script_file_unquoted_reported():
+    rule = build_rule_with_script_file("scripts/check.sh", [build_odv(quoting="single")])
+    errors = placeholder_errors(rule, build_reader({"scripts/check.sh": "echo $ODV_v"}))
+    assert any("scripts/check.sh" in error and "single" in error for error in errors)
+
+
+def test_powershell_backtick_escape_inside_double_quotes():
+    rule = build_rule_with_script_file("scripts/fix.ps1", [build_odv(quoting="double")])
+    script_text = 'Write-Host "a`"b $ODV_v"'
+    assert placeholder_errors(rule, build_reader({"scripts/fix.ps1": script_text})) == []
+
+
+def test_unknown_script_extension_reported():
+    rule = build_rule_with_script_file("scripts/check.rb", [build_odv()])
+    errors = placeholder_errors(rule, build_reader({"scripts/check.rb": "puts $ODV_v"}))
+    assert any("scripts/check.rb" in error and "extension" in error for error in errors)
+
+
+def test_without_reader_script_files_are_ignored():
+    rule = build_rule_with_script_file("scripts/check.sh", [build_odv(quoting="single")])
+    errors = placeholder_errors(rule)
+    assert errors == ["rule_1: ODV 'v' is declared but never used"]
