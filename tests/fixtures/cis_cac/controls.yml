@@ -1,0 +1,73 @@
+---
+policy: 'CIS Benchmark fixture'
+title: 'CIS Benchmark fixture'
+id: cis_fixture
+version: '9.9.9'
+
+levels:
+    - id: l1_server
+    - id: l2_server
+      inherits_from:
+          - l1_server
+    - id: l1_workstation
+    - id: l2_workstation
+      inherits_from:
+          - l1_workstation
+
+controls:
+    - id: 1.1.1
+      title: Ensure cramfs kernel module is not available (Automated)
+      levels: [l1_server, l1_workstation]
+      status: automated
+      rules:
+          - kernel_module_cramfs_disabled
+
+    - id: 1.2.1
+      title: Ensure minimum password length is configured (Automated)
+      levels: [l1_server, l1_workstation]
+      status: automated
+      rules:
+          - accounts_password_pam_minlen
+          - var_password_pam_minlen=14
+
+    - id: 1.2.2
+      title: Ensure cramfs is also covered here (Automated)
+      levels: [l2_server]
+      status: automated
+      rules:
+          - kernel_module_cramfs_disabled
+
+    - id: '2.1'
+      title: Ensure something is reviewed (Manual)
+      levels: [l2_server, l2_workstation]
+      status: manual
+      notes: "Review by hand."
+
+    - id: '3.1'
+      title: Ensure root login is restricted (Automated)
+      levels: [l1_server, l2_workstation]
+      status: partial
+      rules:
+          - sshd_disable_root_login
+          - rule_without_fix_or_ocil
+      related_rules:
+          - sshd_disable_root_password_login
+
+    - id: '4.1'
+      title: Ensure something inherent (Automated)
+      levels: [l1_server]
+      status: inherently met
+
+    - id: '5.1'
+      title: Ensure a banner is configured (Automated)
+      levels: [l1_server, l1_workstation]
+      status: automated
+      rules:
+          - banner_etc_issue
+
+    - id: reload_dconf_db
+      title: Reload Dconf database
+      levels: [l1_server, l1_workstation]
+      status: automated
+      rules:
+          - dconf_db_up_to_date
