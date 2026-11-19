@@ -36,6 +36,24 @@
 
 ---
 
+### Task 0: Close the quote scanner gaps (fail closed)
+
+**Files:**
+- Modify: `tools/odv_placeholders.py` (`scan_quotes` and its callers)
+- Test: `tests/test_odv_placeholders.py` and, if the shared grammar fixture is affected, the matching Vitest file
+
+**Interfaces:**
+- Produces: no new names. `placeholder_errors` now reports a `single`/`double` placeholder as an error in these cases, which today pass (found by the named-ODV fix re-review and the automated security review of b5f88172):
+  - **Comments:** outside quotes, `#` at the start of a word (bash, `.sh`) or anywhere outside quotes (`.ps1`), and `<# ... #>` blocks (`.ps1`), start a comment; quote characters inside a comment are ignored, and a placeholder inside a comment is an error for `single`/`double` ODVs.
+  - **Heredocs (bash):** any `single`/`double` placeholder inside a heredoc body (`<<WORD`, `<<-WORD`, `<<'WORD'`) is an error; the body is skipped for quote tracking.
+  - **Command substitution inside double quotes:** a `single`/`double` placeholder anywhere inside a `$(...)` or backtick substitution is an error (fail closed; no nested-context modelling).
+
+- [ ] **Step 1: Write failing tests:** `test_apostrophe_in_comment_does_not_open_a_quote` (`# don't` then `echo $ODV_v` for a `single` ODV: error); `test_placeholder_in_comment_is_error`; `test_powershell_block_comment` (`<# it's #>` then `$x = $ODV_v`: error; `$x = '$ODV_v'` after it: ok); `test_heredoc_body_placeholder_is_error` (`cat <<EOF` body with `'$ODV_v'`: error); `test_lone_quote_in_heredoc_does_not_open_a_quote` (body `it's`, then after `EOF` a line `echo $ODV_v`: error); `test_placeholder_in_command_substitution_inside_double_quotes_is_error` (`"$(printf '%s' "$ODV_v")"`); and keep the CaC banner shape working: `login_banner_text=$(echo "$ODV_v" | sed 's/a/b/')` with a `double` ODV is still ok (the substitution is not inside double quotes).
+- [ ] **Step 2: Run** `.venv/Scripts/python.exe -m pytest tests/test_odv_placeholders.py -v`. Expected: the new tests FAIL.
+- [ ] **Step 3: Implement.**
+- [ ] **Step 4: Run** `.venv/Scripts/python.exe -m pytest -W error -n auto` and, if the shared fixture changed, `bun run test` in `webui/`. Expected: PASS (bar the 3 known `test_github_fetch.py` failures).
+- [ ] **Step 5: Commit** `fix: fail closed on comments, heredocs and nested substitutions in the quote scanner` (progress log entry in `docs/plans/2026-11-18-named-odvs-design.md`).
+
 ### Task 1: The `openscap` manual reason
 
 **Files:**
