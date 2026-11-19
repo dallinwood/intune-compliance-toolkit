@@ -36,7 +36,14 @@ CaC can't license text it doesn't own) was raised and considered; this is the ma
 ### Non-goals (for now)
 
 - **Windows.** ansible-lockdown is a separate design; its source shape (Ansible tasks plus a
-  separate goss audit repo) is different.
+  separate goss audit repo) is different. Maintainer decisions for it (2026-11-19):
+  - **OpenSCAP is not a Windows CIS source.** OpenSCAP officially deprecated Windows support
+    on 2022-02-10 (`docs/windows.md` in OpenSCAP/openscap: no Windows fixes or release builds,
+    last somewhat working Windows release 1.3.4). Only an actively maintained source qualifies.
+  - **One framework per ansible-lockdown repository.** Each repo, such as
+    https://github.com/ansible-lockdown/Windows-11-CIS, is its own source, referenced by its own
+    repository URL and imported, updated and released on its own. A new repo (another Windows
+    version, a new benchmark) is added as a new source; repos are never merged into one.
 - **macOS.** Out of scope (maintainer, 2026-11-18). See section 10 for why it was considered.
 - **Runnable audit scripts.** CaC's automated checks are OVAL (XML). The audit stored here is
   CaC's readable check procedure (OCIL), not a script that returns pass or fail.
