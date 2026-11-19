@@ -13,6 +13,7 @@ import { RulesView } from '../../views/RulesView'
 import type { ViewContext } from '../../views/viewContext'
 import { tabLinkClassName } from '../layout/tabLinkClassName'
 import { FrameworkCoverageTab } from './FrameworkCoverageTab'
+import { SourceLine } from './SourceLine'
 import { ReleaseComparisonView } from './ReleaseComparisonView'
 
 const TAB_LABELS: Record<FrameworkTab, string> = { rules: 'Rules', releases: 'Releases', coverage: 'Coverage' }
@@ -126,6 +127,7 @@ export function FrameworkPage({ page, context }: { page: ResolvedFrameworkPage<M
       <div className="shrink-0 border-b border-border px-4 pt-0.5">
         <BackToGridLink />
         <PageTitle title={isAll ? 'All rules' : source.display_name} subtitle={subtitle} />
+        {!isAll && <div className="mt-1"><SourceLine source={source} /></div>}
         <div className="mt-1">
           <SubTabs frameworkName={frameworkName} tabs={tabs} activeTab={activeTab} />
         </div>

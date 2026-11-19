@@ -13,7 +13,7 @@ import { ThirdPartyPackages } from './ThirdPartyPackages'
 const LINK_CLASS = 'underline hover:text-foreground'
 const SECTION_HEADING_CLASS = 'mb-2 text-sm font-semibold text-foreground'
 
-function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
+export function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <a className={LINK_CLASS} href={href} target="_blank" rel="noreferrer">
       {children}

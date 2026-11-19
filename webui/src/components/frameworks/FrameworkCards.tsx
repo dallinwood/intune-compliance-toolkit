@@ -15,6 +15,7 @@ import { hrefForFrameworkPage, useFilterStore } from '../../state/filterStore'
 import { ALL_FRAMEWORKS, type FrameworkTab } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import { CoverageBar } from '../selectionCoverage/CoverageBar'
+import { SourceLine } from './SourceLine'
 
 function accessibleName(label: string, isCurrent: boolean, isFirst: boolean): string {
   if (isFirst) return `${label}: see everything in it, compared with an ${EMPTY_RELEASE_LABEL.toLowerCase()}`
@@ -149,6 +150,7 @@ export function FrameworkCards({ sources, coverageBySource }: { sources: Manifes
                   )}
                 </div>
               </div>
+              <SourceLine source={source} />
               <p className="text-sm text-muted-foreground">
                 Current: {current.label} ({current.tag}) · {pluralize(source.rule_count, 'rule', 'rules')}
               </p>
