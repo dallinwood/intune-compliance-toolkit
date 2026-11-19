@@ -32,3 +32,17 @@ describe('the shape checks accept the whole committed library', () => {
     }
   }
 })
+
+
+describe('the shape checks accept the openscap manual reason', () => {
+  it('accepts manual_reason openscap on a rule', () => {
+    const [source] = manifest.sources
+    const releaseDirectory = source.releases[0].index_path.replace(/_index\.json$/, '')
+    const [ruleFileName] = readdirSync(new URL(`${releaseDirectory}rules/`, BASELINES_DIRECTORY))
+    const rule = readJson<Record<string, unknown>>(`${releaseDirectory}rules/${ruleFileName}`)
+
+    const openscapRule = { ...rule, assessment: { status: 'manual', manual_reason: 'openscap' } }
+
+    expect(ruleShapeProblem(openscapRule)).toBeNull()
+  })
+})

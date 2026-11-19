@@ -185,6 +185,11 @@ def test_manual_with_reason_is_valid():
     assert schema_errors(rule) == []
 
 
+def test_manual_reason_openscap_is_valid():
+    rule = make_rule(assessment={"status": "manual", "manual_reason": "openscap"})
+    assert schema_errors(rule) == []
+
+
 def test_odv_placeholder_allowed_as_integer_value():
     rule = make_rule()
     rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "$ODV_value"}

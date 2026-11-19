@@ -83,7 +83,7 @@ const sectionPath: Check = (value, path) =>
 
 const assessment = objectWith({
   status: oneOf('automated', 'manual'),
-  manual_reason: oneOf('manual', 'inherent', 'permanent', 'n_a', 'supplemental', 'no_check', null),
+  manual_reason: oneOf('manual', 'inherent', 'permanent', 'n_a', 'supplemental', 'no_check', 'openscap', null),
 })
 
 const applicability = listOf(

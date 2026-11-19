@@ -570,7 +570,7 @@ test('review & generate offers a download with defaults and lists an inherent ru
 
   const manualList = page.getByRole('region', { name: /Needs manual attestation/ })
   await expect(manualList).toContainText('os_application_sandboxing')
-  await expect(manualList).toContainText('Met by macOS by design (mSCP: inherent).')
+  await expect(manualList).toContainText('Met by the platform by design.')
   await expect(page.getByText('Require a Minimum Password Length of 6 Characters')).toBeVisible()
 
   const downloadEvent = page.waitForEvent('download')

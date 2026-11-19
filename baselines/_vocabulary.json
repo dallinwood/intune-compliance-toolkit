@@ -59,16 +59,21 @@
     ],
     "tags": [],
     "manual_reasons": [
-      { "label": "marked by mSCP", "terms": ["manual"], "description": "mSCP marks this check as manual." },
-      { "label": "inherent", "terms": ["inherent"], "description": "Met by macOS by design (mSCP: inherent)." },
+      { "label": "marked manual by the source", "terms": ["manual"], "description": "The source marks this check as manual." },
+      { "label": "inherent", "terms": ["inherent"], "description": "Met by the platform by design." },
       {
         "label": "permanent",
         "terms": ["permanent"],
-        "description": "Cannot be configured on macOS; mSCP lists this as a permanent finding."
+        "description": "Cannot be configured on the platform; the source lists this as a permanent finding."
       },
-      { "label": "n/a", "terms": ["n_a"], "description": "Not applicable to macOS (mSCP: n_a)." },
+      { "label": "n/a", "terms": ["n_a"], "description": "Not applicable to the platform." },
       { "label": "supplemental", "terms": ["supplemental"], "description": "Supplemental guidance with no check." },
-      { "label": "no check", "terms": ["no_check"], "description": "The source provides no automated check." }
+      { "label": "no check", "terms": ["no_check"], "description": "The source provides no automated check." },
+      {
+        "label": "checkable with OpenSCAP",
+        "terms": ["openscap"],
+        "description": "ComplianceAsCode can check this with OpenSCAP; this toolkit has no runnable check for it."
+      }
     ]
   }
 }

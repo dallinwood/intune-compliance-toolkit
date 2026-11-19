@@ -46,18 +46,19 @@ function manualRule(manualReason: ManualReason | null, additionalInfo: string | 
 
 describe('manualReasonText', () => {
   it.each<[ManualReason, string]>([
-    ['inherent', 'Met by macOS by design (mSCP: inherent).'],
-    ['permanent', 'Cannot be configured on macOS; mSCP lists this as a permanent finding.'],
-    ['n_a', 'Not applicable to macOS (mSCP: n_a).'],
+    ['inherent', 'Met by the platform by design.'],
+    ['permanent', 'Cannot be configured on the platform; the source lists this as a permanent finding.'],
+    ['n_a', 'Not applicable to the platform.'],
     ['supplemental', 'Supplemental guidance with no check.'],
-    ['manual', 'mSCP marks this check as manual.'],
+    ['manual', 'The source marks this check as manual.'],
     ['no_check', 'The source provides no automated check.'],
+    ['openscap', 'ComplianceAsCode can check this with OpenSCAP; this toolkit has no runnable check for it.'],
   ])('explains manual_reason %s with the vocabulary description', (manualReason, text) => {
     expect(manualReasonText(manualReason, vocabularyIndex)).toBe(text)
   })
 
   it('treats a missing reason like an explicit "manual"', () => {
-    expect(manualReasonText(null, vocabularyIndex)).toBe('mSCP marks this check as manual.')
+    expect(manualReasonText(null, vocabularyIndex)).toBe('The source marks this check as manual.')
   })
 
   it('names the raw reason code when the vocabulary has no description for it', () => {
@@ -104,7 +105,7 @@ describe('buildManualAttestationMarkdown', () => {
       {
         id: 'mscp.pwpolicy_temporary_or_emergency_accounts_disable',
         title: 'Disable Temporary Accounts',
-        reason: 'mSCP marks this check as manual.',
+        reason: 'The source marks this check as manual.',
         additionalInfo: 'Ask the ISSO.\n\nThen record it.',
         automatedSupportRuleIds: [],
       },
@@ -112,7 +113,7 @@ describe('buildManualAttestationMarkdown', () => {
 
     expect(markdown).toContain(
       '- **pwpolicy_temporary_or_emergency_accounts_disable** - Disable Temporary Accounts\n\n' +
-        '  mSCP marks this check as manual.\n\n  Ask the ISSO.\n\n  Then record it.\n',
+        '  The source marks this check as manual.\n\n  Ask the ISSO.\n\n  Then record it.\n',
     )
     expect(markdown).not.toContain('mscp.pwpolicy_temporary')
   })

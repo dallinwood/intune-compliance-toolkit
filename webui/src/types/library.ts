@@ -3,7 +3,7 @@
 // so fetched data can be used without a mapping layer.
 
 export type AssessmentStatus = 'automated' | 'manual'
-export type ManualReason = 'manual' | 'inherent' | 'permanent' | 'n_a' | 'supplemental' | 'no_check'
+export type ManualReason = 'manual' | 'inherent' | 'permanent' | 'n_a' | 'supplemental' | 'no_check' | 'openscap'
 export type Architecture = 'arm64' | 'i386' | null
 
 export interface Assessment {

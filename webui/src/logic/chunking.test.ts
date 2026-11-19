@@ -80,7 +80,7 @@ describe('classifyRule', () => {
 
     expect(classify(rule)).toEqual({
       kind: 'manual',
-      entry: { id: rule.id, title: rule.title, reason: 'Met by macOS by design (mSCP: inherent).', additionalInfo: null, automatedSupportRuleIds: [] },
+      entry: { id: rule.id, title: rule.title, reason: 'Met by the platform by design.', additionalInfo: null, automatedSupportRuleIds: [] },
     })
   })
 
@@ -88,7 +88,7 @@ describe('classifyRule', () => {
     const result = classify(realRule('pwpolicy_temporary_or_emergency_accounts_disable'))
 
     if (result.kind !== 'manual') throw new Error(`Expected manual, got ${result.kind}`)
-    expect(result.entry.reason).toBe('mSCP marks this check as manual.')
+    expect(result.entry.reason).toBe('The source marks this check as manual.')
     expect(result.entry.additionalInfo).toMatch(/^Verify if a password policy is enforced by a directory service/)
   })
 

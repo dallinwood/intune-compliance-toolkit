@@ -17,11 +17,11 @@ describe('assessmentLabel', () => {
   it('adds the vocabulary label as a suffix and its description as the tooltip for a manual rule', () => {
     expect(assessmentLabel({ status: 'manual', manual_reason: 'inherent' }, vocabularyIndex)).toEqual({
       label: 'Manual - inherent',
-      description: 'Met by macOS by design (mSCP: inherent).',
+      description: 'Met by the platform by design.',
     })
     expect(assessmentLabel({ status: 'manual', manual_reason: 'n_a' }, vocabularyIndex).label).toBe('Manual - n/a')
     expect(assessmentLabel({ status: 'manual', manual_reason: 'no_check' }, vocabularyIndex).label).toBe('Manual - no check')
-    expect(assessmentLabel({ status: 'manual', manual_reason: 'manual' }, vocabularyIndex).label).toBe('Manual - marked by mSCP')
+    expect(assessmentLabel({ status: 'manual', manual_reason: 'manual' }, vocabularyIndex).label).toBe('Manual - marked manual by the source')
   })
 
   it('shows the raw reason code, as label and tooltip, when the vocabulary does not list it', () => {
