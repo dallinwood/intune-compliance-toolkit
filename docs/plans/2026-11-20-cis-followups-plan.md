@@ -56,3 +56,7 @@ Maintainer request (2026-11-20): other frameworks with plain-English steps must 
 - [ ] **Step 1: Failing test:** a mSCP rule whose fix is a profile/DDM payload gets a step with `language == "instructions"`; a step with a real `shell` keeps `bash`.
 - [ ] **Step 2: Implement, regenerate, run** `.venv/Scripts/python.exe -m pytest -W error -n auto --all-releases` and the web UI unit suite. Confirm with a script that no committed rule of any source has a `bash`/`zsh`/`powershell`/`python` check or step without a script.
 - [ ] **Step 3: Commit** `fix: mark mSCP plain-English remediation steps as instructions`. The controller restarts the dev server and screenshots `mscp.os_external_storage_access_defined` at both widths.
+
+## Progress log
+
+- 2026-11-20: Task 2 - markdown discussions now render fenced code blocks, inline code and bold (new `strong` inline segment). Commit: fix: render code blocks, inline code and bold in markdown discussions.

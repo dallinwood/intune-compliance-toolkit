@@ -9,6 +9,12 @@ function InlineText({ text, format }: { text: string; format: DiscussionFormat }
     switch (segment.kind) {
       case 'emphasis':
         return <em key={segmentIndex}>{segment.text}</em>
+      case 'strong':
+        return (
+          <strong key={segmentIndex} className="font-semibold text-foreground">
+            {segment.text}
+          </strong>
+        )
       case 'code':
         return (
           <code key={segmentIndex} className="rounded bg-foreground/10 px-1 font-mono text-xs break-all">

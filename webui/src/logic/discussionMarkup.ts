@@ -3,7 +3,8 @@
 // full AsciiDoc renderer. Anything unrecognised is shown as plain text.
 // ASD ISM, ASD E4EIT and NIST SP 800-53 discussions are Markdown, but only
 // `# ` to `###### ` headings, `- ` lists (nested by two-space indentation) and [text](url)
-// links appear in them, so that is all the Markdown reader understands.
+// links appear in them. CIS discussions add ``` fenced code, `inline code` and
+// **bold**; that is all the Markdown reader understands.
 
 import { BARE_URL_PATTERN_SOURCE } from './links'
 
@@ -20,6 +21,7 @@ export type DiscussionBlock =
 export type InlineSegment =
   | { kind: 'text'; text: string }
   | { kind: 'emphasis'; text: string }
+  | { kind: 'strong'; text: string }
   | { kind: 'code'; text: string }
   | { kind: 'link'; text: string; href: string }
 
@@ -112,6 +114,7 @@ export function parseDiscussion(text: string): DiscussionBlock[] {
 }
 
 const MARKDOWN_BULLET_PREFIX = '- '
+const MARKDOWN_FENCE = '```'
 const MARKDOWN_HEADING_PATTERN = /^#+ (.*)$/
 const SPACES_PER_LIST_LEVEL = 2
 const DEEPEST_LIST_DEPTH = 2
@@ -154,9 +157,23 @@ export function parseMarkdownDiscussion(text: string): DiscussionBlock[] {
     listItems = []
   }
 
-  for (const line of text.split('\n')) {
+  const lines = text.split('\n')
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+    const line = lines[lineIndex]
     const trimmed = line.trim()
-    if (trimmed === '') {
+    if (trimmed.startsWith(MARKDOWN_FENCE)) {
+      flushParagraph()
+      flushList()
+      const language = trimmed.slice(MARKDOWN_FENCE.length).trim()
+      const codeLines: string[] = []
+      lineIndex += 1
+      while (lineIndex < lines.length && !lines[lineIndex].trim().startsWith(MARKDOWN_FENCE)) {
+        codeLines.push(lines[lineIndex])
+        lineIndex += 1
+      }
+      const codeText = codeLines.join('\n')
+      blocks.push(language === '' ? { kind: 'code', text: codeText } : { kind: 'code', text: codeText, sourceLanguage: language })
+    } else if (trimmed === '') {
       flushParagraph()
       flushList()
     } else if (MARKDOWN_HEADING_PATTERN.test(line)) {
@@ -194,7 +211,11 @@ const INLINE_PATTERN = new RegExp(
 )
 
 const MARKDOWN_INLINE_PATTERN = new RegExp(
-  String.raw`\[(?<markdownText>[^\[\]]+)\]\((?<markdownHref>https?:\/\/[^\s()]+)\)`,
+  [
+    String.raw`\[(?<markdownText>[^\[\]]+)\]\((?<markdownHref>https?:\/\/[^\s()]+)\)`,
+    '`(?<code>[^`\\n]+)`',
+    String.raw`\*\*(?<strong>[^*\n]+?)\*\*`,
+  ].join('|'),
   'g',
 )
 
@@ -215,6 +236,8 @@ export function parseInline(text: string, format: DiscussionFormat = 'asciidoc')
       segments.push({ kind: 'link', text: groups.bareHref, href: groups.bareHref })
     } else if (groups.code !== undefined) {
       segments.push({ kind: 'code', text: groups.code })
+    } else if (groups.strong !== undefined) {
+      segments.push({ kind: 'strong', text: groups.strong })
     } else {
       segments.push({ kind: 'emphasis', text: groups.emphasis })
     }

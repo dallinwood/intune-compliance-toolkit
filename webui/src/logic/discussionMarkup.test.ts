@@ -189,8 +189,51 @@ describe('parseInline for markdown', () => {
     expect(parseInline('[x](javascript:alert(1))', 'markdown')).toEqual([{ kind: 'text', text: '[x](javascript:alert(1))' }])
   })
 
-  it('leaves underscores and backticks alone, since ISM text never uses them as markup', () => {
-    expect(parseInline('use _this_ and `that`', 'markdown')).toEqual([{ kind: 'text', text: 'use _this_ and `that`' }])
+  it('leaves underscores alone, since they are common in setting names', () => {
+    expect(parseInline('use _this_ and snake_case_name', 'markdown')).toEqual([
+      { kind: 'text', text: 'use _this_ and snake_case_name' },
+    ])
+  })
+
+  it('turns backticks into a code segment', () => {
+    expect(parseInline('run `pwpolicy -getaccountpolicies` now', 'markdown')).toEqual([
+      { kind: 'text', text: 'run ' },
+      { kind: 'code', text: 'pwpolicy -getaccountpolicies' },
+      { kind: 'text', text: ' now' },
+    ])
+  })
+
+  it('turns **text** into a strong segment', () => {
+    expect(parseInline('**Rationale:** because', 'markdown')).toEqual([
+      { kind: 'strong', text: 'Rationale:' },
+      { kind: 'text', text: ' because' },
+    ])
+  })
+
+  it('leaves an unmatched ** as text', () => {
+    expect(parseInline('a ** b', 'markdown')).toEqual([{ kind: 'text', text: 'a ** b' }])
+  })
+})
+
+describe('parseMarkdownDiscussion fenced code', () => {
+  it('reads a fenced block with a language as a code block with its exact text', () => {
+    const text = ['Before', '```bash', 'ls -l', '', '  indented', '```', 'After'].join('\n')
+    expect(parseMarkdownDiscussion(text)).toEqual([
+      { kind: 'paragraph', text: 'Before' },
+      { kind: 'code', text: 'ls -l\n\n  indented', sourceLanguage: 'bash' },
+      { kind: 'paragraph', text: 'After' },
+    ])
+  })
+
+  it('reads a fence without a language, and ends an open list before it', () => {
+    expect(parseMarkdownDiscussion('- one\n```\nx\n```')).toEqual([
+      { kind: 'list', items: [{ text: 'one', depth: 0 }] },
+      { kind: 'code', text: 'x' },
+    ])
+  })
+
+  it('runs an unclosed fence to the end of the text', () => {
+    expect(parseMarkdownDiscussion('```\na\nb')).toEqual([{ kind: 'code', text: 'a\nb' }])
   })
 })
 
