@@ -84,3 +84,4 @@ placeholder and quoting checks in CI.
   fixed two provenance minors: a framework source that is not exactly `official` now counts as
   community (none is dropped), and the e2e test for the all-rules page having no provenance
   badge now proves its locator can find the badge on a framework page.
+- 2026-11-20: Final-review fixes: the out-of-date notice now sees through `$replace`/`$append`/`$merge` overlay operators, plus stale v6 text, one old-shape overlay test and leftover target-check names cleaned up.

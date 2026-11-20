@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Library manifest (v6)",
+  "title": "Library manifest (v7)",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "sources"],

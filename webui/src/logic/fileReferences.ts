@@ -111,13 +111,13 @@ async function resolvedEntry<Entry extends { shell?: string | null; shell_file?:
   return { ...rest, shell: await loadText(shellFile) } as Entry
 }
 
-async function resolvedCheckItem(targetCheck: CheckItem, loadText: LoadText): Promise<CheckItem> {
+async function resolvedCheckItem(checkItem: CheckItem, loadText: LoadText): Promise<CheckItem> {
   const byVersion = await Promise.all(
-    Object.entries(targetCheck.by_version).map(async ([version, check]) => [version, await resolvedEntry<RuleCheck>(check, loadText)] as const),
+    Object.entries(checkItem.by_version).map(async ([version, check]) => [version, await resolvedEntry<RuleCheck>(check, loadText)] as const),
   )
   return {
-    ...targetCheck,
-    default: targetCheck.default === null ? null : await resolvedEntry<RuleCheck>(targetCheck.default, loadText),
+    ...checkItem,
+    default: checkItem.default === null ? null : await resolvedEntry<RuleCheck>(checkItem.default, loadText),
     by_version: Object.fromEntries(byVersion),
   }
 }

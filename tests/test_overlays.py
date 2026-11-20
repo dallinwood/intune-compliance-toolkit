@@ -82,15 +82,15 @@ def test_shared_index_case(case):
 
 def test_merge_result_shares_no_objects_with_its_inputs():
     rule = {"id": "x.rule", "tags": ["a"], "references": {"nist": ["AC-1"]}}
-    fields = {"tags": ["b"], "references": {"cis": ["1.1"]}, "check": {"$replace": {"Windows": {"by_version": {}}}}}
+    fields = {"tags": ["b"], "references": {"cis": ["1.1"]}, "check": {"$replace": {"Windows": [{"by_version": {}}]}}}
 
     merged = apply_overlay_fields(rule, fields)
     merged["tags"].append("mutated")
     merged["references"]["nist"].append("mutated")
-    merged["check"]["Windows"]["by_version"]["mutated"] = True
+    merged["check"]["Windows"][0]["by_version"]["mutated"] = True
 
     assert rule == {"id": "x.rule", "tags": ["a"], "references": {"nist": ["AC-1"]}}
-    assert fields["check"] == {"$replace": {"Windows": {"by_version": {}}}}
+    assert fields["check"] == {"$replace": {"Windows": [{"by_version": {}}]}}
 
 
 def test_committed_overlays_are_valid():

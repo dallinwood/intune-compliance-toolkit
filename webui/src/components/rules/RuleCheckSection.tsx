@@ -9,7 +9,7 @@ import { scriptLanguageLabel } from '../../logic/targetDisplay'
 import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
-import type { Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../../types/library'
+import type { Rule, RuleCheck, ScriptLanguage, CheckItem } from '../../types/library'
 import { OdvCodeBlock, SectionHeading } from './CodeBlock'
 import { DisclosureButtons, SelectionButtons, type SelectionItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
@@ -60,28 +60,28 @@ function versionCheckKey(version: string): string {
   return `version-${version}`
 }
 
-function TargetCheckPanel({
+function CheckItemPanel({
   target,
-  targetCheck,
+  checkItem,
   odvValues,
   codeOdv,
 }: {
   target: string
-  targetCheck: TargetCheck
+  checkItem: CheckItem
   odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
   const index = useVocabularyIndex()
   const [selectedKey, setSelectedKey] = useState(DEFAULT_CHECK_KEY)
-  const versionChecks = Object.entries(targetCheck.by_version).sort(([left], [right]) => compareVersionsDescending(left, right))
+  const versionChecks = Object.entries(checkItem.by_version).sort(([left], [right]) => compareVersionsDescending(left, right))
   const selectedVersionCheck = versionChecks.find(([version]) => versionCheckKey(version) === selectedKey)
 
   if (versionChecks.length === 0) {
-    return targetCheck.default ? (
+    return checkItem.default ? (
       <CheckEntry
         label="Check (all listed versions)"
-        check={targetCheck.default}
-        language={targetCheck.language}
+        check={checkItem.default}
+        language={checkItem.language}
         odvValues={odvValues}
         codeOdv={codeOdv}
       />
@@ -102,15 +102,15 @@ function TargetCheckPanel({
         <CheckEntry
           label={termLabel(index, 'versions', versionKey(target, selectedVersionCheck[0]))}
           check={selectedVersionCheck[1]}
-          language={targetCheck.language}
+          language={checkItem.language}
           odvValues={odvValues}
           codeOdv={codeOdv}
         />
-      ) : targetCheck.default ? (
+      ) : checkItem.default ? (
         <CheckEntry
           label="Default check (versions without their own)"
-          check={targetCheck.default}
-          language={targetCheck.language}
+          check={checkItem.default}
+          language={checkItem.language}
           odvValues={odvValues}
           codeOdv={codeOdv}
         />
@@ -133,7 +133,7 @@ export function RuleCheckSection({
   custom?: boolean
 }) {
   const index = useVocabularyIndex()
-  const targetChecks = Object.entries(rule.check ?? {})
+  const checkItemsByTarget = Object.entries(rule.check ?? {})
   // An ISM control has no macOS entry at all, so only an mSCP rule that no
   // release lists is missing a version.
   const hasNoMacosVersion =
@@ -153,13 +153,13 @@ export function RuleCheckSection({
           Applies to {rule.architecture} Macs only; other Macs report a pass.
         </p>
       )}
-      {targetChecks.length === 0 ? (
+      {checkItemsByTarget.length === 0 ? (
         <p className="text-xs text-muted-foreground">
           No automated check. {assessmentLabel(rule.assessment, index).description}
         </p>
       ) : (
         <DisclosureButtons
-          items={targetChecks.flatMap(([target, checkItems]) =>
+          items={checkItemsByTarget.flatMap(([target, checkItems]) =>
             checkItems.map((checkItem, position) => ({
               key: `${target}-${position}`,
               panelTestId: 'check-target',
@@ -169,7 +169,7 @@ export function RuleCheckSection({
                   {checkItem.name ?? scriptLanguageLabel(checkItem.language)}
                 </>
               ),
-              panel: <TargetCheckPanel target={target} targetCheck={checkItem} odvValues={odvValues} codeOdv={codeOdv} />,
+              panel: <CheckItemPanel target={target} checkItem={checkItem} odvValues={odvValues} codeOdv={codeOdv} />,
             })),
           )}
         />

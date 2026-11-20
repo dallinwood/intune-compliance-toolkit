@@ -10,13 +10,24 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 // The paths an overlay's fields set: into plain objects, stopping at arrays and values.
+// An operator is not a path segment: $replace and $append set their parent's whole
+// value, and $merge's wrapped object is merged into the parent.
 export function overlayFieldPaths(fields: Record<string, unknown>): string[][] {
   const paths: string[][] = []
   function visit(prefix: string[], value: Record<string, unknown>) {
     for (const [key, member] of Object.entries(value)) {
       const path = [...prefix, key]
-      if (isPlainObject(member) && Object.keys(member).length > 0) visit(path, member)
-      else paths.push(path)
+      if (!isPlainObject(member) || Object.keys(member).length === 0) {
+        paths.push(path)
+      } else if ('$replace' in member || '$append' in member) {
+        paths.push(path)
+      } else if (isPlainObject(member.$merge) && Object.keys(member.$merge).length > 0) {
+        visit(path, member.$merge)
+      } else if ('$merge' in member) {
+        paths.push(path)
+      } else {
+        visit(path, member)
+      }
     }
   }
   visit([], fields)

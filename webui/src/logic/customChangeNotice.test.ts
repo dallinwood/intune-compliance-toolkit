@@ -30,6 +30,37 @@ describe('overlayFieldPaths', () => {
   })
 })
 
+describe('overlayFieldPaths operators', () => {
+  const upstreamCheckChange = ['check', 'macOS', '0', 'default', 'shell']
+
+  it('stops at the parent of a $replace, which sets the whole value', () => {
+    const paths = overlayFieldPaths({ check: { macOS: { $replace: [{ name: null, by_version: {} }] } } })
+    expect(paths).toEqual([['check', 'macOS']])
+    expect(isTouched(upstreamCheckChange, paths)).toBe(true)
+  })
+
+  it('stops at the parent of an $append', () => {
+    const paths = overlayFieldPaths({ check: { macOS: { $append: [{ name: 'extra', by_version: {} }] } } })
+    expect(paths).toEqual([['check', 'macOS']])
+    expect(isTouched(upstreamCheckChange, paths)).toBe(true)
+  })
+
+  it('treats an odvs $replace as touching the odvs list', () => {
+    const paths = overlayFieldPaths({ odvs: { $replace: [{ recommended: 1 }] } })
+    expect(paths).toEqual([['odvs']])
+    expect(isTouched(['odvs', '0', 'recommended'], paths)).toBe(true)
+  })
+
+  it('recurses into a $merge without adding the operator as a segment', () => {
+    const paths = overlayFieldPaths({ remediation: { Windows: { $merge: { steps: ['a'], payloads: { x: 1 } } } } })
+    expect(paths).toEqual([
+      ['remediation', 'Windows', 'steps'],
+      ['remediation', 'Windows', 'payloads', 'x'],
+    ])
+    expect(isTouched(['remediation', 'Windows', 'steps'], paths)).toBe(true)
+  })
+})
+
 describe('isTouched', () => {
   it('is true when either path is a prefix of the other', () => {
     expect(isTouched(['remediation', 'Windows', 'steps'], [['remediation']])).toBe(true)

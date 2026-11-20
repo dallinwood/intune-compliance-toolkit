@@ -147,7 +147,7 @@ Folder layout (one folder per release, never overwritten by a later import):
   format that built it).
 - `baselines/<source>/releases/<tag>/` holds that release's `_index.json` and
   `rules/`.
-- `baselines/_manifest.json` (schema v6) lists each source's releases, oldest
+- `baselines/_manifest.json` (schema v7) lists each source's releases, oldest
   first. Its top-level `release_tag`, `commit_sha`, `index_path` and so on always
   describe the current (newest) release, so nothing that reads one release
   needs to know about the others.

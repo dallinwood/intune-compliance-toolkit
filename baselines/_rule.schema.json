@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Normalized rule (v6)",
+  "title": "Normalized rule (v7)",
   "type": "object",
   "additionalProperties": false,
   "required": [
