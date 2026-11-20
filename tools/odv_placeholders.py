@@ -47,7 +47,7 @@ POWERSHELL = QuoteDialect(
 # interpreter. Python is left out: its strings process backslash escapes and
 # f-string braces, which the single and double gates do not keep out.
 QUOTE_DIALECT_BY_SCRIPT_EXTENSION = {".sh": BASH, ".ps1": POWERSHELL}
-QUOTE_DIALECT_BY_INLINE_LANGUAGE = {"bash": BASH, "zsh": BASH}
+QUOTE_DIALECT_BY_INLINE_LANGUAGE = {"bash": BASH, "zsh": BASH, "powershell": POWERSHELL}
 SCRIPT_EXTENSIONS = (".sh", ".ps1", ".py")
 
 ANSI_C_QUOTE = "ansi-c"

@@ -79,9 +79,12 @@ def test_odv_placeholders_pass_through_as_powershell_variables():
         "-eq [uint32]$ODV_max_age)) {"
     )
     assert check_condition(setting(type="REG_SZ", data="$ODV_banner")) == (
-        "if (-not ($current -is [string] -and $current -ceq $ODV_banner)) {"
+        "if (-not ($current -is [string] -and $current -ceq '$ODV_banner')) {"
     )
     assert "-Value $ODV_max_age -PropertyType DWord" in registry_fix_powershell([setting(data="$ODV_max_age")])
+    assert "-Value '$ODV_banner' -PropertyType String" in registry_fix_powershell(
+        [setting(type="REG_SZ", data="$ODV_banner")]
+    )
 
 
 def test_a_quote_in_the_key_path_is_doubled():

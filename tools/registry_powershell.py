@@ -64,7 +64,8 @@ def value_expression(setting: dict) -> str:
     if registry_type == "REG_BINARY":
         byte_literals = ", ".join("0x" + pair for pair in bytes_from_hex(data))
         return f"([byte[]]({byte_literals}))" if byte_literals else "([byte[]]@())"
-    return data if is_odv(data) else single_quoted(data)
+    # A string ODV is quoted like any other quoted ODV; its quoting must be "single".
+    return f"'{data}'" if is_odv(data) else single_quoted(data)
 
 
 def match_expression(setting: dict) -> str:

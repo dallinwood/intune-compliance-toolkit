@@ -226,10 +226,16 @@ def test_quoted_placeholder_in_unknown_script_extension_reported():
     assert any("scripts/fix.rb" in error and "single" in error and "extension" not in error for error in errors)
 
 
-def test_quoted_placeholder_in_inline_powershell_reported():
+def test_single_quoted_placeholder_in_inline_powershell_ok():
     rule = build_rule("$x = '$ODV_v'", [build_odv(quoting="single")])
     rule["check"]["macos"][0]["language"] = "powershell"
-    assert any("single" in error for error in placeholder_errors(rule))
+    assert placeholder_errors(rule) == []
+
+
+def test_single_quoted_odv_used_bare_in_inline_powershell_reported():
+    rule = build_rule("$x = $ODV_v", [build_odv(quoting="single")])
+    rule["check"]["macos"][0]["language"] = "powershell"
+    assert any("outside single quotes" in error for error in placeholder_errors(rule))
 
 
 def test_quoted_placeholder_in_inline_zsh_ok():
@@ -538,3 +544,29 @@ def test_a_quoted_odv_in_display_only_text_is_not_a_quoting_error():
         {"name": None, "language": "ansible", "default": {"shell": "value: $ODV_v"}, "by_version": {}}
     )
     assert placeholder_errors(rule) == []
+
+
+def generated_powershell_rule(quoting: str) -> dict:
+    from tools.registry_powershell import registry_check_powershell, registry_fix_powershell
+
+    settings = [registry_setting("REG_SZ", "$ODV_banner")]
+    return {
+        "id": "rule_1",
+        "odvs": [build_odv("banner", quoting=quoting)],
+        "check": {
+            "Windows": [
+                {"name": None, "language": "powershell", "default": {"shell": registry_check_powershell(settings)}, "by_version": {}}
+            ]
+        },
+        "remediation": {
+            "Windows": {"steps": [{"language": "powershell", "shell": registry_fix_powershell(settings)}], "payloads": []}
+        },
+    }
+
+
+def test_generated_powershell_for_a_single_quoted_string_odv_passes_the_scanner():
+    assert placeholder_errors(generated_powershell_rule("single")) == []
+
+
+def test_generated_powershell_for_a_double_quoted_string_odv_is_rejected():
+    assert placeholder_errors(generated_powershell_rule("double")) != []
