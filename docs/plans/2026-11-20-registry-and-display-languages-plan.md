@@ -65,3 +65,5 @@
 - [ ] **Step 4: Commit** `feat: show registry settings as a table with a .reg download`; progress log; push.
 
 ## Progress log
+
+- 2026-11-20 - Task 1 (schema and Python tools): the rule schema accepts the `registry` body and the `ansible` and `goss` languages, `tools/registry_powershell.py` builds the check and fix PowerShell, and the ODV, file reference and overlay checks know the new languages. Commit: 3095dac82 feat: record registry settings and Ansible and goss items in rules.
