@@ -117,10 +117,25 @@ def test_multi_rule_partial_control(upstream_dir):
     assert len(steps) == 2
     assert steps[1]["shell"] is None
     assert steps[1]["additional_info"] == "No fix in ComplianceAsCode (rule `rule_without_fix_or_ocil`)."
-    assert "No audit procedure in ComplianceAsCode." in rule["check"]["Linux"]["default"]["additional_info"]
+    assert steps[1]["language"] == "instructions"
+    assert steps[0]["language"] == "bash"
+    assert rule["check"] is None
     assert rule["assessment"] == {"status": "manual", "manual_reason": "openscap"}
     assert rule["references"]["complianceascode"]["related_rules"] == ["sshd_disable_root_password_login"]
     assert all("Password" not in step["name"] for step in steps)
+
+
+def test_audit_uses_instructions_language(upstream_dir):
+    check = rules_by_cis_id(upstream_dir)["1.2.1"]["check"]["Linux"]
+    assert check["language"] == "instructions"
+    assert check["default"]["shell"] is None
+    assert check["default"]["result"] is None
+
+
+def test_no_check_when_no_linked_rule_has_an_audit_procedure(upstream_dir):
+    rule = rules_by_cis_id(upstream_dir)["1.1.1"]
+    assert rule["check"] is None
+    assert rule["remediation"]["Linux"]["steps"][0]["language"] == "bash"
 
 
 def test_ruleless_controls(upstream_dir):

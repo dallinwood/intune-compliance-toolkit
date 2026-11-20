@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Active Authselect Profile Includes PAM Modules\n\nThe active authselect profile must include the required PAM modules:\n`pam_pwquality.so`, `pam_pwhistory.so`, `pam_faillock.so`, and `pam_unix.so`\nin both `system-auth` and `password-auth` files.\n\nA custom authselect profile can be created by copying and customizing one of the default profiles.\nThe default profiles include: `local`, `sssd`, and `winbind`. These profiles can be customized\nto follow site specific requirements.\n\n**Rationale:**\n\nA custom profile is required to customize many of the PAM options.\nModifications made to a default profile may be overwritten during an update.\nWhen you deploy a profile, the profile is applied to every user logging into the given host.\n\n**Notes:**\n\nThis rule verifies that the active authselect profile includes the required PAM modules:\npam_pwquality.so, pam_pwhistory.so, pam_faillock.so, and pam_unix.so in both system-auth\nand password-auth files. The rule checks the authselect profile source files directly,\nnot the symlinked files in /etc/pam.d/. Other rules ensure these modules are properly\nconfigured with correct options.",

@@ -8,7 +8,8 @@ import type { ScriptLanguage } from '../types/library'
 
 export type HighlightLanguage = 'bash' | 'powershell' | 'json' | 'xml' | 'python'
 
-const SCRIPT_LANGUAGES: Record<ScriptLanguage, HighlightLanguage> = {
+// Instructions are prose, not code, so they have no highlight language.
+const SCRIPT_LANGUAGES: Partial<Record<ScriptLanguage, HighlightLanguage>> = {
   bash: 'bash',
   zsh: 'bash',
   powershell: 'powershell',

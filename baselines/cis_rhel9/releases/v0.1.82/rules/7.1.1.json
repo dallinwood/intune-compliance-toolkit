@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Group Who Owns passwd File\n\nTo properly set the group owner of `/etc/passwd`, run the command:\n\n```\n$ sudo chgrp root /etc/passwd\n```\n\n**Rationale:**\n\nThe `/etc/passwd` file contains information about the users that are configured on\nthe system. Protection of this file is critical for system security.\n\n## Verify User Who Owns passwd File\n\nTo properly set the owner of `/etc/passwd`, run the command:\n\n```\n$ sudo chown root /etc/passwd \n```\n\n**Rationale:**\n\nThe `/etc/passwd` file contains information about the users that are configured on\nthe system. Protection of this file is critical for system security.\n\n## Verify Permissions on passwd File\n\nTo properly set the permissions of `/etc/passwd`, run the command:\n\n```\n$ sudo chmod 0644 /etc/passwd\n```\n\n**Rationale:**\n\nIf the `/etc/passwd` file is writable by a group-owner or the\nworld the risk of its compromise is increased. The file contains the list of\naccounts on the system and associated information, and protection of this file\nis critical for system security.",

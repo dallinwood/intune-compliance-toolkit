@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall tftpd-hpa Package\n\nThe `tftpd-hpa` package can be removed with the following command: \n```\n $ apt-get remove tftpd-hpa\n```\n\n**Rationale:**\n\nRemoving the `tftpd-hpa` package decreases the risk of the accidental\n(or intentional) activation of tftp services.\n\n\n        \n\nIf TFTP is required for operational support (such as transmission of router\nconfigurations), its use must be documented with the Information Systems\nSecurity Manager (ISSM), restricted to only authorized personnel, and have\naccess control rules established.\n\n## Disable tftpd-hpa Service\n\nThe `tftpd-hpa` service should be disabled.\n\nThe `tftpd-hpa` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now tftpd-hpa.service\n```\n\n**Rationale:**\n\nDisabling the `tftpd-hpa` service ensures the system is not acting\nas a TFTP server, which does not provide encryption or authentication.",

@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure /var/log Located On Separate Partition\n\nSystem logs are stored in the `/var/log` directory.\n\nEnsure that `/var/log` has its own partition or logical\nvolume at installation time, or migrate it using LVM.\n\n**Rationale:**\n\nPlacing `/var/log` in its own partition\nenables better separation between log files\nand other files in `/var/`.",
@@ -60,7 +60,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `partition_for_var_log`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure /var/log Located On Separate Partition",
           "shell": null,
           "versions": null

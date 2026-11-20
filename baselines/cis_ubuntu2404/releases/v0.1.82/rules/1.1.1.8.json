@@ -20,17 +20,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Mounting of udf\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Disable Mounting of udf\n\nTo configure the system to prevent the `udf`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/udf.conf`:\n\n```\ninstall udf /bin/false\n```\n\nThis entry will cause a non-zero return value during a `udf` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall udf /bin/true\n```\n\n\nThis effectively prevents usage of this uncommon filesystem.\n\nThe `udf` filesystem type is the universal disk format\nused to implement the ISO/IEC 13346 and ECMA-167 specifications.\nThis is an open vendor filesystem type for data storage on a broad\nrange of media. This filesystem type is necessary to support\nwriting DVDs and newer optical disc formats.\n\n**Rationale:**\n\nRemoving support for unneeded filesystem types reduces the local\nattack surface of the system.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.1.1.8",

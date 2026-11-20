@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Users Re-Authenticate for Privilege Escalation - sudo\n\nThe sudo `NOPASSWD` and `!authenticate` option, when\nspecified, allows a user to execute commands using sudo without having to\nauthenticate. This should be disabled by making sure that\n`NOPASSWD` and/or `!authenticate` do not exist in\n`/etc/sudoers` configuration file or any sudo configuration snippets\nin `/etc/sudoers.d/`.\"\n\n**Rationale:**\n\nWithout re-authentication, users may access resources or perform tasks for which they\ndo not have authorization.\n\n\n        \n\nWhen operating systems provide the capability to escalate a functional capability, it\nis critical that the user re-authenticate.",

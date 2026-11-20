@@ -32,7 +32,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable GSSAPI Authentication\n\nUnless needed, SSH should not permit extraneous or unnecessary\nauthentication mechanisms like GSSAPI.\n\n\nThe default SSH configuration disallows authentications based on GSSAPI. The appropriate\nconfiguration is used if no value is set for `GSSAPIAuthentication`.\n\n\nTo explicitly disable GSSAPI authentication, add or correct the following line in\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nGSSAPIAuthentication no\n```\n\n**Rationale:**\n\nGSSAPI authentication is used to provide additional authentication mechanisms to\napplications. Allowing GSSAPI authentication through SSH exposes the system's\nGSSAPI to remote hosts, increasing the attack surface of the system.",

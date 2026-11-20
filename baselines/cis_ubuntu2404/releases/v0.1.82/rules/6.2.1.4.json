@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Extend Audit Backlog Limit for the Audit Daemon\n\nTo improve the kernel capacity to queue all log events, even those which occurred\nprior to the audit daemon, add the argument `audit_backlog_limit=$ODV_var_audit_backlog_limit` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit_backlog_limit=$ODV_var_audit_backlog_limit` is added as a kernel command line\nargument to newly installed kernels, add `audit_backlog_limit=$ODV_var_audit_backlog_limit` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit_backlog_limit=$ODV_var_audit_backlog_limit ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# update-grub\n```\n\n**Rationale:**\n\naudit_backlog_limit sets the queue length for audit events awaiting transfer\nto the audit daemon. Until the audit daemon is up and running, all log messages\nare stored in this queue.  If the queue is overrun during boot process, the action\ndefined by audit failure flag is taken.\n\n## Extend Audit Backlog Limit for the Audit Daemon in zIPL\n\nTo improve the kernel capacity to queue all log events, even those which start prior to the audit daemon,\ncheck that all boot entries in `/boot/loader/entries/*.conf` have `audit_backlog_limit=8192`\nincluded in its options.\n\nTo ensure that new kernels and boot entries continue to extend the audit log events queue,\nadd `audit_backlog_limit=8192` to `/etc/kernel/cmdline`.\n\n**Rationale:**\n\naudit_backlog_limit sets the queue length for audit events awaiting transfer\nto the audit daemon. Until the audit daemon is up and running, all log messages\nare stored in this queue.  If the queue is overrun during boot process, the action\ndefined by audit failure flag is taken.",
@@ -78,7 +78,7 @@
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `zipl_audit_backlog_limit_argument`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Extend Audit Backlog Limit for the Audit Daemon in zIPL",
           "shell": null,
           "versions": null

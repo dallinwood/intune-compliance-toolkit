@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure journald is configured to send logs to rsyslog\n\nData from journald may be stored in volatile memory or persisted locally.\nUtilities exist to accept remote export of journald logs.\n\n**Rationale:**\n\nStoring log data on a remote host protects log integrity from local attacks. If an attacker gains root access on the local system, they could tamper with or remove log data that is stored on the local system.",

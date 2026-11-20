@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Minimum Different Characters\n\nThe pam_pwquality module's `difok` parameter sets the number of characters\nin a password that must not be present in and old password during a password change.\n\n\n          \n\nModify the `difok` setting in `/etc/security/pwquality.conf`\nto equal $ODV_var_password_pam_difok to require differing characters\nwhen changing passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources\nrequired to compromise the password. Password complexity, or strength,\nis a measure of the effectiveness of a password in resisting attempts\nat guessing and brute–force attacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long\nit takes to crack a password. The more complex the password, the\ngreater the number of possible combinations that need to be tested\nbefore the password is compromised.\n\n\n          \n\nRequiring a minimum number of different characters during password changes ensures that\nnewly changed passwords should not resemble previously compromised ones.\nNote that passwords which are changed on compromised systems will still be compromised, however.",

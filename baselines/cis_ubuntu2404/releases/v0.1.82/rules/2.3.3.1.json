@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Chrony Configure Pool and Server\n\n`Chrony` is a daemon which implements the Network Time Protocol (NTP). It is designed to\nsynchronize system clocks across a variety of systems and use a source that is highly\naccurate. More information on `chrony` can be found at\n\n    [https://chrony-project.org/](https://chrony-project.org/).\n`Chrony` can be configured to be a client and/or a server.\nAdd or edit server or pool lines to `/etc/chrony/chrony.conf` as appropriate:\n\n```\nserver <remote-server>\n```\n\nMultiple servers may be configured.\n\n**Rationale:**\n\nIf `chrony` is in use on the system proper configuration is vital to ensuring time\nsynchronization is working properly.\n\n**Notes:**\n\nRule does not check or remediate config files included via\nconfdir and sourcedir directives.\n",

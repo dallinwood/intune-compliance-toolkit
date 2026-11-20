@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable Randomized Layout of Virtual Address Space\n\nTo set the runtime status of the `kernel.randomize_va_space` kernel parameter, run the following command: \n```\n$ sudo sysctl -w kernel.randomize_va_space=2\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nkernel.randomize_va_space = 2\n```\n\n**Rationale:**\n\nAddress space layout randomization (ASLR) makes it more difficult for an\nattacker to predict the location of attack code they have introduced into a\nprocess's address space during an attempt at exploitation. Additionally,\nASLR makes it more difficult for an attacker to know the location of\nexisting code in order to re-purpose it using return oriented programming\n(ROP) techniques.",

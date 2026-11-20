@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Add nodev Option to /var/log/audit\n\nThe `nodev` mount option can be used to prevent device files from\nbeing created in `/var/log/audit`.\nLegitimate character and block devices should exist only in\nthe `/dev` directory on the root partition or within chroot\njails built for system services.\nAdd the `nodev` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var/log/audit`.\n\n**Rationale:**\n\nThe only legitimate location for device files is the `/dev` directory\nlocated on the root partition. The only exception to this is chroot jails.",

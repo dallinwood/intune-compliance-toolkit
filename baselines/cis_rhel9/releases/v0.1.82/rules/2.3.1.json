@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## The Chrony package is installed\n\nSystem time should be synchronized between all systems in an environment. This is\ntypically done by establishing an authoritative time server or set of servers and having all\nsystems synchronize their clocks to them.\nThe `chrony` package can be installed with the following command:\n\n```\n$ sudo dnf install chrony\n```\n\n**Rationale:**\n\nTime synchronization is important to support time sensitive security mechanisms like\nKerberos and also ensures log files have consistent time records across the enterprise,\nwhich aids in forensic investigations.",

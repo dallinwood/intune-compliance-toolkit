@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable Core Dumps for All Users\n\nTo disable core dumps for all users, add the following line to\n`/etc/security/limits.conf`, or to a file within the\n`/etc/security/limits.d/` directory:\n\n```\n*     hard   core    0\n```\n\n**Rationale:**\n\nA core dump includes a memory image taken at the time the operating system\nterminates an application. The memory image could contain sensitive data and is generally useful\nonly for developers trying to debug problems.\n\n## Disable Core Dumps for SUID programs\n\nTo set the runtime status of the `fs.suid_dumpable` kernel parameter, run the following command: \n```\n$ sudo sysctl -w fs.suid_dumpable=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nfs.suid_dumpable = 0\n```\n\n**Rationale:**\n\nThe core dump of a setuid program is more likely to contain\nsensitive data, as the program itself runs with greater privileges than the\nuser who initiated execution of the program.  Disabling the ability for any\nsetuid program to write a core file decreases the risk of unauthorized access\nof such data.",

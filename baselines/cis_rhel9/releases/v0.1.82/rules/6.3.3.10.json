@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure auditd Collects Information on Exporting to Media (successful)\n\nAt a minimum, the audit system should collect media exportation\nevents for all users and root. If the `auditd` daemon is configured to\nuse the `augenrules` program to read audit rules during daemon startup\n(the default), add the following line to a file with suffix `.rules` in\nthe directory `/etc/audit/rules.d`, setting ARCH to either b32 for\n32-bit system, or having two lines for both b32 and b64 in case your\nsystem is 64-bit:\n\n```\n-a always,exit -F arch=ARCH -S mount -F auid>=1000 -F auid!=unset -F key=export\n```\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following line to\n`/etc/audit/audit.rules` file, setting ARCH to either b32 for\n32-bit system, or having two lines for both b32 and b64 in case your\nsystem is 64-bit:\n\n```\n-a always,exit -F arch=ARCH -S mount -F auid>=1000 -F auid!=unset -F key=export\n```\n\n**Rationale:**\n\nThe unauthorized exportation of data to external media could result in an information leak\nwhere classified information, Privacy Act information, and intellectual property could be lost. An audit\ntrail should be created each time a filesystem is mounted to help identify and guard against information\nloss.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Enforcing\n\nVerify that the operating system uses \"pwquality\" to enforce the\npassword complexity rules.\n\nVerify the pwquality module is being enforced by operating system by\nrunning the following command:\n\n```\n$ grep -i enforcing /etc/security/pwquality.conf\nenforcing = 1\n```\n\n\nIf the value of \"enforcing\" is not \"1\" or the line is commented out,\nthis is a finding.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources\nrequired to compromise the password. Password complexity, or strength,\nis a measure of the effectiveness of a password in resisting attempts at\nguessing and brute-force attacks. Using enforcing=1 ensures \"pwquality\"\nenforces complex password construction configuration and has the ability\nto limit brute-force attacks on the system.",

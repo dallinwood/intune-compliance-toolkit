@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure that chronyd is running under chrony user account\n\nchrony is a daemon which implements the Network Time Protocol (NTP). It is designed to\nsynchronize system clocks across a variety of systems and use a source that is highly\naccurate. More information on chrony can be found at\n\n    [https://chrony-project.org/](https://chrony-project.org/).\nChrony can be configured to be a client and/or a server.\nTo ensure that chronyd is running under chrony user account,\nremove any `-u ...` option from `OPTIONS` other than `-u chrony`,\nas chrony is run under its own user by default.\nThis recommendation only applies if chrony is in use on the system.\n\n**Rationale:**\n\nIf chrony is in use on the system proper configuration is vital to ensuring time synchronization\nis working properly.",

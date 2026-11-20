@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable systemd-journal-remote Socket\n\nJournald supports the ability to receive messages from remote hosts,\nthus acting as a log server. Clients should not receive data from\nother hosts.\nNOTE:\n    The same package, systemd-journal-remote , is used for both sending\n    logs to remote hosts and receiving incoming logs.\n    With regards to receiving logs, there are two Systemd unit files;\n    systemd-journal-remote.socket and systemd-journal-remote.service.\n\n**Rationale:**\n\nIf a client is configured to also receive data, thus turning it into\na server, the client system is acting outside it's operational boundary.",

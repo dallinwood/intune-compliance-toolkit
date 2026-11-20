@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall vsftpd Package\n\nThe `vsftpd` package can be removed with the following command: \n```\n $ sudo dnf remove vsftpd\n```\n\n**Rationale:**\n\nRemoving the `vsftpd` package decreases the risk of its\naccidental activation.",

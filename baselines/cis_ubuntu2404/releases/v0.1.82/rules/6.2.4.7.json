@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Audit Configuration Files Must Be Owned By Group root\n\nAll audit configuration files must be owned by group root.\n\n```\nchown :root /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*\n```\n\n**Rationale:**\n\nWithout the capability to restrict which roles and individuals can\nselect which events are audited, unauthorized personnel may be able\nto prevent the auditing of critical events.\nMisconfigured audits may degrade the system's performance by\noverwhelming the audit log. Misconfigured audits may also make it more\ndifficult to establish, correlate, and investigate the events relating\nto an incident or identify those responsible for one.",

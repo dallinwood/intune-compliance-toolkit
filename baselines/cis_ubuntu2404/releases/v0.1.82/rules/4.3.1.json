@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install nftables Package\n\nnftables provides a new in-kernel packet classification framework that is based on a\nnetwork-specific Virtual Machine (VM) and a new nft userspace command line tool.\nnftables reuses the existing Netfilter subsystems such as the existing hook infrastructure,\nthe connection tracking system, NAT, userspace queuing and logging subsystem.\nThe `nftables` package can be installed with the following command:\n\n```\n$ apt-get install nftables\n```\n\n**Rationale:**\n\n`nftables` is a subsystem of the Linux kernel that can protect against threats\noriginating from within a corporate network to include malicious mobile code and poorly\nconfigured software on a host.",

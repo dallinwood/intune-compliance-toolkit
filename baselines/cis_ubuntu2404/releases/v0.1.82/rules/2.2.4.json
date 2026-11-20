@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove telnet Clients\n\nThe telnet client allows users to start connections to other systems via\nthe telnet protocol.\n\n**Rationale:**\n\nThe `telnet` protocol is insecure and unencrypted. The use\nof an unencrypted transmission medium could allow an unauthorized user\nto steal credentials. The `ssh` package provides an\nencrypted session and stronger security and is included in Ubuntu 24.04.\n\n## Remove telnet Clients\n\nThe telnet client allows users to start connections to other systems via\nthe telnet protocol.\n\n**Rationale:**\n\nThe `telnet` protocol is insecure and unencrypted. The use\nof an unencrypted transmission medium could allow an unauthorized user\nto steal credentials. The `ssh` package provides an\nencrypted session and stronger security and is included in Ubuntu 24.04.",

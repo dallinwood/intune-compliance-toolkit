@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Require Re-Authentication When Using the sudo Command\n\nThe sudo `timestamp_timeout` tag sets the amount of time sudo password prompt waits.\nThe default `timestamp_timeout` value is 5 minutes.\nThe timestamp_timeout should be configured by making sure that the\n`timestamp_timeout` tag exists in\n`/etc/sudoers` configuration file or any sudo configuration snippets\nin `/etc/sudoers.d/`.\nIf the value is set to an integer less than 0, the user's time stamp will not expire\nand the user will not have to re-authenticate for privileged actions until the user's session is terminated.\n\n**Rationale:**\n\nWithout re-authentication, users may access resources or perform tasks for which they\ndo not have authorization.\n\n\n        \n\nWhen operating systems provide the capability to escalate a functional capability, it\nis critical that the user re-authenticate.",

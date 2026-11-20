@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Limit the maximum number of sequential characters in passwords\nNo audit procedure in ComplianceAsCode.\nExpected values: var_password_pam_maxsequence = $ODV_var_password_pam_maxsequence",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Limit the maximum number of sequential characters in passwords\n\nThe `pwquality maxsequence` setting defines the maximum allowable length for consecutive \ncharacter sequences in a new password. Such sequences can be, e.g., 123 or abc. If the value is \nset to 0, this check will be turned off.\n\n\n          \n\nNote: Passwords that consist mainly of such sequences are unlikely to meet the simplicity criteria \nunless the sequence constitutes only a small portion of the overall password.\n\n**Rationale:**\n\nUse of a strong password helps to increase the time and resources required to\ncompromise the password. Password complexity, or strength, is a measure of the\neffectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one important factor that determines the duration required to crack it.\nA more intricate password results in a larger number of potential combinations that must be \ntested before successfully compromising the password.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.3.2.5",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set configuration for loopback traffic\n\nConfigure the loopback interface to accept traffic.\nConfigure all other interfaces to deny traffic to the loopback\nnetwork.\n\n**Rationale:**\n\nLoopback traffic is generated between processes on machine and is\ntypically critical to operation of the system. The loopback interface\nis the only place that loopback network traffic should be seen, all\nother interfaces should ignore traffic on this network as an\nanti-spoofing measure.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify /boot/grub/grub.cfg User Ownership\n\nThe file `/boot/grub/grub.cfg` should\nbe owned by the `root` user to prevent destruction\nor modification of the file.\nTo properly set the owner of `/boot/grub/grub.cfg`, run the command:\n\n  \n```\n$ sudo chown root /boot/grub/grub.cfg \n```\n\n**Rationale:**\n\nOnly root should be able to modify important boot parameters.\n\n## Verify /boot/grub/grub.cfg Permissions\n\nFile permissions for `/boot/grub/grub.cfg` should be set to 600.\nTo properly set the permissions of `/boot/grub/grub.cfg`, run the command:\n\n```\n$ sudo chmod 600 /boot/grub/grub.cfg\n```\n\n**Rationale:**\n\nProper permissions ensure that only the root user can modify important boot\nparameters.",

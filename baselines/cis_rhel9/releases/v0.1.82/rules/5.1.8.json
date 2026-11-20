@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable SSH Warning Banner\n\nTo enable the warning banner and ensure it is consistent\nacross the system, add or correct the following line in\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nBanner /etc/issue.net\n```\n\nAnother section contains information on how to create an\nappropriate system-wide warning banner.\n\n**Rationale:**\n\nThe warning message reinforces policy awareness during the logon process and\nfacilitates possible legal action against attackers. Alternatively, systems\nwhose ownership should not be obvious should ensure usage of a banner that does\nnot provide easy attribution.",

@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Only One Firewall Service is Active\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Ensure Only One Firewall Service is Active\n\nThe system must have exactly one active firewall service running to avoid conflicts\nand ensure consistent packet filtering. Only one of the following services should\nbe enabled and active at any time:\n\n\n- ufw - Uncomplicated Firewall (Ubuntu/Debian default)\n- iptables - Classic Linux firewall\n- nftables - Next Generation Firewall replacement for iptables\n\nHaving zero active firewalls leaves the system vulnerable, while having multiple\nactive firewalls can lead to rule conflicts and security gaps.\n\n**Rationale:**\n\nRunning multiple firewall services simultaneously can lead to conflicts in rule\nprocessing, unpredictable behavior, and potential security gaps. A single\nfirewall service ensures consistent and predictable packet filtering.\n\nHaving no active firewall service leaves the system exposed to network-based\nattacks and unauthorized access.\n\n**Notes:**\n\nRemediation is not automated. To select which firewall to\ninstall and configure, use the profile variable var_network_filtering_service.\n",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.4.1.1",
@@ -65,7 +55,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `firewall_single_service_active`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure Only One Firewall Service is Active",
           "shell": null,
           "versions": null

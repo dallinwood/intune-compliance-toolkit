@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.ip_forward` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.ip_forward=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.ip_forward = 0\n```\n\n**Rationale:**\n\nRouting protocol daemons are typically used on routers to exchange\nnetwork topology information with other routers. If this capability is used when\nnot required, system network information may be unnecessarily transmitted across\nthe network.\n\n## Disable Kernel Parameter for IPv6 Forwarding\n\nTo set the runtime status of the `net.ipv6.conf.all.forwarding` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv6.conf.all.forwarding=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv6.conf.all.forwarding = 0\n```\n\n**Rationale:**\n\nIP forwarding permits the kernel to forward packets from one network\ninterface to another. The ability to forward packets between two networks is\nonly appropriate for systems acting as routers.",

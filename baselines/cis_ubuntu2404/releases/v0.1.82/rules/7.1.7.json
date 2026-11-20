@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Group Who Owns gshadow File\n\nTo properly set the group owner of `/etc/gshadow`, run the command:\n\n```\n$ sudo chgrp shadow /etc/gshadow\n```\n\n**Rationale:**\n\nThe `/etc/gshadow` file contains group password hashes. Protection of this file\nis critical for system security.\n\n## Verify User Who Owns gshadow File\n\nTo properly set the owner of `/etc/gshadow`, run the command:\n\n```\n$ sudo chown root /etc/gshadow \n```\n\n**Rationale:**\n\nThe `/etc/gshadow` file contains group password hashes. Protection of this file\nis critical for system security.\n\n## Verify Permissions on gshadow File\n\nTo properly set the permissions of `/etc/gshadow`, run the command:\n\n```\n$ sudo chmod 0640 /etc/gshadow\n```\n\n**Rationale:**\n\nThe `/etc/gshadow` file contains group password hashes. Protection of this file\nis critical for system security.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Use Only Strong MACs\n\nLimit the MACs to strong hash algorithms.\nThe following line in `/etc/ssh/sshd_config` demonstrates use\nof those MACs:\n\n```\nMACs $ODV_sshd_strong_macs\n        \n```\n\n**Rationale:**\n\nMD5 and 96-bit MAC algorithms are considered weak and have been shown to increase\nexploitability in SSH downgrade attacks. Weak algorithms continue to have a great deal of\nattention as a weak spot that can be exploited with expanded computing power. An\nattacker that breaks the algorithm could take advantage of a MiTM position to decrypt the\nSSH tunnel and capture credentials and information",

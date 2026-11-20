@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Enforce for root User\n\nThe pam_pwquality module's `enforce_for_root` parameter controls requirements for\nenforcing password complexity for the root user. Enable the `enforce_for_root`\nsetting in `/etc/security/pwquality.conf` to require the `root` user\nto use complex passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise\nthe password. Password complexity, or strength, is a measure of the effectiveness of a\npassword in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determines how long it takes to crack a\npassword. The more complex the password, the greater the number of possible combinations\nthat need to be tested before the password is compromised.",

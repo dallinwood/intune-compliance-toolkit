@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Configure the Use of the pam_faillock.so Module in the /etc/pam.d/password-auth File.\n\nThe pam_faillock.so module must be loaded in preauth in /etc/pam.d/password-auth.\n\n**Rationale:**\n\nIf the pam_faillock.so module is not loaded the system will not correctly lockout accounts to prevent\npassword guessing attacks.\n\n## Configure the Use of the pam_faillock.so Module in the /etc/pam.d/system-auth File.\n\nThe pam_faillock.so module must be loaded in preauth in /etc/pam.d/system-auth.\n\n**Rationale:**\n\nIf the pam_faillock.so module is not loaded the system will not correctly lockout accounts to prevent\npassword guessing attacks.\n\n**Notes:**\n\nThis requirement is also indirectly satisfied by the requirement 5.3.3.1.",

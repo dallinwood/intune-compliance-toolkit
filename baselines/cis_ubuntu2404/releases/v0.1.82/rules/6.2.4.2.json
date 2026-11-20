@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## System Audit Logs Must Be Owned By Root\n\nAll audit logs must be owned by root user. The path for audit log can be\nconfigured via `log_file` parameter in \n```\n/etc/audit/auditd.conf\n```\n\nor by default, the path for audit log is \n```\n/var/log/audit/\n```\n.\nTo properly set the owner of `/var/log/audit/*`, run the command:\n\n  \n```\n$ sudo chown root /var/log/audit/* \n```\n\n**Rationale:**\n\nUnauthorized disclosure of audit records can reveal system and configuration data to\nattackers, thus compromising its confidentiality.",

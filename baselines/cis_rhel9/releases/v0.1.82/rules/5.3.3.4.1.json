@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Prevent Login to Accounts With Empty Password\n\nIf an account is configured for password authentication\nbut does not have an assigned password, it may be possible to log\ninto the account without authentication. Remove any instances of the\n`nullok` in\n\n`/etc/pam.d/system-auth` and\n`/etc/pam.d/password-auth`\n\nto prevent logins with empty passwords.\n\n**Rationale:**\n\nIf an account has an empty password, anyone could log in and\nrun commands with the privileges of that account. Accounts with\nempty passwords should never be used in operational environments.\n\n**Notes:**\n\nThe rule more specifically used in this requirement also satify the requirement 5.3.2.5.",

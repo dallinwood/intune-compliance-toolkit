@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure nftables Default Deny Firewall Policy\n\nBase chain policy is the default verdict that will be applied to packets reaching the end of\nthe chain. There are two policies: accept (Default) and drop. If the policy is set to accept,\nthe firewall will accept any packet that is not configured to be denied and the packet will\ncontinue traversing the network stack.\n\nRun the following commands and verify that base chains contain a policy of DROP.\n\n```\n$ nft list ruleset | grep 'hook input'\ntype filter hook input priority 0; policy drop;\n$ nft list ruleset | grep 'hook forward'\ntype filter hook forward priority 0; policy drop;\n$ nft list ruleset | grep 'hook output'\ntype filter hook output priority 0; policy drop;\n```\n\n**Rationale:**\n\nIt is easier to allow acceptable usage than to block unacceptable usage.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `nftables_ensure_default_deny_policy`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure nftables Default Deny Firewall Policy",
           "shell": null,
           "versions": null

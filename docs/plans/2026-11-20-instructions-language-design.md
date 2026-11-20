@@ -1,7 +1,7 @@
 # Design: an `instructions` language for plain-English checks and fixes
 
 Date: 2026-11-20
-Status: Approved 2026-11-20, not yet implemented. Follows CIS plan Task 8.
+Status: Approved and implemented 2026-11-20. Follows CIS plan Task 8.
 
 ## Intent
 
@@ -48,4 +48,4 @@ always be written guidance, a process or manual steps, and the data should say s
 
 ## Progress log
 
-(none yet)
+- 2026-11-20: Implemented the `instructions` language (schema constraints, CaC importer, web UI label and shape checks, `checkPlan` never generating it) and regenerated `cis_rhel9` and `cis_ubuntu2404`. Landed in `feat: add an instructions language for plain-English checks and fixes`.

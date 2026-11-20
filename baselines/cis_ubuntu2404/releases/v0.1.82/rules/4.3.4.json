@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure a Table Exists for Nftables\n\nTables in nftables hold chains. Each table only has one address family and only applies\nto packets of this family. Tables can have one of six families.\n\n**Rationale:**\n\nNftables doesn't have any default tables. Without a table being built, nftables will not\nfilter network traffic.",

@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Mounting of hfsplus\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Disable Mounting of hfsplus\n\nTo configure the system to prevent the `hfsplus`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/hfsplus.conf`:\n\n```\ninstall hfsplus /bin/false\n```\n\nThis entry will cause a non-zero return value during a `hfsplus` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall hfsplus /bin/true\n```\n\n\nThis effectively prevents usage of this uncommon filesystem.\n\n**Rationale:**\n\nLinux kernel modules which implement filesystems that are not needed by the\nlocal system should be disabled.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.1.1.4",

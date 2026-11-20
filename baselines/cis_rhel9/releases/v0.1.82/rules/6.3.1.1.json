@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure the audit Subsystem is Installed\n\nThe audit package should be installed.\n\n**Rationale:**\n\nThe auditd service is an access monitoring and accounting daemon, watching system calls to audit any access, in comparison with potential local access control policy such as SELinux policy.\n\n## Ensure the audit-libs package as a part of audit Subsystem is Installed\n\nThe audit-libs package should be installed.\n\n**Rationale:**\n\nThe auditd service is an access monitoring and accounting daemon, watching system calls to audit any access, in comparison with potential local access control policy such as SELinux policy.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Permissions on SSH Server Public *.pub Key Files\n\nTo properly set the permissions of `/etc/ssh/*.pub`, run the command: \n```\n$ sudo chmod 0644 /etc/ssh/*.pub\n```\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.",

@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable RDS Support\n\nThe Reliable Datagram Sockets (RDS) protocol is a transport\nlayer protocol designed to provide reliable high-bandwidth,\nlow-latency communications between nodes in a cluster.\n\nTo configure the system to prevent the `rds`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/rds.conf`:\n\n```\ninstall rds /bin/false\n```\n\nThis entry will cause a non-zero return value during a `rds` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall rds /bin/true\n```\n\n**Rationale:**\n\nDisabling RDS protects\nthe system against exploitation of any flaws in its implementation.",

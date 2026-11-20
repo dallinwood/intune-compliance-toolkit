@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Group Who Owns /etc/shells File\n\nTo properly set the group owner of `/etc/shells`, run the command:\n\n  \n```\n$ sudo chgrp root /etc/shells\n```\n\n**Rationale:**\n\nThe `/etc/shells` file contains the list of full pathnames to shells on the system.\nSince this file is used by many system programs this file should be protected.\n\n## Verify Who Owns /etc/shells File\n\nTo properly set the owner of `/etc/shells`, run the command:\n\n  \n```\n$ sudo chown root /etc/shells \n```\n\n**Rationale:**\n\nThe `/etc/shells` file contains the list of full pathnames to shells on the system.\nSince this file is used by many system programs this file should be protected.\n\n## Verify Permissions on /etc/shells File\n\nTo properly set the permissions of `/etc/shells`, run the command:\n\n```\n$ sudo chmod 0644 /etc/shells\n```\n\n**Rationale:**\n\nThe `/etc/shells` file contains the list of full pathnames to shells on the system.\nSince this file is used by many system programs this file should be protected.",

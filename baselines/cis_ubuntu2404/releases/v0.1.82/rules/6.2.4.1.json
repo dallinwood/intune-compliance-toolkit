@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## System Audit Logs Must Have Mode 0640 or Less Permissive\n\nVerify the audit log files have a mode of \"0640\" or less permissive by first determining\nwhere the audit logs are stored with the following command:\n\n```\n$ sudo grep -iw log_file /etc/audit/auditd.conf\nlog_file = /var/log/audit/audit.log\n```\n\nBy default, the audit log file is `/var/log/audit/audit.log`.\n\n\nConfigure the audit log to be protected from unauthorized read access by setting the correct\npermissive mode.\nIf `log_group` in `/etc/audit/auditd.conf` is set to a group other than the\n`root` group account, change the mode of the audit log files with the following command:\n\n```\n$ sudo chmod 0640 *audit_log_file*\n       \n```\n\n       \n\nOtherwise, change the mode of the audit log files with the following command:\n\n```\n$ sudo chmod 0600 *audit_log_file*\n       \n```\n\nReplace `*audit_log_file*` with the correct audit log file path.\n\n**Rationale:**\n\nIf users can write to audit logs, audit trails can be modified or destroyed.",

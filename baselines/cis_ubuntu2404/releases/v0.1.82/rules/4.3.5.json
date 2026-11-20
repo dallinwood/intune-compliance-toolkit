@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Base Chains Exist for Nftables\n\nTables in nftables hold chains. Each table only has one address family and only applies\nto packets of this family. Tables can have one of six families.\nChains are containers for rules. They exist in two kinds, base chains and regular chains.\nA base chain is an entry point for packets from the networking stack, a regular chain may\nbe used as jump target and is used for better rule organization.\n\n**Rationale:**\n\nIf a base chain doesn't exist with a hook for input, forward, and delete, packets that would\nflow through those chains will not be touched by nftables.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify User Who Owns shadow File\n\nTo properly set the owner of `/etc/shadow`, run the command:\n\n```\n$ sudo chown root /etc/shadow \n```\n\n**Rationale:**\n\nThe `/etc/shadow` file contains the list of local\nsystem accounts and stores password hashes. Protection of this file is\ncritical for system security. Failure to give ownership of this file\nto root provides the designated owner with access to sensitive information\nwhich could weaken the system security posture.\n\n## Verify Group Who Owns shadow File\n\nTo properly set the group owner of `/etc/shadow`, run the command:\n\n```\n$ sudo chgrp root /etc/shadow\n```\n\n**Rationale:**\n\nThe `/etc/shadow` file stores password hashes. Protection of this file is\ncritical for system security.\n\n## Verify Permissions on shadow File\n\nTo properly set the permissions of `/etc/shadow`, run the command:\n\n```\n$ sudo chmod 0000 /etc/shadow\n```\n\n**Rationale:**\n\nThe `/etc/shadow` file contains the list of local\nsystem accounts and stores password hashes. Protection of this file is\ncritical for system security. Failure to give ownership of this file\nto root provides the designated owner with access to sensitive information\nwhich could weaken the system security posture.",

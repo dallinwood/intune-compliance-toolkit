@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove ftp Package\n\nFTP (File Transfer Protocol) is a traditional and widely used standard tool for\ntransferring files between a server and clients over a network, especially where no\nauthentication is necessary (permits anonymous users to connect to a server).\n\n\nThe `ftp` package can be removed with the following command:\n\n```\n$ apt-get remove ftp\n```\n\n**Rationale:**\n\nFTP does not protect the confidentiality of data or authentication credentials. It\nis recommended SFTP be used if file transfer is required. Unless there is a need\nto run the system as a FTP server (for example, to allow anonymous downloads), it is\nrecommended that the package be removed to reduce the potential attack surface.\n\n## Remove tnftp Package\n\ntnftp an enhanced FTP client, is the user interface to the Internet standard File\nTransfer Protocol. The program allows a user to transfer files to and from a remote\nnetwork site.\nThe `ftp` package can be removed with the following command:\n\n```\n$ apt-get remove ftp\n```\n\n**Rationale:**\n\nUnless there is a need to run the system using Internet standard File Transfer Protocol\n(for example, to allow anonymous downloads), it is recommended that the package be\nremoved to reduce the potential attack surface.",

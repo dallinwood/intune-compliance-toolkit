@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install sudo Package\n\nThe `sudo` package can be installed with the following command:\n\n```\n$ apt-get install sudo\n```\n\n**Rationale:**\n\n`sudo` is a program designed to allow a system administrator to give\nlimited root privileges to users and log root activity. The basic philosophy\nis to give as few privileges as possible but still allow system users to\nget their work done.",

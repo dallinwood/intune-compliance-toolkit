@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure journald and rsyslog Are Not Active Together\n\nEnsure that exactly one logging system is active. Running both rsyslog and\nsystemd-journald simultaneously can lead to duplicate logging, resource\ncontention, and configuration conflicts. Running neither service means no\nlogging is occurring, which is also a violation.\n\n```\nsystemctl is-active rsyslog systemd-journald\n```\n\nThe command should return exactly one `active` service. Both services\nshould not be active at the same time, and at least one must be active.\n\n**Rationale:**\n\nRunning multiple logging systems concurrently can cause conflicts, resource\ncontention, and inconsistent logging behavior. Systems should use either\nrsyslog or systemd-journald, but not both simultaneously. This ensures\npredictable logging behavior and prevents potential issues with log\nduplication or loss.",
@@ -68,7 +68,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `ensure_journald_and_rsyslog_not_active_together`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure journald and rsyslog Are Not Active Together",
           "shell": null,
           "versions": null

@@ -20,17 +20,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure overlayfs kernel module is not available\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Ensure overlayfs kernel module is not available\n\nTo configure the system to prevent the `overlay`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/overlay.conf`:\n\n```\ninstall overlay /bin/false\n```\n\nThis entry will cause a non-zero return value during a `overlay` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall overlay /bin/true\n```\n\n\noverlayfs is a Linux filesystem that layers multiple filesystems to create a single\nunified view which allows a user to \"merge\" several mount points into a unified\nfilesystem.\n\n**Rationale:**\n\nThe overlayfs has known CVE's. Disabling the overlayfs reduces the local attack\nsurface by removing support for unnecessary filesystem types and mitigates potential\nrisks associated with unauthorized execution of setuid files, enhancing the overall\nsystem security.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.1.1.6",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure root account access is controlled\n\nThere are a number of methods to access the root account directly.\nWithout a password set any user would be able to gain access and\nthus control over the entire system.\n\n**Rationale:**\n\nAccess to root should be secured at all times.\n\n**Notes:**\n\nThis rule doesn't come with a remediation, as the exact requirement allows root to either\nhave a password or be locked.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `ensure_root_access_controlled`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure root account access is controlled",
           "shell": null,
           "versions": null

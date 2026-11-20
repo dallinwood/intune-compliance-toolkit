@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure ip6tables Firewall Rules Exist for All Open Ports\n\nAny ports that have been opened on non-loopback addresses\nneed firewall rules to govern traffic.\n\n**Rationale:**\n\nWithout a firewall rule configured for open ports default\nfirewall policy will drop all packets to these ports.\n\n**Notes:**\n\nRemediation is not automated to avoid lockout.\n",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `ip6tables_rules_for_open_ports`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure ip6tables Firewall Rules Exist for All Open Ports",
           "shell": null,
           "versions": null

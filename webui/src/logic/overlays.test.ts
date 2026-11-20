@@ -258,6 +258,16 @@ describe('applyOverlays', () => {
     ])
   })
 
+  it('accepts instructions checks and steps that carry text and no script', () => {
+    const fields = {
+      check: { Linux: { language: 'instructions', default: { shell: null, result: null, additional_info: 'Look.' }, by_version: {} } },
+      remediation: { Linux: { steps: [{ name: null, language: 'instructions', shell: null, additional_info: 'Fix it.', versions: null }], payloads: [] } },
+    }
+    const result = applyOverlays(ism1622Rule(), [overlay('instructions', fields)], CURRENT_RELEASE)
+
+    expect(result.skipped).toEqual([])
+  })
+
   it('appends a remediation step to a null remediation and to an existing target', () => {
     const step = { name: 'Script', language: 'powershell', shell: 'Remove-Thing', additional_info: null, versions: null }
     const fromNull = applyOverlays(ism1622Rule(), [overlay('step', { remediation: { Windows: { steps: [step], payloads: [] } } })], CURRENT_RELEASE)
@@ -292,6 +302,11 @@ describe('applyOverlays', () => {
     ['a check in the v4 shape', { check: { $replace: { default: { shell: 'echo', result: null, additional_info: null }, by_version: {} } } }, {}],
     ['a check under an empty target name', { check: { $replace: { '': { language: 'bash', default: null, by_version: {} } } } }, {}],
     ['a by_version check that is null', { check: { macOS: { by_version: { '14.0': null } } } }, { check: macosCheck(null) }],
+    ['an instructions check with a shell', { check: { $replace: { Linux: { language: 'instructions', default: { shell: 'echo', result: null, additional_info: 'x' }, by_version: {} } } } }, {}],
+    ['an instructions check with a result', { check: { $replace: { Linux: { language: 'instructions', default: { shell: null, result: { type: 'string', value: 'x' }, additional_info: 'x' }, by_version: {} } } } }, {}],
+    ['an instructions check with a shell_file', { check: { $replace: { Linux: { language: 'instructions', default: { shell_file: 'baselines/_overlays/scripts/X.sh', result: null, additional_info: 'x' }, by_version: {} } } } }, {}],
+    ['an instructions step with a shell', { remediation: { Linux: { steps: [{ name: null, language: 'instructions', shell: 'echo', additional_info: 'x', versions: null }], payloads: [] } } }, {}],
+    ['an instructions step with a shell_file', { remediation: { Linux: { steps: [{ name: null, language: 'instructions', shell_file: 'baselines/_overlays/scripts/X.sh', additional_info: 'x', versions: null }], payloads: [] } } }, {}],
     ['a tag that is not a string', { tags: [3] }, {}],
     ['an incomplete odv', { odvs: { $replace: [{ name: 'value', recommended: 5 }] } }, {}],
     ['an odv with a bad name', { odvs: { $replace: [{ ...odvWithValidation(null as never), name: 'Bad-Name' }] } }, {}],

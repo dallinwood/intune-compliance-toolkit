@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable Postfix Network Listening\n\nEdit the file `/etc/postfix/main.cf` to ensure that only the following\n`inet_interfaces` line appears:\n\n```\ninet_interfaces = $ODV_var_postfix_inet_interfaces\n        \n```\n\n**Rationale:**\n\nThis ensures `postfix` accepts mail messages\n(such as cron job reports) from the local system only,\nand not from the network, which protects it from network attack.\n\n## Ensure Mail Transfer Agent is not Listening on any non-loopback Address\n\nMail Transfer Agents (MTA), such as sendmail and Postfix, are used to\nlisten for incoming mail and transfer the messages to the appropriate\nuser or mail server. If the system is not intended to be a mail server,\nit is recommended that the MTA be configured to only process local mail.\n\n**Rationale:**\n\nThe software for all Mail Transfer Agents is complex and most have a\nlong history of security issues. While it is important to ensure that\nthe system can process local mail messages, it is not necessary to have\nthe MTA's daemon listening on a port unless the server is intended to\nbe a mail server that receives and processes mail from other systems.",
@@ -92,7 +92,7 @@
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `has_nonlocal_mta`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure Mail Transfer Agent is not Listening on any non-loopback Address",
           "shell": null,
           "versions": null

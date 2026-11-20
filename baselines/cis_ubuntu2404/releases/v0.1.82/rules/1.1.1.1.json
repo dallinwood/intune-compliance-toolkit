@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable Mounting of cramfs\n\nTo configure the system to prevent the `cramfs`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/cramfs.conf`:\n\n```\ninstall cramfs /bin/false\n```\n\nThis entry will cause a non-zero return value during a `cramfs` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall cramfs /bin/true\n```\n\n\nThis effectively prevents usage of this uncommon filesystem.\n\nThe `cramfs` filesystem type is a compressed read-only\nLinux filesystem embedded in small footprint systems. A\n`cramfs` image can be used without having to first\ndecompress the image.\n\n**Rationale:**\n\nRemoving support for unneeded filesystem types reduces the local attack surface\nof the server.",

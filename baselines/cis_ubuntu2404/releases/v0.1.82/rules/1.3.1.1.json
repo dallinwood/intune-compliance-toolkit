@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure AppArmor is installed\nNo audit procedure in ComplianceAsCode.\n\n== Ensure AppArmor Utils is installed\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Ensure AppArmor is installed\n\nAppArmor provide Mandatory Access Controls.\n\n**Rationale:**\n\nWithout a Mandatory Access Control system installed only the default\nDiscretionary Access Control system will be available.\n\n## Ensure AppArmor Utils is installed\n\nAppArmor provide Mandatory Access Controls.\n\n**Rationale:**\n\nWithout a Mandatory Access Control system installed only the default\nDiscretionary Access Control system will be available.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.3.1.1",

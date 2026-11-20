@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install iptables-persistent Package\n\nThe `iptables-persistent` package can be installed with the following command:\n\n```\n$ apt-get install iptables-persistent\n```\n\n**Rationale:**\n\nA method of configuring and maintaining firewall rules is\nnecessary to configure a Host Based Firewall.\n\n## Install iptables Package\n\nThe `iptables` package can be installed with the following command:\n\n```\n$ apt-get install iptables\n```\n\n**Rationale:**\n\n`iptables` controls the Linux kernel network packet filtering\ncode. `iptables` allows system operators to set up firewalls and IP\nmasquerading, etc.",

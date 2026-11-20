@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Apport Service\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Disable Apport Service\n\nThe Apport modifies certain kernel configuration values at\nruntime which may decrease the overall security of the system and expose sensitive data.\n\nThe `apport` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now apport.service\n```\n\n**Rationale:**\n\nThe Apport service modifies the kernel\n`fs.suid_dumpable` configuration at runtime which\nprevents other hardening from being persistent. Disabling the\nservice prevents this behavior.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.5.5",

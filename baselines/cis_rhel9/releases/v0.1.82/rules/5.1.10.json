@@ -32,7 +32,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable SSH Forwarding\n\nThe DisableForwarding parameter disables all forwarding features, including X11,\nssh-agent(1), TCP and StreamLocal. This option overrides all other forwarding-related\noptions and may simplify restricted configurations.\n\n\nTo explicitly disable SSHD forwarding, add or correct the following line in \n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nDisableForwarding yes\n```\n\n**Rationale:**\n\nDisable ssh forwarding unless there is an operational requirement to use it. \nLeaving port forwarding enabled can expose the organization to security risks.",

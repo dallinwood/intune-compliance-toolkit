@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure SELinux Not Disabled in /etc/default/grub\n\nSELinux can be disabled at boot time by an argument in\n`/etc/default/grub`.\nRemove any instances of `selinux=0` from the kernel arguments in that\nfile to prevent SELinux from being disabled at boot.\n\n**Rationale:**\n\nDisabling a major host protection feature, such as SELinux, at boot time prevents\nit from confining system services at boot time.  Further, it increases\nthe chances that it will remain off during system operation.",

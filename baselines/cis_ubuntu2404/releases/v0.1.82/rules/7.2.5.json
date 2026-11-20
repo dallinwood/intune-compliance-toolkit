@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure All Accounts on the System Have Unique User IDs\n\nChange user IDs (UIDs), or delete accounts, so each has a unique name.\n\n**Rationale:**\n\nTo assure accountability and prevent unauthenticated access, interactive users must be identified and authenticated to prevent potential misuse and compromise of the system.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `account_unique_id`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure All Accounts on the System Have Unique User IDs",
           "shell": null,
           "versions": null

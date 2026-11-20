@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable core dump backtraces\n\nThe `ProcessSizeMax` option in `[Coredump]` section\nof `/etc/systemd/coredump.conf` or in a drop-in file under\n`/etc/systemd/coredump.conf.d/` specifies the maximum size in bytes\nof a core which will be processed. Core dumps exceeding this size may be\nstored, but the backtrace will not be generated.\n\n**Rationale:**\n\nA core dump includes a memory image taken at the time the operating system\nterminates an application. The memory image could contain sensitive data\nand is generally useful only for developers or system operators trying to\ndebug problems.\n\nEnabling core dumps on production systems is not recommended,\nhowever there may be overriding operational requirements to enable advanced\ndebugging. Permitting temporary enablement of core dumps during such situations\nshould be reviewed through local needs and policy.",

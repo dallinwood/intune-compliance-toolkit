@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install libselinux Package\n\nThe `libselinux` package can be installed with the following command:\n\n```\n$ sudo dnf install libselinux\n```\n\n**Rationale:**\n\nSecurity-enhanced Linux is a feature of the Linux kernel and a number of utilities\nwith enhanced security functionality designed to add mandatory access controls to Linux.\n\nThe `libselinux` package contains the core library of the Security-enhanced Linux system.",

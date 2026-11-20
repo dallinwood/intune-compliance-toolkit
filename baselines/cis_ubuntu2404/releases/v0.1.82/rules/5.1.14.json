@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set LogLevel to INFO\n\nThe INFO parameter specifies that record login and logout activity will be logged.\n\n\nThe default SSH configuration sets the log level to INFO. The appropriate\nconfiguration is used if no value is set for `LogLevel`.\n\n\nTo explicitly specify the log level in SSH, add or correct the following line in\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nLogLevel INFO\n```\n\n**Rationale:**\n\nSSH provides several logging levels with varying amounts of verbosity. `DEBUG` is specifically\nnot recommended other than strictly for debugging SSH communications since it provides\nso much data that it is difficult to identify important security information. `INFO` level is the\nbasic level that only records login activity of SSH users. In many situations, such as Incident\nResponse, it is important to determine when a particular user was active on a system. The\nlogout record can eliminate those users who disconnected, which helps narrow the field.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Boot Loader Password in grub2\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-setpassword\n```\n\n\nWhen prompted, enter the password that was selected.\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.\n\n**Notes:**\n\nRHEL9 unified the paths for grub2 files.",
@@ -71,7 +71,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `grub2_password`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Set Boot Loader Password in grub2",
           "shell": null,
           "versions": null

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install pam_pwquality Package\n\nThe `libpam-pwquality` package can be installed with the following command:\n\n```\n$ apt-get install libpam-pwquality\n```\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required\nto compromise the password. Password complexity, or strength, is a measure\nof the effectiveness of a password in resisting attempts at guessing and\nbrute-force attacks. \"pwquality\" enforces complex password construction\nconfiguration and has the ability to limit brute-force attacks on the system.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Minimum Length\n\nThe pam_pwquality module's `minlen` parameter controls requirements for\nminimum characters required in a password. Add `minlen=$ODV_var_password_pam_minlen`\nafter pam_pwquality to set minimum password length requirements.\n\n**Rationale:**\n\nThe shorter the password, the lower the number of possible combinations\nthat need to be tested before the password is compromised.\n\n\nPassword complexity, or strength, is a measure of the effectiveness of a\npassword in resisting attempts at guessing and brute-force attacks.\nPassword length is one factor of several that helps to determine strength\nand how long it takes to crack a password. Use of more characters in a password\nhelps to exponentially increase the time and/or resources required to\ncompromise the password.",

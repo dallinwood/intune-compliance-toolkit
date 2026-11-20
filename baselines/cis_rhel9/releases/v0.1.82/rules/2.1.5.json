@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable dnsmasq Service\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Disable dnsmasq Service\n\nThe `dnsmasq` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now dnsmasq.service\n```\n\n**Rationale:**\n\nUnless a system is specifically designated to act as a DNS\ncaching, DNS forwarding and/or DHCP server, it is recommended\nthat the package be removed to reduce the potential attack surface.",
   "discussion_format": "markdown",
   "id": "cis_rhel9.2.1.5",

@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure SELinux State is Enforcing\n\nThe SELinux state should be set to `$ODV_var_selinux_state` at\nsystem boot time.  In the file `/etc/selinux/config`, add or correct the\nfollowing line to configure the system to boot into enforcing mode:\n\n```\nSELINUX=$ODV_var_selinux_state\n       \n```\n\nEnsure that all files have correct SELinux labels by running:\n\n```\nfixfiles onboot\n```\n\nThen reboot the system.\n\n**Rationale:**\n\nSetting the SELinux state to enforcing ensures SELinux is able to confine\npotentially compromised processes to the security policy, which is designed to\nprevent them from causing damage to the system or further elevating their\nprivileges.",

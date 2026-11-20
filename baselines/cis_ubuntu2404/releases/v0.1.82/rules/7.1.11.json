@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure No World-Writable Files Exist\n\nIt is generally a good idea to remove global (other) write access to a file when it is\ndiscovered. However, check with documentation for specific applications before making changes.\nAlso, monitor for recurring world-writable files, as these may be symptoms of a misconfigured\napplication or user account. Finally, this applies to real files and not virtual files that\nare a part of pseudo file systems such as `sysfs` or `procfs`.\n\n**Rationale:**\n\nData in world-writable files can be modified by any user on the system. In almost all\ncircumstances, files can be configured using a combination of user and group permissions to\nsupport whatever legitimate access is needed without the risk caused by world-writable files.",

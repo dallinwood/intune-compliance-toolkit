@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Password Hashing Algorithm in /etc/login.defs\n\nIn `/etc/login.defs`, add or update the following line to ensure the system will use\n$ODV_var_password_hashing_algorithm as the hashing algorithm:\n\n```\nENCRYPT_METHOD $ODV_var_password_hashing_algorithm\n         \n```\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nUsing a stronger hashing algorithm makes password cracking attacks more difficult.\n\n**Notes:**\n\nRule allows either SHA512 or YESCRYPT",

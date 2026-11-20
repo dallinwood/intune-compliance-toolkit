@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Password Warning Age\n\nTo specify how many days prior to password\nexpiration that a warning will be issued to users,\nedit the file `/etc/login.defs` and add or correct\n the following line:\n\n```\nPASS_WARN_AGE $ODV_var_accounts_password_warn_age_login_defs\n         \n```\n\nThe profile requirement is `$ODV_var_accounts_password_warn_age_login_defs`.\n\n**Rationale:**\n\nSetting the password warning age enables users to\nmake the change at a practical time.",

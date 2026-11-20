@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall nfs-kernel-server Package\n\nThe `nfs-kernel-server` package can be removed with the following command:\n\n```\n$ apt-get remove nfs-kernel-server\n```\n\n**Rationale:**\n\nIf the system does not export NFS shares or act as an NFS client, it is\nrecommended that these services be removed to reduce the remote attack\nsurface.\n\n## Disable Network File System (nfs)\n\nThe Network File System (NFS) service allows remote hosts to mount\nand interact with shared filesystems on the local system. If the local system\nis not designated as a NFS server then this service should be disabled.\n\nThe `nfs-server` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now nfs-server.service\n```\n\n**Rationale:**\n\nUnnecessary services should be disabled to decrease the attack surface of the system.",

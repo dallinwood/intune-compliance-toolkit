@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure SSH LoginGraceTime is configured\n\nThe `LoginGraceTime` parameter to the SSH server specifies the time allowed for successful authentication to\nthe SSH server. The longer the Grace period is the more open unauthenticated connections\ncan exist. Like other session controls in this session the Grace Period should be limited to\nappropriate limits to ensure the service is available for needed access.\n\n**Rationale:**\n\nSetting the `LoginGraceTime` parameter to a low number will minimize the risk of successful\nbrute force attacks to the SSH server. It will also limit the number of concurrent\nunauthenticated connections.",

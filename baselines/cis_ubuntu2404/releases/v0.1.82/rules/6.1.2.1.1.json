@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install systemd-journal-remote Package\n\nJournald (via systemd-journal-remote ) supports the ability to send\nlog events it gathers to a remote log host or to receive messages\nfrom remote hosts, thus enabling centralised log management.\n\n**Rationale:**\n\nStoring log data on a remote host protects log integrity from local\nattacks. If an attacker gains root access on the local system, they\ncould tamper with or remove log data that is stored on the local system.",

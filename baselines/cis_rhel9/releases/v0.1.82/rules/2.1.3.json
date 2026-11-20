@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall DHCP Server Package\n\nIf the system does not need to act as a DHCP server,\nthe dhcp-server package can be uninstalled.\nThe `dhcp-server` package can be removed with the following command:\n\n```\n$ sudo dnf remove dhcp-server\n```\n\n**Rationale:**\n\nRemoving the DHCP server ensures that it cannot be easily or\naccidentally reactivated and disrupt network operation.",

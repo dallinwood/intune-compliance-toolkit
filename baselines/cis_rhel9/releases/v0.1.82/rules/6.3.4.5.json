@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Audit Configuration Files Permissions are 640 or More Restrictive\n\nAll audit configuration files permissions must be 640 or more restrictive.\n\n```\nchmod 0640 /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*\n```\n\n**Rationale:**\n\nWithout the capability to restrict which roles and individuals can\nselect which events are audited, unauthorized personnel may be able\nto prevent the auditing of critical events.\nMisconfigured audits may degrade the system's performance by\noverwhelming the audit log. Misconfigured audits may also make it more\ndifficult to establish, correlate, and investigate the events relating\nto an incident or identify those responsible for one.",

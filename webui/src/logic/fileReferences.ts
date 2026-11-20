@@ -21,6 +21,7 @@ const SCRIPT_EXTENSIONS_BY_LANGUAGE: Record<ScriptLanguage, readonly string[]> =
   bash: ['.sh'],
   zsh: ['.sh'],
   python: ['.py'],
+  instructions: [],
 }
 const TEXT_PAYLOAD_EXTENSIONS: readonly string[] = ['.mobileconfig', '.plist', '.json', '.xml', '.reg', '.admx', '.adml']
 const BINARY_PAYLOAD_EXTENSIONS: readonly string[] = ['.pol', '.intunewin']

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify All Account Password Hashes are Shadowed\n\nIf any password hashes are stored in `/etc/passwd` (in the second field,\ninstead of an `x` or `*`), the cause of this misconfiguration should be\ninvestigated. The account should have its password reset and the hash should be\nproperly stored, or the account should be deleted entirely.\n\n**Rationale:**\n\nThe hashes for all user account passwords should be stored in\nthe file `/etc/shadow` and never in `/etc/passwd`,\nwhich is readable by all users.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `accounts_password_all_shadowed`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Verify All Account Password Hashes are Shadowed",
           "shell": null,
           "versions": null

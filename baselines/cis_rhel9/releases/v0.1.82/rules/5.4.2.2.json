@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Root Has A Primary GID 0\n\nThe `root` user should have a primary group of 0.\n\n**Rationale:**\n\nTo help ensure that root-owned files are not inadvertently exposed to other users.\n\n**Notes:**\n\nThe rule confirms the primary group for root, but doesn't check if any other user are also\nusing GID 0. New rule is necessary.\nThere is assessment but no automated remediation for this rule and this sounds reasonable.",
@@ -68,7 +68,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `accounts_root_gid_zero`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Verify Root Has A Primary GID 0",
           "shell": null,
           "versions": null

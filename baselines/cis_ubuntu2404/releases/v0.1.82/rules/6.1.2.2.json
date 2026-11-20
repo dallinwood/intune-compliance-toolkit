@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure journald ForwardToSyslog is disabled\n\nData from journald should be kept in the confines of the service and not forwarded to other services.\n\n**Rationale:**\n\nIf journald is the method for capturing logs, all logs of the system should be handled by journald and not forwarded to other logging mechanisms.",

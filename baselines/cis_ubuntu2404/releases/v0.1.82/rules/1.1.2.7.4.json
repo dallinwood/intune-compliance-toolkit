@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Add noexec Option to /var/log/audit\n\nThe `noexec` mount option can be used to prevent binaries\nfrom being executed out of `/var/log/audit`.\nAdd the `noexec` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var/log/audit`.\n\n**Rationale:**\n\nAllowing users to execute binaries from directories containing audit log files\nsuch as `/var/log/audit` should never be necessary in normal operation and\ncan expose the system to potential compromise.",

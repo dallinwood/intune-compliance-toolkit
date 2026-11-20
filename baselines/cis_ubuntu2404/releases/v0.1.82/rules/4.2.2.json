@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove iptables-persistent Package\n\nThe `iptables-persistent` package can be removed with the following command:\n\n```\n$ apt-get remove iptables-persistent\n```\n\n**Rationale:**\n\nRunning both `ufw` and the services included in the\n`iptables-persistent` package may lead to conflict.",

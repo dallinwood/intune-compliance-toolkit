@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Prevent the Use of Dictionary Words\n\nThe pam_pwquality module's `dictcheck` check if passwords contains dictionary words. When\n`dictcheck` is set to `1` passwords will be checked for dictionary words.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise the password.\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at\nguessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes to crack a password. The more\ncomplex the password, the greater the number of possible combinations that need to be tested before the\npassword is compromised.\n\n\n          \n\nPasswords with dictionary words may be more vulnerable to password-guessing attacks.",

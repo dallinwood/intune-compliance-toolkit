@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure nftables Rules are Permanent\n\nnftables is a subsystem of the Linux kernel providing filtering and classification of\nnetwork packets/datagrams/frames. The nftables service reads the\n$ODV_var_nftables_master_config_file file for a nftables file or files to\ninclude in the nftables ruleset. A nftables ruleset containing the input, forward, and output\nbase chains allow network traffic to be filtered.\n\n**Rationale:**\n\nChanges made to nftables ruleset only affect the live system, you will also need to configure\nthe nftables ruleset to apply on boot\n\n**Notes:**\n\nAudit procedure for 4.3.10 depends on local site policy thus\nit cannot be fully automated. Upstream ticket:\nhttps://workbench.cisecurity.org/benchmarks/18959/tickets/23190\n",

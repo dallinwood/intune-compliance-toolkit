@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify pam_unix module is activated\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Verify pam_unix module is activated\n\n`pam_unix` is the standard Unix authentication module. It uses standard calls from the\nsystem's libraries to retrieve and set account information as well as authentication.\nUsually this is obtained from the `/etc/passwd` and if shadow is enabled, the\n`/etc/shadow` file as well.\n\n\n        \n\nThe account component performs the task of establishing the status of the user's\naccount and password based on the following shadow elements: `expire,\nlast_change, max_change, min_change, warn_change`. In the case of the latter, it may\noffer advice to the user on changing their password or, through the\n`PAM_AUTHTOKEN_REQD` return, delay giving service to the user until they have\nestablished a new password. The entries listed above are documented in the shadow(5)\nmanual page. Should the user's record not contain one or more of these entries, the\ncorresponding shadow check is not performed.\n\n\n        \n\nThe authentication component performs the task of checking the users credentials\n(password). The default action of this module is to not permit the user access to a\nservice if their official password is blank.\n\n**Rationale:**\n\nThe system should only provide access after performing authentication of a user.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.2.1",

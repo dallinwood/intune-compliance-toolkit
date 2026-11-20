@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Permissions on SSH Server Private *_key Key Files\n\nSSH server private keys - files that match the `/etc/ssh/*_key` glob, have to have restricted permissions.\nIf those files are owned by the `root` user and the `root` group, they have to have the `0600` permission or stricter.\nIf they are owned by the `root` user, but by a dedicated group `ssh_keys`, they still have to have the `0600` permission or stricter.\n\n**Rationale:**\n\nIf an unauthorized user obtains the private SSH host key file, the host could be\nimpersonated.\n\n## Verify Ownership on SSH Server Private *_key Key Files\n\nSSH server private keys, files that match the `/etc/ssh/*_key` glob, must be owned\nby `root` user.\n\n**Rationale:**\n\nIf an unauthorized user obtains the private SSH host key file, the host could be impersonated.\n\n## Verify Group Ownership on SSH Server Private *_key Key Files\n\nSSH server private keys, files that match the `/etc/ssh/*_key` glob, must be\ngroup-owned by `ssh_keys` group.\n\n**Rationale:**\n\nIf an unauthorized user obtains the private SSH host key file, the host could be impersonated.",

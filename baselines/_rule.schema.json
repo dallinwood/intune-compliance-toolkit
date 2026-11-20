@@ -188,7 +188,7 @@
         { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/version" } }
       ]
     },
-    "language": { "enum": ["bash", "powershell", "zsh", "python"] },
+    "language": { "enum": ["bash", "powershell", "zsh", "python", "instructions"] },
     "target_check": {
       "type": "object",
       "additionalProperties": false,
@@ -231,11 +231,28 @@
               "by_version": { "additionalProperties": { "$ref": "#/$defs/shell_file_py" } }
             }
           }
+        },
+        {
+          "if": { "properties": { "language": { "const": "instructions" } }, "required": ["language"] },
+          "then": {
+            "properties": {
+              "default": { "$ref": "#/$defs/instructions_check_entry" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/instructions_check_entry" } }
+            }
+          }
         }
       ]
     },
     "shell_file_ps1": { "properties": { "shell_file": { "pattern": "\\.ps1(?![\\s\\S])" } } },
     "shell_file_sh": { "properties": { "shell_file": { "pattern": "\\.sh(?![\\s\\S])" } } },
+    "instructions_check_entry": {
+      "required": ["shell", "result"],
+      "properties": { "shell": { "type": "null" }, "result": { "type": "null" } }
+    },
+    "instructions_step": {
+      "required": ["shell"],
+      "properties": { "shell": { "type": "null" } }
+    },
     "shell_file_py": { "properties": { "shell_file": { "pattern": "\\.py(?![\\s\\S])" } } },
     "target_remediation": {
       "type": "object",
@@ -274,6 +291,10 @@
         {
           "if": { "properties": { "language": { "const": "python" } }, "required": ["language"] },
           "then": { "$ref": "#/$defs/shell_file_py" }
+        },
+        {
+          "if": { "properties": { "language": { "const": "instructions" } }, "required": ["language"] },
+          "then": { "$ref": "#/$defs/instructions_step" }
         }
       ]
     },

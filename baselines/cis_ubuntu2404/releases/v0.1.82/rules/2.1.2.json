@@ -32,7 +32,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall avahi Server Package\n\nIf the system does not need to have an Avahi server which implements\nthe DNS Service Discovery and Multicast DNS protocols,\nthe avahi-autoipd and avahi packages can be uninstalled.\n\n**Rationale:**\n\nAutomatic discovery of network services is not normally required for\nsystem functionality. It is recommended to remove this package to reduce\nthe potential attack surface.\n\n## Disable Avahi Server Software\n\nThe `avahi-daemon` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now avahi-daemon.service\n```\n\n**Rationale:**\n\nBecause the Avahi daemon service keeps an open network\nport, it is subject to network attacks. Its functionality\nis convenient but is only appropriate if the local network\ncan be trusted.",

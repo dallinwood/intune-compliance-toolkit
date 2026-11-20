@@ -50,10 +50,12 @@ export interface RuleCheckPlan {
 // any other target are ignored here.
 export const GENERATED_TARGET = 'macOS'
 
-// The only check the generator reads; checks for other targets are shown in
-// the details but never scripted.
+// The only check the generator reads; checks for other targets, and
+// instructions (plain-English guidance, never a script), are shown in the
+// details but never scripted.
 export function generatedTargetCheck(rule: Pick<Rule, 'check'>): TargetCheck | null {
-  return rule.check?.[GENERATED_TARGET] ?? null
+  const targetCheck = rule.check?.[GENERATED_TARGET] ?? null
+  return targetCheck?.language === 'instructions' ? null : targetCheck
 }
 
 export type RuleCheckPlanResult = RuleCheckPlan | { problem: string }

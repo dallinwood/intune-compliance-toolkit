@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure journald is configured to compress large log files\n\nThe journald system can compress large log files to avoid fill the system disk.\n\n**Rationale:**\n\nLog files that are not properly compressed run the risk of growing so large that they fill up the log partition. Valuable logging information could be lost if the log partition becomes full.",

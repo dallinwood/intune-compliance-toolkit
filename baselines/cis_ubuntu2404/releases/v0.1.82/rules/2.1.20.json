@@ -24,7 +24,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove the X Windows Package Group\n\nBy removing the xorg-x11-server-common package, the system no longer has X Windows\ninstalled. If X Windows is not installed then the system cannot boot into graphical user mode.\nThis prevents the system from being accidentally or maliciously booted into a `graphical.target`\nmode. To do so, run the following command:\n\n```\n$ sudo apt_get groupremove \"X Window System\"\n```\n\n        \n```\n$ sudo apt_get remove xorg-x11-server-common\n```\n\n**Rationale:**\n\nUnnecessary service packages must not be installed to decrease the attack surface of the system. X windows has a long history of security\nvulnerabilities and should not be installed unless approved and documented.",

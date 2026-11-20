@@ -20,17 +20,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Attempts to Alter Process and Session Initiation Information\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Record Attempts to Alter Process and Session Initiation Information\n\nThe audit system already collects process information for all\nusers and root. If the `auditd` daemon is configured to use the\n`augenrules` program to read audit rules during daemon startup (the\ndefault), add the following lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d` in order to watch for attempted manual\nedits of files involved in storing such process information:\n\n```\n-w /var/run/utmp -p wa -k session\n-w /var/log/btmp -p wa -k session\n-w /var/log/wtmp -p wa -k session\n```\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules` file in order to watch for attempted manual\nedits of files involved in storing such process information:\n\n```\n-w /var/run/utmp -p wa -k session\n-w /var/log/btmp -p wa -k session\n-w /var/log/wtmp -p wa -k session\n```\n\n**Rationale:**\n\nManual editing of these files may indicate nefarious activity, such\nas an attacker attempting to remove evidence of an intrusion.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.6.2.3.11",

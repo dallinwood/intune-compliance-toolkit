@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure There Are No Accounts With Blank or Null Passwords\n\nCheck the \"/etc/shadow\" file for blank passwords with the\nfollowing command:\n\n```\n$ sudo awk -F: '!$2 {print $1}' /etc/shadow\n```\n\nIf the command returns any results, this is a finding.\nConfigure all accounts on the system to have a password or lock\nthe account with the following commands:\nPerform a password reset:\n\n```\n$ sudo passwd [username]\n```\n\nLock an account:\n\n```\n$ sudo passwd -l [username]\n```\n\n**Rationale:**\n\nIf an account has an empty password, anyone could log in and\nrun commands with the privileges of that account. Accounts with\nempty passwords should never be used in operational environments.",

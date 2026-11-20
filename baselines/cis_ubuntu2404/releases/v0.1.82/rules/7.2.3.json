@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## All GIDs referenced in /etc/passwd must be defined in /etc/group\n\nAdd a group to the system for each GID referenced without a corresponding group.\n\n**Rationale:**\n\nIf a user is assigned the Group Identifier (GID) of a group not existing on the system, and a group\nwith the Group Identifier (GID) is subsequently created, the user may have unintended rights to\nany files associated with the group.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `gid_passwd_group_same`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "All GIDs referenced in /etc/passwd must be defined in /etc/group",
           "shell": null,
           "versions": null

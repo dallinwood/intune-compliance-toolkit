@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable systemd-journald Service\n\nThe `systemd-journald` service is an essential component of\nsystemd.\n\nThe `systemd-journald` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable systemd-journald.service\n```\n\n**Rationale:**\n\nIn the event of a system failure, Red Hat Enterprise Linux 9 must preserve any information necessary to determine cause of failure and any information necessary to return to operations with least disruption to system processes.",

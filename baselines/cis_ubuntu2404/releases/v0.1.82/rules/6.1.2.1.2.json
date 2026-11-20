@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Configure systemd-journal-upload TLS parameters: ServerKeyFile, ServerCertificateFile and TrustedCertificateFile\n\nUbuntu 24.04 must offload rsyslog messages for networked systems in real time and\noffload standalone systems at least weekly\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration.\nOffloading is a common process in information systems with limited audit storage capacity\n\n## Configure systemd-journal-upload URL\n\nUbuntu 24.04 must offload rsyslog messages for networked systems in real time and\noffload standalone systems at least weekly\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration.\nOffloading is a common process in information systems with limited audit storage capacity",

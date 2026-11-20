@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable storing core dump\n\nThe `Storage` option in `[Coredump]` section\nof `/etc/systemd/coredump.conf` or a drop-in file in\n`/etc/systemd/coredump.conf.d/*.conf`\ncan be set to `none` to disable storing core dumps permanently.\n\n**Rationale:**\n\nA core dump includes a memory image taken at the time the operating system\nterminates an application. The memory image could contain sensitive data\nand is generally useful only for developers or system operators trying to\ndebug problems. Enabling core dumps on production systems is not recommended,\nhowever there may be overriding operational requirements to enable advanced\ndebugging. Permitting temporary enablement of core dumps during such situations\nshould be reviewed through local needs and policy.",

@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure the audit Subsystem is Installed\n\nThe audit package should be installed.\n\n**Rationale:**\n\nThe auditd service is an access monitoring and accounting daemon, watching system calls to audit any access, in comparison with potential local access control policy such as SELinux policy.\n\n## Ensure the default plugins for the audit dispatcher are Installed\n\nThe audit-audispd-plugins package should be installed.\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration. Off-loading is a common process in information systems with limited audit storage capacity.\n\n**Notes:**\n\nImplementation analogous to ubuntu2204/4.1.1.1.\nAdded also the missing rule for audispd.\n",

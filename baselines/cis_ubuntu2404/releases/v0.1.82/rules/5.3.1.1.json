@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Install pam-runtime Package\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Install pam-runtime Package\n\nThe `libpam-runtime` package can be installed with the following command:\n\n```\n$ apt-get install libpam-runtime\n```\n\n**Rationale:**\n\nlibpam-runtime contains configuration that is needed\nby other rules when configuring PAM options.\n\n**Notes:**\n\nThe CIS control checks that version >= 1.5.3-5 and not that\nit is the latest version as the title suggests.\n",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.1.1",

@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Record Any Attempts to Run setfacl\n\nAt a minimum, the audit system should collect the execution of privileged\ncommands for all users and root.\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add\na line of the following form to a file with suffix `.rules`\nin the directory `/etc/audit/rules.d`:\n\n```\n-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add a line of the\nfollowing form to `/etc/audit/audit.rules`:\n\n```\n-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n```\n\n**Rationale:**\n\nWithout generating audit records that are specific to the security and\nmission needs of the organization, it would be difficult to establish,\ncorrelate, and investigate the events relating to an incident or identify\nthose responsible for one.\nAudit records can be generated from various components within the\ninformation system (e.g., module or policy filter).",

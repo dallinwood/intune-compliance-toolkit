@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure All Files Are Owned by a User\n\nIf any files are not owned by a user, then the cause of their lack of ownership should be\ninvestigated. Following this, the files should be deleted or assigned to an appropriate user.\n\nLocate the mount points related to local devices by the following command:\n\n```\n$ findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\n```\n\n\nFor all mount points listed by the previous command, it is necessary to search for files which\ndo not belong to a valid user using the following command:\n\n```\n$ sudo find *MOUNTPOINT* -xdev -nouser 2>/dev/null\n```\n\n**Rationale:**\n\nUnowned files do not directly imply a security problem, but they are generally a sign that\nsomething is amiss. They may be caused by an intruder, by incorrect software installation or\ndraft software removal, or by failure to remove all files belonging to a deleted account, or\nother similar cases. The files should be repaired so they will not cause problems when\naccounts are created in the future, and the cause should be discovered and addressed.\n\n## Ensure All Files Are Owned by a Group\n\nIf any file is not group-owned by a valid defined group, the cause of the lack of\ngroup-ownership must be investigated. Following this, those files should be deleted or\nassigned to an appropriate group. The groups need to be defined in `/etc/group`\nor in `/usr/lib/group` if `nss-altfiles` are configured to be used\nin `/etc/nsswitch.conf`.\n\nLocate the mount points related to local devices by the following command:\n\n```\n$ findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\n```\n\n\nFor all mount points listed by the previous command, it is necessary to search for files which\ndo not belong to a valid group using the following command:\n\n```\n$ sudo find *MOUNTPOINT* -xdev -nogroup 2>/dev/null\n```\n\n**Rationale:**\n\nUnowned files do not directly imply a security problem, but they are generally a sign that\nsomething is amiss. They may be caused by an intruder, by incorrect software installation or\ndraft software removal, or by failure to remove all files belonging to a deleted account, or\nother similar cases. The files should be repaired so they will not cause problems when\naccounts are created in the future, and the cause should be discovered and addressed.",
@@ -66,14 +66,14 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `no_files_unowned_by_user`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure All Files Are Owned by a User",
           "shell": null,
           "versions": null
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `file_permissions_ungroupowned`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure All Files Are Owned by a Group",
           "shell": null,
           "versions": null

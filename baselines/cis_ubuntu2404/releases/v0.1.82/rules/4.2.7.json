@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure ufw Default Deny Firewall Policy\n\nA default deny policy on connections ensures that any unconfigured\nnetwork usage will be rejected.\n\nNote: Any port or protocol without a explicit allow before the default\ndeny will be blocked.\n\n**Rationale:**\n\nWith a default accept policy the firewall will accept any packet that\nis not configured to be denied. It is easier to allow acceptable\nusage than to block unacceptable usage.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `set_ufw_default_rule`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure ufw Default Deny Firewall Policy",
           "shell": null,
           "versions": null

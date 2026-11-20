@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Limit Password Reuse\n\nDo not allow users to reuse recent passwords. This can be\naccomplished by using the `remember` option for the\n`pam_pwhistory` PAM modules.\n\n\n         \n\nIn the file `/etc/pam.d/common-password`, make sure the parameters\n`remember` and `use_authtok` are present, and that the value\nfor the `remember` parameter is $ODV_var_password_pam_remember or greater. For example:\n\n```\npassword requisite pam_pwhistory.so *...existing_options...* remember=$ODV_var_password_pam_remember use_authtok\n```\n\nThe profile requirement is $ODV_var_password_pam_remember passwords.\n\n**Rationale:**\n\nPreventing reuse of previous passwords helps ensure that a compromised password is not reused by a user.",

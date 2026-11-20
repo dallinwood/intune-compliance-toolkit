@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable Auditing for Processes Which Start Prior to the Audit Daemon\n\nTo ensure all processes can be audited, even those which start\nprior to the audit daemon, add the argument `audit=1` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit=1` is added as a kernel command line\nargument to newly installed kernels, add `audit=1` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit=1 ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# update-grub\n```\n\n**Rationale:**\n\nEach process on the system carries an \"auditable\" flag which indicates whether\nits activities can be audited. Although `auditd` takes care of enabling\nthis for all processes which launch after it does, adding the kernel argument\nensures it is set for every process during boot.\n\n## Enable Auditing to Start Prior to the Audit Daemon in zIPL\n\nTo ensure all processes can be audited, even those which start prior to the audit daemon,\ncheck that all boot entries in `/boot/loader/entries/*.conf` have `audit=1`\nincluded in its options.\n\n\nTo ensure that new kernels and boot entries continue to enable audit,\nadd `audit=1` to `/etc/kernel/cmdline`.\n\n**Rationale:**\n\nEach process on the system carries an \"auditable\" flag which indicates whether\nits activities can be audited. Although `auditd` takes care of enabling\nthis for all processes which launch after it does, adding the kernel argument\nensures it is set for every process during boot.",
@@ -65,7 +65,7 @@
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `zipl_audit_argument`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Enable Auditing to Start Prior to the Audit Daemon in zIPL",
           "shell": null,
           "versions": null

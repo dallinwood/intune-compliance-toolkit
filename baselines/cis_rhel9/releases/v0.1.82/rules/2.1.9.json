@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable Network File System (nfs)\n\nThe Network File System (NFS) service allows remote hosts to mount\nand interact with shared filesystems on the local system. If the local system\nis not designated as a NFS server then this service should be disabled.\n\nThe `nfs-server` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now nfs-server.service\n```\n\n**Rationale:**\n\nUnnecessary services should be disabled to decrease the attack surface of the system.\n\n**Notes:**\n\nMany of the libvirt packages used by Enterprise Linux virtualization are dependent on the\nnfs-utils package.",

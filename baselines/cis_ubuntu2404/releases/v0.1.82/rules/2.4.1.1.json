@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Install the cron service\n\nThe Cron service should be installed.\n\n**Rationale:**\n\nThe cron service allow periodic job execution, needed for almost all administrative tasks and services (software update, log rotating, etc.). Access to cron service should be restricted to administrative accounts only.\n\n## Enable cron Service\n\nThe `crond` service is used to execute commands at\npreconfigured times. It is required by almost all systems to perform necessary\nmaintenance tasks, such as notifying root of system activity.\n\nThe `cron` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable cron.service\n```\n\n**Rationale:**\n\nDue to its usage for maintenance and security-supporting tasks,\nenabling the cron daemon is essential.",

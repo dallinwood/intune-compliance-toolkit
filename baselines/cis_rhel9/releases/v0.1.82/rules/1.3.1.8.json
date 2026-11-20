@@ -20,17 +20,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Uninstall setroubleshoot Package\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Uninstall setroubleshoot Package\n\nThe SETroubleshoot service notifies desktop users of SELinux\ndenials. The service provides information around configuration errors,\nunauthorized intrusions, and other potential errors.\nThe `setroubleshoot` package can be removed with the following command:\n\n```\n$ sudo dnf remove setroubleshoot\n```\n\n**Rationale:**\n\nThe SETroubleshoot service is an unnecessary daemon to\nhave running on a server, especially if\nX Windows is removed or disabled.",
   "discussion_format": "markdown",
   "id": "cis_rhel9.1.3.1.8",

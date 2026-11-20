@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.all.rp_filter` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.all.rp_filter=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.all.rp_filter = 1\n```\n\n**Rationale:**\n\nEnabling reverse path filtering drops packets with source addresses\nthat should not have been able to be received on the interface they were\nreceived on. It should not be used on systems which are routers for\ncomplicated networks, but is helpful for end hosts and routers serving small\nnetworks.\n\n## Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default\n\nTo set the runtime status of the `net.ipv4.conf.default.rp_filter` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.default.rp_filter=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.default.rp_filter = 1\n```\n\n**Rationale:**\n\nEnabling reverse path filtering drops packets with source addresses\nthat should not have been able to be received on the interface they were\nreceived on. It should not be used on systems which are routers for\ncomplicated networks, but is helpful for end hosts and routers serving small\nnetworks.",

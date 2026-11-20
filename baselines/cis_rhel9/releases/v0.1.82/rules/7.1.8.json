@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Group Who Owns Backup gshadow File\n\nTo properly set the group owner of `/etc/gshadow-`, run the command:\n\n```\n$ sudo chgrp root /etc/gshadow-\n```\n\n**Rationale:**\n\nThe `/etc/gshadow-` file is a backup of `/etc/gshadow`, and as such,\nit contains group password hashes. Protection of this file is critical for system security.\n\n## Verify User Who Owns Backup gshadow File\n\nTo properly set the owner of `/etc/gshadow-`, run the command:\n\n```\n$ sudo chown root /etc/gshadow- \n```\n\n**Rationale:**\n\nThe `/etc/gshadow-` file is a backup of `/etc/gshadow`, and as such,\nit contains group password hashes. Protection of this file is critical for system security.\n\n## Verify Permissions on Backup gshadow File\n\nTo properly set the permissions of `/etc/gshadow-`, run the command:\n\n```\n$ sudo chmod 0000 /etc/gshadow-\n```\n\n**Rationale:**\n\nThe `/etc/gshadow-` file is a backup of `/etc/gshadow`, and as such,\nit contains group password hashes. Protection of this file is critical for system security.",

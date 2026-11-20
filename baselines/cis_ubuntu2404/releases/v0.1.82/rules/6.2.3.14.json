@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor)\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-w /etc/apparmor/ -p wa -k MAC-policy\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-w /etc/apparmor/ -p wa -k MAC-policy\n```\n\n**Rationale:**\n\nThe system's mandatory access policy (Apparmor) should not be\narbitrarily changed by anything other than administrator action. All changes to\nMAC policy should be audited.\n\n## Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor.d)\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-w /etc/apparmor.d/ -p wa -k MAC-policy\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-w /etc/apparmor.d/ -p wa -k MAC-policy\n```\n\n**Rationale:**\n\nThe system's mandatory access policy (Apparmor) should not be\narbitrarily changed by anything other than administrator action. All changes to\nMAC policy should be audited.",

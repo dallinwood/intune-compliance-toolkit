@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Group Who Owns cron.hourly\n\nTo properly set the group owner of `/etc/cron.hourly`, run the command:\n\n  \n```\n$ sudo chgrp root /etc/cron.hourly\n```\n\n**Rationale:**\n\nService configuration files enable or disable features of their respective services that if configured incorrectly\ncan lead to insecure and vulnerable configurations. Therefore, service configuration files should be owned by the\ncorrect group to prevent unauthorized changes.\n\n## Verify Owner on cron.hourly\n\nTo properly set the owner of `/etc/cron.hourly`, run the command:\n\n  \n```\n$ sudo chown root /etc/cron.hourly \n```\n\n**Rationale:**\n\nService configuration files enable or disable features of their respective services that if configured incorrectly\ncan lead to insecure and vulnerable configurations. Therefore, service configuration files should be owned by the\ncorrect user to prevent unauthorized changes.\n\n## Verify Permissions on cron.hourly\n\nTo properly set the permissions of `/etc/cron.hourly`, run the command:\n\n```\n$ sudo chmod 0700 /etc/cron.hourly\n```\n\n**Rationale:**\n\nService configuration files enable or disable features of their respective services that if configured incorrectly\ncan lead to insecure and vulnerable configurations. Therefore, service configuration files should have the\ncorrect access rights to prevent unauthorized changes.",

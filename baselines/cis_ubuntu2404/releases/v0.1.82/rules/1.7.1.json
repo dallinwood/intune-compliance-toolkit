@@ -24,7 +24,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove the GDM Package Group\n\nBy removing the `gdm3` package, the system no longer has GNOME installed.\n\nIf X Windows is not installed then the system cannot boot into graphical user mode.\nThis prevents the system from being accidentally or maliciously booted into a `graphical.target`\nmode. To do so, run the following command:\n\n\n```\n$ sudo apt remove gdm3\n```\n\n**Rationale:**\n\nUnnecessary service packages must not be installed to decrease the attack surface of the system.\nA graphical environment is unnecessary for certain types of systems including a virtualization\nhypervisor.",

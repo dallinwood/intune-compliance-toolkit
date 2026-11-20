@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { CheckResult, Odv, Rule, RuleCheck } from '../types/library'
-import { planRuleCheck, settingNameFor, type RuleCheckPlan } from './checkPlan'
+import { generatedTargetCheck, planRuleCheck, settingNameFor, type RuleCheckPlan } from './checkPlan'
 import { applicabilityOfVersions, macosCheck } from './testRuleFixtures'
 
 // Pinned on purpose: these tests describe the exact shape of rules as release_27.0 stored them (27.1 changed some).
@@ -273,6 +273,18 @@ describe('planRuleCheck with inline rules', () => {
     const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.branches).toEqual([{ majors: ['15', '26', '27'], shell: 'echo PASS', expected: { type: 'string', value: 'PASS' } }])
+  })
+
+  it('never plans an instructions check', () => {
+    const instructionsCheck = {
+      language: 'instructions' as const,
+      default: { shell: null, result: null, additional_info: 'Inspect the setting by hand.' },
+      by_version: {},
+    }
+    const rule = inlineRule({ check: { macOS: instructionsCheck } })
+
+    expect(generatedTargetCheck(rule)).toBeNull()
+    expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP has no check for macOS 15.0.')
   })
 
   it('refuses a rule whose listed version resolves to a check with a null result', () => {

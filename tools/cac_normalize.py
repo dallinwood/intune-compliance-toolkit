@@ -116,11 +116,11 @@ def _discussion(control: Control, linked_rules: list[DatastreamRule]) -> str:
 
 
 def _check(spec: BenchmarkSpec, linked_rules: list[DatastreamRule]) -> dict | None:
-    if not linked_rules:
+    if not any(linked_rule.ocil_text for linked_rule in linked_rules):
         return None
     return {
         spec.target: {
-            "language": "bash",
+            "language": "instructions",
             "default": {
                 "shell": None,
                 "result": None,
@@ -151,7 +151,7 @@ def _remediation(spec: BenchmarkSpec, linked_rules: list[DatastreamRule]) -> dic
     steps = [
         {
             "name": linked_rule.title,
-            "language": "bash",
+            "language": "bash" if linked_rule.fix_shell else "instructions",
             "shell": linked_rule.fix_shell,
             "additional_info": (
                 f"ComplianceAsCode rule `{linked_rule.rule_id}`"

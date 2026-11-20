@@ -45,7 +45,9 @@ export interface RuleCheck {
   additional_info: string | null
 }
 
-export type ScriptLanguage = 'bash' | 'powershell' | 'zsh' | 'python'
+// 'instructions' is plain-English guidance in additional_info, never a script:
+// its entries have shell null, no shell_file and (for checks) result null.
+export type ScriptLanguage = 'bash' | 'powershell' | 'zsh' | 'python' | 'instructions'
 
 export interface TargetCheck {
   language: ScriptLanguage

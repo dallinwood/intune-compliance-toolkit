@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty\n\nThe sudo `use_pty` tag, when specified, will only execute sudo\ncommands from users logged in to a real tty.\nThis should be enabled by making sure that the `use_pty` tag exists in\n`/etc/sudoers` configuration file or any sudo configuration snippets\nin `/etc/sudoers.d/`.\n\n**Rationale:**\n\nRequiring that sudo commands be run in a pseudo-terminal can prevent an attacker from retaining\naccess to the user's terminal after the main program has finished executing.",

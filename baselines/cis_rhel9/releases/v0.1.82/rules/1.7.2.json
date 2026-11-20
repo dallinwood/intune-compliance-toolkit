@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Local Login Warning Banner Is Configured Properly\n\nTo configure the system local login warning banner edit the `/etc/issue` file.\nThe contents of this file is displayed to users prior to login to local terminals.\nReplace the default text with a message compliant with the local site policy.\nThe message should not contain information about operating system version,\nrelease, kernel version or patch level.\n\nThe recommended banner text can be tailored in the XCCDF Value `xccdf_org.ssgproject.content_value_cis_banner_text`:\n\n```\n$ODV_cis_banner_text\n```\n\n**Rationale:**\n\nWarning messages inform users who are attempting to login to the system of their legal\nstatus regarding the system and must include the name of the organization that owns\nthe system and any monitoring policies that are in place. Displaying OS and patch level\ninformation in login banners also has the side effect of providing detailed system\ninformation to attackers attempting to target specific exploits of a system. Authorized\nusers can easily get this information by running the `uname -a` command once they\nhave logged in.",

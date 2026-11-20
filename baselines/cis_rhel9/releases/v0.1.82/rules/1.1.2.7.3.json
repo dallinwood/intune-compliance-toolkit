@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Add nosuid Option to /var/log/audit\n\nThe `nosuid` mount option can be used to prevent\nexecution of setuid programs in `/var/log/audit`. The SUID and SGID permissions\nshould not be required in directories containing audit log files.\nAdd the `nosuid` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var/log/audit`.\n\n**Rationale:**\n\nThe presence of SUID and SGID executables should be tightly controlled. Users\nshould not be able to execute SUID or SGID binaries from partitions\ndesignated for audit log files.",

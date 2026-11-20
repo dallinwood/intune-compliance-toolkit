@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Group Who Owns Backup passwd File\n\nTo properly set the group owner of `/etc/passwd-`, run the command:\n\n```\n$ sudo chgrp root /etc/passwd-\n```\n\n**Rationale:**\n\nThe `/etc/passwd-` file is a backup file of `/etc/passwd`, and as such,\nit contains information about the users that are configured on the system.\nProtection of this file is critical for system security.\n\n## Verify User Who Owns Backup passwd File\n\nTo properly set the owner of `/etc/passwd-`, run the command:\n\n```\n$ sudo chown root /etc/passwd- \n```\n\n**Rationale:**\n\nThe `/etc/passwd-` file is a backup file of `/etc/passwd`, and as such,\nit contains information about the users that are configured on the system.\nProtection of this file is critical for system security.\n\n## Verify Permissions on Backup passwd File\n\nTo properly set the permissions of `/etc/passwd-`, run the command:\n\n```\n$ sudo chmod 0644 /etc/passwd-\n```\n\n**Rationale:**\n\nThe `/etc/passwd-` file is a backup file of `/etc/passwd`, and as such,\nit contains information about the users that are configured on the system.\nProtection of this file is critical for system security.",

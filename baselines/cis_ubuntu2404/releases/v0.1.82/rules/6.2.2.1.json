@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Configure auditd Max Log File Size\n\nDetermine the amount of audit data (in megabytes)\nwhich should be retained in each log file. Edit the file\n`/etc/audit/auditd.conf`. Add or modify the following line, substituting\nthe correct value of $ODV_var_auditd_max_log_file for *STOREMB*:\n\n```\nmax_log_file = *STOREMB*\n       \n```\n\nSet the value to `6` (MB) or higher for general-purpose systems.\nLarger values, of course,\nsupport retention of even more audit data.\n\n**Rationale:**\n\nThe total storage for audit log files must be large enough to retain\nlog information over the period required. This is a function of the maximum\nlog file size and the number of logs retained.",

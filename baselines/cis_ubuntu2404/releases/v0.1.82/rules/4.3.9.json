@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify nftables Service is Enabled\n\nThe nftables service allows for the loading of nftables rulesets during boot,\nor starting on the nftables service\n\nThe `nftables` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable nftables.service\n```\n\n**Rationale:**\n\nThe nftables service restores the nftables rules from the rules files referenced\nin the `/etc/sysconfig/nftables.conf` file during boot or the starting of\nthe nftables service",

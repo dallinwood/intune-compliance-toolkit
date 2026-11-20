@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable DCCP Support\n\nThe Datagram Congestion Control Protocol (DCCP) is a\nrelatively new transport layer protocol, designed to support\nstreaming media and telephony.\n\nTo configure the system to prevent the `dccp`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/dccp.conf`:\n\n```\ninstall dccp /bin/false\n```\n\nThis entry will cause a non-zero return value during a `dccp` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall dccp /bin/true\n```\n\n**Rationale:**\n\nDisabling DCCP protects\nthe system against exploitation of any flaws in its implementation.",

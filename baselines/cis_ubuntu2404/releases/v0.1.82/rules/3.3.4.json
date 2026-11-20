@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.icmp_echo_ignore_broadcasts` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.icmp_echo_ignore_broadcasts = 1\n```\n\n**Rationale:**\n\nResponding to broadcast (ICMP) echoes facilitates network mapping\nand provides a vector for amplification attacks.\n\n\nIgnoring ICMP echo requests (pings) sent to broadcast or multicast\naddresses makes the system slightly more difficult to enumerate on the network.",

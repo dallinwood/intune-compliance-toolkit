@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Authentication Required for Single User Mode\n\nSingle user mode is used for recovery when the system detects an\nissue during boot or by manual selection from the bootloader.\n\n**Rationale:**\n\nRequiring authentication in single user mode prevents an unauthorized\nuser from rebooting the system into single user to gain root privileges\nwithout credentials.",
@@ -68,7 +68,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `ensure_root_password_configured`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure Authentication Required for Single User Mode",
           "shell": null,
           "versions": null

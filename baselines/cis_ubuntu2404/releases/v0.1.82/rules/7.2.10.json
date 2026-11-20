@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove Rsh Trust Files\n\nThe files `/etc/hosts.equiv` and `~/.rhosts` (in\neach user's home directory) list remote hosts and users that are trusted by the\nlocal system when using the rshd daemon.\nTo remove these files, run the following command to delete them from any\nlocation:\n\n```\n$ sudo rm /etc/hosts.equiv\n```\n\n        \n```\n$ rm ~/.rhosts\n```\n\n**Rationale:**\n\nThis action is only meaningful if `.rhosts` support is permitted\nthrough PAM. Trust files are convenient, but when used in conjunction with\nthe R-services, they can allow unauthenticated access to a system.\n\n## Verify No .forward Files Exist\n\nThe `.forward` file specifies an email address to forward the user's mail to.\n\n**Rationale:**\n\nUse of the `.forward` file poses a security risk in that sensitive data may\nbe inadvertently transferred outside the organization. The .forward file\nalso poses a risk as it can be used to execute commands that may perform\nunintended actions.\n\n## Verify No netrc Files Exist\n\nThe `.netrc` files contain login information\nused to auto-login into FTP servers and reside in the user's home\ndirectory. These files may contain unencrypted passwords to\nremote FTP servers making them susceptible to access by unauthorized\nusers and should not be used.  Any `.netrc` files should be removed.\n\n**Rationale:**\n\nUnencrypted passwords for remote FTP servers may be stored in `.netrc`\nfiles.\n\n## User Initialization Files Must Be Owned By the Primary User\n\nSet the owner of the user initialization files for interactive users to\nthe primary owner with the following command:\n\n```\n$ sudo chown *USER* /home/*USER*/.*\n```\n\n\nThis rule ensures every initialization file related to an interactive user\nis owned by an interactive user.\n\n**Rationale:**\n\nLocal initialization files are used to configure the user's shell environment\nupon logon. Malicious modification of these files could compromise accounts upon\nlogon.\n\n## User Initialization Files Must Be Group-Owned By The Primary Group\n\nChange the group owner of interactive users files to the group found\nin \n```\n/etc/passwd\n```\n for the user. To change the group owner of a local\ninteractive user home directory, use the following command:\n\n```\n$ sudo chgrp *USER_GROUP* /home/*USER*/.*INIT_FILE*\n        \n```\n\n\nThis rule ensures every initialization file related to an interactive user\nis group-owned by an interactive user.\n\n**Rationale:**\n\nLocal initialization files for interactive users are used to configure the\nuser's shell environment upon logon. Malicious modification of these files could\ncompromise accounts upon logon.\n\n## Ensure All User Initialization Files Have Mode 0740 Or Less Permissive\n\nSet the mode of the user initialization files to `0740` or less permissisive with the\nfollowing command:\n\n```\n$ sudo chmod u-s,g-wxs,o= /home/*USER*/.*INIT_FILE*\n        \n```\n\n**Rationale:**\n\nLocal initialization files are used to configure the user's shell environment\nupon logon. Malicious modification of these files could compromise accounts upon\nlogon.\n\n## Ensure User Bash History File Has Correct Permissions\n\nSet the mode of the bash history file to `0600` with the\nfollowing command:\n\n```\n$ sudo chmod 0600 /home/*USER*/.bash_history\n```\n\n**Rationale:**\n\nIncorrect permissions may enable malicious users to recover\nother users' command history.",
@@ -93,14 +93,14 @@
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `no_forward_files`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Verify No .forward Files Exist",
           "shell": null,
           "versions": null
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `no_netrc_files`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Verify No netrc Files Exist",
           "shell": null,
           "versions": null

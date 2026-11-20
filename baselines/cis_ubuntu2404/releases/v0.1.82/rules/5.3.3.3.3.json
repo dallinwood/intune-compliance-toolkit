@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enforce Password History with use_authtok\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Enforce Password History with use_authtok\n\nThe `use_authtok` option ensures the pam_pwhistory module uses the new\npassword provided by a previously stacked PAM module during password\nchanges, rather than prompting the user again.\n\n**Rationale:**\n\nThe `use_authtok` option allows multiple PAM modules to validate the new\npassword before it is accepted, ensuring it meets all security requirements\nwithout requiring the user to re-enter it multiple times.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.3.3.3",

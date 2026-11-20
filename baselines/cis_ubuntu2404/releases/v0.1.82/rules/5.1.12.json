@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Use Only Strong Key Exchange algorithms\n\nLimit the Key Exchange to strong algorithms.\nThe following line in `/etc/ssh/sshd_config` demonstrates use\nof those:\n\n```\nKexAlgorithms $ODV_sshd_strong_kex\n        \n```\n\n**Rationale:**\n\nKey exchange is any method in cryptography by which cryptographic keys are exchanged\nbetween two parties, allowing use of a cryptographic algorithm. If the sender and receiver\nwish to exchange encrypted messages, each must be equipped to encrypt messages to be\nsent and decrypt messages received",

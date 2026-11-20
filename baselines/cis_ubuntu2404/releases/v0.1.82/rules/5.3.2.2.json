@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure pam_faillock module is enabled\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Ensure pam_faillock module is enabled\n\nThe `pam_faillock.so` module maintains a list of failed authentication attempts per\nuser during a specified interval and locks the account in case there were more than the\nconfigured number of consecutive failed authentications (this is defined by the `deny`\nparameter in the faillock configuration). It stores the failure records into per-user files in\nthe tally directory.\n\n**Rationale:**\n\nLocking out user IDs after n unsuccessful consecutive login attempts mitigates brute\nforce password attacks against your systems.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.2.2",

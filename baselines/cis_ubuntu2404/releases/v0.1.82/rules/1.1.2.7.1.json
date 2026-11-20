@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure /var/log/audit Located On Separate Partition\n\nAudit logs are stored in the `/var/log/audit` directory.\n\nEnsure that `/var/log/audit` has its own partition or logical\nvolume at installation time, or migrate it using LVM.\nMake absolutely certain that it is large enough to store all\naudit logs that will be created by the auditing daemon.\n\n**Rationale:**\n\nPlacing `/var/log/audit` in its own partition\nenables better separation between audit files\nand other files, and helps ensure that\nauditing cannot be halted due to the partition running out\nof space.",
@@ -57,7 +57,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `partition_for_var_log_audit`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure /var/log/audit Located On Separate Partition",
           "shell": null,
           "versions": null

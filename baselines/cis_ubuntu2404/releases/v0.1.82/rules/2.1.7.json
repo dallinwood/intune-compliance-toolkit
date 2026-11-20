@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall slapd Package\n\nThe slapd package is not installed by default on a Ubuntu 24.04\nsystem. It is needed only by the OpenLDAP server, not by the\nclients which use LDAP for authentication. If the system is not\nintended for use as an LDAP Server it should be removed.\n\n**Rationale:**\n\nUnnecessary packages should not be installed to decrease the attack\nsurface of the system.  While this software is clearly essential on an LDAP\nserver, it is not necessary on typical desktop or workstation systems.\n\n## Disable LDAP Server (slapd)\n\nThe Lightweight Directory Access Protocol (LDAP) is a service that\nprovides a method for looking up information from a central database.\n\n**Rationale:**\n\nIf the system will not need to act as an LDAP server, it is recommended\nthat the software be disabled to reduce the potential attack surface.",

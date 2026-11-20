@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable the GNOME3 Login User List\n\nIn the default graphical environment, users logging directly into the\nsystem are greeted with a login screen that displays all known users.\nThis functionality should be disabled by setting `disable-user-list`\nto `true`.\n\n\n         \n\nTo disable, add or edit `disable-user-list` to\n`/etc/dconf/db/distro.d/00-security-settings`. For example:\n\n```\n[org/gnome/login-screen]\ndisable-user-list=true\n```\n\nOnce the setting has been added, add a lock to\n`/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent\nuser modification. For example:\n\n```\n/org/gnome/login-screen/disable-user-list\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nLeaving the user list enabled is a security risk since it allows anyone\nwith physical access to the system to quickly enumerate known user accounts\nwithout logging in.",

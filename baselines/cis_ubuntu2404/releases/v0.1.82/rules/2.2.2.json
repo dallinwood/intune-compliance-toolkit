@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall rsh Package\n\nThe `rsh-client` package contains the client commands\n\nfor the rsh services\n\n**Rationale:**\n\nThese legacy clients contain numerous security exposures and have\nbeen replaced with the more secure SSH package. Even if the server is removed,\nit is best to ensure the clients are also removed to prevent users from\ninadvertently attempting to use these commands and therefore exposing\n\ntheir credentials. Note that removing the `rsh-client` package removes\n\nthe clients for `rsh`,`rcp`, and `rlogin`.",

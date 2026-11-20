@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable rsyslog Service\n\nThe `rsyslog` service provides syslog-style logging by default on Ubuntu 24.04.\n\nThe `rsyslog` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable rsyslog.service\n```\n\n**Rationale:**\n\nThe `rsyslog` service must be running in order to provide\nlogging services, which are essential to system administration.",

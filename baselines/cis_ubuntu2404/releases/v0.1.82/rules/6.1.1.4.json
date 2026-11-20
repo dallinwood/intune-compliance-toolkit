@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure One Logging Service Is In Use\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Ensure One Logging Service Is In Use\n\nEnsure that a logging system is active and in use.\n\n```\nsystemctl is-active rsyslog syslog-ng systemd-journald\n```\n\nThe command should return at least one `active`.\n\n**Rationale:**\n\nThe system should have one active logging service to avoid conflicts\nand ensure consistency.\n\n**Notes:**\n\nThe title of this rule is misleading. The actual audit checks that at least\none of \"rsyslogd\" and \"systemd-journald\" is active.\nSee https://workbench.cisecurity.org/benchmarks/18959/tickets/23601\n\nRemediation is not automated as the choice of correct logging service\nis dependent on site policy.\n",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.6.1.1.4",
@@ -65,7 +55,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `logging_services_active`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure One Logging Service Is In Use",
           "shell": null,
           "versions": null

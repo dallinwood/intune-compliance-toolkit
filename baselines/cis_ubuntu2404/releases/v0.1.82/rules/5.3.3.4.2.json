@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Avoid using remember in pam_unix module\n\nThe `remember` option stores the last n passwords for each user in `/etc/security/opasswd`,\nenforcing password history and preventing users from reusing the same passwords. However, this feature\nrelies on the MD5 password hash algorithm, which is less secure. Instead, the `pam_pwhistory`\nmodule should be used. This module also stores the last n passwords in `/etc/security/opasswd`\nand it uses the password hash algorithm configured in the pam_unix module, such as yescrypt or SHA512,\noffering enhanced security.\n\n\n\n         \n\nOn Debian-based systems, the `remember` option should be removed from the PAM configuration\nin `/etc/pam.d/common-*` files.\n\n**Rationale:**\n\nRemoving the `remember` argument ensures the use of a stronger password hashing algorithm.\nA more robust hash algorithm increases the difficulty for attackers to crack stored\npasswords in `/etc/security/opasswd`, thereby improving system security and\nprotecting user credentials.",

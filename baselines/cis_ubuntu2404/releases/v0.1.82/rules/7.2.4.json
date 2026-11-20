@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure shadow Group is Empty\n\nThe shadow group allows system programs which require access the ability\nto read the /etc/shadow file. No users should be assigned to the shadow group.\n\n**Rationale:**\n\nAny users assigned to the shadow group would be granted read access to the\n/etc/shadow file. If attackers can gain read access to the /etc/shadow file,\nthey can easily run a password cracking program against the hashed passwords\nto break them. Other security information that is stored in the /etc/shadow\nfile (such as expiration) could also be useful to subvert additional user\naccounts.",

@@ -20,17 +20,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enforce all AppArmor Profiles\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Enforce all AppArmor Profiles\n\nAppArmor profiles define what resources applications are able to access.\nTo set all profiles to enforce mode run the following command:\n\n```\n$ sudo aa-enforce /etc/apparmor.d/*\n```\n\nTo list unconfined processes run the following command:\n\n\n```\n$ sudo apparmor_status | grep processes\n```\n\n\nAny unconfined processes may need to have a profile created or activated\nfor them and then be restarted.\n\n**Rationale:**\n\nSecurity configuration requirements vary from site to site. Some sites may\nmandate a policy that is stricter than the default policy, which is perfectly\nacceptable. This recommendation is intended to ensure that any policies that\nexist on the system are activated.\n\n**Notes:**\n\nCIS recommendation does not adequately address the nuances\nof various profiles, including disabled, force-complain,\nand unconfined. Currently, the control changes the default apparmor\nmode for all profiles in /etc/apparmor.d which can\nbreak certain applications. See https://workbench.cisecurity.org/benchmarks/18959/tickets/23987\n",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.3.1.4",

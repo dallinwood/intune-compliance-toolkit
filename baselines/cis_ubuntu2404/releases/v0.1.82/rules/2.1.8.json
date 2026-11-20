@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall dovecot Package\n\nThe `dovecot-core` package can be removed with the following command:\n\n```\n$ apt-get remove dovecot-core\n```\n\n**Rationale:**\n\nIf there is no need to make the Dovecot software available,\nremoving it provides a safeguard against its activation.\n\n## Disable Dovecot Service\n\nThe `dovecot` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now dovecot.service\n```\n\n**Rationale:**\n\nRunning an IMAP or POP3 server provides a network-based\navenue of attack, and should be disabled if not needed.",

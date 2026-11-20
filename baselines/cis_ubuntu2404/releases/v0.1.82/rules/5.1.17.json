@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set SSH MaxSessions limit\n\nThe `MaxSessions` parameter specifies the maximum number of open sessions permitted\nfrom a given connection. To set MaxSessions edit\n`/etc/ssh/sshd_config` as follows: \n```\nMaxSessions $ODV_var_sshd_max_sessions\n        \n```\n\n**Rationale:**\n\nTo protect a system from denial of service due to a large number of concurrent\nsessions, use the rate limiting function of MaxSessions to protect availability\nof sshd logins and prevent overwhelming the daemon.",

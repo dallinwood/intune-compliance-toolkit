@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify Only Root Has UID 0\n\nIf any account other than root has a UID of 0, this misconfiguration should\nbe investigated and the accounts other than root should be removed, locked\nor have their UID changed.\n\n\nIf the account is associated with system commands or applications the UID\nshould be changed to one greater than \"0\" but less than \"1000.\"\nOtherwise assign a UID greater than \"1000\" that has not already been\nassigned.\n\n**Rationale:**\n\nAn account has root authority if it has a UID of 0. Multiple accounts\nwith a UID of 0 afford more opportunity for potential intruders to\nguess a password for a privileged account. Proper configuration of\nsudo is recommended to afford multiple system administrators\naccess to root privileges in an accountable manner.",

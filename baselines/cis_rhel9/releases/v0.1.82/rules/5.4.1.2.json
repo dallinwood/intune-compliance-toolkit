@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Password Minimum Age\n\nTo specify password minimum age for new accounts,\nedit the file `/etc/login.defs`\nand add or correct the following line:\n\n```\nPASS_MIN_DAYS $ODV_var_accounts_minimum_age_login_defs\n         \n```\n\nA value of 1 day is considered sufficient for many\nenvironments.\nThe profile requirement is `$ODV_var_accounts_minimum_age_login_defs`.\n\n**Rationale:**\n\nEnforcing a minimum password lifetime helps to prevent repeated password\nchanges to defeat the password reuse or history enforcement requirement. If\nusers are allowed to immediately and continually change their password,\nthen the password could be repeatedly changed in a short period of time to\ndefeat the organization's policy regarding password reuse.\n\n\n         \n\nSetting the minimum password age protects against users cycling back to a\nfavorite password after satisfying the password reuse requirement.\n\n## Set Existing Passwords Minimum Age\n\nConfigure non-compliant accounts to enforce a 24 hours/1 day minimum password\nlifetime by running the following command:\n\n```\n$ sudo chage -m 1 *USER*\n         \n```\n\n**Rationale:**\n\nEnforcing a minimum password lifetime helps to prevent repeated password\nchanges to defeat the password reuse or history enforcement requirement. If\nusers are allowed to immediately and continually change their password, the\npassword could be repeatedly changed in a short period of time to defeat the\norganization's policy regarding password reuse.",

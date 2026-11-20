@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Add noexec Option to /dev/shm\n\nThe `noexec` mount option can be used to prevent binaries\nfrom being executed out of `/dev/shm`.\nIt can be dangerous to allow the execution of binaries\nfrom world-writable temporary storage directories such as `/dev/shm`.\nAdd the `noexec` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/dev/shm`.\n\n**Rationale:**\n\nAllowing users to execute binaries from world-writable directories\nsuch as `/dev/shm` can expose the system to potential compromise.",

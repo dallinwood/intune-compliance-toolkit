@@ -8,6 +8,7 @@ const SCRIPT_LANGUAGE_LABELS: Record<ScriptLanguage, string> = {
   powershell: 'PowerShell',
   zsh: 'zsh',
   python: 'Python',
+  instructions: 'Instructions',
 }
 
 const PAYLOAD_KIND_LABELS: Record<string, string> = {
@@ -50,7 +51,9 @@ export type RemediationItem =
 export function remediationItemButtonLabel(index: VocabularyIndex, target: string, item: RemediationItem): string {
   const typeLabel =
     item.type === 'step'
-      ? `${scriptLanguageLabel(item.step.language)} script`
+      ? item.step.language === 'instructions'
+        ? scriptLanguageLabel(item.step.language)
+        : `${scriptLanguageLabel(item.step.language)} script`
       : Object.hasOwn(PAYLOAD_BUTTON_LABELS, item.payload.kind)
         ? PAYLOAD_BUTTON_LABELS[item.payload.kind]
         : item.payload.kind

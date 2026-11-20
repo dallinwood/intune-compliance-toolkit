@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure that System Accounts Are Locked\n\nSome accounts are not associated with a human user of the system, and exist to perform some\nadministrative functions. An attacker should not be able to log into these accounts.\n\n\n         \n\nSystem accounts are those user accounts with a user ID less than `1000`.\nIf any system account other than `root`, `halt`, `sync`, `shutdown`\nand `nfsnobody` has an unlocked password, disable it with the command:\n\n```\n$ sudo usermod -L *account*\n         \n```\n\n**Rationale:**\n\nDisabling authentication for default system accounts makes it more difficult for attackers\nto make use of them to compromise a system.\n\n## Ensure that System Accounts Do Not Run a Shell Upon Login\n\nSome accounts are not associated with a human user of the system, and exist to perform some\nadministrative functions. Should an attacker be able to log into these accounts, they should\nnot be granted access to a shell.\n\n\n         \n\nThe login shell for each local account is stored in the last field of each line in\n`/etc/passwd`. System accounts are those user accounts with a user ID less than\n`1000`. The user ID is stored in the third field. If any system account\nother than `root` has a login shell, disable it with the command:\n\n```\n$ sudo usermod -s /sbin/nologin *account*\n         \n```\n\n**Rationale:**\n\nEnsuring shells are not given to system accounts upon login makes it more difficult for\nattackers to make use of system accounts.",

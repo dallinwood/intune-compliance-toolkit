@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Configure AIDE to Verify the Audit Tools\n\nThe operating system file integrity tool must be configured to protect the integrity of the audit tools.\n\n**Rationale:**\n\nProtecting the integrity of the tools used for auditing purposes is a\ncritical step toward ensuring the integrity of audit information. Audit\ninformation includes all information (e.g., audit records, audit settings,\nand audit reports) needed to successfully audit information system\nactivity.\n\nAudit tools include but are not limited to vendor-provided and open-source\naudit tools needed to successfully view and manipulate audit information\nsystem activity and records. Audit tools include custom queries and report\ngenerators.\n\nIt is not uncommon for attackers to replace the audit tools or inject code\ninto the existing tools to provide the capability to hide or erase system\nactivity from the audit logs.\n\nTo address this risk, audit tools must be cryptographically signed to\nprovide the capability to identify when the audit tools have been modified,\nmanipulated, or replaced. An example is a checksum hash of the file or\nfiles.",

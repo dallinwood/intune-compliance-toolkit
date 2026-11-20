@@ -166,6 +166,50 @@ def test_minimal_rule_is_valid():
     assert schema_errors(MINIMAL_RULE) == []
 
 
+def instructions_rule(**entry_overrides):
+    rule = make_rule()
+    entry = {"shell": None, "additional_info": "Read the setting.", "result": None}
+    entry.update(entry_overrides)
+    rule["check"] = {"macOS": {"language": "instructions", "default": entry, "by_version": {"15.0": dict(entry)}}}
+    rule["remediation"]["macOS"]["steps"] = [
+        {"name": None, "language": "instructions", "shell": None, "additional_info": "Do it.", "versions": None}
+    ]
+    return rule
+
+
+def test_instructions_language_is_valid_without_a_script():
+    assert schema_errors(instructions_rule()) == []
+
+
+def test_instructions_check_rejects_shell():
+    assert schema_errors(instructions_rule(shell="echo hi")) != []
+
+
+def test_instructions_check_rejects_shell_file():
+    rule = instructions_rule()
+    del rule["check"]["macOS"]["default"]["shell"]
+    rule["check"]["macOS"]["default"]["shell_file"] = "baselines/x/check.sh"
+    assert schema_errors(rule) != []
+
+
+def test_instructions_check_rejects_result():
+    assert schema_errors(instructions_rule(result={"type": "integer", "value": 1})) != []
+
+
+def test_instructions_step_rejects_shell():
+    rule = instructions_rule()
+    rule["remediation"]["macOS"]["steps"][0]["shell"] = "echo hi"
+    assert schema_errors(rule) != []
+
+
+def test_instructions_step_rejects_shell_file():
+    rule = instructions_rule()
+    step = rule["remediation"]["macOS"]["steps"][0]
+    del step["shell"]
+    step["shell_file"] = "baselines/x/fix.sh"
+    assert schema_errors(rule) != []
+
+
 def test_rejects_numeric_id():
     assert schema_errors(make_rule(id="12"))
 

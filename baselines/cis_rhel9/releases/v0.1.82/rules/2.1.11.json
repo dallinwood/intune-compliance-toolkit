@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable the CUPS Service\n\nThe `cups` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now cups.service\n```\n\n**Rationale:**\n\nTurn off unneeded services to reduce attack surface.",

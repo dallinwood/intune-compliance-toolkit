@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify pam_pwquality module is activated\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Verify pam_pwquality module is activated\n\nThe `pam_pwquality.so` module ensures password quality by evaluating user-created passwords \nagainst a system dictionary and a set of rules designed to detect weak choices. Originally derived \nfrom the pam_cracklib module, this module is backward-compatible with options of pam_cracklib.\n\n\n          \n\nThe module's process includes prompting the user for a password, checking its strength, and if it \nmeets the criteria requesting the password again for confirmation. If both entries match, the \npassword is passed to subsequent modules to be set as the new authentication token.\n\n**Rationale:**\n\nStrong passwords significantly increase the time and effort required for unauthorized access, \nincreasing overall system security.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.2.3",

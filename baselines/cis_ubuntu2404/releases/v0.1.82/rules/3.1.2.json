@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Deactivate Wireless Network Interfaces\n\nDeactivating wireless network interfaces should prevent normal usage of the wireless\ncapability.\n\n\n         \n\n\nVerify that there are no wireless interfaces configured on the system\nwith the following command:\n\n```\n$ ls -L -d /sys/class/net/*/wireless | xargs dirname | xargs basename -a\n```\n\n**Rationale:**\n\nThe use of wireless networking can introduce many different attack vectors into\nthe organization's network. Common attack vectors such as malicious association\nand ad hoc networks will allow an attacker to spoof a wireless access point\n(AP), allowing validated systems to connect to the malicious AP and enabling the\nattacker to monitor and record network traffic. These malicious APs can also\nserve to create a man-in-the-middle attack or be used to create a denial of\nservice to valid network resources.",

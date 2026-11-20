@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable SSH Support for .rhosts Files\n\nSSH can emulate the behavior of the obsolete rsh\ncommand in allowing users to enable insecure access to their\naccounts via `.rhosts` files.\n\n\nThe default SSH configuration disables support for `.rhosts`. The appropriate\nconfiguration is used if no value is set for `IgnoreRhosts`.\n\n\nTo explicitly disable support for .rhosts files, add or correct the following line in\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nIgnoreRhosts yes\n```\n\n**Rationale:**\n\nSSH trust relationships mean a compromise on one host\ncan allow an attacker to move trivially to other hosts.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Use Only Strong Ciphers\n\nLimit the ciphers to strong algorithms.\nCounter (CTR) mode is also preferred over cipher-block chaining (CBC) mode.\nThe following line in `/etc/ssh/sshd_config`\ndemonstrates use of those ciphers:\n\n```\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n```\n\nThe man page `sshd_config(5)` contains a list of supported ciphers.\n\n**Rationale:**\n\nBased on research conducted at various institutions, it was determined that the symmetric\nportion of the SSH Transport Protocol (as described in RFC 4253) has security weaknesses\nthat allowed recovery of up to 32 bits of plaintext from a block of ciphertext that was\nencrypted with the Cipher Block Chaining (CBD) method. From that research, new Counter\nmode algorithms (as described in RFC4344) were designed that are not vulnerable to these\ntypes of attacks and these algorithms are now recommended for standard use.",

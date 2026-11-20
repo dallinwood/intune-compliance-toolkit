@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Require use_authtok for pam_unix.so\n\nWhen password changing enforce the module to set the new password to the one\nprovided by a previously stacked password module\n\n**Rationale:**\n\nRequire use_authtok in pam_unix.so configuration",

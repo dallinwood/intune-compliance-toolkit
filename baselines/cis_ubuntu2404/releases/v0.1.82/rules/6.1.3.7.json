@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server\n\nThe `rsyslog` daemon should not accept remote messages unless the system acts as a log\nserver. To ensure that it is not listening on the network, ensure any of the following lines\nare *not* found in `rsyslog` configuration files.\n\nIf using legacy syntax:\n\n```\n$ModLoad imtcp\n$InputTCPServerRun *port*\n$ModLoad imudp\n$UDPServerRun *port*\n$ModLoad imrelp\n$InputRELPServerRun *port*\n        \n```\n\n\nIf using RainerScript syntax:\n\n```\nmodule(load=\"imtcp\")\nmodule(load=\"imudp\")\ninput(type=\"imtcp\" port=\"514\")\ninput(type=\"imudp\" port=\"514\")\n```\n\n**Rationale:**\n\nAny process which receives messages from the network incurs some risk of receiving malicious\nmessages. This risk can be eliminated for rsyslog by configuring it not to listen on the\nnetwork.",

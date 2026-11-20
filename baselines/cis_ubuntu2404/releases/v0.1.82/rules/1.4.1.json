@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Boot Loader Password in grub2\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-mkpasswd-pbkdf2\n```\n\n\nWhen prompted, enter the password that was selected.\n\n\n        \n\n\nUsing the hash from the output, modify the `/etc/grub.d/40_custom`\nfile with the following content:\n\n```\nset superusers=\"boot\"\npassword_pbkdf2 boot grub.pbkdf2.sha512.VeryLongString\n```\n\nNOTE: the bootloader superuser account and password MUST differ from the\nroot account and password.\nOnce the superuser password has been added,\nupdate the\n`grub.cfg` file by running:\n\n```\nupdate-grub \n```\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.\n\n## Set the UEFI Boot Loader Password\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-mkpasswd-pbkdf2\n```\n\n\nWhen prompted, enter the password that was selected.\n\n\n        \n\n\nUsing the hash from the output, modify the `/etc/grub.d/40_custom`\nfile with the following content:\n\n```\nset superusers=\"boot\"\npassword_pbkdf2 boot grub.pbkdf2.sha512.VeryLongString\n```\n\nNOTE: the bootloader superuser account and password MUST differ from the\nroot account and password.\nOnce the superuser password has been added,\nupdate the\n`grub.cfg` file by running:\n\n```\nupdate-grub \n```\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.",
@@ -66,14 +66,14 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `grub2_password`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Set Boot Loader Password in grub2",
           "shell": null,
           "versions": null
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `grub2_uefi_password`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Set the UEFI Boot Loader Password",
           "shell": null,
           "versions": null

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure /dev/shm is configured\n\nThe `/dev/shm` is a traditional shared memory concept.\nOne program will create a memory portion, which other processes\n(if permitted) can access. If `/dev/shm` is not configured,\ntmpfs will be mounted to /dev/shm by systemd.\n\n**Rationale:**\n\nAny user can upload and execute files inside the `/dev/shm` similar to\nthe `/tmp` partition. Configuring `/dev/shm` allows an administrator\nto set the noexec option on the mount, making /dev/shm useless for an attacker to\ninstall executable code. It would also prevent an attacker from establishing a\nhardlink to a system setuid program and wait for it to be updated. Once the program\nwas updated, the hardlink would be broken and the attacker would have his own copy\nof the program. If the program happened to have a security vulnerability, the attacker\ncould continue to exploit the known flaw.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `partition_for_dev_shm`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure /dev/shm is configured",
           "shell": null,
           "versions": null

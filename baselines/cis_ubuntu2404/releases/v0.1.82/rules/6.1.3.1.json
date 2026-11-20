@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure rsyslog is Installed\n\nRsyslog is installed by default. The `rsyslog` package can be installed with the following command: \n```\n $ apt-get install rsyslog\n```\n\n**Rationale:**\n\nThe rsyslog package provides the rsyslog daemon, which provides\nsystem logging services.",

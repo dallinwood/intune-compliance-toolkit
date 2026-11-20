@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Default iptables Policy for Incoming Packets\n\nTo set the default policy to DROP (instead of ACCEPT) for\nthe built-in INPUT chain which processes incoming packets,\nadd or correct the following line in\n\n`/etc/iptables/rules.v4`:\n\n\n```\n:INPUT DROP [0:0]\n```\n\n**Rationale:**\n\nIn `iptables` the default policy is applied only after all\nthe applicable rules in the table are examined for a match. Setting the\ndefault policy to `DROP` implements proper design for a firewall, i.e.\nany packets which are not explicitly permitted should not be\naccepted.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `set_iptables_default_rule`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Set Default iptables Policy for Incoming Packets",
           "shell": null,
           "versions": null

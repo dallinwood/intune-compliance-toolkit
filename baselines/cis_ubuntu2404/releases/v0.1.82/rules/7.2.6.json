@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure All Groups on the System Have Unique Group ID\n\nChange the group name or delete groups, so each has a unique id.\n\n**Rationale:**\n\nTo assure accountability and prevent unauthenticated access, groups must be identified uniquely to prevent potential misuse and compromise of the system.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `group_unique_id`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure All Groups on the System Have Unique Group ID",
           "shell": null,
           "versions": null

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Enable systemd-journal-upload Service\n\nThe `systemd-journal-upload` service is part of the `systemd-journal-remote` package\nand enables centralized logging by uploading local systemd journal entries to a remote log\nserver via HTTPS. This service acts as a client that pushes journal data to a remote host\nrunning the `systemd-journal-remote` receiver service.\n\nThe `systemd-journal-upload` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable systemd-journal-upload.service\n```\n\n**Rationale:**\n\nCentralized logging through `systemd-journal-upload` is essential for security monitoring,\nincident response, and compliance requirements. Storing log data on a remote host protects log\nintegrity from local attacks. If an attacker gains root access on the local system, they could\ntamper with or remove log data stored locally to hide their activities. Remote logging ensures\nthat audit trails remain intact even if the local system is compromised. Additionally,\ncentralized logs facilitate correlation of events across multiple systems, enabling better\ndetection of distributed attacks and security incidents.",

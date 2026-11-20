@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall DHCP Server Package\n\nIf the system does not need to act as a DHCP server,\nthe isc-dhcp-server package can be uninstalled.\nThe `isc-dhcp-server` package can be removed with the following command:\n\n```\n$ apt-get remove isc-dhcp-server\n```\n\n**Rationale:**\n\nRemoving the DHCP server ensures that it cannot be easily or\naccidentally reactivated and disrupt network operation.\n\n## Disable DHCP Service\n\nThe `dhcpd` service should be disabled on\nany system that does not need to act as a DHCP server.\n\n\nThe `isc-dhcp-server` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now isc-dhcp-server.service\n```\n\n**Rationale:**\n\nUnmanaged or unintentionally activated DHCP servers may provide faulty information\nto clients, interfering with the operation of a legitimate site\nDHCP server if there is one.\n\n## Disable DHCPD6 Service\n\nThe `dhcp6` service should be disabled on\nany system that does not need to act as a DHCP server.\n\n\nThe `isc-dhcp-server6` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now isc-dhcp-server6.service\n```\n\n**Rationale:**\n\nUnmanaged or unintentionally activated DHCP servers may provide faulty information\nto clients, interfering with the operation of a legitimate site\nDHCP server if there is one.",

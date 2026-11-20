@@ -20,17 +20,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Root Lockout Time for Failed Password Attempts\nNo audit procedure in ComplianceAsCode.\nExpected values: var_accounts_passwords_pam_faillock_root_unlock_time = $ODV_var_accounts_passwords_pam_faillock_root_unlock_time",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Set Root Lockout Time for Failed Password Attempts\n\nThis rule configures the system to lock out root during a specified time period after a\nnumber of incorrect login attempts using `pam_faillock.so`.\n\nEnsure that the file `/etc/security/faillock.conf` contains the following entry:\n`root_unlock_time=<interval-in-seconds>` where\n`interval-in-seconds` is `$ODV_var_accounts_passwords_pam_faillock_root_unlock_time` or greater.\n\nIf `root_unlock_time` is set to `0`, it may enable attacker to\napply denial of service to legitimate users.\n\n**Rationale:**\n\nBy limiting the number of failed logon attempts the risk of unauthorized root\naccess via password guessing, otherwise known as brute-forcing, is reduced.\nLimits are imposed by locking the account.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.3.1.3",

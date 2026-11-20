@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Limit Password Reuse\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Limit Password Reuse\n\nDo not allow root to reuse recent passwords. This can be\naccomplished by using the `enforce_for_root` option for the\n`pam_pwhistory` PAM modules.\n\n\n         \n\nIn the file `/etc/pam.d/common-password`, make sure the parameters\n`enforce_for_root` is present.\n\n**Rationale:**\n\nPreventing reuse of previous passwords helps ensure that a compromised password is not reused by a user.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.3.3.2",

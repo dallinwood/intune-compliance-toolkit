@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Disable SCTP Support\n\nThe Stream Control Transmission Protocol (SCTP) is a\ntransport layer protocol, designed to support the idea of\nmessage-oriented communication, with several streams of messages\nwithin one connection.\n\nTo configure the system to prevent the `sctp`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/sctp.conf`:\n\n```\ninstall sctp /bin/false\n```\n\nThis entry will cause a non-zero return value during a `sctp` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall sctp /bin/true\n```\n\n**Rationale:**\n\nDisabling SCTP protects\nthe system against exploitation of any flaws in its implementation.",

@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure that Root's Path Does Not Include World or Group-Writable Directories\n\nFor each element in root's path, run:\n\n```\n# ls -ld *DIR*\n         \n```\n\nand ensure that write permissions are disabled for group and\nother.\n\n**Rationale:**\n\nSuch entries increase the risk that root could\nexecute code provided by unprivileged users,\nand potentially malicious code.\n\n## Ensure that All Entries in The Path of Root Are Directories\n\nFor each element in root's path, run:\n\n```\n# ls -ld *DIR*\n         \n```\n\nand ensure that the entry is a directory.\n\n**Rationale:**\n\nLocations in root's path that are not directories could cause unexpected behavior,\nsuch as executing scripts from unintended locations. Ensuring that all locations in\nroot's path are directories helps maintain a secure environment for root.\n\n## Ensure that Root's Path Does Not Include Relative Paths or Null Directories\n\nEnsure that none of the directories in root's path is equal to a single\n`.` character, or\nthat it contains any instances that lead to relative path traversal, such as\n`..` or beginning a path without the slash (`/`) character.\nAlso ensure that there are no \"empty\" elements in the path, such as in these examples:\n\n```\nPATH=:/bin\nPATH=/bin:\nPATH=/bin::/sbin\n```\n\nThese empty elements have the same effect as a single `.` character.\n\n**Rationale:**\n\nIncluding these entries increases the risk that root could\nexecute code from an untrusted location.\n\n## Ensure that All Root's Path Directories Are Owned by Root\n\nFor each element in root's path, run:\n\n```\n# ls -ld *DIR*\n         \n```\n\nand ensure that the directory is owned by the root user.\n\n**Rationale:**\n\nDirectories in root's path that are not owned by root could allow\nunprivileged users to manipulate the execution environment of root,\npotentially leading to privilege escalation or execution of malicious code.",
@@ -68,28 +68,28 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `accounts_root_path_dirs_no_write`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure that Root's Path Does Not Include World or Group-Writable Directories",
           "shell": null,
           "versions": null
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `root_path_all_dirs`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure that All Entries in The Path of Root Are Directories",
           "shell": null,
           "versions": null
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `root_path_no_dot`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure that Root's Path Does Not Include Relative Paths or Null Directories",
           "shell": null,
           "versions": null
         },
         {
           "additional_info": "No fix in ComplianceAsCode (rule `no_dirs_unowned_by_root`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure that All Root's Path Directories Are Owned by Root",
           "shell": null,
           "versions": null

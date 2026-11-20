@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure all users last password change date is in the past\n\nAll users should have a password change date in the past.\n\n**Rationale:**\n\nIf a user recorded password change date is in the future then they could\nbypass any set password expiration.",
@@ -68,7 +68,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `accounts_password_last_change_is_in_past`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure all users last password change date is in the past",
           "shell": null,
           "versions": null

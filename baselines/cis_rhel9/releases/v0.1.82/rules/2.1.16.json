@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall tftp-server Package\n\nThe `tftp-server` package can be removed with the following command: \n```\n $ sudo dnf remove tftp-server\n```\n\n**Rationale:**\n\nRemoving the `tftp-server` package decreases the risk of the accidental\n(or intentional) activation of tftp services.\n\n\n        \n\nIf TFTP is required for operational support (such as transmission of router\nconfigurations), its use must be documented with the Information Systems\nSecurity Manager (ISSM), restricted to only authorized personnel, and have\naccess control rules established.",

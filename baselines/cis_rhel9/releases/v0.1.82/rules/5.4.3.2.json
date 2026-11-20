@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Interactive Session Timeout\n\nSetting the `TMOUT` option in `/etc/profile` ensures that\nall user sessions will terminate based on inactivity. A value of `0` (zero)\ndisables the automatic logout feature and is therefore not a compliant setting.\nThe value of TMOUT should be a positive integer, exported, and read only.\nThe `TMOUT`\n\nsetting in a file loaded by `/etc/profile`, e.g.\n`/etc/profile.d/tmout.sh` should read as follows:\n\n```\ntypeset -xr TMOUT=$ODV_var_accounts_tmout\n        \n```\n\nor\n\n```\ndeclare -xr TMOUT=$ODV_var_accounts_tmout\n        \n```\n\nUsing the `typeset` keyword is preferred for wider compatibility with ksh and other shells.\n\n**Rationale:**\n\nTerminating an idle session within a short time period reduces\nthe window of opportunity for unauthorized personnel to take control of a\nmanagement session enabled on the console or console port that has been\nleft unattended.",

@@ -15,6 +15,10 @@ describe('scriptHighlightLanguage', () => {
     expect(scriptHighlightLanguage('python')).toBe('python')
   })
 
+  it('shows instructions as plain text', () => {
+    expect(scriptHighlightLanguage('instructions')).toBeUndefined()
+  })
+
   it('maps a missing or unknown language to none', () => {
     expect(scriptHighlightLanguage(undefined)).toBeUndefined()
     expect(scriptHighlightLanguage('toString' as never)).toBeUndefined()

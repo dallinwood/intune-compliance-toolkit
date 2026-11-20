@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Non-Interactive Accounts Are Locked\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Verify Non-Interactive Accounts Are Locked\n\nAccounts meant for non-interactive purposes should be locked to prevent\nunauthorized access. Accounts with non-standard shells (those not defined in\n`/etc/shells`) should be locked using `usermod -L`.\n\n**Rationale:**\n\nLocking non-interactive accounts improves security by preventing potential\nmisuse. While many systems configure these accounts with invalid strings,\nsetting the shell field to `nologin` is also suggested",
   "discussion_format": "markdown",
   "id": "cis_rhel9.5.4.2.8",
@@ -68,7 +58,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `no_invalid_shell_accounts_unlocked`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Verify Non-Interactive Accounts Are Locked",
           "shell": null,
           "versions": null

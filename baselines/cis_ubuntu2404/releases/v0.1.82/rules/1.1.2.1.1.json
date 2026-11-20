@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure /tmp Located On Separate Partition\n\nThe `/tmp` directory is a world-writable directory used\nfor temporary file storage. Ensure it has its own partition or\nlogical volume at installation time, or migrate it using LVM.\n\n**Rationale:**\n\nThe `/tmp` partition is used as temporary storage by many programs.\nPlacing `/tmp` in its own partition enables the setting of more\nrestrictive mount options, which can help protect programs which use it.",
@@ -65,7 +65,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `partition_for_tmp`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure /tmp Located On Separate Partition",
           "shell": null,
           "versions": null

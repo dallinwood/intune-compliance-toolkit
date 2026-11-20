@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Uninstall xinetd package if not used by network services\n\nThe `xinetd` package can be removed with the following command:\n\n```\n$ apt-get remove xinetd\n```\n\n**Rationale:**\n\nRemoving the `xinetd` package decreases the risk of the\nxinetd service's accidental (or intentional) activation.\n\n## Disable xinetd Service\n\nThe `xinetd` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now xinetd.service\n```\n\n**Rationale:**\n\nThe xinetd service provides a dedicated listener service for some programs,\nwhich is no longer necessary for commonly-used network services. Disabling\nit ensures that these uncommon services are not running, and also prevents\nattacks against xinetd itself.",

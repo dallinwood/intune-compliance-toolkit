@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Package \"prelink\" Must not be Installed\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Package \"prelink\" Must not be Installed\n\nThe `prelink` package can be removed with the following command:\n \n```\n $ apt-get remove prelink\n```\n\n**Rationale:**\n\nThe use of the `prelink` package can interfere with the operation of AIDE since it binaries.\nPrelinking can also increase damage caused by vulnerability in a common library like libc.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.1.5.4",

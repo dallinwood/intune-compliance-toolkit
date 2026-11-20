@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable rpcbind Service\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Disable rpcbind Service\n\nThe rpcbind utility maps RPC services to the ports on which they listen.\nRPC processes notify rpcbind when they start, registering the ports they\nare listening on and the RPC program numbers they expect to serve. The\nrpcbind service redirects the client to the proper port number so it can\ncommunicate with the requested service. If the system does not require RPC\n(such as for NFS servers) then this service should be disabled.\n\nThe `rpcbind` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now rpcbind.service\n```\n\n**Rationale:**\n\nIf the system does not require rpc based services, it is recommended that\nrpcbind be disabled to reduce the attack surface.\n\n**Notes:**\n\nMany of the libvirt packages used by Enterprise Linux virtualization, and the nfs-utils\npackage used for The Network File System (NFS), are dependent on the rpcbind package.",
   "discussion_format": "markdown",
   "id": "cis_rhel9.2.1.12",

@@ -28,17 +28,7 @@
     "manual_reason": "openscap",
     "status": "manual"
   },
-  "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify pam_pwhistory module is activated\nNo audit procedure in ComplianceAsCode.",
-        "result": null,
-        "shell": null
-      },
-      "language": "bash"
-    }
-  },
+  "check": null,
   "discussion": "## Verify pam_pwhistory module is activated\n\nThe `pam_pwhistory.so` module is part of the Pluggable Authentication Modules (PAM) \nframework designed to increase password security. It works by storing a history of previously \nused passwords for each user, ensuring users cannot alternate between the same passwords too frequently.\n\n\n         \n\nThis module is incompatible with Kerberos. Furthermore, its usage with `NIS` or `LDAP` is \ngenerally impractical, as other machines can not access local password histories.\n\n**Rationale:**\n\nEnforcing strong passwords increases the difficulty and resources required \nfor password compromise.",
   "discussion_format": "markdown",
   "id": "cis_ubuntu2404.5.3.2.4",

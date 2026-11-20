@@ -99,6 +99,7 @@ const checkResult = objectWith({
   value: (value, path) => expect(isNumberOrString(value), path, 'a number or a string'),
 })
 const anyValue: Check = () => null
+const expectNull: Check = (value, path) => expect(value === null, path, 'null for instructions')
 
 // A script is inline (shell) or in a file (shell_file), a payload inline
 // (data) or in a file (data_file): exactly one of each pair, checked by the
@@ -126,14 +127,29 @@ const payloadFile: Check = (value, path) => {
   return problem ? `${path} ${problem}` : null
 }
 
+const INSTRUCTIONS = 'instructions'
+
+// Instructions are text in additional_info: no script, and for a check no
+// expected result either.
+function instructionsEntry(requiresNullResult: boolean): Check {
+  return (value, path) =>
+    firstProblem(
+      () => objectWith({ shell: expectNull, ...(requiresNullResult ? { result: expectNull } : {}) })(value, path),
+      () => expect(!Object.hasOwn(value as JsonObject, 'shell_file'), `${path}.shell_file`, 'absent for instructions'),
+    )
+}
+
 function checkEntryFor(scriptLanguage: unknown): Check {
   return (value, path) =>
     firstProblem(
       () => objectWith({ result: orNull(checkResult), additional_info: textOrNull })(value, path),
-      () => exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
+      () =>
+        scriptLanguage === INSTRUCTIONS
+          ? instructionsEntry(true)(value, path)
+          : exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
     )
 }
-const language = oneOf('bash', 'powershell', 'zsh', 'python')
+const language = oneOf('bash', 'powershell', 'zsh', 'python', INSTRUCTIONS)
 const versions: Check = (value, path) =>
   value === null
     ? null
@@ -217,7 +233,10 @@ const odvs: Check = (value, path) =>
 const remediationStep: Check = (value, path) =>
   firstProblem(
     () => objectWith({ name: textOrNull, language, additional_info: textOrNull, versions })(value, path),
-    () => exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor((value as JsonObject).language))(value, path),
+    () =>
+      (value as JsonObject).language === INSTRUCTIONS
+        ? instructionsEntry(false)(value, path)
+        : exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor((value as JsonObject).language))(value, path),
   )
 // Inline payload data is only ever shown through JSON.stringify, so any JSON
 // object or list is safe.

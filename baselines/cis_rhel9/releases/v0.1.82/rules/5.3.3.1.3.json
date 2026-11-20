@@ -28,7 +28,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure Root Account Lockout on Failed Password Attempts\n\nThis rule configures the system to include the `root` account in the account lockout policy using `pam_faillock.so`. The system must have either the `even_deny_root` option enabled or `root_unlock_time` set to `$ODV_var_accounts_passwords_pam_faillock_root_unlock_time` seconds or greater in `/etc/security/faillock.conf`.\npam_faillock.so module requires multiple entries in pam files. These entries must be carefully defined to work as expected. In order to avoid errors when manually editing these files, it is recommended to use the appropriate tools, such as `authselect` or `authconfig`, depending on the OS version.\n\n**Rationale:**\n\nBy limiting the number of failed logon attempts, the risk of unauthorized system access via user password guessing, also known as brute-forcing, is reduced. Limits are imposed by locking the account.",

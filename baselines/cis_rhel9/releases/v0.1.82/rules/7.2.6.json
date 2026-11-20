@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure All Accounts on the System Have Unique Names\n\nEnsure accounts on the system have unique names.\n\nTo ensure all accounts have unique names, run the following command:\n\n```\n$ sudo getent passwd | awk -F: '{ print $1}' | uniq -d\n```\n\nIf a username is returned, change or delete the username.\n\n**Rationale:**\n\nUnique usernames allow for accountability on the system.",
@@ -68,7 +68,7 @@
       "steps": [
         {
           "additional_info": "No fix in ComplianceAsCode (rule `account_unique_name`).",
-          "language": "bash",
+          "language": "instructions",
           "name": "Ensure All Accounts on the System Have Unique Names",
           "shell": null,
           "versions": null

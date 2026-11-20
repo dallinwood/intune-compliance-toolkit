@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Remove tftp Daemon\n\nTrivial File Transfer Protocol (TFTP) is a simple file transfer protocol,\ntypically used to automatically transfer configuration or boot files between systems.\nTFTP does not support authentication and can be easily hacked. The package\n`tftp` is a client program that allows for connections to a `tftp` server.\n\n**Rationale:**\n\nIt is recommended that TFTP be removed, unless there is a specific need\nfor TFTP (such as a boot server). In that case, use extreme caution when configuring\nthe services.",

@@ -26,6 +26,7 @@ describe('scriptLanguageLabel', () => {
     ['powershell', 'PowerShell'],
     ['zsh', 'zsh'],
     ['python', 'Python'],
+    ['instructions', 'Instructions'],
   ] as const)('labels %s as %s', (language, label) => {
     expect(scriptLanguageLabel(language)).toBe(label)
   })

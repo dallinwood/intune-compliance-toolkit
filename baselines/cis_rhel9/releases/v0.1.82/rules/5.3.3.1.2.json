@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Set Lockout Time for Failed Password Attempts\n\nThis rule configures the system to lock out accounts during a specified time period after a\nnumber of incorrect login attempts using `pam_faillock.so`.\n\nEnsure that the file `/etc/security/faillock.conf` contains the following entry:\n`unlock_time=<interval-in-seconds>` where\n`interval-in-seconds` is `$ODV_var_accounts_passwords_pam_faillock_unlock_time` or greater.\n\npam_faillock.so module requires multiple entries in pam files. These entries must be carefully\ndefined to work as expected. In order to avoid any errors when manually editing these files,\nit is recommended to use the appropriate tools, such as `authselect` or `authconfig`,\ndepending on the OS version.\n\nIf `unlock_time` is set to `0`, manual intervention by an administrator is required\nto unlock a user. This should be done using the `faillock` tool.\n\n**Rationale:**\n\nBy limiting the number of failed logon attempts the risk of unauthorized system\naccess via user password guessing, otherwise known as brute-forcing, is reduced.\nLimits are imposed by locking the account.\n\n**Notes:**\n\nThe policy also accepts value 0, which means the locked accounts should be manually unlocked\nby an administrator. However, it also mentions that using value 0 can facilitate a DoS\nattack to legitimate users.",

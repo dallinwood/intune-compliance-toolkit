@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Add noexec Option to /var/tmp\n\nThe `noexec` mount option can be used to prevent binaries\nfrom being executed out of `/var/tmp`.\nAdd the `noexec` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var/tmp`.\n\n**Rationale:**\n\nAllowing users to execute binaries from world-writable directories\nsuch as `/var/tmp` should never be necessary in normal operation and\ncan expose the system to potential compromise.",

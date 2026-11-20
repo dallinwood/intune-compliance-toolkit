@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Ensure journald is configured to write log files to persistent disk\n\nThe journald system may store log files in volatile memory or locally on disk.\nIf the logs are only stored in volatile memory they will be lost upon reboot.\n\n**Rationale:**\n\nLog files contain valuable data and need to be persistent to aid in possible investigations.",

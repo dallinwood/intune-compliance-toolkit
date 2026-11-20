@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Verify nftables Service is Disabled\n\nnftables is a subsystem of the Linux kernel providing filtering and classification of network\npackets/datagrams/frames and is the successor to iptables.\nThe `nftables` service can be disabled with the following command:\n\n```\nsystemctl disable nftables\n```\n\n**Rationale:**\n\nnftables should be disabled if another firewall service is used as it may lead to conflict.",

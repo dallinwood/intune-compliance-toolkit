@@ -36,7 +36,7 @@
         "result": null,
         "shell": null
       },
-      "language": "bash"
+      "language": "instructions"
     }
   },
   "discussion": "## Do Not Allow SSH Environment Options\n\nEnsure that users are not able to override environment variables of the SSH daemon.\n\n\nThe default SSH configuration disables environment processing. The appropriate\nconfiguration is used if no value is set for `PermitUserEnvironment`.\n\n\nTo explicitly disable Environment options, add or correct the following\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nPermitUserEnvironment no\n```\n\n**Rationale:**\n\nSSH environment options potentially allow users to bypass\naccess restriction in some configurations.",
