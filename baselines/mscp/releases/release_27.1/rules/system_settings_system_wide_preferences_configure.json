@@ -73,18 +73,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath '//*[contains(text(), \"group\")]/following-sibling::*[1]/text()' - ) != \"admin\" ]]; then\n    result=\"0\"\n  fi\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"authenticate-user\")]/following-sibling::*[1])' -) != \"true\" ]]; then\n    result=\"0\"\n  fi\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"session-owner\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result"
         },
-        "shell": "authDBs=(\"system.preferences\" \"system.preferences.energysaver\" \"system.preferences.network\" \"system.preferences.printing\" \"system.preferences.sharing\" \"system.preferences.softwareupdate\" \"system.preferences.startupdisk\" \"system.preferences.timemachine\")\nresult=\"1\"\nfor section in ${authDBs[@]}; do\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"shared\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath '//*[contains(text(), \"group\")]/following-sibling::*[1]/text()' - ) != \"admin\" ]]; then\n    result=\"0\"\n  fi\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"authenticate-user\")]/following-sibling::*[1])' -) != \"true\" ]]; then\n    result=\"0\"\n  fi\n  if [[ $(/usr/bin/security -q authorizationdb read \"$section\" | /usr/bin/xmllint -xpath 'name(//*[contains(text(), \"session-owner\")]/following-sibling::*[1])' -) != \"false\" ]]; then\n    result=\"0\"\n  fi\ndone\necho $result"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The system _MUST_ be configured to require an administrator password in order to modify the system-wide preferences in System Settings.\n\nSome Preference Panes in System Settings contain settings that affect the entire system. Requiring a password to unlock these system-wide settings reduces the risk of a non-authorized user modifying system configurations.\n",
   "discussion_format": "asciidoc",
@@ -190,7 +193,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

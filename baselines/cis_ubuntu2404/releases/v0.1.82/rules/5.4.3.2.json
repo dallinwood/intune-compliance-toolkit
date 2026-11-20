@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Interactive Session Timeout\n----\nRun the following command to ensure the TMOUT value is configured for all users\non the system:\n\n$ sudo grep TMOUT /etc/bash.bashrc /etc/profile /etc/profile.d/*.sh\n\nThe output should return the following:\nTMOUT=\n\nreadonly TMOUT\nexport TMOUT\n      Is it the case that the TMOUT value is not configured, is set to 0, or is not less than or equal to the expected setting?\n----\nExpected values: var_accounts_tmout = $ODV_var_accounts_tmout",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Interactive Session Timeout\n----\nRun the following command to ensure the TMOUT value is configured for all users\non the system:\n\n$ sudo grep TMOUT /etc/bash.bashrc /etc/profile /etc/profile.d/*.sh\n\nThe output should return the following:\nTMOUT=\n\nreadonly TMOUT\nexport TMOUT\n      Is it the case that the TMOUT value is not configured, is set to 0, or is not less than or equal to the expected setting?\n----\nExpected values: var_accounts_tmout = $ODV_var_accounts_tmout",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Interactive Session Timeout\n\nSetting the `TMOUT` option in `/etc/profile` ensures that\nall user sessions will terminate based on inactivity. A value of `0` (zero)\ndisables the automatic logout feature and is therefore not a compliant setting.\nThe value of TMOUT should be a positive integer, exported, and read only.\nThe `TMOUT`\n\nsetting in a file loaded by `/etc/profile`, e.g.\n`/etc/profile.d/tmout.sh` should read as follows:\n\n```\nTMOUT=$ODV_var_accounts_tmout\n        \n```\n\nreadonly TMOUT\nexport TMOUT\n\n**Rationale:**\n\nTerminating an idle session within a short time period reduces\nthe window of opportunity for unauthorized personnel to take control of a\nmanagement session enabled on the console or console port that has been\nleft unattended.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

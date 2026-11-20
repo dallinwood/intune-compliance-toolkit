@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c com.apple.Siri-Settings.extension"
         },
-        "shell": "/usr/bin/profiles show -output stdout-xml | /usr/bin/xmllint --xpath '//key[text()=\"DisabledSystemSettings\"]/following-sibling::*[1]' - | /usr/bin/grep -c com.apple.Siri-Settings.extension"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The System Settings pane for Siri _MUST_ be hidden.\n\nHiding the System Settings pane prevents the users from configuring Siri.\n\nNOTE: On macOS 15 and later, disabling the Siri System Settings pane blocks the user from opting into Apple Intelligence.\n",
   "discussion_format": "asciidoc",
@@ -142,7 +145,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

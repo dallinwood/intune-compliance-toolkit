@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify User Who Owns /etc/security/opasswd File\n----\nTo check the ownership of /etc/security/opasswd,\nrun the command:\n$ ls -lL /etc/security/opasswd\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/security/opasswd does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/security/opasswd File\n----\nTo check the group ownership of /etc/security/opasswd,\nrun the command:\n$ ls -lL /etc/security/opasswd\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/security/opasswd does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/security/opasswd File\n----\nTo check the permissions of /etc/security/opasswd,\nrun the command:\n$ ls -l /etc/security/opasswd\nIf properly configured, the output should indicate the following permissions:\n0600\n      Is it the case that /etc/security/opasswd does not have unix mode 0600?\n----\n\n== Verify User Who Owns /etc/security/opasswd.old File\n----\nTo check the ownership of /etc/security/opasswd.old,\nrun the command:\n$ ls -lL /etc/security/opasswd.old\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/security/opasswd.old does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/security/opasswd.old File\n----\nTo check the group ownership of /etc/security/opasswd.old,\nrun the command:\n$ ls -lL /etc/security/opasswd.old\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/security/opasswd.old does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/security/opasswd.old File\n----\nTo check the permissions of /etc/security/opasswd.old,\nrun the command:\n$ ls -l /etc/security/opasswd.old\nIf properly configured, the output should indicate the following permissions:\n0600\n      Is it the case that /etc/security/opasswd.old does not have unix mode 0600?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify User Who Owns /etc/security/opasswd File\n----\nTo check the ownership of /etc/security/opasswd,\nrun the command:\n$ ls -lL /etc/security/opasswd\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/security/opasswd does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/security/opasswd File\n----\nTo check the group ownership of /etc/security/opasswd,\nrun the command:\n$ ls -lL /etc/security/opasswd\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/security/opasswd does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/security/opasswd File\n----\nTo check the permissions of /etc/security/opasswd,\nrun the command:\n$ ls -l /etc/security/opasswd\nIf properly configured, the output should indicate the following permissions:\n0600\n      Is it the case that /etc/security/opasswd does not have unix mode 0600?\n----\n\n== Verify User Who Owns /etc/security/opasswd.old File\n----\nTo check the ownership of /etc/security/opasswd.old,\nrun the command:\n$ ls -lL /etc/security/opasswd.old\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/security/opasswd.old does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/security/opasswd.old File\n----\nTo check the group ownership of /etc/security/opasswd.old,\nrun the command:\n$ ls -lL /etc/security/opasswd.old\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/security/opasswd.old does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/security/opasswd.old File\n----\nTo check the permissions of /etc/security/opasswd.old,\nrun the command:\n$ ls -l /etc/security/opasswd.old\nIf properly configured, the output should indicate the following permissions:\n0600\n      Is it the case that /etc/security/opasswd.old does not have unix mode 0600?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify User Who Owns /etc/security/opasswd File\n\nTo properly set the owner of `/etc/security/opasswd`, run the command:\n\n```\n$ sudo chown root /etc/security/opasswd \n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd` file stores old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Group Who Owns /etc/security/opasswd File\n\nTo properly set the group owner of `/etc/security/opasswd`, run the command:\n\n```\n$ sudo chgrp root /etc/security/opasswd\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd` file stores old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Permissions on /etc/security/opasswd File\n\nTo properly set the permissions of `/etc/security/opasswd`, run the command:\n\n```\n$ sudo chmod 0600 /etc/security/opasswd\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd` file stores old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify User Who Owns /etc/security/opasswd.old File\n\nTo properly set the owner of `/etc/security/opasswd.old`, run the command:\n\n```\n$ sudo chown root /etc/security/opasswd.old \n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd.old` file stores backups of old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Group Who Owns /etc/security/opasswd.old File\n\nTo properly set the group owner of `/etc/security/opasswd.old`, run the command:\n\n```\n$ sudo chgrp root /etc/security/opasswd.old\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd.old` file stores backups of old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Permissions on /etc/security/opasswd.old File\n\nTo properly set the permissions of `/etc/security/opasswd.old`, run the command:\n\n```\n$ sudo chmod 0600 /etc/security/opasswd.old\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd.old` file stores backups of old passwords to prevent\npassword reuse. Protection of this file is critical for system security.",
   "discussion_format": "markdown",
@@ -113,7 +116,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "7",
     "7.1"

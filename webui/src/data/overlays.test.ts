@@ -127,7 +127,7 @@ const RULE_LEVEL_MISFITS: Record<string, Record<string, unknown>> = {
     odvs: { $replace: [{ name: 'value', datatype: 'number', description: 'd', validation: null, recommended: 1, by_benchmark: {}, quoting: 'backtick' }] },
   },
   'empty-remediation': { remediation: { $replace: { Windows: {} } } },
-  'check-without-by-version': { check: { $replace: { Windows: { language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } } } } },
+  'check-without-by-version': { check: { $replace: { Windows: [{ name: null, language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } }] } } },
 }
 
 function serveLibrary(overlays: Record<string, Record<string, unknown>>) {
@@ -142,8 +142,8 @@ function serveLibrary(overlays: Record<string, Record<string, unknown>>) {
     'fetch',
     vi.fn(async (url: string) => {
       fetched.push(url)
-      if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 6, sources: [ISM_SOURCE] })
-      if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 6, source: 'asd_ism', rules: [ENTRY] })
+      if (url.endsWith('/baselines/_manifest.json')) return jsonResponse({ schema_version: 7, sources: [ISM_SOURCE] })
+      if (url.endsWith('/baselines/asd_ism/_index.json')) return jsonResponse({ schema_version: 7, source: 'asd_ism', rules: [ENTRY] })
       if (url.endsWith('/baselines/asd_ism/rules/ism-1622.json')) return jsonResponse(rule)
       if (url.endsWith('/baselines/_overlays/_index.json')) return jsonResponse(index)
       const path = url.slice(url.indexOf('/baselines/_overlays/') + '/baselines/_overlays/'.length)

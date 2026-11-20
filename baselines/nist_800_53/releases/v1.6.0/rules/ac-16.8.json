@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Access Control",
     "AC-16 Security and Privacy Attributes"

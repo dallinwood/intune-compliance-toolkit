@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure journald is configured to compress large log files\n----\nStoring logs with compression can help avoid filling the system disk.\nRun the following command to verify that journald is compressing logs.\n\ngrep \"^\\sCompress\" /etc/systemd/journald.conf /etc/systemd/journald.conf.d/*.conf\n\n\nand it should return\n\nCompress=yes\n\n      Is it the case that is commented out or not configured correctly?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure journald is configured to compress large log files\n----\nStoring logs with compression can help avoid filling the system disk.\nRun the following command to verify that journald is compressing logs.\n\ngrep \"^\\sCompress\" /etc/systemd/journald.conf /etc/systemd/journald.conf.d/*.conf\n\n\nand it should return\n\nCompress=yes\n\n      Is it the case that is commented out or not configured correctly?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure journald is configured to compress large log files\n\nThe journald system can compress large log files to avoid fill the system disk.\n\n**Rationale:**\n\nLog files that are not properly compressed run the risk of growing so large that they fill up the log partition. Valuable logging information could be lost if the log partition becomes full.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.1",

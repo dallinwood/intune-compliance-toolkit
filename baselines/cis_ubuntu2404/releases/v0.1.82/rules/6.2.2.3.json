@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Configure auditd Disk Error Action on Disk Error\n----\nVerify Ubuntu 24.04 takes the appropriate action when an audit processing failure occurs.\n\nCheck that Ubuntu 24.04 takes the appropriate action when an audit processing failure occurs with the following command:\n\n$ sudo grep disk_error_action /etc/audit/auditd.conf\n\ndisk_error_action = \n\nIf the value of the \"disk_error_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit process failure occurs.\n      Is it the case that there is no evidence of appropriate action?\n----\nExpected values: var_auditd_disk_error_action = $ODV_var_auditd_disk_error_action\n\n== Configure auditd Disk Full Action when Disk Space Is Full\n----\nVerify Ubuntu 24.04 takes the appropriate action when the audit storage volume is full.\n\nCheck that Ubuntu 24.04 takes the appropriate action when the audit storage volume is full with the following command:\n\n$ sudo grep disk_full_action /etc/audit/auditd.conf\n\ndisk_full_action = \n\nIf the value of the \"disk_full_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit storage volume is full.\n      Is it the case that there is no evidence of appropriate action?\n----\nExpected values: var_auditd_disk_full_action = $ODV_var_auditd_disk_full_action",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Configure auditd Disk Error Action on Disk Error\n----\nVerify Ubuntu 24.04 takes the appropriate action when an audit processing failure occurs.\n\nCheck that Ubuntu 24.04 takes the appropriate action when an audit processing failure occurs with the following command:\n\n$ sudo grep disk_error_action /etc/audit/auditd.conf\n\ndisk_error_action = \n\nIf the value of the \"disk_error_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit process failure occurs.\n      Is it the case that there is no evidence of appropriate action?\n----\nExpected values: var_auditd_disk_error_action = $ODV_var_auditd_disk_error_action\n\n== Configure auditd Disk Full Action when Disk Space Is Full\n----\nVerify Ubuntu 24.04 takes the appropriate action when the audit storage volume is full.\n\nCheck that Ubuntu 24.04 takes the appropriate action when the audit storage volume is full with the following command:\n\n$ sudo grep disk_full_action /etc/audit/auditd.conf\n\ndisk_full_action = \n\nIf the value of the \"disk_full_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit storage volume is full.\n      Is it the case that there is no evidence of appropriate action?\n----\nExpected values: var_auditd_disk_full_action = $ODV_var_auditd_disk_full_action",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Configure auditd Disk Error Action on Disk Error\n\nThe `auditd` service can be configured to take an action\nwhen there is a disk error.\nEdit the file `/etc/audit/auditd.conf`. Add or modify the following line,\nsubstituting *ACTION* appropriately:\n\n```\ndisk_error_action = *ACTION*\n       \n```\n\nSet this value to `single` to cause the system to switch to single-user\nmode for corrective action. Acceptable values also include\n\n`syslog`, `single` and `halt`\n\nFor certain systems, the need for availability\noutweighs the need to log all actions, and a different setting should be\ndetermined. Details regarding all possible values for *ACTION* are described in the\n`auditd.conf` man page.\n\n**Rationale:**\n\nTaking appropriate action in case of disk errors will minimize the possibility of\nlosing audit records.\n\n## Configure auditd Disk Full Action when Disk Space Is Full\n\nThe `auditd` service can be configured to take an action\nwhen disk space is running low but prior to running out of space completely.\nEdit the file `/etc/audit/auditd.conf`. Add or modify the following line,\nsubstituting *ACTION* appropriately:\n\n```\ndisk_full_action = *ACTION*\n       \n```\n\nSet this value to `single` to cause the system to switch to single-user\nmode for corrective action. Acceptable values also include\n\n`single` and `halt`\n\nFor certain systems, the need for availability\noutweighs the need to log all actions, and a different setting should be\ndetermined. Details regarding all possible values for *ACTION* are described in the\n`auditd.conf` man page.\n\n**Rationale:**\n\nTaking appropriate action in case of a filled audit storage volume will minimize\nthe possibility of losing audit records.",
   "discussion_format": "markdown",
@@ -98,7 +101,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Account Expiration Following Inactivity\n----\nTo verify the INACTIVE setting, run the following command:\n$ grep \"INACTIVE\" /etc/default/useradd\nThe output should indicate the INACTIVE configuration option is set\nto an appropriate integer as shown in the example below:\n$ grep \"INACTIVE\" /etc/default/useradd\nINACTIVE=\n      Is it the case that the value of INACTIVE is greater than the expected value or is -1?\n----\nExpected values: var_account_disable_post_pw_expiration = $ODV_var_account_disable_post_pw_expiration\n\n== Set existing passwords a period of inactivity before they been locked\n----\nVerify that Ubuntu 24.04 's INACTIVE conforms to site policy (no more than 30 days) with the following command:\n\n$ sudo awk -F: '$7 > 30 {print $1 \" \" $7}' /etc/shadow\n      Is it the case that the value of INACTIVE is greater than the expected value or is -1?\n----\nExpected values: var_account_disable_post_pw_expiration = $ODV_var_account_disable_post_pw_expiration",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Account Expiration Following Inactivity\n----\nTo verify the INACTIVE setting, run the following command:\n$ grep \"INACTIVE\" /etc/default/useradd\nThe output should indicate the INACTIVE configuration option is set\nto an appropriate integer as shown in the example below:\n$ grep \"INACTIVE\" /etc/default/useradd\nINACTIVE=\n      Is it the case that the value of INACTIVE is greater than the expected value or is -1?\n----\nExpected values: var_account_disable_post_pw_expiration = $ODV_var_account_disable_post_pw_expiration\n\n== Set existing passwords a period of inactivity before they been locked\n----\nVerify that Ubuntu 24.04 's INACTIVE conforms to site policy (no more than 30 days) with the following command:\n\n$ sudo awk -F: '$7 > 30 {print $1 \" \" $7}' /etc/shadow\n      Is it the case that the value of INACTIVE is greater than the expected value or is -1?\n----\nExpected values: var_account_disable_post_pw_expiration = $ODV_var_account_disable_post_pw_expiration",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Account Expiration Following Inactivity\n\nTo specify the number of days after a password expires (which\nsignifies inactivity) until an account is permanently disabled, add or correct\nthe following line in `/etc/default/useradd`:\n\n```\nINACTIVE=*$ODV_var_account_disable_post_pw_expiration*\n         \n```\n\nIf a password is currently on the verge of expiration, then\n`$ODV_var_account_disable_post_pw_expiration`\nday(s) remain(s) until the account is automatically\ndisabled. However, if the password will not expire for another 60 days, then 60\ndays plus `$ODV_var_account_disable_post_pw_expiration` day(s) could\nelapse until the account would be automatically disabled. See the\n`useradd` man page for more information.\n\n**Rationale:**\n\nInactive identifiers pose a risk to systems and applications because attackers may exploit an inactive identifier and potentially obtain undetected access to the system.\nDisabling inactive accounts ensures that accounts which may not have been responsibly removed are not available to attackers who may have compromised their credentials.\nOwners of inactive accounts will not notice if unauthorized access to their user account has been obtained.\n\n## Set existing passwords a period of inactivity before they been locked\n\nConfigure user accounts that have been inactive for over a given period of time\nto be automatically disabled by running the following command:\n\n```\n$ sudo chage --inactive 30 USER\n```\n\n**Rationale:**\n\nInactive accounts pose a threat to system security since the users are not logging in to\nnotice failed login attempts or other anomalies.\n\n**Notes:**\n\nCIS setting now 45 days.",
   "discussion_format": "markdown",
@@ -96,7 +99,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

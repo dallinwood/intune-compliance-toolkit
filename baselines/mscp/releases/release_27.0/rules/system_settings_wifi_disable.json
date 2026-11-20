@@ -22,18 +22,21 @@
     "status": "manual"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/usr/sbin/networksetup -listallnetworkservices | /usr/bin/grep -c \"*Wi-Fi\""
         },
-        "shell": "/usr/sbin/networksetup -listallnetworkservices | /usr/bin/grep -c \"*Wi-Fi\""
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The macOS system must be configured with Wi-Fi support software disabled if not connected to an authorized trusted network.\n\nAllowing devices and users to connect to or from the system without first authenticating them allows untrusted access and can lead to a compromise or attack. Since wireless communications can be intercepted it is necessary to use encryption to protect the confidentiality of information in transit. Wireless technologies include for example  microwave packet radio (UHF/VHF) 802.11x and Bluetooth. Wireless networks use authentication protocols (e.g. EAP/TLS PEAP) which provide credential protection and mutual authentication.\n\nNOTE: If the system requires Wi-Fi to connect to an authorized network, this is not applicable.\n",
   "discussion_format": "asciidoc",
@@ -100,7 +103,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

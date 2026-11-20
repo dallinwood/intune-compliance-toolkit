@@ -46,7 +46,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-10 Inspection of Systems or Components"

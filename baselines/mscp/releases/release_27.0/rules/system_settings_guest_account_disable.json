@@ -77,18 +77,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('DisableGuestAccount'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.MCX')\\\n.objectForKey('EnableGuestAccount'))\n  if ( pref1 == true && pref2 == false ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Guest access _MUST_ be disabled.\n\nTurning off guest access prevents anonymous users from accessing files.\n",
   "discussion_format": "asciidoc",
@@ -203,7 +206,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

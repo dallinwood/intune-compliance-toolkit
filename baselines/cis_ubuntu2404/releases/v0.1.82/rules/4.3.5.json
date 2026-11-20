@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Base Chains Exist for Nftables\n----\nTo verify that base chains exist for INPUT, FORWARD, and OUTPUT, run the following commands:\n$ sudo nft list ruleset | grep 'hook input'\n$ sudo nft list ruleset | grep 'hook forward'\n$ sudo nft list ruleset | grep 'hook output'\nOutput should be similar to:\n\n  type filter hook input priority 0;\n  type filter hook forward priority 0;\n  type filter hook output priority 0;\n\n      Is it the case that base chains do not exist for nftables?\n----\nExpected values: var_nftables_table = $ODV_var_nftables_table, var_nftables_family = $ODV_var_nftables_family, var_nftables_base_chain_names = $ODV_var_nftables_base_chain_names, var_nftables_base_chain_types = $ODV_var_nftables_base_chain_types, var_nftables_base_chain_hooks = $ODV_var_nftables_base_chain_hooks, var_nftables_base_chain_priorities = $ODV_var_nftables_base_chain_priorities, var_nftables_base_chain_policies = $ODV_var_nftables_base_chain_policies",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Base Chains Exist for Nftables\n----\nTo verify that base chains exist for INPUT, FORWARD, and OUTPUT, run the following commands:\n$ sudo nft list ruleset | grep 'hook input'\n$ sudo nft list ruleset | grep 'hook forward'\n$ sudo nft list ruleset | grep 'hook output'\nOutput should be similar to:\n\n  type filter hook input priority 0;\n  type filter hook forward priority 0;\n  type filter hook output priority 0;\n\n      Is it the case that base chains do not exist for nftables?\n----\nExpected values: var_nftables_table = $ODV_var_nftables_table, var_nftables_family = $ODV_var_nftables_family, var_nftables_base_chain_names = $ODV_var_nftables_base_chain_names, var_nftables_base_chain_types = $ODV_var_nftables_base_chain_types, var_nftables_base_chain_hooks = $ODV_var_nftables_base_chain_hooks, var_nftables_base_chain_priorities = $ODV_var_nftables_base_chain_priorities, var_nftables_base_chain_policies = $ODV_var_nftables_base_chain_policies",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Base Chains Exist for Nftables\n\nTables in nftables hold chains. Each table only has one address family and only applies\nto packets of this family. Tables can have one of six families.\nChains are containers for rules. They exist in two kinds, base chains and regular chains.\nA base chain is an entry point for packets from the networking stack, a regular chain may\nbe used as jump target and is used for better rule organization.\n\n**Rationale:**\n\nIf a base chain doesn't exist with a hook for input, forward, and delete, packets that would\nflow through those chains will not be touched by nftables.",
   "discussion_format": "markdown",
@@ -172,7 +175,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.3"

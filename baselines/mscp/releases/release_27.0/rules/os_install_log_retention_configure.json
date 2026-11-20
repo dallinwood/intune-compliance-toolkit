@@ -69,18 +69,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "Yes"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "Yes"
+          },
+          "shell": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= $ODV_value) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'"
         },
-        "shell": "/usr/sbin/aslmanager -dd 2>&1 | /usr/bin/awk '/\\/var\\/log\\/install.log$/ {count++} /Processing module com.apple.install/,/Finished/ { for (i=1;i<=NR;i++) { if ($i == \"TTL\" && $(i+2) >= $ODV_value) { ttl=\"True\" }; if ($i == \"MAX\") {max=\"True\"}}} END{if (count > 1) { print \"Multiple config files for /var/log/install, manually remove the extra files\"} else if (max == \"True\") { print \"all_max setting is configured, must be removed\" } if (ttl != \"True\") { print \"TTL not configured\" } else { print \"Yes\" }}'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The install.log _MUST_ be configured to require records be kept for a organizational defined value before deletion, unless the system uses a central audit record storage facility.\n",
   "discussion_format": "asciidoc",
@@ -193,7 +196,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Audit Configuration Files Permissions are 640 or More Restrictive\n----\nTo properly set the permissions of /etc/audit/, run the command:\n$ sudo chmod 0640 /etc/audit/\nTo properly set the permissions of /etc/audit/rules.d/, run the command:\n$ sudo chmod 0640 /etc/audit/rules.d/\n      Is it the case that ?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Audit Configuration Files Permissions are 640 or More Restrictive\n----\nTo properly set the permissions of /etc/audit/, run the command:\n$ sudo chmod 0640 /etc/audit/\nTo properly set the permissions of /etc/audit/rules.d/, run the command:\n$ sudo chmod 0640 /etc/audit/rules.d/\n      Is it the case that ?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Audit Configuration Files Permissions are 640 or More Restrictive\n\nAll audit configuration files permissions must be 640 or more restrictive.\n\n```\nchmod 0640 /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*\n```\n\n**Rationale:**\n\nWithout the capability to restrict which roles and individuals can\nselect which events are audited, unauthorized personnel may be able\nto prevent the auditing of critical events.\nMisconfigured audits may degrade the system's performance by\noverwhelming the audit log. Misconfigured audits may also make it more\ndifficult to establish, correlate, and investigate the events relating\nto an incident or identify those responsible for one.",
   "discussion_format": "markdown",
@@ -68,7 +71,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

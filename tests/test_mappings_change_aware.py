@@ -16,7 +16,7 @@ LICENSE = {"name": "CC BY 4.0", "url": "https://example.test/licence", "rights_h
 
 def make_rule(rule_id: str, release_tag: str, **overrides) -> dict:
     rule = {
-        "schema_version": 6,
+        "schema_version": 7,
         "id": rule_id,
         "title": "Example rule",
         "discussion": "Discussion.",
@@ -31,7 +31,7 @@ def make_rule(rule_id: str, release_tag: str, **overrides) -> dict:
         ],
         "tags": [],
         "references": {},
-        "check": {"macOS": {"language": "bash", "default": {"shell": "echo 1", "result": None, "additional_info": None}, "by_version": {}}},
+        "check": {"macOS": [{"name": None, "language": "bash", "default": {"shell": "echo 1", "result": None, "additional_info": None}, "by_version": {}}]},
         "odvs": [],
         "remediation": None,
     }
@@ -51,7 +51,7 @@ def write_library(baselines_dir: Path, releases_by_source: dict[str, dict[str, d
         releases = []
         for position, (tag, rule) in enumerate(rule_by_tag.items()):
             index_path = f"{source_name}/releases/{tag}/_index.json"
-            write_json(baselines_dir / index_path, {"schema_version": 6, "source": source_name, "rules": [{"id": rule["id"], "file": "rules/rule.json"}]})
+            write_json(baselines_dir / index_path, {"schema_version": 7, "source": source_name, "rules": [{"id": rule["id"], "file": "rules/rule.json"}]})
             write_json(baselines_dir / source_name / "releases" / tag / "rules" / "rule.json", rule)
             releases.append({"tag": tag, "label": tag, "published_date": f"2026-0{position + 1}-01", "commit_sha": COMMIT_SHA,
                              "retrieved_date": "2026-10-01", "importer_format": "x-1", "index_path": index_path, "rule_count": 1})
@@ -59,7 +59,7 @@ def write_library(baselines_dir: Path, releases_by_source: dict[str, dict[str, d
         sources.append({"name": source_name, "display_name": source_name, "release_tag": newest["tag"], "commit_sha": COMMIT_SHA,
                         "retrieved_date": "2026-10-01", "repository_url": "https://example.test", "license": LICENSE,
                         "index_path": newest["index_path"], "rule_count": 1, "releases": releases})
-    write_json(baselines_dir / "_manifest.json", {"schema_version": 6, "sources": sources})
+    write_json(baselines_dir / "_manifest.json", {"schema_version": 7, "sources": sources})
     write_json(baselines_dir / "_change_ignore.json", {"schema_version": 1, "ignored_fields": ["source", "schema_version", "id", "file"]})
 
 
@@ -161,7 +161,7 @@ def test_a_release_that_is_current_is_unchanged(tmp_path):
 def test_a_missing_value_and_a_null_are_the_same_so_this_agrees_with_the_web_ui(tmp_path):
     older = make_rule(MSCP_RULE, "R1")
     newer = make_rule(MSCP_RULE, "R2")
-    del older["check"]["macOS"]["default"]["additional_info"]
+    del older["check"]["macOS"][0]["default"]["additional_info"]
     baselines_dir = two_release_library(tmp_path, older, newer)
 
     assert changed_since(baselines_dir, MSCP_RULE, "R1") == []

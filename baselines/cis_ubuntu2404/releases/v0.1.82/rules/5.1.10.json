@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Host-Based Authentication\n----\nTo determine how the SSH daemon's HostbasedAuthentication option is set, run the following command:\n\n$ sudo grep -i HostbasedAuthentication /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n$ sudo grep -i HostbasedAuthentication /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\n\nIf a line indicating no is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable Host-Based Authentication\n----\nTo determine how the SSH daemon's HostbasedAuthentication option is set, run the following command:\n\n$ sudo grep -i HostbasedAuthentication /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n$ sudo grep -i HostbasedAuthentication /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\n\nIf a line indicating no is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable Host-Based Authentication\n\nSSH's cryptographic host-based authentication is\nmore secure than `.rhosts` authentication. However, it is\nnot recommended that hosts unilaterally trust one another, even\nwithin an organization.\n\n\nThe default SSH configuration disables host-based authentication. The appropriate\nconfiguration is used if no value is set for `HostbasedAuthentication`.\n\n\nTo explicitly disable host-based authentication, add or correct the\nfollowing line in\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nHostbasedAuthentication no\n```\n\n**Rationale:**\n\nSSH trust relationships mean a compromise on one host\ncan allow an attacker to move trivially to other hosts.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

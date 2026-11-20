@@ -61,18 +61,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -c 'ShowFullURLInSmartSearchField = 1' | /usr/bin/awk '{ if ($1 >= 1) {print \"1\"} else {print \"0\"}}'"
         },
-        "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -c 'ShowFullURLInSmartSearchField = 1' | /usr/bin/awk '{ if ($1 >= 1) {print \"1\"} else {print \"0\"}}'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Show full website address _MUST_ be enabled in Safari.\n",
   "discussion_format": "asciidoc",
@@ -142,7 +145,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

@@ -62,7 +62,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Media Protection",
     "MP-06 Media Sanitization"

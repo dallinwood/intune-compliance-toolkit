@@ -100,21 +100,35 @@ describe('resolveGeneratedCheckFiles', () => {
   it('replaces only the macOS check script files with their text, and leaves the input alone', async () => {
     const step = { name: 'Fix', language: 'powershell' as const, shell_file: 'baselines/_overlays/scripts/Fix.ps1', additional_info: null, versions: null }
     const windowsCheck = {
+      name: null,
       language: 'powershell' as const,
       default: { shell_file: 'baselines/_overlays/scripts/Check.ps1', result: null, additional_info: null },
       by_version: {},
     }
     const fileRule = ruleWithCheckFile()
-    const rule = { ...fileRule, check: { ...fileRule.check, Windows: windowsCheck }, remediation: { Windows: { steps: [step], payloads: [] } } }
+    const rule = { ...fileRule, check: { ...fileRule.check, Windows: [windowsCheck] }, remediation: { Windows: { steps: [step], payloads: [] } } }
     const loadText = vi.fn(async (path: string) => `text of ${path}`)
 
     const resolved = await resolveGeneratedCheckFiles(rule, loadText)
 
-    expect(resolved.check?.macOS.default).toEqual({ shell: `text of ${SCRIPT_PATH}`, result: { type: 'integer', value: 1 }, additional_info: null })
-    expect(resolved.check?.Windows).toEqual(windowsCheck)
+    expect(resolved.check?.macOS[0].default).toEqual({ shell: `text of ${SCRIPT_PATH}`, result: { type: 'integer', value: 1 }, additional_info: null })
+    expect(resolved.check?.Windows).toEqual([windowsCheck])
     expect(resolved.remediation).toEqual(rule.remediation)
     expect(loadText.mock.calls).toEqual([[SCRIPT_PATH]])
-    expect(fileRule.check?.macOS.default?.shell_file).toBe(SCRIPT_PATH)
+    expect(fileRule.check?.macOS[0].default?.shell_file).toBe(SCRIPT_PATH)
+  })
+
+  it('fetches only the chosen item of the macOS list, not a later one', async () => {
+    const fileRule = ruleWithCheckFile()
+    const laterItem = { ...fileRule.check!.macOS[0], name: 'Later', default: { shell_file: 'baselines/_overlays/scripts/Later.sh', result: null, additional_info: null } }
+    const rule = { ...fileRule, check: { macOS: [fileRule.check!.macOS[0], laterItem] } }
+    const loadText = vi.fn(async (path: string) => `text of ${path}`)
+
+    const resolved = await resolveGeneratedCheckFiles(rule, loadText)
+
+    expect(loadText.mock.calls).toEqual([[SCRIPT_PATH]])
+    expect(resolved.check?.macOS[0].default?.shell).toBe(`text of ${SCRIPT_PATH}`)
+    expect(resolved.check?.macOS[1]).toBe(laterItem)
   })
 
   it('fetches nothing for a rule without a macOS check, so a missing Windows script cannot block a bundle', async () => {

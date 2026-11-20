@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Root Has A Primary GID 0\n----\nTo verify that root's primary group is zero run the following command:\n\n    awk -F: '($1 !~ /^(sync|shutdown|halt|operator)/ && $4==\"0\") {print $1\":\"$4}' /etc/passwd\n\nThe command should return:\n\n    root:0\n\n      Is it the case that root has a primary gid not equal to zero or other non-system accounts has a primary gid equal to zero?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Root Has A Primary GID 0\n----\nTo verify that root's primary group is zero run the following command:\n\n    awk -F: '($1 !~ /^(sync|shutdown|halt|operator)/ && $4==\"0\") {print $1\":\"$4}' /etc/passwd\n\nThe command should return:\n\n    root:0\n\n      Is it the case that root has a primary gid not equal to zero or other non-system accounts has a primary gid equal to zero?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify Root Has A Primary GID 0\n\nThe `root` user should have a primary group of 0.\n\n**Rationale:**\n\nTo help ensure that root-owned files are not inadvertently exposed to other users.\n\n**Notes:**\n\nThe remediation is not automated as the removal or modification\nof group IDs from a system is too disruptive.\n",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

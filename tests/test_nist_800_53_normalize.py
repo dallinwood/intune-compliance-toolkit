@@ -89,7 +89,7 @@ def test_entries_become_v5_rules():
 def test_base_control_fields():
     rule = rules_by_id()["nist_800_53.ac-2"]
 
-    assert rule["schema_version"] == 6
+    assert rule["schema_version"] == 7
     assert rule["title"] == "Account Management"
     assert rule["discussion_format"] == "markdown"
     assert rule["section_path"] == ["Access Control", "AC-02 Account Management"]

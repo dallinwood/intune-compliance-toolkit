@@ -7,7 +7,7 @@ import { bashSingleQuote } from './scriptGen/bash'
 import { currentRulesDirectory } from './testCurrentRelease'
 
 const bannerRule = JSON.parse(readFileSync(new URL('os_policy_banner_ssh_configure.json', currentRulesDirectory('mscp')), 'utf8')) as Rule
-const bannerCheckShell = bannerRule.check!.macOS.default!.shell!
+const bannerCheckShell = bannerRule.check!.macOS[0].default!.shell!
 const bannerOdv = bannerRule.odvs[0]
 
 describe('the SSH banner check shown as the generator runs it', () => {

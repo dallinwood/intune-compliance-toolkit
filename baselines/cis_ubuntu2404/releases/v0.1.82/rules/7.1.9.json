@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Who Owns /etc/shells File\n----\nTo check the ownership of /etc/shells,\nrun the command:\n$ ls -lL /etc/shells\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/shells does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/shells File\n----\nTo check the group ownership of /etc/shells,\nrun the command:\n$ ls -lL /etc/shells\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/shells does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/shells File\n----\nTo check the permissions of /etc/shells,\nrun the command:\n$ ls -l /etc/shells\nIf properly configured, the output should indicate the following permissions:\n0644\n      Is it the case that /etc/shells does not have unix mode 0644?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Who Owns /etc/shells File\n----\nTo check the ownership of /etc/shells,\nrun the command:\n$ ls -lL /etc/shells\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/shells does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/shells File\n----\nTo check the group ownership of /etc/shells,\nrun the command:\n$ ls -lL /etc/shells\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/shells does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/shells File\n----\nTo check the permissions of /etc/shells,\nrun the command:\n$ ls -l /etc/shells\nIf properly configured, the output should indicate the following permissions:\n0644\n      Is it the case that /etc/shells does not have unix mode 0644?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify Who Owns /etc/shells File\n\nTo properly set the owner of `/etc/shells`, run the command:\n\n  \n```\n$ sudo chown root /etc/shells \n```\n\n**Rationale:**\n\nThe `/etc/shells` file contains the list of full pathnames to shells on the system.\nSince this file is used by many system programs this file should be protected.\n\n## Verify Group Who Owns /etc/shells File\n\nTo properly set the group owner of `/etc/shells`, run the command:\n\n  \n```\n$ sudo chgrp root /etc/shells\n```\n\n**Rationale:**\n\nThe `/etc/shells` file contains the list of full pathnames to shells on the system.\nSince this file is used by many system programs this file should be protected.\n\n## Verify Permissions on /etc/shells File\n\nTo properly set the permissions of `/etc/shells`, run the command:\n\n```\n$ sudo chmod 0644 /etc/shells\n```\n\n**Rationale:**\n\nThe `/etc/shells` file contains the list of full pathnames to shells on the system.\nSince this file is used by many system programs this file should be protected.",
   "discussion_format": "markdown",
@@ -89,7 +92,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "7",
     "7.1"

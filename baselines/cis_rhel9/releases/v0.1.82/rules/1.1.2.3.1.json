@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure /home Located On Separate Partition\n----\nVerify that a separate file system/partition has been created for /home with the following command:\n\n$ mountpoint /home\n\n      Is it the case that \"/home is not a mountpoint\" is returned?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure /home Located On Separate Partition\n----\nVerify that a separate file system/partition has been created for /home with the following command:\n\n$ mountpoint /home\n\n      Is it the case that \"/home is not a mountpoint\" is returned?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure /home Located On Separate Partition\n\nIf user home directories will be stored locally, create a separate partition\nfor `/home` at installation time (or migrate it later using LVM). If\n`/home` will be mounted from another system such as an NFS server, then\ncreating a separate partition is not necessary at installation time, and the\nmountpoint can instead be configured later.\n\n**Rationale:**\n\nEnsuring that `/home` is mounted on its own partition enables the\nsetting of more restrictive mount options, and also helps ensure that\nusers cannot trivially fill partitions used for log or audit data storage.",
   "discussion_format": "markdown",
@@ -68,7 +71,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.1",

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable GNOME3 Automount running\n----\nThese settings can be verified by running the following:\n$ gsettings get org.gnome.desktop.media-handling autorun-never\nIf properly configured, the output for autorun-nevershould be true.\nTo ensure that users cannot enable autorun in GNOME3, run the following:\n$ grep 'autorun-never' /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output for autorun-never should be /org/gnome/desktop/media-handling/autorun-never\n      Is it the case that GNOME autorun is not disabled?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable GNOME3 Automount running\n----\nThese settings can be verified by running the following:\n$ gsettings get org.gnome.desktop.media-handling autorun-never\nIf properly configured, the output for autorun-nevershould be true.\nTo ensure that users cannot enable autorun in GNOME3, run the following:\n$ grep 'autorun-never' /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output for autorun-never should be /org/gnome/desktop/media-handling/autorun-never\n      Is it the case that GNOME autorun is not disabled?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable GNOME3 Automount running\n\nThe system's default desktop environment, GNOME3, will mount\ndevices and removable media (such as DVDs, CDs and USB flash drives) whenever\nthey are inserted into the system. To disable autorun-never within GNOME3, add or set\n`autorun-never` to `true` in `/etc/dconf/db/distro.d/00-security-settings`.\nFor example:\n\n```\n[org/gnome/desktop/media-handling]\nautorun-never=true\n```\n\nOnce the settings have been added, add a lock to\n`/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/desktop/media-handling/autorun-never\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nAutomatically mounting file systems permits easy introduction of unknown devices, thereby facilitating malicious activity.\nDisabling automatic mount running in GNOME3 can prevent\nthe introduction of malware via removable media.\nIt will, however, also prevent desktop users from legitimate use\nof removable media.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.8"

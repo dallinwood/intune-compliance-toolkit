@@ -320,13 +320,18 @@ class ShellText:
     quote_dialect: QuoteDialect | None
 
 
+def iter_check_items(rule: dict) -> Iterator[dict]:
+    for check_items in (rule.get("check") or {}).values():
+        yield from check_items
+
+
 def iter_inline_shell_texts(rule: dict) -> Iterator[ShellText]:
-    for target_check in (rule.get("check") or {}).values():
-        quote_dialect = QUOTE_DIALECT_BY_INLINE_LANGUAGE.get(target_check.get("language"))
-        default_check = target_check.get("default")
+    for check_item in iter_check_items(rule):
+        quote_dialect = QUOTE_DIALECT_BY_INLINE_LANGUAGE.get(check_item.get("language"))
+        default_check = check_item.get("default")
         if default_check and default_check.get("shell"):
             yield ShellText(default_check["shell"], "", quote_dialect)
-        for version_check in (target_check.get("by_version") or {}).values():
+        for version_check in (check_item.get("by_version") or {}).values():
             if version_check.get("shell"):
                 yield ShellText(version_check["shell"], "", quote_dialect)
     for target_remediation in (rule.get("remediation") or {}).values():
@@ -336,11 +341,11 @@ def iter_inline_shell_texts(rule: dict) -> Iterator[ShellText]:
 
 
 def iter_script_paths(rule: dict) -> Iterator[str]:
-    for target_check in (rule.get("check") or {}).values():
-        default_check = target_check.get("default")
+    for check_item in iter_check_items(rule):
+        default_check = check_item.get("default")
         if default_check and default_check.get("shell_file"):
             yield default_check["shell_file"]
-        for version_check in (target_check.get("by_version") or {}).values():
+        for version_check in (check_item.get("by_version") or {}).values():
             if version_check.get("shell_file"):
                 yield version_check["shell_file"]
     for target_remediation in (rule.get("remediation") or {}).values():

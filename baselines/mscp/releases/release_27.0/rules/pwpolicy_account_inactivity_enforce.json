@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": "$ODV_value"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": "$ODV_value"
+          },
+          "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeInactiveDays\"]/following-sibling::integer[1]/text()' -"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributeInactiveDays\"]/following-sibling::integer[1]/text()' -"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The macOS _MUST_ be configured to disable accounts after $ODV_value days of inactivity.\n\nThis rule prevents malicious users from making use of unused accounts to gain access to the system while avoiding detection.\n",
   "discussion_format": "asciidoc",
@@ -139,7 +142,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "pwpolicy"
   ],

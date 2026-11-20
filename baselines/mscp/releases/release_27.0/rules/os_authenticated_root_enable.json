@@ -69,27 +69,30 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {
-        "15.0": {
+    "macOS": [
+      {
+        "by_version": {
+          "15.0": {
+            "additional_info": null,
+            "result": {
+              "type": "integer",
+              "value": 1
+            },
+            "shell": "/usr/libexec/mdmclient QuerySecurityInfo 2>/dev/null | /usr/bin/grep -c \"AuthenticatedRootVolumeEnabled = 1;\""
+          }
+        },
+        "default": {
           "additional_info": null,
           "result": {
-            "type": "integer",
-            "value": 1
+            "type": "string",
+            "value": "sealed"
           },
-          "shell": "/usr/libexec/mdmclient QuerySecurityInfo 2>/dev/null | /usr/bin/grep -c \"AuthenticatedRootVolumeEnabled = 1;\""
-        }
-      },
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "sealed"
+          "shell": "/sbin/mount | /usr/bin/grep ' / ' | /usr/bin/grep -o 'sealed'"
         },
-        "shell": "/sbin/mount | /usr/bin/grep ' / ' | /usr/bin/grep -o 'sealed'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Authenticated Root _MUST_ be enabled.\n\nWhen Authenticated Root is enabled the macOS is booted from a signed volume that is cryptographically protected to prevent tampering with the system volume.\n\nNOTE: Authenticated Root is enabled by default on macOS systems.\n\nWARNING: If more than one partition with macOS is detected, the csrutil command will hang awaiting input.\n",
   "discussion_format": "asciidoc",
@@ -200,7 +203,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

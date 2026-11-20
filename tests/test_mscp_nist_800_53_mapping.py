@@ -53,7 +53,7 @@ def build_library(
     if include_nist:
         nist_rules = {control_id: {} for control_id in NIST_CONTROL_IDS}
         sources.append(write_release(baselines_dir, "nist_800_53", NIST_TAG, nist_rules))
-    write_json(baselines_dir / "_manifest.json", {"schema_version": 6, "sources": sources})
+    write_json(baselines_dir / "_manifest.json", {"schema_version": 7, "sources": sources})
     return baselines_dir
 
 

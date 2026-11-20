@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Remote Login Warning Banner Is Configured Properly\n----\nRun the following command and verify no results are returned:\n\n$ grep -E -i \"(\\\\\\v|\\\\\\r|\\\\\\m|\\\\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/\"//g'))\" /etc/issue.net\n      Is it the case that any results are returned?\n----\nExpected values: cis_banner_text = $ODV_cis_banner_text",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Remote Login Warning Banner Is Configured Properly\n----\nRun the following command and verify no results are returned:\n\n$ grep -E -i \"(\\\\\\v|\\\\\\r|\\\\\\m|\\\\\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/\"//g'))\" /etc/issue.net\n      Is it the case that any results are returned?\n----\nExpected values: cis_banner_text = $ODV_cis_banner_text",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Remote Login Warning Banner Is Configured Properly\n\nTo configure the system remote login warning banner edit the `/etc/issue.net` file.\nThe contents of this file is displayed to users prior to login from remote connections.\nReplace the default text with a message compliant with the local site policy.\nThe message should not contain information about operating system version,\nrelease, kernel version or patch level.\n\nThe recommended banner text can be tailored in the XCCDF Value `xccdf_org.ssgproject.content_value_cis_banner_text`:\n\n```\n$ODV_cis_banner_text\n```\n\n**Rationale:**\n\nWarning messages inform users who are attempting to login to the system of their legal\nstatus regarding the system and must include the name of the organization that owns\nthe system and any monitoring policies that are in place. Displaying OS and patch level\ninformation in login banners also has the side effect of providing detailed system\ninformation to attackers attempting to target specific exploits of a system. Authorized\nusers can easily get this information by running the `uname -a` command once they\nhave logged in.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.6"

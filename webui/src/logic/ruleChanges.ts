@@ -141,6 +141,10 @@ function isAbsent(value: unknown): boolean {
   return value === undefined || value === null
 }
 
+function isListOfObjects(value: unknown): value is unknown[] {
+  return Array.isArray(value) && value.some((item) => !isPrimitive(item))
+}
+
 function isPayloadData(path: string[]): boolean {
   return path[path.length - 1] === 'data' && path.includes('payloads')
 }
@@ -175,24 +179,27 @@ function walk(kind: ChangeKind, path: string[], before: unknown, after: unknown,
     return
   }
 
-  if (Array.isArray(before) && Array.isArray(after)) {
+  // The same for a list of objects (a target's check items) that appeared or disappeared.
+  const beforeItems = Array.isArray(before) ? before : isAbsent(before) && isListOfObjects(after) ? [] : null
+  const afterItems = Array.isArray(after) ? after : isAbsent(after) && isListOfObjects(before) ? [] : null
+  if (beforeItems !== null && afterItems !== null) {
     const lastSegment = path[path.length - 1]
     if (path.length === 1 && lastSegment === 'applicability') {
-      walkApplicability(kind, path, before as ApplicabilityEntry[], after as ApplicabilityEntry[], changes)
+      walkApplicability(kind, path, beforeItems as ApplicabilityEntry[], afterItems as ApplicabilityEntry[], changes)
       return
     }
     if (lastSegment === 'benchmarks') {
       const labels = (benchmarks: unknown[]) => (benchmarks as { name: string; severity: string | null }[]).map(benchmarkLabel)
-      changes.push({ kind, path, display: 'list', before: labels(before), after: labels(after) })
+      changes.push({ kind, path, display: 'list', before: labels(beforeItems), after: labels(afterItems) })
       return
     }
-    if (before.every(isPrimitive) && after.every(isPrimitive)) {
-      changes.push({ kind, path, display: 'list', before, after })
+    if (beforeItems.every(isPrimitive) && afterItems.every(isPrimitive)) {
+      changes.push({ kind, path, display: 'list', before: beforeItems, after: afterItems })
       return
     }
-    const length = Math.max(before.length, after.length)
+    const length = Math.max(beforeItems.length, afterItems.length)
     for (let position = 0; position < length; position += 1) {
-      walk(kind, [...path, String(position)], before[position], after[position], changes)
+      walk(kind, [...path, String(position)], beforeItems[position], afterItems[position], changes)
     }
     return
   }

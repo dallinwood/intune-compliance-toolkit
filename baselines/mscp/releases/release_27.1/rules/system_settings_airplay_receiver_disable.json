@@ -61,18 +61,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowAirPlayIncomingRequests\")) == false && s.objectIsForcedForKey(\"allowAirPlayIncomingRequests\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowAirPlayIncomingRequests\")) == false && s.objectIsForcedForKey(\"allowAirPlayIncomingRequests\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Airplay Receiver allows you to send content from another Apple device to be displayed on the screen as it's being played from your other device.\n\nSupport for Airplay Receiver is non-essential and _MUST_ be disabled.\n\nThe information system _MUST_ be configured to provide only essential capabilities.\n",
   "discussion_format": "asciidoc",
@@ -179,7 +182,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

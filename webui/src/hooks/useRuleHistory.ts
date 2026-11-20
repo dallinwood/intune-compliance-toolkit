@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchHistoryIndex, fetchRuleAtRelease } from '../data/history'
+import { checkItemCounts, type CheckItemCounts } from '../logic/changeLabels'
 import { ruleTimeline, type HistoryIndex, type TimelineEntry } from '../logic/historyIndex'
 import { fieldChanges, type FieldChange } from '../logic/ruleChanges'
 import type { Rule } from '../types/library'
@@ -44,7 +45,7 @@ export function useRuleHistory(rule: Rule | null): RuleHistoryState {
 export type RuleChangesState =
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'ready'; changes: FieldChange[] }
+  | { status: 'ready'; changes: FieldChange[]; checkCounts: CheckItemCounts }
 
 // The field changes of a rule between two releases, fetched when asked for
 // (null skips). Both rule files are fetched; nothing is fetched until a diff is drawn.
@@ -57,7 +58,7 @@ export function useRuleChanges(index: HistoryIndex, ruleId: string, fromTag: str
     let cancelled = false
     Promise.all([fetchRuleAtRelease(index, ruleId, fromTag), fetchRuleAtRelease(index, ruleId, toTag)])
       .then(([before, after]) => {
-        if (!cancelled) setLoaded({ key, state: { status: 'ready', changes: fieldChanges(before, after) } })
+        if (!cancelled) setLoaded({ key, state: { status: 'ready', changes: fieldChanges(before, after), checkCounts: checkItemCounts(before, after) } })
       })
       .catch((error: unknown) => {
         if (!cancelled) setLoaded({ key, state: { status: 'error', message: messageOf(error) } })

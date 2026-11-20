@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Events When Executables Are Run As Another User\n----\nVerify Ubuntu 24.04 audits execution as another user.\n\nCheck if Ubuntu 24.04 is configured to audit the execution of the \"execve\" system call using the following command:\n\n$ sudo grep execve /etc/audit/audit.rules\n\nThe output should be the following:\n\n-a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation\n-a always,exit -F arch=b64 -S execve  -C euid!=uid -F auid!=unset-k user_emulation\n      Is it the case that the command does not return all lines, or the lines are commented out?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Record Events When Executables Are Run As Another User\n----\nVerify Ubuntu 24.04 audits execution as another user.\n\nCheck if Ubuntu 24.04 is configured to audit the execution of the \"execve\" system call using the following command:\n\n$ sudo grep execve /etc/audit/audit.rules\n\nThe output should be the following:\n\n-a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation\n-a always,exit -F arch=b64 -S execve  -C euid!=uid -F auid!=unset-k user_emulation\n      Is it the case that the command does not return all lines, or the lines are commented out?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Record Events When Executables Are Run As Another User\n\nVerify the system generates an audit record when actions are run as another user.\nsudo provides users with temporary elevated privileges to perform operations, either as the superuser or another user.\n\nIf audit is using the \"auditctl\" tool to load the rules, run the following command:\n\n\n```\n$ sudo grep execve /etc/audit/audit.rules\n```\n\n\nIf audit is using the \"augenrules\" tool to load the rules, run the following command:\n\n\n```\n$ sudo grep -r execve /etc/audit/rules.d\n```\n\n       \n```\n-a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation\n```\n\n       \n```\n-a always,exit -F arch=b64  S execve -C euid!=uid -F auid!=unset -k user_emulation\n```\n\n\nIf both the \"b32\" and \"b64\" audit rules for \"SUID\" files are not defined, this is a finding.\n\n**Rationale:**\n\nCreating an audit log of users with temporary elevated privileges and the\noperation(s) they performed is essential to reporting. Administrators will\nwant to correlate the events written to the audit trail with the records\nwritten to sudo's logfile to verify if unauthorized commands have\nbeen executed.\nMisuse of privileged functions, either intentionally or unintentionally by\nauthorized users, or by unauthorized external entities that have\ncompromised information system accounts, is a serious and ongoing concern\nand can have significant adverse impacts on organizations. Auditing the use\nof privileged functions is one way to detect such misuse and identify the\nrisk from insider threats and the advanced persistent threat.",
   "discussion_format": "markdown",
@@ -65,7 +68,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

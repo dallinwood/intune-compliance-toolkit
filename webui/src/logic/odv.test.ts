@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import type { Odv, Rule } from '../types/library'
+import type { Odv, Rule, RuleChecks } from '../types/library'
 import {
   canonicalOdvValue,
   codeOdvValues,
@@ -51,11 +51,14 @@ describe('odvSubstitutionMode', () => {
       id,
       odvs: [valueOdv],
       check: {
-        macOS: {
-          language: 'bash',
-          default: defaultShell === null ? null : checkOf(defaultShell),
-          by_version: Object.fromEntries(Object.entries(byVersionShells).map(([version, shell]) => [version, checkOf(shell)])),
-        },
+        macOS: [
+          {
+            name: null,
+            language: 'bash',
+            default: defaultShell === null ? null : checkOf(defaultShell),
+            by_version: Object.fromEntries(Object.entries(byVersionShells).map(([version, shell]) => [version, checkOf(shell)])),
+          },
+        ],
       },
       discussion: 'Mentions $ODV_value here but that is ignored',
     } as unknown as Rule
@@ -118,9 +121,17 @@ describe('odvSubstitutionMode', () => {
     for (const shell of Object.values(ODV_VARIABLE_ALLOWLIST)) expect(shell).toContain('$ODV_value')
   })
 
+  it('reads the mode from the first runnable check item, not a later one', () => {
+    const rule = ruleWithChecks(allowlistedId, allowlistedShell)
+    const [firstItem] = (rule.check as Record<string, { default: unknown }[]>).macOS
+    const laterItem = { ...firstItem, default: { shell: 'echo $ODV_value', result: null, additional_info: null } }
+    const withLaterItem = { ...rule, check: { macOS: [firstItem, laterItem] } } as unknown as Rule
+    expect(odvSubstitutionMode(withLaterItem, valueOdv)).toBe('variable')
+  })
+
   it('ignores the placeholder in a check for a target the generator does not write', () => {
     const rule = ruleWithChecks(allowlistedId, allowlistedShell)
-    const windowsCheck = { language: 'powershell', default: { shell: 'Write-Output $ODV_value', result: null, additional_info: null }, by_version: {} }
+    const windowsCheck = [{ name: null, language: 'powershell', default: { shell: 'Write-Output $ODV_value', result: null, additional_info: null }, by_version: {} }]
     const withWindows = { ...rule, check: { ...rule.check, Windows: windowsCheck } } as unknown as Rule
     expect(odvSubstitutionMode(withWindows, valueOdv)).toBe('variable')
     const windowsOnly = { ...rule, check: { Windows: windowsCheck } } as unknown as Rule
@@ -594,9 +605,9 @@ describe('codeOdvValues', () => {
   const injection = 'a"; rm -rf ~ #'
   const none = { verifiedShell: {}, strict: {}, json: {}, exported: {} }
   const ruleOf = (odvValue: Odv, overrides: Partial<Rule> = {}) => ruleWithOdvs([odvValue], overrides)
-  const textModeCheck = {
-    macOS: { language: 'bash', default: { shell: 'echo $ODV_value', result: null, additional_info: null }, by_version: {} },
-  } as const
+  const textModeCheck: RuleChecks = {
+    macOS: [{ name: null, language: 'bash', default: { shell: 'echo $ODV_value', result: null, additional_info: null }, by_version: {} }],
+  }
 
   it('returns a valid value for scripts and JSON so code blocks show it in place of the placeholder', () => {
     expect(codeOdvValues(ruleOf(numberOdv), { value: 12 })).toEqual({ verifiedShell: { value: 12 }, strict: { value: 12 }, json: { value: 12 }, exported: {} })
@@ -631,11 +642,14 @@ describe('codeOdvValues', () => {
     const bannerRule = ruleWithOdvs([bannerOdv], {
       id: bannerRuleId,
       check: {
-        macOS: {
-          language: 'bash',
-          default: { shell: ODV_VARIABLE_ALLOWLIST[`${bannerRuleId}:value`], result: null, additional_info: null },
-          by_version: {},
-        },
+        macOS: [
+          {
+            name: null,
+            language: 'bash',
+            default: { shell: ODV_VARIABLE_ALLOWLIST[`${bannerRuleId}:value`], result: null, additional_info: null },
+            by_version: {},
+          },
+        ],
       },
     })
     const value = "it's \"$HOME\" `x` \\ ok"

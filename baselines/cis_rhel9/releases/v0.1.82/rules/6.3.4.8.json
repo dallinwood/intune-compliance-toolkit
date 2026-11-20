@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify that audit tools Have Mode 0755 or less\n----\nVerify it by running the following command:\n$ stat -c \"%n %a\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules /sbin/audisp-syslog\n\n/sbin/auditctl 755\n\n/sbin/aureport 755\n\n/sbin/ausearch 755\n\n/sbin/autrace 755\n\n/sbin/auditd 755\n\n/sbin/augenrules 755\n\n/sbin/audisp-syslog 755\n\n\nIf the command does not return all the above lines, the missing ones\nneed to be added.\n\nRun the following command to correct the permissions of the missing\nentries:\n$ sudo chmod 0755 [audit_tool] \n\nReplace \"[audit_tool]\" with the audit tool that does not have the\ncorrect permissions.\n      Is it the case that ?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify that audit tools Have Mode 0755 or less\n----\nVerify it by running the following command:\n$ stat -c \"%n %a\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules /sbin/audisp-syslog\n\n/sbin/auditctl 755\n\n/sbin/aureport 755\n\n/sbin/ausearch 755\n\n/sbin/autrace 755\n\n/sbin/auditd 755\n\n/sbin/augenrules 755\n\n/sbin/audisp-syslog 755\n\n\nIf the command does not return all the above lines, the missing ones\nneed to be added.\n\nRun the following command to correct the permissions of the missing\nentries:\n$ sudo chmod 0755 [audit_tool] \n\nReplace \"[audit_tool]\" with the audit tool that does not have the\ncorrect permissions.\n      Is it the case that ?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify that audit tools Have Mode 0755 or less\n\nThe Red Hat Enterprise Linux 9 operating system audit tools must have the proper\npermissions configured to protected against unauthorized access.\n\nVerify it by running the following command:\n\n```\n$ stat -c \"%n %a\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules /sbin/audisp-syslog\n\n/sbin/auditctl 755\n\n/sbin/aureport 755\n\n/sbin/ausearch 755\n\n/sbin/autrace 755\n\n/sbin/auditd 755\n\n/sbin/augenrules 755\n\n/sbin/audisp-syslog 755\n```\n\n\nAudit tools needed to successfully view and manipulate audit information\nsystem activity and records. Audit tools include custom queries and report\ngenerators\n\n**Rationale:**\n\nProtecting audit information also includes identifying and protecting the\ntools used to view and manipulate log data. Therefore, protecting audit\ntools is necessary to prevent unauthorized operation on audit information.\n\nOperating systems providing tools to interface with audit information\nwill leverage user permissions and roles identifying the user accessing the\ntools and the corresponding rights the user enjoys to make access decisions\nregarding the access to audit tools.",
   "discussion_format": "markdown",
@@ -68,7 +71,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

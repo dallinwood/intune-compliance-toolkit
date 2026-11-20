@@ -39,7 +39,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Supply Chain Risk Management",
     "SR-09 Tamper Resistance and Detection"

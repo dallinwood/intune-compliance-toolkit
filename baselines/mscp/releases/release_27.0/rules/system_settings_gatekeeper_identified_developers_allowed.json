@@ -53,18 +53,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('AllowIdentifiedDevelopers'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('EnableAssessment'))\n  if ( pref1 == true && pref2 == true ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('AllowIdentifiedDevelopers'))\n  let pref2 = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.systempolicy.control')\\\n.objectForKey('EnableAssessment'))\n  if ( pref1 == true && pref2 == true ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The information system implements cryptographic mechanisms to authenticate software prior to installation.\n\nGatekeeper settings must be configured correctly to only allow the system to run applications downloaded from the Mac App Store or applications signed with a valid Apple Developer ID code. Administrator users will still have the option to override these settings on a per-app basis. Gatekeeper is a security feature that ensures that applications must be digitally signed by an Apple-issued certificate in order to run. Digital signatures allow the macOS to verify that the application has not been modified by a malicious third party.\n",
   "discussion_format": "asciidoc",
@@ -162,7 +165,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

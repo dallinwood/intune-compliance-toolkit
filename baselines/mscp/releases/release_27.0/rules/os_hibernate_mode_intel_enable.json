@@ -17,27 +17,30 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {
-        "15.0": {
+    "macOS": [
+      {
+        "by_version": {
+          "15.0": {
+            "additional_info": null,
+            "result": {
+              "type": "integer",
+              "value": 0
+            },
+            "shell": "error_count=0\nif /usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice 2>&1 | /usr/bin/grep -q \"MacBook\"; then\n  hibernateMode=$(/usr/bin/pmset -b -g | /usr/bin/grep hibernatemode 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyLowValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelaylow 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyHighValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelayhigh 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyThreshValue=$(/usr/bin/pmset -g | /usr/bin/grep highstandbythreshold 2>&1 | /usr/bin/awk '{print $2}')\n\n  if [[ \"$hibernateStandbyLowValue\" == \"\" ]] || [[ \"$hibernateStandbyLowValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyHighValue\" == \"\" ]] || [[ \"$hibernateStandbyHighValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyThreshValue\" == \"\" ]] || [[ \"$hibernateStandbyThreshValue\" -lt 90 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateMode\" == \"\" ]] || [[ \"$hibernateMode\" != 25 ]]; then\n    ((error_count++))\n  fi\nfi\necho \"$error_count\""
+          }
+        },
+        "default": {
           "additional_info": null,
           "result": {
             "type": "integer",
             "value": 0
           },
-          "shell": "error_count=0\nif /usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice 2>&1 | /usr/bin/grep -q \"MacBook\"; then\n  hibernateMode=$(/usr/bin/pmset -b -g | /usr/bin/grep hibernatemode 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyLowValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelaylow 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyHighValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelayhigh 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyThreshValue=$(/usr/bin/pmset -g | /usr/bin/grep highstandbythreshold 2>&1 | /usr/bin/awk '{print $2}')\n\n  if [[ \"$hibernateStandbyLowValue\" == \"\" ]] || [[ \"$hibernateStandbyLowValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyHighValue\" == \"\" ]] || [[ \"$hibernateStandbyHighValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyThreshValue\" == \"\" ]] || [[ \"$hibernateStandbyThreshValue\" -lt 90 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateMode\" == \"\" ]] || [[ \"$hibernateMode\" != 25 ]]; then\n    ((error_count++))\n  fi\nfi\necho \"$error_count\""
-        }
-      },
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 0
+          "shell": "error_count=0\nif /usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice 2>&1 | /usr/bin/grep -Ei \"MacBook|Mac[0-9]\"; then\n  hibernateMode=$(/usr/bin/pmset -b -g | /usr/bin/grep hibernatemode 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyLowValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelaylow 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyHighValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelayhigh 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyThreshValue=$(/usr/bin/pmset -g | /usr/bin/grep highstandbythreshold 2>&1 | /usr/bin/awk '{print $2}')\n\n  if [[ \"$hibernateStandbyLowValue\" == \"\" ]] || [[ \"$hibernateStandbyLowValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyHighValue\" == \"\" ]] || [[ \"$hibernateStandbyHighValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyThreshValue\" == \"\" ]] || [[ \"$hibernateStandbyThreshValue\" -lt 90 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateMode\" == \"\" ]] || [[ \"$hibernateMode\" != 25 ]]; then\n    ((error_count++))\n  fi\nfi\necho \"$error_count\""
         },
-        "shell": "error_count=0\nif /usr/sbin/ioreg -rd1 -c IOPlatformExpertDevice 2>&1 | /usr/bin/grep -Ei \"MacBook|Mac[0-9]\"; then\n  hibernateMode=$(/usr/bin/pmset -b -g | /usr/bin/grep hibernatemode 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyLowValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelaylow 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyHighValue=$(/usr/bin/pmset -g | /usr/bin/grep standbydelayhigh 2>&1 | /usr/bin/awk '{print $2}')\n  hibernateStandbyThreshValue=$(/usr/bin/pmset -g | /usr/bin/grep highstandbythreshold 2>&1 | /usr/bin/awk '{print $2}')\n\n  if [[ \"$hibernateStandbyLowValue\" == \"\" ]] || [[ \"$hibernateStandbyLowValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyHighValue\" == \"\" ]] || [[ \"$hibernateStandbyHighValue\" -gt 900 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateStandbyThreshValue\" == \"\" ]] || [[ \"$hibernateStandbyThreshValue\" -lt 90 ]]; then\n    ((error_count++))\n  fi\n  if [[ \"$hibernateMode\" == \"\" ]] || [[ \"$hibernateMode\" != 25 ]]; then\n    ((error_count++))\n  fi\nfi\necho \"$error_count\""
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Hibernate mode _MUST_ be enabled.\n\nThis will store a copy of memory to persistent storage, and will remove power to memory. This setting will stop the potential for a cold-boot attack.\n",
   "discussion_format": "asciidoc",
@@ -72,7 +75,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

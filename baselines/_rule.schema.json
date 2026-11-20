@@ -9,7 +9,7 @@
     "check", "odvs", "remediation"
   ],
   "properties": {
-    "schema_version": { "const": 6 },
+    "schema_version": { "const": 7 },
     "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?:\\.[a-z0-9_-]+)*(?![\\s\\S])" },
     "title": { "type": "string" },
     "discussion": { "type": "string" },
@@ -85,7 +85,7 @@
       "type": ["object", "null"],
       "minProperties": 1,
       "propertyNames": { "$ref": "#/$defs/target_name" },
-      "additionalProperties": { "$ref": "#/$defs/target_check" }
+      "additionalProperties": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/target_check" } }
     },
     "odvs": {
       "type": "array",
@@ -192,8 +192,9 @@
     "target_check": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["language", "default", "by_version"],
+      "required": ["name", "language", "default", "by_version"],
       "properties": {
+        "name": { "type": ["string", "null"] },
         "language": { "$ref": "#/$defs/language" },
         "default": {
           "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/check_entry" }]

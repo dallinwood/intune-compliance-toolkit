@@ -37,27 +37,30 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {
-        "15.0": {
+    "macOS": [
+      {
+        "by_version": {
+          "15.0": {
+            "additional_info": null,
+            "result": {
+              "type": "string",
+              "value": "true"
+            },
+            "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipUnlockWithWatch').js\nEOS"
+          }
+        },
+        "default": {
           "additional_info": null,
           "result": {
             "type": "string",
-            "value": "true"
+            "value": "PASS"
           },
-          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SetupAssistant.managed')\\\n.objectForKey('SkipUnlockWithWatch').js\nEOS"
-        }
-      },
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"WatchMigration\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.SetupAssistant.managed\"); (ObjC.unwrap(s.objectForKey(\"SkipSetupItems\").containsObject(\"WatchMigration\")) == true && s.objectIsForcedForKey(\"SkipSetupItems\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The prompt for Apple Watch unlock setup during Setup Assistant _MUST_ be disabled.\n\nDisabling Apple watches is a necessary step to ensuring that the information system retains a session lock until the user reestablishes access using an authorized identification and authentication procedures.\n",
   "discussion_format": "asciidoc",
@@ -160,7 +163,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

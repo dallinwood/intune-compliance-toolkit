@@ -237,18 +237,22 @@ def test_a_windows_remediation_step_onto_a_null_remediation_is_valid(tmp_path):
     assert merged[ISM_1622]["remediation"] == {"Windows": {"steps": [step], "payloads": []}}
 
 
-def test_switching_an_entry_to_a_file_needs_replace(tmp_path):
+def test_a_check_list_is_changed_by_replace_or_append_not_merge(tmp_path):
     script = "baselines/_overlays/scripts/BlockCerts.ps1"
     inline_default = {"shell": "Get-Thing", "result": None, "additional_info": None}
-    inline_check = {"Windows": {"language": "powershell", "default": inline_default, "by_version": {}}}
-    write_overlay(tmp_path, "a-inline.json", ism_1622_overlay("inline", {"check": inline_check}))
-    write_overlay(tmp_path, "b-plain-merge.json", ism_1622_overlay("plain-merge", {"check": {"Windows": {"default": {"shell_file": script}}}}))
+    inline_item = {"name": None, "language": "powershell", "default": inline_default, "by_version": {}}
+    write_overlay(tmp_path, "a-inline.json", ism_1622_overlay("inline", {"check": {"Windows": [inline_item]}}))
+    file_default = {"shell_file": script, "result": None, "additional_info": None}
+    file_item = {"name": "From a file", "language": "powershell", "default": file_default, "by_version": {}}
+    write_overlay(tmp_path, "b-merge.json", ism_1622_overlay("merge", {"check": {"Windows": {"$merge": {"default": file_default}}}}))
 
     errors, _ = validate_overlays(tmp_path, BASELINES_DIR)
     assert errors and all("check" in error for error in errors)
 
-    write_overlay(tmp_path, "b-plain-merge.json", ism_1622_overlay("plain-merge", {"check": {"Windows": {"default": {"$replace": {"shell_file": script, "result": None, "additional_info": None}}}}}))
+    write_overlay(tmp_path, "b-merge.json", ism_1622_overlay("merge", {"check": {"Windows": {"$append": [file_item]}}}))
     assert validate_overlays(tmp_path, BASELINES_DIR) == ([], [])
+    merged = overlays.merged_rules(tmp_path, BASELINES_DIR)
+    assert merged[ISM_1622]["check"]["Windows"] == [inline_item, file_item]
 
 
 def mini_repository_with_ism_1622(repository_root: Path) -> Path:

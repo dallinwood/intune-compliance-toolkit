@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Default ip6tables Policy for Incoming Packets\n----\nIf IPv6 is disabled, this is not applicable.\n\nInspect the file /etc/sysconfig/ip6tables to determine\nthe default policy for the INPUT chain. It should be set to DROP:\n$ sudo grep \":INPUT\" /etc/sysconfig/ip6tables\n      Is it the case that the default policy for the INPUT chain is not set to DROP?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Default ip6tables Policy for Incoming Packets\n----\nIf IPv6 is disabled, this is not applicable.\n\nInspect the file /etc/sysconfig/ip6tables to determine\nthe default policy for the INPUT chain. It should be set to DROP:\n$ sudo grep \":INPUT\" /etc/sysconfig/ip6tables\n      Is it the case that the default policy for the INPUT chain is not set to DROP?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Default ip6tables Policy for Incoming Packets\n\nTo set the default policy to DROP (instead of ACCEPT) for\nthe built-in INPUT chain which processes incoming packets,\nadd or correct the following line in\n\n`/etc/iptables/rules.v6`:\n\n\n```\n:INPUT DROP [0:0]\n```\n\nIf changes were required, reload the ip6tables rules:\n\n```\n$ sudo service ip6tables reload\n```\n\n**Rationale:**\n\nIn `ip6tables`, the default policy is applied only after all\nthe applicable rules in the table are examined for a match. Setting the\ndefault policy to `DROP` implements proper design for a firewall, i.e.\nany packets which are not explicitly permitted should not be\naccepted.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.4",

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set nftables Configuration for Loopback Traffic\n----\nVerify that the loopback interface is configured:\n\n# nft list ruleset | awk '/hook input/,/}/' | grep 'iif \"lo\" accept'\n\niif \"lo\" accept\nIf IPv6 is enabled, verify that the IPv6 loopback interface is configured:\n\n# nft list ruleset | awk '/hook input/,/}/' | grep 'ip6 saddr'\n\nip saddr 127.0.0.0/8 counter packets 0 bytes 0 drop\n      Is it the case that nftables loopback traffic is not configured?\n----\nExpected values: var_nftables_family = $ODV_var_nftables_family",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set nftables Configuration for Loopback Traffic\n----\nVerify that the loopback interface is configured:\n\n# nft list ruleset | awk '/hook input/,/}/' | grep 'iif \"lo\" accept'\n\niif \"lo\" accept\nIf IPv6 is enabled, verify that the IPv6 loopback interface is configured:\n\n# nft list ruleset | awk '/hook input/,/}/' | grep 'ip6 saddr'\n\nip saddr 127.0.0.0/8 counter packets 0 bytes 0 drop\n      Is it the case that nftables loopback traffic is not configured?\n----\nExpected values: var_nftables_family = $ODV_var_nftables_family",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set nftables Configuration for Loopback Traffic\n\nConfigure the loopback interface to accept traffic.\nConfigure all other interfaces to deny traffic to the loopback\nnetwork.\n\n**Rationale:**\n\nLoopback traffic is generated between processes on machine and is\ntypically critical to operation of the system. The loopback interface\nis the only place that loopback network traffic should be seen,\nall other interfaces should ignore traffic on this network as an\nanti-spoofing measure.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.3"

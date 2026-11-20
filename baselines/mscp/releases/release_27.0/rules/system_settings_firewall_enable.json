@@ -69,18 +69,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n.objectForKey('EnableFirewall').js\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n.objectForKey('EnableFirewall').js\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The macOS Application Firewall is the built-in firewall that comes with macOS, and it _MUST_ be enabled.\n\nWhen the macOS Application Firewall is enabled, the flow of information within the information system and between interconnected systems will be controlled by approved authorizations.\n",
   "discussion_format": "asciidoc",
@@ -206,7 +209,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

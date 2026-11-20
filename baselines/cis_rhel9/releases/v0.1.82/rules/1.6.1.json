@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Implement Custom Crypto Policy Modules for CIS Benchmark\n----\nVerify that /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod exists and has the following content:\n\ncipher@SSH = -*-CBC\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod exists and has the following content:\n\ncipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod exists and has the following content:\n\nmac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod exists and has the following content:\n\nmac = -*-128*\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod exists and has the following content:\n\nhash@rpm = -SHA1\n\n      Is it the case that the custom crypto policy modules do not exist?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Implement Custom Crypto Policy Modules for CIS Benchmark\n----\nVerify that /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod exists and has the following content:\n\ncipher@SSH = -*-CBC\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod exists and has the following content:\n\ncipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod exists and has the following content:\n\nmac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod exists and has the following content:\n\nmac = -*-128*\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod exists and has the following content:\n\nhash@rpm = -SHA1\n\n      Is it the case that the custom crypto policy modules do not exist?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Implement Custom Crypto Policy Modules for CIS Benchmark\n\nCreate a custom crypto policy module to enforce the use of strong ciphers and MACs in SSHD, disable CBC mode ciphers in SSHD and disable the use of weak MACs globally.\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-SSHCBC.pmod`:\n\n```\ncipher@SSH = -*-CBC\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod`:\n\n```\ncipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod`:\n\n```\nmac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod`:\n\n```\nmac = -*-128*\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod`:\n\n```\nhash@rpm = -SHA1\n```\n\n\nThen, set the system wide crypto policy to use the custom policy.\n\n```\n$ sudo update-crypto-policies --set DEFAULT:NO-SHA1:NO-SSHCBC:NO-SSHWEAKCIPHERS:NO-SSHWEAKMACS:NO-WEAKMAC:NO-RPMSHA1\n```\n\n**Rationale:**\n\nCBC mode ciphers are vulnerable to certain attacks, such as the BEAST attack.\nDisabling CBC mode ciphers helps protect against these attacks and ensures that only\nstrong, proven cryptographic algorithms are used to protect SSH communications.\nWeak ciphers that are used for authentication to the cryptographic module cannot be\nrelied upon to provide confidentiality or integrity, and system data may be compromised.\nMessage Authentication Codes (MACs) are cryptographic mechanisms used to verify the\nintegrity and authenticity of data transmitted over SSH connections. Weak MACs that\nare used for authentication to the cryptographic module cannot be relied upon to\nprovide integrity, and system data may be compromised. Implementing a custom crypto\npolicy that disables weak MAC algorithms helps ensure that only strong, proven\ncryptographic algorithms are used to protect SSH communications.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.6"

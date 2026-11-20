@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure the Default Bash Umask is Set Correctly\n----\nVerify the umask setting is configured correctly in the /etc/bashrc file with the following command:\n\n$ sudo grep \"umask\" /etc/bashrc\n\numask \n      Is it the case that the value for the \"umask\" parameter is not \"$ODV_var_accounts_user_umask\", or the \"umask\" parameter is missing or is commented out?\n----\nExpected values: var_accounts_user_umask = $ODV_var_accounts_user_umask\n\n== Ensure the Default Umask is Set Correctly in login.defs\n----\nVerify Red Hat Enterprise Linux 9 defines default permissions for all authenticated users in such a way that the user can only read and modify their own files with the following command:\n\n# grep -i umask /etc/login.defs\n\nUMASK \n      Is it the case that the value for the \"UMASK\" parameter is not \"$ODV_var_accounts_user_umask\", or the \"UMASK\" parameter is missing or is commented out?\n----\nExpected values: var_accounts_user_umask = $ODV_var_accounts_user_umask\n\n== Ensure the Default Umask is Set Correctly in /etc/profile\n----\nVerify the umask setting is configured correctly in the /etc/profile file\nor scripts within /etc/profile.d directory with the following command:\n$ grep \"umask\" /etc/profile*\numask \n      Is it the case that the value for the \"umask\" parameter is not \"$ODV_var_accounts_user_umask\",\nor the \"umask\" parameter is missing or is commented out?\n----\nExpected values: var_accounts_user_umask = $ODV_var_accounts_user_umask",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure the Default Bash Umask is Set Correctly\n----\nVerify the umask setting is configured correctly in the /etc/bashrc file with the following command:\n\n$ sudo grep \"umask\" /etc/bashrc\n\numask \n      Is it the case that the value for the \"umask\" parameter is not \"$ODV_var_accounts_user_umask\", or the \"umask\" parameter is missing or is commented out?\n----\nExpected values: var_accounts_user_umask = $ODV_var_accounts_user_umask\n\n== Ensure the Default Umask is Set Correctly in login.defs\n----\nVerify Red Hat Enterprise Linux 9 defines default permissions for all authenticated users in such a way that the user can only read and modify their own files with the following command:\n\n# grep -i umask /etc/login.defs\n\nUMASK \n      Is it the case that the value for the \"UMASK\" parameter is not \"$ODV_var_accounts_user_umask\", or the \"UMASK\" parameter is missing or is commented out?\n----\nExpected values: var_accounts_user_umask = $ODV_var_accounts_user_umask\n\n== Ensure the Default Umask is Set Correctly in /etc/profile\n----\nVerify the umask setting is configured correctly in the /etc/profile file\nor scripts within /etc/profile.d directory with the following command:\n$ grep \"umask\" /etc/profile*\numask \n      Is it the case that the value for the \"umask\" parameter is not \"$ODV_var_accounts_user_umask\",\nor the \"umask\" parameter is missing or is commented out?\n----\nExpected values: var_accounts_user_umask = $ODV_var_accounts_user_umask",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure the Default Bash Umask is Set Correctly\n\nTo ensure the default umask for users of the Bash shell is set properly,\nadd or correct the `umask` setting in `/etc/bashrc` to read\nas follows:\n\n```\numask $ODV_var_accounts_user_umask\n         \n```\n\n**Rationale:**\n\nThe umask value influences the permissions assigned to files when they are created.\nA misconfigured umask value could result in files with excessive permissions that can be read or\nwritten to by unauthorized users.\n\n## Ensure the Default Umask is Set Correctly in login.defs\n\nTo ensure the default umask controlled by `/etc/login.defs` is set properly,\nadd or correct the `UMASK` setting in `/etc/login.defs` to read as follows:\n\n```\nUMASK $ODV_var_accounts_user_umask\n         \n```\n\n**Rationale:**\n\nThe umask value influences the permissions assigned to files when they are created.\nA misconfigured umask value could result in files with excessive permissions that can be read and\nwritten to by unauthorized users.\n\n## Ensure the Default Umask is Set Correctly in /etc/profile\n\nTo ensure the default umask controlled by `/etc/profile` is set properly,\nadd or correct the `umask` setting in `/etc/profile` to read as follows:\n\n```\numask $ODV_var_accounts_user_umask\n         \n```\n\n\nNote that `/etc/profile` also reads scripts within `/etc/profile.d` directory.\nThese scripts are also valid files to set umask value. Therefore, they should also be\nconsidered during the check and properly remediated, if necessary.\n\n**Rationale:**\n\nThe umask value influences the permissions assigned to files when they are created.\nA misconfigured umask value could result in files with excessive permissions that can be read or\nwritten to by unauthorized users.",
   "discussion_format": "markdown",
@@ -109,7 +112,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Install iptables-persistent Package\n----\nRun the following command to determine if the iptables-persistent package is installed: $ dpkg -l iptables-persistent\n      Is it the case that the iptables-persistent package is not installed?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service\n\n== Install iptables Package\n----\nRun the following command to determine if the iptables package is installed: $ dpkg -l iptables\n      Is it the case that the iptables package is not installed?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Install iptables-persistent Package\n----\nRun the following command to determine if the iptables-persistent package is installed: $ dpkg -l iptables-persistent\n      Is it the case that the iptables-persistent package is not installed?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service\n\n== Install iptables Package\n----\nRun the following command to determine if the iptables package is installed: $ dpkg -l iptables\n      Is it the case that the iptables package is not installed?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Install iptables-persistent Package\n\nThe `iptables-persistent` package can be installed with the following command:\n\n```\n$ apt-get install iptables-persistent\n```\n\n**Rationale:**\n\nA method of configuring and maintaining firewall rules is\nnecessary to configure a Host Based Firewall.\n\n## Install iptables Package\n\nThe `iptables` package can be installed with the following command:\n\n```\n$ apt-get install iptables\n```\n\n**Rationale:**\n\n`iptables` controls the Linux kernel network packet filtering\ncode. `iptables` allows system operators to set up firewalls and IP\nmasquerading, etc.",
   "discussion_format": "markdown",
@@ -96,7 +99,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.4",

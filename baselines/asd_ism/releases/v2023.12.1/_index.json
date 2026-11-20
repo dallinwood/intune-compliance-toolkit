@@ -40961,6 +40961,6 @@
       "title": "Network documentation includes device settings for all critical servers, high-value servers, network devices and network security appliances."
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "asd_ism"
 }

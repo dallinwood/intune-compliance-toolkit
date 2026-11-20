@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowGameCenter\")) == false && s.objectIsForcedForKey(\"allowGameCenter\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowGameCenter\")) == false && s.objectIsForcedForKey(\"allowGameCenter\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "This works only with supervised devices and allows to disable Apple Game Center. The rationale is Game Center is using Apple Account and will share data on iCloud based services, therefore, Game Center _MUST_ be disabled.\n\nThis setting also prohibits functionality of adding friends to Game Center.\n\nThis requirement helps ensure that organizational contact data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
   "discussion_format": "asciidoc",
@@ -145,7 +148,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "icloud"
   ],

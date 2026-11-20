@@ -12,18 +12,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n  .objectForKey('EnableLogging').js\n  let pref2 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n  .objectForKey('LoggingOption').js\n  if ( pref1 == true && pref2 == \"detail\" ){\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let pref1 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n  .objectForKey('EnableLogging').js\n  let pref2 = $.NSUserDefaults.alloc.initWithSuiteName('com.apple.security.firewall')\\\n  .objectForKey('LoggingOption').js\n  if ( pref1 == true && pref2 == \"detail\" ){\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Firewall logging _MUST_ be enabled.\n\nFirewall logging ensures that malicious network activity will be logged to the system.\n\nNOTE: The firewall data is logged to Apple's Unified Logging with the subsystem `com.apple.alf` and the data is marked as private. In order to enable private data, review the `com.apple.alf.private_data.mobileconfig` file in the project's `includes` folder.\n",
   "discussion_format": "asciidoc",
@@ -88,7 +91,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

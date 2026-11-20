@@ -23,5 +23,5 @@ export function ChangesBetween({
   const state = useRuleChanges(index, ruleId, fromTag, toTag)
   if (state.status === 'loading') return <p className="text-sm text-muted-foreground">Loading changes…</p>
   if (state.status === 'error') return <p className="text-sm text-destructive">Failed to load: {state.message}</p>
-  return <FieldChangeList changes={state.changes} kinds={kinds} focusPaths={focusPaths} />
+  return <FieldChangeList changes={state.changes} checkCounts={state.checkCounts} kinds={kinds} focusPaths={focusPaths} />
 }

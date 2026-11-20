@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Group Ownership of System Login Banner for Remote Connections\n----\nTo check the group ownership of /etc/issue.net,\nrun the command:\n$ ls -lL /etc/issue.net\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/issue.net does not have a group owner of\nroot\n?\n----\n\n== Verify ownership of System Login Banner for Remote Connections\n----\nTo check the ownership of /etc/issue.net,\nrun the command:\n$ ls -lL /etc/issue.net\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/issue.net does not have an owner of root?\n----\n\n== Verify permissions on System Login Banner for Remote Connections\n----\nTo check the permissions of /etc/issue.net,\nrun the command:\n$ ls -l /etc/issue.net\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /etc/issue.net does not have unix mode -rw-r--r--?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Group Ownership of System Login Banner for Remote Connections\n----\nTo check the group ownership of /etc/issue.net,\nrun the command:\n$ ls -lL /etc/issue.net\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/issue.net does not have a group owner of\nroot\n?\n----\n\n== Verify ownership of System Login Banner for Remote Connections\n----\nTo check the ownership of /etc/issue.net,\nrun the command:\n$ ls -lL /etc/issue.net\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/issue.net does not have an owner of root?\n----\n\n== Verify permissions on System Login Banner for Remote Connections\n----\nTo check the permissions of /etc/issue.net,\nrun the command:\n$ ls -l /etc/issue.net\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /etc/issue.net does not have unix mode -rw-r--r--?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify Group Ownership of System Login Banner for Remote Connections\n\nTo properly set the group owner of `/etc/issue.net`, run the command:\n\n  \n```\n$ sudo chgrp root /etc/issue.net\n```\n\n**Rationale:**\n\nDisplay of a standardized and approved use notification before granting\naccess to the operating system ensures privacy and security notification\nverbiage used is consistent with applicable federal laws, Executive Orders,\ndirectives, policies, regulations, standards, and guidance.\n\nProper group ownership will ensure that only root user can modify the banner.\n\n## Verify ownership of System Login Banner for Remote Connections\n\nTo properly set the owner of `/etc/issue.net`, run the command:\n\n  \n```\n$ sudo chown root /etc/issue.net \n```\n\n**Rationale:**\n\nDisplay of a standardized and approved use notification before granting\naccess to the operating system ensures privacy and security notification\nverbiage used is consistent with applicable federal laws, Executive Orders,\ndirectives, policies, regulations, standards, and guidance.\n\nProper ownership will ensure that only root user can modify the banner.\n\n## Verify permissions on System Login Banner for Remote Connections\n\nTo properly set the permissions of `/etc/issue.net`, run the command:\n\n```\n$ sudo chmod 0644 /etc/issue.net\n```\n\n**Rationale:**\n\nDisplay of a standardized and approved use notification before granting\naccess to the operating system ensures privacy and security notification\nverbiage used is consistent with applicable federal laws, Executive Orders,\ndirectives, policies, regulations, standards, and guidance.\n\nProper permissions will ensure that only root user can modify the banner.",
   "discussion_format": "markdown",
@@ -94,7 +97,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.7"

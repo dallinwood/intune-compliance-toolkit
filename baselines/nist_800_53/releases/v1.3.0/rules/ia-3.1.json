@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Identification and Authentication",
     "IA-03 Device Identification and Authentication"

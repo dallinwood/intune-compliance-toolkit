@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { TimelineEntry } from './historyIndex'
-import { KIND_LABELS, changeLabel, historyTabLabel, quietEntryText, quietRunSummary, startingPointText, timelineStateText, visibleChanges } from './changeLabels'
+import { KIND_LABELS, changeLabel, checkItemCounts, historyTabLabel, quietEntryText, quietRunSummary, startingPointText, timelineStateText, visibleChanges } from './changeLabels'
 import { CHANGE_KINDS, type ChangeKind, type FieldChange } from './ruleChanges'
+import { inlineRule } from './testRuleFixtures'
 import { vocabularyIndexOf } from './testVocabularyFixtures'
 
 const vocabularyIndex = vocabularyIndexOf({
@@ -17,14 +18,42 @@ describe('KIND_LABELS', () => {
   })
 })
 
+describe('changeLabel with check item counts', () => {
+  const windowsCheck = (name: string | null) => ({ name, language: 'powershell' as const, default: null, by_version: {} })
+  const oneItem = inlineRule({ overrides: { check: { macOS: [windowsCheck(null)] } } })
+  const twoItems = inlineRule({ overrides: { check: { macOS: [windowsCheck(null)], Windows: [windowsCheck('A'), windowsCheck('B')] } } })
+
+  it('counts the most items each target has across the rules given', () => {
+    expect(checkItemCounts(oneItem)).toEqual({ macOS: 1 })
+    expect(checkItemCounts(oneItem, twoItems)).toEqual({ macOS: 1, Windows: 2 })
+    expect(checkItemCounts(inlineRule({ overrides: { check: null } }))).toEqual({})
+  })
+
+  it('names no item for a target with one, and numbers every item of a target with two', () => {
+    const counts = checkItemCounts(twoItems)
+
+    expect(changeLabel(['check', 'macOS', '0', 'default', 'shell'], vocabularyIndex, counts)).toBe('Check · macOS')
+    expect(changeLabel(['check', 'Windows', '0', 'default', 'shell'], vocabularyIndex, counts)).toBe('Check 1 · Windows')
+    expect(changeLabel(['check', 'Windows', '1', 'default', 'shell'], vocabularyIndex, counts)).toBe('Check 2 · Windows')
+    expect(changeLabel(['check', 'Windows', '1', 'by_version', '26.0', 'shell'], vocabularyIndex, counts)).toBe('Check 2 · Windows 26.0')
+  })
+
+  it('numbers only items after the first when the counts are not known', () => {
+    expect(changeLabel(['check', 'Windows', '0', 'default', 'shell'], vocabularyIndex)).toBe('Check · Windows')
+    expect(changeLabel(['check', 'Windows', '1', 'default', 'shell'], vocabularyIndex)).toBe('Check 2 · Windows')
+  })
+})
+
 describe('changeLabel', () => {
   it.each([
-    [['check', 'macOS', 'default', 'shell'], 'Check · macOS'],
-    [['check', 'macOS', 'default', 'result', 'value'], 'Check · macOS · Result value'],
-    [['check', 'macOS', 'default', 'additional_info'], 'Check · macOS · Additional info'],
-    [['check', 'macOS', 'by_version', '26.0', 'result', 'type'], 'Check · macOS 26 · Result type'],
+    [['check', 'macOS', '0', 'default', 'shell'], 'Check · macOS'],
+    [['check', 'macOS', '0', 'default', 'result', 'value'], 'Check · macOS · Result value'],
+    [['check', 'macOS', '0', 'default', 'additional_info'], 'Check · macOS · Additional info'],
+    [['check', 'macOS', '0', 'by_version', '26.0', 'result', 'type'], 'Check · macOS 26 · Result type'],
+    [['check', 'macOS', '0', 'name'], 'Check · macOS · Name'],
+    [['check', 'Windows', '1', 'default', 'shell'], 'Check 2 · Windows'],
     [['remediation', 'macOS', 'steps', '0', 'language'], 'Fix · macOS · Step 1 · Language'],
-    [['check', 'macOS', 'by_version', '26.0', 'shell'], 'Check · macOS 26'],
+    [['check', 'macOS', '0', 'by_version', '26.0', 'shell'], 'Check · macOS 26'],
     [['remediation', 'macOS', 'steps', '1', 'shell'], 'Fix · macOS · Step 2'],
     [['remediation', 'Windows', 'payloads', '0', 'data'], 'Fix · Windows · Payload 1'],
     [['applicability', 'macOS 27.0', 'benchmarks'], 'Benchmarks · macOS 27'],

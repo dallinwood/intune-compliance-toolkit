@@ -73,9 +73,9 @@ def test_a_crlf_script_is_an_error(tmp_path):
 def test_a_check_script_extension_follows_the_target_language(tmp_path):
     write_file(tmp_path, "baselines/_overlays/scripts/check.ps1", b"1\n")
     entry = {"shell_file": "baselines/_overlays/scripts/check.ps1", "result": None, "additional_info": None}
-    rule = {"check": {"macOS": {"language": "bash", "default": entry, "by_version": {}}}, "remediation": None}
+    rule = {"check": {"macOS": [{"name": None, "language": "bash", "default": entry, "by_version": {}}]}, "remediation": None}
     errors = file_reference_errors(rule, tmp_path)
-    assert len(errors) == 1 and "check.macOS.default" in errors[0] and ".sh" in errors[0]
+    assert len(errors) == 1 and "check.macOS[0].default" in errors[0] and ".sh" in errors[0]
 
 
 def test_both_shell_and_shell_file_is_an_error(tmp_path):
@@ -125,7 +125,7 @@ def rule_with_reference(case: dict) -> dict:
         rule["remediation"]["macOS"]["payloads"] = [{"kind": "example", "versions": None, **case["entry"]}]
         return rule
     language = case["language"]
-    rule["check"] = {"Example": {"language": language, "default": {"result": None, "additional_info": None, **case["entry"]}, "by_version": {}}}
+    rule["check"] = {"Example": [{"name": None, "language": language, "default": {"result": None, "additional_info": None, **case["entry"]}, "by_version": {}}]}
     rule["remediation"]["macOS"]["steps"] = [
         {"name": None, "language": language, "additional_info": None, "versions": None, **case["entry"]}
     ]
@@ -139,7 +139,7 @@ def test_the_rule_schema_agrees_with_the_shared_file_reference_case(case):
 
 def check_rule_with_file(path: str) -> dict:
     entry = {"shell_file": path, "result": None, "additional_info": None}
-    return {"check": {"macOS": {"language": "bash", "default": entry, "by_version": {}}}, "remediation": None}
+    return {"check": {"macOS": [{"name": None, "language": "bash", "default": entry, "by_version": {}}]}, "remediation": None}
 
 
 def test_a_check_script_file_using_odv_is_an_error_until_the_ui_resolves_files(tmp_path):
@@ -181,3 +181,20 @@ def test_a_text_payload_that_is_not_utf8_is_an_error_suggesting_utf8(tmp_path):
     payload = {"kind": "registry", "versions": None, "data_file": "baselines/_overlays/payloads/Policy.reg"}
     errors = file_reference_errors(rule_with_step(powershell_step(shell="1"), [payload]), tmp_path)
     assert len(errors) == 1 and "UTF-8" in errors[0] and "re-save" in errors[0]
+
+
+def test_every_check_item_has_its_script_reference_checked(tmp_path):
+    write_file(tmp_path, "baselines/_overlays/scripts/check.ps1", b"1\n")
+    good_entry = {"shell": "echo ok", "result": None, "additional_info": None}
+    bad_entry = {"shell_file": "baselines/_overlays/scripts/check.ps1", "result": None, "additional_info": None}
+    rule = {
+        "check": {
+            "macOS": [
+                {"name": None, "language": "bash", "default": good_entry, "by_version": {}},
+                {"name": "Second", "language": "bash", "default": bad_entry, "by_version": {}},
+            ]
+        },
+        "remediation": None,
+    }
+    errors = file_reference_errors(rule, tmp_path)
+    assert len(errors) == 1 and "check.macOS[1].default" in errors[0]

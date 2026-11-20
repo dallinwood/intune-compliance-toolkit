@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/usr/bin/defaults read /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices"
         },
-        "shell": "/usr/bin/defaults read /Library/Preferences/com.apple.locationmenu.plist ShowSystemServices"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Location Services menu item _MUST_ be enabled.\n",
   "discussion_format": "asciidoc",
@@ -106,7 +109,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

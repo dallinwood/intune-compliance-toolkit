@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Uninstall DHCP Server Package\n----\nRun the following command to determine if the dhcp-server package is installed: $ rpm -q dhcp-server\n      Is it the case that the dhcp-server package is installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Uninstall DHCP Server Package\n----\nRun the following command to determine if the dhcp-server package is installed: $ rpm -q dhcp-server\n      Is it the case that the dhcp-server package is installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Uninstall DHCP Server Package\n\nIf the system does not need to act as a DHCP server,\nthe dhcp-server package can be uninstalled.\nThe `dhcp-server` package can be removed with the following command:\n\n```\n$ sudo dnf remove dhcp-server\n```\n\n**Rationale:**\n\nRemoving the DHCP server ensures that it cannot be easily or\naccidentally reactivated and disrupt network operation.",
   "discussion_format": "markdown",
@@ -79,7 +82,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.1"

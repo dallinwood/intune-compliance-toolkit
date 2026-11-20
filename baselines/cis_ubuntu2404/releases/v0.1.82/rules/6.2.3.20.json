@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Make the auditd Configuration Immutable\n----\nVerify the audit system prevents unauthorized changes with the following command:\n\n$ sudo grep \"^\\s*[^#]\" /etc/audit/audit.rules | tail -1\n-e 2\n\n      Is it the case that the audit system is not set to be immutable by adding the \"-e 2\" option to the end of \"/etc/audit/audit.rules\"?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Make the auditd Configuration Immutable\n----\nVerify the audit system prevents unauthorized changes with the following command:\n\n$ sudo grep \"^\\s*[^#]\" /etc/audit/audit.rules | tail -1\n-e 2\n\n      Is it the case that the audit system is not set to be immutable by adding the \"-e 2\" option to the end of \"/etc/audit/audit.rules\"?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Make the auditd Configuration Immutable\n\nIf the `auditd` daemon is configured to use the\n`augenrules` program to read audit rules during daemon startup (the\ndefault), add the following line to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d` in order to make the auditd configuration\nimmutable:\n\n```\n-e 2\n```\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following line to\n`/etc/audit/audit.rules` file in order to make the auditd configuration\nimmutable:\n\n```\n-e 2\n```\n\nWith this setting, a reboot will be required to change any audit rules.\n\n**Rationale:**\n\nMaking the audit configuration immutable prevents accidental as\nwell as malicious modification of the audit rules, although it may be\nproblematic if legitimate changes are needed during system\noperation.",
   "discussion_format": "markdown",
@@ -65,7 +68,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

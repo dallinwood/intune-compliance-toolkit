@@ -41411,6 +41411,6 @@
       "title": "Large language model applications evaluate the sentence perplexity of user prompts to detect and mitigate adversarial suffixes designed to assist in the generation of sensitive or harmful content."
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "asd_ism"
 }

@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 2
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 2
+          },
+          "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/login\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/login\nfi"
         },
-        "shell": "if [[ -d /var/db/ManagedConfigurationFiles/com.apple.pam ]]; then\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /var/db/ManagedConfigurationFiles/com.apple.pam/etc/pam.d/login\nelse\n  /usr/bin/grep -Ec '^(auth\\s+sufficient\\s+pam_smartcard.so|auth\\s+required\\s+pam_deny.so)' /etc/pam.d/login\nfi"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The system _MUST_ be configured to enforce multifactor authentication.\n\nAll users _MUST_ go through multifactor authentication to prevent unauthenticated access and potential compromise to the system.\n\nIMPORTANT: Modification of Pluggable Authentication Modules (PAM) now require user authorization, or use of a Privacy Preferences Policy Control (PPPC) profile from MDM that authorizes modifying system administrator files or full disk access.\n\nNOTE: /etc/pam.d/login will be automatically modified to its original state following any update or major upgrade to the operating system.\n",
   "discussion_format": "asciidoc",
@@ -156,7 +159,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "auth"
   ],

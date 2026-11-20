@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Red Hat GPG Key Installed\n----\nTo ensure that the GPG key is installed, run:\n$ rpm -q --queryformat \"%{SUMMARY}\\n\" gpg-pubkey\nThe command should return the string below:\ngpg(Red Hat, Inc. (release key 2)  <security@redhat.com>\n      Is it the case that the Red Hat GPG Key is not installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Red Hat GPG Key Installed\n----\nTo ensure that the GPG key is installed, run:\n$ rpm -q --queryformat \"%{SUMMARY}\\n\" gpg-pubkey\nThe command should return the string below:\ngpg(Red Hat, Inc. (release key 2)  <security@redhat.com>\n      Is it the case that the Red Hat GPG Key is not installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Red Hat GPG Key Installed\n\nTo ensure the system can cryptographically verify base software packages\ncome from Red Hat (and to connect to the Red Hat Network to receive them),\nthe Red Hat GPG key must properly be installed.\n\n\nTo install the Red Hat GPG key, run:\n\n```\n$ sudo subscription-manager register\n```\n\n\nIf the system is not connected to the Internet or an RHN Satellite, then\ninstall the Red Hat GPG key from trusted media such as the Red Hat\ninstallation CD-ROM or DVD. Assuming the disc is mounted in\n`/media/cdrom`, use the following command as the root user to import\nit into the keyring:\n\n```\n$ sudo rpm --import /media/cdrom/RPM-GPG-KEY\n```\n\n\nAlternatively, the key may be pre-loaded during the RHEL installation. In\nsuch cases, the key can be installed by running the following command:\n\n```\nsudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release\n```\n\n**Rationale:**\n\nChanges to software components can have significant effects on the overall\nsecurity of the operating system. This requirement ensures the software has\nnot been tampered with and that it has been provided by a trusted vendor.\nThe Red Hat GPG key is necessary to cryptographically verify packages are\nfrom Red Hat.\n\n**Notes:**\n\nIn CIS Benchmark, the requirement is manual, because of GPG keys for 3rd party repositories. But, add the rule ensure_redhat_gpgkey_installed to the profile because the requirement 1.2.1.2 adds ensure_gpgcheck_never_disabled which requires GPG key checking. If the Red Hat GPG key wouldn't be installed, people won't be able to install any RPM package using dnf.\n",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.2",

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Configure SELinux Policy\n----\nVerify the SELINUX on Red Hat Enterprise Linux 9 is using the  policy with the following command:\n\n$ sestatus | grep policy\n\nLoaded policy name:             \n      Is it the case that the loaded policy name is not \"$ODV_var_selinux_policy_name\"?\n----\nExpected values: var_selinux_policy_name = $ODV_var_selinux_policy_name",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Configure SELinux Policy\n----\nVerify the SELINUX on Red Hat Enterprise Linux 9 is using the  policy with the following command:\n\n$ sestatus | grep policy\n\nLoaded policy name:             \n      Is it the case that the loaded policy name is not \"$ODV_var_selinux_policy_name\"?\n----\nExpected values: var_selinux_policy_name = $ODV_var_selinux_policy_name",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Configure SELinux Policy\n\nThe SELinux `targeted` policy is appropriate for\ngeneral-purpose desktops and servers, as well as systems in many other roles.\nTo configure the system to use this policy, add or correct the following line\nin `/etc/selinux/config`:\n\n```\nSELINUXTYPE=$ODV_var_selinux_policy_name\n       \n```\n\nOther policies, such as `mls`, provide additional security labeling\nand greater confinement but are not compatible with many general-purpose\nuse cases.\n\n**Rationale:**\n\nSetting the SELinux policy to `targeted` or a more specialized policy\nensures the system will confine processes that are likely to be\ntargeted for exploitation, such as network or system services.\n\n\n       \n\nNote: During the development or debugging of SELinux modules, it is common to\ntemporarily place non-production systems in `permissive` mode. In such\ntemporary cases, SELinux policies should be developed, and once work\nis completed, the system should be reconfigured to\n`$ODV_var_selinux_policy_name`.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.3",

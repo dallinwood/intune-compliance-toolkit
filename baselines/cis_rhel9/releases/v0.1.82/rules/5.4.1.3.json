@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Password Warning Age\n----\nTo check the password warning age, run the command:\n$ grep PASS_WARN_AGE /etc/login.defs\nThe profile requirement is .\n      Is it the case that it is not set to the required value?\n----\nExpected values: var_accounts_password_warn_age_login_defs = $ODV_var_accounts_password_warn_age_login_defs\n\n== Set Existing Passwords Warning Age\n----\nVerify that Red Hat Enterprise Linux 9 set the days of warning before a password expires to\n or more for users with a\npassword:\n\n$ sudo awk -F: '$6  || $6 == \"\" {print $1}' /etc/shadow\n      Is it the case that any results are returned that are not associated with a system account?\n----\nExpected values: var_accounts_password_warn_age_login_defs = $ODV_var_accounts_password_warn_age_login_defs",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Password Warning Age\n----\nTo check the password warning age, run the command:\n$ grep PASS_WARN_AGE /etc/login.defs\nThe profile requirement is .\n      Is it the case that it is not set to the required value?\n----\nExpected values: var_accounts_password_warn_age_login_defs = $ODV_var_accounts_password_warn_age_login_defs\n\n== Set Existing Passwords Warning Age\n----\nVerify that Red Hat Enterprise Linux 9 set the days of warning before a password expires to\n or more for users with a\npassword:\n\n$ sudo awk -F: '$6  || $6 == \"\" {print $1}' /etc/shadow\n      Is it the case that any results are returned that are not associated with a system account?\n----\nExpected values: var_accounts_password_warn_age_login_defs = $ODV_var_accounts_password_warn_age_login_defs",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Password Warning Age\n\nTo specify how many days prior to password\nexpiration that a warning will be issued to users,\nedit the file `/etc/login.defs` and add or correct\n the following line:\n\n```\nPASS_WARN_AGE $ODV_var_accounts_password_warn_age_login_defs\n         \n```\n\nThe profile requirement is `$ODV_var_accounts_password_warn_age_login_defs`.\n\n**Rationale:**\n\nSetting the password warning age enables users to\nmake the change at a practical time.\n\n## Set Existing Passwords Warning Age\n\nTo configure how many days prior to password expiration that a warning will be issued to\nusers, run the command:\n\n```\n$ sudo chage --warndays $ODV_var_accounts_password_warn_age_login_defs\n          *USER*\n         \n```\n\nThis profile requirement is `$ODV_var_accounts_password_warn_age_login_defs`.\n\n**Rationale:**\n\nProviding an advance warning that a password will be expiring gives users\ntime to think of a secure password. Users caught unaware may choose a simple\npassword or write it down where it may be discovered.",
   "discussion_format": "markdown",
@@ -100,7 +103,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

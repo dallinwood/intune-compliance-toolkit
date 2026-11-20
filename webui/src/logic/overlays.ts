@@ -63,7 +63,7 @@ const RESERVED_KEYS: ReadonlySet<string> = new Set(['__proto__', 'constructor', 
 // A replace-only list is set whole with $replace; $merge, $append and a bare list are rejected.
 type FieldKind = 'string' | 'list' | 'object' | 'object-or-null' | 'string-or-null' | 'replace-only-list'
 
-// The v6 rule fields an overlay may set, with the value kind the rule schema
+// The v7 rule fields an overlay may set, with the value kind the rule schema
 // allows. The shape of the merged result is checked in overlayShape.ts; full
 // schema validation is CI's job.
 export const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {

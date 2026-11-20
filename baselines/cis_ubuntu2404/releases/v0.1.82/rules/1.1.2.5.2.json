@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Add nodev Option to /var/tmp\n----\nVerify the nodev option is configured for the /var/tmp mount point,\n    run the following command:\n    $ sudo mount | grep '\\s/var/tmp\\s'\n    . . . /var/tmp . . . nodev . . .\n\n      Is it the case that the \"/var/tmp\" file system does not have the \"nodev\" option set?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Add nodev Option to /var/tmp\n----\nVerify the nodev option is configured for the /var/tmp mount point,\n    run the following command:\n    $ sudo mount | grep '\\s/var/tmp\\s'\n    . . . /var/tmp . . . nodev . . .\n\n      Is it the case that the \"/var/tmp\" file system does not have the \"nodev\" option set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Add nodev Option to /var/tmp\n\nThe `nodev` mount option can be used to prevent device files from\nbeing created in `/var/tmp`. Legitimate character and block devices\nshould not exist within temporary directories like `/var/tmp`.\nAdd the `nodev` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var/tmp`.\n\n**Rationale:**\n\nThe only legitimate location for device files is the `/dev` directory\nlocated on the root partition. The only exception to this is chroot jails.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.1",

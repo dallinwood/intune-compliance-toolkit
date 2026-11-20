@@ -1,5 +1,6 @@
 import { fetchHistoryIndex, fetchRuleAtRelease } from './history'
 import { fetchOverlayById } from './ruleDetail'
+import { checkItemCounts } from '../logic/changeLabels'
 import {
   customChangeBaseline,
   customChangeNotice,
@@ -35,7 +36,7 @@ export async function loadCustomChangeStatus(
   const toTag = rule.source.release_tag
   const [before, after] = await Promise.all([fetchRuleAtRelease(history, rule.id, baseline.fromTag), fetchRuleAtRelease(history, rule.id, toTag)])
   const focusPaths = overlayFieldPaths(overlay.fields)
-  const status = customChangeStatus(fieldChanges(before, after), focusPaths, vocabularyIndex)
+  const status = customChangeStatus(fieldChanges(before, after), focusPaths, vocabularyIndex, checkItemCounts(before, after))
   const labelOf = (tag: string) => history.releases.find((release) => release.tag === tag)?.label ?? tag
   const releaseLabel = baseline.inHistory ? labelOf(application.release) : application.release
   const notice = customChangeNotice(status, {

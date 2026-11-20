@@ -82,11 +82,18 @@ describe('additionalInfoFor', () => {
   it('reads only the macOS check, since the report ships with the macOS bundle', () => {
     const rule = manualRule('manual')
     rule.check = {
-      Windows: { language: 'powershell', default: ruleCheck(null, null, 'Ask the Windows team.'), by_version: {} },
+      Windows: [{ name: null, language: 'powershell', default: ruleCheck(null, null, 'Ask the Windows team.'), by_version: {} }],
     }
     expect(additionalInfoFor(rule, {})).toBeNull()
     rule.check = { ...macosCheck(ruleCheck(null, null, 'Ask the ISSO.')), ...rule.check }
     expect(additionalInfoFor(rule, {})).toBe('Ask the ISSO.')
+  })
+
+  it('joins the additional_info of every macOS check item', () => {
+    const rule = manualRule('manual')
+    const [firstItem] = macosCheck(ruleCheck(null, null, 'Ask the ISSO.')).macOS
+    rule.check = { macOS: [firstItem, { ...firstItem, name: 'Second', default: ruleCheck(null, null, 'Then record it.') }] }
+    expect(additionalInfoFor(rule, {})).toBe(['Ask the ISSO.', 'Then record it.'].join('\n\n'))
   })
 
   it('shows the effective value instead of its placeholder', () => {

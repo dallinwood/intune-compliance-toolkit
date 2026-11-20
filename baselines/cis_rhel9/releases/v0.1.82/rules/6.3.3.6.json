@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure auditd Collects Information on the Use of Privileged Commands\n----\nTo verify that auditing of privileged command use is configured, run the following command\nto search privileged commands in relevant partitions and check if they are covered by auditd\nrules:\n\nFILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\nPARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | grep -Pv \"noexec|nosuid\" | awk '{ print $1 }')\nfor PARTITION in $PARTITIONS; do\n  for PRIV_CMD in $(find \"${PARTITION}\" -xdev -perm /6000 -type f 2>/dev/null); do\n    grep -qr \"${PRIV_CMD}\" /etc/audit/rules.d /etc/audit/audit.rules &&\n      printf \"OK: ${PRIV_CMD}\\n\" || printf \"WARNING - rule not found for: ${PRIV_CMD}\\n\"\n  done\ndone\n\nThe output should not contain any WARNING.\n      Is it the case that any setuid or setgid programs doesn't have a line in the audit rules?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure auditd Collects Information on the Use of Privileged Commands\n----\nTo verify that auditing of privileged command use is configured, run the following command\nto search privileged commands in relevant partitions and check if they are covered by auditd\nrules:\n\nFILTER_NODEV=$(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\nPARTITIONS=$(findmnt -n -l -k -it $FILTER_NODEV | grep -Pv \"noexec|nosuid\" | awk '{ print $1 }')\nfor PARTITION in $PARTITIONS; do\n  for PRIV_CMD in $(find \"${PARTITION}\" -xdev -perm /6000 -type f 2>/dev/null); do\n    grep -qr \"${PRIV_CMD}\" /etc/audit/rules.d /etc/audit/audit.rules &&\n      printf \"OK: ${PRIV_CMD}\\n\" || printf \"WARNING - rule not found for: ${PRIV_CMD}\\n\"\n  done\ndone\n\nThe output should not contain any WARNING.\n      Is it the case that any setuid or setgid programs doesn't have a line in the audit rules?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure auditd Collects Information on the Use of Privileged Commands\n\nThe audit system should collect information about usage of privileged commands for all users.\nThese are commands with suid or sgid bits on and they are specially risky in local block\ndevice partitions not mounted with noexec and nosuid options. Therefore, these partitions\nshould be first identified by the following command:\n\n```\nfindmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | grep -Pv \"noexec|nosuid\"\n```\n\n\nFor all partitions listed by the previous command, it is necessary to search for\nsetuid / setgid programs using the following command:\n\n```\n$ sudo find *PARTITION* -xdev -perm /6000 -type f 2>/dev/null\n```\n\n\n\nFor each setuid / setgid program identified by the previous command, an audit rule must be\npresent in the appropriate place using the following line structure:\n\n```\n-a always,exit -F path=*PROG_PATH* -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n```\n\n\n\nIf the `auditd` daemon is configured to use the `augenrules` program to read\naudit rules during daemon startup, add the line to a file with suffix `.rules` in the\n`/etc/audit/rules.d` directory, replacing the *PROG_PATH* part with the full path\nof that setuid / setgid identified program.\n\nIf the `auditd` daemon is configured to use the `auditctl` utility instead, add\nthe line to the `/etc/audit/audit.rules` file, also replacing the *PROG_PATH* part\nwith the full path of that setuid / setgid identified program.\n\n**Rationale:**\n\nMisuse of privileged functions, either intentionally or unintentionally by authorized users,\nor by unauthorized external entities that have compromised system accounts, is a serious and\nongoing concern that can have significant adverse impacts on organizations.\nAuditing the use of privileged functions is one way to detect such misuse and identify the\nrisk from insider and advanced persistent threats.\n\n\n        \n\nPrivileged programs are subject to escalation-of-privilege attacks, which attempt to subvert\ntheir normal role of providing some necessary but limited capability. As such, motivation\nexists to monitor these programs for unusual activity.",
   "discussion_format": "markdown",
@@ -68,7 +71,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

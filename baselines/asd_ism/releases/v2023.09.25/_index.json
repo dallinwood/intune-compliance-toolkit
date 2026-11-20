@@ -40393,6 +40393,6 @@
       "title": "Patches, updates or other vendor mitigations for vulnerabilities in drivers and firmware are applied within 48 hours of release when vulnerabilities are assessed as critical by vendors or when working exploits exist."
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "asd_ism"
 }

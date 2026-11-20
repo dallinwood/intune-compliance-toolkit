@@ -22,18 +22,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 0
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "found=$(for u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n  /usr/bin/dsmemberutil checkmembership -U \"$u\" -G admin 2> /dev/null | /usr/bin/grep -q \"is a member\" && echo \"$u\"\ndone | /usr/bin/grep -vE \"$ODV_value\")\n\nif [[ -z \"$found\" ]]; then\n  echo \"0\"\nelse\n  echo \"Undocumented admin accounts found: $found\"\nfi"
         },
-        "shell": "found=$(for u in $(/usr/bin/dscl . -list /Users UniqueID | /usr/bin/awk '$2 > 500 {print $1}'); do\n  /usr/bin/dsmemberutil checkmembership -U \"$u\" -G admin 2> /dev/null | /usr/bin/grep -q \"is a member\" && echo \"$u\"\ndone | /usr/bin/grep -vE \"$ODV_value\")\n\nif [[ -z \"$found\" ]]; then\n  echo \"0\"\nelse\n  echo \"Undocumented admin accounts found: $found\"\nfi"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Membership in the admin group _MUST_ be restricted to only those accounts that have been documented and explicitly authorized to receive privileged access.\n\nEvery account granted membership in the admin group increases the attack surface available to an adversary who compromises that account, and undocumented or unauthorized admin accounts complicate the organization's ability to audit who holds elevated privileges on the system. Any account discovered in the admin group that is not on the organization's documented list of authorized administrators _MUST_ be removed or formally documented and approved.\n\nThis check evaluates effective (computed) group membership rather than only the admin group's direct membership list, so an account that inherits admin privilege through a nested group, or through a directory service such as Active Directory, is also evaluated against the documented list.",
   "discussion_format": "asciidoc",
@@ -81,7 +84,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enable Auditing for Processes Which Start Prior to the Audit Daemon\n----\nInspect the form of default GRUB 2 command line for the Linux operating system\nin /etc/default/grub. If it includes audit=1,\nthen the parameter will be configured for newly installed kernels.\nFirst check if the GRUB recovery is enabled:\n$ sudo grep 'GRUB_DISABLE_RECOVERY' /etc/default/grub\nIf this option is set to true, then check that a line is output by the following command:\n$ sudo grep 'GRUB_CMDLINE_LINUX_DEFAULT.*audit=1.*' /etc/default/grub\nIf the recovery is disabled, check the line with\n$ sudo grep 'GRUB_CMDLINE_LINUX.*audit=1.*' /etc/default/grub.Moreover, command line parameters for currently installed kernels should be checked as well.\nRun the following command:\n$ sudo grubby --info=ALL | grep args | grep -v 'audit=1'\nThe command should not return any output.\n      Is it the case that auditing is not enabled at boot time?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable Auditing for Processes Which Start Prior to the Audit Daemon\n----\nInspect the form of default GRUB 2 command line for the Linux operating system\nin /etc/default/grub. If it includes audit=1,\nthen the parameter will be configured for newly installed kernels.\nFirst check if the GRUB recovery is enabled:\n$ sudo grep 'GRUB_DISABLE_RECOVERY' /etc/default/grub\nIf this option is set to true, then check that a line is output by the following command:\n$ sudo grep 'GRUB_CMDLINE_LINUX_DEFAULT.*audit=1.*' /etc/default/grub\nIf the recovery is disabled, check the line with\n$ sudo grep 'GRUB_CMDLINE_LINUX.*audit=1.*' /etc/default/grub.Moreover, command line parameters for currently installed kernels should be checked as well.\nRun the following command:\n$ sudo grubby --info=ALL | grep args | grep -v 'audit=1'\nThe command should not return any output.\n      Is it the case that auditing is not enabled at boot time?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Enable Auditing for Processes Which Start Prior to the Audit Daemon\n\nTo ensure all processes can be audited, even those which start\nprior to the audit daemon, add the argument `audit=1` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit=1` is added as a kernel command line\nargument to newly installed kernels, add `audit=1` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit=1 ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# grubby --update-kernel=ALL --args=\"audit=1\"\n```\n\nIf the system is distributed as a bootable container image, GRUB2 can't be configured using the method described above, but the following method needs to be used instead.\nThe kernel arguments should be set in `/usr/lib/bootc/kargs.d` in a TOML file that has the following form:\n\n```\n# /usr/lib/bootc/kargs.d/10-example.toml\nkargs = [\"audit=1\"]\n```\n\nFor more details on configuring kernel arguments in bootable container images, please refer to [Bootc documentation](https://bootc-dev.github.io/bootc//building/kernel-arguments.html).\n\n**Rationale:**\n\nEach process on the system carries an \"auditable\" flag which indicates whether\nits activities can be audited. Although `auditd` takes care of enabling\nthis for all processes which launch after it does, adding the kernel argument\nensures it is set for every process during boot.",
   "discussion_format": "markdown",
@@ -68,7 +71,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

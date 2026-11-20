@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate\n----\nTo determine if !authenticate has not been configured for sudo, run the following command:\n$ sudo grep -r \\!authenticate /etc/sudoers /etc/sudoers.d/\nThe command should return no output.\n      Is it the case that !authenticate is specified in the sudo config files?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate\n----\nTo determine if !authenticate has not been configured for sudo, run the following command:\n$ sudo grep -r \\!authenticate /etc/sudoers /etc/sudoers.d/\nThe command should return no output.\n      Is it the case that !authenticate is specified in the sudo config files?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate\n\nThe sudo `!authenticate` option, when specified, allows a user to execute commands using\nsudo without having to authenticate. This should be disabled by making sure that the\n`!authenticate` option does not exist in `/etc/sudoers` configuration file or\nany sudo configuration snippets in `/etc/sudoers.d/`.\n\n**Rationale:**\n\nWithout re-authentication, users may access resources or perform tasks for which they\ndo not have authorization.\n\n\n        \n\nWhen operating systems provide the capability to escalate a functional capability, it\nis critical that the user re-authenticate.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.2"

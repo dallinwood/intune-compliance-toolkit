@@ -49,18 +49,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "pass"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "pass"
+          },
+          "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributePasswordHistoryDepth\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 >= $ODV_value ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyAttributePasswordHistoryDepth\"]/following-sibling::*[1]/text()' - | /usr/bin/awk '{ if ($1 >= $ODV_value ) {print \"pass\"} else {print \"fail\"}}' | /usr/bin/uniq"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The device _MUST_ be configured to enforce a password history of at least $ODV_value previous passwords when a password is created.\n\nThis rule ensures that users are not allowed to re-use a password that was used in any of the $ODV_value previous password generations.\n\nLimiting password reuse protects against malicious users attempting to gain access to the system via brute-force hacking methods.\n",
   "discussion_format": "asciidoc",
@@ -228,7 +231,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "pwpolicy"
   ],

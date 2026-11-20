@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty\n----\nTo determine if use_pty has been configured for sudo, run the following command:\n$ sudo grep -ri \"^[\\s]*Defaults.*\\buse_pty\\b.*\" /etc/sudoers /etc/sudoers.d/\nThe command should return a matching output.\n      Is it the case that use_pty is not enabled in sudo?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty\n----\nTo determine if use_pty has been configured for sudo, run the following command:\n$ sudo grep -ri \"^[\\s]*Defaults.*\\buse_pty\\b.*\" /etc/sudoers /etc/sudoers.d/\nThe command should return a matching output.\n      Is it the case that use_pty is not enabled in sudo?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty\n\nThe sudo `use_pty` tag, when specified, will only execute sudo\ncommands from users logged in to a real tty.\nThis should be enabled by making sure that the `use_pty` tag exists in\n`/etc/sudoers` configuration file or any sudo configuration snippets\nin `/etc/sudoers.d/`.\n\n**Rationale:**\n\nRequiring that sudo commands be run in a pseudo-terminal can prevent an attacker from retaining\naccess to the user's terminal after the main program has finished executing.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.2"

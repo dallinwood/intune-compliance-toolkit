@@ -60,7 +60,7 @@ describe('fieldChanges', () => {
     const after = withOverrides({ check: macosCheck(ruleCheck('echo new', { type: 'string', value: 'PASS' })) })
 
     expect(fieldChanges(before, after)).toEqual([
-      { kind: 'behaviour', path: ['check', 'macOS', 'default', 'shell'], display: 'code', before: 'echo old', after: 'echo new' },
+      { kind: 'behaviour', path: ['check', 'macOS', '0', 'default', 'shell'], display: 'code', before: 'echo old', after: 'echo new' },
     ])
   })
 
@@ -138,7 +138,7 @@ describe('fieldChanges', () => {
   it('spells out a whole object that appeared, so each part is drawn as its own kind of change', () => {
     const changes = fieldChanges(withOverrides({ check: null }), withOverrides({ check: macosCheck(ruleCheck('echo new', { type: 'string', value: 'PASS' })) }))
 
-    expect(changes).toContainEqual({ kind: 'behaviour', path: ['check', 'macOS', 'default', 'shell'], display: 'code', before: undefined, after: 'echo new' })
+    expect(changes).toContainEqual({ kind: 'behaviour', path: ['check', 'macOS', '0', 'default', 'shell'], display: 'code', before: undefined, after: 'echo new' })
     expect(changes.every((change) => change.path[0] === 'check' && change.before === undefined)).toBe(true)
   })
 
@@ -162,7 +162,7 @@ describe('fieldChanges', () => {
   it('does not report a missing value turning into null, or the other way round', () => {
     const before = withOverrides({ check: macosCheck(ruleCheck('echo 1', null)) })
     const withoutAdditionalInfo = structuredClone(before)
-    delete (withoutAdditionalInfo.check!.macOS.default as { additional_info?: unknown }).additional_info
+    delete (withoutAdditionalInfo.check!.macOS[0].default as { additional_info?: unknown }).additional_info
 
     expect(fieldChanges(withoutAdditionalInfo, before)).toEqual([])
     expect(fieldChanges(before, withoutAdditionalInfo)).toEqual([])

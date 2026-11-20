@@ -20837,6 +20837,6 @@
       "title": "Disable Wi-Fi When Connected to Ethernet"
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "mscp"
 }

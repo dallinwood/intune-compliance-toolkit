@@ -1,3 +1,4 @@
+import type { Rule } from '../types/library'
 import { NONE_LABEL, NO_VERSION_KEY, versionKey } from './applicability'
 import type { TimelineEntry } from './historyIndex'
 import type { ChangeKind, FieldChange } from './ruleChanges'
@@ -34,11 +35,32 @@ function sentenceCase(code: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1)
 }
 
+// How many check items each target has: the most of any rule given, so a diff
+// between two versions of a rule labels items by the larger list.
+export type CheckItemCounts = Readonly<Record<string, number>>
+
+export function checkItemCounts(...rules: Pick<Rule, 'check'>[]): CheckItemCounts {
+  const counts: Record<string, number> = {}
+  for (const rule of rules) {
+    for (const [target, items] of Object.entries(rule.check ?? {})) counts[target] = Math.max(counts[target] ?? 0, items.length)
+  }
+  return counts
+}
+
+// "Check" for a target with one item; "Check 2" when the target has several
+// (or, when the counts are not known, for any item after the first).
+function checkHeading(target: string, itemPosition: number, counts: CheckItemCounts | undefined): string {
+  const hasSeveralItems = counts === undefined ? itemPosition > 0 : (counts[target] ?? 0) > 1 || itemPosition > 0
+  return hasSeveralItems ? `Check ${itemPosition + 1}` : 'Check'
+}
+
 // What a changed part of a check or fix is called: the target (or the
 // version it is for, or the step or payload), then the part itself unless it
-// is the script, which is what a reader of a check or fix expects.
+// is the script, which is what a reader of a check or fix expects. A check's
+// path has the item's position between the target and what changed.
 function scriptFieldParts(field: string, rest: string[], vocabularyIndex: VocabularyIndex): string[] {
-  const [target, ...inTarget] = rest
+  const [target, ...afterTarget] = rest
+  const inTarget = field === 'check' ? afterTarget.slice(1) : afterTarget
   const parts: string[] = []
   let remaining = inTarget
   if (field === 'check' && inTarget[0] === 'by_version' && inTarget.length > 1) {
@@ -63,9 +85,10 @@ function scriptFieldParts(field: string, rest: string[], vocabularyIndex: Vocabu
 
 // A changed field's path in plain words for a reader of the diff, parts
 // joined with " · ": the field, then where in it (a target, a version, a step).
-export function changeLabel(path: string[], vocabularyIndex: VocabularyIndex): string {
+export function changeLabel(path: string[], vocabularyIndex: VocabularyIndex, counts?: CheckItemCounts): string {
   const [field, ...rest] = path
   const parts = [FIELD_LABELS[field] ?? field]
+  if (field === 'check' && rest.length >= 2) parts[0] = checkHeading(rest[0], Number(rest[1]), counts)
   if (field === 'assessment' && rest.length > 0) {
     parts.push(sentenceCase(rest[0]))
   } else if (field === 'odvs' && rest.length > 0) {

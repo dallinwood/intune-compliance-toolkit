@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure a Table Exists for Nftables\n----\nTo verify that a nftables table exists, run the following command:\n$ sudo nft list tables\nOutput should include a list of nftables similar to:\n\n  table  \n\n      Is it the case that a nftables table does not exist?\n----\nExpected values: var_nftables_family = $ODV_var_nftables_family, var_nftables_table = $ODV_var_nftables_table",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure a Table Exists for Nftables\n----\nTo verify that a nftables table exists, run the following command:\n$ sudo nft list tables\nOutput should include a list of nftables similar to:\n\n  table  \n\n      Is it the case that a nftables table does not exist?\n----\nExpected values: var_nftables_family = $ODV_var_nftables_family, var_nftables_table = $ODV_var_nftables_table",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure a Table Exists for Nftables\n\nTables in nftables hold chains. Each table only has one address family and only applies\nto packets of this family. Tables can have one of six families.\n\n**Rationale:**\n\nNftables doesn't have any default tables. Without a table being built, nftables will not\nfilter network traffic.",
   "discussion_format": "markdown",
@@ -102,7 +105,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.3"

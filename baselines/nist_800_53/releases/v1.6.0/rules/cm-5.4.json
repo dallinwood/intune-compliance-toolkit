@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Configuration Management",
     "CM-05 Access Restrictions for Change"

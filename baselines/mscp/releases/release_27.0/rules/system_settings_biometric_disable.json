@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowFingerprintForUnlock\")) == false && s.objectIsForcedForKey(\"allowFingerprintForUnlock\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowFingerprintForUnlock\")) == false && s.objectIsForcedForKey(\"allowFingerprintForUnlock\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "TouchID and OpticID enables the ability to unlock an Apple device with a user's fingerprint or iris.\n\nTouchID _MUST_ be disabled for \"Unlocking your Mac\" on all macOS devices that are capable of using Touch ID. OpticID _MUST_ be disabled for \"Unlocking your device\" on all devices that are capable of using OpticID.\n\nThe system _MUST_ remain locked until the user establishes access using an authorized identification and authentication method.\n\nNOTE: TouchID and OpticID is not an approved biometric authenticator for US Federal Government usage as it has not been verified to meet the strength requirements outlined in NIST SP 800-63.\n",
   "discussion_format": "asciidoc",
@@ -137,7 +140,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

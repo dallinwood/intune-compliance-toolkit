@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Do Not Allow SSH Environment Options\n----\nTo determine how the SSH daemon's PermitUserEnvironment option is set, run the following command:\n\n$ sudo grep -i PermitUserEnvironment /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n$ sudo grep -i PermitUserEnvironment /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\n\nIf a line indicating no is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Do Not Allow SSH Environment Options\n----\nTo determine how the SSH daemon's PermitUserEnvironment option is set, run the following command:\n\n$ sudo grep -i PermitUserEnvironment /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n$ sudo grep -i PermitUserEnvironment /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\n\nIf a line indicating no is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Do Not Allow SSH Environment Options\n\nEnsure that users are not able to override environment variables of the SSH daemon.\n\n\nThe default SSH configuration disables environment processing. The appropriate\nconfiguration is used if no value is set for `PermitUserEnvironment`.\n\n\nTo explicitly disable Environment options, add or correct the following\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nPermitUserEnvironment no\n```\n\n**Rationale:**\n\nSSH environment options potentially allow users to bypass\naccess restriction in some configurations.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

@@ -73,18 +73,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "pass"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "pass"
+          },
+          "shell": "isDisabled=$(/sbin/nfsd status | /usr/bin/awk '/nfsd service/ {print $NF}')\nif [[ \"$isDisabled\" == \"disabled\" ]] && [[ -z $(/usr/bin/pgrep nfsd) ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
         },
-        "shell": "isDisabled=$(/sbin/nfsd status | /usr/bin/awk '/nfsd service/ {print $NF}')\nif [[ \"$isDisabled\" == \"disabled\" ]] && [[ -z $(/usr/bin/pgrep nfsd) ]]; then\n  echo \"pass\"\nelse\n  echo \"fail\"\nfi"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Support for Network File Systems (NFS) services is non-essential and, therefore, _MUST_ be disabled.\n",
   "discussion_format": "asciidoc",
@@ -187,7 +190,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

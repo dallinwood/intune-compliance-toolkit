@@ -159,17 +159,19 @@ export function RuleCheckSection({
         </p>
       ) : (
         <DisclosureButtons
-          items={targetChecks.map(([target, targetCheck]) => ({
-            key: target,
-            panelTestId: 'check-target',
-            buttonContent: (
-              <>
-                <TargetIcons targetKeys={[target]} />
-                {scriptLanguageLabel(targetCheck.language)}
-              </>
-            ),
-            panel: <TargetCheckPanel target={target} targetCheck={targetCheck} odvValues={odvValues} codeOdv={codeOdv} />,
-          }))}
+          items={targetChecks.flatMap(([target, checkItems]) =>
+            checkItems.map((checkItem, position) => ({
+              key: `${target}-${position}`,
+              panelTestId: 'check-target',
+              buttonContent: (
+                <>
+                  <TargetIcons targetKeys={[target]} />
+                  {checkItem.name ?? scriptLanguageLabel(checkItem.language)}
+                </>
+              ),
+              panel: <TargetCheckPanel target={target} targetCheck={checkItem} odvValues={odvValues} codeOdv={codeOdv} />,
+            })),
+          )}
         />
       )}
     </div>

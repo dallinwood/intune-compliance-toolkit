@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Uninstall dovecot Package\n----\nRun the following command to determine if the dovecot package is installed: $ rpm -q dovecot\n      Is it the case that the dovecot package is installed?\n----\n\n== Uninstall cyrus-imapd Package\n----\nRun the following command to determine if the cyrus-imapd package is installed: $ rpm -q cyrus-imapd\n      Is it the case that the cyrus-imapd package is installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Uninstall dovecot Package\n----\nRun the following command to determine if the dovecot package is installed: $ rpm -q dovecot\n      Is it the case that the dovecot package is installed?\n----\n\n== Uninstall cyrus-imapd Package\n----\nRun the following command to determine if the cyrus-imapd package is installed: $ rpm -q cyrus-imapd\n      Is it the case that the cyrus-imapd package is installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Uninstall dovecot Package\n\nThe `dovecot` package can be removed with the following command:\n\n```\n$ sudo dnf remove dovecot\n```\n\n**Rationale:**\n\nIf there is no need to make the Dovecot software available,\nremoving it provides a safeguard against its activation.\n\n## Uninstall cyrus-imapd Package\n\nThe `cyrus-imapd` package can be removed with the following command:\n\n```\n$ sudo dnf remove cyrus-imapd\n```\n\n**Rationale:**\n\nIf there is no need to make the cyrus-imapd software available,\nremoving it provides a safeguard against its activation.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.1"

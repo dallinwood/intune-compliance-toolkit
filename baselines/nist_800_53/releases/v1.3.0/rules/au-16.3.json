@@ -18,7 +18,7 @@
   "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Audit and Accountability",
     "AU-16 Cross-organizational Audit Logging"

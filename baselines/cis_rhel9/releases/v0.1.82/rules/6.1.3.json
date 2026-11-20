@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Configure AIDE to Verify the Audit Tools\n----\nCheck that AIDE is properly configured to protect the integrity of the\naudit tools by running the following command:\n\n# sudo cat /etc/aide.conf | grep /usr/sbin/au\n\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512\n\n\n\nIf AIDE is configured properly to protect the integrity of the audit tools,\nall lines listed above will be returned from the command.\n\nIf one or more lines are missing, this is a finding.\n      Is it the case that integrity checks of the audit tools are missing or incomplete?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Configure AIDE to Verify the Audit Tools\n----\nCheck that AIDE is properly configured to protect the integrity of the\naudit tools by running the following command:\n\n# sudo cat /etc/aide.conf | grep /usr/sbin/au\n\n/usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512\n/usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512\n\n\n\nIf AIDE is configured properly to protect the integrity of the audit tools,\nall lines listed above will be returned from the command.\n\nIf one or more lines are missing, this is a finding.\n      Is it the case that integrity checks of the audit tools are missing or incomplete?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Configure AIDE to Verify the Audit Tools\n\nThe operating system file integrity tool must be configured to protect the integrity of the audit tools.\n\n**Rationale:**\n\nProtecting the integrity of the tools used for auditing purposes is a\ncritical step toward ensuring the integrity of audit information. Audit\ninformation includes all information (e.g., audit records, audit settings,\nand audit reports) needed to successfully audit information system\nactivity.\n\nAudit tools include but are not limited to vendor-provided and open-source\naudit tools needed to successfully view and manipulate audit information\nsystem activity and records. Audit tools include custom queries and report\ngenerators.\n\nIt is not uncommon for attackers to replace the audit tools or inject code\ninto the existing tools to provide the capability to hide or erase system\nactivity from the audit logs.\n\nTo address this risk, audit tools must be cryptographically signed to\nprovide the capability to identify when the audit tools have been modified,\nmanipulated, or replaced. An example is a checksum hash of the file or\nfiles.",
   "discussion_format": "markdown",
@@ -79,7 +82,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.1"

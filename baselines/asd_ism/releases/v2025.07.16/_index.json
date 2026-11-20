@@ -47707,6 +47707,6 @@
       "title": "Internet connectivity for networked devices is strictly limited to those that require access."
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "asd_ism"
 }

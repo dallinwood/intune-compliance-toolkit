@@ -1,6 +1,6 @@
 // The notice on a rule whose custom changes were written for an older release:
 // did the rule change since in a field the custom changes touch?
-import { changeLabel } from './changeLabels'
+import { changeLabel, type CheckItemCounts } from './changeLabels'
 import type { HistoryIndex } from './historyIndex'
 import type { FieldChange } from './ruleChanges'
 import type { VocabularyIndex } from './vocabulary'
@@ -42,11 +42,16 @@ export function customChangeBaseline(index: HistoryIndex, overlayRelease: string
 
 export type CustomChangeStatus = { kind: 'touched'; labels: string[] } | { kind: 'untouched' } | { kind: 'unchanged' }
 
-export function customChangeStatus(changes: FieldChange[], overlayPaths: string[][], vocabularyIndex: VocabularyIndex): CustomChangeStatus {
+export function customChangeStatus(
+  changes: FieldChange[],
+  overlayPaths: string[][],
+  vocabularyIndex: VocabularyIndex,
+  checkCounts?: CheckItemCounts,
+): CustomChangeStatus {
   if (changes.length === 0) return { kind: 'unchanged' }
   const touched = changes.filter((change) => isTouched(change.path, overlayPaths))
   if (touched.length === 0) return { kind: 'untouched' }
-  return { kind: 'touched', labels: [...new Set(touched.map((change) => changeLabel(change.path, vocabularyIndex)))] }
+  return { kind: 'touched', labels: [...new Set(touched.map((change) => changeLabel(change.path, vocabularyIndex, checkCounts)))] }
 }
 
 export interface CustomChangeNotice {

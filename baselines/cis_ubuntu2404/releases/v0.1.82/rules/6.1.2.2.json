@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure journald ForwardToSyslog is disabled\n----\nRun the following command to verify that journald is not forwarding logs to syslog.\n\ngrep \"^\\sForwardToSyslog\" /etc/systemd/journald.conf /etc/systemd/journald.conf.d/*.conf\n\n\nand it should return\n\nForwardToSyslog=no\n\n      Is it the case that is commented out or not configured correctly?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure journald ForwardToSyslog is disabled\n----\nRun the following command to verify that journald is not forwarding logs to syslog.\n\ngrep \"^\\sForwardToSyslog\" /etc/systemd/journald.conf /etc/systemd/journald.conf.d/*.conf\n\n\nand it should return\n\nForwardToSyslog=no\n\n      Is it the case that is commented out or not configured correctly?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure journald ForwardToSyslog is disabled\n\nData from journald should be kept in the confines of the service and not forwarded to other services.\n\n**Rationale:**\n\nIf journald is the method for capturing logs, all logs of the system should be handled by journald and not forwarded to other logging mechanisms.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.1",

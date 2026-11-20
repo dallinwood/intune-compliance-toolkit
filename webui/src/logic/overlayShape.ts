@@ -173,10 +173,10 @@ function targetMapOf(check: Check): Check {
     )
 }
 
-// A check entry's script file extension follows its target's language.
+// A check entry's script file extension follows its item's language.
 const targetCheck: Check = (value, path) =>
   firstProblem(
-    () => objectWith({ language, default: anyValue, by_version: mapOf(anyValue) })(value, path),
+    () => objectWith({ name: textOrNull, language, default: anyValue, by_version: mapOf(anyValue) })(value, path),
     () => {
       const { language: scriptLanguage, default: defaultCheck, by_version: byVersion } = value as JsonObject
       const checkEntry = checkEntryFor(scriptLanguage)
@@ -186,7 +186,13 @@ const targetCheck: Check = (value, path) =>
       )
     },
   )
-const check = orNull(targetMapOf(targetCheck))
+// A target's checks are a list with at least one item, as in the schema.
+const checkItems: Check = (value, path) =>
+  firstProblem(
+    () => listOf(targetCheck)(value, path),
+    () => expect((value as unknown[]).length > 0, path, 'a non-empty list of check items'),
+  )
+const check = orNull(targetMapOf(checkItems))
 
 // Every key is optional, and the schema closes the object, so an unknown
 // key is rejected; logic/odv.ts reads each one with these types.

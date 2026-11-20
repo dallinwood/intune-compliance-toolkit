@@ -93,6 +93,16 @@ describe('committed library data', () => {
         expect(entriesWithoutSection).toEqual([])
       })
 
+      it('has a check that is null or a non-empty list of items per target, in schema 7', () => {
+        const badShapes = rules.flatMap((rule) =>
+          Object.entries(rule.check ?? {})
+            .filter(([, items]) => !Array.isArray(items) || items.length === 0 || items.some((item) => !('name' in item)))
+            .map(([target]) => `${rule.id}:${target}`),
+        )
+        expect(badShapes).toEqual([])
+        expect(rules.every((rule) => rule.schema_version === 7)).toBe(true)
+      })
+
       // The pins below describe mSCP's check shells; other sources have no ODVs.
       it.runIf(source.name === 'mscp')('pins the substitution mode of every rule that has an ODV', () => {
         const actualModes = Object.fromEntries(
@@ -113,7 +123,7 @@ describe('committed library data', () => {
         const rulesById = new Map(rulesWithOdv.map((rule) => [rule.source.upstream_rule_id, rule]))
         const actualShells = Object.fromEntries(
           Object.keys(PINNED_CHECK_SHELLS).map((upstreamId) => {
-            const check = rulesById.get(upstreamId)?.check?.macOS
+            const check = rulesById.get(upstreamId)?.check?.macOS[0]
             const shells: Record<string, string | null | undefined> = { default: check?.default?.shell }
             for (const [version, versionCheck] of Object.entries(check?.by_version ?? {})) shells[version] = versionCheck.shell
             return [upstreamId, shells]

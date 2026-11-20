@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Lock Accounts After Failed Password Attempts\n----\nVerify Red Hat Enterprise Linux 9 is configured to lock an account after \nunsuccessful logon attempts with the command:\n\n$ grep 'deny =' /etc/security/faillock.conf\ndeny = .\n      Is it the case that the \"deny\" option is not set to \"$ODV_var_accounts_passwords_pam_faillock_deny\"\nor less (but not \"0\"), is missing or commented out?\n----\nExpected values: var_accounts_passwords_pam_faillock_deny = $ODV_var_accounts_passwords_pam_faillock_deny",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Lock Accounts After Failed Password Attempts\n----\nVerify Red Hat Enterprise Linux 9 is configured to lock an account after \nunsuccessful logon attempts with the command:\n\n$ grep 'deny =' /etc/security/faillock.conf\ndeny = .\n      Is it the case that the \"deny\" option is not set to \"$ODV_var_accounts_passwords_pam_faillock_deny\"\nor less (but not \"0\"), is missing or commented out?\n----\nExpected values: var_accounts_passwords_pam_faillock_deny = $ODV_var_accounts_passwords_pam_faillock_deny",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Lock Accounts After Failed Password Attempts\n\nThis rule configures the system to lock out accounts after a number of incorrect login attempts\nusing `pam_faillock.so`.\npam_faillock.so module requires multiple entries in pam files. These entries must be carefully\ndefined to work as expected.\nEnsure that the file `/etc/security/faillock.conf` contains the following entry:\n`deny = <count>`\nWhere count should be less than or equal to\n$ODV_var_accounts_passwords_pam_faillock_deny and greater than 0.\n\nIn order to avoid errors when manually editing these files, it is\nrecommended to use the appropriate tools, such as `authselect` or `authconfig`,\ndepending on the OS version.\n\n**Rationale:**\n\nBy limiting the number of failed logon attempts, the risk of unauthorized system access via\nuser password guessing, also known as brute-forcing, is reduced. Limits are imposed by locking\nthe account.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

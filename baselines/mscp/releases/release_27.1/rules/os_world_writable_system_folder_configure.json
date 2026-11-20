@@ -49,18 +49,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 0
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "/usr/bin/find /System/Volumes/Data/System -type d -perm -2 -ls | /usr/bin/grep -vE \"downloadDir|locks\" | /usr/bin/wc -l | /usr/bin/xargs"
         },
-        "shell": "/usr/bin/find /System/Volumes/Data/System -type d -perm -2 -ls | /usr/bin/grep -vE \"downloadDir|locks\" | /usr/bin/wc -l | /usr/bin/xargs"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Folders in /System/Volumes/Data/System _MUST_ not be world-writable.\n",
   "discussion_format": "asciidoc",
@@ -117,7 +120,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

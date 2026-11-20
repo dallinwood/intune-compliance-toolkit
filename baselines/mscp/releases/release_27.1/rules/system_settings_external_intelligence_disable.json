@@ -53,18 +53,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowExternalIntelligenceIntegrations\")) == false && s.objectIsForcedForKey(\"allowExternalIntelligenceIntegrations\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowExternalIntelligenceIntegrations\")) == false && s.objectIsForcedForKey(\"allowExternalIntelligenceIntegrations\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The external intelligence integration feature of Apple Intelligence allows information to be downloaded from the device and processed by an external application in the cloud.\n\nIntegration with external intelligence systems _MUST_ be disabled unless approved by the organization. Disabling external intelligence integration will mitigate the risk of data being sent to unapproved third party.\n\nThe information system _MUST_ be configured to provide only essential capabilities.\n",
   "discussion_format": "asciidoc",
@@ -216,7 +219,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

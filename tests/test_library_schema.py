@@ -17,7 +17,7 @@ LICENSE = {
 }
 
 MINIMAL_RULE = {
-    "schema_version": 6,
+    "schema_version": 7,
     "id": "mscp.os_gatekeeper_enable",
     "title": "Enable Gatekeeper",
     "discussion": "Gatekeeper _MUST_ be enabled.",
@@ -53,21 +53,24 @@ MINIMAL_RULE = {
     "tags": ["800-53r5_low", "cisv8"],
     "references": {"nist": {"800-53r5": ["CM-14"]}},
     "check": {
-        "macOS": {
-            "language": "bash",
-            "default": {
-                "shell": "/usr/sbin/spctl --status",
-                "additional_info": None,
-                "result": {"type": "string", "value": "PASS"},
-            },
-            "by_version": {
-                "15.0": {
-                    "shell": "defaults read com.apple.x",
+        "macOS": [
+            {
+                "name": None,
+                "language": "bash",
+                "default": {
+                    "shell": "/usr/sbin/spctl --status",
                     "additional_info": None,
-                    "result": {"type": "integer", "value": 1},
-                }
-            },
-        }
+                    "result": {"type": "string", "value": "PASS"},
+                },
+                "by_version": {
+                    "15.0": {
+                        "shell": "defaults read com.apple.x",
+                        "additional_info": None,
+                        "result": {"type": "integer", "value": 1},
+                    }
+                },
+            }
+        ]
     },
     "odvs": [],
     "remediation": {
@@ -130,7 +133,7 @@ def make_manifest(releases=None):
     releases = copy.deepcopy(releases or [MSCP_RELEASE])
     newest = releases[-1]
     return {
-        "schema_version": 6,
+        "schema_version": 7,
         "sources": [
             {
                 "name": "mscp",
@@ -155,7 +158,7 @@ def write_library(baselines_dir: Path, rule=None, index_file="rules/os_gatekeepe
     write_json(
         baselines_dir / MSCP_RELEASE_DIR / "_index.json",
         {
-            "schema_version": 6,
+            "schema_version": 7,
             "source": "mscp",
             "rules": [index_entry_for(rule, index_file)],
         },
@@ -171,7 +174,7 @@ def instructions_rule(**entry_overrides):
     rule = make_rule()
     entry = {"shell": None, "additional_info": "Read the setting.", "result": None}
     entry.update(entry_overrides)
-    rule["check"] = {"macOS": {"language": "instructions", "default": entry, "by_version": {"15.0": dict(entry)}}}
+    rule["check"] = {"macOS": [{"name": None, "language": "instructions", "default": entry, "by_version": {"15.0": dict(entry)}}]}
     rule["remediation"]["macOS"]["steps"] = [
         {"name": None, "language": "instructions", "shell": None, "additional_info": "Do it.", "versions": None}
     ]
@@ -188,8 +191,8 @@ def test_instructions_check_rejects_shell():
 
 def test_instructions_check_rejects_shell_file():
     rule = instructions_rule()
-    del rule["check"]["macOS"]["default"]["shell"]
-    rule["check"]["macOS"]["default"]["shell_file"] = "baselines/x/check.sh"
+    del rule["check"]["macOS"][0]["default"]["shell"]
+    rule["check"]["macOS"][0]["default"]["shell_file"] = "baselines/x/check.sh"
     assert schema_errors(rule) != []
 
 
@@ -237,10 +240,10 @@ def test_manual_reason_openscap_is_valid():
 
 def test_odv_placeholder_allowed_as_integer_value():
     rule = make_rule()
-    rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": "$ODV_value"}
+    rule["check"]["macOS"][0]["default"]["result"] = {"type": "integer", "value": "$ODV_value"}
     assert schema_errors(rule) == []
     for bad_value in ("7", "$ODV", "$ODV_Value", "$ODV_value extra", "$ODV_value\n"):
-        rule["check"]["macOS"]["default"]["result"] = {"type": "integer", "value": bad_value}
+        rule["check"]["macOS"][0]["default"]["result"] = {"type": "integer", "value": bad_value}
         assert schema_errors(rule), bad_value
 
 
@@ -418,7 +421,7 @@ def test_validate_library_rejects_null_rule_file(tmp_path):
 )
 def test_index_rejects_unsafe_file_path(unsafe_path):
     index = {
-        "schema_version": 6,
+        "schema_version": 7,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, unsafe_path)],
     }
@@ -427,7 +430,7 @@ def test_index_rejects_unsafe_file_path(unsafe_path):
 
 def test_index_accepts_safe_file_path():
     index = {
-        "schema_version": 6,
+        "schema_version": 7,
         "source": "mscp",
         "rules": [index_entry_for(MINIMAL_RULE, "rules/os..x.json")],
     }
@@ -437,46 +440,46 @@ def test_index_accepts_safe_file_path():
 def test_index_rejects_platform_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["platform"] = "macOS"
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section"]
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 def test_index_rejects_entry_missing_section_path():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["section_path"]
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("bad_section_path", [[], [""], ["os\nx"], "os"])
 def test_index_rejects_bad_section_path(bad_section_path):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section_path"] = bad_section_path
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("bad_section", ["", "os\n"])
 def test_index_rejects_bad_section(bad_section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = bad_section
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 @pytest.mark.parametrize("section", ["os", "Access Control", "3.1 Policy"])
 def test_index_accepts_any_single_line_section(section):
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["section"] = section
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index") == []
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index") == []
 
 
 def test_index_rejects_entry_missing_required_key():
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     del entry["has_odv"]
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 def read_manifest(baselines_dir: Path) -> dict:
@@ -511,7 +514,7 @@ def write_older_release(baselines_dir: Path, tag: str = "release_26.0") -> None:
     older_rule["source"]["release_tag"] = tag
     write_json(
         baselines_dir / "mscp" / "releases" / tag / "_index.json",
-        {"schema_version": 6, "source": "mscp", "rules": [index_entry_for(older_rule, "rules/os_gatekeeper_enable.json")]},
+        {"schema_version": 7, "source": "mscp", "rules": [index_entry_for(older_rule, "rules/os_gatekeeper_enable.json")]},
     )
     write_json(baselines_dir / "mscp" / "releases" / tag / "rules" / "os_gatekeeper_enable.json", older_rule)
 
@@ -687,7 +690,7 @@ def test_rule_and_index_schemas_accept_dotted_rule_ids(rule_id):
     assert schema_errors(make_rule(id=rule_id)) == []
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["id"] = rule_id
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index") == []
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index") == []
 
 
 @pytest.mark.parametrize("rule_id", REJECTED_RULE_IDS)
@@ -695,7 +698,7 @@ def test_rule_and_index_schemas_reject_empty_dot_segments_in_rule_ids(rule_id):
     assert schema_errors(make_rule(id=rule_id))
     entry = index_entry_for(MINIMAL_RULE, "rules/x.json")
     entry["id"] = rule_id
-    assert schema_errors({"schema_version": 6, "source": "mscp", "rules": [entry]}, "index")
+    assert schema_errors({"schema_version": 7, "source": "mscp", "rules": [entry]}, "index")
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
@@ -862,6 +865,7 @@ def test_validate_library_checks_vocabulary_even_when_manifest_is_broken(tmp_pat
 
 
 WINDOWS_CHECK = {
+    "name": None,
     "language": "powershell",
     "default": {"shell": "Get-Item x", "additional_info": None, "result": {"type": "string", "value": "ok"}},
     "by_version": {},
@@ -878,7 +882,7 @@ WINDOWS_STEP = {
 
 def test_rule_with_checks_and_remediation_for_two_targets_is_valid():
     rule = make_rule()
-    rule["check"]["Windows"] = copy.deepcopy(WINDOWS_CHECK)
+    rule["check"]["Windows"] = [copy.deepcopy(WINDOWS_CHECK)]
     rule["remediation"]["Windows"] = {"steps": [copy.deepcopy(WINDOWS_STEP)], "payloads": []}
     assert schema_errors(rule) == []
 
@@ -890,7 +894,7 @@ def test_null_check_and_remediation_are_valid():
 @pytest.mark.parametrize("language", ["bash", "powershell", "zsh", "python"])
 def test_accepts_each_known_language(language):
     rule = make_rule()
-    rule["check"]["macOS"]["language"] = language
+    rule["check"]["macOS"][0]["language"] = language
     rule["remediation"]["macOS"]["steps"][0]["language"] = language
     assert schema_errors(rule) == []
 
@@ -898,7 +902,7 @@ def test_accepts_each_known_language(language):
 @pytest.mark.parametrize("language", ["cmd", "Bash", None])
 def test_rejects_unknown_check_language(language):
     rule = make_rule()
-    rule["check"]["macOS"]["language"] = language
+    rule["check"]["macOS"][0]["language"] = language
     assert schema_errors(rule)
 
 
@@ -911,7 +915,7 @@ def test_rejects_unknown_step_language():
 @pytest.mark.parametrize("bad_target", ["", "mac\nOS", "macOS\n"])
 def test_rejects_empty_or_multi_line_target_keys(bad_target):
     check_rule = make_rule()
-    check_rule["check"][bad_target] = copy.deepcopy(WINDOWS_CHECK)
+    check_rule["check"][bad_target] = [copy.deepcopy(WINDOWS_CHECK)]
     assert schema_errors(check_rule)
     remediation_rule = make_rule()
     remediation_rule["remediation"][bad_target] = {"steps": [], "payloads": []}
@@ -920,7 +924,7 @@ def test_rejects_empty_or_multi_line_target_keys(bad_target):
 
 def test_accepts_a_target_key_with_a_space():
     rule = make_rule()
-    rule["check"]["Microsoft 365"] = copy.deepcopy(WINDOWS_CHECK)
+    rule["check"]["Microsoft 365"] = [copy.deepcopy(WINDOWS_CHECK)]
     assert schema_errors(rule) == []
 
 
@@ -928,14 +932,14 @@ def test_accepts_a_non_numeric_check_version_key():
     rule = make_rule()
     windows_check = copy.deepcopy(WINDOWS_CHECK)
     windows_check["by_version"]["24H2"] = copy.deepcopy(windows_check["default"])
-    rule["check"]["Windows"] = windows_check
+    rule["check"]["Windows"] = [windows_check]
     assert schema_errors(rule) == []
 
 
 @pytest.mark.parametrize("bad_key", ["", "24 H2", "15.0\n"])
 def test_rejects_check_version_keys_with_whitespace_or_empty(bad_key):
     rule = make_rule()
-    rule["check"]["macOS"]["by_version"][bad_key] = copy.deepcopy(rule["check"]["macOS"]["default"])
+    rule["check"]["macOS"][0]["by_version"][bad_key] = copy.deepcopy(rule["check"]["macOS"][0]["default"])
     assert schema_errors(rule)
 
 
@@ -990,7 +994,7 @@ def test_accepts_any_payload_kind():
 @pytest.mark.parametrize(
     "location",
     [
-        ("check", "macOS"),
+        ("check", "macOS", 0),
         ("remediation", "macOS"),
         ("remediation", "macOS", "steps", 0),
         ("remediation", "macOS", "payloads", 0),
@@ -1008,7 +1012,7 @@ def test_rejects_unknown_keys_in_target_entries(location):
 @pytest.mark.parametrize("missing_key", ["language", "default", "by_version"])
 def test_rejects_target_check_missing_a_key(missing_key):
     rule = make_rule()
-    del rule["check"]["macOS"][missing_key]
+    del rule["check"]["macOS"][0][missing_key]
     assert schema_errors(rule)
 
 
@@ -1041,7 +1045,7 @@ SCRIPT_PATH = "baselines/_overlays/scripts/Example.ps1"
 
 def test_a_check_entry_and_a_step_may_reference_a_script_file():
     rule = make_rule()
-    rule["check"]["macOS"]["default"] = {"shell_file": "baselines/x/scripts/check.sh", "result": None, "additional_info": None}
+    rule["check"]["macOS"][0]["default"] = {"shell_file": "baselines/x/scripts/check.sh", "result": None, "additional_info": None}
     rule["remediation"]["macOS"]["steps"][0] = {
         "name": None, "language": "powershell", "shell_file": SCRIPT_PATH, "additional_info": None, "versions": None,
     }
@@ -1052,7 +1056,7 @@ def test_a_check_entry_and_a_step_may_reference_a_script_file():
 def test_both_or_neither_of_shell_and_shell_file_is_rejected(location):
     for keys in ({"shell": "echo", "shell_file": SCRIPT_PATH}, {}):
         rule = make_rule()
-        entry = rule["check"]["macOS"]["default"] if location == "check" else rule["remediation"]["macOS"]["steps"][0]
+        entry = rule["check"]["macOS"][0]["default"] if location == "check" else rule["remediation"]["macOS"]["steps"][0]
         entry.pop("shell")
         entry.update(keys)
         assert schema_errors(rule), keys
@@ -1094,3 +1098,34 @@ def test_both_or_neither_of_data_and_data_file_is_rejected():
     neither = make_rule()
     del neither["remediation"]["macOS"]["payloads"][0]["data"]
     assert schema_errors(neither)
+
+
+def test_a_target_may_hold_several_check_items_with_names():
+    rule = make_rule()
+    second_item = copy.deepcopy(WINDOWS_CHECK)
+    second_item["name"] = "Registry check"
+    rule["check"]["macOS"].append(second_item)
+    assert schema_errors(rule) == []
+
+
+def test_rejects_an_empty_check_list_for_a_target():
+    assert schema_errors(make_rule(check={"macOS": []}))
+
+
+def test_rejects_a_bare_check_object_for_a_target():
+    bare_check = copy.deepcopy(MINIMAL_RULE["check"]["macOS"][0])
+    assert schema_errors(make_rule(check={"macOS": bare_check}))
+
+
+def test_rejects_a_check_item_name_that_is_not_a_string_or_null():
+    rule = make_rule()
+    rule["check"]["macOS"][0]["name"] = 3
+    assert schema_errors(rule)
+
+
+def test_instructions_constraints_apply_to_every_check_item():
+    rule = instructions_rule()
+    second_item = copy.deepcopy(rule["check"]["macOS"][0])
+    second_item["default"]["shell"] = "echo hi"
+    rule["check"]["macOS"].append(second_item)
+    assert schema_errors(rule)

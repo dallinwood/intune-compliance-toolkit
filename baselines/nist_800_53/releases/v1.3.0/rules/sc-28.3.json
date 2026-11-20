@@ -23,7 +23,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "System and Communications Protection",
     "SC-28 Protection of Information at Rest"

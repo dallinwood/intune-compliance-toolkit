@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enable GNOME3 Login Warning Banner\n----\nTo ensure a login warning banner is enabled, run the following:\n$ grep banner-message-enable /etc/dconf/db/gdm.d/*\nIf properly configured, the output should be true.\nTo ensure a login warning banner is locked and cannot be changed by a user, run the following:\n$ grep banner-message-enable /etc/dconf/db/gdm.d/locks/*\nIf properly configured, the output should be /org/gnome/login-screen/banner-message-enable.\n      Is it the case that it is not?\n----\n\n== Set the GNOME3 Login Warning Banner Text\n----\nTo ensure the login warning banner text is properly set, run the following:\n$ grep banner-message-text /etc/gdm3/greeter.dconf-defaults\nIf properly configured, the proper banner text will appear.\n      Is it the case that it does not?\n----\nExpected values: dconf_login_banner_contents = $ODV_dconf_login_banner_contents",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable GNOME3 Login Warning Banner\n----\nTo ensure a login warning banner is enabled, run the following:\n$ grep banner-message-enable /etc/dconf/db/gdm.d/*\nIf properly configured, the output should be true.\nTo ensure a login warning banner is locked and cannot be changed by a user, run the following:\n$ grep banner-message-enable /etc/dconf/db/gdm.d/locks/*\nIf properly configured, the output should be /org/gnome/login-screen/banner-message-enable.\n      Is it the case that it is not?\n----\n\n== Set the GNOME3 Login Warning Banner Text\n----\nTo ensure the login warning banner text is properly set, run the following:\n$ grep banner-message-text /etc/gdm3/greeter.dconf-defaults\nIf properly configured, the proper banner text will appear.\n      Is it the case that it does not?\n----\nExpected values: dconf_login_banner_contents = $ODV_dconf_login_banner_contents",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Enable GNOME3 Login Warning Banner\n\nIn the default graphical environment, displaying a login warning banner\nin the GNOME Display Manager's login screen can be enabled on the login\nscreen by setting `banner-message-enable` to `true`.\n\n\n         \n\nTo enable, add or edit `banner-message-enable` to\n`/etc/dconf/db/gdm.d/00-security-settings`. For example:\n\n```\n[org/gnome/login-screen]\nbanner-message-enable=true\n```\n\nOnce the setting has been added, add a lock to\n`/etc/dconf/db/gdm.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/login-screen/banner-message-enable\n```\n\nAfter the settings have been set, run `dconf update`.\nThe banner text must also be set.\n\n**Rationale:**\n\nDisplay of a standardized and approved use notification before granting access to the operating system\nensures privacy and security notification verbiage used is consistent with applicable federal laws,\nExecutive Orders, directives, policies, regulations, standards, and guidance.\n\n\n         \n\nFor U.S. Government systems, system use notifications are required only for access via login interfaces\nwith human users and are not required when such human interfaces do not exist.\n\n## Set the GNOME3 Login Warning Banner Text\n\nIn the default graphical environment, configuring the login warning banner text\nin the GNOME Display Manager's login screen can be configured on the login\nscreen by setting `banner-message-text` to `'*APPROVED_BANNER*'`\nwhere *APPROVED_BANNER* is the approved banner for your environment.\n\n\n         \n\nTo enable, add or edit `banner-message-text` to\n\n`/etc/gdm3/greeter.dconf-defaults`. For example:\n\n```\n[org/gnome/login-screen]\nbanner-message-text='*APPROVED_BANNER*'\n```\n\n\nAfter the settings have been set, run `dconf update`.\nWhen entering a warning banner that spans several lines, remember\nto begin and end the string with `'` and use `\\n` for new lines.\n\n**Rationale:**\n\nAn appropriate warning message reinforces policy awareness during the logon\nprocess and facilitates possible legal action against attackers.",
   "discussion_format": "markdown",
@@ -96,7 +99,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.7"

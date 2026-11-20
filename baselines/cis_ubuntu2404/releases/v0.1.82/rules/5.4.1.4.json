@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Password Hashing Algorithm in /etc/login.defs\n----\nVerify that the shadow password suite configuration is set to encrypt password with a FIPS 140-2 approved cryptographic hashing algorithm.\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i ENCRYPT_METHOD  /etc/login.defs\n\nENCRYPT_METHOD \n      Is it the case that ENCRYPT_METHOD is not set to $ODV_var_password_hashing_algorithm?\n----\nExpected values: var_password_hashing_algorithm = $ODV_var_password_hashing_algorithm",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Password Hashing Algorithm in /etc/login.defs\n----\nVerify that the shadow password suite configuration is set to encrypt password with a FIPS 140-2 approved cryptographic hashing algorithm.\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i ENCRYPT_METHOD  /etc/login.defs\n\nENCRYPT_METHOD \n      Is it the case that ENCRYPT_METHOD is not set to $ODV_var_password_hashing_algorithm?\n----\nExpected values: var_password_hashing_algorithm = $ODV_var_password_hashing_algorithm",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Password Hashing Algorithm in /etc/login.defs\n\nIn `/etc/login.defs`, add or update the following line to ensure the system will use\n$ODV_var_password_hashing_algorithm as the hashing algorithm:\n\n```\nENCRYPT_METHOD $ODV_var_password_hashing_algorithm\n         \n```\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nUsing a stronger hashing algorithm makes password cracking attacks more difficult.\n\n**Notes:**\n\nRule allows either SHA512 or YESCRYPT",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

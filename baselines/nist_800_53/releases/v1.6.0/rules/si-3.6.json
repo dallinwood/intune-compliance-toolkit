@@ -24,7 +24,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "System and Information Integrity",
     "SI-03 Malicious Code Protection"

@@ -165,7 +165,7 @@ def test_constants_match_the_design():
 
 def test_full_action_has_exact_field_values():
     rule = rules_by_id()[FULL_ACTION_ID]
-    assert rule["schema_version"] == 6
+    assert rule["schema_version"] == 7
     assert rule["id"] == FULL_ACTION_ID
     assert rule["title"] == "Require multi-factor authentication for all remote access."
     assert rule["discussion_format"] == "markdown"

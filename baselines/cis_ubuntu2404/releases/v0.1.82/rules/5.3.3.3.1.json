@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Limit Password Reuse\n----\nCheck that the SUSE operating system prohibits the reuse of a password for\na minimum of  generations with the following command:\n# grep pam_pwhistory.so /etc/pam.d/common-password\npassword requisite pam_pwhistory.so remember= use_authtok\nIf the command does not return a result, or the returned line is commented\nout, has a second column value different from \"requisite\", does not contain\n\"remember\" value, the value is less than\n, or is missing the\n\"use_authtok\" keyword, this is a finding.\n      Is it the case that the value of remember is not set equal to or greater than $ODV_var_password_pam_remember?\n----\nExpected values: var_password_pam_remember = $ODV_var_password_pam_remember",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Limit Password Reuse\n----\nCheck that the SUSE operating system prohibits the reuse of a password for\na minimum of  generations with the following command:\n# grep pam_pwhistory.so /etc/pam.d/common-password\npassword requisite pam_pwhistory.so remember= use_authtok\nIf the command does not return a result, or the returned line is commented\nout, has a second column value different from \"requisite\", does not contain\n\"remember\" value, the value is less than\n, or is missing the\n\"use_authtok\" keyword, this is a finding.\n      Is it the case that the value of remember is not set equal to or greater than $ODV_var_password_pam_remember?\n----\nExpected values: var_password_pam_remember = $ODV_var_password_pam_remember",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Limit Password Reuse\n\nDo not allow users to reuse recent passwords. This can be\naccomplished by using the `remember` option for the\n`pam_pwhistory` PAM modules.\n\n\n         \n\nIn the file `/etc/pam.d/common-password`, make sure the parameters\n`remember` and `use_authtok` are present, and that the value\nfor the `remember` parameter is $ODV_var_password_pam_remember or greater. For example:\n\n```\npassword requisite pam_pwhistory.so *...existing_options...* remember=$ODV_var_password_pam_remember use_authtok\n```\n\nThe profile requirement is $ODV_var_password_pam_remember passwords.\n\n**Rationale:**\n\nPreventing reuse of previous passwords helps ensure that a compromised password is not reused by a user.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

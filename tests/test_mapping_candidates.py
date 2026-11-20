@@ -276,7 +276,7 @@ def build_library(root: Path) -> Path:
         write_release(baselines_dir, "asd_ism", ISM_TAG, {**filler_library_rules("ism"), **ISM_RULES}),
         write_release(baselines_dir, "mscp", MSCP_TAG, {**filler_library_rules("mscp"), **MSCP_RULES}),
     ]
-    write_json(baselines_dir / "_manifest.json", {"schema_version": 6, "sources": sources})
+    write_json(baselines_dir / "_manifest.json", {"schema_version": 7, "sources": sources})
     return baselines_dir
 
 

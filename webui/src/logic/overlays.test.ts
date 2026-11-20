@@ -220,25 +220,38 @@ describe('applyOverlays', () => {
 
   it('fills a null check from a complete partial object', () => {
     const entry = { shell: 'echo ok', result: null, additional_info: null }
-    const windowsCheck = { language: 'powershell', default: entry, by_version: {} }
-    const result = applyOverlays(ism1622Rule(), [overlay('check', { check: { Windows: windowsCheck } })], CURRENT_RELEASE)
+    const windowsCheck = { name: null, language: 'powershell', default: entry, by_version: {} }
+    const result = applyOverlays(ism1622Rule(), [overlay('check', { check: { Windows: [windowsCheck] } })], CURRENT_RELEASE)
 
     expect(result.skipped).toEqual([])
-    expect(result.rule.check).toEqual({ Windows: windowsCheck })
+    expect(result.rule.check).toEqual({ Windows: [windowsCheck] })
+  })
+
+  it('appends a second check item to a target and replaces a target list whole', () => {
+    const macosOnly = ism1622Rule({ check: macosCheck(ruleCheck('echo mac', null)) })
+    const extraItem = { name: 'Extra', language: 'powershell', default: ruleCheck('Get-Thing', null), by_version: {} }
+
+    const appended = applyOverlays(macosOnly, [overlay('append', { check: { macOS: { $append: [extraItem] } } })], CURRENT_RELEASE)
+    expect(appended.skipped).toEqual([])
+    expect(appended.rule.check?.macOS).toEqual([...macosOnly.check!.macOS, extraItem])
+
+    const replaced = applyOverlays(macosOnly, [overlay('replace', { check: { macOS: { $replace: [extraItem] } } })], CURRENT_RELEASE)
+    expect(replaced.skipped).toEqual([])
+    expect(replaced.rule.check?.macOS).toEqual([extraItem])
   })
 
   it('adds a check for another target beside the macOS one', () => {
     const macosOnly = ism1622Rule({ check: macosCheck(ruleCheck('echo mac', null)) })
-    const windowsCheck = { language: 'powershell', default: ruleCheck('Get-Thing', null), by_version: {} }
-    const result = applyOverlays(macosOnly, [overlay('windows', { check: { Windows: windowsCheck } })], CURRENT_RELEASE)
+    const windowsCheck = { name: null, language: 'powershell', default: ruleCheck('Get-Thing', null), by_version: {} }
+    const result = applyOverlays(macosOnly, [overlay('windows', { check: { Windows: [windowsCheck] } })], CURRENT_RELEASE)
 
     expect(result.skipped).toEqual([])
-    expect(result.rule.check).toEqual({ ...macosOnly.check, Windows: windowsCheck })
+    expect(result.rule.check).toEqual({ ...macosOnly.check, Windows: [windowsCheck] })
   })
 
   it('accepts a check, a step and payloads that reference files', () => {
     const fields = {
-      check: { Windows: { language: 'powershell', default: { shell_file: 'baselines/_overlays/scripts/Check.ps1', result: null, additional_info: null }, by_version: {} } },
+      check: { Windows: [{ name: null, language: 'powershell', default: { shell_file: 'baselines/_overlays/scripts/Check.ps1', result: null, additional_info: null }, by_version: {} }] },
       remediation: {
         Windows: {
           steps: [{ name: 'Fix', language: 'powershell', shell_file: 'baselines/_overlays/scripts/Fix.ps1', additional_info: null, versions: null }],
@@ -260,7 +273,7 @@ describe('applyOverlays', () => {
 
   it('accepts instructions checks and steps that carry text and no script', () => {
     const fields = {
-      check: { Linux: { language: 'instructions', default: { shell: null, result: null, additional_info: 'Look.' }, by_version: {} } },
+      check: { Linux: [{ name: null, language: 'instructions', default: { shell: null, result: null, additional_info: 'Look.' }, by_version: {} }] },
       remediation: { Linux: { steps: [{ name: null, language: 'instructions', shell: null, additional_info: 'Fix it.', versions: null }], payloads: [] } },
     }
     const result = applyOverlays(ism1622Rule(), [overlay('instructions', fields)], CURRENT_RELEASE)
@@ -283,11 +296,15 @@ describe('applyOverlays', () => {
     ['an applicability entry without benchmarks', { applicability: [{ target: null, version: null }] }, {}],
     ['a remediation target without its required keys', { remediation: { $replace: { Windows: {} } } }, {}],
     ['a plain merge of shell_file onto an inline check', { check: { macOS: { default: { shell_file: 'baselines/x/scripts/check.sh' } } } }, { check: macosCheck(ruleCheck('echo inline', null)) }],
+    ['an appended check item without a name', { check: { macOS: { $append: [{ language: 'bash', default: null, by_version: {} }] } } }, { check: macosCheck(null) }],
+    ['an appended check item with a non-string name', { check: { macOS: { $append: [{ name: 3, language: 'bash', default: null, by_version: {} }] } } }, { check: macosCheck(null) }],
+    ['a target whose check is a bare object', { check: { $replace: { Windows: { name: null, language: 'powershell', default: null, by_version: {} } } } }, {}],
+    ['a target whose check list is empty', { check: { $replace: { Windows: [] } } }, {}],
     ['a shell_file with a percent-encoded .. segment', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell_file: 'baselines/%2e%2e/x.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a step with both shell and shell_file', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell: 'x', shell_file: 'baselines/_overlays/scripts/X.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a step with neither shell nor shell_file', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a step whose shell_file does not match its language', { remediation: { Windows: { steps: [{ name: null, language: 'bash', shell_file: 'baselines/_overlays/scripts/X.ps1', additional_info: null, versions: null }], payloads: [] } } }, {}],
-    ['a check whose shell_file is outside baselines/', { check: { Windows: { language: 'powershell', default: { shell_file: '../X.ps1', result: null, additional_info: null }, by_version: {} } } }, {}],
+    ['a check whose shell_file is outside baselines/', { check: { Windows: [{ name: null, language: 'powershell', default: { shell_file: '../X.ps1', result: null, additional_info: null }, by_version: {} }] } }, {}],
     ['a payload with both data and data_file', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null, data: {}, data_file: 'baselines/_overlays/payloads/X.reg' }] } } }, {}],
     ['a payload with neither data nor data_file', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null }] } } }, {}],
     ['a payload file with a disallowed extension', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null, data_file: 'baselines/_overlays/payloads/X.txt' }] } } }, {}],
@@ -297,14 +314,14 @@ describe('applyOverlays', () => {
     ['a remediation step with an unknown language', { remediation: { Windows: { steps: [{ name: null, language: 'cmd', shell: 'x', additional_info: null, versions: null }], payloads: [] } } }, {}],
     ['a remediation step with an empty versions list', { remediation: { Windows: { steps: [{ name: null, language: 'powershell', shell: 'x', additional_info: null, versions: [] }], payloads: [] } } }, {}],
     ['a payload whose data is not an object or a list', { remediation: { Windows: { steps: [], payloads: [{ kind: 'reg', versions: null, data: 'x' }] } } }, {}],
-    ['a check without by_version', { check: { $replace: { Windows: { language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } } } } }, {}],
-    ['a check without a language', { check: { $replace: { Windows: { default: null, by_version: {} } } } }, {}],
+    ['a check without by_version', { check: { $replace: { Windows: [{ name: null, language: 'powershell', default: { shell: 'echo', result: null, additional_info: null } }] } } }, {}],
+    ['a check without a language', { check: { $replace: { Windows: [{ name: null, default: null, by_version: {} }] } } }, {}],
     ['a check in the v4 shape', { check: { $replace: { default: { shell: 'echo', result: null, additional_info: null }, by_version: {} } } }, {}],
-    ['a check under an empty target name', { check: { $replace: { '': { language: 'bash', default: null, by_version: {} } } } }, {}],
-    ['a by_version check that is null', { check: { macOS: { by_version: { '14.0': null } } } }, { check: macosCheck(null) }],
-    ['an instructions check with a shell', { check: { $replace: { Linux: { language: 'instructions', default: { shell: 'echo', result: null, additional_info: 'x' }, by_version: {} } } } }, {}],
-    ['an instructions check with a result', { check: { $replace: { Linux: { language: 'instructions', default: { shell: null, result: { type: 'string', value: 'x' }, additional_info: 'x' }, by_version: {} } } } }, {}],
-    ['an instructions check with a shell_file', { check: { $replace: { Linux: { language: 'instructions', default: { shell_file: 'baselines/_overlays/scripts/X.sh', result: null, additional_info: 'x' }, by_version: {} } } } }, {}],
+    ['a check under an empty target name', { check: { $replace: { '': [{ name: null, language: 'bash', default: null, by_version: {} }] } } }, {}],
+    ['a by_version check that is null', { check: { macOS: { $append: [{ name: null, language: 'bash', default: null, by_version: { '14.0': null } }] } } }, { check: macosCheck(null) }],
+    ['an instructions check with a shell', { check: { $replace: { Linux: [{ name: null, language: 'instructions', default: { shell: 'echo', result: null, additional_info: 'x' }, by_version: {} }] } } }, {}],
+    ['an instructions check with a result', { check: { $replace: { Linux: [{ name: null, language: 'instructions', default: { shell: null, result: { type: 'string', value: 'x' }, additional_info: 'x' }, by_version: {} }] } } }, {}],
+    ['an instructions check with a shell_file', { check: { $replace: { Linux: [{ name: null, language: 'instructions', default: { shell_file: 'baselines/_overlays/scripts/X.sh', result: null, additional_info: 'x' }, by_version: {} }] } } }, {}],
     ['an instructions step with a shell', { remediation: { Linux: { steps: [{ name: null, language: 'instructions', shell: 'echo', additional_info: 'x', versions: null }], payloads: [] } } }, {}],
     ['an instructions step with a shell_file', { remediation: { Linux: { steps: [{ name: null, language: 'instructions', shell_file: 'baselines/_overlays/scripts/X.sh', additional_info: 'x', versions: null }], payloads: [] } } }, {}],
     ['a tag that is not a string', { tags: [3] }, {}],
@@ -368,7 +385,7 @@ describe('applyOverlays', () => {
   })
 
   it('adding a check leaves the assessment alone', () => {
-    const check = { Windows: { language: 'powershell', default: { shell: 'echo ok', result: null, additional_info: null }, by_version: {} } }
+    const check = { Windows: [{ name: null, language: 'powershell', default: { shell: 'echo ok', result: null, additional_info: null }, by_version: {} }] }
     const rule = ism1622Rule({ assessment: { status: 'manual', manual_reason: 'no_check' } })
 
     const result = applyOverlays(rule, [overlay('check', { check: { $replace: check } })], CURRENT_RELEASE)

@@ -49,18 +49,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('enforcedSoftwareUpdateDelay')) || 0\n  if ( timeout <= $ODV_value ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.applicationaccess')\\\n.objectForKey('enforcedSoftwareUpdateDelay')) || 0\n  if ( timeout <= $ODV_value ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Software updates _MUST_ be deferred for $ODV_value days or less.\n\nIf you need to defer software updates, create a Restrictions profile using the com.apple.applicationaccess domain and the key enforcedSoftwareUpdateDelay.\n",
   "discussion_format": "asciidoc",
@@ -142,7 +145,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

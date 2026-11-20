@@ -65,35 +65,38 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {
-        "15.0": {
+    "macOS": [
+      {
+        "by_version": {
+          "15.0": {
+            "additional_info": null,
+            "result": {
+              "type": "string",
+              "value": "true"
+            },
+            "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS"
+          },
+          "26.0": {
+            "additional_info": null,
+            "result": {
+              "type": "string",
+              "value": "true"
+            },
+            "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS\n)\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload')\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then\n  echo \"true\"\nelse\n  echo \"false\"\nfi"
+          }
+        },
+        "default": {
           "additional_info": null,
           "result": {
-            "type": "string",
-            "value": "true"
+            "type": "integer",
+            "value": 1
           },
-          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS"
+          "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload'"
         },
-        "26.0": {
-          "additional_info": null,
-          "result": {
-            "type": "string",
-            "value": "true"
-          },
-          "shell": "configprofile=$(/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.SoftwareUpdate')\\\n.objectForKey('AutomaticDownload').js\nEOS\n)\nddm=$(/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload')\nif [[ \"$configprofile\" == \"true\" ]] || [[ \"$ddm\" == \"1\" ]]; then\n  echo \"true\"\nelse\n  echo \"false\"\nfi"
-        }
-      },
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
-        },
-        "shell": "/usr/bin/plutil -convert json /var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist -o - | /usr/bin/jq --raw-output .'SUCorePersistedStatePolicyFields.SUCoreDDMDeclarationGlobalSettings.automaticallyDownload'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Software Update _MUST_ be configured to enforce automatic downloads of updates is enabled.\n",
   "discussion_format": "asciidoc",
@@ -201,7 +204,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

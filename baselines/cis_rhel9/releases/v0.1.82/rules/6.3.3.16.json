@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Any Attempts to Run setfacl\n----\nVerify that Red Hat Enterprise Linux 9 is configured to audit the execution of the \"setfacl\" command with the following command:\n\n$ sudo auditctl -l | grep setfacl\n\n-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod\n      Is it the case that the command does not return a line, or the line is commented out?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Record Any Attempts to Run setfacl\n----\nVerify that Red Hat Enterprise Linux 9 is configured to audit the execution of the \"setfacl\" command with the following command:\n\n$ sudo auditctl -l | grep setfacl\n\n-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod\n      Is it the case that the command does not return a line, or the line is commented out?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Record Any Attempts to Run setfacl\n\nAt a minimum, the audit system should collect the execution of privileged\ncommands for all users and root.\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add\na line of the following form to a file with suffix `.rules`\nin the directory `/etc/audit/rules.d`:\n\n```\n-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add a line of the\nfollowing form to `/etc/audit/audit.rules`:\n\n```\n-a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged\n```\n\n**Rationale:**\n\nWithout generating audit records that are specific to the security and\nmission needs of the organization, it would be difficult to establish,\ncorrelate, and investigate the events relating to an incident or identify\nthose responsible for one.\nAudit records can be generated from various components within the\ninformation system (e.g., module or policy filter).",
   "discussion_format": "markdown",
@@ -68,7 +71,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

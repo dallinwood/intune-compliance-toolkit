@@ -35,7 +35,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Program Management",
     "PM-23 Data Governance Body"

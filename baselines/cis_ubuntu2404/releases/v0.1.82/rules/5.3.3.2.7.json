@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure PAM Enforces Password Requirements - Enforcing\n----\nTo verify that enforcing is correctly applied, run the following command:\n$ grep -i enforcing /etc/security/pwquality.conf\nThe output should return enforcing = 1 uncommented.\n      Is it the case that enforcing is not uncommented or configured correctly?\n----\nExpected values: var_password_pam_enforcing = $ODV_var_password_pam_enforcing",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure PAM Enforces Password Requirements - Enforcing\n----\nTo verify that enforcing is correctly applied, run the following command:\n$ grep -i enforcing /etc/security/pwquality.conf\nThe output should return enforcing = 1 uncommented.\n      Is it the case that enforcing is not uncommented or configured correctly?\n----\nExpected values: var_password_pam_enforcing = $ODV_var_password_pam_enforcing",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Enforcing\n\nVerify that the operating system uses \"pwquality\" to enforce the\npassword complexity rules.\n\nVerify the pwquality module is being enforced by operating system by\nrunning the following command:\n\n```\n$ grep -i enforcing /etc/security/pwquality.conf\nenforcing = 1\n```\n\n\nIf the value of \"enforcing\" is not \"1\" or the line is commented out,\nthis is a finding.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources\nrequired to compromise the password. Password complexity, or strength,\nis a measure of the effectiveness of a password in resisting attempts at\nguessing and brute-force attacks. Using enforcing=1 ensures \"pwquality\"\nenforces complex password construction configuration and has the ability\nto limit brute-force attacks on the system.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

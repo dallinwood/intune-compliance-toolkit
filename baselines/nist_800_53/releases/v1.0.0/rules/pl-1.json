@@ -49,7 +49,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Planning",
     "PL-01 Policy and Procedures"

@@ -27,11 +27,14 @@ def build_rule(shell: str | None, odvs: list[dict]) -> dict:
         "id": "rule_1",
         "odvs": odvs,
         "check": {
-            "macos": {
-                "language": "bash",
-                "default": {"shell": shell},
-                "by_version": {},
-            }
+            "macos": [
+                {
+                    "name": None,
+                    "language": "bash",
+                    "default": {"shell": shell},
+                    "by_version": {},
+                }
+            ]
         },
         "remediation": None,
     }
@@ -142,7 +145,7 @@ def test_unknown_quoting_reported():
 
 def test_null_check_and_null_shell_are_tolerated():
     rule = build_rule(None, [])
-    rule["check"]["macos"]["default"] = None
+    rule["check"]["macos"][0]["default"] = None
     assert placeholder_errors(rule) == []
     rule["check"] = None
     assert placeholder_errors(rule) == []
@@ -150,7 +153,7 @@ def test_null_check_and_null_shell_are_tolerated():
 
 def build_rule_with_script_file(script_path: str, odvs: list[dict]) -> dict:
     rule = build_rule(None, odvs)
-    rule["check"]["macos"]["default"] = {"shell_file": script_path}
+    rule["check"]["macos"][0]["default"] = {"shell_file": script_path}
     return rule
 
 
@@ -225,13 +228,13 @@ def test_quoted_placeholder_in_unknown_script_extension_reported():
 
 def test_quoted_placeholder_in_inline_powershell_reported():
     rule = build_rule("$x = '$ODV_v'", [build_odv(quoting="single")])
-    rule["check"]["macos"]["language"] = "powershell"
+    rule["check"]["macos"][0]["language"] = "powershell"
     assert any("single" in error for error in placeholder_errors(rule))
 
 
 def test_quoted_placeholder_in_inline_zsh_ok():
     rule = build_rule("x='$ODV_v'", [build_odv(quoting="single")])
-    rule["check"]["macos"]["language"] = "zsh"
+    rule["check"]["macos"][0]["language"] = "zsh"
     assert placeholder_errors(rule) == []
 
 
@@ -258,7 +261,7 @@ def test_ansi_c_quoted_placeholder_reported():
 
 def build_script_rule(script_path: str, quoting: str) -> dict:
     rule = build_rule(None, [build_odv(quoting=quoting)])
-    rule["check"]["macos"]["default"] = {"shell_file": script_path}
+    rule["check"]["macos"][0]["default"] = {"shell_file": script_path}
     return rule
 
 
@@ -400,3 +403,23 @@ def test_text_after_powershell_here_string_is_checked():
     assert placeholder_errors(rule, lambda path: "$x = @\"\nit's\n\"@\n$y = '$ODV_v'") == []
     errors = placeholder_errors(rule, lambda path: "$x = @\"\nit's\n\"@\n$y = $ODV_v")
     assert any("outside single quotes" in error for error in errors)
+
+
+def test_every_check_item_is_scanned_for_placeholders_and_quoting():
+    rule = build_rule("echo $ODV_v", [build_odv(quoting="single")])
+    second_item = {"name": "Second", "language": "bash", "default": {"shell": "echo $ODV_v"}, "by_version": {}}
+    rule["check"]["macos"].append(second_item)
+    errors = placeholder_errors(rule)
+    assert len([error for error in errors if "single" in error]) == 2
+
+
+def test_a_placeholder_used_only_in_a_second_check_item_counts_as_used():
+    rule = build_rule("echo nothing", [build_odv()])
+    rule["check"]["macos"].append({"name": "Second", "language": "bash", "default": {"shell": "echo $ODV_v"}, "by_version": {}})
+    assert placeholder_errors(rule) == []
+
+
+def test_a_script_file_in_a_second_check_item_is_read():
+    rule = build_rule("echo nothing", [build_odv()])
+    rule["check"]["macos"].append({"name": "Second", "language": "bash", "default": {"shell_file": "scripts/second.sh"}, "by_version": {}})
+    assert placeholder_errors(rule, build_reader({"scripts/second.sh": "echo $ODV_v"})) == []

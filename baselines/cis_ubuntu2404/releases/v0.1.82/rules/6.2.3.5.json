@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Events that Modify the System's Network Environment\n----\nTo determine if the system is configured to audit changes to its network configuration,\nrun the following command:\nauditctl -l | grep -E '(/etc/issue|/etc/issue.net|/etc/hosts|/etc/networks|/etc/network/|/etc/netplan/)'\n\nIf the system is configured to watch for network configuration changes, a line should be returned for\neach file specified (and perm=wa should be indicated for each).\n      Is it the case that the system is not configured to audit changes of the network configuration?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Record Events that Modify the System's Network Environment\n----\nTo determine if the system is configured to audit changes to its network configuration,\nrun the following command:\nauditctl -l | grep -E '(/etc/issue|/etc/issue.net|/etc/hosts|/etc/networks|/etc/network/|/etc/netplan/)'\n\nIf the system is configured to watch for network configuration changes, a line should be returned for\neach file specified (and perm=wa should be indicated for each).\n      Is it the case that the system is not configured to audit changes of the network configuration?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Record Events that Modify the System's Network Environment\n\nIf the `auditd` daemon is configured to use the\n`augenrules` program to read audit rules during daemon startup (the\ndefault), add the following lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`, setting ARCH to either b32 for\n32-bit system, or having two lines for both b32 and b64 in case your system\nis 64-bit:\n\n```\n-a always,exit -F arch=ARCH -S sethostname,setdomainname -F key=audit_rules_networkconfig_modification\n-w /etc/issue -p wa -k audit_rules_networkconfig_modification\n-w /etc/issue.net -p wa -k audit_rules_networkconfig_modification\n-w /etc/hosts -p wa -k audit_rules_networkconfig_modification\n\n-w /etc/netplan/ -p wa -k audit_rules_networkconfig_modification\n\n-w /etc/networks -p wa -k audit_rules_networkconfig_modification\n-w /etc/network/ -p wa -k audit_rules_networkconfig_modification\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules` file, setting ARCH to either b32 for\n32-bit system, or having two lines for both b32 and b64 in case your system\nis 64-bit:\n\n```\n-a always,exit -F arch=ARCH -S sethostname,setdomainname -F key=audit_rules_networkconfig_modification\n-w /etc/issue -p wa -k audit_rules_networkconfig_modification\n-w /etc/issue.net -p wa -k audit_rules_networkconfig_modification\n-w /etc/hosts -p wa -k audit_rules_networkconfig_modification\n-w /etc/networks -p wa -k audit_rules_networkconfig_modification\n-w /etc/network/ -p wa -k audit_rules_networkconfig_modification\n```\n\n**Rationale:**\n\nThe network environment should not be modified by anything other\nthan administrator action. Any change to network parameters should be\naudited.",
   "discussion_format": "markdown",
@@ -65,7 +68,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

@@ -1,5 +1,5 @@
 import type { ManifestSource, ManualReason, Rule } from '../types/library'
-import { generatedTargetCheck } from './checkPlan'
+import { GENERATED_TARGET } from './checkPlan'
 import type { ManualAttestationEntry } from './chunking'
 import { displayWithOdvs } from './odv'
 import { upstreamRuleId } from './ruleDisplay'
@@ -14,9 +14,13 @@ export function manualReasonText(manualReason: ManualReason | null, index: Vocab
   return termDescription(index, 'manual_reasons', reason) ?? `mSCP manual reason: ${reason}.`
 }
 
+const PARAGRAPH_SEPARATOR = '\n\n'
+
 export function additionalInfoFor(rule: Rule, odvValues: OdvValues): string | null {
-  const additionalInfo = generatedTargetCheck(rule)?.default?.additional_info?.trim()
-  return additionalInfo ? displayWithOdvs(additionalInfo, odvValues) : null
+  const additionalInfos = (rule.check?.[GENERATED_TARGET] ?? [])
+    .map((item) => item.default?.additional_info?.trim())
+    .filter((text): text is string => !!text)
+  return additionalInfos.length > 0 ? displayWithOdvs(additionalInfos.join(PARAGRAPH_SEPARATOR), odvValues) : null
 }
 
 function attributionLine(source: ManifestSource): string {

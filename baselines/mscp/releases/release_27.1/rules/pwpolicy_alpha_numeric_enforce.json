@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 1
+          },
+          "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyIdentifier\"]/following-sibling::*[1]/text()' - | /usr/bin/grep \"requireAlphanumeric\" -c"
         },
-        "shell": "/usr/bin/pwpolicy -getaccountpolicies 2> /dev/null | /usr/bin/tail +2 | /usr/bin/xmllint --xpath '//dict/key[text()=\"policyIdentifier\"]/following-sibling::*[1]/text()' - | /usr/bin/grep \"requireAlphanumeric\" -c"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The system _MUST_ be configured to require at least one numeric character be used when a password is created.\n\nThis rule enforces password complexity by requiring users to set passwords that are less vulnerable to malicious users.\n\nNOTE: To comply with Executive Order 14028, \"Improving the Nation's Cybersecurity\", OMB M-22-09, \"Moving the U.S. Government Toward Zero Trust Cybersecurity Principles\", and NIST SP-800-63b, \"Digital Identity Guidelines: Authentication and Lifecycle Management\" federal, military, and intelligence communities must adopt the following configuration settings. Password policies must not require the use of complexity policies such as upper characters, lower characters, or special characters. Password policies must also not require the use of regular rotation. Password policies should define a minimum length. Multifactor authentication should be used where ever possible.\n",
   "discussion_format": "asciidoc",
@@ -176,7 +179,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "pwpolicy"
   ],

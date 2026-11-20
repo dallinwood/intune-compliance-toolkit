@@ -27,18 +27,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": -1
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": -1
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.integerForKey('AdminHostInfo')\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.integerForKey('AdminHostInfo')\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The system _MUST_ be configured to not display sensitive information at the login window. If the key `AdminHostInfo` is configured with a string value, it will allow the HostName, IP Address, and operating system version and build to be displayed when clicking on the clock area of the login window.\n\nConfiguring this key to be an integer value, since it expects a string value, will effectively disable the behavior.\n\nNOTE: This configuration requires it to be deployed via Managed Preferences rather than directly to com.apple.loginwindow.\n",
   "discussion_format": "asciidoc",
@@ -101,7 +104,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

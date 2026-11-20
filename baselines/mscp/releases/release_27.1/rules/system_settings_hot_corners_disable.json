@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 4
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 4
+          },
+          "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -Ec '\"wvous-bl-corner\" = 0|\"wvous-br-corner\" = 0|\"wvous-tl-corner\" = 0|\"wvous-tr-corner\" = 0'"
         },
-        "shell": "/usr/bin/profiles -P -o stdout | /usr/bin/grep -Ec '\"wvous-bl-corner\" = 0|\"wvous-br-corner\" = 0|\"wvous-tl-corner\" = 0|\"wvous-tr-corner\" = 0'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Hot corners _MUST_ be disabled.\n\nThe information system conceals, via the session lock, information previously visible on the display with a publicly viewable image. Although hot corners can be used to initiate a session lock or to launch useful applications, they can also be configured to disable an automatic session lock from initiating. Such a configuration introduces the risk that a user might forget to manually lock the screen before stepping away from the computer.\n",
   "discussion_format": "asciidoc",
@@ -129,7 +132,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

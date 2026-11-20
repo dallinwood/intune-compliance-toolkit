@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure /dev/shm is configured\n----\nVerify that a separate file system/partition has been created for /dev/shm with the following command:\n\n$ mountpoint /dev/shm\n\n      Is it the case that \"/dev/shm is not a mountpoint\" is returned?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure /dev/shm is configured\n----\nVerify that a separate file system/partition has been created for /dev/shm with the following command:\n\n$ mountpoint /dev/shm\n\n      Is it the case that \"/dev/shm is not a mountpoint\" is returned?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure /dev/shm is configured\n\nThe `/dev/shm` is a traditional shared memory concept.\nOne program will create a memory portion, which other processes\n(if permitted) can access. If `/dev/shm` is not configured,\ntmpfs will be mounted to /dev/shm by systemd.\n\n**Rationale:**\n\nAny user can upload and execute files inside the `/dev/shm` similar to\nthe `/tmp` partition. Configuring `/dev/shm` allows an administrator\nto set the noexec option on the mount, making /dev/shm useless for an attacker to\ninstall executable code. It would also prevent an attacker from establishing a\nhardlink to a system setuid program and wait for it to be updated. Once the program\nwas updated, the hardlink would be broken and the attacker would have his own copy\nof the program. If the program happened to have a security vulnerability, the attacker\ncould continue to exploit the known flaw.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.1",

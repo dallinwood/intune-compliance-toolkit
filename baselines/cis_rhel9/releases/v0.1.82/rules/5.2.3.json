@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Sudo Logfile Exists - sudo logfile\n----\nTo determine if logfile has been configured for sudo, run the following command:\n$ sudo grep -ri \"^[\\s]*Defaults\\s*\\blogfile\\b.*\" /etc/sudoers /etc/sudoers.d/\nThe command should return a matching output.\n      Is it the case that logfile is not enabled in sudo?\n----\nExpected values: var_sudo_logfile = $ODV_var_sudo_logfile",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Sudo Logfile Exists - sudo logfile\n----\nTo determine if logfile has been configured for sudo, run the following command:\n$ sudo grep -ri \"^[\\s]*Defaults\\s*\\blogfile\\b.*\" /etc/sudoers /etc/sudoers.d/\nThe command should return a matching output.\n      Is it the case that logfile is not enabled in sudo?\n----\nExpected values: var_sudo_logfile = $ODV_var_sudo_logfile",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Sudo Logfile Exists - sudo logfile\n\nA custom log sudo file can be configured with the 'logfile' tag. This rule configures\na sudo custom logfile at the default location suggested by CIS, which uses\n/var/log/sudo.log.\n\n**Rationale:**\n\nA sudo log file simplifies auditing of sudo commands.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.2"

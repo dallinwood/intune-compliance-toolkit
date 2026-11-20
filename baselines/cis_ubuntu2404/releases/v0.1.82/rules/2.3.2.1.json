@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Configure Systemd Timesyncd Servers\n----\nReview /etc/systemd/timesyncd.conf and ensure that the NTP servers, NTP FallbackNTP\nservers are listed in accordance with local policy.\n      Is it the case that a remote time server is not configured?\n----\nExpected values: var_multiple_time_servers = $ODV_var_multiple_time_servers",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Configure Systemd Timesyncd Servers\n----\nReview /etc/systemd/timesyncd.conf and ensure that the NTP servers, NTP FallbackNTP\nservers are listed in accordance with local policy.\n      Is it the case that a remote time server is not configured?\n----\nExpected values: var_multiple_time_servers = $ODV_var_multiple_time_servers",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Configure Systemd Timesyncd Servers\n\n`systemd-timesyncd` is a daemon that has been added for synchronizing the system clock\nacross the network. The `systemd-timesyncd` daemon implements:\n  - Implements an SNTP client\n  - Runs with minimal privileges\n  - Saves the current clock to disk every time a new NTP sync has been acquired\n  - Is hooked up with networkd to only operate when network connectivity is available\nAdd or edit server or pool lines to `/etc/systemd/timesyncd.conf` as appropriate:\n\n```\nserver <remote-server>\n```\n\nMultiple servers may be configured.\n\n**Rationale:**\n\nConfiguring `systemd-timesyncd` ensures time synchronization is working properly.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.3",

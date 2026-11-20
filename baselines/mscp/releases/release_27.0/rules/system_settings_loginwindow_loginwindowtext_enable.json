@@ -65,18 +65,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "base64",
-          "value": "$ODV_value"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "base64",
+            "value": "$ODV_value"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS | /usr/bin/base64\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.objectForKey('LoginwindowText').js\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS | /usr/bin/base64\n$.NSUserDefaults.alloc.initWithSuiteName('com.apple.loginwindow')\\\n.objectForKey('LoginwindowText').js\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The login window _MUST_ be configured to show a custom access warning message.\n",
   "discussion_format": "asciidoc",
@@ -161,7 +164,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

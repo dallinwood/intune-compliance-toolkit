@@ -81,7 +81,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Protect principles",
     "PRO-13 - Identity, credential and access management"

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.rp_filter parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.rp_filter\nThe output of the command should indicate either:\nnet.ipv4.conf.all.rp_filter = 1\n\nThe output of the command should not indicate:\nnet.ipv4.conf.all.rp_filter = 0\n\nThe preferable way how to assure the runtime compliance is to have\ncorrect persistent configuration, and rebooting the system.\n\nThe persistent sysctl parameter configuration is performed by specifying the appropriate\nassignment in any file located in the /etc/sysctl.d directory.\nVerify that there is not any existing incorrect configuration by executing the following command:\n$ grep -r '^\\s*net.ipv4.conf.all.rp_filter\\s*=' /etc/sysctl.conf /etc/sysctl.d\nThe command should not find any assignments other than:\nnet.ipv4.conf.all.rp_filter = 1\n\n\nConflicting assignments are not allowed.\n      Is it the case that the net.ipv4.conf.all.rp_filter is not set to 1 or is configured to be 0 or 2?\n----\nExpected values: sysctl_net_ipv4_conf_all_rp_filter_value = $ODV_sysctl_net_ipv4_conf_all_rp_filter_value\n\n== Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default\n----\nThe runtime status of the net.ipv4.conf.default.rp_filter kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.rp_filter\n1.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_rp_filter_value = $ODV_sysctl_net_ipv4_conf_default_rp_filter_value",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.rp_filter parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.rp_filter\nThe output of the command should indicate either:\nnet.ipv4.conf.all.rp_filter = 1\n\nThe output of the command should not indicate:\nnet.ipv4.conf.all.rp_filter = 0\n\nThe preferable way how to assure the runtime compliance is to have\ncorrect persistent configuration, and rebooting the system.\n\nThe persistent sysctl parameter configuration is performed by specifying the appropriate\nassignment in any file located in the /etc/sysctl.d directory.\nVerify that there is not any existing incorrect configuration by executing the following command:\n$ grep -r '^\\s*net.ipv4.conf.all.rp_filter\\s*=' /etc/sysctl.conf /etc/sysctl.d\nThe command should not find any assignments other than:\nnet.ipv4.conf.all.rp_filter = 1\n\n\nConflicting assignments are not allowed.\n      Is it the case that the net.ipv4.conf.all.rp_filter is not set to 1 or is configured to be 0 or 2?\n----\nExpected values: sysctl_net_ipv4_conf_all_rp_filter_value = $ODV_sysctl_net_ipv4_conf_all_rp_filter_value\n\n== Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default\n----\nThe runtime status of the net.ipv4.conf.default.rp_filter kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.rp_filter\n1.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_rp_filter_value = $ODV_sysctl_net_ipv4_conf_default_rp_filter_value",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.all.rp_filter` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.all.rp_filter=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.all.rp_filter = 1\n```\n\n**Rationale:**\n\nEnabling reverse path filtering drops packets with source addresses\nthat should not have been able to be received on the interface they were\nreceived on. It should not be used on systems which are routers for\ncomplicated networks, but is helpful for end hosts and routers serving small\nnetworks.\n\n## Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default\n\nTo set the runtime status of the `net.ipv4.conf.default.rp_filter` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.default.rp_filter=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.default.rp_filter = 1\n```\n\n**Rationale:**\n\nEnabling reverse path filtering drops packets with source addresses\nthat should not have been able to be received on the interface they were\nreceived on. It should not be used on systems which are routers for\ncomplicated networks, but is helpful for end hosts and routers serving small\nnetworks.",
   "discussion_format": "markdown",
@@ -114,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "3",
     "3.3"

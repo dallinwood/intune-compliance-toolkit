@@ -1,4 +1,4 @@
-import type { Architecture, CheckResult, Rule, RuleCheck, TargetCheck } from '../types/library'
+import type { Architecture, CheckItem, CheckResult, Rule, RuleCheck } from '../types/library'
 import { versionsForTarget } from './applicability'
 import type { IntuneDataType } from './operatorMap'
 import {
@@ -50,12 +50,16 @@ export interface RuleCheckPlan {
 // any other target are ignored here.
 export const GENERATED_TARGET = 'macOS'
 
-// The only check the generator reads; checks for other targets, and
-// instructions (plain-English guidance, never a script), are shown in the
-// details but never scripted.
-export function generatedTargetCheck(rule: Pick<Rule, 'check'>): TargetCheck | null {
-  const targetCheck = rule.check?.[GENERATED_TARGET] ?? null
-  return targetCheck?.language === 'instructions' ? null : targetCheck
+// The shell languages the generator can write a script in for GENERATED_TARGET.
+const GENERATED_LANGUAGES: ReadonlySet<string> = new Set(['bash', 'zsh'])
+
+// The only check item the generator reads: the first, in list order, whose
+// language it supports on the generated target. Items for other targets, in
+// other languages, and instructions (plain-English guidance, never a script)
+// are shown in the details but never scripted.
+export function generatedCheckItem(rule: Pick<Rule, 'check'>): CheckItem | null {
+  const items = rule.check?.[GENERATED_TARGET] ?? []
+  return items.find((item) => GENERATED_LANGUAGES.has(item.language)) ?? null
 }
 
 export type RuleCheckPlanResult = RuleCheckPlan | { problem: string }
@@ -106,8 +110,8 @@ function sameExpected(left: ExpectedResult, right: ExpectedResult): boolean {
 }
 
 function generatedCheckTexts(rule: Rule): string[] {
-  const targetCheck = generatedTargetCheck(rule)
-  const checks = [targetCheck?.default, ...Object.values(targetCheck?.by_version ?? {})]
+  const checkItem = generatedCheckItem(rule)
+  const checks = [checkItem?.default, ...Object.values(checkItem?.by_version ?? {})]
   return checks.flatMap((check) => [check?.shell, check?.result?.value]).filter((text): text is string => typeof text === 'string')
 }
 
@@ -153,8 +157,8 @@ interface VersionCheck {
 }
 
 function resolveVersionCheck(rule: Rule, version: string, odvs: ResolvedOdvs): VersionCheck | { problem: string } {
-  const targetCheck = generatedTargetCheck(rule)
-  const check: RuleCheck | null = targetCheck?.by_version[version] ?? targetCheck?.default ?? null
+  const checkItem = generatedCheckItem(rule)
+  const check: RuleCheck | null = checkItem?.by_version[version] ?? checkItem?.default ?? null
   if (!check?.shell) return { problem: `mSCP has no check for macOS ${version}.` }
   if (!check.result) return { problem: `mSCP gives no expected result for macOS ${version}.` }
 

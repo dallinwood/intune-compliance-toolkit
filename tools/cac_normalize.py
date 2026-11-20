@@ -119,17 +119,20 @@ def _check(spec: BenchmarkSpec, linked_rules: list[DatastreamRule], where: str) 
     if not any(linked_rule.ocil_text for linked_rule in linked_rules):
         return None
     return {
-        spec.target: {
-            "language": "instructions",
-            "default": {
-                "shell": None,
-                "result": None,
-                "additional_info": PARAGRAPH_SEPARATOR.join(
-                    _audit_text(linked_rule, where) for linked_rule in linked_rules
-                ),
-            },
-            "by_version": {},
-        }
+        spec.target: [
+            {
+                "name": None,
+                "language": "instructions",
+                "default": {
+                    "shell": None,
+                    "result": None,
+                    "additional_info": PARAGRAPH_SEPARATOR.join(
+                        _audit_text(linked_rule, where) for linked_rule in linked_rules
+                    ),
+                },
+                "by_version": {},
+            }
+        ]
     }
 
 

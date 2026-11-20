@@ -10,8 +10,8 @@ from tools.json_output import write_json
 from tools.source_lock import SourceLock
 from tools.validate_library import manifest_consistency_errors, schema_errors, validate_library
 
-SCHEMA_VERSION = 6
-MANIFEST_SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
+MANIFEST_SCHEMA_VERSION = 7
 MANIFEST_FILE_NAME = "_manifest.json"
 BUILD_DIR_NAME = ".build"
 

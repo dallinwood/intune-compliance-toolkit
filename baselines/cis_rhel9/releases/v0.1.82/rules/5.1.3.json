@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Permissions on SSH Server Public *.pub Key Files\n----\nTo check the permissions of /etc/ssh/*.pub,\nrun the command:\n$ ls -l /etc/ssh/*.pub\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /etc/ssh/*.pub does not have unix mode -rw-r--r--?\n----\n\n== Verify Ownership on SSH Server Public *.pub Key Files\n----\nTo check the ownership of /etc/ssh/*.pub,\nrun the command:\n$ ls -lL /etc/ssh/*.pub\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/ssh/*.pub does not have an owner of root?\n----\n\n== Verify Group Ownership on SSH Server Public *.pub Key Files\n----\nTo check the group ownership of /etc/ssh/*.pub,\nrun the command:\n$ ls -lL /etc/ssh/*.pub\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/ssh/*.pub does not have a group owner of\nroot\n?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Permissions on SSH Server Public *.pub Key Files\n----\nTo check the permissions of /etc/ssh/*.pub,\nrun the command:\n$ ls -l /etc/ssh/*.pub\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /etc/ssh/*.pub does not have unix mode -rw-r--r--?\n----\n\n== Verify Ownership on SSH Server Public *.pub Key Files\n----\nTo check the ownership of /etc/ssh/*.pub,\nrun the command:\n$ ls -lL /etc/ssh/*.pub\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/ssh/*.pub does not have an owner of root?\n----\n\n== Verify Group Ownership on SSH Server Public *.pub Key Files\n----\nTo check the group ownership of /etc/ssh/*.pub,\nrun the command:\n$ ls -lL /etc/ssh/*.pub\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/ssh/*.pub does not have a group owner of\nroot\n?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify Permissions on SSH Server Public *.pub Key Files\n\nTo properly set the permissions of `/etc/ssh/*.pub`, run the command: \n```\n$ sudo chmod 0644 /etc/ssh/*.pub\n```\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.\n\n## Verify Ownership on SSH Server Public *.pub Key Files\n\nSSH server public keys, files that match the `/etc/ssh/*.pub` glob, must be owned\nby `root` user.\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.\n\n## Verify Group Ownership on SSH Server Public *.pub Key Files\n\nSSH server public keys, files that match the `/etc/ssh/*.pub` glob, must be\ngroup-owned by `root` group.\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.",
   "discussion_format": "markdown",
@@ -94,7 +97,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

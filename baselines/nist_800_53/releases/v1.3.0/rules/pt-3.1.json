@@ -30,7 +30,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Personally Identifiable Information Processing and Transparency",
     "PT-03 Personally Identifiable Information Processing Purposes"

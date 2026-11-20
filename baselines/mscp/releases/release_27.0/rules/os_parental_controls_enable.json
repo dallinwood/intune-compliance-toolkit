@@ -22,18 +22,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess.new\"); (ObjC.unwrap(s.objectForKey(\"familyControlsEnabled\")) == true && s.objectIsForcedForKey(\"familyControlsEnabled\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess.new\"); (ObjC.unwrap(s.objectForKey(\"familyControlsEnabled\")) == true && s.objectIsForcedForKey(\"familyControlsEnabled\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Parental Controls _MUST_ be enabled.\n\nControl of program execution is a mechanism used to prevent program execution of unauthorized programs, which is critical to maintaining a secure system baseline.\n\nParental Controls on the macOS consist of many different payloads, which are set individually depending on the type of control required. Enabling parental controls allows for further configuration of these restrictions.\n",
   "discussion_format": "asciidoc",
@@ -89,7 +92,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

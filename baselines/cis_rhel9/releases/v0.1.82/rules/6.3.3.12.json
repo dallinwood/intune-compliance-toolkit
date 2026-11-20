@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Attempts to Alter Logon and Logout Events - faillock\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"\" with the following command:\n\n$ sudo auditctl -l | grep \n\n\n\n\n-a always,exit -F arch=b32 -F path= -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path= -F perm=wa -F key=logins\n      Is it the case that the command does not return a line, or the line is commented out?\n----\nExpected values: var_accounts_passwords_pam_faillock_dir = $ODV_var_accounts_passwords_pam_faillock_dir\n\n== Record Attempts to Alter Logon and Logout Events - lastlog\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/log/lastlog\" with the following command:\n\n$ sudo auditctl -l | grep /var/log/lastlog\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/log/lastlog -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path=/var/log/lastlog -F perm=wa -F key=logins\n      Is it the case that the command does not return a line, or the line is commented out?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Record Attempts to Alter Logon and Logout Events - faillock\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"\" with the following command:\n\n$ sudo auditctl -l | grep \n\n\n\n\n-a always,exit -F arch=b32 -F path= -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path= -F perm=wa -F key=logins\n      Is it the case that the command does not return a line, or the line is commented out?\n----\nExpected values: var_accounts_passwords_pam_faillock_dir = $ODV_var_accounts_passwords_pam_faillock_dir\n\n== Record Attempts to Alter Logon and Logout Events - lastlog\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/log/lastlog\" with the following command:\n\n$ sudo auditctl -l | grep /var/log/lastlog\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/log/lastlog -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path=/var/log/lastlog -F perm=wa -F key=logins\n      Is it the case that the command does not return a line, or the line is commented out?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Record Attempts to Alter Logon and Logout Events - faillock\n\nThe audit system already collects login information for all users\nand root.\n\n\n\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-a always,exit -F arch=b32 -F path=$ODV_var_accounts_passwords_pam_faillock_dir -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path=$ODV_var_accounts_passwords_pam_faillock_dir -F perm=wa -F key=logins\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-a always,exit -F arch=b32 -F path=$ODV_var_accounts_passwords_pam_faillock_dir -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path=$ODV_var_accounts_passwords_pam_faillock_dir -F perm=wa -F key=logins\n```\n\n**Rationale:**\n\nManual editing of these files may indicate nefarious activity, such\nas an attacker attempting to remove evidence of an intrusion.\n\n## Record Attempts to Alter Logon and Logout Events - lastlog\n\nThe audit system already collects login information for all users\nand root.\n\n\n\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/log/lastlog -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path=/var/log/lastlog -F perm=wa -F key=logins\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/log/lastlog -F perm=wa -F key=logins\n-a always,exit -F arch=b64 -F path=/var/log/lastlog -F perm=wa -F key=logins\n```\n\n**Rationale:**\n\nManual editing of these files may indicate nefarious activity, such\nas an attacker attempting to remove evidence of an intrusion.",
   "discussion_format": "markdown",
@@ -90,7 +93,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

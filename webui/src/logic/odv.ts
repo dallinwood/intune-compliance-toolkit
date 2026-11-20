@@ -1,5 +1,5 @@
 import type { Odv, Rule } from '../types/library'
-import { generatedTargetCheck } from './checkPlan'
+import { generatedCheckItem } from './checkPlan'
 import type { OdvValues, OrgDefinedValue } from './selectionEntry'
 import { termLabel, type VocabularyIndex } from './vocabulary'
 
@@ -148,8 +148,8 @@ function odvKey(ruleId: string, odvName: string): string {
 // How this ODV reaches the generated macOS check: text-replaced into the
 // shell, exported as a variable, or not in the shell at all.
 export function odvSubstitutionMode(rule: Rule, odv: Odv): OdvSubstitutionMode {
-  const targetCheck = generatedTargetCheck(rule)
-  const shellTexts = [targetCheck?.default?.shell, ...Object.values(targetCheck?.by_version ?? {}).map((check) => check.shell)]
+  const checkItem = generatedCheckItem(rule)
+  const shellTexts = [checkItem?.default?.shell, ...Object.values(checkItem?.by_version ?? {}).map((check) => check.shell)]
   const shellsWithOdv = shellTexts.filter(
     (shellText): shellText is string => !!shellText && odvPlaceholderNames(shellText).includes(odv.name),
   )

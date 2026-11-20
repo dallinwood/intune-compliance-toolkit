@@ -74,7 +74,7 @@ def test_minlen_rule(upstream_dir):
             "quoting": "unquoted",
         },
     ]
-    check_text = rule["check"]["Linux"]["default"]["additional_info"]
+    check_text = rule["check"]["Linux"][0]["default"]["additional_info"]
     assert (
         "Expected values: var_password_pam_minlen = $ODV_var_password_pam_minlen, "
         "var_ocil_only = $ODV_var_ocil_only"
@@ -126,7 +126,10 @@ def test_multi_rule_partial_control(upstream_dir):
 
 
 def test_audit_uses_instructions_language(upstream_dir):
-    check = rules_by_cis_id(upstream_dir)["1.2.1"]["check"]["Linux"]
+    check_items = rules_by_cis_id(upstream_dir)["1.2.1"]["check"]["Linux"]
+    assert len(check_items) == 1
+    check = check_items[0]
+    assert check["name"] is None
     assert check["language"] == "instructions"
     assert check["default"]["shell"] is None
     assert check["default"]["result"] is None
@@ -171,7 +174,7 @@ def test_audit_fence_line_in_audit_text_fails(upstream_dir):
 def test_longer_dash_line_in_audit_text_is_kept(upstream_dir):
     edit_datastream(upstream_dir, "Verify minlen with:\n", "Verify minlen with:\n-----\n")
     rule = rules_by_cis_id(upstream_dir)["1.2.1"]
-    assert "\n-----\n" in rule["check"]["Linux"]["default"]["additional_info"]
+    assert "\n-----\n" in rule["check"]["Linux"][0]["default"]["additional_info"]
 
 
 def test_cis_reference_mismatch_fails(upstream_dir):

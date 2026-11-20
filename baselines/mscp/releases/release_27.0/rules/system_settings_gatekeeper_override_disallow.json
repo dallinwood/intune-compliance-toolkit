@@ -40,18 +40,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.systempolicy.managed\"); (ObjC.unwrap(s.objectForKey(\"DisableOverride\")) == false && s.objectIsForcedForKey(\"DisableOverride\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.systempolicy.managed\"); (ObjC.unwrap(s.objectForKey(\"DisableOverride\")) == false && s.objectIsForcedForKey(\"DisableOverride\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Gatekeeper _MUST_ be configured with a configuration profile to prevent normal users from overriding its settings.\n\nIf users are allowed to disable Gatekeeper or set it to a less restrictive setting, malware could be introduced into the system.\n",
   "discussion_format": "asciidoc",
@@ -114,7 +117,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

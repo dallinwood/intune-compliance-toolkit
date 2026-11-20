@@ -49,18 +49,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowNotesTranscriptionSummary\")) == false && s.objectIsForcedForKey(\"allowNotesTranscriptionSummary\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowNotesTranscriptionSummary\")) == false && s.objectIsForcedForKey(\"allowNotesTranscriptionSummary\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Apple Intelligence features such as Notes Transcription Summary that use off device AI _MUST_ be disabled.",
   "discussion_format": "asciidoc",
@@ -184,7 +187,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

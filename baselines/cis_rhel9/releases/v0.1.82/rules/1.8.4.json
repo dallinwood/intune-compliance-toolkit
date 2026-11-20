@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set GNOME3 Screensaver Inactivity Timeout\n----\nTo check the current idle time-out value, run the following command:\n$ gsettings get org.gnome.desktop.session idle-delay\nIf properly configured, the output should be 'uint32 '.\nTo ensure that users cannot change the screensaver inactivity timeout setting, run the following:\n$ grep idle-delay /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should be /org/gnome/desktop/session/idle-delay\n      Is it the case that idle-delay is set to 0 or a value greater than $ODV_inactivity_timeout_value?\n----\nExpected values: inactivity_timeout_value = $ODV_inactivity_timeout_value\n\n== Set GNOME3 Screensaver Lock Delay After Activation Period\n----\nTo check that the screen locks immediately when activated, run the following command:\n$ gsettings get org.gnome.desktop.screensaver lock-delay\nIf properly configured, the output should be 'uint32 '.\n      Is it the case that the screensaver lock delay is missing, or is set to a value greater than $ODV_var_screensaver_lock_delay?\n----\nExpected values: var_screensaver_lock_delay = $ODV_var_screensaver_lock_delay",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set GNOME3 Screensaver Inactivity Timeout\n----\nTo check the current idle time-out value, run the following command:\n$ gsettings get org.gnome.desktop.session idle-delay\nIf properly configured, the output should be 'uint32 '.\nTo ensure that users cannot change the screensaver inactivity timeout setting, run the following:\n$ grep idle-delay /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should be /org/gnome/desktop/session/idle-delay\n      Is it the case that idle-delay is set to 0 or a value greater than $ODV_inactivity_timeout_value?\n----\nExpected values: inactivity_timeout_value = $ODV_inactivity_timeout_value\n\n== Set GNOME3 Screensaver Lock Delay After Activation Period\n----\nTo check that the screen locks immediately when activated, run the following command:\n$ gsettings get org.gnome.desktop.screensaver lock-delay\nIf properly configured, the output should be 'uint32 '.\n      Is it the case that the screensaver lock delay is missing, or is set to a value greater than $ODV_var_screensaver_lock_delay?\n----\nExpected values: var_screensaver_lock_delay = $ODV_var_screensaver_lock_delay",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set GNOME3 Screensaver Inactivity Timeout\n\nThe idle time-out value for inactivity in the GNOME3 desktop is configured via the `idle-delay`\nsetting must be set under an appropriate configuration file(s) in the `/etc/dconf/db/distro.d` directory\nand locked in `/etc/dconf/db/distro.d/locks` directory to prevent user modification.\n\n\n         \n\nFor example, to configure the system for a 15 minute delay, add the following to\n`/etc/dconf/db/distro.d/00-security-settings`:\n\n```\n[org/gnome/desktop/session]\nidle-delay=uint32 900\n```\n\n**Rationale:**\n\nA session time-out lock is a temporary action taken when a user stops work and moves away from\nthe immediate physical vicinity of the information system but does not logout because of the\ntemporary nature of the absence. Rather than relying on the user to manually lock their operating\nsystem session prior to vacating the vicinity, GNOME3 can be configured to identify when\na user's session has idled and take action to initiate a session lock.\n\n## Set GNOME3 Screensaver Lock Delay After Activation Period\n\nTo activate the locking delay of the screensaver in the GNOME3 desktop when\nthe screensaver is activated, add or set `lock-delay` to `uint32 $ODV_var_screensaver_lock_delay` in\n`/etc/dconf/db/distro.d/00-security-settings`. For example:\n\n```\n[org/gnome/desktop/screensaver]\nlock-delay=uint32 $ODV_var_screensaver_lock_delay\n         \n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nA session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity\nof the information system but does not want to logout because of the temporary nature of the absence.",
   "discussion_format": "markdown",
@@ -114,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.8"

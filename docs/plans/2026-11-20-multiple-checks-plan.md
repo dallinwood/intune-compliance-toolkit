@@ -42,3 +42,7 @@
 - [ ] **Step 2: Implement; run unit, lint, `tsc -b`, full e2e (rerun failures alone), and the Python suite with `--all-releases`.**
 - [ ] **Step 3: Screenshots** of a one-item and a two-item check section at about 375px and 1440px; look at them.
 - [ ] **Step 4: Commit** Tasks 1 to 3 as `feat: allow several checks per platform`, explicit paths only (build the list from `git status`; the working tree holds only this plan's changes), design `Status: Implemented`, progress log; push.
+
+## Progress log
+
+- 2026-11-20: Tasks 1 to 3 done and committed together as `feat: allow several checks per platform` (schema 7 data and Python, web UI logic, components and e2e).

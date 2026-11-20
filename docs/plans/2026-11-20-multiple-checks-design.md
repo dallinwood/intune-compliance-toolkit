@@ -1,7 +1,7 @@
 # Design: several checks per platform
 
 Date: 2026-11-20
-Status: Approved 2026-11-20, not yet implemented. Prerequisite for the Windows CIS (ansible-lockdown) design.
+Status: Implemented 2026-11-20. Prerequisite for the Windows CIS (ansible-lockdown) design.
 
 ## Intent
 
@@ -77,4 +77,10 @@ placeholder and quoting checks in CI.
 
 ## Progress log
 
-(none yet)
+- 2026-11-20: Implemented in one commit, `feat: allow several checks per platform`. Schema 7
+  (`check[target]` is a non-empty list of items with a `name`), every source and release
+  regenerated, the web UI logic reads the first bash or zsh item on macOS, Rule detail shows one
+  selectable entry per check item, change labels name the item when a rule has several. Also
+  fixed two provenance minors: a framework source that is not exactly `official` now counts as
+  community (none is dropped), and the e2e test for the all-rules page having no provenance
+  badge now proves its locator can find the badge on a framework page.

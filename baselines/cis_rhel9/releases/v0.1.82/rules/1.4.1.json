@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Boot Loader Password in grub2\n----\nFirst, check whether the password is defined in either /boot/grub2/user.cfg or\n/boot/grub2/grub.cfg.\nRun the following commands:\n$ sudo grep '^[\\s]*GRUB2_PASSWORD=grub\\.pbkdf2\\.sha512.*$' /boot/grub2/user.cfg\n$ sudo grep '^[\\s]*password_pbkdf2[\\s]+.*[\\s]+grub\\.pbkdf2\\.sha512.*$' /boot/grub2/grub.cfg\n\n\nSecond, check that a superuser is defined in /boot/grub2/grub.cfg.\n$ sudo grep '^[\\s]*set[\\s]+superusers=(\"?)[a-zA-Z_]+\\1$'  /boot/grub2/grub.cfg\n      Is it the case that it does not produce any output?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Boot Loader Password in grub2\n----\nFirst, check whether the password is defined in either /boot/grub2/user.cfg or\n/boot/grub2/grub.cfg.\nRun the following commands:\n$ sudo grep '^[\\s]*GRUB2_PASSWORD=grub\\.pbkdf2\\.sha512.*$' /boot/grub2/user.cfg\n$ sudo grep '^[\\s]*password_pbkdf2[\\s]+.*[\\s]+grub\\.pbkdf2\\.sha512.*$' /boot/grub2/grub.cfg\n\n\nSecond, check that a superuser is defined in /boot/grub2/grub.cfg.\n$ sudo grep '^[\\s]*set[\\s]+superusers=(\"?)[a-zA-Z_]+\\1$'  /boot/grub2/grub.cfg\n      Is it the case that it does not produce any output?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Boot Loader Password in grub2\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-setpassword\n```\n\n\nWhen prompted, enter the password that was selected.\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.\n\n**Notes:**\n\nRHEL9 unified the paths for grub2 files.",
   "discussion_format": "markdown",
@@ -79,7 +82,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.4"

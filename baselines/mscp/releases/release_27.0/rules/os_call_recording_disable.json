@@ -17,18 +17,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCallRecording\")) == false && s.objectIsForcedForKey(\"allowCallRecording\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCallRecording\")) == false && s.objectIsForcedForKey(\"allowCallRecording\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The built-in Call Recording _MUST_ be disabled in certain organizations or jurisdictions by legal statutes and/or privacy laws.\n\nThe Call Recording service announces to all users that a cellular phone call is about to be recorded. When recording stops (either manually by the user or by ending the call), the recording is saved to a new note in the Notes app. This functionality may be prohibited by certain organizations or jurisdictions by legal statutes and/or privacy laws.\n",
   "discussion_format": "asciidoc",
@@ -110,7 +113,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

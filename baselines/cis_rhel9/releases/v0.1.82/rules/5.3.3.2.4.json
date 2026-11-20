@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Password Maximum Consecutive Repeating Characters\n----\nVerify the value of the \"maxrepeat\" option in \"/etc/security/pwquality.conf\" with the following command:\n\n$ grep maxrepeat /etc/security/pwquality.conf\n\nmaxrepeat = \n      Is it the case that the value of \"maxrepeat\" is set to more than \"$ODV_var_password_pam_maxrepeat\" or is commented out?\n----\nExpected values: var_password_pam_maxrepeat = $ODV_var_password_pam_maxrepeat",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Password Maximum Consecutive Repeating Characters\n----\nVerify the value of the \"maxrepeat\" option in \"/etc/security/pwquality.conf\" with the following command:\n\n$ grep maxrepeat /etc/security/pwquality.conf\n\nmaxrepeat = \n      Is it the case that the value of \"maxrepeat\" is set to more than \"$ODV_var_password_pam_maxrepeat\" or is commented out?\n----\nExpected values: var_password_pam_maxrepeat = $ODV_var_password_pam_maxrepeat",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Password Maximum Consecutive Repeating Characters\n\nThe pam_pwquality module's `maxrepeat` parameter controls requirements for\nconsecutive repeating characters. When set to a positive number, it will reject passwords\nwhich contain more than that number of consecutive characters. Modify the `maxrepeat` setting\nin `/etc/security/pwquality.conf` to equal $ODV_var_password_pam_maxrepeat to prevent a\nrun of ($ODV_var_password_pam_maxrepeat + 1) or more identical characters.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise the password.\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at\nguessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes to crack a password. The more\ncomplex the password, the greater the number of possible combinations that need to be tested before the\npassword is compromised.\n\n\n          \n\nPasswords with excessive repeating characters may be more vulnerable to password-guessing attacks.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

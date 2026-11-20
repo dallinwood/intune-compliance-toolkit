@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Add nosuid Option to /var\n----\nVerify the nosuid option is configured for the /var mount point,\n    run the following command:\n    $ sudo mount | grep '\\s/var\\s'\n    . . . /var . . . nosuid . . .\n\n      Is it the case that the \"/var\" file system does not have the \"nosuid\" option set?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Add nosuid Option to /var\n----\nVerify the nosuid option is configured for the /var mount point,\n    run the following command:\n    $ sudo mount | grep '\\s/var\\s'\n    . . . /var . . . nosuid . . .\n\n      Is it the case that the \"/var\" file system does not have the \"nosuid\" option set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Add nosuid Option to /var\n\nThe `nosuid` mount option can be used to prevent\nexecution of setuid programs in `/var`. The SUID and SGID permissions\nshould not be required for this directory.\nAdd the `nosuid` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var`.\n\n**Rationale:**\n\nThe presence of SUID and SGID executables should be tightly controlled.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.1",

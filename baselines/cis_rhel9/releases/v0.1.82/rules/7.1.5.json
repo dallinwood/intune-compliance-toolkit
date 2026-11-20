@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify User Who Owns shadow File\n----\nTo check the ownership of /etc/shadow,\nrun the command:\n$ ls -lL /etc/shadow\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/shadow does not have an owner of root?\n----\n\n== Verify Group Who Owns shadow File\n----\nTo check the group ownership of /etc/shadow,\nrun the command:\n$ ls -lL /etc/shadow\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/shadow does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on shadow File\n----\nTo check the permissions of /etc/shadow,\nrun the command:\n$ ls -l /etc/shadow\nIf properly configured, the output should indicate the following permissions:\n----------\n      Is it the case that /etc/shadow does not have unix mode ----------?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify User Who Owns shadow File\n----\nTo check the ownership of /etc/shadow,\nrun the command:\n$ ls -lL /etc/shadow\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/shadow does not have an owner of root?\n----\n\n== Verify Group Who Owns shadow File\n----\nTo check the group ownership of /etc/shadow,\nrun the command:\n$ ls -lL /etc/shadow\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/shadow does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on shadow File\n----\nTo check the permissions of /etc/shadow,\nrun the command:\n$ ls -l /etc/shadow\nIf properly configured, the output should indicate the following permissions:\n----------\n      Is it the case that /etc/shadow does not have unix mode ----------?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify User Who Owns shadow File\n\nTo properly set the owner of `/etc/shadow`, run the command:\n\n```\n$ sudo chown root /etc/shadow \n```\n\n**Rationale:**\n\nThe `/etc/shadow` file contains the list of local\nsystem accounts and stores password hashes. Protection of this file is\ncritical for system security. Failure to give ownership of this file\nto root provides the designated owner with access to sensitive information\nwhich could weaken the system security posture.\n\n## Verify Group Who Owns shadow File\n\nTo properly set the group owner of `/etc/shadow`, run the command:\n\n```\n$ sudo chgrp root /etc/shadow\n```\n\n**Rationale:**\n\nThe `/etc/shadow` file stores password hashes. Protection of this file is\ncritical for system security.\n\n## Verify Permissions on shadow File\n\nTo properly set the permissions of `/etc/shadow`, run the command:\n\n```\n$ sudo chmod 0000 /etc/shadow\n```\n\n**Rationale:**\n\nThe `/etc/shadow` file contains the list of local\nsystem accounts and stores password hashes. Protection of this file is\ncritical for system security. Failure to give ownership of this file\nto root provides the designated owner with access to sensitive information\nwhich could weaken the system security posture.",
   "discussion_format": "markdown",
@@ -94,7 +97,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "7",
     "7.1"

@@ -55,8 +55,12 @@ export interface TargetCheck {
   by_version: Record<string, RuleCheck>
 }
 
-// Keyed by target name (macOS, Windows, ...).
-export type RuleChecks = Record<string, TargetCheck>
+// One of the checks a rule has for a target; name is a short label, or null
+// when the language says enough.
+export type CheckItem = TargetCheck & { name: string | null }
+
+// Keyed by target name (macOS, Windows, ...); each target has a non-empty list.
+export type RuleChecks = Record<string, CheckItem[]>
 
 export type OdvDatatype = 'number' | 'string' | 'enum' | 'regex'
 
@@ -121,7 +125,7 @@ export interface RuleSource {
 }
 
 export interface Rule {
-  schema_version: 6
+  schema_version: 7
   id: string
   title: string
   discussion: string
@@ -152,7 +156,7 @@ export interface IndexEntry {
 }
 
 export interface RuleIndex {
-  schema_version: 6
+  schema_version: 7
   source: string
   rules: IndexEntry[]
 }
@@ -186,6 +190,6 @@ export interface ManifestSource {
 }
 
 export interface Manifest {
-  schema_version: 6
+  schema_version: 7
   sources: ManifestSource[]
 }

@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure /var/tmp Located On Separate Partition\n----\nVerify that a separate file system/partition has been created for /var/tmp with the following command:\n\n$ mountpoint /var/tmp\n\n      Is it the case that \"/var/tmp is not a mountpoint\" is returned?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure /var/tmp Located On Separate Partition\n----\nVerify that a separate file system/partition has been created for /var/tmp with the following command:\n\n$ mountpoint /var/tmp\n\n      Is it the case that \"/var/tmp is not a mountpoint\" is returned?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure /var/tmp Located On Separate Partition\n\nThe `/var/tmp` directory is a world-writable directory used\nfor temporary file storage. Ensure it has its own partition or\nlogical volume at installation time, or migrate it using LVM.\n\n**Rationale:**\n\nThe `/var/tmp` partition is used as temporary storage by many programs.\nPlacing `/var/tmp` in its own partition enables the setting of more\nrestrictive mount options, which can help protect programs which use it.",
   "discussion_format": "markdown",
@@ -65,7 +68,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.1",

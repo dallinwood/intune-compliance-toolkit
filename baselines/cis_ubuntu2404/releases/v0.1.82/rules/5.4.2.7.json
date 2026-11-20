@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure that System Accounts Do Not Run a Shell Upon Login\n----\nTo obtain a listing of all users, their UIDs, and their shells, run the command:\n$ awk -F: '{print $1 \":\" $3 \":\" $7}' /etc/passwd\nIdentify the system accounts from this listing. These will primarily be the accounts with UID\nnumbers less than 1000, other than root.\n      Is it the case that any system account other than root has a login shell?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure that System Accounts Do Not Run a Shell Upon Login\n----\nTo obtain a listing of all users, their UIDs, and their shells, run the command:\n$ awk -F: '{print $1 \":\" $3 \":\" $7}' /etc/passwd\nIdentify the system accounts from this listing. These will primarily be the accounts with UID\nnumbers less than 1000, other than root.\n      Is it the case that any system account other than root has a login shell?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure that System Accounts Do Not Run a Shell Upon Login\n\nSome accounts are not associated with a human user of the system, and exist to perform some\nadministrative functions. Should an attacker be able to log into these accounts, they should\nnot be granted access to a shell.\n\n\n         \n\nThe login shell for each local account is stored in the last field of each line in\n`/etc/passwd`. System accounts are those user accounts with a user ID less than\n`1000`. The user ID is stored in the third field. If any system account\nother than `root` has a login shell, disable it with the command:\n\n```\n$ sudo usermod -s /sbin/nologin *account*\n         \n```\n\n**Rationale:**\n\nEnsuring shells are not given to system accounts upon login makes it more difficult for\nattackers to make use of system accounts.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

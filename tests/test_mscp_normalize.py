@@ -97,7 +97,9 @@ def test_gatekeeper_like_rule_normalizes():
     assert {"name": "disa_stig", "severity": "high"} in benchmarks_for_27
     assert {"name": "cis_lvl1", "severity": None} in benchmarks_for_27
     assert result["tags"] == ["800-53r5_low", "cisv8"]
-    assert result["check"]["macOS"]["language"] == "bash"
+    assert len(result["check"]["macOS"]) == 1
+    assert result["check"]["macOS"][0]["name"] is None
+    assert result["check"]["macOS"][0]["language"] == "bash"
     assert result["remediation"] == {
         "macOS": {
             "steps": [bash_step("/usr/sbin/spctl --global-enable")],
@@ -127,8 +129,8 @@ def test_version_override_result_type_kept():
             "tags: [a]\n",
         )
     )
-    assert result["check"]["macOS"]["default"]["result"] == {"type": "string", "value": "PASS"}
-    assert result["check"]["macOS"]["by_version"]["15.0"]["result"] == {"type": "integer", "value": 1}
+    assert result["check"]["macOS"][0]["default"]["result"] == {"type": "string", "value": "PASS"}
+    assert result["check"]["macOS"][0]["by_version"]["15.0"]["result"] == {"type": "integer", "value": 1}
     assert schema_errors(result) == []
 
 
@@ -145,8 +147,8 @@ def test_version_only_check_has_null_default():
             """,
         )
     )
-    assert result["check"]["macOS"]["default"] is None
-    assert result["check"]["macOS"]["by_version"]["15.0"]["shell"] == "defaults read x"
+    assert result["check"]["macOS"][0]["default"] is None
+    assert result["check"]["macOS"][0]["by_version"]["15.0"]["shell"] == "defaults read x"
     assert result["assessment"]["status"] == "automated"
     assert result["tags"] == []
     assert schema_errors(result) == []
@@ -165,7 +167,7 @@ def test_check_additional_info_is_carried():
             """,
         )
     )
-    assert result["check"]["macOS"]["default"]["additional_info"] == "Run as root."
+    assert result["check"]["macOS"][0]["default"]["additional_info"] == "Run as root."
     assert schema_errors(result) == []
 
 
@@ -202,7 +204,7 @@ def test_manual_tag_wins_over_existing_check():
         )
     )
     assert result["assessment"] == {"status": "manual", "manual_reason": "manual"}
-    assert result["check"]["macOS"]["default"] is not None
+    assert result["check"]["macOS"][0]["default"] is not None
 
 
 def test_no_check_is_manual_no_check():
@@ -273,8 +275,8 @@ def test_odv_by_benchmark_filtered_to_macos_benchmarks():
             "quoting": "unquoted",
         }
     ]
-    assert result["check"]["macOS"]["default"]["result"] == {"type": "integer", "value": "$ODV_value"}
-    assert result["check"]["macOS"]["default"]["shell"] == "test $ODV_value"
+    assert result["check"]["macOS"][0]["default"]["result"] == {"type": "integer", "value": "$ODV_value"}
+    assert result["check"]["macOS"][0]["default"]["shell"] == "test $ODV_value"
     assert schema_errors(result) == []
 
 
@@ -296,7 +298,7 @@ def test_odv_placeholder_without_odv_raises():
 
 def test_odv_token_rewritten_not_bare_name():
     result = normalize(rule_with(ODV_SHELL_PLATFORM, ODV_BLOCK))
-    assert result["check"]["macOS"]["default"]["shell"] == "/usr/bin/awk -v ODV=$ODV_value '$1 > ODV' /etc/x"
+    assert result["check"]["macOS"][0]["default"]["shell"] == "/usr/bin/awk -v ODV=$ODV_value '$1 > ODV' /etc/x"
 
 
 def test_unused_odv_raises():
@@ -457,7 +459,7 @@ def test_index_entry_fields():
         "applicability", "tags", "has_odv",
     }
     assert entry["has_odv"] is False
-    wrapped = {"schema_version": 6, "source": "mscp", "rules": [entry]}
+    wrapped = {"schema_version": 7, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
 
 
@@ -541,7 +543,7 @@ def test_source_and_format_fields():
     assert result["discussion_format"] == "asciidoc"
     assert result["source"]["upstream_revision"] is None
     assert result["source"]["upstream_updated"] is None
-    assert result["schema_version"] == 6
+    assert result["schema_version"] == 7
     assert result["section_path"] == ["os"]
     assert "platform" not in result
 
@@ -553,7 +555,7 @@ def test_empty_result_on_manual_rule_normalizes_to_null():
             "tags: [manual]\n",
         )
     )
-    assert result["check"]["macOS"]["default"]["result"] is None
+    assert result["check"]["macOS"][0]["default"]["result"] is None
     assert result["assessment"]["manual_reason"] == "manual"
     assert schema_errors(result) == []
 
@@ -590,7 +592,7 @@ def test_fix_nested_in_version_check_becomes_version_fix():
     assert result["remediation"]["macOS"]["steps"] == [
         {**bash_step(None, versions=["26.0"], additional_info="Implemented by DDM."), "language": "instructions"},
     ]
-    assert "fix" not in result["check"]["macOS"]["by_version"]["26.0"]
+    assert "fix" not in result["check"]["macOS"][0]["by_version"]["26.0"]
     assert schema_errors(result) == []
 
 
@@ -610,7 +612,7 @@ NESTED_DEFAULT_FIX_PLATFORM = (
 def test_fix_nested_in_default_check_becomes_default_fix():
     result = normalize(rule_with(NESTED_DEFAULT_FIX_PLATFORM))
     assert result["remediation"]["macOS"]["steps"] == [bash_step("fix_nested")]
-    assert result["check"]["macOS"]["default"]["shell"] == "x"
+    assert result["check"]["macOS"][0]["default"]["shell"] == "x"
     assert schema_errors(result) == []
 
 
@@ -786,3 +788,4 @@ def test_default_profile_covers_listed_versions_without_their_own_profile():
 def test_default_profile_without_version_profiles_applies_to_every_version():
     result = normalize(rule_with("'27.0':\n  benchmarks: []\n", "mobileconfig_info:\n  - PayloadType: default\n"))
     assert result["remediation"]["macOS"]["payloads"][0]["versions"] is None
+

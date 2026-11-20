@@ -38193,6 +38193,6 @@
       "title": "Clients are authenticated when calling web APIs that facilitate modification of data."
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "asd_ism"
 }

@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Permissions on /etc/audit/auditd.conf\n----\nTo check the permissions of /etc/audit/auditd.conf,\nrun the command:\n$ ls -l /etc/audit/auditd.conf\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /etc/audit/auditd.conf does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /etc/audit/audit.rules\n----\nTo check the permissions of /etc/audit/audit.rules,\nrun the command:\n$ ls -l /etc/audit/audit.rules\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /etc/audit/audit.rules does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /etc/audit/rules.d/*.rules\n----\nTo check the permissions of /etc/audit/rules.d/*.rules,\nrun the command:\n$ ls -l /etc/audit/rules.d/*.rules\nIf properly configured, the output should indicate the following permissions:\n-rw-------\n      Is it the case that /etc/audit/rules.d/*.rules does not have unix mode -rw-------?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Permissions on /etc/audit/auditd.conf\n----\nTo check the permissions of /etc/audit/auditd.conf,\nrun the command:\n$ ls -l /etc/audit/auditd.conf\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /etc/audit/auditd.conf does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /etc/audit/audit.rules\n----\nTo check the permissions of /etc/audit/audit.rules,\nrun the command:\n$ ls -l /etc/audit/audit.rules\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /etc/audit/audit.rules does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /etc/audit/rules.d/*.rules\n----\nTo check the permissions of /etc/audit/rules.d/*.rules,\nrun the command:\n$ ls -l /etc/audit/rules.d/*.rules\nIf properly configured, the output should indicate the following permissions:\n-rw-------\n      Is it the case that /etc/audit/rules.d/*.rules does not have unix mode -rw-------?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify Permissions on /etc/audit/auditd.conf\n\nTo properly set the permissions of `/etc/audit/auditd.conf`, run the command:\n\n```\n$ sudo chmod 0640 /etc/audit/auditd.conf\n```\n\n**Rationale:**\n\nWithout the capability to restrict the roles and individuals that can select which events\nare audited, unauthorized personnel may be able to prevent the auditing of critical\nevents. Misconfigured audits may degrade the system's performance by overwhelming\nthe audit log. Misconfigured audits may also make it more difficult to establish,\ncorrelate, and investigate the events relating to an incident or identify\nthose responsible for one.\n\n## Verify Permissions on /etc/audit/audit.rules\n\nTo properly set the permissions of `/etc/audit/audit.rules`, run the command:\n\n```\n$ sudo chmod 0640 /etc/audit/audit.rules\n```\n\n**Rationale:**\n\nWithout the capability to restrict the roles and individuals that can select which events\nare audited, unauthorized personnel may be able to prevent the auditing of critical\nevents. Misconfigured audits may degrade the system's performance by overwhelming\nthe audit log. Misconfigured audits may also make it more difficult to establish,\ncorrelate, and investigate the events relating to an incident or identify\nthose responsible for one.\n\n## Verify Permissions on /etc/audit/rules.d/*.rules\n\nTo properly set the permissions of `/etc/audit/rules.d/*.rules`, run the command:\n\n```\n$ sudo chmod 0600 /etc/audit/rules.d/*.rules\n```\n\n**Rationale:**\n\nWithout the capability to restrict the roles and individuals that can select which events\nare audited, unauthorized personnel may be able to prevent the auditing of critical\nevents. Misconfigured audits may degrade the system's performance by overwhelming\nthe audit log. Misconfigured audits may also make it more difficult to establish,\ncorrelate, and investigate the events relating to an incident or identify\nthose responsible for one.",
   "discussion_format": "markdown",
@@ -81,7 +84,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

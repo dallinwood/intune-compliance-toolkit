@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Build and Test AIDE Database\n----\nTo find the location of the AIDE database file, run the following command:\n$ sudo ls -l DBDIR/database_file_name\n      Is it the case that there is no database file?\n----\n\n== Install AIDE\n----\nRun the following command to determine if the aide package is installed: $ dpkg -l aide\n      Is it the case that the aide package is not installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Build and Test AIDE Database\n----\nTo find the location of the AIDE database file, run the following command:\n$ sudo ls -l DBDIR/database_file_name\n      Is it the case that there is no database file?\n----\n\n== Install AIDE\n----\nRun the following command to determine if the aide package is installed: $ dpkg -l aide\n      Is it the case that the aide package is not installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Build and Test AIDE Database\n\nRun the following command to generate a new database:\n\n\n```\n$ sudo aideinit\n```\n\n\nBy default, the database will be written to the file\n\n`/var/lib/aide/aide.db.new`.\n\nStoring the database, the configuration file `/etc/aide.conf`, and the binary\n`/usr/bin/aide`\n(or hashes of these files), in a secure location (such as on read-only media) provides additional assurance about their integrity.\nThe newly-generated database can be installed as follows:\n\n\n```\n$ sudo cp /var/lib/aide/aide.db.new /var/lib/aide/aide.db\n```\n\n\nTo initiate a manual check, run the following command:\n\n```\n$ sudo /usr/bin/aide --check\n```\n\nIf this check produces any unexpected output, investigate.\n\n**Rationale:**\n\nFor AIDE to be effective, an initial database of \"known-good\" information about files\nmust be captured and it should be able to be verified against the installed files.\n\n## Install AIDE\n\nThe `aide` package can be installed with the following command:\n\n```\n$ apt-get install aide\n```\n\n**Rationale:**\n\nThe AIDE package must be installed if it is to be available for integrity checking.",
   "discussion_format": "markdown",
@@ -81,7 +84,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3"

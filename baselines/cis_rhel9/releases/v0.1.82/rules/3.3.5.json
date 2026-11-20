@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Accepting ICMP Redirects for All IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_all_accept_redirects_value = $ODV_sysctl_net_ipv4_conf_all_accept_redirects_value\n\n== Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.default.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_accept_redirects_value = $ODV_sysctl_net_ipv4_conf_default_accept_redirects_value\n\n== Disable Accepting ICMP Redirects for All IPv6 Interfaces\n----\nThe runtime status of the net.ipv6.conf.all.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv6.conf.all.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv6_conf_all_accept_redirects_value = $ODV_sysctl_net_ipv6_conf_all_accept_redirects_value\n\n== Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv6 Interfaces\n----\nThe runtime status of the net.ipv6.conf.default.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv6.conf.default.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv6_conf_default_accept_redirects_value = $ODV_sysctl_net_ipv6_conf_default_accept_redirects_value",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable Accepting ICMP Redirects for All IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_all_accept_redirects_value = $ODV_sysctl_net_ipv4_conf_all_accept_redirects_value\n\n== Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.default.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_accept_redirects_value = $ODV_sysctl_net_ipv4_conf_default_accept_redirects_value\n\n== Disable Accepting ICMP Redirects for All IPv6 Interfaces\n----\nThe runtime status of the net.ipv6.conf.all.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv6.conf.all.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv6_conf_all_accept_redirects_value = $ODV_sysctl_net_ipv6_conf_all_accept_redirects_value\n\n== Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv6 Interfaces\n----\nThe runtime status of the net.ipv6.conf.default.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv6.conf.default.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv6_conf_default_accept_redirects_value = $ODV_sysctl_net_ipv6_conf_default_accept_redirects_value",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable Accepting ICMP Redirects for All IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.all.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.all.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.all.accept_redirects = 0\n```\n\n**Rationale:**\n\nICMP redirect messages are used by routers to inform hosts that a more\ndirect route exists for a particular destination. These messages modify the\nhost's route table and are unauthenticated. An illicit ICMP redirect\nmessage could result in a man-in-the-middle attack.\n\n\nThis feature of the IPv4 protocol has few legitimate uses. It should be\ndisabled unless absolutely required.\"\n\n## Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.default.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.default.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.default.accept_redirects = 0\n```\n\n**Rationale:**\n\nICMP redirect messages are used by routers to inform hosts that a more\ndirect route exists for a particular destination. These messages modify the\nhost's route table and are unauthenticated. An illicit ICMP redirect\nmessage could result in a man-in-the-middle attack.\n\nThis feature of the IPv4 protocol has few legitimate uses. It should\nbe disabled unless absolutely required.\n\n## Disable Accepting ICMP Redirects for All IPv6 Interfaces\n\nTo set the runtime status of the `net.ipv6.conf.all.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv6.conf.all.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv6.conf.all.accept_redirects = 0\n```\n\n**Rationale:**\n\nAn illicit ICMP redirect message could result in a man-in-the-middle attack.\n\n## Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv6 Interfaces\n\nTo set the runtime status of the `net.ipv6.conf.default.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv6.conf.default.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv6.conf.default.accept_redirects = 0\n```\n\n**Rationale:**\n\nAn illicit ICMP redirect message could result in a man-in-the-middle attack.",
   "discussion_format": "markdown",
@@ -160,7 +163,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "3",
     "3.3"

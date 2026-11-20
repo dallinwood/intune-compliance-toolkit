@@ -25,15 +25,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Bluetooth Service\n----\nTo check that the bluetooth service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled bluetooth\nOutput should indicate the bluetooth service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled bluetooth disabled\n\nRun the following command to verify bluetooth is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active bluetooth\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the bluetooth is masked, run the following command:\n$ sudo systemctl show bluetooth | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"bluetooth\" is loaded and not masked?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable Bluetooth Service\n----\nTo check that the bluetooth service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled bluetooth\nOutput should indicate the bluetooth service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled bluetooth disabled\n\nRun the following command to verify bluetooth is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active bluetooth\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the bluetooth is masked, run the following command:\n$ sudo systemctl show bluetooth | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"bluetooth\" is loaded and not masked?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable Bluetooth Service\n\nThe `bluetooth` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now bluetooth.service\n```\n\n         \n```\n$ sudo service bluetooth stop\n```\n\n**Rationale:**\n\nDisabling the `bluetooth` service prevents the system from attempting\nconnections to Bluetooth devices, which entails some security risk.\nNevertheless, variation in this risk decision may be expected due to the\nutility of Bluetooth connectivity and its limited range.",
   "discussion_format": "markdown",
@@ -69,7 +72,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "3",
     "3.1"

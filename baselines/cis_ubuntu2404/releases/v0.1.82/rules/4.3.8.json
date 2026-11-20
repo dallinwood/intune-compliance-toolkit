@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure nftables Default Deny Firewall Policy\n----\nRun the following commands and verify that base chains policy is drop:\n$ sudo nft list ruleset | grep 'hook input' \nOutput should include a list of nftables similar to:\ntype filter hook input priority 0; policy drop; \nSame goes not only for hook input, but also output and forward\n      Is it the case that default policy is not set for nftables rules?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure nftables Default Deny Firewall Policy\n----\nRun the following commands and verify that base chains policy is drop:\n$ sudo nft list ruleset | grep 'hook input' \nOutput should include a list of nftables similar to:\ntype filter hook input priority 0; policy drop; \nSame goes not only for hook input, but also output and forward\n      Is it the case that default policy is not set for nftables rules?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure nftables Default Deny Firewall Policy\n\nBase chain policy is the default verdict that will be applied to packets reaching the end of\nthe chain. There are two policies: accept (Default) and drop. If the policy is set to accept,\nthe firewall will accept any packet that is not configured to be denied and the packet will\ncontinue traversing the network stack.\n\nRun the following commands and verify that base chains contain a policy of DROP.\n\n```\n$ nft list ruleset | grep 'hook input'\ntype filter hook input priority 0; policy drop;\n$ nft list ruleset | grep 'hook forward'\ntype filter hook forward priority 0; policy drop;\n$ nft list ruleset | grep 'hook output'\ntype filter hook output priority 0; policy drop;\n```\n\n**Rationale:**\n\nIt is easier to allow acceptable usage than to block unacceptable usage.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.3"

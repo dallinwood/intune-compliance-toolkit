@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Require Re-Authentication When Using the sudo Command\n----\nVerify the operating system requires re-authentication\nwhen using the \"sudo\" command to elevate privileges, run the following command:\nsudo grep -ri '^Defaults.*timestamp_timeout' /etc/sudoers /etc/sudoers.d\nThe output should be:\n/etc/sudoers:Defaults timestamp_timeout=0 or \"timestamp_timeout\" is set to a positive number.\nIf conflicting results are returned, this is a finding.\n      Is it the case that timestamp_timeout is not set with the appropriate value for sudo?\n----\nExpected values: var_sudo_timestamp_timeout = $ODV_var_sudo_timestamp_timeout",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Require Re-Authentication When Using the sudo Command\n----\nVerify the operating system requires re-authentication\nwhen using the \"sudo\" command to elevate privileges, run the following command:\nsudo grep -ri '^Defaults.*timestamp_timeout' /etc/sudoers /etc/sudoers.d\nThe output should be:\n/etc/sudoers:Defaults timestamp_timeout=0 or \"timestamp_timeout\" is set to a positive number.\nIf conflicting results are returned, this is a finding.\n      Is it the case that timestamp_timeout is not set with the appropriate value for sudo?\n----\nExpected values: var_sudo_timestamp_timeout = $ODV_var_sudo_timestamp_timeout",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Require Re-Authentication When Using the sudo Command\n\nThe sudo `timestamp_timeout` tag sets the amount of time sudo password prompt waits.\nThe default `timestamp_timeout` value is 5 minutes.\nThe timestamp_timeout should be configured by making sure that the\n`timestamp_timeout` tag exists in\n`/etc/sudoers` configuration file or any sudo configuration snippets\nin `/etc/sudoers.d/`.\nIf the value is set to an integer less than 0, the user's time stamp will not expire\nand the user will not have to re-authenticate for privileged actions until the user's session is terminated.\n\n**Rationale:**\n\nWithout re-authentication, users may access resources or perform tasks for which they\ndo not have authorization.\n\n\n        \n\nWhen operating systems provide the capability to escalate a functional capability, it\nis critical that the user re-authenticate.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.2"

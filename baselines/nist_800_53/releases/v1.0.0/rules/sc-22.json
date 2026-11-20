@@ -41,7 +41,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "System and Communications Protection",
     "SC-22 Architecture and Provisioning for Name/address Resolution Service"

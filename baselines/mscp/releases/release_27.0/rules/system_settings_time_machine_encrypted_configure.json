@@ -57,18 +57,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 0
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 0
+          },
+          "shell": "/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine.plist | /usr/bin/grep -c NotEncrypted"
         },
-        "shell": "/usr/bin/defaults read /Library/Preferences/com.apple.TimeMachine.plist | /usr/bin/grep -c NotEncrypted"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "Time Machine volumes _MUST_ be encrypted.\n",
   "discussion_format": "asciidoc",
@@ -133,7 +136,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

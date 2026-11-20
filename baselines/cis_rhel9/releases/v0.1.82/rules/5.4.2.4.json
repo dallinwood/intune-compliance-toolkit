@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Authentication Required for Single User Mode\n----\nroot password is not set\n      Is it the case that Perform the following to determine if a password is set for the\nroot user:\n<pre># grep -Eq '^root:\\$[0-9]' /etc/shadow || echo \"root is locked\"</pre>\nNo results should be returned.\nOtherwise, run the following command and follow the prompts to set a\npassword for the root user:\n<pre># passwd root</pre>?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Authentication Required for Single User Mode\n----\nroot password is not set\n      Is it the case that Perform the following to determine if a password is set for the\nroot user:\n<pre># grep -Eq '^root:\\$[0-9]' /etc/shadow || echo \"root is locked\"</pre>\nNo results should be returned.\nOtherwise, run the following command and follow the prompts to set a\npassword for the root user:\n<pre># passwd root</pre>?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Authentication Required for Single User Mode\n\nSingle user mode is used for recovery when the system detects an\nissue during boot or by manual selection from the bootloader.\n\n**Rationale:**\n\nRequiring authentication in single user mode prevents an unauthorized\nuser from rebooting the system into single user to gain root privileges\nwithout credentials.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

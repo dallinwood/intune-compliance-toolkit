@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify Group Who Owns cron.hourly\n----\nTo check the group ownership of /etc/cron.hourly,\nrun the command:\n$ ls -lL /etc/cron.hourly\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/cron.hourly does not have a group owner of\nroot\n?\n----\n\n== Verify Owner on cron.hourly\n----\nTo check the ownership of /etc/cron.hourly,\nrun the command:\n$ ls -lL /etc/cron.hourly\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/cron.hourly does not have an owner of root?\n----\n\n== Verify Permissions on cron.hourly\n----\nTo check the permissions of /etc/cron.hourly,\nrun the command:\n$ ls -l /etc/cron.hourly\nIf properly configured, the output should indicate the following permissions:\n-rwx------\n      Is it the case that /etc/cron.hourly does not have unix mode -rwx------?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Group Who Owns cron.hourly\n----\nTo check the group ownership of /etc/cron.hourly,\nrun the command:\n$ ls -lL /etc/cron.hourly\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/cron.hourly does not have a group owner of\nroot\n?\n----\n\n== Verify Owner on cron.hourly\n----\nTo check the ownership of /etc/cron.hourly,\nrun the command:\n$ ls -lL /etc/cron.hourly\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/cron.hourly does not have an owner of root?\n----\n\n== Verify Permissions on cron.hourly\n----\nTo check the permissions of /etc/cron.hourly,\nrun the command:\n$ ls -l /etc/cron.hourly\nIf properly configured, the output should indicate the following permissions:\n-rwx------\n      Is it the case that /etc/cron.hourly does not have unix mode -rwx------?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify Group Who Owns cron.hourly\n\nTo properly set the group owner of `/etc/cron.hourly`, run the command:\n\n  \n```\n$ sudo chgrp root /etc/cron.hourly\n```\n\n**Rationale:**\n\nService configuration files enable or disable features of their respective services that if configured incorrectly\ncan lead to insecure and vulnerable configurations. Therefore, service configuration files should be owned by the\ncorrect group to prevent unauthorized changes.\n\n## Verify Owner on cron.hourly\n\nTo properly set the owner of `/etc/cron.hourly`, run the command:\n\n  \n```\n$ sudo chown root /etc/cron.hourly \n```\n\n**Rationale:**\n\nService configuration files enable or disable features of their respective services that if configured incorrectly\ncan lead to insecure and vulnerable configurations. Therefore, service configuration files should be owned by the\ncorrect user to prevent unauthorized changes.\n\n## Verify Permissions on cron.hourly\n\nTo properly set the permissions of `/etc/cron.hourly`, run the command:\n\n```\n$ sudo chmod 0700 /etc/cron.hourly\n```\n\n**Rationale:**\n\nService configuration files enable or disable features of their respective services that if configured incorrectly\ncan lead to insecure and vulnerable configurations. Therefore, service configuration files should have the\ncorrect access rights to prevent unauthorized changes.",
   "discussion_format": "markdown",
@@ -89,7 +92,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.4",

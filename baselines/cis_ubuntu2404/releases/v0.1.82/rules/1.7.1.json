@@ -17,15 +17,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Remove the GDM Package Group\n----\nTo ensure the gdm3 package group is removed, run the following command:\n$ dpkg -l gdm3\nThe output should begin with:\nrc gdm3\nOr\ndpkg-query: no packages found matching gdm3\n      Is it the case that gdm3 has not been removed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Remove the GDM Package Group\n----\nTo ensure the gdm3 package group is removed, run the following command:\n$ dpkg -l gdm3\nThe output should begin with:\nrc gdm3\nOr\ndpkg-query: no packages found matching gdm3\n      Is it the case that gdm3 has not been removed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Remove the GDM Package Group\n\nBy removing the `gdm3` package, the system no longer has GNOME installed.\n\nIf X Windows is not installed then the system cannot boot into graphical user mode.\nThis prevents the system from being accidentally or maliciously booted into a `graphical.target`\nmode. To do so, run the following command:\n\n\n```\n$ sudo apt remove gdm3\n```\n\n**Rationale:**\n\nUnnecessary service packages must not be installed to decrease the attack surface of the system.\nA graphical environment is unnecessary for certain types of systems including a virtualization\nhypervisor.",
   "discussion_format": "markdown",
@@ -60,7 +63,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.7"

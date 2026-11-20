@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure SSH LoginGraceTime is configured\n----\nTo ensure LoginGraceTime is set correctly, run the following command:\n$ sudo grep LoginGraceTime /etc/ssh/sshd_config\nIf properly configured, the output should be:\nLoginGraceTime \nIf the option is set to a number greater than 0, then the unauthenticated session will be disconnected\nafter the configured number seconds.\n      Is it the case that it is commented out or not configured properly?\n----\nExpected values: var_sshd_set_login_grace_time = $ODV_var_sshd_set_login_grace_time",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure SSH LoginGraceTime is configured\n----\nTo ensure LoginGraceTime is set correctly, run the following command:\n$ sudo grep LoginGraceTime /etc/ssh/sshd_config\nIf properly configured, the output should be:\nLoginGraceTime \nIf the option is set to a number greater than 0, then the unauthenticated session will be disconnected\nafter the configured number seconds.\n      Is it the case that it is commented out or not configured properly?\n----\nExpected values: var_sshd_set_login_grace_time = $ODV_var_sshd_set_login_grace_time",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure SSH LoginGraceTime is configured\n\nThe `LoginGraceTime` parameter to the SSH server specifies the time allowed for successful authentication to\nthe SSH server. The longer the Grace period is the more open unauthenticated connections\ncan exist. Like other session controls in this session the Grace Period should be limited to\nappropriate limits to ensure the service is available for needed access.\n\n**Rationale:**\n\nSetting the `LoginGraceTime` parameter to a low number will minimize the risk of successful\nbrute force attacks to the SSH server. It will also limit the number of concurrent\nunauthenticated connections.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

@@ -63,7 +63,7 @@
     },
     {
       "name": "null replaces an object",
-      "rule": { "id": "x.rule", "check": { "macOS": { "language": "bash", "default": null, "by_version": {} } } },
+      "rule": { "id": "x.rule", "check": { "macOS": [{ "name": null, "language": "bash", "default": null, "by_version": {} }] } },
       "fields": { "check": null },
       "expected": { "id": "x.rule", "check": null }
     },
@@ -125,11 +125,11 @@
       "name": "$replace puts an object where upstream has null",
       "rule": { "id": "asd_ism.ism-1622", "check": null },
       "fields": {
-        "check": { "$replace": { "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } } }
+        "check": { "$replace": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }] } }
       },
       "expected": {
         "id": "asd_ism.ism-1622",
-        "check": { "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } }
+        "check": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }] }
       }
     },
     {
@@ -298,10 +298,10 @@
     {
       "name": "an object onto null merges as onto an absent field",
       "rule": { "id": "asd_ism.ism-1622", "check": null },
-      "fields": { "check": { "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } } },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }] } },
       "expected": {
         "id": "asd_ism.ism-1622",
-        "check": { "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } }
+        "check": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }] }
       }
     },
     {
@@ -311,31 +311,72 @@
       "expected": { "id": "x.rule", "references": { "nist": ["AC-1"] } }
     },
     {
-      "name": "an object merges into a nested null",
+      "name": "$merge into a check list is a type mismatch",
       "rule": {
         "id": "x.rule",
-        "check": { "macOS": { "language": "bash", "default": null, "by_version": {} } }
+        "check": { "macOS": [{ "name": null, "language": "bash", "default": null, "by_version": {} }] }
+      },
+      "fields": {
+        "check": { "macOS": { "$merge": { "default": { "shell": "echo check", "result": null, "additional_info": null } } } }
+      },
+      "error": true
+    },
+    {
+      "name": "a plain object merged into a check list is a type mismatch",
+      "rule": {
+        "id": "x.rule",
+        "check": { "macOS": [{ "name": null, "language": "bash", "default": null, "by_version": {} }] }
       },
       "fields": {
         "check": { "macOS": { "default": { "shell": "echo check", "result": null, "additional_info": null } } }
       },
+      "error": true
+    },
+    {
+      "name": "$append adds a check item after the existing items of a target",
+      "rule": {
+        "id": "x.rule",
+        "check": { "macOS": [{ "name": null, "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} }] }
+      },
+      "fields": {
+        "check": { "macOS": { "$append": [{ "name": "Python check", "language": "python", "default": { "shell": "print(1)", "result": null, "additional_info": null }, "by_version": {} }] } }
+      },
       "expected": {
         "id": "x.rule",
-        "check": { "macOS": { "language": "bash", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } }
+        "check": {
+          "macOS": [
+            { "name": null, "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} },
+            { "name": "Python check", "language": "python", "default": { "shell": "print(1)", "result": null, "additional_info": null }, "by_version": {} }
+          ]
+        }
+      }
+    },
+    {
+      "name": "$replace swaps a target's check list for a new one",
+      "rule": {
+        "id": "x.rule",
+        "check": { "macOS": [{ "name": null, "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} }] }
+      },
+      "fields": {
+        "check": { "macOS": { "$replace": [{ "name": "Only", "language": "zsh", "default": { "shell": "echo zsh", "result": null, "additional_info": null }, "by_version": {} }] } }
+      },
+      "expected": {
+        "id": "x.rule",
+        "check": { "macOS": [{ "name": "Only", "language": "zsh", "default": { "shell": "echo zsh", "result": null, "additional_info": null }, "by_version": {} }] }
       }
     },
     {
       "name": "a check for another target merges beside the existing target",
       "rule": {
         "id": "x.rule",
-        "check": { "macOS": { "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} } }
+        "check": { "macOS": [{ "name": null, "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} }] }
       },
-      "fields": { "check": { "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } } },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }] } },
       "expected": {
         "id": "x.rule",
         "check": {
-          "macOS": { "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} },
-          "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }
+          "macOS": [{ "name": null, "language": "bash", "default": { "shell": "echo mac", "result": null, "additional_info": null }, "by_version": {} }],
+          "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }]
         }
       }
     },
@@ -391,8 +432,6 @@
         }
       }
     },
-    {"name": "a plain merge of shell_file onto an inline entry keeps both keys, which the shape checks then reject", "rule": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell": "echo inline", "result": null, "additional_info": null}, "by_version": {}}}}, "fields": {"check": {"macOS": {"default": {"shell_file": "baselines/x/scripts/check.sh"}}}}, "expected": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell": "echo inline", "shell_file": "baselines/x/scripts/check.sh", "result": null, "additional_info": null}, "by_version": {}}}}},
-    {"name": "$replace on the entry switches it from inline to a file", "rule": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell": "echo inline", "result": null, "additional_info": null}, "by_version": {}}}}, "fields": {"check": {"macOS": {"default": {"$replace": {"shell_file": "baselines/x/scripts/check.sh", "result": null, "additional_info": null}}}}}, "expected": {"id": "x.rule", "check": {"macOS": {"language": "bash", "default": {"shell_file": "baselines/x/scripts/check.sh", "result": null, "additional_info": null}, "by_version": {}}}}},
     {
       "name": "$merge onto a list is a type mismatch",
       "rule": { "id": "x.rule", "tags": ["a"] },
@@ -425,8 +464,8 @@
     },
     {
       "name": "the protected field schema_version cannot be overlaid",
-      "rule": { "id": "x.rule", "schema_version": 6 },
-      "fields": { "schema_version": 6 },
+      "rule": { "id": "x.rule", "schema_version": 7 },
+      "fields": { "schema_version": 7 },
       "error": true
     },
     {
@@ -481,7 +520,7 @@
         "tags": ["powershell"],
         "assessment": { "manual_reason": "manual" },
         "discussion": { "$replace": "Not carried by an index entry." },
-        "check": { "$replace": { "Windows": { "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} } } }
+        "check": { "$replace": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo check", "result": null, "additional_info": null }, "by_version": {} }] } }
       },
       "expected": {
         "id": "asd_ism.ism-1622",

@@ -350,11 +350,14 @@ def normalize_rule(upstream: dict, upstream_path: str, lock: SourceLock) -> dict
         default_fix = _normalize_fix(default_info["fix"], "platforms.macOS fix", rule_id)
     check = (
         {
-            MACOS_TARGET: {
-                "language": MSCP_SCRIPT_LANGUAGE,
-                "default": default_check,
-                "by_version": check_by_version,
-            }
+            MACOS_TARGET: [
+                {
+                    "name": None,
+                    "language": MSCP_SCRIPT_LANGUAGE,
+                    "default": default_check,
+                    "by_version": check_by_version,
+                }
+            ]
         }
         if default_check is not None or check_by_version
         else None

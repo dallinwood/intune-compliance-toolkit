@@ -39683,6 +39683,6 @@
       "title": "Networked management interfaces for ICT equipment are not directly exposed to the internet."
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "asd_ism"
 }

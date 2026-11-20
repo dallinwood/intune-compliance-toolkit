@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Limit Password Reuse: password-auth\n----\nVerify Red Hat Enterprise Linux 9 use the \"pam_pwhistory.so\" module in the /etc/pam.d/password-auth file\nand is configured to prohibit password reuse for a minimum of \ngenerations.\n\nVerify the \"/etc/pam.d/password-auth\" file with the following command:\n\n$ grep pam_pwhistory.so /etc/pam.d/password-auth\npassword  pam_pwhistory.so use_authtok remember=\n\n\nVerify the \"/etc/security/pwhistory.conf\" file using the following command:\n\n$ grep remember /etc/security/pwhistory.conf\nremember = \n\nThe pam_pwhistory.so \"remember\" option must be configured only in one file.\n      Is it the case that the pam_pwhistory.so module is not used, the \"remember\" module option is not set in\n/etc/pam.d/password-auth or in /etc/security/pwhistory.conf, or is set in both files, or is set\nwith a value less than \"$ODV_var_password_pam_remember\"?\n----\nExpected values: var_password_pam_remember = $ODV_var_password_pam_remember, var_password_pam_remember_control_flag = $ODV_var_password_pam_remember_control_flag\n\n== Limit Password Reuse: system-auth\n----\nVerify Red Hat Enterprise Linux 9 use the \"pam_pwhistory.so\" module in the /etc/pam.d/system-auth file\nand is configured to prohibit password reuse for a minimum of \ngenerations.\n\nVerify the \"/etc/pam.d/system-auth\" file with the following command:\n\n$ grep pam_pwhistory.so /etc/pam.d/system-auth\npassword  pam_pwhistory.so use_authtok remember=\n\n\nVerify the \"/etc/security/pwhistory.conf\" file using the following command:\n\n$ grep remember /etc/security/pwhistory.conf\nremember = \n\nThe pam_pwhistory.so \"remember\" option must be configured only in one file.\n      Is it the case that the pam_pwhistory.so module is not used, the \"remember\" module option is not set in\n/etc/pam.d/system-auth or in /etc/security/pwhistory.conf, or is set in both files, or is set\nwith a value less than \"$ODV_var_password_pam_remember\"?\n----\nExpected values: var_password_pam_remember = $ODV_var_password_pam_remember, var_password_pam_remember_control_flag = $ODV_var_password_pam_remember_control_flag",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Limit Password Reuse: password-auth\n----\nVerify Red Hat Enterprise Linux 9 use the \"pam_pwhistory.so\" module in the /etc/pam.d/password-auth file\nand is configured to prohibit password reuse for a minimum of \ngenerations.\n\nVerify the \"/etc/pam.d/password-auth\" file with the following command:\n\n$ grep pam_pwhistory.so /etc/pam.d/password-auth\npassword  pam_pwhistory.so use_authtok remember=\n\n\nVerify the \"/etc/security/pwhistory.conf\" file using the following command:\n\n$ grep remember /etc/security/pwhistory.conf\nremember = \n\nThe pam_pwhistory.so \"remember\" option must be configured only in one file.\n      Is it the case that the pam_pwhistory.so module is not used, the \"remember\" module option is not set in\n/etc/pam.d/password-auth or in /etc/security/pwhistory.conf, or is set in both files, or is set\nwith a value less than \"$ODV_var_password_pam_remember\"?\n----\nExpected values: var_password_pam_remember = $ODV_var_password_pam_remember, var_password_pam_remember_control_flag = $ODV_var_password_pam_remember_control_flag\n\n== Limit Password Reuse: system-auth\n----\nVerify Red Hat Enterprise Linux 9 use the \"pam_pwhistory.so\" module in the /etc/pam.d/system-auth file\nand is configured to prohibit password reuse for a minimum of \ngenerations.\n\nVerify the \"/etc/pam.d/system-auth\" file with the following command:\n\n$ grep pam_pwhistory.so /etc/pam.d/system-auth\npassword  pam_pwhistory.so use_authtok remember=\n\n\nVerify the \"/etc/security/pwhistory.conf\" file using the following command:\n\n$ grep remember /etc/security/pwhistory.conf\nremember = \n\nThe pam_pwhistory.so \"remember\" option must be configured only in one file.\n      Is it the case that the pam_pwhistory.so module is not used, the \"remember\" module option is not set in\n/etc/pam.d/system-auth or in /etc/security/pwhistory.conf, or is set in both files, or is set\nwith a value less than \"$ODV_var_password_pam_remember\"?\n----\nExpected values: var_password_pam_remember = $ODV_var_password_pam_remember, var_password_pam_remember_control_flag = $ODV_var_password_pam_remember_control_flag",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Limit Password Reuse: password-auth\n\nDo not allow users to reuse recent passwords. This can be accomplished by using the\n`remember` option for the `pam_pwhistory` PAM module.\n\n\n         \n\n\nOn systems with newer versions of `authselect`, the `pam_pwhistory` PAM module\ncan be enabled via authselect feature:\n\n```\nauthselect enable-feature with-pwhistory\n```\n\n\nOtherwise, it should be enabled using an authselect custom profile.\n\n\n         \n\nNewer systems also have the `/etc/security/pwhistory.conf` file for setting\n`pam_pwhistory` module options. This file should be used whenever available.\nOtherwise, the `pam_pwhistory` module options can be set in PAM files.\n\n\n         \n\nThe value for `remember` option must be equal or greater than\n$ODV_var_password_pam_remember\n\n**Rationale:**\n\nPreventing reuse of previous passwords helps ensure that a compromised password is not\nreused by a user.\n\n## Limit Password Reuse: system-auth\n\nDo not allow users to reuse recent passwords. This can be accomplished by using the\n`remember` option for the `pam_pwhistory` PAM module.\n\n\n         \n\n\nOn systems with newer versions of `authselect`, the `pam_pwhistory` PAM module\ncan be enabled via authselect feature:\n\n```\nauthselect enable-feature with-pwhistory\n```\n\n\nOtherwise, it should be enabled using an authselect custom profile.\n\n\n         \n\nNewer systems also have the `/etc/security/pwhistory.conf` file for setting\n`pam_pwhistory` module options. This file should be used whenever available.\nOtherwise, the `pam_pwhistory` module options can be set in PAM files.\n\n\n         \n\nThe value for `remember` option must be equal or greater than\n$ODV_var_password_pam_remember\n\n**Rationale:**\n\nPreventing reuse of previous passwords helps ensure that a compromised password is not\nreused by a user.\n\n**Notes:**\n\nAlthough mentioned in the section 5.3.3.3, there is no explicit requirement to configure\nretry option of pam_pwhistory. If come in the future, the rule accounts_password_pam_retry\ncan be used.",
   "discussion_format": "markdown",
@@ -117,7 +120,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

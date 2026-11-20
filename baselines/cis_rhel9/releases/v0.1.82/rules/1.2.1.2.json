@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure gpgcheck Enabled In Main dnf Configuration\n----\nVerify that dnf verifies the signature of packages from a repository prior to install with the following command:\n\n$ grep gpgcheck /etc/dnf/dnf.conf\n\ngpgcheck=1\n\nIf \"gpgcheck\" is not set to \"1\", or if the option is missing or commented out, ask the System Administrator how the certificates for patches and other operating system components are verified.\n      Is it the case that there is no process to validate certificates that is approved by the organization?\n----\n\n== Ensure gpgcheck Enabled for All dnf Package Repositories\n----\nTo determine whether dnf has been configured to disable\ngpgcheck for any repos,  inspect all files in\n/etc/yum.repos.d and ensure the following does not appear in any\nsections:\ngpgcheck=0\nA value of 0 indicates that gpgcheck has been disabled for that repo.\n      Is it the case that GPG checking is disabled?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure gpgcheck Enabled In Main dnf Configuration\n----\nVerify that dnf verifies the signature of packages from a repository prior to install with the following command:\n\n$ grep gpgcheck /etc/dnf/dnf.conf\n\ngpgcheck=1\n\nIf \"gpgcheck\" is not set to \"1\", or if the option is missing or commented out, ask the System Administrator how the certificates for patches and other operating system components are verified.\n      Is it the case that there is no process to validate certificates that is approved by the organization?\n----\n\n== Ensure gpgcheck Enabled for All dnf Package Repositories\n----\nTo determine whether dnf has been configured to disable\ngpgcheck for any repos,  inspect all files in\n/etc/yum.repos.d and ensure the following does not appear in any\nsections:\ngpgcheck=0\nA value of 0 indicates that gpgcheck has been disabled for that repo.\n      Is it the case that GPG checking is disabled?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure gpgcheck Enabled In Main dnf Configuration\n\nThe `gpgcheck` option controls whether\nRPM packages' signatures are always checked prior to installation.\nTo configure dnf to check package signatures before installing\nthem, ensure the following line appears in `/etc/dnf/dnf.conf` in\nthe `[main]` section:\n\n```\ngpgcheck=1\n```\n\n**Rationale:**\n\nChanges to any software components can have significant effects on the\noverall security of the operating system. This requirement ensures the\nsoftware has not been tampered with and that it has been provided by a\ntrusted vendor.\n\n\nAccordingly, patches, service packs, device drivers, or operating system\ncomponents must be signed with a certificate recognized and approved by the\norganization.\n\nVerifying the authenticity of the software prior to installation\nvalidates the integrity of the patch or upgrade received from a vendor.\nThis ensures the software has not been tampered with and that it has been\nprovided by a trusted vendor. Self-signed certificates are disallowed by\nthis requirement. Certificates used to verify the software must be from an\napproved Certificate Authority (CA).\n\n## Ensure gpgcheck Enabled for All dnf Package Repositories\n\nTo ensure signature checking is not disabled for\nany repos, remove any lines from files in `/etc/yum.repos.d` of the form:\n\n```\ngpgcheck=0\n```\n\n**Rationale:**\n\nVerifying the authenticity of the software prior to installation validates\nthe integrity of the patch or upgrade received from a vendor. This ensures\nthe software has not been tampered with and that it has been provided by a\ntrusted vendor. Self-signed certificates are disallowed by this\nrequirement. Certificates used to verify the software must be from an\napproved Certificate Authority (CA).\"",
   "discussion_format": "markdown",
@@ -85,7 +88,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.2",

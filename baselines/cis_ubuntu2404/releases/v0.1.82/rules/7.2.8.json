@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure All Groups on the System Have Unique Group Names\n----\nRun the following command to check for duplicate group names:\nCheck that the operating system contains no duplicate group names for interactive users by running the following command:\n\n    cut -d : -f 1 /etc/group | uniq -d\n\nIf output is produced, this is a finding.\nConfigure the operating system to contain no duplicate names for groups.\nEdit the file \"/etc/group\" and provide each group that has a duplicate group name with a unique group name.\n      Is it the case that has duplicate group names?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure All Groups on the System Have Unique Group Names\n----\nRun the following command to check for duplicate group names:\nCheck that the operating system contains no duplicate group names for interactive users by running the following command:\n\n    cut -d : -f 1 /etc/group | uniq -d\n\nIf output is produced, this is a finding.\nConfigure the operating system to contain no duplicate names for groups.\nEdit the file \"/etc/group\" and provide each group that has a duplicate group name with a unique group name.\n      Is it the case that has duplicate group names?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure All Groups on the System Have Unique Group Names\n\nChange the group name or delete groups, so each has a unique name.\n\n**Rationale:**\n\nTo assure accountability and prevent unauthenticated access, groups must be identified uniquely to prevent potential misuse and compromise of the system.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "7",
     "7.2"

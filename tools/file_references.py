@@ -145,15 +145,19 @@ def _payload_content_problem(path: str, repository_root: Path) -> str | None:
 
 def _script_entries(rule: dict):
     """(where, entry, language, is_check) for every check entry and remediation step."""
-    for target, target_check in (rule.get("check") or {}).items():
-        if not isinstance(target_check, dict):
+    for target, check_items in (rule.get("check") or {}).items():
+        if not isinstance(check_items, list):
             continue
-        language = target_check.get("language")
-        if isinstance(target_check.get("default"), dict):
-            yield f"check.{target}.default", target_check["default"], language, True
-        for version, entry in (target_check.get("by_version") or {}).items():
-            if isinstance(entry, dict):
-                yield f"check.{target}.by_version.{version}", entry, language, True
+        for position, check_item in enumerate(check_items):
+            if not isinstance(check_item, dict):
+                continue
+            language = check_item.get("language")
+            item_where = f"check.{target}[{position}]"
+            if isinstance(check_item.get("default"), dict):
+                yield f"{item_where}.default", check_item["default"], language, True
+            for version, entry in (check_item.get("by_version") or {}).items():
+                if isinstance(entry, dict):
+                    yield f"{item_where}.by_version.{version}", entry, language, True
     for target, target_remediation in (rule.get("remediation") or {}).items():
         if not isinstance(target_remediation, dict):
             continue

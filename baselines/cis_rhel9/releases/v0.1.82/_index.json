@@ -11868,6 +11868,6 @@
       "title": "Ensure local interactive user dot files access is configured (Automated)"
     }
   ],
-  "schema_version": 6,
+  "schema_version": 7,
   "source": "cis_rhel9"
 }

@@ -73,18 +73,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "true"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "true"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\n  if ( timeout <= $ODV_value ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
         },
-        "shell": "/usr/bin/osascript -l JavaScript << EOS\nfunction run() {\n  let timeout = ObjC.unwrap($.NSUserDefaults.alloc.initWithSuiteName('com.apple.screensaver')\\\n.objectForKey('idleTime'))\n  if ( timeout <= $ODV_value ) {\n    return(\"true\")\n  } else {\n    return(\"false\")\n  }\n}\nEOS"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The screen saver timeout _MUST_ be set to $ODV_value seconds or a shorter length of time.\n\nThis rule ensures that a full session lock is triggered within no more than $ODV_value seconds of inactivity.\n",
   "discussion_format": "asciidoc",
@@ -204,7 +207,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "system_settings"
   ],

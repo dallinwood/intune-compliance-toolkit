@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enable Kernel Parameter to Use TCP Syncookies on Network Interfaces\n----\nThe runtime status of the net.ipv4.tcp_syncookies kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.tcp_syncookies\n1.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_tcp_syncookies_value = $ODV_sysctl_net_ipv4_tcp_syncookies_value",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable Kernel Parameter to Use TCP Syncookies on Network Interfaces\n----\nThe runtime status of the net.ipv4.tcp_syncookies kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.tcp_syncookies\n1.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_tcp_syncookies_value = $ODV_sysctl_net_ipv4_tcp_syncookies_value",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Enable Kernel Parameter to Use TCP Syncookies on Network Interfaces\n\nTo set the runtime status of the `net.ipv4.tcp_syncookies` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.tcp_syncookies=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.tcp_syncookies = 1\n```\n\n**Rationale:**\n\nA TCP SYN flood attack can cause a denial of service by filling a\nsystem's TCP connection table with connections in the SYN_RCVD state.\nSyncookies can be used to track a connection when a subsequent ACK is received,\nverifying the initiator is attempting a valid connection and is not a flood\nsource. This feature is activated when a flood condition is detected, and\nenables the system to continue servicing valid connection requests.",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "3",
     "3.3"

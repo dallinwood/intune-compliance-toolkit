@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure No World-Writable Files Exist\n----\nTo find world-writable files, run the following command:\n$ sudo find / -xdev -type f -perm -002\n      Is it the case that there is output?\n----\n\n== Verify that All World-Writable Directories Have Sticky Bits Set\n----\nTo find world-writable directories that lack the sticky bit, run the following command:\n$ sudo find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null\nfixtext: |-\nConfigure all world-writable directories to have the sticky bit set to prevent unauthorized and unintended information transferred via shared system resources.\n\nSet the sticky bit on all world-writable directories using the command, replace \"[World-Writable Directory]\" with any directory path missing the sticky bit:\n\n$ chmod a+t [World-Writable Directory]\nsrg_requirement:\nA sticky bit must be set on all Red Hat Enterprise Linux 9 public directories to prevent unauthorized and unintended information transferred via shared system resources.\n      Is it the case that any world-writable directories are missing the sticky bit?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure No World-Writable Files Exist\n----\nTo find world-writable files, run the following command:\n$ sudo find / -xdev -type f -perm -002\n      Is it the case that there is output?\n----\n\n== Verify that All World-Writable Directories Have Sticky Bits Set\n----\nTo find world-writable directories that lack the sticky bit, run the following command:\n$ sudo find / -type d \\( -perm -0002 -a ! -perm -1000 \\) -print 2>/dev/null\nfixtext: |-\nConfigure all world-writable directories to have the sticky bit set to prevent unauthorized and unintended information transferred via shared system resources.\n\nSet the sticky bit on all world-writable directories using the command, replace \"[World-Writable Directory]\" with any directory path missing the sticky bit:\n\n$ chmod a+t [World-Writable Directory]\nsrg_requirement:\nA sticky bit must be set on all Red Hat Enterprise Linux 9 public directories to prevent unauthorized and unintended information transferred via shared system resources.\n      Is it the case that any world-writable directories are missing the sticky bit?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure No World-Writable Files Exist\n\nIt is generally a good idea to remove global (other) write access to a file when it is\ndiscovered. However, check with documentation for specific applications before making changes.\nAlso, monitor for recurring world-writable files, as these may be symptoms of a misconfigured\napplication or user account. Finally, this applies to real files and not virtual files that\nare a part of pseudo file systems such as `sysfs` or `procfs`.\n\n**Rationale:**\n\nData in world-writable files can be modified by any user on the system. In almost all\ncircumstances, files can be configured using a combination of user and group permissions to\nsupport whatever legitimate access is needed without the risk caused by world-writable files.\n\n## Verify that All World-Writable Directories Have Sticky Bits Set\n\nWhen the so-called 'sticky bit' is set on a directory, only the owner of a given file may\nremove that file from the directory. Without the sticky bit, any user with write access to a\ndirectory may remove any file in the directory. Setting the sticky bit prevents users from\nremoving each other's files. In cases where there is no reason for a directory to be\nworld-writable, a better solution is to remove that permission rather than to set the sticky\nbit. However, if a directory is used by a particular application, consult that application's\ndocumentation instead of blindly changing modes.\n\n\nTo set the sticky bit on a world-writable directory *DIR*, run the following command:\n\n```\n$ sudo chmod +t *DIR*\n        \n```\n\n**Rationale:**\n\nFailing to set the sticky bit on public directories allows unauthorized users to delete files\nin the directory structure.\n\n\n        \n\nThe only authorized public directories are those temporary directories supplied with the\nsystem, or those designed to be temporary file repositories. The setting is normally reserved\nfor directories used by the system, by users for temporary file storage (such as `/tmp`),\nand for directories requiring global read/write access.",
   "discussion_format": "markdown",
@@ -85,7 +88,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "7",
     "7.1"

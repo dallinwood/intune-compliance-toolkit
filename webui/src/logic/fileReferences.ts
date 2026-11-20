@@ -7,8 +7,8 @@
 // encoding, line endings and content are checked there; the UI reports a
 // failed fetch.
 
-import type { Rule, RuleCheck, ScriptLanguage, TargetCheck } from '../types/library'
-import { GENERATED_TARGET } from './checkPlan'
+import type { CheckItem, Rule, RuleCheck, ScriptLanguage } from '../types/library'
+import { GENERATED_TARGET, generatedCheckItem } from './checkPlan'
 
 const REFERENCE_PREFIX = 'baselines/'
 // Every segment after baselines/ is plain: no percent-encoding, query or
@@ -111,7 +111,7 @@ async function resolvedEntry<Entry extends { shell?: string | null; shell_file?:
   return { ...rest, shell: await loadText(shellFile) } as Entry
 }
 
-async function resolvedTargetCheck(targetCheck: TargetCheck, loadText: LoadText): Promise<TargetCheck> {
+async function resolvedCheckItem(targetCheck: CheckItem, loadText: LoadText): Promise<CheckItem> {
   const byVersion = await Promise.all(
     Object.entries(targetCheck.by_version).map(async ([version, check]) => [version, await resolvedEntry<RuleCheck>(check, loadText)] as const),
   )
@@ -123,13 +123,16 @@ async function resolvedTargetCheck(targetCheck: TargetCheck, loadText: LoadText)
 }
 
 // The rule with the shell_file of each check entry the generator bundles
-// (the GENERATED_TARGET check) replaced by the file's text as shell, so the
-// bundle holds exactly what an inline script would give. Nothing else is
-// fetched: remediation steps, payloads and other targets' checks are never
-// bundled, so a missing file there cannot block a bundle. The details fetch
-// what they show themselves.
+// (the check item generatedCheckItem chooses) replaced by the file's text as
+// shell, so the bundle holds exactly what an inline script would give. Nothing
+// else is fetched: remediation steps, payloads, other targets' checks and the
+// target's other check items are never bundled, so a missing file there cannot
+// block a bundle. The details fetch what they show themselves.
 export async function resolveGeneratedCheckFiles(rule: Rule, loadText: LoadText): Promise<Rule> {
-  const generatedCheck = rule.check?.[GENERATED_TARGET]
-  if (rule.check === null || generatedCheck === undefined) return rule
-  return { ...rule, check: { ...rule.check, [GENERATED_TARGET]: await resolvedTargetCheck(generatedCheck, loadText) } }
+  const chosenItem = generatedCheckItem(rule)
+  if (rule.check === null || chosenItem === null) return rule
+  const items = await Promise.all(
+    rule.check[GENERATED_TARGET].map((item) => (item === chosenItem ? resolvedCheckItem(item, loadText) : item)),
+  )
+  return { ...rule, check: { ...rule.check, [GENERATED_TARGET]: items } }
 }

@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Uninstall telnet-server Package\n----\nRun the following command to determine if the telnet-server package is installed: $ rpm -q telnet-server\n      Is it the case that the telnet-server package is installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Uninstall telnet-server Package\n----\nRun the following command to determine if the telnet-server package is installed: $ rpm -q telnet-server\n      Is it the case that the telnet-server package is installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Uninstall telnet-server Package\n\nThe `telnet-server` package can be removed with the following command:\n\n```\n$ sudo dnf remove telnet-server\n```\n\n**Rationale:**\n\nIt is detrimental for operating systems to provide, or install by default,\nfunctionality exceeding requirements or mission objectives. These\nunnecessary capabilities are often overlooked and therefore may remain\ninsecure. They increase the risk to the platform by providing additional\nattack vectors.\n\n\nThe telnet service provides an unencrypted remote access service which does\nnot provide for the confidentiality and integrity of user passwords or the\nremote session. If a privileged user were to login using this service, the\nprivileged user password could be compromised.\n\n\nRemoving the `telnet-server` package decreases the risk of the\ntelnet service's accidental (or intentional) activation.",
   "discussion_format": "markdown",
@@ -79,7 +82,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.1"

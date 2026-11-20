@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure PAM Enforces Password Requirements - Minimum Different Categories\n----\nVerify the value of the \"minclass\" option in \"/etc/security/pwquality.conf\" with the following command:\n\n$ grep minclass /etc/security/pwquality.conf\n\nminclass = \n      Is it the case that the value of \"minclass\" is set to less than \"$ODV_var_password_pam_minclass\" or is commented out?\n----\nExpected values: var_password_pam_minclass = $ODV_var_password_pam_minclass",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure PAM Enforces Password Requirements - Minimum Different Categories\n----\nVerify the value of the \"minclass\" option in \"/etc/security/pwquality.conf\" with the following command:\n\n$ grep minclass /etc/security/pwquality.conf\n\nminclass = \n      Is it the case that the value of \"minclass\" is set to less than \"$ODV_var_password_pam_minclass\" or is commented out?\n----\nExpected values: var_password_pam_minclass = $ODV_var_password_pam_minclass",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure PAM Enforces Password Requirements - Minimum Different Categories\n\nThe pam_pwquality module's `minclass` parameter controls\nrequirements for usage of different character classes, or types, of character\nthat must exist in a password before it is considered valid. For example,\nsetting this value to three (3) requires that any password must have characters\nfrom at least three different categories in order to be approved. The default\nvalue is zero (0), meaning there are no required classes. There are four\ncategories available:\n\n```\n* Upper-case characters\n* Lower-case characters\n* Digits\n* Special characters (for example, punctuation)\n```\n\nModify the `minclass` setting in `/etc/security/pwquality.conf` entry\nto require $ODV_var_password_pam_minclass\ndiffering categories of characters when changing passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise the password.\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts\nat guessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes to crack a password. The\nmore complex the password, the greater the number of possible combinations that need to be tested before\nthe password is compromised.\n\n\n          \n\nRequiring a minimum number of character categories makes password guessing attacks more difficult\nby ensuring a larger search space.\n\n**Notes:**\n\nThis requirement is expected to be manual. However, in previous versions of the policy\nit was already automated the configuration of \"minclass\" option. This posture was kept for\nRHEL 9 in this new version. Rules related to other options are informed in related_rules.\nIn short, minclass=4 alone can achieve the same result achieved by the combination of the\nother 4 options mentioned in the policy.",
   "discussion_format": "markdown",
@@ -97,7 +100,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

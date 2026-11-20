@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set Password Hashing Algorithm in /etc/libuser.conf\n----\nVerify that the libuser is set to encrypt password with a FIPS 140-3 approved cryptographic hashing algorithm.\n\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i crypt_style /etc/libuser.conf\n\ncrypt_style = \n      Is it the case that crypt_style is not set to sha512?\n----\nExpected values: var_password_hashing_algorithm_pam = $ODV_var_password_hashing_algorithm_pam\n\n== Set Password Hashing Algorithm in /etc/login.defs\n----\nVerify that the shadow password suite configuration is set to encrypt password with a FIPS 140-3 approved cryptographic hashing algorithm.\n\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i ENCRYPT_METHOD  /etc/login.defs\n\nENCRYPT_METHOD \n      Is it the case that ENCRYPT_METHOD is not set to $ODV_var_password_hashing_algorithm?\n----\nExpected values: var_password_hashing_algorithm = $ODV_var_password_hashing_algorithm",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Password Hashing Algorithm in /etc/libuser.conf\n----\nVerify that the libuser is set to encrypt password with a FIPS 140-3 approved cryptographic hashing algorithm.\n\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i crypt_style /etc/libuser.conf\n\ncrypt_style = \n      Is it the case that crypt_style is not set to sha512?\n----\nExpected values: var_password_hashing_algorithm_pam = $ODV_var_password_hashing_algorithm_pam\n\n== Set Password Hashing Algorithm in /etc/login.defs\n----\nVerify that the shadow password suite configuration is set to encrypt password with a FIPS 140-3 approved cryptographic hashing algorithm.\n\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i ENCRYPT_METHOD  /etc/login.defs\n\nENCRYPT_METHOD \n      Is it the case that ENCRYPT_METHOD is not set to $ODV_var_password_hashing_algorithm?\n----\nExpected values: var_password_hashing_algorithm = $ODV_var_password_hashing_algorithm",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set Password Hashing Algorithm in /etc/libuser.conf\n\nIn `/etc/libuser.conf`, add or correct the following line in its `[defaults]`\nsection to ensure the system will use the $ODV_var_password_hashing_algorithm_pam\nalgorithm for password hashing:\n\n```\ncrypt_style = $ODV_var_password_hashing_algorithm_pam\n         \n```\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nThis setting ensures user and group account administration utilities are configured to store\nonly encrypted representations of passwords. Additionally, the `crypt_style`\nconfiguration option in `/etc/libuser.conf` ensures the use of a strong hashing\nalgorithm that makes password cracking attacks more difficult.\n\n## Set Password Hashing Algorithm in /etc/login.defs\n\nIn `/etc/login.defs`, add or update the following line to ensure the system will use\n$ODV_var_password_hashing_algorithm as the hashing algorithm:\n\n```\nENCRYPT_METHOD $ODV_var_password_hashing_algorithm\n         \n```\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nUsing a stronger hashing algorithm makes password cracking attacks more difficult.",
   "discussion_format": "markdown",
@@ -114,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.4",

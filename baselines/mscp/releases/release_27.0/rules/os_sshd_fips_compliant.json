@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": 7
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": 7
+          },
+          "shell": "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total"
         },
-        "shell": "fips_sshd_config=(\"Ciphers aes128-gcm@openssh.com\" \"HostbasedAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\" \"KexAlgorithms ecdh-sha2-nistp256\" \"MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-256\" \"PubkeyAcceptedAlgorithms ecdsa-sha2-nistp256,ecdsa-sha2-nistp256-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com\" \"CASignatureAlgorithms ecdsa-sha2-nistp256,sk-ecdsa-sha2-nistp256@openssh.com\")\ntotal=0\nfor config in $fips_sshd_config; do\n  total=$(expr $(/usr/sbin/sshd -G | /usr/bin/grep -i -c \"$config\") + $total)\ndone\n\necho $total"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "If SSHD is enabled then it _MUST_ be configured to limit the Ciphers, HostbasedAcceptedAlgorithms, HostKeyAlgorithms, KexAlgorithms, MACs, PubkeyAcceptedAlgorithms, CASignatureAlgorithms to algorithms that are FIPS 140 validated.\n\nFIPS 140-3 is the current standard for validating that mechanisms used to access cryptographic modules utilize authentication that meet federal requirements.\n\nOperating systems utilizing encryption _MUST_ use FIPS validated mechanisms for authenticating to cryptographic modules.\n\nNOTE: For more information on FIPS compliance with the version of SSHD included in the macOS, the manual page apple_ssh_and_fips has additional information.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
   "discussion_format": "asciidoc",
@@ -154,7 +157,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

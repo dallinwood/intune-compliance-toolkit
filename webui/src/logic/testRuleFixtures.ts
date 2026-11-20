@@ -8,7 +8,7 @@ export function ruleCheck(shell: string | null, result: CheckResult | null, addi
 
 // Test shorthand for the only check shape mSCP produces: a bash check for macOS.
 export function macosCheck(defaultCheck: RuleCheck | null, byVersion: Record<string, RuleCheck> = {}): RuleChecks {
-  return { macOS: { language: 'bash', default: defaultCheck, by_version: byVersion } }
+  return { macOS: [{ name: null, language: 'bash', default: defaultCheck, by_version: byVersion }] }
 }
 
 // Test shorthand: { 'macOS 27.0': [...] } as the entry list the library stores.
@@ -30,7 +30,7 @@ export function inlineRule({
   overrides = {},
 }: InlineRuleOptions = {}): Rule {
   return {
-    schema_version: 6,
+    schema_version: 7,
     id: `mscp.${upstreamId}`,
     title: `Rule ${upstreamId}`,
     discussion: 'First paragraph.\n\nSecond paragraph.',

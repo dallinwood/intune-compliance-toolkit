@@ -47,7 +47,7 @@
   "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Guidelines for cyber security incidents",
     "Responding to cyber security incidents",

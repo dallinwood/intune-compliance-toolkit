@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server\n----\nVerify that the system is not accepting \"rsyslog\" messages from other systems unless it is\ndocumented as a log aggregation server.\nDisplay the contents of the rsyslog configuration files:\nfind /etc -maxdepth 2 -regex '/etc/rsyslog\\(\\.conf\\|\\.d\\/.*\\.conf\\)' -exec cat '{}' \\;\n\nIf any of the below lines are found, ask to see the documentation for the system being used\nfor log aggregation:\n\nIf using legacy syntax:\n$ModLoad imtcp\n$InputTCPServerRun port\n$ModLoad imudp\n$UDPServerRun port\n$ModLoad imrelp\n$InputRELPServerRun port\n\nIf using RainerScript syntax:\nmodule(load=\"imtcp\")\nmodule(load=\"imudp\")\ninput(type=\"imtcp\" port=\"514\")\ninput(type=\"imudp\" port=\"514\")\n\n      Is it the case that rsyslog accepts remote messages and is not documented as a log aggregation system?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server\n----\nVerify that the system is not accepting \"rsyslog\" messages from other systems unless it is\ndocumented as a log aggregation server.\nDisplay the contents of the rsyslog configuration files:\nfind /etc -maxdepth 2 -regex '/etc/rsyslog\\(\\.conf\\|\\.d\\/.*\\.conf\\)' -exec cat '{}' \\;\n\nIf any of the below lines are found, ask to see the documentation for the system being used\nfor log aggregation:\n\nIf using legacy syntax:\n$ModLoad imtcp\n$InputTCPServerRun port\n$ModLoad imudp\n$UDPServerRun port\n$ModLoad imrelp\n$InputRELPServerRun port\n\nIf using RainerScript syntax:\nmodule(load=\"imtcp\")\nmodule(load=\"imudp\")\ninput(type=\"imtcp\" port=\"514\")\ninput(type=\"imudp\" port=\"514\")\n\n      Is it the case that rsyslog accepts remote messages and is not documented as a log aggregation system?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server\n\nThe `rsyslog` daemon should not accept remote messages unless the system acts as a log\nserver. To ensure that it is not listening on the network, ensure any of the following lines\nare *not* found in `rsyslog` configuration files.\n\nIf using legacy syntax:\n\n```\n$ModLoad imtcp\n$InputTCPServerRun *port*\n$ModLoad imudp\n$UDPServerRun *port*\n$ModLoad imrelp\n$InputRELPServerRun *port*\n        \n```\n\n\nIf using RainerScript syntax:\n\n```\nmodule(load=\"imtcp\")\nmodule(load=\"imudp\")\ninput(type=\"imtcp\" port=\"514\")\ninput(type=\"imudp\" port=\"514\")\n```\n\n**Rationale:**\n\nAny process which receives messages from the network incurs some risk of receiving malicious\nmessages. This risk can be eliminated for rsyslog by configuring it not to listen on the\nnetwork.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.1",

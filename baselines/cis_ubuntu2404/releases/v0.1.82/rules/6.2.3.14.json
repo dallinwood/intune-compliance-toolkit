@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor)\n----\nVerify Ubuntu 24.04 generates audit records for all events that affect \"/etc/apparmor\" with the following command:\n\n$ sudo auditctl -l | grep /etc/apparmor\n\n-w /etc/apparmor -p wa -k MAC-policy\n      Is it the case that the system is not configured to audit attempts to change files within the /etc/apparmor directory?\n----\n\n== Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor.d)\n----\nVerify Ubuntu 24.04 generates audit records for all events that affect \"/etc/apparmor.d\" with the following command:\n\n$ sudo auditctl -l | grep /etc/apparmor.d\n\n-w /etc/apparmor.d -p wa -k MAC-policy\n      Is it the case that the system is not configured to audit attempts to change files within the /etc/apparmor.d directory?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor)\n----\nVerify Ubuntu 24.04 generates audit records for all events that affect \"/etc/apparmor\" with the following command:\n\n$ sudo auditctl -l | grep /etc/apparmor\n\n-w /etc/apparmor -p wa -k MAC-policy\n      Is it the case that the system is not configured to audit attempts to change files within the /etc/apparmor directory?\n----\n\n== Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor.d)\n----\nVerify Ubuntu 24.04 generates audit records for all events that affect \"/etc/apparmor.d\" with the following command:\n\n$ sudo auditctl -l | grep /etc/apparmor.d\n\n-w /etc/apparmor.d -p wa -k MAC-policy\n      Is it the case that the system is not configured to audit attempts to change files within the /etc/apparmor.d directory?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor)\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-w /etc/apparmor/ -p wa -k MAC-policy\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-w /etc/apparmor/ -p wa -k MAC-policy\n```\n\n**Rationale:**\n\nThe system's mandatory access policy (Apparmor) should not be\narbitrarily changed by anything other than administrator action. All changes to\nMAC policy should be audited.\n\n## Record Events that Modify the System's Mandatory Access Controls (/etc/apparmor.d)\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-w /etc/apparmor.d/ -p wa -k MAC-policy\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-w /etc/apparmor.d/ -p wa -k MAC-policy\n```\n\n**Rationale:**\n\nThe system's mandatory access policy (Apparmor) should not be\narbitrarily changed by anything other than administrator action. All changes to\nMAC policy should be audited.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

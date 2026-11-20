@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "integer",
-          "value": "$ODV_value"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "integer",
+            "value": "$ODV_value"
+          },
+          "shell": "/usr/sbin/sshd -G | /usr/bin/awk 'tolower($0) ~ /clientalivecountmax/{print $2}'"
         },
-        "shell": "/usr/sbin/sshd -G | /usr/bin/awk 'tolower($0) ~ /clientalivecountmax/{print $2}'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "If SSHD is enabled it _MUST_ be configured with the Client Alive Maximum Count set to $ODV_value.\n\nThis will set the number of client alive messages which may be sent without the SSH server receiving any messages back from the client.  If this threshold is reached while client alive messages are being sent, the SSH server will disconnect the client, terminating the session.  The client alive messages are sent through the encrypted channel and therefore will not be spoofable.  The client alive mechanism is valuable when the client or server depend on knowing when a connection has become unresponsive.\n\nNOTE: This setting is not intended to manage idle user sessions where there is no input from the client. Its purpose is to monitor for interruptions in network connectivity and force the session to terminate after the connection appears to be broken.\n\nNOTE: /etc/ssh/sshd_config will be automatically modified to its original state following any update or major upgrade to the operating system.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
   "discussion_format": "asciidoc",
@@ -143,7 +146,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

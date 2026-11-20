@@ -55,7 +55,7 @@
     }
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Govern principles",
     "GOV-04 - Cyber security resourcing"

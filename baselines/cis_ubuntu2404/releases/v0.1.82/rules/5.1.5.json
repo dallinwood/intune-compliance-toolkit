@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Enable SSH Warning Banner\n----\nTo determine how the SSH daemon's Banner option is set, run the following command:\n\n$ sudo grep -i Banner /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n\n\nIf a line indicating /etc/issue.net is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable SSH Warning Banner\n----\nTo determine how the SSH daemon's Banner option is set, run the following command:\n\n$ sudo grep -i Banner /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n\n\nIf a line indicating /etc/issue.net is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Enable SSH Warning Banner\n\nTo enable the warning banner and ensure it is consistent\nacross the system, add or correct the following line in\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nBanner /etc/issue.net\n```\n\nAnother section contains information on how to create an\nappropriate system-wide warning banner.\n\n**Rationale:**\n\nThe warning message reinforces policy awareness during the logon process and\nfacilitates possible legal action against attackers. Alternatively, systems\nwhose ownership should not be obvious should ensure usage of a banner that does\nnot provide easy attribution.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

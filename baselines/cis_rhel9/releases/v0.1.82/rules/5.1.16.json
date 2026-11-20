@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Set SSH authentication attempt limit\n----\nTo ensure the MaxAuthTries parameter is set, run the following command:\n$ sudo grep MaxAuthTries /etc/ssh/sshd_config\nIf properly configured, output should be:\nMaxAuthTries \n      Is it the case that it is commented out or not configured properly?\n----\nExpected values: sshd_max_auth_tries_value = $ODV_sshd_max_auth_tries_value",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set SSH authentication attempt limit\n----\nTo ensure the MaxAuthTries parameter is set, run the following command:\n$ sudo grep MaxAuthTries /etc/ssh/sshd_config\nIf properly configured, output should be:\nMaxAuthTries \n      Is it the case that it is commented out or not configured properly?\n----\nExpected values: sshd_max_auth_tries_value = $ODV_sshd_max_auth_tries_value",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Set SSH authentication attempt limit\n\nThe `MaxAuthTries` parameter specifies the maximum number of authentication attempts\npermitted per connection. Once the number of failures reaches half this value, additional failures are logged.\nto set MaxAUthTries edit `/etc/ssh/sshd_config` as follows:\n\n```\nMaxAuthTries $ODV_sshd_max_auth_tries_value\n        \n```\n\n**Rationale:**\n\nSetting the MaxAuthTries parameter to a low number will minimize the risk of successful\nbrute force attacks to the SSH server.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

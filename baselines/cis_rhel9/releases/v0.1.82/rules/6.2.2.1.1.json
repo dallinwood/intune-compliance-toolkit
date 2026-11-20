@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Install systemd-journal-remote Package\n----\nRun the following command to determine if the systemd-journal-remote package is installed: $ rpm -q systemd-journal-remote\n      Is it the case that the systemd-journal-remote package is not installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Install systemd-journal-remote Package\n----\nRun the following command to determine if the systemd-journal-remote package is installed: $ rpm -q systemd-journal-remote\n      Is it the case that the systemd-journal-remote package is not installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Install systemd-journal-remote Package\n\nJournald (via systemd-journal-remote ) supports the ability to send\nlog events it gathers to a remote log host or to receive messages\nfrom remote hosts, thus enabling centralised log management.\n\n**Rationale:**\n\nStoring log data on a remote host protects log integrity from local\nattacks. If an attacker gains root access on the local system, they\ncould tamper with or remove log data that is stored on the local system.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

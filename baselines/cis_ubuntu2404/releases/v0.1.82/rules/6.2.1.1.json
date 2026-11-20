@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure the audit Subsystem is Installed\n----\nRun the following command to determine if the audit package is installed: $ dpkg -l audit\n      Is it the case that the audit package is not installed?\n----\n\n== Ensure the default plugins for the audit dispatcher are Installed\n----\nIs it the case that the package is not installed?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure the audit Subsystem is Installed\n----\nRun the following command to determine if the audit package is installed: $ dpkg -l audit\n      Is it the case that the audit package is not installed?\n----\n\n== Ensure the default plugins for the audit dispatcher are Installed\n----\nIs it the case that the package is not installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure the audit Subsystem is Installed\n\nThe audit package should be installed.\n\n**Rationale:**\n\nThe auditd service is an access monitoring and accounting daemon, watching system calls to audit any access, in comparison with potential local access control policy such as SELinux policy.\n\n## Ensure the default plugins for the audit dispatcher are Installed\n\nThe audit-audispd-plugins package should be installed.\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration. Off-loading is a common process in information systems with limited audit storage capacity.\n\n**Notes:**\n\nImplementation analogous to ubuntu2204/4.1.1.1.\nAdded also the missing rule for audispd.\n",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.2",

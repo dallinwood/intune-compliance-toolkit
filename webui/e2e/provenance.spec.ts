@@ -41,8 +41,15 @@ test('a framework page shows its provenance badge by the title', async ({ page }
   await expect(page.getByRole('heading', { level: 2, name: /^CIS/ }).locator('..').getByText('Community', { exact: true })).toBeVisible()
 })
 
-test('the all-rules page has no provenance badge', async ({ page }) => {
+test('the all-rules page has no provenance badge beside its title', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(page.getByRole('heading', { level: 2, name: 'All rules' })).toBeVisible()
-  await expect(page.getByText('Community', { exact: true })).toHaveCount(0)
+  const title = page.getByRole('heading', { level: 2, name: 'All rules' })
+  await expect(title).toBeVisible()
+  await expect(title.locator('..').getByText(/^(Official|Community)$/)).toHaveCount(0)
+
+  // The same locator finds the badge on a framework page, so the zero above
+  // is a real absence and not a locator that matches nothing anywhere.
+  await page.goto('/frameworks?framework=cis_rhel9&tab=rules')
+  const frameworkTitle = page.getByRole('heading', { level: 2, name: /^CIS/ })
+  await expect(frameworkTitle.locator('..').getByText(/^(Official|Community)$/)).toHaveCount(1)
 })

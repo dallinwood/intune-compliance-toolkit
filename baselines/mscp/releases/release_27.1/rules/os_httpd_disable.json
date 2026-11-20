@@ -73,18 +73,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"org.apache.httpd\" => enabled')\nrunning=$(/bin/launchctl print system/org.apache.httpd 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
         },
-        "shell": "result=\"FAIL\"\nenabled=$(/bin/launchctl print-disabled system | /usr/bin/grep '\"org.apache.httpd\" => enabled')\nrunning=$(/bin/launchctl print system/org.apache.httpd 2>/dev/null)\n\nif [[ -z \"$running\" ]] && [[ -z \"$enabled\" ]]; then\n  result=\"PASS\"\nelif [[ -n \"$running\" ]]; then\n  result=\"${result}  RUNNING\"\nelif [[ -n \"$enabled\" ]]; then\n  result=\"${result}  ENABLED\"\nfi\necho $result"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The built-in web server which is managed by launchd is a non-essential service built into macOS and _MUST_ be disabled and not running.\n\nNOTE: The built in web server service is disabled at startup by default macOS.\n",
   "discussion_format": "asciidoc",
@@ -186,7 +189,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

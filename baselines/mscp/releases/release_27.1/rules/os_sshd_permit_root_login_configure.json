@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "no"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "no"
+          },
+          "shell": "/usr/sbin/sshd -G | /usr/bin/awk 'tolower($0) ~ /permitrootlogin/{print $2}'"
         },
-        "shell": "/usr/sbin/sshd -G | /usr/bin/awk 'tolower($0) ~ /permitrootlogin/{print $2}'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "If SSH is enabled to assure individual accountability and prevent unauthorized access, logging in as root via SSH _MUST_ be disabled.\n\nThe macOS system _MUST_ require individuals to be authenticated with an individual authenticator prior to using a group authenticator, and administrator users _MUST_ never log in directly as root.\n\nNOTE: On macOS 15.2 and higher the SSH configuration can be reset to the macOS default by running /usr/libexec/reset-ssh-configuration.\n",
   "discussion_format": "asciidoc",
@@ -126,7 +129,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

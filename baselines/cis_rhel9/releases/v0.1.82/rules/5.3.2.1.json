@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure Active Authselect Profile Includes PAM Modules\n----\nRun the following command to verify the active authselect profile includes lines for the\npwquality, pwhistory, faillock, and unix modules:\n\n# grep -P '\\b(pam_pwquality\\.so|pam_pwhistory\\.so|pam_faillock\\.so|pam_unix\\.so)\\b' /etc/authselect/\"$(head -1 /etc/authselect/authselect.conf)\"/{system,password}-auth\n\nThe output should show entries for all four modules in both system-auth and password-auth files.\n      Is it the case that the active authselect profile does not include all required PAM modules?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Active Authselect Profile Includes PAM Modules\n----\nRun the following command to verify the active authselect profile includes lines for the\npwquality, pwhistory, faillock, and unix modules:\n\n# grep -P '\\b(pam_pwquality\\.so|pam_pwhistory\\.so|pam_faillock\\.so|pam_unix\\.so)\\b' /etc/authselect/\"$(head -1 /etc/authselect/authselect.conf)\"/{system,password}-auth\n\nThe output should show entries for all four modules in both system-auth and password-auth files.\n      Is it the case that the active authselect profile does not include all required PAM modules?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure Active Authselect Profile Includes PAM Modules\n\nThe active authselect profile must include the required PAM modules:\n`pam_pwquality.so`, `pam_pwhistory.so`, `pam_faillock.so`, and `pam_unix.so`\nin both `system-auth` and `password-auth` files.\n\nA custom authselect profile can be created by copying and customizing one of the default profiles.\nThe default profiles include: `local`, `sssd`, and `winbind`. These profiles can be customized\nto follow site specific requirements.\n\n**Rationale:**\n\nA custom profile is required to customize many of the PAM options.\nModifications made to a default profile may be overwritten during an update.\nWhen you deploy a profile, the profile is applied to every user logging into the given host.\n\n**Notes:**\n\nThis rule verifies that the active authselect profile includes the required PAM modules:\npam_pwquality.so, pam_pwhistory.so, pam_faillock.so, and pam_unix.so in both system-auth\nand password-auth files. The rule checks the authselect profile source files directly,\nnot the symlinked files in /etc/pam.d/. Other rules ensure these modules are properly\nconfigured with correct options.",
   "discussion_format": "markdown",
@@ -86,7 +89,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.3",

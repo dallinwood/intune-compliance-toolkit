@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable the GNOME3 Login User List\n----\nTo ensure the user list is disabled, run the following command:\n$ grep disable-user-list /etc/dconf/db/distro.d/*\nThe output should be true.\nTo ensure that users cannot enable displaying the user list, run the following:\n$ grep disable-user-list /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should be /org/gnome/login-screen/disable-user-list\n      Is it the case that disable-user-list has not been configured or is not disabled?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable the GNOME3 Login User List\n----\nTo ensure the user list is disabled, run the following command:\n$ grep disable-user-list /etc/dconf/db/distro.d/*\nThe output should be true.\nTo ensure that users cannot enable displaying the user list, run the following:\n$ grep disable-user-list /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should be /org/gnome/login-screen/disable-user-list\n      Is it the case that disable-user-list has not been configured or is not disabled?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable the GNOME3 Login User List\n\nIn the default graphical environment, users logging directly into the\nsystem are greeted with a login screen that displays all known users.\nThis functionality should be disabled by setting `disable-user-list`\nto `true`.\n\n\n         \n\nTo disable, add or edit `disable-user-list` to\n`/etc/dconf/db/distro.d/00-security-settings`. For example:\n\n```\n[org/gnome/login-screen]\ndisable-user-list=true\n```\n\nOnce the setting has been added, add a lock to\n`/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent\nuser modification. For example:\n\n```\n/org/gnome/login-screen/disable-user-list\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nLeaving the user list enabled is a security risk since it allows anyone\nwith physical access to the system to quickly enumerate known user accounts\nwithout logging in.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.8"

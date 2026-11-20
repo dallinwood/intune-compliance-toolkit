@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable Kernel Parameter for Accepting Secure ICMP Redirects on all IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.secure_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.secure_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_all_secure_redirects_value = $ODV_sysctl_net_ipv4_conf_all_secure_redirects_value\n\n== Configure Kernel Parameter for Accepting Secure Redirects By Default\n----\nThe runtime status of the net.ipv4.conf.default.secure_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.secure_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_secure_redirects_value = $ODV_sysctl_net_ipv4_conf_default_secure_redirects_value",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable Kernel Parameter for Accepting Secure ICMP Redirects on all IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.secure_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.secure_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_all_secure_redirects_value = $ODV_sysctl_net_ipv4_conf_all_secure_redirects_value\n\n== Configure Kernel Parameter for Accepting Secure Redirects By Default\n----\nThe runtime status of the net.ipv4.conf.default.secure_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.secure_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_secure_redirects_value = $ODV_sysctl_net_ipv4_conf_default_secure_redirects_value",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable Kernel Parameter for Accepting Secure ICMP Redirects on all IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.all.secure_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.all.secure_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.all.secure_redirects = 0\n```\n\n**Rationale:**\n\nAccepting \"secure\" ICMP redirects (from those gateways listed as\ndefault gateways) has few legitimate uses. It should be disabled unless it is\nabsolutely required.\n\n## Configure Kernel Parameter for Accepting Secure Redirects By Default\n\nTo set the runtime status of the `net.ipv4.conf.default.secure_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.default.secure_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.default.secure_redirects = 0\n```\n\n**Rationale:**\n\nAccepting \"secure\" ICMP redirects (from those gateways listed as\ndefault gateways) has few legitimate uses. It should be disabled unless it is\nabsolutely required.",
   "discussion_format": "markdown",
@@ -114,7 +117,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "3",
     "3.3"

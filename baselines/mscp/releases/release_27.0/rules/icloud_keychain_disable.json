@@ -45,18 +45,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCloudKeychainSync\")) == false && s.objectIsForcedForKey(\"allowCloudKeychainSync\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.applicationaccess\"); (ObjC.unwrap(s.objectForKey(\"allowCloudKeychainSync\")) == false && s.objectIsForcedForKey(\"allowCloudKeychainSync\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "The system's ability to automatically synchronize a user's passwords to their iCloud account _MUST_ be disabled, unless the organization has explicitly authorized the use of iCloud as a approved password management service.\n\nApple's iCloud service does not provide an organization with enough control over the storage and access of data and, therefore, password management and synchronization _MUST_ be controlled by an organization approved service.\n\nThis requirement helps ensure that organizational contact data is managed in accordance with established security, privacy, access-control, and data governance requirements.\n",
   "discussion_format": "asciidoc",
@@ -218,7 +221,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "icloud"
   ],

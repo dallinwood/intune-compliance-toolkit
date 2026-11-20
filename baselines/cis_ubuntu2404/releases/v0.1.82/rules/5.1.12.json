@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Use Only Strong Key Exchange algorithms\n----\nOnly strong KEX algorithms should be used. To verify that only strong\nKexAlgorithms are in use, run the following command:\n$ sudo grep -i kexalgorithms /etc/ssh/sshd_config\nThe output should contain only those KexAlgorithms which are strong, namely,\n\n      Is it the case that KexAlgorithms option is commented out or not using strong hash algorithms?\n----\nExpected values: sshd_strong_kex = $ODV_sshd_strong_kex",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Use Only Strong Key Exchange algorithms\n----\nOnly strong KEX algorithms should be used. To verify that only strong\nKexAlgorithms are in use, run the following command:\n$ sudo grep -i kexalgorithms /etc/ssh/sshd_config\nThe output should contain only those KexAlgorithms which are strong, namely,\n\n      Is it the case that KexAlgorithms option is commented out or not using strong hash algorithms?\n----\nExpected values: sshd_strong_kex = $ODV_sshd_strong_kex",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Use Only Strong Key Exchange algorithms\n\nLimit the Key Exchange to strong algorithms.\nThe following line in `/etc/ssh/sshd_config` demonstrates use\nof those:\n\n```\nKexAlgorithms $ODV_sshd_strong_kex\n        \n```\n\n**Rationale:**\n\nKey exchange is any method in cryptography by which cryptographic keys are exchanged\nbetween two parties, allowing use of a cryptographic algorithm. If the sender and receiver\nwish to exchange encrypted messages, each must be equipped to encrypt messages to be\nsent and decrypt messages received",
   "discussion_format": "markdown",
@@ -88,7 +91,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "5",
     "5.1"

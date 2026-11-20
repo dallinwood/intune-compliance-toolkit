@@ -37,18 +37,21 @@
     "status": "automated"
   },
   "check": {
-    "macOS": {
-      "by_version": {},
-      "default": {
-        "additional_info": null,
-        "result": {
-          "type": "string",
-          "value": "PASS"
+    "macOS": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": {
+            "type": "string",
+            "value": "PASS"
+          },
+          "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.loginwindow\"); (ObjC.unwrap(s.objectForKey(\"AdminMayDisableMCX\")) == false && s.objectIsForcedForKey(\"AdminMayDisableMCX\")) ? \"PASS\" : \"FAIL\"'"
         },
-        "shell": "/usr/bin/osascript -l JavaScript -e 'var s = $.NSUserDefaults.alloc.initWithSuiteName(\"com.apple.loginwindow\"); (ObjC.unwrap(s.objectForKey(\"AdminMayDisableMCX\")) == false && s.objectIsForcedForKey(\"AdminMayDisableMCX\")) ? \"PASS\" : \"FAIL\"'"
-      },
-      "language": "bash"
-    }
+        "language": "bash",
+        "name": null
+      }
+    ]
   },
   "discussion": "A local administrator can bypass or disable managed preferences for their login session by holding down the Shift key if the key AdminMayDisableMCX is set to true. This setting _MUST_ be disabled to ensure that managed preferences are enforced for all users on the system.",
   "discussion_format": "asciidoc",
@@ -128,7 +131,7 @@
       "steps": []
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "os"
   ],

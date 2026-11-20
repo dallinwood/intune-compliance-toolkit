@@ -1,4 +1,4 @@
-import { changeLabel, visibleChanges } from '../../logic/changeLabels'
+import { changeLabel, visibleChanges, type CheckItemCounts } from '../../logic/changeLabels'
 import type { ChangeKind, FieldChange } from '../../logic/ruleChanges'
 import { diffLines, diffWords } from '../../logic/sequenceDiff'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
@@ -130,7 +130,9 @@ export function FieldChangeList({
   changes,
   kinds,
   focusPaths,
+  checkCounts,
 }: {
+  checkCounts?: CheckItemCounts
   changes: FieldChange[]
   kinds?: ReadonlySet<ChangeKind>
   focusPaths?: string[][]
@@ -142,7 +144,7 @@ export function FieldChangeList({
     <ul className="divide-y divide-border">
       {shown.map((change) => (
         <li key={change.path.join('\u0000')} data-testid="field-change" className="flex flex-col gap-1.5 py-2 sm:flex-row sm:gap-4">
-          <span className="shrink-0 text-sm font-medium break-words sm:w-52">{changeLabel(change.path, vocabularyIndex)}</span>
+          <span className="shrink-0 text-sm font-medium break-words sm:w-52">{changeLabel(change.path, vocabularyIndex, checkCounts)}</span>
           <div className="min-w-0 sm:flex-1">
             <ChangeBody change={change} />
           </div>

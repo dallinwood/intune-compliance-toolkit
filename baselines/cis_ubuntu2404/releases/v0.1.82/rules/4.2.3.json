@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Verify ufw Active\nNo audit procedure in ComplianceAsCode.\n\n== Verify ufw Enabled\n----\nRun the following command to determine the current status of the\nufw service:\n$ sudo systemctl is-active ufw\nIf the service is running, it should return the following: active\n      Is it the case that the service is not enabled?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify ufw Active\nNo audit procedure in ComplianceAsCode.\n\n== Verify ufw Enabled\n----\nRun the following command to determine the current status of the\nufw service:\n$ sudo systemctl is-active ufw\nIf the service is running, it should return the following: active\n      Is it the case that the service is not enabled?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Verify ufw Active\n\nVerify the ufw is enabled on the system with the following command:\n\n```\n# sudo ufw status\n```\n\nIf the above command returns the status as \"inactive\" or any type of error, this is a finding.\n\n**Rationale:**\n\nRemote access services, such as those providing remote access to network devices and information systems, \nwhich lack automated control capabilities, increase risk and make remote user access management difficult at best.  \nRemote access is access to nonpublic information systems by an authorized user (or an information system) communicating \nthrough an external, nonorganization-controlled network. Remote access methods include, for example, dial-up, broadband, and wireless.  \nUbuntu 22.04 LTS functionality (e.g., RDP) must be capable of taking enforcement action if the audit reveals unauthorized activity. \nAutomated control of remote access sessions allows organizations to ensure ongoing compliance with remote access policies by \nenforcing connection rules of remote access applications on a variety of information system components.\n\n## Verify ufw Enabled\n\nThe `ufw` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable ufw.service\n```\n\n**Rationale:**\n\nThe ufw service must be enabled and running in order for ufw to protect the system",
   "discussion_format": "markdown",
@@ -96,7 +99,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "4",
     "4.2"

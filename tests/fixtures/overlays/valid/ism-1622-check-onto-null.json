@@ -6,11 +6,14 @@
   ],
   "fields": {
     "check": {
-      "Windows": {
-        "language": "powershell",
-        "default": { "shell": "echo check", "result": null, "additional_info": null },
-        "by_version": {}
-      }
+      "Windows": [
+        {
+          "name": null,
+          "language": "powershell",
+          "default": { "shell": "echo check", "result": null, "additional_info": null },
+          "by_version": {}
+        }
+      ]
     }
   }
 }

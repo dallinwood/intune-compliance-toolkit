@@ -16,6 +16,15 @@ describe('groupByProvenance', () => {
     expect(groups.community.map((source) => source.name)).toEqual(['cis_rhel9', 'cis_ubuntu2404'])
   })
 
+  it('keeps a source whose provenance is missing or unknown, in the community group', () => {
+    const missing = { name: 'no_provenance' } as unknown as ReturnType<typeof entry>
+    const unknown = { name: 'odd', provenance: 'vendor' } as unknown as ReturnType<typeof entry>
+    const groups = groupByProvenance([entry('mscp', 'official'), missing, unknown, entry('cis_rhel9', 'community')])
+
+    expect(groups.official.map((source) => source.name)).toEqual(['mscp'])
+    expect(groups.community.map((source) => source.name)).toEqual(['no_provenance', 'odd', 'cis_rhel9'])
+  })
+
   it('returns empty groups when a kind is absent', () => {
     expect(groupByProvenance([entry('mscp', 'official')])).toEqual({ official: [entry('mscp', 'official')], community: [] })
     expect(groupByProvenance([])).toEqual({ official: [], community: [] })

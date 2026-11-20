@@ -34,7 +34,7 @@
     ]
   },
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Program Management",
     "PM-25 Minimization of Personally Identifiable Information Used in Testing, Training, and Research"

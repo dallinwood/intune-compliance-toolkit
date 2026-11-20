@@ -21,15 +21,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Record Attempts to Alter Process and Session Initiation Information utmp\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/run/utmp\" with the following command:\n\n$ sudo auditctl -l | grep /var/run/utmp\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/run/utmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/run/utmp -F perm=wa -F key=session\n      Is it the case that Audit rule is not present?\n----\n\n== Record Attempts to Alter Process and Session Initiation Information btmp\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/log/btmp\" with the following command:\n\n$ sudo auditctl -l | grep /var/log/btmp\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/log/btmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/btmp -F perm=wa -F key=session\n      Is it the case that Audit rule is not present?\n----\n\n== Record Attempts to Alter Process and Session Initiation Information wtmp\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/log/wtmp\" with the following command:\n\n$ sudo auditctl -l | grep /var/log/wtmp\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/log/wtmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/wtmp -F perm=wa -F key=session\n      Is it the case that Audit rule is not present?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Record Attempts to Alter Process and Session Initiation Information utmp\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/run/utmp\" with the following command:\n\n$ sudo auditctl -l | grep /var/run/utmp\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/run/utmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/run/utmp -F perm=wa -F key=session\n      Is it the case that Audit rule is not present?\n----\n\n== Record Attempts to Alter Process and Session Initiation Information btmp\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/log/btmp\" with the following command:\n\n$ sudo auditctl -l | grep /var/log/btmp\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/log/btmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/btmp -F perm=wa -F key=session\n      Is it the case that Audit rule is not present?\n----\n\n== Record Attempts to Alter Process and Session Initiation Information wtmp\n----\nVerify Red Hat Enterprise Linux 9 generates audit records for all events that affect \"/var/log/wtmp\" with the following command:\n\n$ sudo auditctl -l | grep /var/log/wtmp\n\n\n\n\n-a always,exit -F arch=b32 -F path=/var/log/wtmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/wtmp -F perm=wa -F key=session\n      Is it the case that Audit rule is not present?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Record Attempts to Alter Process and Session Initiation Information utmp\n\nThe audit system already collects process information for all\nusers and root.\n\n\n\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/run/utmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/run/utmp -F perm=wa -F key=session\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/run/utmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/run/utmp -F perm=wa -F key=session\n```\n\n**Rationale:**\n\nManual editing of these files may indicate nefarious activity, such\nas an attacker attempting to remove evidence of an intrusion.\n\n## Record Attempts to Alter Process and Session Initiation Information btmp\n\nThe audit system already collects process information for all\nusers and root.\n\n\n\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/log/btmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/btmp -F perm=wa -F key=session\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/log/btmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/btmp -F perm=wa -F key=session\n```\n\n**Rationale:**\n\nManual editing of these files may indicate nefarious activity, such\nas an attacker attempting to remove evidence of an intrusion.\n\n## Record Attempts to Alter Process and Session Initiation Information wtmp\n\nThe audit system already collects process information for all\nusers and root.\n\n\n\n\nIf the `auditd` daemon is configured to use the `augenrules`\nprogram to read audit rules during daemon startup (the default), add the\nfollowing lines to a file with suffix `.rules` in the\ndirectory `/etc/audit/rules.d`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/log/wtmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/wtmp -F perm=wa -F key=session\n```\n\n\nIf the `auditd` daemon is configured to use the `auditctl`\nutility to read audit rules during daemon startup, add the following lines to\n`/etc/audit/audit.rules`:\n\n\n```\n-a always,exit -F arch=b32 -F path=/var/log/wtmp -F perm=wa -F key=session\n-a always,exit -F arch=b64 -F path=/var/log/wtmp -F perm=wa -F key=session\n```\n\n**Rationale:**\n\nManual editing of these files may indicate nefarious activity, such\nas an attacker attempting to remove evidence of an intrusion.",
   "discussion_format": "markdown",
@@ -86,7 +89,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "6",
     "6.3",

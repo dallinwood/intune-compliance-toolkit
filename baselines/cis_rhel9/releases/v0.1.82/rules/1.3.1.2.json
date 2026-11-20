@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Ensure SELinux Not Disabled in /etc/default/grub\n----\nInspect /etc/default/grub for any instances of selinux=0\nin the kernel boot arguments.  Presence of selinux=0 indicates\nthat SELinux is disabled at boot time.\n      Is it the case that SELinux is disabled at boot time?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure SELinux Not Disabled in /etc/default/grub\n----\nInspect /etc/default/grub for any instances of selinux=0\nin the kernel boot arguments.  Presence of selinux=0 indicates\nthat SELinux is disabled at boot time.\n      Is it the case that SELinux is disabled at boot time?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Ensure SELinux Not Disabled in /etc/default/grub\n\nSELinux can be disabled at boot time by an argument in\n`/etc/default/grub`.\nRemove any instances of `selinux=0` from the kernel arguments in that\nfile to prevent SELinux from being disabled at boot.\n\n**Rationale:**\n\nDisabling a major host protection feature, such as SELinux, at boot time prevents\nit from confining system services at boot time.  Further, it increases\nthe chances that it will remain off during system operation.",
   "discussion_format": "markdown",
@@ -76,7 +79,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.3",

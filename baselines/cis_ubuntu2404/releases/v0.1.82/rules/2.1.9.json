@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Uninstall nfs-kernel-server Package\n----\nRun the following command to determine if the nfs-kernel-server package is installed: $ dpkg -l nfs-kernel-server\n      Is it the case that the nfs-kernel-server package is installed?\n----\n\n== Disable Network File System (nfs)\n----\nTo check that the nfs-server service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled nfs-server\nOutput should indicate the nfs-server service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled nfs-server disabled\n\nRun the following command to verify nfs-server is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active nfs-server\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the nfs-server is masked, run the following command:\n$ sudo systemctl show nfs-server | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"nfs-server\" is loaded and not masked?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Uninstall nfs-kernel-server Package\n----\nRun the following command to determine if the nfs-kernel-server package is installed: $ dpkg -l nfs-kernel-server\n      Is it the case that the nfs-kernel-server package is installed?\n----\n\n== Disable Network File System (nfs)\n----\nTo check that the nfs-server service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled nfs-server\nOutput should indicate the nfs-server service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled nfs-server disabled\n\nRun the following command to verify nfs-server is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active nfs-server\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the nfs-server is masked, run the following command:\n$ sudo systemctl show nfs-server | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"nfs-server\" is loaded and not masked?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Uninstall nfs-kernel-server Package\n\nThe `nfs-kernel-server` package can be removed with the following command:\n\n```\n$ apt-get remove nfs-kernel-server\n```\n\n**Rationale:**\n\nIf the system does not export NFS shares or act as an NFS client, it is\nrecommended that these services be removed to reduce the remote attack\nsurface.\n\n## Disable Network File System (nfs)\n\nThe Network File System (NFS) service allows remote hosts to mount\nand interact with shared filesystems on the local system. If the local system\nis not designated as a NFS server then this service should be disabled.\n\nThe `nfs-server` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now nfs-server.service\n```\n\n**Rationale:**\n\nUnnecessary services should be disabled to decrease the attack surface of the system.",
   "discussion_format": "markdown",
@@ -81,7 +84,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.1"

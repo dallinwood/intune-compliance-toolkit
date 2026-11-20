@@ -23,7 +23,7 @@
   "odvs": [],
   "references": {},
   "remediation": null,
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "Audit and Accountability",
     "AU-05 Response to Audit Logging Process Failures"

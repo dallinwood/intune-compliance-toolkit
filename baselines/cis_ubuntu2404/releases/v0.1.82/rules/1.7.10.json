@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== Disable XDMCP in GDM\n----\nTo ensure that XDMCP is disabled in /etc/gdm3/custom.conf, run the following command:\ngrep -Pzo \"\\[xdmcp\\]\\nEnable=false\" /etc/gdm3/custom.conf\nThe output should return the following:\n\n[xdmcp]\nEnable=false\n\n      Is it the case that the Enable is not set to false or is missing in the xdmcp section of the /etc/gdm3/custom.conf gdm configuration file?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable XDMCP in GDM\n----\nTo ensure that XDMCP is disabled in /etc/gdm3/custom.conf, run the following command:\ngrep -Pzo \"\\[xdmcp\\]\\nEnable=false\" /etc/gdm3/custom.conf\nThe output should return the following:\n\n[xdmcp]\nEnable=false\n\n      Is it the case that the Enable is not set to false or is missing in the xdmcp section of the /etc/gdm3/custom.conf gdm configuration file?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## Disable XDMCP in GDM\n\nXDMCP is an unencrypted protocol, and therefore, presents a security risk.\nTo disable XDMCP support in Gnome, set `Enable` to `false` under the `[xdmcp]` configuration section in `/etc/gdm3/custom.conf`. For example:\n\n```\n[xdmcp]\nEnable=false\n```\n\n**Rationale:**\n\nXDMCP provides unencrypted remote access through the Gnome Display Manager (GDM) which does\nnot provide for the confidentiality and integrity of user passwords or the\nremote session. If a privileged user were to login using XDMCP, the\nprivileged user password could be compromised due to typed XEvents\nand keystrokes will traversing over the network in clear text.",
   "discussion_format": "markdown",
@@ -73,7 +76,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "1",
     "1.7"

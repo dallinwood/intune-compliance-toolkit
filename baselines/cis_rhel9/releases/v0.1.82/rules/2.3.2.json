@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== A remote time server for Chrony is configured\n----\nVerify that a remote time server is configured. First, check the main configuration file:\n# grep -E \"^(server|pool)\" /etc/chrony.conf\nIf no server or pool directive is found, check for sourcedir or confdir directives:\n# grep -E \"^(sourcedir|confdir)\" /etc/chrony.conf\nFor each sourcedir found, check .sources files in that directory:\n# grep -E \"^(server|pool)\" /path/to/sourcedir/*.sources\nFor each confdir found, check .conf files in that directory:\n# grep -E \"^(server|pool)\" /path/to/confdir/*.conf\nAt least one server or pool directive must be present in the main configuration file\nor in files within directories specified by sourcedir or confdir directives.\n      Is it the case that a remote time server is not configured?\n----\nExpected values: var_multiple_time_servers = $ODV_var_multiple_time_servers",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== A remote time server for Chrony is configured\n----\nVerify that a remote time server is configured. First, check the main configuration file:\n# grep -E \"^(server|pool)\" /etc/chrony.conf\nIf no server or pool directive is found, check for sourcedir or confdir directives:\n# grep -E \"^(sourcedir|confdir)\" /etc/chrony.conf\nFor each sourcedir found, check .sources files in that directory:\n# grep -E \"^(server|pool)\" /path/to/sourcedir/*.sources\nFor each confdir found, check .conf files in that directory:\n# grep -E \"^(server|pool)\" /path/to/confdir/*.conf\nAt least one server or pool directive must be present in the main configuration file\nor in files within directories specified by sourcedir or confdir directives.\n      Is it the case that a remote time server is not configured?\n----\nExpected values: var_multiple_time_servers = $ODV_var_multiple_time_servers",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## A remote time server for Chrony is configured\n\n`Chrony` is a daemon which implements the Network Time Protocol (NTP). It is designed\nto synchronize system clocks across a variety of systems and use a source that is highly\naccurate. More information on `chrony` can be found at\n\n    [https://chrony-project.org/](https://chrony-project.org/).\n`Chrony` can be configured to be a client and/or a server.\nAdd or edit server or pool lines to `/etc/chrony.conf` as appropriate:\n\n```\nserver <remote-server>\n```\n\nAlternatively, server or pool directives can be specified in files included via\n`sourcedir` or `confdir` directives in `/etc/chrony.conf`.\nWhen using `sourcedir`, create `.sources` files in the specified directory:\n\n```\n# In /etc/chrony.conf:\nsourcedir /etc/chrony/sources.d\n\n# In /etc/chrony/sources.d/ntp.sources:\nserver 0.pool.ntp.org\n```\n\nWhen using `confdir`, create `.conf` files in the specified directory:\n\n```\n# In /etc/chrony.conf:\nconfdir /etc/chrony/conf.d\n\n# In /etc/chrony/conf.d/ntp-servers.conf:\npool 1.pool.ntp.org\n```\n\nMultiple servers may be configured.\n\n**Rationale:**\n\nIf `chrony` is in use on the system proper configuration is vital to ensuring time\nsynchronization is working properly.",
   "discussion_format": "markdown",
@@ -91,7 +94,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "2",
     "2.3"

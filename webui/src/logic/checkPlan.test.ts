@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { CheckResult, Odv, Rule, RuleCheck } from '../types/library'
-import { generatedTargetCheck, planRuleCheck, settingNameFor, type RuleCheckPlan } from './checkPlan'
+import { generatedCheckItem, planRuleCheck, settingNameFor, type RuleCheckPlan } from './checkPlan'
 import { applicabilityOfVersions, macosCheck } from './testRuleFixtures'
 
 // Pinned on purpose: these tests describe the exact shape of rules as release_27.0 stored them (27.1 changed some).
@@ -19,7 +19,7 @@ function check(shell: string | null, result: CheckResult | null): RuleCheck {
 function inlineRule(overrides: Partial<Rule> = {}): Rule {
   const upstreamId = (overrides.id ?? 'mscp.example_rule').replace(/^mscp\./, '')
   return {
-    schema_version: 6,
+    schema_version: 7,
     id: `mscp.${upstreamId}`,
     title: 'Example rule',
     discussion: 'First paragraph.\n\nSecond paragraph.',
@@ -96,9 +96,9 @@ describe('planRuleCheck with real committed rules', () => {
       exportedOdvs: {},
     })
     expect(plan.branches).toEqual([
-      { majors: ['15', '26', '27'], shell: rule.check!.macOS.default!.shell, expected: { type: 'string', value: 'PASS' } },
+      { majors: ['15', '26', '27'], shell: rule.check!.macOS[0].default!.shell, expected: { type: 'string', value: 'PASS' } },
     ])
-    expect(plan.newerBranch).toEqual({ shell: rule.check!.macOS.default!.shell, expected: { type: 'string', value: 'PASS' } })
+    expect(plan.newerBranch).toEqual({ shell: rule.check!.macOS[0].default!.shell, expected: { type: 'string', value: 'PASS' } })
   })
 
   it('reports os_tftpd_disable as boolean because its 15.0 override changes the result type', () => {
@@ -109,10 +109,10 @@ describe('planRuleCheck with real committed rules', () => {
     expect(plan.dataType).toBe('Boolean')
     expect(plan.operand).toBe(true)
     expect(plan.branches).toEqual([
-      { majors: ['15'], shell: rule.check!.macOS.by_version['15.0'].shell, expected: { type: 'integer', value: 1 } },
-      { majors: ['26', '27'], shell: rule.check!.macOS.default!.shell, expected: { type: 'string', value: 'PASS' } },
+      { majors: ['15'], shell: rule.check!.macOS[0].by_version['15.0'].shell, expected: { type: 'integer', value: 1 } },
+      { majors: ['26', '27'], shell: rule.check!.macOS[0].default!.shell, expected: { type: 'string', value: 'PASS' } },
     ])
-    expect(plan.newerBranch).toEqual({ shell: rule.check!.macOS.default!.shell, expected: { type: 'string', value: 'PASS' } })
+    expect(plan.newerBranch).toEqual({ shell: rule.check!.macOS[0].default!.shell, expected: { type: 'string', value: 'PASS' } })
   })
 
   it('substitutes the ODV into the integer result of audit_configure_capacity_notify', () => {
@@ -144,7 +144,7 @@ describe('planRuleCheck with real committed rules', () => {
 
     expect(plan.newerThan).toBe('27')
     expect(plan.branches.flatMap((branch) => branch.majors)).toEqual(['15', '26'])
-    expect(plan.newerBranch).toEqual({ shell: rule.check!.macOS.by_version['26.0'].shell, expected: { type: 'string', value: 'true' } })
+    expect(plan.newerBranch).toEqual({ shell: rule.check!.macOS[0].by_version['26.0'].shell, expected: { type: 'string', value: 'true' } })
   })
 
   it('exports a variable-mode ODV and leaves $ODV in the shell for os_policy_banner_ssh_configure', () => {
@@ -153,7 +153,7 @@ describe('planRuleCheck with real committed rules', () => {
     const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, { value: banner }))
 
     expect(plan.exportedOdvs).toEqual({ value: banner })
-    expect(plan.branches[0].shell).toBe(rule.check!.macOS.default!.shell)
+    expect(plan.branches[0].shell).toBe(rule.check!.macOS[0].default!.shell)
     expect(plan.branches[0].shell).toContain('$ODV_value')
   })
 
@@ -261,15 +261,15 @@ describe('planRuleCheck with inline rules', () => {
   })
 
   it('treats a rule whose checks are all for other targets as having no macOS check', () => {
-    const windowsCheck = { language: 'powershell' as const, default: check('Get-Thing', { type: 'string', value: 'ok' }), by_version: {} }
-    const rule = inlineRule({ check: { Windows: windowsCheck } })
+    const windowsCheck = { name: null, language: 'powershell' as const, default: check('Get-Thing', { type: 'string', value: 'ok' }), by_version: {} }
+    const rule = inlineRule({ check: { Windows: [windowsCheck] } })
 
     expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP has no check for macOS 15.0.')
   })
 
   it('plans only the macOS check when the rule also has a check for another target', () => {
-    const windowsCheck = { language: 'powershell' as const, default: check('Write-Output $ODV_value', { type: 'string', value: '$ODV_value' }), by_version: {} }
-    const rule = inlineRule({ check: { ...macosCheck(check('echo PASS', { type: 'string', value: 'PASS' })), Windows: windowsCheck } })
+    const windowsCheck = { name: null, language: 'powershell' as const, default: check('Write-Output $ODV_value', { type: 'string', value: '$ODV_value' }), by_version: {} }
+    const rule = inlineRule({ check: { ...macosCheck(check('echo PASS', { type: 'string', value: 'PASS' })), Windows: [windowsCheck] } })
     const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
 
     expect(plan.branches).toEqual([{ majors: ['15', '26', '27'], shell: 'echo PASS', expected: { type: 'string', value: 'PASS' } }])
@@ -277,14 +277,27 @@ describe('planRuleCheck with inline rules', () => {
 
   it('never plans an instructions check', () => {
     const instructionsCheck = {
+      name: null,
       language: 'instructions' as const,
       default: { shell: null, result: null, additional_info: 'Inspect the setting by hand.' },
       by_version: {},
     }
-    const rule = inlineRule({ check: { macOS: instructionsCheck } })
+    const rule = inlineRule({ check: { macOS: [instructionsCheck] } })
 
-    expect(generatedTargetCheck(rule)).toBeNull()
+    expect(generatedCheckItem(rule)).toBeNull()
     expect(expectProblem(planRuleCheck(rule, COVERED_VERSIONS, {}))).toBe('mSCP has no check for macOS 15.0.')
+  })
+
+  it('plans the first item in a supported shell, skipping instructions and other languages before it', () => {
+    const instructionsItem = { name: 'Look', language: 'instructions' as const, default: { shell: null, result: null, additional_info: 'Look.' }, by_version: {} }
+    const pythonItem = { name: 'Py', language: 'python' as const, default: check('print(1)', { type: 'string', value: '1' }), by_version: {} }
+    const zshItem = { name: 'Zsh', language: 'zsh' as const, default: check('echo ZSH', { type: 'string', value: 'ZSH' }), by_version: {} }
+    const laterBashItem = { name: 'Bash', language: 'bash' as const, default: check('echo LATER', { type: 'string', value: 'LATER' }), by_version: {} }
+    const rule = inlineRule({ check: { macOS: [instructionsItem, pythonItem, zshItem, laterBashItem] } })
+
+    expect(generatedCheckItem(rule)).toBe(zshItem)
+    const plan = expectPlan(planRuleCheck(rule, COVERED_VERSIONS, {}))
+    expect(plan.branches[0].shell).toBe('echo ZSH')
   })
 
   it('refuses a rule whose listed version resolves to a check with a null result', () => {

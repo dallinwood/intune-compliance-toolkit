@@ -29,15 +29,18 @@
     "status": "manual"
   },
   "check": {
-    "Linux": {
-      "by_version": {},
-      "default": {
-        "additional_info": "== All Interactive Users Home Directories Must Exist\n----\nVerify the assigned home directories of all interactive users on the system exist with the following command:\n\n$ sudo pwck -r\n\nuser 'mailnull': directory 'var/spool/mqueue' does not exist\n\nThe output should not return any interactive users.\n      Is it the case that users home directory does not exist?\n----\n\n== All Interactive User Home Directories Must Be Group-Owned By The Primary Group\n----\nTo verify the assigned home directory of all interactive users is group-\nowned by that user's primary GID, run the following command:\n# ls -ld $(getent passwd | awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($7 !~ /\\/false$/){print $6}')\n\nThis should return a list of home directories with group ownership matching each user's primary group.\nUsing getent passwd instead of reading /etc/passwd directly ensures that remote users\n(LDAP, SSSD, NIS, etc.) are also checked.\n      Is it the case that the group ownership is incorrect?\n----\n\n== All Interactive User Home Directories Must Be Owned By The Primary User\n----\nTo verify the home directory ownership, run the following command:\n# ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n      Is it the case that the user ownership is incorrect?\n----\n\n== All Interactive User Home Directories Must Have mode 0750 Or Less Permissive\n----\nTo verify the assigned home directory of all interactive user home directories\nhave a mode of 0750 or less permissive, run the following command:\n$ sudo ls -l /home\nInspect the output for any directories with incorrect permissions.\n      Is it the case that they are more permissive?\n----",
-        "result": null,
-        "shell": null
-      },
-      "language": "instructions"
-    }
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== All Interactive Users Home Directories Must Exist\n----\nVerify the assigned home directories of all interactive users on the system exist with the following command:\n\n$ sudo pwck -r\n\nuser 'mailnull': directory 'var/spool/mqueue' does not exist\n\nThe output should not return any interactive users.\n      Is it the case that users home directory does not exist?\n----\n\n== All Interactive User Home Directories Must Be Group-Owned By The Primary Group\n----\nTo verify the assigned home directory of all interactive users is group-\nowned by that user's primary GID, run the following command:\n# ls -ld $(getent passwd | awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($7 !~ /\\/false$/){print $6}')\n\nThis should return a list of home directories with group ownership matching each user's primary group.\nUsing getent passwd instead of reading /etc/passwd directly ensures that remote users\n(LDAP, SSSD, NIS, etc.) are also checked.\n      Is it the case that the group ownership is incorrect?\n----\n\n== All Interactive User Home Directories Must Be Owned By The Primary User\n----\nTo verify the home directory ownership, run the following command:\n# ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n      Is it the case that the user ownership is incorrect?\n----\n\n== All Interactive User Home Directories Must Have mode 0750 Or Less Permissive\n----\nTo verify the assigned home directory of all interactive user home directories\nhave a mode of 0750 or less permissive, run the following command:\n$ sudo ls -l /home\nInspect the output for any directories with incorrect permissions.\n      Is it the case that they are more permissive?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
   },
   "discussion": "## All Interactive Users Home Directories Must Exist\n\nCreate home directories to all local interactive users that currently do not\nhave a home directory assigned. Use the following commands to create the user\nhome directory assigned in `/etc/passwd`:\n\n```\n$ sudo mkdir /home/*USER*\n        \n```\n\n**Rationale:**\n\nIf a local interactive user has a home directory defined that does not exist,\nthe user may be given access to the / directory as the current working directory\nupon logon. This could create a Denial of Service because the user would not be\nable to access their logon configuration files, and it may give them visibility\nto system files they normally would not be able to access.\n\n## All Interactive User Home Directories Must Be Group-Owned By The Primary Group\n\nChange the group owner of interactive user home directories to the\ngroup found in `getent passwd`. To change the group owner of\nan interactive user's home directory, use the following command:\n\n```\n$ sudo chgrp *USER_GROUP* /home/*USER*\n        \n```\n\n\nThis rule ensures every home directory related to an interactive user is\ngroup-owned by that user's primary group. It also ensures that interactive users\nare group-owners of one and only one home directory.\n\nInteractive users are those with a UID greater than or equal to 1000\nand a valid interactive shell (not `/sbin/nologin`, `/usr/sbin/nologin`,\n`/bin/false`, or `/usr/bin/false`).\n\n**Rationale:**\n\nIf the Group Identifier (GID) of a local interactive users home directory is\nnot the same as the primary GID of the user, this would allow unauthorized\naccess to the users files, and users that share the same group may not be\nable to access files that they legitimately should.\n\n## All Interactive User Home Directories Must Be Owned By The Primary User\n\nChange the owner of interactive users home directories to that correct\nowner. To change the owner of a interactive users home directory, use\nthe following command:\n\n```\n$ sudo chown *USER* /home/*USER*\n        \n```\n\n\nThis rule ensures every home directory related to an interactive user is\nowned by an interactive user. It also ensures that interactive users are\nowners of one and only one home directory.\n\n**Rationale:**\n\nIf a local interactive user does not own their home directory, unauthorized\nusers could access or modify the user's files, and the users may not be able to\naccess their own files.\n\n## All Interactive User Home Directories Must Have mode 0750 Or Less Permissive\n\nChange the mode of interactive users home directories to `0750`. To\nchange the mode of interactive users home directory, use the\nfollowing command:\n\n```\n$ sudo chmod 0750 /home/*USER*\n        \n```\n\n**Rationale:**\n\nExcessive permissions on local interactive user home directories may allow\nunauthorized access to user files by other users.",
   "discussion_format": "markdown",
@@ -97,7 +100,7 @@
       ]
     }
   },
-  "schema_version": 6,
+  "schema_version": 7,
   "section_path": [
     "7",
     "7.2"
