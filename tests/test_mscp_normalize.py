@@ -397,6 +397,43 @@ def test_mobileconfig_by_version_and_ddm_copied():
     assert schema_errors(result) == []
 
 
+def test_fix_without_shell_becomes_an_instructions_step():
+    result = normalize(
+        rule_with(
+            """
+            enforcement_info:
+              fix:
+                additional_info: This is implemented by Declarative Device Management (DDM).
+            """,
+            "ddm_info:\n  ddm_key: K\n",
+        )
+    )
+    assert result["remediation"]["macOS"]["steps"] == [
+        {
+            "name": None,
+            "language": "instructions",
+            "shell": None,
+            "additional_info": "This is implemented by Declarative Device Management (DDM).",
+            "versions": None,
+        }
+    ]
+    assert schema_errors(result) == []
+
+
+def test_fix_with_shell_keeps_bash_language():
+    result = normalize(
+        rule_with(
+            """
+            enforcement_info:
+              fix:
+                shell: /usr/bin/true
+                additional_info: Extra.
+            """
+        )
+    )
+    assert result["remediation"]["macOS"]["steps"] == [bash_step("/usr/bin/true", additional_info="Extra.")]
+
+
 def test_upstream_url_uses_commit_sha():
     result = normalize(GATEKEEPER_YAML, "rules/os/os_gatekeeper_enable.yaml")
     source = result["source"]
@@ -551,7 +588,7 @@ NESTED_FIX_PLATFORM = """
 def test_fix_nested_in_version_check_becomes_version_fix():
     result = normalize(rule_with(NESTED_FIX_PLATFORM))
     assert result["remediation"]["macOS"]["steps"] == [
-        bash_step(None, versions=["26.0"], additional_info="Implemented by DDM."),
+        {**bash_step(None, versions=["26.0"], additional_info="Implemented by DDM."), "language": "instructions"},
     ]
     assert "fix" not in result["check"]["macOS"]["by_version"]["26.0"]
     assert schema_errors(result) == []

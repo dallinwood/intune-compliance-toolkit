@@ -204,7 +204,7 @@
       "steps": [
         {
           "additional_info": "NOTE: See the FileVault supplemental to implement this rule.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

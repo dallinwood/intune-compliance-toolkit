@@ -60,3 +60,4 @@ Maintainer request (2026-11-20): other frameworks with plain-English steps must 
 ## Progress log
 
 - 2026-11-20: Task 2 - markdown discussions now render fenced code blocks, inline code and bold (new `strong` inline segment). Commit: fix: render code blocks, inline code and bold in markdown discussions.
+- 2026-11-20: Task 4 - mSCP remediation steps with no shell (profile/DDM fixes whose text is in additional_info) are now `instructions` instead of `bash`; both stored mSCP releases regenerated. Commit: fix: mark mSCP plain-English remediation steps as instructions

@@ -125,7 +125,7 @@
       "steps": [
         {
           "additional_info": ". Go to System Settings -> Time Machine\n. Click *Select Disk*\n. Select existing Backup Disk under *Available Disks*\n. Click *Encrypt Backups*\n. Click *Use Disk*",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

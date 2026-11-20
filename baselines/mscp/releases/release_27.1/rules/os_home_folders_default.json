@@ -72,7 +72,7 @@
       "steps": [
         {
           "additional_info": "Configure the macOS system to set the appropriate permissions for each user on the system with the following command:\n\n`/usr/sbin/diskutil resetUserPermissions / DeviceNode UID`, where \"DeviceNode UID\" is the ID number for the user whose home directory permissions need to be repaired.\n\nNOTE: Using the `/usr/sbin/diskutil resetUserPermissions` command will only reset the permissions on the default folder set. Other folders in the home directory will not be affected.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

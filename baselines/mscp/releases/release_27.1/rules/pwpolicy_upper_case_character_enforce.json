@@ -99,7 +99,7 @@
       "steps": [
         {
           "additional_info": "This setting may be enforced using local policy or by a directory service.\n\nTo set local policy to require at least $ODV_value lowercase letter, edit the current password policy to contain the following <dict> within the \"policyCategoryPasswordContent\":\n\n[source,xml]\n----\n<dict>\n<key>policyContent</key>\n<string>policyAttributePassword matches &apos;(.*[A-Z].*){$ODV_value,}+&apos;</string>\n<key>policyIdentifier</key>\n<string>Must have at least $ODV_value uppercase letter</string>\n<key>policyParameters</key>\n<dict>\n<key>minimumAlphaCharactersUpperCase</key>\n<integer>$ODV_value</integer>\n</dict>\n</dict>\n----\nAfter saving the file and exiting to the command prompt, run the following command to load the new policy file, substituting the path to the file in place of \"$pwpolicy_file\".\n\n[source,bash]\n----\n/usr/bin/pwpolicy setaccountpolicies $pwpolicy_file\n----\nNOTE: See the password policy supplemental on more information on how to implement password policies on macOS.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

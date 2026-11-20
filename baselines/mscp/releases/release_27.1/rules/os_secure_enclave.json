@@ -119,7 +119,7 @@
       "steps": [
         {
           "additional_info": "The hardware does not support the requirement.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

@@ -162,7 +162,7 @@
       "steps": [
         {
           "additional_info": "Ensure that system is enrolled via UAMDM.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

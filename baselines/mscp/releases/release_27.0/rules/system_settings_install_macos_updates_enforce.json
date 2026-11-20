@@ -199,7 +199,7 @@
       "steps": [
         {
           "additional_info": "This is implemented by Declarative Device Management (DDM).",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": [
@@ -209,7 +209,7 @@
         },
         {
           "additional_info": "This is implemented by Declarative Device Management (DDM) or by a configuration profile.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": [

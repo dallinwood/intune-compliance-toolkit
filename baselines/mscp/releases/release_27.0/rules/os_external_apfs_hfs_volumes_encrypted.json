@@ -85,7 +85,7 @@
       "steps": [
         {
           "additional_info": "Use Disk Utility to erase a user disk and format as APFS (Encrypted).\n\nNOTE: It is recommended using APFS over HFS+ where possible. If you do need to use an HFS+/CoreStorage external drive for compatibility reasons, you need to format the drive to MacOS Extended (Journaled) (or MacOS Extended (Case-Sensitive, Journaled) if Case-Sensitive is required).",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

@@ -61,7 +61,7 @@
       "steps": [
         {
           "additional_info": "The technology partially meets this requirement. An appropriate mitigation for the system must be implemented for full compliance.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

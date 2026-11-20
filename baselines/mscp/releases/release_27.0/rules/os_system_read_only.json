@@ -73,7 +73,7 @@
       "steps": [
         {
           "additional_info": "NOTE: To remount the System volume as Read Only, rebooting the computer will mount it as Read Only.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

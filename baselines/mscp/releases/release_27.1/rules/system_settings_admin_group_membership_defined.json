@@ -73,7 +73,7 @@
       "steps": [
         {
           "additional_info": "Remove any account that is not on the organization's documented list of authorized administrators from the admin group.\n\nIf the account is a direct member, run:\n  /usr/sbin/dseditgroup -o edit -d UNDOCUMENTED_USERNAME -t user admin\n\n`dsmemberutil checkmembership` resolves effective membership, including membership granted through a nested group. If an undocumented account is admin only through a nested group, remove it from that nested group (or remove the nested group from admin) rather than running the command above, which only removes direct membership.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

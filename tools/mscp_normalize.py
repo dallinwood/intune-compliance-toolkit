@@ -20,6 +20,7 @@ LICENSE = {
 
 MACOS_TARGET = "macOS"
 MSCP_SCRIPT_LANGUAGE = "bash"
+INSTRUCTIONS_LANGUAGE = "instructions"
 VERSION_KEY_PATTERN = re.compile(r"^\d+\.\d+$")
 ODV_PLACEHOLDER = "$ODV"
 ODV_NAME = "value"
@@ -177,7 +178,7 @@ def _fix_has_content(fix: dict) -> bool:
 def _remediation_step(fix: dict, versions: list[str] | None) -> dict:
     return {
         "name": None,
-        "language": MSCP_SCRIPT_LANGUAGE,
+        "language": MSCP_SCRIPT_LANGUAGE if fix["shell"] is not None else INSTRUCTIONS_LANGUAGE,
         "shell": fix["shell"],
         "additional_info": fix["additional_info"],
         "versions": versions,

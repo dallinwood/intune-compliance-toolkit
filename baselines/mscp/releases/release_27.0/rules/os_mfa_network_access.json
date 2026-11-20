@@ -55,7 +55,7 @@
       "steps": [
         {
           "additional_info": "For directory bound systems, the technology inherently meets this requirement. No fix is required.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

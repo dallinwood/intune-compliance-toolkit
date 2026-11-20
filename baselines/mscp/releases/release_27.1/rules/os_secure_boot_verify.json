@@ -133,7 +133,7 @@
       "steps": [
         {
           "additional_info": "NOTE: Boot into Recovery Mode and enable Full Secure Boot",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

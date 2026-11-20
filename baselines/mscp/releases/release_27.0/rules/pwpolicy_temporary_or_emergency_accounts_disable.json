@@ -105,7 +105,7 @@
       "steps": [
         {
           "additional_info": "This setting may be enforced using local policy or by a directory service.\n\nTo set local policy to disable a temporary or emergency user, create a plain text file containing the following:\n\n<dict>\n<key>policyCategoryAuthentication</key>\n<array>\n<dict>\n<key>policyContent</key>\n<string>policyAttributeCurrentTime &lt; policyAttributeCreationTime+259299</string>\n<key>policyIdentifier</key>\n<string>Disable Tmp Accounts </string>\n</dict>\n</array>\n</dict>\n\nAfter saving the file and exiting to the command prompt, run the following command to load the new policy file, substituting the correct user name in place of \"username\" and the path to the file in place of \"/path/to/file\".\n\n/usr/bin/pwpolicy -u username setaccountpolicies /path/to/file",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

@@ -59,7 +59,7 @@
       "steps": [
         {
           "additional_info": "The technology inherently meets this requirement. No fix is required.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

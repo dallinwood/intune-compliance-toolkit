@@ -101,7 +101,7 @@
       "steps": [
         {
           "additional_info": "Use Disk Utility to erase a user disk and format as APFS (Encrypted).\n\nNOTE: APFS Encrypted disks will be described as \"FileVault\" whether they are the boot volume or not.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null

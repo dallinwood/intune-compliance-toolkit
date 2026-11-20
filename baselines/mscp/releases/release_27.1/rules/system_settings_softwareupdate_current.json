@@ -218,7 +218,7 @@
         },
         {
           "additional_info": "NOTE: See discussion on how to install software updates.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": [

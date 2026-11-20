@@ -68,7 +68,7 @@
       "steps": [
         {
           "additional_info": "Integrate the system into an existing directory services infrastructure.",
-          "language": "bash",
+          "language": "instructions",
           "name": null,
           "shell": null,
           "versions": null
