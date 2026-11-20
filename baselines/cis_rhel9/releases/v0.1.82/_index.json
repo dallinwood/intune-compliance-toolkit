@@ -37,8 +37,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.1"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure cramfs kernel module is not available (Automated)"
@@ -80,8 +79,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.2"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure freevxfs kernel module is not available (Automated)"
@@ -123,8 +121,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.3"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure hfs kernel module is not available (Automated)"
@@ -166,8 +163,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.4"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure hfsplus kernel module is not available (Automated)"
@@ -209,8 +205,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.5"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure jffs2 kernel module is not available (Automated)"
@@ -244,8 +239,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.6"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure squashfs kernel module is not available (Automated)"
@@ -279,8 +273,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.7"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure udf kernel module is not available (Automated)"
@@ -318,8 +311,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.8"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure usb-storage kernel module is not available (Automated)"
@@ -357,8 +349,7 @@
       "section_path": [
         "1",
         "1.1",
-        "1.1.1",
-        "1.1.1.9"
+        "1.1.1"
       ],
       "tags": [],
       "title": "Ensure unused filesystems kernel modules are not available (Manual)"
@@ -401,8 +392,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.1",
-        "1.1.2.1.1"
+        "1.1.2.1"
       ],
       "tags": [],
       "title": "Ensure /tmp is a separate partition (Automated)"
@@ -445,8 +435,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.1",
-        "1.1.2.1.2"
+        "1.1.2.1"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /tmp partition (Automated)"
@@ -489,8 +478,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.1",
-        "1.1.2.1.3"
+        "1.1.2.1"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /tmp partition (Automated)"
@@ -533,8 +521,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.1",
-        "1.1.2.1.4"
+        "1.1.2.1"
       ],
       "tags": [],
       "title": "Ensure noexec option set on /tmp partition (Automated)"
@@ -577,8 +564,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.2",
-        "1.1.2.2.1"
+        "1.1.2.2"
       ],
       "tags": [],
       "title": "Ensure /dev/shm is a separate partition (Automated)"
@@ -621,8 +607,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.2",
-        "1.1.2.2.2"
+        "1.1.2.2"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /dev/shm partition (Automated)"
@@ -665,8 +650,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.2",
-        "1.1.2.2.3"
+        "1.1.2.2"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /dev/shm partition (Automated)"
@@ -709,8 +693,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.2",
-        "1.1.2.2.4"
+        "1.1.2.2"
       ],
       "tags": [],
       "title": "Ensure noexec option set on /dev/shm partition (Automated)"
@@ -745,8 +728,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.3",
-        "1.1.2.3.1"
+        "1.1.2.3"
       ],
       "tags": [],
       "title": "Ensure separate partition exists for /home (Automated)"
@@ -789,8 +771,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.3",
-        "1.1.2.3.2"
+        "1.1.2.3"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /home partition (Automated)"
@@ -833,8 +814,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.3",
-        "1.1.2.3.3"
+        "1.1.2.3"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /home partition (Automated)"
@@ -869,8 +849,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.4",
-        "1.1.2.4.1"
+        "1.1.2.4"
       ],
       "tags": [],
       "title": "Ensure separate partition exists for /var (Automated)"
@@ -913,8 +892,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.4",
-        "1.1.2.4.2"
+        "1.1.2.4"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /var partition (Automated)"
@@ -957,8 +935,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.4",
-        "1.1.2.4.3"
+        "1.1.2.4"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /var partition (Automated)"
@@ -993,8 +970,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.5",
-        "1.1.2.5.1"
+        "1.1.2.5"
       ],
       "tags": [],
       "title": "Ensure separate partition exists for /var/tmp (Automated)"
@@ -1037,8 +1013,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.5",
-        "1.1.2.5.2"
+        "1.1.2.5"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /var/tmp partition (Automated)"
@@ -1081,8 +1056,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.5",
-        "1.1.2.5.3"
+        "1.1.2.5"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /var/tmp partition (Automated)"
@@ -1125,8 +1099,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.5",
-        "1.1.2.5.4"
+        "1.1.2.5"
       ],
       "tags": [],
       "title": "Ensure noexec option set on /var/tmp partition (Automated)"
@@ -1161,8 +1134,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.6",
-        "1.1.2.6.1"
+        "1.1.2.6"
       ],
       "tags": [],
       "title": "Ensure separate partition exists for /var/log (Automated)"
@@ -1205,8 +1177,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.6",
-        "1.1.2.6.2"
+        "1.1.2.6"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /var/log partition (Automated)"
@@ -1249,8 +1220,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.6",
-        "1.1.2.6.3"
+        "1.1.2.6"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /var/log partition (Automated)"
@@ -1293,8 +1263,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.6",
-        "1.1.2.6.4"
+        "1.1.2.6"
       ],
       "tags": [],
       "title": "Ensure noexec option set on /var/log partition (Automated)"
@@ -1329,8 +1298,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.7",
-        "1.1.2.7.1"
+        "1.1.2.7"
       ],
       "tags": [],
       "title": "Ensure separate partition exists for /var/log/audit (Automated)"
@@ -1373,8 +1341,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.7",
-        "1.1.2.7.2"
+        "1.1.2.7"
       ],
       "tags": [],
       "title": "Ensure nodev option set on /var/log/audit partition (Automated)"
@@ -1417,8 +1384,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.7",
-        "1.1.2.7.3"
+        "1.1.2.7"
       ],
       "tags": [],
       "title": "Ensure nosuid option set on /var/log/audit partition (Automated)"
@@ -1461,8 +1427,7 @@
         "1",
         "1.1",
         "1.1.2",
-        "1.1.2.7",
-        "1.1.2.7.4"
+        "1.1.2.7"
       ],
       "tags": [],
       "title": "Ensure noexec option set on /var/log/audit partition (Automated)"
@@ -1504,8 +1469,7 @@
       "section_path": [
         "1",
         "1.2",
-        "1.2.1",
-        "1.2.1.1"
+        "1.2.1"
       ],
       "tags": [],
       "title": "Ensure GPG keys are configured (Manual)"
@@ -1547,8 +1511,7 @@
       "section_path": [
         "1",
         "1.2",
-        "1.2.1",
-        "1.2.1.2"
+        "1.2.1"
       ],
       "tags": [],
       "title": "Ensure gpgcheck is globally activated (Automated)"
@@ -1582,8 +1545,7 @@
       "section_path": [
         "1",
         "1.2",
-        "1.2.1",
-        "1.2.1.3"
+        "1.2.1"
       ],
       "tags": [],
       "title": "Ensure repo_gpgcheck is globally activated (Manual)"
@@ -1625,8 +1587,7 @@
       "section_path": [
         "1",
         "1.2",
-        "1.2.1",
-        "1.2.1.4"
+        "1.2.1"
       ],
       "tags": [],
       "title": "Ensure package manager repositories are configured (Manual)"
@@ -1668,8 +1629,7 @@
       "section_path": [
         "1",
         "1.2",
-        "1.2.2",
-        "1.2.2.1"
+        "1.2.2"
       ],
       "tags": [],
       "title": "Ensure updates, patches, and additional security software are installed (Manual)"
@@ -1711,8 +1671,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.1"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure SELinux is installed (Automated)"
@@ -1754,8 +1713,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.2"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure SELinux is not disabled in bootloader configuration (Automated)"
@@ -1797,8 +1755,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.3"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure SELinux policy is configured (Automated)"
@@ -1840,8 +1797,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.4"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure the SELinux mode is not disabled (Automated)"
@@ -1875,8 +1831,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.5"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure the SELinux mode is enforcing (Automated)"
@@ -1910,8 +1865,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.6"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure no unconfined services exist (Manual)"
@@ -1953,8 +1907,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.7"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure the MCS Translation Service (mcstrans) is not installed (Automated)"
@@ -1988,8 +1941,7 @@
       "section_path": [
         "1",
         "1.3",
-        "1.3.1",
-        "1.3.1.8"
+        "1.3.1"
       ],
       "tags": [],
       "title": "Ensure SETroubleshoot is not installed (Automated)"
@@ -2030,8 +1982,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.4",
-        "1.4.1"
+        "1.4"
       ],
       "tags": [],
       "title": "Ensure bootloader password is set (Automated)"
@@ -2072,8 +2023,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.4",
-        "1.4.2"
+        "1.4"
       ],
       "tags": [],
       "title": "Ensure access to bootloader config is configured (Automated)"
@@ -2114,8 +2064,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.5",
-        "1.5.1"
+        "1.5"
       ],
       "tags": [],
       "title": "Ensure address space layout randomization is enabled (Automated)"
@@ -2156,8 +2105,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.5",
-        "1.5.2"
+        "1.5"
       ],
       "tags": [],
       "title": "Ensure ptrace_scope is restricted (Automated)"
@@ -2198,8 +2146,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.5",
-        "1.5.3"
+        "1.5"
       ],
       "tags": [],
       "title": "Ensure core dump backtraces are disabled (Automated)"
@@ -2240,8 +2187,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.5",
-        "1.5.4"
+        "1.5"
       ],
       "tags": [],
       "title": "Ensure core dump storage is disabled (Automated)"
@@ -2282,8 +2228,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.1"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy is not set to legacy (Automated)"
@@ -2324,8 +2269,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.2"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy is not set in sshd configuration (Automated)"
@@ -2366,8 +2310,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.3"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy disables sha1 hash and signature support (Automated)"
@@ -2408,8 +2351,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.4"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy disables macs less than 128 bits (Automated)"
@@ -2450,8 +2392,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.5"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy disables cbc for ssh (Automated)"
@@ -2492,8 +2433,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.6"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy disables chacha20-poly1305 for ssh (Automated)"
@@ -2534,8 +2474,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.6",
-        "1.6.7"
+        "1.6"
       ],
       "tags": [],
       "title": "Ensure system wide crypto policy disables EtM for ssh (Automated)"
@@ -2576,8 +2515,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.7",
-        "1.7.1"
+        "1.7"
       ],
       "tags": [],
       "title": "Ensure message of the day is configured properly (Automated)"
@@ -2618,8 +2556,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.7",
-        "1.7.2"
+        "1.7"
       ],
       "tags": [],
       "title": "Ensure local login warning banner is configured properly (Automated)"
@@ -2660,8 +2597,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.7",
-        "1.7.3"
+        "1.7"
       ],
       "tags": [],
       "title": "Ensure remote login warning banner is configured properly (Automated)"
@@ -2702,8 +2638,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.7",
-        "1.7.4"
+        "1.7"
       ],
       "tags": [],
       "title": "Ensure access to /etc/motd is configured (Automated)"
@@ -2744,8 +2679,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.7",
-        "1.7.5"
+        "1.7"
       ],
       "tags": [],
       "title": "Ensure access to /etc/issue is configured (Automated)"
@@ -2786,8 +2720,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.7",
-        "1.7.6"
+        "1.7"
       ],
       "tags": [],
       "title": "Ensure access to /etc/issue.net is configured (Automated)"
@@ -2816,8 +2749,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.1"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GNOME Display Manager is removed (Automated)"
@@ -2858,8 +2790,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.2"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM login banner is configured (Automated)"
@@ -2900,8 +2831,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.3"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM disable-user-list option is enabled (Automated)"
@@ -2942,8 +2872,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.4"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM screen locks when the user is idle (Automated)"
@@ -2984,8 +2913,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.5"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM screen locks cannot be overridden (Automated)"
@@ -3022,8 +2950,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.6"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM automatic mounting of removable media is disabled (Automated)"
@@ -3060,8 +2987,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.7"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM disabling automatic mounting of removable media is not overridden (Automated)"
@@ -3102,8 +3028,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.8"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM autorun-never is enabled (Automated)"
@@ -3144,8 +3069,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.9"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure GDM autorun-never is not overridden (Automated)"
@@ -3186,8 +3110,7 @@
       "section": "1",
       "section_path": [
         "1",
-        "1.8",
-        "1.8.10"
+        "1.8"
       ],
       "tags": [],
       "title": "Ensure XDMCP is not enabled (Automated)"
@@ -3224,8 +3147,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.1"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure autofs services are not in use (Automated)"
@@ -3262,8 +3184,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.2"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure avahi daemon services are not in use (Automated)"
@@ -3304,8 +3225,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.3"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure dhcp server services are not in use (Automated)"
@@ -3346,8 +3266,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.4"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure dns server services are not in use (Automated)"
@@ -3388,8 +3307,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.5"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure dnsmasq services are not in use (Automated)"
@@ -3430,8 +3348,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.6"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure samba file server services are not in use (Automated)"
@@ -3472,8 +3389,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.7"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure ftp server services are not in use (Automated)"
@@ -3514,8 +3430,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.8"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure message access server services are not in use (Automated)"
@@ -3556,8 +3471,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.9"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure network file system services are not in use (Automated)"
@@ -3598,8 +3512,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.10"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure nis server services are not in use (Automated)"
@@ -3632,8 +3545,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.11"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure print server services are not in use (Automated)"
@@ -3674,8 +3586,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.12"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure rpcbind services are not in use (Automated)"
@@ -3716,8 +3627,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.13"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure rsync services are not in use (Automated)"
@@ -3758,8 +3668,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.14"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure snmp services are not in use (Automated)"
@@ -3800,8 +3709,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.15"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure telnet server services are not in use (Automated)"
@@ -3842,8 +3750,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.16"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure tftp server services are not in use (Automated)"
@@ -3884,8 +3791,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.17"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure web proxy server services are not in use (Automated)"
@@ -3926,8 +3832,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.18"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure web server services are not in use (Automated)"
@@ -3968,8 +3873,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.19"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure xinetd services are not in use (Automated)"
@@ -3998,8 +3902,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.20"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure X window server services are not in use (Automated)"
@@ -4040,8 +3943,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.21"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure mail transfer agents are configured for local-only mode (Automated)"
@@ -4082,8 +3984,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.1",
-        "2.1.22"
+        "2.1"
       ],
       "tags": [],
       "title": "Ensure only approved services are listening on a network interface (Manual)"
@@ -4124,8 +4025,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.2",
-        "2.2.1"
+        "2.2"
       ],
       "tags": [],
       "title": "Ensure ftp client is not installed (Automated)"
@@ -4158,8 +4058,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.2",
-        "2.2.2"
+        "2.2"
       ],
       "tags": [],
       "title": "Ensure ldap client is not installed (Automated)"
@@ -4200,8 +4099,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.2",
-        "2.2.3"
+        "2.2"
       ],
       "tags": [],
       "title": "Ensure nis client is not installed (Automated)"
@@ -4242,8 +4140,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.2",
-        "2.2.4"
+        "2.2"
       ],
       "tags": [],
       "title": "Ensure telnet client is not installed (Automated)"
@@ -4284,8 +4181,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.2",
-        "2.2.5"
+        "2.2"
       ],
       "tags": [],
       "title": "Ensure tftp client is not installed (Automated)"
@@ -4326,8 +4222,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.3",
-        "2.3.1"
+        "2.3"
       ],
       "tags": [],
       "title": "Ensure time synchronization is in use (Automated)"
@@ -4368,8 +4263,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.3",
-        "2.3.2"
+        "2.3"
       ],
       "tags": [],
       "title": "Ensure chrony is configured (Automated)"
@@ -4410,8 +4304,7 @@
       "section": "2",
       "section_path": [
         "2",
-        "2.3",
-        "2.3.3"
+        "2.3"
       ],
       "tags": [],
       "title": "Ensure chrony is not run as the root user (Automated)"
@@ -4453,8 +4346,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.1"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure cron daemon is enabled and active (Automated)"
@@ -4496,8 +4388,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.2"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/crontab are configured (Automated)"
@@ -4539,8 +4430,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.3"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/cron.hourly are configured (Automated)"
@@ -4582,8 +4472,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.4"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/cron.daily are configured (Automated)"
@@ -4625,8 +4514,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.5"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/cron.weekly are configured (Automated)"
@@ -4668,8 +4556,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.6"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/cron.monthly are configured (Automated)"
@@ -4711,8 +4598,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.7"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/cron.d are configured (Automated)"
@@ -4754,8 +4640,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.1",
-        "2.4.1.8"
+        "2.4.1"
       ],
       "tags": [],
       "title": "Ensure crontab is restricted to authorized users (Automated)"
@@ -4797,8 +4682,7 @@
       "section_path": [
         "2",
         "2.4",
-        "2.4.2",
-        "2.4.2.1"
+        "2.4.2"
       ],
       "tags": [],
       "title": "Ensure at is restricted to authorized users (Automated)"
@@ -4839,8 +4723,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.1",
-        "3.1.1"
+        "3.1"
       ],
       "tags": [],
       "title": "Ensure IPv6 status is identified (Manual)"
@@ -4873,8 +4756,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.1",
-        "3.1.2"
+        "3.1"
       ],
       "tags": [],
       "title": "Ensure wireless interfaces are disabled (Automated)"
@@ -4911,8 +4793,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.1",
-        "3.1.3"
+        "3.1"
       ],
       "tags": [],
       "title": "Ensure bluetooth services are not in use (Automated)"
@@ -4945,8 +4826,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.2",
-        "3.2.1"
+        "3.2"
       ],
       "tags": [],
       "title": "Ensure dccp kernel module is not available (Automated)"
@@ -4979,8 +4859,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.2",
-        "3.2.2"
+        "3.2"
       ],
       "tags": [],
       "title": "Ensure tipc kernel module is not available (Automated)"
@@ -5013,8 +4892,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.2",
-        "3.2.3"
+        "3.2"
       ],
       "tags": [],
       "title": "Ensure rds kernel module is not available (Automated)"
@@ -5047,8 +4925,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.2",
-        "3.2.4"
+        "3.2"
       ],
       "tags": [],
       "title": "Ensure sctp kernel module is not available (Automated)"
@@ -5089,8 +4966,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.1"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure IP forwarding is disabled (Automated)"
@@ -5131,8 +5007,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.2"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure packet redirect sending is disabled (Automated)"
@@ -5173,8 +5048,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.3"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure bogus icmp responses are ignored (Automated)"
@@ -5215,8 +5089,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.4"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure broadcast icmp requests are ignored (Automated)"
@@ -5257,8 +5130,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.5"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure icmp redirects are not accepted (Automated)"
@@ -5299,8 +5171,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.6"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure secure icmp redirects are not accepted (Automated)"
@@ -5341,8 +5212,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.7"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure reverse path filtering is enabled (Automated)"
@@ -5383,8 +5253,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.8"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure source routed packets are not accepted (Automated)"
@@ -5425,8 +5294,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.9"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure suspicious packets are logged (Automated)"
@@ -5467,8 +5335,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.10"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure tcp syn cookies is enabled (Automated)"
@@ -5509,8 +5376,7 @@
       "section": "3",
       "section_path": [
         "3",
-        "3.3",
-        "3.3.11"
+        "3.3"
       ],
       "tags": [],
       "title": "Ensure IPv6 router advertisements are not accepted (Automated)"
@@ -5551,8 +5417,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.1",
-        "4.1.1"
+        "4.1"
       ],
       "tags": [],
       "title": "Ensure nftables is installed (Automated)"
@@ -5593,8 +5458,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.1",
-        "4.1.2"
+        "4.1"
       ],
       "tags": [],
       "title": "Ensure a single firewall configuration utility is in use (Automated)"
@@ -5635,8 +5499,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.2",
-        "4.2.1"
+        "4.2"
       ],
       "tags": [],
       "title": "Ensure firewalld drops unnecessary services and ports (Manual)"
@@ -5677,8 +5540,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.2",
-        "4.2.2"
+        "4.2"
       ],
       "tags": [],
       "title": "Ensure firewalld loopback traffic is configured (Automated)"
@@ -5719,8 +5581,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.3",
-        "4.3.1"
+        "4.3"
       ],
       "tags": [],
       "title": "Ensure nftables base chains exist (Automated)"
@@ -5761,8 +5622,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.3",
-        "4.3.2"
+        "4.3"
       ],
       "tags": [],
       "title": "Ensure nftables established connections are configured (Manual)"
@@ -5803,8 +5663,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.3",
-        "4.3.3"
+        "4.3"
       ],
       "tags": [],
       "title": "Ensure nftables default deny firewall policy (Automated)"
@@ -5845,8 +5704,7 @@
       "section": "4",
       "section_path": [
         "4",
-        "4.3",
-        "4.3.4"
+        "4.3"
       ],
       "tags": [],
       "title": "Ensure nftables loopback traffic is configured (Automated)"
@@ -5887,8 +5745,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.1"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/ssh/sshd_config are configured (Automated)"
@@ -5929,8 +5786,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.2"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure permissions on SSH private host key files are configured (Automated)"
@@ -5971,8 +5827,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.3"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure permissions on SSH public host key files are configured (Automated)"
@@ -6013,8 +5868,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.4"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd Ciphers are configured (Automated)"
@@ -6055,8 +5909,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.5"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd KexAlgorithms is configured (Automated)"
@@ -6097,8 +5950,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.6"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd MACs are configured (Automated)"
@@ -6139,8 +5991,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.7"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd access is configured (Automated)"
@@ -6181,8 +6032,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.8"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd Banner is configured (Automated)"
@@ -6223,8 +6073,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.9"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured (Automated)"
@@ -6261,8 +6110,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.10"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd DisableForwarding is enabled (Automated)"
@@ -6299,8 +6147,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.11"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd GSSAPIAuthentication is disabled (Automated)"
@@ -6341,8 +6188,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.12"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd HostbasedAuthentication is disabled (Automated)"
@@ -6383,8 +6229,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.13"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd IgnoreRhosts is enabled (Automated)"
@@ -6425,8 +6270,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.14"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd LoginGraceTime is configured (Automated)"
@@ -6467,8 +6311,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.15"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd LogLevel is configured (Automated)"
@@ -6509,8 +6352,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.16"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd MaxAuthTries is configured (Automated)"
@@ -6551,8 +6393,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.17"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd MaxStartups is configured (Automated)"
@@ -6593,8 +6434,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.18"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd MaxSessions is configured (Automated)"
@@ -6635,8 +6475,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.19"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd PermitEmptyPasswords is disabled (Automated)"
@@ -6677,8 +6516,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.20"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd PermitRootLogin is disabled (Automated)"
@@ -6719,8 +6557,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.21"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd PermitUserEnvironment is disabled (Automated)"
@@ -6761,8 +6598,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.1",
-        "5.1.22"
+        "5.1"
       ],
       "tags": [],
       "title": "Ensure sshd UsePAM is enabled (Automated)"
@@ -6803,8 +6639,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.1"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure sudo is installed (Automated)"
@@ -6845,8 +6680,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.2"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure sudo commands use pty (Automated)"
@@ -6887,8 +6721,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.3"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure sudo log file exists (Automated)"
@@ -6921,8 +6754,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.4"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure users must provide password for escalation (Automated)"
@@ -6963,8 +6795,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.5"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure re-authentication for privilege escalation is not disabled globally (Automated)"
@@ -7005,8 +6836,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.6"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure sudo authentication timeout is configured correctly (Automated)"
@@ -7047,8 +6877,7 @@
       "section": "5",
       "section_path": [
         "5",
-        "5.2",
-        "5.2.7"
+        "5.2"
       ],
       "tags": [],
       "title": "Ensure access to the su command is restricted (Automated)"
@@ -7090,8 +6919,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.1",
-        "5.3.1.1"
+        "5.3.1"
       ],
       "tags": [],
       "title": "Ensure latest version of pam is installed (Automated)"
@@ -7133,8 +6961,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.1",
-        "5.3.1.2"
+        "5.3.1"
       ],
       "tags": [],
       "title": "Ensure latest version of authselect is installed (Automated)"
@@ -7176,8 +7003,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.1",
-        "5.3.1.3"
+        "5.3.1"
       ],
       "tags": [],
       "title": "Ensure latest version of libpwquality is installed (Automated)"
@@ -7219,8 +7045,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.2",
-        "5.3.2.1"
+        "5.3.2"
       ],
       "tags": [],
       "title": "Ensure active authselect profile includes pam modules (Automated)"
@@ -7262,8 +7087,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.2",
-        "5.3.2.2"
+        "5.3.2"
       ],
       "tags": [],
       "title": "Ensure pam_faillock module is enabled (Automated)"
@@ -7305,8 +7129,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.2",
-        "5.3.2.3"
+        "5.3.2"
       ],
       "tags": [],
       "title": "Ensure pam_pwquality module is enabled (Automated)"
@@ -7348,8 +7171,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.2",
-        "5.3.2.4"
+        "5.3.2"
       ],
       "tags": [],
       "title": "Ensure pam_pwhistory module is enabled (Automated)"
@@ -7391,8 +7213,7 @@
       "section_path": [
         "5",
         "5.3",
-        "5.3.2",
-        "5.3.2.5"
+        "5.3.2"
       ],
       "tags": [],
       "title": "Ensure pam_unix module is enabled (Automated)"
@@ -7435,8 +7256,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.1",
-        "5.3.3.1.1"
+        "5.3.3.1"
       ],
       "tags": [],
       "title": "Ensure password failed attempts lockout is configured (Automated)"
@@ -7479,8 +7299,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.1",
-        "5.3.3.1.2"
+        "5.3.3.1"
       ],
       "tags": [],
       "title": "Ensure password unlock time is configured (Automated)"
@@ -7515,8 +7334,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.1",
-        "5.3.3.1.3"
+        "5.3.3.1"
       ],
       "tags": [],
       "title": "Ensure password failed attempts lockout includes root account (Automated)"
@@ -7559,8 +7377,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.1"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password number of changed characters is configured (Automated)"
@@ -7603,8 +7420,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.2"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password length is configured (Automated)"
@@ -7647,8 +7463,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.3"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password complexity is configured (Manual)"
@@ -7691,8 +7506,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.4"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password same consecutive characters is configured (Automated)"
@@ -7735,8 +7549,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.5"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password maximum sequential characters is configured (Automated)"
@@ -7779,8 +7592,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.6"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password dictionary check is enabled (Automated)"
@@ -7823,8 +7635,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.2",
-        "5.3.3.2.7"
+        "5.3.3.2"
       ],
       "tags": [],
       "title": "Ensure password quality is enforced for the root user (Automated)"
@@ -7867,8 +7678,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.3",
-        "5.3.3.3.1"
+        "5.3.3.3"
       ],
       "tags": [],
       "title": "Ensure password history remember is configured (Automated)"
@@ -7911,8 +7721,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.3",
-        "5.3.3.3.2"
+        "5.3.3.3"
       ],
       "tags": [],
       "title": "Ensure password history is enforced for the root user (Automated)"
@@ -7955,8 +7764,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.3",
-        "5.3.3.3.3"
+        "5.3.3.3"
       ],
       "tags": [],
       "title": "Ensure pam_pwhistory includes use_authtok (Automated)"
@@ -7999,8 +7807,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.4",
-        "5.3.3.4.1"
+        "5.3.3.4"
       ],
       "tags": [],
       "title": "Ensure pam_unix does not include nullok (Automated)"
@@ -8043,8 +7850,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.4",
-        "5.3.3.4.2"
+        "5.3.3.4"
       ],
       "tags": [],
       "title": "Ensure pam_unix does not include remember (Automated)"
@@ -8087,8 +7893,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.4",
-        "5.3.3.4.3"
+        "5.3.3.4"
       ],
       "tags": [],
       "title": "Ensure pam_unix includes a strong password hashing algorithm (Automated)"
@@ -8131,8 +7936,7 @@
         "5",
         "5.3",
         "5.3.3",
-        "5.3.3.4",
-        "5.3.3.4.4"
+        "5.3.3.4"
       ],
       "tags": [],
       "title": "Ensure pam_unix includes use_authtok (Automated)"
@@ -8174,8 +7978,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.1",
-        "5.4.1.1"
+        "5.4.1"
       ],
       "tags": [],
       "title": "Ensure password expiration is configured (Automated)"
@@ -8209,8 +8012,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.1",
-        "5.4.1.2"
+        "5.4.1"
       ],
       "tags": [],
       "title": "Ensure minimum password days is configured (Automated)"
@@ -8252,8 +8054,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.1",
-        "5.4.1.3"
+        "5.4.1"
       ],
       "tags": [],
       "title": "Ensure password expiration warning days is configured (Automated)"
@@ -8295,8 +8096,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.1",
-        "5.4.1.4"
+        "5.4.1"
       ],
       "tags": [],
       "title": "Ensure strong password hashing algorithm is configured (Automated)"
@@ -8338,8 +8138,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.1",
-        "5.4.1.5"
+        "5.4.1"
       ],
       "tags": [],
       "title": "Ensure inactive password lock is configured (Automated)"
@@ -8381,8 +8180,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.1",
-        "5.4.1.6"
+        "5.4.1"
       ],
       "tags": [],
       "title": "Ensure all users last password change date is in the past (Automated)"
@@ -8424,8 +8222,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.1"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure root is the only UID 0 account (Automated)"
@@ -8467,8 +8264,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.2"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure root is the only GID 0 account (Automated)"
@@ -8510,8 +8306,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.3"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure group root is the only GID 0 group (Automated)"
@@ -8553,8 +8348,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.4"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure root account access is controlled (Automated)"
@@ -8596,8 +8390,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.5"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure root path integrity (Automated)"
@@ -8639,8 +8432,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.6"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure root user umask is configured (Automated)"
@@ -8682,8 +8474,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.7"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure system accounts do not have a valid login shell (Automated)"
@@ -8725,8 +8516,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.2",
-        "5.4.2.8"
+        "5.4.2"
       ],
       "tags": [],
       "title": "Ensure accounts without a valid login shell are locked (Automated)"
@@ -8760,8 +8550,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.3",
-        "5.4.3.1"
+        "5.4.3"
       ],
       "tags": [],
       "title": "Ensure nologin is not listed in /etc/shells (Automated)"
@@ -8803,8 +8592,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.3",
-        "5.4.3.2"
+        "5.4.3"
       ],
       "tags": [],
       "title": "Ensure default user shell timeout is configured (Automated)"
@@ -8846,8 +8634,7 @@
       "section_path": [
         "5",
         "5.4",
-        "5.4.3",
-        "5.4.3.3"
+        "5.4.3"
       ],
       "tags": [],
       "title": "Ensure default user umask is configured (Automated)"
@@ -8888,8 +8675,7 @@
       "section": "6",
       "section_path": [
         "6",
-        "6.1",
-        "6.1.1"
+        "6.1"
       ],
       "tags": [],
       "title": "Ensure AIDE is installed (Automated)"
@@ -8930,8 +8716,7 @@
       "section": "6",
       "section_path": [
         "6",
-        "6.1",
-        "6.1.2"
+        "6.1"
       ],
       "tags": [],
       "title": "Ensure filesystem integrity is regularly checked (Automated)"
@@ -8972,8 +8757,7 @@
       "section": "6",
       "section_path": [
         "6",
-        "6.1",
-        "6.1.3"
+        "6.1"
       ],
       "tags": [],
       "title": "Ensure cryptographic mechanisms are used to protect the integrity of audit tools (Automated)"
@@ -9015,8 +8799,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.1",
-        "6.2.1.1"
+        "6.2.1"
       ],
       "tags": [],
       "title": "Ensure journald service is enabled and active (Automated)"
@@ -9058,8 +8841,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.1",
-        "6.2.1.2"
+        "6.2.1"
       ],
       "tags": [],
       "title": "Ensure journald log file access is configured (Manual)"
@@ -9101,8 +8883,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.1",
-        "6.2.1.3"
+        "6.2.1"
       ],
       "tags": [],
       "title": "Ensure journald log file rotation is configured (Manual)"
@@ -9144,8 +8925,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.1",
-        "6.2.1.4"
+        "6.2.1"
       ],
       "tags": [],
       "title": "Ensure only one logging system is in use (Automated)"
@@ -9188,8 +8968,7 @@
         "6",
         "6.2",
         "6.2.2",
-        "6.2.2.1",
-        "6.2.2.1.1"
+        "6.2.2.1"
       ],
       "tags": [],
       "title": "Ensure systemd-journal-remote is installed (Automated)"
@@ -9232,8 +9011,7 @@
         "6",
         "6.2",
         "6.2.2",
-        "6.2.2.1",
-        "6.2.2.1.2"
+        "6.2.2.1"
       ],
       "tags": [],
       "title": "Ensure systemd-journal-upload authentication is configured (Manual)"
@@ -9276,8 +9054,7 @@
         "6",
         "6.2",
         "6.2.2",
-        "6.2.2.1",
-        "6.2.2.1.3"
+        "6.2.2.1"
       ],
       "tags": [],
       "title": "Ensure systemd-journal-upload is enabled and active (Automated)"
@@ -9320,8 +9097,7 @@
         "6",
         "6.2",
         "6.2.2",
-        "6.2.2.1",
-        "6.2.2.1.4"
+        "6.2.2.1"
       ],
       "tags": [],
       "title": "Ensure systemd-journal-remote service is not in use (Automated)"
@@ -9363,8 +9139,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.2",
-        "6.2.2.2"
+        "6.2.2"
       ],
       "tags": [],
       "title": "Ensure journald ForwardToSyslog is disabled (Automated)"
@@ -9406,8 +9181,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.2",
-        "6.2.2.3"
+        "6.2.2"
       ],
       "tags": [],
       "title": "Ensure journald Compress is configured (Automated)"
@@ -9449,8 +9223,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.2",
-        "6.2.2.4"
+        "6.2.2"
       ],
       "tags": [],
       "title": "Ensure journald Storage is configured (Automated)"
@@ -9492,8 +9265,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.1"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog is installed (Automated)"
@@ -9535,8 +9307,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.2"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog service is enabled and active (Automated)"
@@ -9578,8 +9349,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.3"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure journald is configured to send logs to rsyslog (Automated)"
@@ -9621,8 +9391,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.4"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog log file creation mode is configured (Automated)"
@@ -9664,8 +9433,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.5"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog logging is configured (Manual)"
@@ -9707,8 +9475,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.6"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog is configured to send logs to a remote log host (Manual)"
@@ -9750,8 +9517,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.7"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog is not configured to receive logs from a remote client (Automated)"
@@ -9793,8 +9559,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.3",
-        "6.2.3.8"
+        "6.2.3"
       ],
       "tags": [],
       "title": "Ensure rsyslog logrotate is configured (Manual)"
@@ -9836,8 +9601,7 @@
       "section_path": [
         "6",
         "6.2",
-        "6.2.4",
-        "6.2.4.1"
+        "6.2.4"
       ],
       "tags": [],
       "title": "Ensure access to all logfiles has been configured (Automated)"
@@ -9871,8 +9635,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.1",
-        "6.3.1.1"
+        "6.3.1"
       ],
       "tags": [],
       "title": "Ensure auditd packages are installed (Automated)"
@@ -9906,8 +9669,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.1",
-        "6.3.1.2"
+        "6.3.1"
       ],
       "tags": [],
       "title": "Ensure auditing for processes that start prior to auditd is enabled (Automated)"
@@ -9941,8 +9703,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.1",
-        "6.3.1.3"
+        "6.3.1"
       ],
       "tags": [],
       "title": "Ensure audit_backlog_limit is sufficient (Automated)"
@@ -9976,8 +9737,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.1",
-        "6.3.1.4"
+        "6.3.1"
       ],
       "tags": [],
       "title": "Ensure auditd service is enabled and active (Automated)"
@@ -10011,8 +9771,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.2",
-        "6.3.2.1"
+        "6.3.2"
       ],
       "tags": [],
       "title": "Ensure audit log storage size is configured (Automated)"
@@ -10046,8 +9805,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.2",
-        "6.3.2.2"
+        "6.3.2"
       ],
       "tags": [],
       "title": "Ensure audit logs are not automatically deleted (Automated)"
@@ -10081,8 +9839,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.2",
-        "6.3.2.3"
+        "6.3.2"
       ],
       "tags": [],
       "title": "Ensure system is disabled when audit logs are full (Automated)"
@@ -10116,8 +9873,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.2",
-        "6.3.2.4"
+        "6.3.2"
       ],
       "tags": [],
       "title": "Ensure system warns when audit logs are low on space (Automated)"
@@ -10151,8 +9907,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.1"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure changes to system administration scope (sudoers) is collected (Automated)"
@@ -10186,8 +9941,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.2"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure actions as another user are always logged (Automated)"
@@ -10221,8 +9975,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.3"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure events that modify the sudo log file are collected (Automated)"
@@ -10256,8 +10009,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.4"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure events that modify date and time information are collected (Automated)"
@@ -10291,8 +10043,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.5"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure events that modify the system's network environment are collected (Automated)"
@@ -10326,8 +10077,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.6"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure use of privileged commands are collected (Automated)"
@@ -10361,8 +10111,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.7"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure unsuccessful file access attempts are collected (Automated)"
@@ -10396,8 +10145,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.8"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure events that modify user/group information are collected (Automated)"
@@ -10431,8 +10179,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.9"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure discretionary access control permission modification events are collected (Automated)"
@@ -10466,8 +10213,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.10"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure successful file system mounts are collected (Automated)"
@@ -10501,8 +10247,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.11"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure session initiation information is collected (Automated)"
@@ -10536,8 +10281,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.12"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure login and logout events are collected (Automated)"
@@ -10571,8 +10315,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.13"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure file deletion events by users are collected (Automated)"
@@ -10606,8 +10349,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.14"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure events that modify the system's Mandatory Access Controls are collected (Automated)"
@@ -10641,8 +10383,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.15"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure successful and unsuccessful attempts to use the chcon command are collected (Automated)"
@@ -10676,8 +10417,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.16"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure successful and unsuccessful attempts to use the setfacl command are collected (Automated)"
@@ -10711,8 +10451,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.17"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure successful and unsuccessful attempts to use the chacl command are collected (Automated)"
@@ -10746,8 +10485,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.18"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure successful and unsuccessful attempts to use the usermod command are collected (Automated)"
@@ -10781,8 +10519,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.19"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure kernel module loading unloading and modification is collected (Automated)"
@@ -10816,8 +10553,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.20"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure the audit configuration is immutable (Automated)"
@@ -10851,8 +10587,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.3",
-        "6.3.3.21"
+        "6.3.3"
       ],
       "tags": [],
       "title": "Ensure the running and on disk configuration is the same (Manual)"
@@ -10886,8 +10621,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.1"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure the audit log file directory mode is configured (Automated)"
@@ -10921,8 +10655,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.2"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit log files mode is configured (Automated)"
@@ -10956,8 +10689,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.3"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit log files owner is configured (Automated)"
@@ -10991,8 +10723,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.4"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit log files group owner is configured (Automated)"
@@ -11026,8 +10757,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.5"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit configuration files mode is configured (Automated)"
@@ -11061,8 +10791,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.6"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit configuration files owner is configured (Automated)"
@@ -11096,8 +10825,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.7"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit configuration files group owner is configured (Automated)"
@@ -11131,8 +10859,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.8"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit tools mode is configured (Automated)"
@@ -11166,8 +10893,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.9"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit tools owner is configured (Automated)"
@@ -11201,8 +10927,7 @@
       "section_path": [
         "6",
         "6.3",
-        "6.3.4",
-        "6.3.4.10"
+        "6.3.4"
       ],
       "tags": [],
       "title": "Ensure audit tools group owner is configured (Automated)"
@@ -11243,8 +10968,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.1"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/passwd are configured (Automated)"
@@ -11285,8 +11009,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.2"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/passwd- are configured (Automated)"
@@ -11327,8 +11050,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.3"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/group are configured (Automated)"
@@ -11369,8 +11091,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.4"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/group- are configured (Automated)"
@@ -11411,8 +11132,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.5"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/shadow are configured (Automated)"
@@ -11453,8 +11173,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.6"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/shadow- are configured (Automated)"
@@ -11495,8 +11214,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.7"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/gshadow are configured (Automated)"
@@ -11537,8 +11255,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.8"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/gshadow- are configured (Automated)"
@@ -11579,8 +11296,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.9"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/shells are configured (Automated)"
@@ -11621,8 +11337,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.10"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure permissions on /etc/security/opasswd are configured (Automated)"
@@ -11663,8 +11378,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.11"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure world writable files and directories are secured (Automated)"
@@ -11705,8 +11419,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.12"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure no files or directories without an owner and a group exist (Automated)"
@@ -11747,8 +11460,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.13"
+        "7.1"
       ],
       "tags": [],
       "title": "Ensure SUID and SGID files are reviewed (Manual)"
@@ -11781,8 +11493,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.1",
-        "7.1.14"
+        "7.1"
       ],
       "tags": [],
       "title": "Audit system file permissions (Manual)"
@@ -11823,8 +11534,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.1"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure accounts in /etc/passwd use shadowed passwords (Automated)"
@@ -11865,8 +11575,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.2"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure /etc/shadow password fields are not empty (Automated)"
@@ -11907,8 +11616,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.3"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure all groups in /etc/passwd exist in /etc/group (Automated)"
@@ -11949,8 +11657,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.4"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure no duplicate UIDs exist (Automated)"
@@ -11991,8 +11698,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.5"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure no duplicate GIDs exist (Automated)"
@@ -12033,8 +11739,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.6"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure no duplicate user names exist (Automated)"
@@ -12075,8 +11780,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.7"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure no duplicate group names exist (Automated)"
@@ -12117,8 +11821,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.8"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure local interactive user home directories are configured (Automated)"
@@ -12159,8 +11862,7 @@
       "section": "7",
       "section_path": [
         "7",
-        "7.2",
-        "7.2.9"
+        "7.2"
       ],
       "tags": [],
       "title": "Ensure local interactive user dot files access is configured (Automated)"

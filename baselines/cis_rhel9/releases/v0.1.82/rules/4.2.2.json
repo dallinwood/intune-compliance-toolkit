@@ -88,8 +88,7 @@
   "schema_version": 6,
   "section_path": [
     "4",
-    "4.2",
-    "4.2.2"
+    "4.2"
   ],
   "source": {
     "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",

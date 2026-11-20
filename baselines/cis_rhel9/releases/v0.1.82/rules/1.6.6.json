@@ -50,8 +50,7 @@
   "schema_version": 6,
   "section_path": [
     "1",
-    "1.6",
-    "1.6.6"
+    "1.6"
   ],
   "source": {
     "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",

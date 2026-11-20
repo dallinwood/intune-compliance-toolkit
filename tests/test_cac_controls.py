@@ -67,8 +67,14 @@ def test_variable_settings_are_dropped():
     assert password_control.rule_ids == ("accounts_password_pam_minlen",)
 
 
-def test_section_path():
-    assert section_path("1.1.1") == ["1", "1.1", "1.1.1"]
+def test_section_path_stops_at_the_parent():
+    assert section_path("1.1.1.1") == ["1", "1.1", "1.1.1"]
+    assert section_path("2.1") == ["2"]
+
+
+def test_section_path_of_a_top_level_id_fails():
+    with pytest.raises(UnsupportedUpstreamData, match="'7'"):
+        section_path("7")
 
 
 def test_levels_with_inheritance():

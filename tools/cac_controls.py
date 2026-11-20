@@ -100,8 +100,11 @@ def _string_list(value, key: str, where: str) -> list[str]:
 
 
 def section_path(cis_id: str) -> list[str]:
+    """The sections containing a recommendation: its id's prefixes, not the id itself."""
     parts = cis_id.split(".")
-    return [".".join(parts[: length + 1]) for length in range(len(parts))]
+    if len(parts) < 2:
+        raise UnsupportedUpstreamData(f"CIS id {cis_id!r} has no parent section")
+    return [".".join(parts[: length + 1]) for length in range(len(parts) - 1)]
 
 
 def levels_with_inheritance(levels: tuple[str, ...]) -> list[str]:

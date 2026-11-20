@@ -148,7 +148,7 @@ def test_discussion_and_source(upstream_dir):
     rule = rules_by_cis_id(upstream_dir)["1.2.1"]
     assert rule["discussion"].startswith("## Ensure PAM Enforces Password Requirements - Minimum Length\n\n")
     assert "\n\n**Rationale:**\n\nLonger passwords resist guessing." in rule["discussion"]
-    assert rule["section_path"] == ["1", "1.2", "1.2.1"]
+    assert rule["section_path"] == ["1", "1.2"]
     assert rule["source"]["upstream_url"] == (
         f"https://github.com/ComplianceAsCode/content/blob/{'a' * 40}/controls/cis_fixture.yml"
     )

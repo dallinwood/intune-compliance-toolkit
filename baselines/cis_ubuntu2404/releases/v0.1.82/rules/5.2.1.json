@@ -76,8 +76,7 @@
   "schema_version": 6,
   "section_path": [
     "5",
-    "5.2",
-    "5.2.1"
+    "5.2"
   ],
   "source": {
     "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",

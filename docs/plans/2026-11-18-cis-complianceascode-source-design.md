@@ -158,7 +158,7 @@ fails the import instead of being silently skipped.
 | Rule field | From |
 |---|---|
 | `title` | control `title`, verbatim (including the "(Automated)"/"(Manual)" suffix) |
-| `section_path` | the CIS number's prefixes: `1.1.1.1` gives `["1", "1.1", "1.1.1", "1.1.1.1"]` (the control file has no section names) |
+| `section_path` | the CIS number's parent prefixes, not the number itself: `1.1.1.1` gives `["1", "1.1", "1.1.1"]` (the control file has no section names; including the number made every recommendation its own one-rule section, maintainer 2026-11-20). A number with no parent fails the import |
 | `discussion` (markdown) | for each linked CaC rule: its title as a heading, then its description and rationale, converted from XCCDF HTML to markdown; then the control's `notes`, if any |
 | `applicability` | one entry: target `Linux` (the library's existing key, which the UI's Linux icon and the product catalog use), version `RHEL-9` / `Ubuntu-24.04` (versions can't contain spaces), benchmarks per section 5.3. `check` and `remediation` are keyed by `Linux` too |
 | `assessment` | section 5.5 |
@@ -331,7 +331,7 @@ For the maintainer to check while reading:
 
 - Rule id `<source>.<CIS number>`; release label = the benchmark version (section 4).
 - Title kept verbatim, including "(Automated)"/"(Manual)" (5.2).
-- `section_path` as CIS number prefixes, since the control file has no section names (5.2).
+- `section_path` as CIS number parent prefixes, since the control file has no section names (5.2).
 - Level inheritance expanded for filtering, with the CIS-assigned level kept in references (5.3).
 - Target `Linux`, version `RHEL-9` / `Ubuntu-24.04` (5.2).
 - Bash fixes only, taken from the datastream with variables as customisable values (5.4, 5.7).
@@ -346,3 +346,4 @@ For the maintainer to check while reading:
 - 2026-11-20: Added rule assembly (`normalize_benchmark`) with tests; fixed the quote scanner mistaking a here-string for a heredoc, found on real RHEL 9 and Ubuntu 24.04 data (298 and 312 rules validate). Commit: 34ecaa9c feat: normalize CaC CIS controls into rules
 - 2026-11-20: Added the fetcher (checksum-verified release zip, datastream extracted, LICENSE and control file pinned to the tag commit) and the `import_cis_cac.py` CLI with tests; added `openscap` to the index schema enum, which the earlier enum commit missed. Commit: feat: fetch and import CIS benchmarks from ComplianceAsCode
 - 2026-11-20: Imported CIS RHEL 9 (298 rules) and Ubuntu 24.04 (312 rules) from ComplianceAsCode v0.1.82 into the library, registered the importers in the committed-library test and added the vocabulary entries. Commit: feat: import CIS RHEL 9 and Ubuntu 24.04 from ComplianceAsCode v0.1.82
+- 2026-11-20: Sections now stop at a recommendation's parent number (`1.1.1.1` sits in `1 > 1.1 > 1.1.1`); including the number itself gave every recommendation its own one-rule section. Both releases regenerated. Commit: `fix: stop CIS sections at the recommendation's parent`.
