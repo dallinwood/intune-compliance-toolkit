@@ -36,7 +36,7 @@
             "properties": {
               "status": { "enum": ["automated", "manual"] },
               "manual_reason": {
-                "enum": ["manual", "inherent", "permanent", "n_a", "supplemental", "no_check", null]
+                "enum": ["manual", "inherent", "permanent", "n_a", "supplemental", "no_check", "openscap", null]
               }
             },
             "if": { "properties": { "status": { "const": "automated" } } },
