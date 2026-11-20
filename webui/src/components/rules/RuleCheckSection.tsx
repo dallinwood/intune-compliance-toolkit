@@ -14,18 +14,23 @@ import { OdvCodeBlock, SectionHeading } from './CodeBlock'
 import { DisclosureButtons, SelectionButtons, type SelectionItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { ScriptFile } from './ReferencedFile'
+import { RegistryTable } from './RegistryTable'
 import { TargetIcons } from './TargetIcons'
 
 function CheckEntry({
   label,
   check,
   language,
+  ruleId,
+  target,
   odvValues,
   codeOdv,
 }: {
   label: string
   check: RuleCheck
   language: ScriptLanguage
+  ruleId: string
+  target: string
   odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
@@ -34,7 +39,9 @@ function CheckEntry({
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
-      {check.shell_file !== undefined ? (
+      {check.registry !== undefined ? (
+        <RegistryTable settings={check.registry} odvValues={odvValues} ruleId={ruleId} target={target} />
+      ) : check.shell_file !== undefined ? (
         <ScriptFile path={check.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       ) : check.shell ? (
         <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
@@ -61,11 +68,13 @@ function versionCheckKey(version: string): string {
 }
 
 function CheckItemPanel({
+  ruleId,
   target,
   checkItem,
   odvValues,
   codeOdv,
 }: {
+  ruleId: string
   target: string
   checkItem: CheckItem
   odvValues: Partial<OdvValues>
@@ -82,6 +91,8 @@ function CheckItemPanel({
         label="Check (all listed versions)"
         check={checkItem.default}
         language={checkItem.language}
+        ruleId={ruleId}
+        target={target}
         odvValues={odvValues}
         codeOdv={codeOdv}
       />
@@ -103,6 +114,8 @@ function CheckItemPanel({
           label={termLabel(index, 'versions', versionKey(target, selectedVersionCheck[0]))}
           check={selectedVersionCheck[1]}
           language={checkItem.language}
+          ruleId={ruleId}
+          target={target}
           odvValues={odvValues}
           codeOdv={codeOdv}
         />
@@ -111,6 +124,8 @@ function CheckItemPanel({
           label="Default check (versions without their own)"
           check={checkItem.default}
           language={checkItem.language}
+          ruleId={ruleId}
+          target={target}
           odvValues={odvValues}
           codeOdv={codeOdv}
         />
@@ -169,7 +184,7 @@ export function RuleCheckSection({
                   {checkItem.name ?? scriptLanguageLabel(checkItem.language)}
                 </>
               ),
-              panel: <CheckItemPanel target={target} checkItem={checkItem} odvValues={odvValues} codeOdv={codeOdv} />,
+              panel: <CheckItemPanel ruleId={rule.id} target={target} checkItem={checkItem} odvValues={odvValues} codeOdv={codeOdv} />,
             })),
           )}
         />

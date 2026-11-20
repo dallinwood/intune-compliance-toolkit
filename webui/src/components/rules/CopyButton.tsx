@@ -20,7 +20,7 @@ type CopyState = { status: 'idle' } | { status: 'copied' } | { status: 'failed';
 
 // Sits in the top-right corner of a relatively positioned wrapper; the
 // block it belongs to reserves right padding so wrapped lines stay clear.
-export function CopyButton({ text, tone = 'dark' }: { text: string; tone?: keyof typeof TONE_CLASSES }) {
+export function CopyButton({ text, tone = 'dark', label = 'Copy code' }: { text: string; tone?: keyof typeof TONE_CLASSES; label?: string }) {
   const [state, setState] = useState<CopyState>({ status: 'idle' })
   const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -39,7 +39,7 @@ export function CopyButton({ text, tone = 'dark' }: { text: string; tone?: keyof
     <>
       <button
         type="button"
-        aria-label="Copy code"
+        aria-label={label}
         onClick={copy}
         className={`absolute top-1 right-1 rounded-sm p-1 focus-visible:ring-2 focus-visible:outline-none ${TONE_CLASSES[tone]}`}
       >

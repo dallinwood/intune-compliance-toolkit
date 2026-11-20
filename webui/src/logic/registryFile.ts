@@ -72,6 +72,34 @@ function valueLine(setting: RegistrySetting): string {
   return `${name}=${setting.state === 'absent' ? '-' : dataText(setting)}`
 }
 
+function describeSetting(setting: RegistrySetting): string {
+  return `The registry setting ${JSON.stringify(`${setting.path}\\${setting.value_name}`)}`
+}
+
+const LINE_BREAK_OR_NUL_PATTERN = /[\r\n\0]/
+
+// A line break or NUL in a key path, value name or string would end the line it
+// sits on, letting the value that holds it add lines of its own to the file a
+// reader imports; a "]" in a path would end the key header early.
+function refuseLineInjection(setting: RegistrySetting): void {
+  const checkedFields: [string, string][] = [
+    ['key path', setting.path],
+    ['value name', setting.value_name],
+  ]
+  if (typeof setting.data === 'string' && setting.type !== 'REG_BINARY') checkedFields.push(['data', setting.data])
+  if (Array.isArray(setting.data)) {
+    for (const item of setting.data) checkedFields.push(['data', item])
+  }
+  for (const [fieldName, fieldValue] of checkedFields) {
+    if (LINE_BREAK_OR_NUL_PATTERN.test(fieldValue)) {
+      throw new Error(`${describeSetting(setting)} has ${fieldName} with a line break or NUL character, which would corrupt the .reg file`)
+    }
+  }
+  if (setting.path.includes(']')) {
+    throw new Error(`${describeSetting(setting)} has a key path containing "]", which would end the key header in the .reg file`)
+  }
+}
+
 function refuseUnresolvedOdv(setting: RegistrySetting): void {
   const odvName = registryOdvName(setting.data)
   if (odvName !== null) {
@@ -88,6 +116,7 @@ export function registryFileText(settings: RegistrySetting[], odvValues: Partial
   for (const declared of settings) {
     const setting = resolveRegistrySetting(declared, odvValues)
     refuseUnresolvedOdv(setting)
+    refuseLineInjection(setting)
     const keyHeader = `[${LONG_HIVE_NAMES[setting.hive]}\\${setting.path}]`
     const lines = linesByKey.get(keyHeader) ?? []
     lines.push(valueLine(setting))
@@ -95,6 +124,21 @@ export function registryFileText(settings: RegistrySetting[], odvValues: Partial
   }
   const keyBlocks = Array.from(linesByKey, ([keyHeader, lines]) => [keyHeader, ...lines].map((line) => line + LINE_BREAK).join('') + LINE_BREAK)
   return `${HEADER_LINE}${LINE_BREAK}${LINE_BREAK}${keyBlocks.join('')}`
+}
+
+// Why registryFileText cannot build the file, as a sentence for the reader, or
+// null when it can. Lets the Download button disable itself rather than throw.
+export function registryFileProblem(settings: RegistrySetting[], odvValues: Partial<OdvValues>): string | null {
+  for (const declared of settings) {
+    const odvName = registryOdvName(declared.data)
+    if (odvName !== null && !Object.hasOwn(odvValues, odvName)) return `Set a valid value for $ODV_${odvName} to download`
+  }
+  try {
+    registryFileText(settings, odvValues)
+    return null
+  } catch (error) {
+    return error instanceof Error ? error.message : String(error)
+  }
 }
 
 // Regedit reads a UTF-16LE file only when it starts with a byte order mark.

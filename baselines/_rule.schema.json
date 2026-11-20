@@ -198,8 +198,8 @@
       "required": ["hive", "path", "value_name", "type", "data", "state"],
       "properties": {
         "hive": { "enum": ["HKLM", "HKCU", "HKU", "HKCR"] },
-        "path": { "type": "string", "pattern": "^[^\\\\\\n](?:[^\\n]*[^\\\\\\n])?(?![\\s\\S])" },
-        "value_name": { "type": "string" },
+        "path": { "type": "string", "pattern": "^[^\\\\\\r\\n\\u0000\\]](?:[^\\r\\n\\u0000\\]]*[^\\\\\\r\\n\\u0000\\]])?(?![\\s\\S])" },
+        "value_name": { "type": "string", "pattern": "^[^\\r\\n\\u0000]*(?![\\s\\S])" },
         "type": { "enum": ["REG_DWORD", "REG_QWORD", "REG_SZ", "REG_EXPAND_SZ", "REG_MULTI_SZ", "REG_BINARY", null] },
         "data": {},
         "state": { "enum": ["present", "absent"] }
@@ -221,11 +221,11 @@
               },
               {
                 "if": { "properties": { "type": { "enum": ["REG_SZ", "REG_EXPAND_SZ"] } }, "required": ["type"] },
-                "then": { "properties": { "data": { "type": "string" } } }
+                "then": { "properties": { "data": { "type": "string", "pattern": "^[^\\r\\n\\u0000]*(?![\\s\\S])" } } }
               },
               {
                 "if": { "properties": { "type": { "const": "REG_MULTI_SZ" } }, "required": ["type"] },
-                "then": { "properties": { "data": { "type": "array", "items": { "type": "string", "not": { "pattern": "^\\$ODV" } } } } }
+                "then": { "properties": { "data": { "type": "array", "items": { "type": "string", "pattern": "^[^\\r\\n\\u0000]*(?![\\s\\S])", "not": { "pattern": "^\\$ODV" } } } } }
               },
               {
                 "if": { "properties": { "type": { "const": "REG_BINARY" } }, "required": ["type"] },

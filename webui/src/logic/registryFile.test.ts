@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { RegistrySetting } from '../types/library'
-import { registryFileBytes, registryFileName, registryFileText } from './registryFile'
+import { registryFileBytes, registryFileName, registryFileProblem, registryFileText } from './registryFile'
 
 const HEADER = 'Windows Registry Editor Version 5.00\r\n\r\n'
 
@@ -113,6 +113,41 @@ describe('registryFileText', () => {
 
   it('refuses a setting whose ODV has no value', () => {
     expect(() => registryFileText([present({ data: '$ODV_missing' })], {})).toThrow('missing')
+  })
+
+  it('refuses a customised string ODV holding a line break, which would add lines to the file', () => {
+    const setting = present({ type: 'REG_SZ', data: '$ODV_banner' })
+    expect(() => registryFileText([setting], { banner: 'hi"\r\n[HKEY_LOCAL_MACHINE\\Evil]' })).toThrow('SOFTWARE\\\\Example\\\\Setting')
+  })
+
+  it('refuses a line break or NUL in string data, in each MULTI_SZ item, in a value name and in a path', () => {
+    expect(() => registryFileText([present({ type: 'REG_SZ', data: 'a\nb' })], {})).toThrow('line break')
+    expect(() => registryFileText([present({ type: 'REG_EXPAND_SZ', data: 'a\rb' })], {})).toThrow('line break')
+    expect(() => registryFileText([present({ type: 'REG_MULTI_SZ', data: ['ok', 'a\0b'] })], {})).toThrow('NUL')
+    expect(() => registryFileText([present({ value_name: 'a\0b' })], {})).toThrow('value name')
+    expect(() => registryFileText([absent({ path: 'SOFTWARE\nEvil' })], {})).toThrow('key path')
+  })
+
+  it('refuses a closing bracket in a key path', () => {
+    expect(() => registryFileText([present({ path: 'SOFTWARE\\Ex]ample' })], {})).toThrow('"]"')
+  })
+
+  it('accepts a closing bracket in a value name or string data', () => {
+    expect(registryFileText([present({ value_name: 'a]', type: 'REG_SZ', data: '[x]' })], {})).toContain('"a]"="[x]"')
+  })
+})
+
+describe('registryFileProblem', () => {
+  it('is null for a file that can be built', () => {
+    expect(registryFileProblem([present({})], {})).toBeNull()
+  })
+
+  it('asks for a value when an ODV has none', () => {
+    expect(registryFileProblem([present({ data: '$ODV_timeout' })], {})).toBe('Set a valid value for $ODV_timeout to download')
+  })
+
+  it('gives the refusal for a value that cannot be written', () => {
+    expect(registryFileProblem([present({ type: 'REG_SZ', data: 'a\nb' })], {})).toContain('line break')
   })
 })
 

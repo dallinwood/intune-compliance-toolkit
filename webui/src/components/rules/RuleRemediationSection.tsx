@@ -15,16 +15,21 @@ import { OdvCodeBlock, SectionHeading } from './CodeBlock'
 import { DisclosureButtons, type DisclosureItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { PayloadFile, ScriptFile } from './ReferencedFile'
+import { RegistryTable } from './RegistryTable'
 import { TargetIcons } from './TargetIcons'
 
 function StepEntry({
   label,
   step,
+  ruleId,
+  target,
   odvValues,
   codeOdv,
 }: {
   label: string
   step: RemediationStep
+  ruleId: string
+  target: string
   odvValues: Partial<OdvValues>
   codeOdv: CodeOdvValues
 }) {
@@ -32,6 +37,7 @@ function StepEntry({
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
+      {step.registry !== undefined && <RegistryTable settings={step.registry} odvValues={odvValues} ruleId={ruleId} target={target} />}
       {step.shell_file !== undefined && (
         <ScriptFile path={step.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       )}
@@ -71,11 +77,13 @@ function remediationItemsOf(targetRemediation: TargetRemediation): RemediationIt
 }
 
 function RemediationItemPanel({
+  ruleId,
   target,
   item,
   odvValues,
   codeOdv,
 }: {
+  ruleId: string
   target: string
   item: RemediationItem
   odvValues: Partial<OdvValues>
@@ -83,7 +91,16 @@ function RemediationItemPanel({
 }) {
   const index = useVocabularyIndex()
   if (item.type === 'step') {
-    return <StepEntry label={remediationStepLabel(index, target, item.step)} step={item.step} odvValues={odvValues} codeOdv={codeOdv} />
+    return (
+      <StepEntry
+        label={remediationStepLabel(index, target, item.step)}
+        step={item.step}
+        ruleId={ruleId}
+        target={target}
+        odvValues={odvValues}
+        codeOdv={codeOdv}
+      />
+    )
   }
   const label = remediationPayloadLabel(index, target, item.payload)
   return item.payload.data_file !== undefined ? (
@@ -115,7 +132,7 @@ export function RuleRemediationSection({
           {remediationItemButtonLabel(index, target, item)}
         </>
       ),
-      panel: <RemediationItemPanel target={target} item={item} odvValues={odvValues} codeOdv={codeOdv} />,
+      panel: <RemediationItemPanel ruleId={rule.id} target={target} item={item} odvValues={odvValues} codeOdv={codeOdv} />,
     })),
   )
 
