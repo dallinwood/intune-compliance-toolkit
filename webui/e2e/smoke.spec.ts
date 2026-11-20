@@ -2514,14 +2514,13 @@ test.describe('CIS rules from ComplianceAsCode', () => {
     return page.locator('[id^="rule-detail-"]')
   }
 
-  test('CIS rule shows its audit procedure', async ({ page }) => {
+  test('CIS rule shows its audit as instructions', async ({ page }) => {
     const detail = await openCisRule(page, 'Ensure sshd PermitRootLogin is disabled')
 
-    await expect(detail.getByText('Audit procedure')).toBeVisible()
     await expect(detail.getByText('PermitRootLogin').first()).toBeVisible()
     await expect(detail.getByText('No check script.')).toHaveCount(0)
     await expect(detail.getByTestId('check-target')).toBeVisible()
-    await expect(detail.getByTestId('check-target')).toHaveAccessibleName(/Audit/)
+    await expect(detail.getByTestId('check-target')).toHaveAccessibleName(/Instructions/)
     await expect(detail.getByTestId('check-target')).not.toHaveAccessibleName(/Bash/)
   })
 
