@@ -30,6 +30,7 @@ function CheckEntry({
   codeOdv: CodeOdvValues
 }) {
   const highlightLanguage = scriptHighlightLanguage(language)
+  const isTextOnlyAudit = !hasScript(check) && Boolean(check.additional_info)
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
@@ -37,6 +38,8 @@ function CheckEntry({
         <ScriptFile path={check.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       ) : check.shell ? (
         <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
+      ) : isTextOnlyAudit ? (
+        <p className="text-xs font-medium text-foreground/80">Audit procedure</p>
       ) : (
         <p className="text-xs text-muted-foreground">No check script.</p>
       )}
@@ -51,6 +54,14 @@ function CheckEntry({
       {check.additional_info && <DiscussionText text={check.additional_info} format="asciidoc" odvValues={odvValues} codeOdv={codeOdv} />}
     </div>
   )
+}
+
+function hasScript(check: RuleCheck): boolean {
+  return check.shell_file !== undefined || Boolean(check.shell)
+}
+
+function targetCheckHasScript(targetCheck: TargetCheck): boolean {
+  return [targetCheck.default, ...Object.values(targetCheck.by_version)].some((check) => check !== null && check !== undefined && hasScript(check))
 }
 
 const DEFAULT_CHECK_KEY = 'default'
@@ -164,7 +175,7 @@ export function RuleCheckSection({
             buttonContent: (
               <>
                 <TargetIcons targetKeys={[target]} />
-                {scriptLanguageLabel(targetCheck.language)}
+                {targetCheckHasScript(targetCheck) ? scriptLanguageLabel(targetCheck.language) : 'Audit'}
               </>
             ),
             panel: <TargetCheckPanel target={target} targetCheck={targetCheck} odvValues={odvValues} codeOdv={codeOdv} />,

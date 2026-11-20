@@ -1,7 +1,7 @@
 # Design: CIS Linux benchmarks as rule sources, imported from ComplianceAsCode
 
 Date: 2026-11-18
-Status: Approved 2026-11-18, not yet implemented
+Status: Implemented 2026-11-20
 
 ## 1. Intent
 
@@ -348,3 +348,4 @@ For the maintainer to check while reading:
 - 2026-11-20: Imported CIS RHEL 9 (298 rules) and Ubuntu 24.04 (312 rules) from ComplianceAsCode v0.1.82 into the library, registered the importers in the committed-library test and added the vocabulary entries. Commit: feat: import CIS RHEL 9 and Ubuntu 24.04 from ComplianceAsCode v0.1.82
 - 2026-11-20: Sections now stop at a recommendation's parent number (`1.1.1.1` sits in `1 > 1.1 > 1.1.1`); including the number itself gave every recommendation its own one-rule section. Both releases regenerated. Commit: `fix: stop CIS sections at the recommendation's parent`.
 - 2026-11-20: Credited ComplianceAsCode in `NOTICE` and `README.md` (BSD-3-Clause, no-endorsement clause, the update section). Commit: `docs: credit ComplianceAsCode for the CIS rule sources`.
+- 2026-11-20: The rule detail shows a text-only audit (no script, procedure in `additional_info`) under an "Audit procedure" label instead of "No check script.", and its check button reads "Audit" rather than the "Bash" language pill; checks with a script look as before. Added e2e tests for the audit procedure, the customisable value and the mSCP Bash label, and checked 375px and 1440px screenshots. Commit: `feat: show text-only audits as an audit procedure`.

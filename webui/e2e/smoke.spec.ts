@@ -33,7 +33,7 @@ async function searchForSingleRow(page: Page, search: string, title: RegExp | st
   // Clearing first keeps repeated calls in one test working: the count only
   // returns to the full library once the previous search is gone.
   await searchBox.fill('')
-  await expect(ruleCount(page)).toHaveText(/^2,567 of 2,567 rules$/, { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText(/^3,177 of 3,177 rules$/, { timeout: 10_000 })
   await searchBox.fill(search)
   const row = page.locator('table tbody tr').filter({ hasText: title })
   await expect(row).toHaveCount(1)
@@ -44,7 +44,7 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   await page.goto(ALL_RULES_PATH)
 
   await expect(page.getByRole('heading', { name: 'Intune Compliance Toolkit' })).toBeVisible()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
   // Scoped to the row rather than the button's name, which flips between
@@ -81,22 +81,22 @@ test('an architecture-gated rule names its architecture by the raw mSCP code', a
 // a screenshot.
 test('Version and benchmark facets narrow the table together', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   const countOf = async () => Number((await ruleCount(page).textContent())?.split(' ')[0].replace(',', ''))
   await openFacetGroup(page, 'Version')
   await openFacetGroup(page, 'Benchmark')
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).not.toHaveText('3,177 of 3,177 rules')
   const versionOnly = await countOf()
 
   await page.getByRole('checkbox', { name: 'CIS Level 1', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText(`${versionOnly} of 2,567 rules`)
+  await expect(ruleCount(page)).not.toHaveText(`${versionOnly} of 3,177 rules`)
   const both = await countOf()
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText(`${both} of 2,567 rules`)
+  await expect(ruleCount(page)).not.toHaveText(`${both} of 3,177 rules`)
   const benchmarkOnly = await countOf()
 
   expect(both).toBeGreaterThan(0)
@@ -104,7 +104,7 @@ test('Version and benchmark facets narrow the table together', async ({ page }) 
   expect(both).toBeLessThan(benchmarkOnly)
 
   await page.getByRole('radio', { name: 'Manual only' }).click()
-  await expect(ruleCount(page)).not.toHaveText(`${benchmarkOnly} of 2,567 rules`)
+  await expect(ruleCount(page)).not.toHaveText(`${benchmarkOnly} of 3,177 rules`)
 })
 
 interface IndexBenchmark {
@@ -126,7 +126,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
   expect(expectedCount).toBeGreaterThan(0)
 
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Version')
   await openFacetGroup(page, 'Benchmark')
   const stigLabels = page.getByTestId('sidebar-scroll-area').locator('label').filter({ hasText: /^DISA STIG/ })
@@ -135,7 +135,7 @@ test('a benchmark severity option narrows the table to rules listing that severi
 
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
-  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 2,567 rules`)
+  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 3,177 rules`)
   await page.getByRole('button', { name: 'Expand all' }).click()
   await expect(page.locator('table tbody tr').first()).toContainText('DISA STIG (high)')
 })
@@ -154,7 +154,7 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
     page.locator('table tbody tr').filter({ has: page.getByText(ruleId.replace('mscp.', ''), { exact: true }) })
 
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Version')
   await page.getByRole('checkbox', { name: 'macOS 15', exact: true }).click()
 
@@ -167,10 +167,10 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
   await expect(rowOf(inNoBenchmark.id).locator('td').last()).toHaveText('Not in a benchmark')
 })
 
-// Only the mSCP rules name a target, so ticking macOS or mscp keeps 352 of the 2567 rules; ticking ASD ISM keeps 1143 and NIST SP 800-53 keeps 1014.
+// Only the mSCP rules name a target, so ticking macOS or mscp keeps 352 of the 3177 rules; ticking ASD ISM keeps 1143 and NIST SP 800-53 keeps 1014.
 test('the Target facet follows Automation and the Source facet sits between Version and Benchmark, and each filters to its own rules', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   const facetTitles = page.getByTestId('sidebar-scroll-area').getByRole('heading')
   await expect(facetTitles.nth(0)).toHaveText('Automation')
@@ -183,21 +183,21 @@ test('the Target facet follows Automation and the Source facet sits between Vers
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
   await platformOption.click()
   await expect(platformOption).toBeChecked()
-  await expect(ruleCount(page)).toHaveText('352 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('352 of 3,177 rules')
   await platformOption.click()
 
   const sourceOption = page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })
   await sourceOption.scrollIntoViewIfNeeded()
   await sourceOption.click()
   await expect(sourceOption).toBeChecked()
-  await expect(ruleCount(page)).toHaveText('352 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('352 of 3,177 rules')
   await sourceOption.click()
 
   const ismSourceOption = page.getByRole('checkbox', { name: 'ASD ISM', exact: true })
   await ismSourceOption.scrollIntoViewIfNeeded()
   await ismSourceOption.click()
   await expect(ismSourceOption).toBeChecked()
-  await expect(ruleCount(page)).toHaveText('1,143 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1,143 of 3,177 rules')
 })
 
 // The two mSCP rules no release lists have an entry whose version is null,
@@ -205,7 +205,7 @@ test('the Target facet follows Automation and the Source facet sits between Vers
 // rules while Target "None" keeps only the ISM rules.
 test('Version "None" and Target "None" filter to the rules without a version or a target', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   await openFacetGroup(page, 'Version')
   await expect(page.getByRole('group', { name: 'Target', exact: true })).toBeVisible()
@@ -215,17 +215,17 @@ test('Version "None" and Target "None" filter to the rules without a version or 
     page.getByRole('group', { name: facetTitle, exact: true }).getByRole('checkbox', { name: 'None', exact: true })
 
   await facetOptionNamedNone('Version').click()
-  await expect(ruleCount(page)).toHaveText('2,217 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('2,217 of 3,177 rules')
   await facetOptionNamedNone('Version').click()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules')
 
   await facetOptionNamedNone('Target').click()
-  await expect(ruleCount(page)).toHaveText('2,215 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('2,215 of 3,177 rules')
   await facetOptionNamedNone('Target').click()
 
   await page.getByRole('checkbox', { name: 'macOS', exact: true }).click()
   await facetOptionNamedNone('Version').click()
-  await expect(ruleCount(page)).toHaveText('2 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('2 of 3,177 rules')
   await page.getByRole('button', { name: 'Expand all' }).click()
   await expect(page.getByText('os_gatekeeper_rearm', { exact: true })).toBeVisible()
   await expect(page.getByText('os_firewall_log_enable', { exact: true })).toBeVisible()
@@ -234,12 +234,12 @@ test('Version "None" and Target "None" filter to the rules without a version or 
 
 test('an ISM benchmark filters to ISM rules and its benchmarks show in the table', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   await openFacetGroup(page, 'Benchmark')
   await page.getByRole('checkbox', { name: 'Essential Eight ML3', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText('2,567 of 2,567 rules')
-  await expect(ruleCount(page)).not.toHaveText('0 of 2,567 rules')
+  await expect(ruleCount(page)).not.toHaveText('3,177 of 3,177 rules')
+  await expect(ruleCount(page)).not.toHaveText('0 of 3,177 rules')
   await openFacetGroup(page, 'Version')
 
   await page.getByRole('button', { name: 'Expand all' }).click()
@@ -323,7 +323,7 @@ test('each rule credits its own source in the detail panel', async ({ page }) =>
 
 test('the sources dialog names no platform in its rule sources', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' }).click()
   const dialog = page.getByRole('dialog', { name: 'Sources & licences' })
   await expect(dialog).toContainText('Rules from the ASD Information Security Manual')
@@ -333,7 +333,7 @@ test('the sources dialog names no platform in its rule sources', async ({ page }
 
 test('the Sources & licences dialog lists sources and bundled packages', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   const footerButton = page.getByRole('contentinfo').getByRole('button', { name: 'Sources & licences' })
   await expect(page.getByRole('dialog')).toHaveCount(0)
   await footerButton.click()
@@ -360,14 +360,14 @@ test('the Sources & licences dialog lists sources and bundled packages', async (
 
 test('a facet with no reachable options is not rendered', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   const tagsHeading = page.getByTestId('sidebar-scroll-area').getByRole('heading', { name: 'Tags', exact: true })
   await expect(tagsHeading).toBeVisible()
 
   const ismSourceOption = page.getByRole('checkbox', { name: 'ASD ISM', exact: true })
   await ismSourceOption.scrollIntoViewIfNeeded()
   await ismSourceOption.click()
-  await expect(ruleCount(page)).toHaveText('1,143 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1,143 of 3,177 rules')
   // No ISM rule carries a tag, so the group is dropped once its options have faded out.
   await expect(tagsHeading).toHaveCount(0, { timeout: 10_000 })
 })
@@ -375,7 +375,7 @@ test('a facet with no reachable options is not rendered', async ({ page }) => {
 test('searching an ISM control id finds exactly that control', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
   await searchForSingleRow(page, 'ism-1667', 'Microsoft Office is blocked from creating child processes.')
-  await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
   await expect(page.getByRole('checkbox', { name: 'Select ism-1667' })).toBeVisible()
 })
 
@@ -673,7 +673,7 @@ test('a saved selection that is no longer in the library is reported and removab
 // must stay usable with raw codes when that file is missing or broken.
 test('display names come from the vocabulary file, with raw codes and a warning when it is missing', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Benchmark')
   await expect(page.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: /^Operating system/ })).toBeVisible()
@@ -681,7 +681,7 @@ test('display names come from the vocabulary file, with raw codes and a warning 
 
   await page.route('**/baselines/_vocabulary.json', (route) => route.fulfill({ status: 404, body: 'Not found' }))
   await page.reload()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('raw codes are shown')
   await openFacetGroup(page, 'Benchmark')
   await openFacetGroup(page, 'Version')
@@ -692,7 +692,7 @@ test('display names come from the vocabulary file, with raw codes and a warning 
 
   // Raw-code filters still filter.
   await page.getByRole('checkbox', { name: 'cis_lvl1', exact: true }).click()
-  await expect(ruleCount(page)).not.toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).not.toHaveText('3,177 of 3,177 rules')
 })
 
 test('a malformed vocabulary file falls back to raw codes with a warning', async ({ page }) => {
@@ -700,7 +700,7 @@ test('a malformed vocabulary file falls back to raw codes with a warning', async
     route.fulfill({ status: 200, contentType: 'application/json', body: '{"schema_version": 1, "vocabularies": []}' }),
   )
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await expect(page.getByRole('status', { name: 'Display name problems' })).toContainText('vocabularies must be an object')
   await openFacetGroup(page, 'Benchmark')
   await expect(page.getByRole('checkbox', { name: 'disa_stig (high)', exact: true })).toBeVisible()
@@ -716,7 +716,7 @@ test.describe('filter sidebar scrolling', () => {
 
   test('scrolls with pinned search and edge indicators that follow the scroll position', async ({ page }) => {
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
     await openFacetGroup(page, 'Section')
     await openFacetGroup(page, 'Tags')
@@ -744,7 +744,7 @@ test.describe('filter sidebar scrolling', () => {
 
   test('the last tag is reachable and clickable', async ({ page }) => {
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
     await openFacetGroup(page, 'Tags')
     const tagsFacet = scroller(page).getByRole('heading', { name: 'Tags', exact: true }).locator('..')
@@ -752,24 +752,24 @@ test.describe('filter sidebar scrolling', () => {
     await lastTag.scrollIntoViewIfNeeded()
     await lastTag.click()
     await expect(lastTag).toBeChecked()
-    await expect(ruleCount(page)).not.toHaveText('2,567 of 2,567 rules')
+    await expect(ruleCount(page)).not.toHaveText('3,177 of 3,177 rules')
   })
 
   test('the last source option is reachable and clickable', async ({ page }) => {
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
     const lastSource = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox').last()
     await lastSource.scrollIntoViewIfNeeded()
     await lastSource.click()
     await expect(lastSource).toBeChecked()
-    await expect(ruleCount(page)).toHaveText('58 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('312 of 3,177 rules')
   })
 })
 
 test('the None facet options read as system-generated', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   await openFacetGroup(page, 'Version')
   for (const facetTitle of ['Target', 'Version']) {
@@ -784,14 +784,14 @@ test('the None facet options read as system-generated', async ({ page }) => {
 
 test('facet options show how many rules they would leave in view', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   const sourceGroup = page.getByRole('group', { name: 'Source', exact: true })
   const optionRow = (group: Locator, name: string) => group.getByRole('checkbox', { name, exact: true }).locator('xpath=..')
   await expect(optionRow(sourceGroup, 'ASD ISM')).toContainText('(1,143)')
   await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(352)')
 
   await page.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
-  await expect(ruleCount(page)).toHaveText('1,143 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1,143 of 3,177 rules')
   const targetGroup = page.getByRole('group', { name: 'Target', exact: true })
   await expect(optionRow(targetGroup, 'None')).toContainText('(1,143)')
   await expect(optionRow(sourceGroup, 'ASD ISM')).toContainText('(1,143)')
@@ -799,13 +799,13 @@ test('facet options show how many rules they would leave in view', async ({ page
   await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(352)')
 
   await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules')
   await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(352)')
 })
 
 test('ticking one option leaves the others in its group selectable', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await openFacetGroup(page, 'Section')
   const sectionGroup = page.getByRole('group', { name: 'Section', exact: true })
   const sourceGroup = page.getByRole('group', { name: 'Source', exact: true })
@@ -814,14 +814,14 @@ test('ticking one option leaves the others in its group selectable', async ({ pa
   const emailSection = sectionGroup.getByRole('checkbox', { name: 'Guidelines for email', exact: true })
   await expect(emailSection).toBeVisible()
   await emailSection.click()
-  await expect(ruleCount(page)).toHaveText('57 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('57 of 3,177 rules')
   await expect(sectionGroup.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
   await expect(emailSection).toBeChecked()
 
   await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules')
   await sourceGroup.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
-  await expect(ruleCount(page)).toHaveText('1,143 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1,143 of 3,177 rules')
   const mscpRow = sourceGroup.getByRole('checkbox', { name: 'NIST mSCP', exact: true }).locator('xpath=..')
   await expect(mscpRow).toBeVisible()
   await expect(mscpRow).toContainText('(352)')
@@ -829,7 +829,7 @@ test('ticking one option leaves the others in its group selectable', async ({ pa
 
 test('the table shows an Updating rules spinner while it catches up with a large filter change', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
   await expect(updatingStatus).toBeHidden()
 
@@ -848,7 +848,7 @@ test('the table shows an Updating rules spinner while it catches up with a large
 
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
   await platformOption.click()
-  await expect(ruleCount(page)).toHaveText('352 of 2,567 rules', { timeout: 30_000 })
+  await expect(ruleCount(page)).toHaveText('352 of 3,177 rules', { timeout: 30_000 })
   await expect(updatingStatus).toBeHidden({ timeout: 30_000 })
   expect(await page.evaluate(() => (window as unknown as { spinnerSeen: boolean }).spinnerSeen)).toBe(true)
 })
@@ -889,14 +889,14 @@ test('eight facet options from four facets toggled in quick succession all regis
   const updatingStatus = page.getByRole('status', { name: 'Updating rules' })
   await expect(updatingStatus).toBeHidden({ timeout: 30_000 })
   for (const option of options) await expect(option).toBeChecked()
-  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 2,567 rules`)
+  await expect(ruleCount(page)).toHaveText(`${expectedCount} of 3,177 rules`)
 })
 
 const searchBox = (page: Page) => page.getByPlaceholder('Search title or id…')
 
 async function openLibrary(page: Page, path = ALL_RULES_PATH) {
   await page.goto(path)
-  await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 3,177 rules$/, { timeout: 10_000 })
 }
 
 test('filters, search, page and size survive a reload through the URL', async ({ page }) => {
@@ -911,9 +911,9 @@ test('filters, search, page and size survive a reload through the URL', async ({
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
   await versionOption.click()
   await expect(versionOption).toBeChecked()
-  await expect(ruleCount(page)).not.toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).not.toHaveText('3,177 of 3,177 rules')
   const filteredCount = String(await ruleCount(page).textContent())
-  expect(filteredCount).toMatch(/^[\d,]+ of 2,567 rules$/)
+  expect(filteredCount).toMatch(/^[\d,]+ of 3,177 rules$/)
 
   const parameters = new URL(page.url()).searchParams
   expect(parameters.get('q')).toBe('configure')
@@ -951,7 +951,7 @@ test('clearing the filters leaves a URL with only the page in its query string',
   expect(page.url()).toContain('q=gatekeeper')
 
   await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   expect(page.url()).toMatch(/\/frameworks\?framework=all&tab=rules$/)
 })
 
@@ -967,10 +967,10 @@ test('filter changes do not add history entries', async ({ page }) => {
 test('a search is restored after a reload', async ({ page }) => {
   await openLibrary(page)
   await searchBox(page).fill('os_gatekeeper_enable')
-  await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
   await page.reload()
   await expect(searchBox(page)).toHaveValue('os_gatekeeper_enable')
-  await expect(ruleCount(page)).toHaveText('1 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('1 of 3,177 rules', { timeout: 10_000 })
 })
 
 test('the search clear button appears with text, clears the search and refocuses the box', async ({ page }) => {
@@ -979,13 +979,13 @@ test('the search clear button appears with text, clears the search and refocuses
   await expect(clearButton).toHaveCount(0)
 
   await searchBox(page).fill('os_gatekeeper_enable')
-  await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
   await expect(clearButton).toBeVisible()
   await clearButton.click()
 
   await expect(searchBox(page)).toHaveValue('')
   await expect(searchBox(page)).toBeFocused()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
   await expect(clearButton).toHaveCount(0)
   await expect(page).not.toHaveURL(/[?&]q=/)
 })
@@ -993,17 +993,17 @@ test('the search clear button appears with text, clears the search and refocuses
 test('Escape in the search box clears the search', async ({ page }) => {
   await openLibrary(page)
   await searchBox(page).fill('os_gatekeeper_enable')
-  await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
   await searchBox(page).press('Escape')
   await expect(searchBox(page)).toHaveValue('')
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 })
 
 test('a shared URL with unknown values loads and drops them on the next write', async ({ page }) => {
   await openLibrary(page, `${ALL_RULES_PATH}&benchmark=not_a_benchmark%1Fhigh&tag=no-such-tag&source=nope&target=macOS&unknown=1&automation=bogus&page=abc&size=junk`)
   await expect(page.getByRole('radio', { name: 'All rules' })).toBeChecked()
   await expect(page.getByRole('checkbox', { name: 'macOS', exact: true })).toBeChecked()
-  await expect(ruleCount(page)).toHaveText('352 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('352 of 3,177 rules')
 
   const parameters = new URL(page.url()).searchParams
   expect(parameters.getAll('benchmark')).toEqual([])
@@ -1017,18 +1017,18 @@ test('Version None and its page and size are restored from the URL', async ({ pa
   await openFacetGroup(page, 'Version')
   const versionNone = page.getByRole('group', { name: 'Version', exact: true }).getByRole('checkbox', { name: 'None', exact: true })
   await versionNone.click()
-  await expect(ruleCount(page)).toHaveText('2,217 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('2,217 of 3,177 rules')
   expect(new URL(page.url()).searchParams.getAll('version')).toHaveLength(1)
 
   await page.goto(`${page.url()}&page=3&size=100`)
-  await expect(ruleCount(page)).toHaveText('2,217 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('2,217 of 3,177 rules', { timeout: 10_000 })
   await expect(versionNone).toBeChecked()
   const parameters = new URL(page.url()).searchParams
   expect(parameters.get('page')).toBe('3')
   expect(parameters.get('size')).toBe('100')
 
   await versionNone.click()
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules')
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules')
   expect(new URL(page.url()).searchParams.has('page')).toBe(false)
   expect(new URL(page.url()).searchParams.get('size')).toBe('100')
 })
@@ -1043,7 +1043,7 @@ test.describe('section tree and paging', () => {
   test('the initial view shows only the root section headers, all collapsed', async ({ page }) => {
     await openLibrary(page)
     // 7 mSCP sections, 23 ISM guidelines, 20 NIST SP 800-53 control families and 5 E4EIT sections.
-    await expect(sectionHeadings(page, 2)).toHaveCount(55)
+    await expect(sectionHeadings(page, 2)).toHaveCount(62)
     await expect(sectionHeadings(page, 3)).toHaveCount(0)
     await expect(ruleRows(page)).toHaveCount(0)
     await expect(ruleTable(page).getByRole('button', { expanded: true })).toHaveCount(0)
@@ -1071,44 +1071,44 @@ test.describe('section tree and paging', () => {
   test('the paging bar pages through the rules with previous, next, a page jump and the size select', async ({ page }) => {
     await openLibrary(page)
     await page.getByRole('button', { name: 'Expand all' }).click()
-    await expect(pageStatus(page)).toHaveText('Page 1 of 52')
+    await expect(pageStatus(page)).toHaveText('Page 1 of 64')
     await expect(ruleRows(page)).toHaveCount(50)
     await expect(page.getByRole('button', { name: 'Previous page' })).toBeDisabled()
 
     await page.getByRole('button', { name: 'Next page' }).click()
-    await expect(pageStatus(page)).toHaveText('Page 2 of 52')
+    await expect(pageStatus(page)).toHaveText('Page 2 of 64')
     await expect(ruleRows(page)).toHaveCount(50)
     // Page 2 starts inside Operating system, so its header repeats at the top.
     await expect(ruleTable(page).getByRole('heading').first()).toHaveText(/^Operating system/)
 
     await page.getByRole('button', { name: 'Previous page' }).click()
-    await expect(pageStatus(page)).toHaveText('Page 1 of 52')
+    await expect(pageStatus(page)).toHaveText('Page 1 of 64')
 
     const pageNumber = page.getByRole('spinbutton', { name: 'Page number' })
-    await pageNumber.fill('52')
+    await pageNumber.fill('64')
     await pageNumber.press('Enter')
-    await expect(pageStatus(page)).toHaveText('Page 52 of 52')
-    await expect(ruleRows(page)).toHaveCount(2567 - 51 * 50)
+    await expect(pageStatus(page)).toHaveText('Page 64 of 64')
+    await expect(ruleRows(page)).toHaveCount(3177 - 63 * 50)
     await expect(page.getByRole('button', { name: 'Next page' })).toBeDisabled()
 
     await pageNumber.fill('999')
     await pageNumber.blur()
-    await expect(pageStatus(page)).toHaveText('Page 52 of 52')
-    await expect(pageNumber).toHaveValue('52')
+    await expect(pageStatus(page)).toHaveText('Page 64 of 64')
+    await expect(pageNumber).toHaveValue('64')
 
     await pageNumber.fill('0')
     await pageNumber.press('Enter')
-    await expect(pageStatus(page)).toHaveText('Page 1 of 52')
+    await expect(pageStatus(page)).toHaveText('Page 1 of 64')
 
     await pageSizeSelect(page).selectOption('200')
-    await expect(pageStatus(page)).toHaveText('Page 1 of 13')
+    await expect(pageStatus(page)).toHaveText('Page 1 of 16')
     await expect(ruleRows(page)).toHaveCount(200)
   })
 
   test('a collapse that leaves fewer pages moves the stored page back, so reopening a section starts at its top', async ({ page }) => {
     await openLibrary(page, `${ALL_RULES_PATH}&page=7&size=25`)
     await page.getByRole('button', { name: 'Expand all' }).click()
-    await expect(pageStatus(page)).toHaveText('Page 7 of 103')
+    await expect(pageStatus(page)).toHaveText('Page 7 of 128')
 
     await page.getByRole('button', { name: 'Collapse all' }).click()
     await expect(pageStatus(page)).toHaveText('Page 1 of 1')
@@ -1124,7 +1124,7 @@ test.describe('section tree and paging', () => {
     await openLibrary(page, `${ALL_RULES_PATH}&size=all`)
     await openFacetGroup(page, 'Section')
     await page.getByRole('checkbox', { name: 'Operating system', exact: true }).click()
-    await expect(ruleCount(page)).toHaveText('203 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('203 of 3,177 rules')
     await page.getByRole('button', { name: 'Expand all' }).click()
     await expect(ruleRows(page)).toHaveCount(100)
     await page.getByTestId('infinite-scroll-sentinel').scrollIntoViewIfNeeded()
@@ -1156,18 +1156,18 @@ test.describe('section tree and paging', () => {
     await openLibrary(page, `${ALL_RULES_PATH}&size=200&section=audit&section=Guidelines%20for%20email`)
     await expect(page.getByRole('checkbox', { name: 'Auditing', exact: true })).toBeChecked()
     await expect(page.getByRole('checkbox', { name: 'Guidelines for email', exact: true })).toBeChecked()
-    await expect(ruleCount(page)).toHaveText('57 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('57 of 3,177 rules')
     await page.getByRole('button', { name: 'Expand all' }).click()
     await expect(ruleRows(page)).toHaveCount(57)
     await expect(sectionHeadings(page, 3)).toHaveCount(2)
 
     await searchBox(page).fill('ism-0267')
-    await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
     await expect(ruleTable(page).getByText('ism-0267', { exact: true })).toBeVisible()
     await expect(sectionHeadings(page, 4)).toHaveText([/^Webmail services/])
 
     await searchBox(page).fill('')
-    await expect(ruleCount(page)).toHaveText('57 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('57 of 3,177 rules')
     await expect(ruleTable(page).getByText('ism-0267', { exact: true })).toBeVisible()
     await expect(ruleRows(page)).toHaveCount(57)
     await expect(sectionHeadings(page, 3)).toHaveCount(2)
@@ -1176,7 +1176,7 @@ test.describe('section tree and paging', () => {
     // Facet filters do not open sections.
     await page.getByRole('button', { name: 'Collapse all' }).click()
     await page.getByRole('checkbox', { name: 'Auditing', exact: true }).click()
-    await expect(ruleCount(page)).toHaveText('26 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('26 of 3,177 rules')
     await expect(ruleRows(page)).toHaveCount(0)
   })
 
@@ -1185,16 +1185,16 @@ test.describe('section tree and paging', () => {
     await pageSizeSelect(page).selectOption('100')
     await page.getByRole('button', { name: 'Expand all' }).click()
     await page.getByRole('button', { name: 'Next page' }).click()
-    await expect(pageStatus(page)).toHaveText('Page 2 of 26')
+    await expect(pageStatus(page)).toHaveText('Page 2 of 32')
     let parameters = new URL(page.url()).searchParams
     expect(parameters.get('page')).toBe('2')
     expect(parameters.get('size')).toBe('100')
 
     await page.reload()
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
     await expect(pageSizeSelect(page)).toHaveValue('100')
     await page.getByRole('button', { name: 'Expand all' }).click()
-    await expect(pageStatus(page)).toHaveText('Page 2 of 26')
+    await expect(pageStatus(page)).toHaveText('Page 2 of 32')
     parameters = new URL(page.url()).searchParams
     expect(parameters.get('page')).toBe('2')
 
@@ -1326,22 +1326,22 @@ test.describe('custom overlays', () => {
   test('an overlay changes the title in the table, search and tag facet, and the details tag it Custom', async ({ page }) => {
     await serveOverlays(page, { 'a-title.json': titleOverlay })
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
     const searchBox = page.getByPlaceholder('Search title or id…')
     await searchBox.fill('every managed device')
-    await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
     await expect(page.locator('table tbody tr').filter({ hasText: CUSTOM_TITLE })).toHaveCount(1)
     await expect(page.getByText(ISM_1622_TITLE)).toHaveCount(0)
     await searchBox.fill('')
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules')
 
     await openFacetGroup(page, 'Tags')
     const tagOption = page.getByRole('checkbox', { name: 'powershell-custom', exact: true })
     await tagOption.scrollIntoViewIfNeeded()
     await expect(tagOption.locator('xpath=..')).toContainText('(1)')
     await tagOption.click()
-    await expect(ruleCount(page)).toHaveText('1 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('1 of 3,177 rules')
     await tagOption.click()
 
     const detail = await openIsm1622(page)
@@ -1372,7 +1372,7 @@ test.describe('custom overlays', () => {
       if (request.url().includes('/baselines/_overlays/rules/')) fetchedOverlayFiles.push(new URL(request.url()).pathname)
     })
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
     const searchBox = page.getByPlaceholder('Search title or id…')
     await searchBox.fill('every managed device')
@@ -1387,7 +1387,7 @@ test.describe('custom overlays', () => {
   test('a misfit overlay is skipped with a warning while the valid ones still apply', async ({ page }) => {
     await serveOverlays(page, { 'a-title.json': titleOverlay, 'c-index-misfit.json': indexLevelMisfit, 'd-rule-misfit.json': ruleLevelMisfit })
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
     const notice = page.getByRole('status', { name: 'Custom content problems' })
     await expect(notice).toContainText('applicability-shape')
@@ -1814,7 +1814,7 @@ test.describe('light and dark theme', () => {
     test('a first visit with no stored choice starts dark', async ({ page }) => {
       await page.goto(ALL_RULES_PATH)
       await expect(htmlElement(page)).toHaveClass(/\bdark\b/)
-      await expect(page.getByText(/^2,567 of 2,567 rules$/)).toBeVisible({ timeout: 10_000 })
+      await expect(page.getByText(/^3,177 of 3,177 rules$/)).toBeVisible({ timeout: 10_000 })
       await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
     })
 
@@ -1861,9 +1861,9 @@ test.describe('Windows target from the ASD Blueprint overlays', () => {
 
   test('the Target "Windows" option lists exactly the five Blueprint-overlaid controls', async ({ page }) => {
     await page.goto(ALL_RULES_PATH)
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
     await page.getByRole('group', { name: 'Target', exact: true }).getByRole('checkbox', { name: 'Windows', exact: true }).click()
-    await expect(ruleCount(page)).toHaveText('5 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('5 of 3,177 rules')
     await page.getByRole('button', { name: 'Expand all' }).click()
     for (const control of blueprintControls) {
       await expect(page.getByRole('checkbox', { name: `Select ${control}` })).toBeVisible()
@@ -2442,7 +2442,7 @@ test.describe('rule mappings', () => {
     await page.route('**/baselines/_mappings/_index.json', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{ broken' }))
     await openLibrary(page)
 
-    await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules')
+    await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules')
     await expect(page.getByRole('status', { name: 'Mapping problems' })).toContainText('Rule mappings could not be loaded')
     const row = await searchForSingleRow(page, 'ism-1622', ISM_1622_TITLE)
     await row.getByRole('button').click()
@@ -2471,7 +2471,7 @@ test('the Views navigation shows Frameworks as the current page on the all-rules
   const views = page.getByRole('navigation', { name: 'Views' })
   const frameworksTab = views.getByRole('link', { name: 'Frameworks' })
   await expect(frameworksTab).toHaveAttribute('aria-current', 'page')
-  await expect(ruleCount(page)).toHaveText('2,567 of 2,567 rules', { timeout: 10_000 })
+  await expect(ruleCount(page)).toHaveText('3,177 of 3,177 rules', { timeout: 10_000 })
 
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper')
   await frameworksTab.click()
@@ -2503,4 +2503,45 @@ test('an unknown view in the URL opens Frameworks and is replaced in the URL', a
   await expect(page.getByPlaceholder('Search title or id…')).toHaveValue('gatekeeper')
   await page.getByPlaceholder('Search title or id…').fill('gatekeeper enable')
   await expect(page).toHaveURL(/\/frameworks\?q=gatekeeper/)
+})
+
+test.describe('CIS rules from ComplianceAsCode', () => {
+  async function openCisRule(page: Page, title: string) {
+    await page.goto('/frameworks?framework=cis_rhel9&tab=rules')
+    await page.getByPlaceholder('Search title or id…').fill(title)
+    await page.getByRole('button', { name: 'Expand all' }).click({ timeout: 30_000 })
+    await page.locator('table tbody tr').filter({ hasText: title }).getByRole('button').click()
+    return page.locator('[id^="rule-detail-"]')
+  }
+
+  test('CIS rule shows its audit procedure', async ({ page }) => {
+    const detail = await openCisRule(page, 'Ensure sshd PermitRootLogin is disabled')
+
+    await expect(detail.getByText('Audit procedure')).toBeVisible()
+    await expect(detail.getByText('PermitRootLogin').first()).toBeVisible()
+    await expect(detail.getByText('No check script.')).toHaveCount(0)
+    await expect(detail.getByTestId('check-target')).toBeVisible()
+    await expect(detail.getByTestId('check-target')).toHaveAccessibleName(/Audit/)
+    await expect(detail.getByTestId('check-target')).not.toHaveAccessibleName(/Bash/)
+  })
+
+  test('an mSCP check script still shows its Bash language label', async ({ page }) => {
+    await page.goto(ALL_RULES_PATH)
+    await page.getByPlaceholder('Search title or id…').fill('os_gatekeeper_enable')
+    await page.locator('table tbody tr').filter({ hasText: 'Enable Gatekeeper' }).getByRole('button').click()
+
+    await expect(page.locator('[id^="rule-detail-"]').getByTestId('check-target')).toHaveAccessibleName(/Shell|Bash|Zsh/)
+  })
+
+  test('CIS value is customisable', async ({ page }) => {
+    const detail = await openCisRule(page, 'Ensure password length is configured')
+
+    const minimumLengthInput = detail.getByRole('textbox', { name: /minlen/ })
+    await expect(minimumLengthInput).toBeVisible()
+    await expect(page.getByText('Using recommended value: 14')).toBeVisible()
+
+    await minimumLengthInput.fill('16')
+    await expect(detail.getByText("var_password_pam_minlen='16'")).toBeVisible()
+    await expect(detail.getByText('Expected values: var_password_pam_minlen = 16')).toBeVisible()
+  })
 })

@@ -7,7 +7,7 @@ import { addChangedKinds, buildMappingIndex } from '../src/logic/mappingIndex'
 import { openFacetGroup } from './facets'
 import { ALL_RULES_PATH } from './locations'
 
-const TOTAL_RULES = '2,567'
+const TOTAL_RULES = '3,177'
 const E4EIT_RULES = 58
 const PRO_13_1_STATEMENT =
   'Identify and disable or remove default and unused accounts regularly, permitting exceptions only where the account is documented, justified, hardened and monitored.'
@@ -130,7 +130,7 @@ test.describe('ASD E4EIT to ISM mappings from the committed mapping files', () =
     )
     await routeCatalogAsEmpty(page)
     await page.goto(`${ALL_RULES_PATH}&q=${search}&rule=${ruleId}`)
-    await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 2,567 rules$/, { timeout: 10_000 })
+    await expect(ruleCount(page)).toHaveText(/^[\d,]+ of 3,177 rules$/, { timeout: 10_000 })
     await detailOf(page, ruleId).getByRole('tab', { name: /^Mapped rules/ }).click()
     await expect(mappedRulesPanel(page, ruleId)).toBeVisible()
   }
