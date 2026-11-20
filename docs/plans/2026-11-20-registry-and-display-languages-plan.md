@@ -67,3 +67,4 @@
 ## Progress log
 
 - 2026-11-20 - Task 1 (schema and Python tools): the rule schema accepts the `registry` body and the `ansible` and `goss` languages, `tools/registry_powershell.py` builds the check and fix PowerShell, and the ODV, file reference and overlay checks know the new languages. Commit: 3095dac82 feat: record registry settings and Ansible and goss items in rules.
+- 2026-11-20 - Task 2 (web UI logic): the TS types, labels, overlay shape check and file reference rules know `registry`, `ansible` and `goss`; new `logic/registryRows.ts` and `logic/registryFile.ts` build the table rows and the UTF-16LE `.reg` file with the reader's customised ODV values (resolved in `logic/odv.ts`); Vitest runs the shared `rule_shape_cases` and the ansible/goss file reference cases. Commit: feat: build registry rows and .reg files in the web UI.

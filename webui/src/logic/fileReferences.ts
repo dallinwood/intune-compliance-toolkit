@@ -22,6 +22,9 @@ const SCRIPT_EXTENSIONS_BY_LANGUAGE: Record<ScriptLanguage, readonly string[]> =
   zsh: ['.sh'],
   python: ['.py'],
   instructions: [],
+  registry: [],
+  ansible: [],
+  goss: [],
 }
 const TEXT_PAYLOAD_EXTENSIONS: readonly string[] = ['.mobileconfig', '.plist', '.json', '.xml', '.reg', '.admx', '.adml']
 const BINARY_PAYLOAD_EXTENSIONS: readonly string[] = ['.pol', '.intunewin']

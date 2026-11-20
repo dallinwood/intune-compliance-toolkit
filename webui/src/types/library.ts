@@ -41,13 +41,35 @@ export interface CheckResult {
 export interface RuleCheck {
   shell?: string | null
   shell_file?: string
+  registry?: RegistrySetting[]
   result: CheckResult | null
   additional_info: string | null
 }
 
 // 'instructions' is plain-English guidance in additional_info, never a script:
 // its entries have shell null, no shell_file and (for checks) result null.
-export type ScriptLanguage = 'bash' | 'powershell' | 'zsh' | 'python' | 'instructions'
+//
+// 'registry' is a list of structured Windows registry settings (the registry
+// body, never shell or shell_file); 'ansible' and 'goss' are inline text that
+// is shown but never run. None of the three is ever scripted.
+export type ScriptLanguage = 'bash' | 'powershell' | 'zsh' | 'python' | 'instructions' | 'registry' | 'ansible' | 'goss'
+
+export type RegistryHive = 'HKLM' | 'HKCU' | 'HKU' | 'HKCR'
+
+export type RegistryType = 'REG_DWORD' | 'REG_QWORD' | 'REG_SZ' | 'REG_EXPAND_SZ' | 'REG_MULTI_SZ' | 'REG_BINARY'
+
+// type and data are null exactly when state is 'absent'. data is a number
+// (DWORD, QWORD), a string (SZ, EXPAND_SZ), a list of strings (MULTI_SZ), an
+// even-length hex string (BINARY), or a whole-value "$ODV_<name>" placeholder
+// for a DWORD, QWORD, SZ or EXPAND_SZ. value_name "" is the key's default value.
+export interface RegistrySetting {
+  hive: RegistryHive
+  path: string
+  value_name: string
+  type: RegistryType | null
+  data: number | string | string[] | null
+  state: 'present' | 'absent'
+}
 
 export interface TargetCheck {
   language: ScriptLanguage
@@ -91,6 +113,7 @@ export interface RemediationStep {
   language: ScriptLanguage
   shell?: string | null
   shell_file?: string
+  registry?: RegistrySetting[]
   additional_info: string | null
   versions: string[] | null
 }

@@ -388,3 +388,13 @@ describe('planRuleCheck with several ODVs', () => {
     expect(plan.odvValues).toEqual({ length: 8, length_max: 64 })
   })
 })
+
+describe('generatedCheckItem and the display-only languages', () => {
+  it.each(['registry', 'ansible', 'goss'] as const)('never picks a %s item, even on macOS and before a bash item', (language) => {
+    const displayOnlyItem = { name: null, language, default: check('echo x', null), by_version: {} }
+    const bashItem = { name: 'Bash', language: 'bash' as const, default: check('echo y', { type: 'string', value: 'y' }), by_version: {} }
+
+    expect(generatedCheckItem(inlineRule({ check: { macOS: [displayOnlyItem] } }))).toBeNull()
+    expect(generatedCheckItem(inlineRule({ check: { macOS: [displayOnlyItem, bashItem] } }))).toBe(bashItem)
+  })
+})

@@ -1,4 +1,4 @@
-import type { Odv, Rule } from '../types/library'
+import type { Odv, RegistrySetting, Rule } from '../types/library'
 import { generatedCheckItem } from './checkPlan'
 import type { OdvValues, OrgDefinedValue } from './selectionEntry'
 import { termLabel, type VocabularyIndex } from './vocabulary'
@@ -337,6 +337,30 @@ export function substituteOdvsInJson(jsonText: string, values: Partial<OdvValues
 // The exact text a code block shows, and therefore copies.
 export function codeTextWithOdvs(code: string, values: Partial<OdvValues>, isJson: boolean): string {
   return isJson ? substituteOdvsInJson(code, values) : substituteOdvs(code, values)
+}
+
+const WHOLE_ODV_NAME_PATTERN = /^\$ODV_([a-z][a-z0-9_]*)$/
+
+// The ODV a registry setting's data names, or null. Registry data names an ODV
+// only as a whole-value "$ODV_<name>"; it is never text inside a longer string.
+export function registryOdvName(data: unknown): string | null {
+  if (typeof data !== 'string') return null
+  return WHOLE_ODV_NAME_PATTERN.exec(data)?.[1] ?? null
+}
+
+// The setting with its ODV placeholder replaced by the value the reader chose
+// (values as usableOdvValues returns them). Registry data is structured, not
+// shell text, so the value goes in as data of the setting's type with no
+// quoting rules. A setting whose ODV has no value is returned unchanged.
+export function resolveRegistrySetting(setting: RegistrySetting, values: Partial<OdvValues>): RegistrySetting {
+  const odvName = registryOdvName(setting.data)
+  if (odvName === null || !Object.hasOwn(values, odvName)) return setting
+  const value = values[odvName] as OrgDefinedValue
+  if (setting.type === 'REG_DWORD' || setting.type === 'REG_QWORD') {
+    const asNumber = typeof value === 'number' ? value : INTEGER_PATTERN.test(value) ? Number(value) : null
+    return asNumber === null ? setting : { ...setting, data: asNumber }
+  }
+  return { ...setting, data: String(value) }
 }
 
 export function containsOdvPlaceholder(text: string): boolean {

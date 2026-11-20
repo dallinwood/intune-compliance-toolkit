@@ -9,7 +9,14 @@ const SCRIPT_LANGUAGE_LABELS: Record<ScriptLanguage, string> = {
   zsh: 'zsh',
   python: 'Python',
   instructions: 'Instructions',
+  registry: 'Registry',
+  ansible: 'Ansible',
+  goss: 'goss',
 }
+
+// Only these are scripts; registry settings and Ansible or goss text are
+// shown as what they are.
+const SCRIPT_LANGUAGES: ReadonlySet<ScriptLanguage> = new Set(['bash', 'powershell', 'zsh', 'python'])
 
 const PAYLOAD_KIND_LABELS: Record<string, string> = {
   mobileconfig: 'Configuration profile payloads',
@@ -51,9 +58,9 @@ export type RemediationItem =
 export function remediationItemButtonLabel(index: VocabularyIndex, target: string, item: RemediationItem): string {
   const typeLabel =
     item.type === 'step'
-      ? item.step.language === 'instructions'
-        ? scriptLanguageLabel(item.step.language)
-        : `${scriptLanguageLabel(item.step.language)} script`
+      ? SCRIPT_LANGUAGES.has(item.step.language)
+        ? `${scriptLanguageLabel(item.step.language)} script`
+        : scriptLanguageLabel(item.step.language)
       : Object.hasOwn(PAYLOAD_BUTTON_LABELS, item.payload.kind)
         ? PAYLOAD_BUTTON_LABELS[item.payload.kind]
         : item.payload.kind

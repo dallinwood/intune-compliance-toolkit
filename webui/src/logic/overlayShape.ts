@@ -128,6 +128,90 @@ const payloadFile: Check = (value, path) => {
 }
 
 const INSTRUCTIONS = 'instructions'
+const REGISTRY = 'registry'
+
+const REGISTRY_TYPES = ['REG_DWORD', 'REG_QWORD', 'REG_SZ', 'REG_EXPAND_SZ', 'REG_MULTI_SZ', 'REG_BINARY']
+const REGISTRY_SETTING_KEYS = ['hive', 'path', 'value_name', 'type', 'data', 'state']
+const DWORD_MAXIMUM = 2 ** 32 - 1
+const QWORD_MAXIMUM = 2 ** 64 - 1
+const ODV_REFERENCE_PATTERN = /^\$ODV_[a-z][a-z0-9_]*(?![\s\S])/
+const REGISTRY_PATH_PATTERN = /^[^\\\n](?:[^\n]*[^\\\n])?(?![\s\S])/
+const BINARY_DATA_PATTERN = /^(?:[0-9a-fA-F]{2})*(?![\s\S])/
+
+const isOdvReference = (value: unknown) => typeof value === 'string' && ODV_REFERENCE_PATTERN.test(value)
+
+function numberData(maximum: number): Check {
+  return (value, path) =>
+    expect(
+      isOdvReference(value) || (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= maximum),
+      path,
+      `an integer from 0 to ${maximum} or a whole-value ODV placeholder`,
+    )
+}
+
+const registryDataChecks: Record<string, Check> = {
+  REG_DWORD: numberData(DWORD_MAXIMUM),
+  REG_QWORD: numberData(QWORD_MAXIMUM),
+  REG_SZ: text,
+  REG_EXPAND_SZ: text,
+  REG_MULTI_SZ: listOf((value, path) =>
+    firstProblem(
+      () => text(value, path),
+      () => expect(!(value as string).startsWith('$ODV'), path, 'text that does not start with $ODV'),
+    ),
+  ),
+  REG_BINARY: (value, path) => expect(typeof value === 'string' && BINARY_DATA_PATTERN.test(value), path, 'an even-length hex string'),
+}
+
+// Mirrors the registry_setting definition in baselines/_rule.schema.json.
+const registrySetting: Check = (value, path) =>
+  firstProblem(
+    () =>
+      objectWith({
+        hive: oneOf('HKLM', 'HKCU', 'HKU', 'HKCR'),
+        path: (pathValue, pathPath) => expect(typeof pathValue === 'string' && REGISTRY_PATH_PATTERN.test(pathValue), pathPath, 'a key path with no leading or trailing backslash'),
+        value_name: text,
+        type: oneOf(...REGISTRY_TYPES, null),
+        data: anyValue,
+        state: oneOf('present', 'absent'),
+      })(value, path),
+    () => {
+      const unknownKey = Object.keys(value as JsonObject).find((key) => !REGISTRY_SETTING_KEYS.includes(key))
+      return unknownKey === undefined ? null : `${path} has unknown key ${unknownKey}`
+    },
+    () => {
+      const { state, type, data } = value as JsonObject
+      if (state === 'absent') return firstProblem(() => expect(type === null, `${path}.type`, 'null for an absent setting'), () => expect(data === null, `${path}.data`, 'null for an absent setting'))
+      return firstProblem(
+        () => expect(type !== null, `${path}.type`, 'a registry type for a present setting'),
+        () => registryDataChecks[type as string](data, `${path}.data`),
+      )
+    },
+  )
+
+const registrySettings: Check = (value, path) =>
+  firstProblem(
+    () => listOf(registrySetting)(value, path),
+    () => expect((value as unknown[]).length > 0, path, 'a non-empty list of registry settings'),
+  )
+
+// A registry body replaces shell and shell_file; no other language has one.
+function registryEntry(requiresNullResult: boolean): Check {
+  return (value, path) =>
+    firstProblem(
+      () => objectWith({ registry: registrySettings, ...(requiresNullResult ? { result: expectNull } : {}) })(value, path),
+      () => expect(!Object.hasOwn(value as JsonObject, 'shell'), `${path}.shell`, 'absent for registry'),
+      () => expect(!Object.hasOwn(value as JsonObject, 'shell_file'), `${path}.shell_file`, 'absent for registry'),
+    )
+}
+
+function scriptEntryFor(scriptLanguage: unknown): Check {
+  return (value, path) =>
+    firstProblem(
+      () => expect(!isObject(value) || !Object.hasOwn(value, REGISTRY), `${path}.registry`, 'absent unless the language is registry'),
+      () => exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
+    )
+}
 
 // Instructions are text in additional_info: no script, and for a check no
 // expected result either.
@@ -146,10 +230,12 @@ function checkEntryFor(scriptLanguage: unknown): Check {
       () =>
         scriptLanguage === INSTRUCTIONS
           ? instructionsEntry(true)(value, path)
-          : exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
+          : scriptLanguage === REGISTRY
+            ? registryEntry(true)(value, path)
+            : scriptEntryFor(scriptLanguage)(value, path),
     )
 }
-const language = oneOf('bash', 'powershell', 'zsh', 'python', INSTRUCTIONS)
+const language = oneOf('bash', 'powershell', 'zsh', 'python', INSTRUCTIONS, REGISTRY, 'ansible', 'goss')
 const versions: Check = (value, path) =>
   value === null
     ? null
@@ -242,7 +328,9 @@ const remediationStep: Check = (value, path) =>
     () =>
       (value as JsonObject).language === INSTRUCTIONS
         ? instructionsEntry(false)(value, path)
-        : exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor((value as JsonObject).language))(value, path),
+        : (value as JsonObject).language === REGISTRY
+          ? registryEntry(false)(value, path)
+          : scriptEntryFor((value as JsonObject).language)(value, path),
   )
 // Inline payload data is only ever shown through JSON.stringify, so any JSON
 // object or list is safe.

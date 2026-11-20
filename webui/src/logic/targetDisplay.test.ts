@@ -27,6 +27,9 @@ describe('scriptLanguageLabel', () => {
     ['zsh', 'zsh'],
     ['python', 'Python'],
     ['instructions', 'Instructions'],
+    ['registry', 'Registry'],
+    ['ansible', 'Ansible'],
+    ['goss', 'goss'],
   ] as const)('labels %s as %s', (language, label) => {
     expect(scriptLanguageLabel(language)).toBe(label)
   })
@@ -114,5 +117,19 @@ describe('newestVersionsFirst', () => {
     const before = [...entries]
     expect(newestVersionsFirst(entries)).toEqual(entries)
     expect(entries).toEqual(before)
+  })
+})
+
+describe('remediationItemButtonLabel for display-only languages', () => {
+  it.each([
+    ['registry', 'Registry'],
+    ['ansible', 'Ansible'],
+    ['goss', 'goss'],
+  ] as const)('does not call a %s step a script', (language, label) => {
+    expect(remediationItemButtonLabel(index, 'Windows', { type: 'step', step: step({ language }) })).toBe(label)
+  })
+
+  it('still calls a PowerShell step a script', () => {
+    expect(remediationItemButtonLabel(index, 'Windows', { type: 'step', step: step({ language: 'powershell' }) })).toBe('PowerShell script')
   })
 })
