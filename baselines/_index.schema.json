@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Rule index for one library source (v5)",
+  "title": "Rule index for one library source (v7)",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "source", "rules"],

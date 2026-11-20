@@ -46,3 +46,4 @@
 ## Progress log
 
 - 2026-11-20: Tasks 1 to 3 done and committed together as `feat: allow several checks per platform` (schema 7 data and Python, web UI logic, components and e2e).
+- 2026-11-20: Tasks 1 to 3 landed in `7906af76 feat: allow several checks per platform`. Final review found one Important (the custom-change notice treated overlay operators as path segments) and three Minors, fixed in `1e41eac4 fix: count overlay operators as touching their parent field`; scoped re-review clean. The index schema title still said v5; corrected in the docs commit that records this entry.
