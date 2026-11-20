@@ -221,7 +221,9 @@ def scan_quotes(text: str, dialect: QuoteDialect) -> QuoteScan:
             comment_end = text.find("#>", index + 2)
             next_index = len(text) if comment_end == -1 else comment_end + 2
             mark(index, next_index, COMMENT)
-        elif is_bash and text.startswith("<<", index) and not text.startswith("<<<", index):
+        elif is_bash and text.startswith("<<<", index):
+            next_index = index + 3
+        elif is_bash and text.startswith("<<", index):
             heredoc = read_heredoc_delimiter(text, index + 2)
             if heredoc is not None:
                 delimiter, strips_tabs, next_index = heredoc

@@ -308,6 +308,11 @@ def test_heredoc_forms_are_skipped_and_the_text_after_is_checked(heredoc):
     assert "heredoc" in errors[0]
 
 
+def test_here_string_is_not_a_heredoc():
+    rule = build_rule("done <<< \"$matching\"\nx='$ODV_v'", [build_odv(quoting="single")])
+    assert placeholder_errors(rule) == []
+
+
 def test_lone_quote_in_heredoc_does_not_open_a_quote():
     rule = build_rule("cat <<EOF\nit's\nEOF\necho $ODV_v", [build_odv(quoting="single")])
     assert any("outside single quotes" in error for error in placeholder_errors(rule))
