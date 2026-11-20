@@ -1,0 +1,115 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Install nftables Package\n----\nRun the following command to determine if the nftables package is installed: $ dpkg -l nftables\n      Is it the case that the nftables package is not installed?\n----\nExpected values: var_network_filtering_service = $ODV_var_network_filtering_service",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Install nftables Package\n\nnftables provides a new in-kernel packet classification framework that is based on a\nnetwork-specific Virtual Machine (VM) and a new nft userspace command line tool.\nnftables reuses the existing Netfilter subsystems such as the existing hook infrastructure,\nthe connection tracking system, NAT, userspace queuing and logging subsystem.\nThe `nftables` package can be installed with the following command:\n\n```\n$ apt-get install nftables\n```\n\n**Rationale:**\n\n`nftables` is a subsystem of the Linux kernel that can protect against threats\noriginating from within a corporate network to include malicious mobile code and poorly\nconfigured software on a host.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.4.3.1",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "nftables",
+        "cis_l1_workstation": "nftables",
+        "cis_l2_server": "nftables",
+        "cis_l2_workstation": "nftables"
+      },
+      "datatype": "string",
+      "description": "Network filtering service",
+      "name": "var_network_filtering_service",
+      "quoting": "single",
+      "recommended": "nftables",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "4.3.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "package_nftables_installed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_nftables_installed`",
+          "language": "bash",
+          "name": "Install nftables Package",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( ( ! (systemctl is-active iptables &>/dev/null) && ! (systemctl is-active ufw &>/dev/null) && dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' ) ); then\n\nvar_network_filtering_service='$ODV_var_network_filtering_service'\n\n\n\n  if [ $var_network_filtering_service == nftables ]; then\n    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 install -y \"nftables\"\n  fi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "4",
+    "4.3",
+    "4.3.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "4.3.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure nftables is installed (Automated)"
+}

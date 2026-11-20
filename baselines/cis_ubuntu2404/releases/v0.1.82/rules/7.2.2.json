@@ -1,0 +1,100 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure There Are No Accounts With Blank or Null Passwords\n----\nTo verify that null passwords cannot be used, run the following command:\n$ sudo awk -F: '!$2 {print $1}' /etc/shadow\nIf this produces any output, it may be possible to log into accounts\nwith empty passwords.\n      Is it the case that Blank or NULL passwords can be used?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure There Are No Accounts With Blank or Null Passwords\n\nCheck the \"/etc/shadow\" file for blank passwords with the\nfollowing command:\n\n```\n$ sudo awk -F: '!$2 {print $1}' /etc/shadow\n```\n\nIf the command returns any results, this is a finding.\nConfigure all accounts on the system to have a password or lock\nthe account with the following commands:\nPerform a password reset:\n\n```\n$ sudo passwd [username]\n```\n\nLock an account:\n\n```\n$ sudo passwd -l [username]\n```\n\n**Rationale:**\n\nIf an account has an empty password, anyone could log in and\nrun commands with the privileges of that account. Accounts with\nempty passwords should never be used in operational environments.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.7.2.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "7.2.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "no_empty_passwords_etc_shadow"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `no_empty_passwords_etc_shadow`",
+          "language": "bash",
+          "name": "Ensure There Are No Accounts With Blank or Null Passwords",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nreadarray -t users_with_empty_pass < <(awk -F: '!$2 {print $1}' /etc/shadow)\n\nfor user_with_empty_pass in \"${users_with_empty_pass[@]}\"\ndo\n    passwd -l $user_with_empty_pass\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "7",
+    "7.2",
+    "7.2.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "7.2.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure /etc/shadow password fields are not empty (Automated)"
+}

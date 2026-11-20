@@ -1,0 +1,133 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure that /etc/cron.allow exists\n----\nThe file /etc/cron.allow should exist.\nThis can be checked by running the following command:\n\nstat /etc/cron.allow\n\nand the output should list the file.\n      Is it the case that the file /etc/cron.allow does not exist?\n----\n\n== Ensure that /etc/cron.deny does not exist\n----\nThe file /etc/cron.deny should not exist.\nThis can be checked by running the following\n\nstat /etc/cron.deny\n\nand the output should be\n\nstat: cannot stat `/etc/cron.deny': No such file or directory\n\n      Is it the case that the file /etc/cron.deny exists?\n----\n\n== Verify Group Who Owns /etc/cron.allow file\n----\nTo check the group ownership of /etc/cron.allow,\nrun the command:\n$ ls -lL /etc/cron.allow\nIf properly configured, the output should indicate the following group-owner:\n\n  crontab\n  \n      Is it the case that /etc/cron.allow does not have a group owner of\ncrontab\n?\n----\n\n== Verify User Who Owns /etc/cron.allow file\n----\nTo check the ownership of /etc/cron.allow,\nrun the command:\n$ ls -lL /etc/cron.allow\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/cron.allow does not have an owner of root?\n----\n\n== Verify Permissions on /etc/cron.allow file\n----\nTo check the permissions of /etc/cron.allow,\nrun the command:\n$ ls -l /etc/cron.allow\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /etc/cron.allow does not have unix mode -rw-r-----?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure that /etc/cron.allow exists\n\nThe file `/etc/cron.allow` should exist and should be used instead\nof `/etc/cron.deny`.\n\n**Rationale:**\n\nAccess to `crontab` should be restricted.\nIt is easier to manage an allow list than a deny list.\nTherefore, `/etc/cron.allow` needs to be created and used instead of `/etc/cron.deny`.\nRegardless of the existence of any of these files, the root administrative user is always allowed to setup a crontab.\n\n## Ensure that /etc/cron.deny does not exist\n\nThe file `/etc/cron.deny` should not exist.\nUse `/etc/cron.allow` instead.\n\n**Rationale:**\n\nAccess to `cron` should be restricted.\nIt is easier to manage an allow list than a deny list.\n\n## Verify Group Who Owns /etc/cron.allow file\n\nIf `/etc/cron.allow` exists, it must be group-owned by `crontab`.\nTo properly set the group owner of `/etc/cron.allow`, run the command:\n\n  \n```\n$ sudo chgrp crontab /etc/cron.allow\n```\n\n**Rationale:**\n\nIf the owner of the cron.allow file is not set to crontab, the possibility exists for an\nunauthorized user to view or edit sensitive information.\n\n## Verify User Who Owns /etc/cron.allow file\n\nIf `/etc/cron.allow` exists, it must be owned by `root`.\nTo properly set the owner of `/etc/cron.allow`, run the command:\n\n  \n```\n$ sudo chown root /etc/cron.allow \n```\n\n**Rationale:**\n\nIf the owner of the cron.allow file is not set to root, the possibility exists for an\nunauthorized user to view or edit sensitive information.\n\n## Verify Permissions on /etc/cron.allow file\n\nIf `/etc/cron.allow` exists, it must have permissions `0640`\nor more restrictive.\n\nTo properly set the permissions of `/etc/cron.allow`, run the command:\n\n```\n$ sudo chmod 0640 /etc/cron.allow\n```\n\n**Rationale:**\n\nIf the permissions of the cron.allow file are not set to 0640 or more restrictive,\nthe possibility exists for an unauthorized user to view or edit sensitive information.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.2.4.1.8",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.4.1.8",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "file_cron_allow_exists",
+        "file_cron_deny_not_exist",
+        "file_groupowner_cron_allow",
+        "file_owner_cron_allow",
+        "file_permissions_cron_allow"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_cron_allow_exists`",
+          "language": "bash",
+          "name": "Ensure that /etc/cron.allow exists",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\ntouch /etc/cron.allow\n    chown 0 /etc/cron.allow\n    chmod 0640 /etc/cron.allow\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_cron_deny_not_exist`",
+          "language": "bash",
+          "name": "Ensure that /etc/cron.deny does not exist",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nif [[ -f  /etc/cron.deny ]]; then\n        rm /etc/cron.deny\n    fi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_cron_allow`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /etc/cron.allow file",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nnewgroup=\"\"\nif getent group \"crontab\" >/dev/null 2>&1; then\n  newgroup=\"crontab\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"crontab is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/etc/cron.allow\" | grep -E -w -q \"crontab\"; then\n    chgrp --no-dereference \"$newgroup\" /etc/cron.allow\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_cron_allow`",
+          "language": "bash",
+          "name": "Verify User Who Owns /etc/cron.allow file",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nnewown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/etc/cron.allow\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /etc/cron.allow\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_cron_allow`",
+          "language": "bash",
+          "name": "Verify Permissions on /etc/cron.allow file",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nchmod u-xs,g-xws,o-xwrt /etc/cron.allow\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.4",
+    "2.4.1",
+    "2.4.1.8"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.4.1.8",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure crontab is restricted to authorized users (Automated)"
+}

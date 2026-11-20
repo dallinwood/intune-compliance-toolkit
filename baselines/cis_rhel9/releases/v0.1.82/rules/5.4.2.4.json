@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure Authentication Required for Single User Mode\n----\nroot password is not set\n      Is it the case that Perform the following to determine if a password is set for the\nroot user:\n<pre># grep -Eq '^root:\\$[0-9]' /etc/shadow || echo \"root is locked\"</pre>\nNo results should be returned.\nOtherwise, run the following command and follow the prompts to set a\npassword for the root user:\n<pre># passwd root</pre>?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure Authentication Required for Single User Mode\n\nSingle user mode is used for recovery when the system detects an\nissue during boot or by manual selection from the bootloader.\n\n**Rationale:**\n\nRequiring authentication in single user mode prevents an unauthorized\nuser from rebooting the system into single user to gain root privileges\nwithout credentials.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.4.2.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.4.2.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "ensure_root_password_configured": "CCE-87101-2"
+      },
+      "rules": [
+        "ensure_root_password_configured"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `ensure_root_password_configured`).",
+          "language": "bash",
+          "name": "Ensure Authentication Required for Single User Mode",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.2",
+    "5.4.2.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.2.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure root account access is controlled (Automated)"
+}

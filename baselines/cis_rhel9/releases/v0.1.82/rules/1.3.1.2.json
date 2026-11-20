@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure SELinux Not Disabled in /etc/default/grub\n----\nInspect /etc/default/grub for any instances of selinux=0\nin the kernel boot arguments.  Presence of selinux=0 indicates\nthat SELinux is disabled at boot time.\n      Is it the case that SELinux is disabled at boot time?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure SELinux Not Disabled in /etc/default/grub\n\nSELinux can be disabled at boot time by an argument in\n`/etc/default/grub`.\nRemove any instances of `selinux=0` from the kernel arguments in that\nfile to prevent SELinux from being disabled at boot.\n\n**Rationale:**\n\nDisabling a major host protection feature, such as SELinux, at boot time prevents\nit from confining system services at boot time.  Further, it increases\nthe chances that it will remain off during system operation.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.3.1.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.3.1.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "grub2_enable_selinux": "CCE-84078-5"
+      },
+      "rules": [
+        "grub2_enable_selinux"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `grub2_enable_selinux`",
+          "language": "bash",
+          "name": "Ensure SELinux Not Disabled in /etc/default/grub",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q grub2-common; }; then\n\nsed -i --follow-symlinks \"s/selinux=0//gI\" /etc/default/grub /etc/grub2.cfg /etc/grub.d/*\nsed -i --follow-symlinks \"s/enforcing=0//gI\" /etc/default/grub /etc/grub2.cfg /etc/grub.d/*\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.3",
+    "1.3.1",
+    "1.3.1.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.3.1.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure SELinux is not disabled in bootloader configuration (Automated)"
+}

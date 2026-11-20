@@ -1,0 +1,103 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable GNOME3 Automount running\n----\nThese settings can be verified by running the following:\n$ gsettings get org.gnome.desktop.media-handling autorun-never\nIf properly configured, the output for autorun-nevershould be true.\nTo ensure that users cannot enable autorun in GNOME3, run the following:\n$ grep 'autorun-never' /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output for autorun-never should be /org/gnome/desktop/media-handling/autorun-never\n      Is it the case that GNOME autorun is not disabled?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable GNOME3 Automount running\n\nThe system's default desktop environment, GNOME3, will mount\ndevices and removable media (such as DVDs, CDs and USB flash drives) whenever\nthey are inserted into the system. To disable autorun-never within GNOME3, add or set\n`autorun-never` to `true` in `/etc/dconf/db/distro.d/00-security-settings`.\nFor example:\n\n```\n[org/gnome/desktop/media-handling]\nautorun-never=true\n```\n\nOnce the settings have been added, add a lock to\n`/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/desktop/media-handling/autorun-never\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nAutomatically mounting file systems permits easy introduction of unknown devices, thereby facilitating malicious activity.\nDisabling automatic mount running in GNOME3 can prevent\nthe introduction of malware via removable media.\nIt will, however, also prevent desktop users from legitimate use\nof removable media.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.8.9",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.8.9",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "dconf_gnome_disable_autorun": "CCE-90257-7"
+      },
+      "rules": [
+        "dconf_gnome_disable_autorun"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_disable_autorun`",
+          "language": "bash",
+          "name": "Disable GNOME3 Automount running",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q gdm; then\n\n# Check for setting in any of the DConf db directories\n# If files contain ibus or distro, ignore them.\n# The assignment assumes that individual filenames don't contain :\nreadarray -t SETTINGSFILES < <(grep -r \"\\\\[org/gnome/desktop/media-handling\\\\]\" \"/etc/dconf/db/\" \\\n                                | grep -v 'distro\\|ibus\\|local.d' | cut -d\":\" -f1)\nDCONFFILE=\"/etc/dconf/db/local.d/00-security-settings\"\nDBDIR=\"/etc/dconf/db/local.d\"\n\nmkdir -p \"${DBDIR}\"\nchmod 0755 \"${DBDIR}\"\n\n# Comment out the configurations in databases different from the target one\nif [ \"${#SETTINGSFILES[@]}\" -ne 0 ]\nthen\n    if grep -q \"^\\\\s*autorun-never\\\\s*=\" \"${SETTINGSFILES[@]}\"\n    then\n        \n        sed -Ei \"s/(^\\s*)autorun-never(\\s*=)/#\\1autorun-never\\2/g\" \"${SETTINGSFILES[@]}\"\n    fi\nfi\n\n[ ! -z \"${DCONFFILE}\" ] && echo \"\" >> \"${DCONFFILE}\"\nif ! grep -q \"\\\\[org/gnome/desktop/media-handling\\\\]\" \"${DCONFFILE}\"\nthen\n    printf '%s\\n' \"[org/gnome/desktop/media-handling]\" >> ${DCONFFILE}\nfi\n\nescaped_value=\"$(sed -e 's/\\\\/\\\\\\\\/g' <<< \"true\")\"\nif grep -q \"^\\\\s*autorun-never\\\\s*=\" \"${DCONFFILE}\"\nthen\n        sed -i \"s/\\\\s*autorun-never\\\\s*=\\\\s*.*/autorun-never=${escaped_value}/g\" \"${DCONFFILE}\"\n    else\n        sed -i \"\\\\|\\\\[org/gnome/desktop/media-handling\\\\]|a\\\\autorun-never=${escaped_value}\" \"${DCONFFILE}\"\nfi\ndconf update\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/desktop/media-handling/autorun-never$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|local.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/local.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/desktop/media-handling/autorun-never$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/desktop/media-handling/autorun-never$\" /etc/dconf/db/local.d/\nthen\n    echo \"/org/gnome/desktop/media-handling/autorun-never\" >> \"/etc/dconf/db/local.d/locks/00-security-settings-lock\"\nfi\ndconf update\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.8",
+    "1.8.9"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.8.9",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure GDM autorun-never is not overridden (Automated)"
+}

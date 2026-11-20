@@ -1,0 +1,115 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Uninstall dovecot Package\n----\nRun the following command to determine if the dovecot package is installed: $ rpm -q dovecot\n      Is it the case that the dovecot package is installed?\n----\n\n== Uninstall cyrus-imapd Package\n----\nRun the following command to determine if the cyrus-imapd package is installed: $ rpm -q cyrus-imapd\n      Is it the case that the cyrus-imapd package is installed?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Uninstall dovecot Package\n\nThe `dovecot` package can be removed with the following command:\n\n```\n$ sudo dnf remove dovecot\n```\n\n**Rationale:**\n\nIf there is no need to make the Dovecot software available,\nremoving it provides a safeguard against its activation.\n\n## Uninstall cyrus-imapd Package\n\nThe `cyrus-imapd` package can be removed with the following command:\n\n```\n$ sudo dnf remove cyrus-imapd\n```\n\n**Rationale:**\n\nIf there is no need to make the cyrus-imapd software available,\nremoving it provides a safeguard against its activation.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.2.1.8",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "2.1.8",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "package_cyrus-imapd_removed": "CCE-88120-1",
+        "package_dovecot_removed": "CCE-85977-7"
+      },
+      "related_rules": [
+        "service_dovecot_disabled"
+      ],
+      "rules": [
+        "package_dovecot_removed",
+        "package_cyrus-imapd_removed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_dovecot_removed`",
+          "language": "bash",
+          "name": "Uninstall dovecot Package",
+          "shell": "# CAUTION: This remediation script will remove dovecot\n# from the system, and may remove any packages\n# that depend on dovecot. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\nif rpm -q --quiet \"dovecot\" ; then\ndnf remove -y --noautoremove \"dovecot\"\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `package_cyrus-imapd_removed`",
+          "language": "bash",
+          "name": "Uninstall cyrus-imapd Package",
+          "shell": "# CAUTION: This remediation script will remove cyrus-imapd\n# from the system, and may remove any packages\n# that depend on cyrus-imapd. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\nif rpm -q --quiet \"cyrus-imapd\" ; then\ndnf remove -y --noautoremove \"cyrus-imapd\"\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.1",
+    "2.1.8"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.1.8",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure message access server services are not in use (Automated)"
+}

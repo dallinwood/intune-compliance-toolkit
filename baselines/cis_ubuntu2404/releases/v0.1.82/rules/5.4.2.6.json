@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure the Root Bash Umask is Set Correctly\nNo audit procedure in ComplianceAsCode.",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure the Root Bash Umask is Set Correctly\n\nTo ensure the root user's umask of the Bash shell is set properly,\nadd or correct the `umask` setting in `/root/.bashrc`\nor `/root/.profile` to read as follows:\n\n```\numask 0027\n```\n\n**Rationale:**\n\nThe umask value influences the permissions assigned to files when they are created.\nA misconfigured umask value could result in files with excessive permissions that can be read or\nwritten to by unauthorized users.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.5.4.2.6",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.4.2.6",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_umask_root"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_umask_root`",
+          "language": "bash",
+          "name": "Ensure the Root Bash Umask is Set Correctly",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'bash' 2>/dev/null | grep -q '^installed$'; then\n\nfor file in /root/.bashrc /root/.profile; do\n    if [ -f \"$file\" ]; then\n        sed -i -E -e \"s/^([^#]*\\bumask)[[:space:]]+[[:digit:]]+/\\1 0027/g\" \"$file\"\n    fi\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.2",
+    "5.4.2.6"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.2.6",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure root user umask is configured (Automated)"
+}

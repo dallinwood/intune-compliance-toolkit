@@ -1,0 +1,140 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Verify User Who Owns /etc/security/opasswd File\n----\nTo check the ownership of /etc/security/opasswd,\nrun the command:\n$ ls -lL /etc/security/opasswd\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/security/opasswd does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/security/opasswd File\n----\nTo check the group ownership of /etc/security/opasswd,\nrun the command:\n$ ls -lL /etc/security/opasswd\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/security/opasswd does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/security/opasswd File\n----\nTo check the permissions of /etc/security/opasswd,\nrun the command:\n$ ls -l /etc/security/opasswd\nIf properly configured, the output should indicate the following permissions:\n0600\n      Is it the case that /etc/security/opasswd does not have unix mode 0600?\n----\n\n== Verify User Who Owns /etc/security/opasswd.old File\n----\nTo check the ownership of /etc/security/opasswd.old,\nrun the command:\n$ ls -lL /etc/security/opasswd.old\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/security/opasswd.old does not have an owner of root?\n----\n\n== Verify Group Who Owns /etc/security/opasswd.old File\n----\nTo check the group ownership of /etc/security/opasswd.old,\nrun the command:\n$ ls -lL /etc/security/opasswd.old\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/security/opasswd.old does not have a group owner of\nroot\n?\n----\n\n== Verify Permissions on /etc/security/opasswd.old File\n----\nTo check the permissions of /etc/security/opasswd.old,\nrun the command:\n$ ls -l /etc/security/opasswd.old\nIf properly configured, the output should indicate the following permissions:\n0600\n      Is it the case that /etc/security/opasswd.old does not have unix mode 0600?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Verify User Who Owns /etc/security/opasswd File\n\nTo properly set the owner of `/etc/security/opasswd`, run the command:\n\n```\n$ sudo chown root /etc/security/opasswd \n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd` file stores old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Group Who Owns /etc/security/opasswd File\n\nTo properly set the group owner of `/etc/security/opasswd`, run the command:\n\n```\n$ sudo chgrp root /etc/security/opasswd\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd` file stores old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Permissions on /etc/security/opasswd File\n\nTo properly set the permissions of `/etc/security/opasswd`, run the command:\n\n```\n$ sudo chmod 0600 /etc/security/opasswd\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd` file stores old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify User Who Owns /etc/security/opasswd.old File\n\nTo properly set the owner of `/etc/security/opasswd.old`, run the command:\n\n```\n$ sudo chown root /etc/security/opasswd.old \n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd.old` file stores backups of old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Group Who Owns /etc/security/opasswd.old File\n\nTo properly set the group owner of `/etc/security/opasswd.old`, run the command:\n\n```\n$ sudo chgrp root /etc/security/opasswd.old\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd.old` file stores backups of old passwords to prevent\npassword reuse. Protection of this file is critical for system security.\n\n## Verify Permissions on /etc/security/opasswd.old File\n\nTo properly set the permissions of `/etc/security/opasswd.old`, run the command:\n\n```\n$ sudo chmod 0600 /etc/security/opasswd.old\n```\n\n**Rationale:**\n\nThe `/etc/security/opasswd.old` file stores backups of old passwords to prevent\npassword reuse. Protection of this file is critical for system security.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.7.1.10",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "7.1.10",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "file_owner_etc_security_opasswd",
+        "file_groupowner_etc_security_opasswd",
+        "file_permissions_etc_security_opasswd",
+        "file_owner_etc_security_opasswd_old",
+        "file_groupowner_etc_security_opasswd_old",
+        "file_permissions_etc_security_opasswd_old"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_etc_security_opasswd`",
+          "language": "bash",
+          "name": "Verify User Who Owns /etc/security/opasswd File",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/etc/security/opasswd\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /etc/security/opasswd\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_etc_security_opasswd`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /etc/security/opasswd File",
+          "shell": "newgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/etc/security/opasswd\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /etc/security/opasswd\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_etc_security_opasswd`",
+          "language": "bash",
+          "name": "Verify Permissions on /etc/security/opasswd File",
+          "shell": "chmod u-xs,g-xwrs,o-xwrt /etc/security/opasswd",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_etc_security_opasswd_old`",
+          "language": "bash",
+          "name": "Verify User Who Owns /etc/security/opasswd.old File",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/etc/security/opasswd.old\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /etc/security/opasswd.old\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_etc_security_opasswd_old`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /etc/security/opasswd.old File",
+          "shell": "newgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/etc/security/opasswd.old\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /etc/security/opasswd.old\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_etc_security_opasswd_old`",
+          "language": "bash",
+          "name": "Verify Permissions on /etc/security/opasswd.old File",
+          "shell": "chmod u-xs,g-xwrs,o-xwrt /etc/security/opasswd.old",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "7",
+    "7.1",
+    "7.1.10"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "7.1.10",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure permissions on /etc/security/opasswd are configured (Automated)"
+}

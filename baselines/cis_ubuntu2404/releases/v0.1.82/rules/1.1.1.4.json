@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable Mounting of hfsplus\nNo audit procedure in ComplianceAsCode.",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable Mounting of hfsplus\n\nTo configure the system to prevent the `hfsplus`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/hfsplus.conf`:\n\n```\ninstall hfsplus /bin/false\n```\n\nThis entry will cause a non-zero return value during a `hfsplus` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall hfsplus /bin/true\n```\n\n\nThis effectively prevents usage of this uncommon filesystem.\n\n**Rationale:**\n\nLinux kernel modules which implement filesystems that are not needed by the\nlocal system should be disabled.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.1.1.1.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.1.1.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "kernel_module_hfsplus_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `kernel_module_hfsplus_disabled`",
+          "language": "bash",
+          "name": "Disable Mounting of hfsplus",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nif LC_ALL=C grep -q -m 1 \"^install hfsplus\" /etc/modprobe.d/hfsplus.conf ; then\n\t\n\tsed -i 's#^install hfsplus.*#install hfsplus /bin/false#g' /etc/modprobe.d/hfsplus.conf\nelse\n\techo -e \"\\n# Disable per security requirements\" >> /etc/modprobe.d/hfsplus.conf\n\techo \"install hfsplus /bin/false\" >> /etc/modprobe.d/hfsplus.conf\nfi\n\nif ! LC_ALL=C grep -q -m 1 \"^blacklist hfsplus$\" /etc/modprobe.d/hfsplus.conf ; then\n\techo \"blacklist hfsplus\" >> /etc/modprobe.d/hfsplus.conf\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.1",
+    "1.1.1",
+    "1.1.1.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.1.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure hfsplus kernel module is not available (Automated)"
+}

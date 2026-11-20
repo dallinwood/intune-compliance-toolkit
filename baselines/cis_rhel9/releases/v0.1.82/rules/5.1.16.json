@@ -1,0 +1,118 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Set SSH authentication attempt limit\n----\nTo ensure the MaxAuthTries parameter is set, run the following command:\n$ sudo grep MaxAuthTries /etc/ssh/sshd_config\nIf properly configured, output should be:\nMaxAuthTries \n      Is it the case that it is commented out or not configured properly?\n----\nExpected values: sshd_max_auth_tries_value = $ODV_sshd_max_auth_tries_value",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Set SSH authentication attempt limit\n\nThe `MaxAuthTries` parameter specifies the maximum number of authentication attempts\npermitted per connection. Once the number of failures reaches half this value, additional failures are logged.\nto set MaxAUthTries edit `/etc/ssh/sshd_config` as follows:\n\n```\nMaxAuthTries $ODV_sshd_max_auth_tries_value\n        \n```\n\n**Rationale:**\n\nSetting the MaxAuthTries parameter to a low number will minimize the risk of successful\nbrute force attacks to the SSH server.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.1.16",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 4,
+        "cis_l1_workstation": 4,
+        "cis_l2_server": 4,
+        "cis_l2_workstation": 4
+      },
+      "datatype": "number",
+      "description": "SSH Max authentication attempts",
+      "name": "sshd_max_auth_tries_value",
+      "quoting": "single",
+      "recommended": 4,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.1.16",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sshd_set_max_auth_tries": "CCE-90810-3"
+      },
+      "rules": [
+        "sshd_set_max_auth_tries"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sshd_set_max_auth_tries`",
+          "language": "bash",
+          "name": "Set SSH authentication attempt limit",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nsshd_max_auth_tries_value='$ODV_sshd_max_auth_tries_value'\n\nmkdir -p /etc/ssh/sshd_config.d\nchmod 0700 /etc/ssh/sshd_config.d\ntouch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nchmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nLC_ALL=C sed -i \"/^\\s*MaxAuthTries\\s\\+/Id\" \"/etc/ssh/sshd_config\"\nLC_ALL=C sed -i \"/^\\s*MaxAuthTries\\s\\+/Id\" \"/etc/ssh/sshd_config.d\"/*.conf\nif [ -e \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*MaxAuthTries\\s\\+/Id\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nelse\n    touch \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n    chmod 0644 \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n\ncp \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n# Insert at the beginning of the file\nprintf '%s\\n' \"MaxAuthTries $sshd_max_auth_tries_value\" > \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\ncat \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\" >> \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n# Clean up after ourselves.\nrm \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.1",
+    "5.1.16"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.16",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd MaxAuthTries is configured (Automated)"
+}

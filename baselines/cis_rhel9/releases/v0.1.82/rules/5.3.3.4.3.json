@@ -1,0 +1,129 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Set PAM Password Hashing Algorithm - system-auth\n----\nInspect the password section of /etc/pam.d/system-auth\nand ensure that the pam_unix.so module is configured to use the argument\n:\n\n$ sudo grep \"^password.*pam_unix\\.so.*\" /etc/pam.d/system-auth\n\npassword sufficient pam_unix.so \n      Is it the case that \"$ODV_var_password_hashing_algorithm_pam\" is missing, or is commented out?\n----\nExpected values: var_password_hashing_algorithm_pam = $ODV_var_password_hashing_algorithm_pam\n\n== Set PAM Password Hashing Algorithm - password-auth\n----\nInspect the password section of /etc/pam.d/password-auth\nand ensure that the pam_unix.so module is configured to use the argument\n:\n\n$ grep  /etc/pam.d/password-auth\n      Is it the case that it does not?\n----\nExpected values: var_password_hashing_algorithm_pam = $ODV_var_password_hashing_algorithm_pam",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Set PAM Password Hashing Algorithm - system-auth\n\nThe PAM system service can be configured to only store encrypted representations of passwords.\nIn \"/etc/pam.d/system-auth\", the `password` section of the file controls which\nPAM modules to execute during a password change.\n\nSet the `pam_unix.so` module in the `password` section to include the option\n`$ODV_var_password_hashing_algorithm_pam` and no other hashing\nalgorithms as shown below:\n\n\n         \n```\npassword    sufficient    pam_unix.so $ODV_var_password_hashing_algorithm_pam\n          *other arguments...*\n         \n```\n\n         \n\nThis will help ensure that new passwords for local users will be stored using the\n$ODV_var_password_hashing_algorithm_pam algorithm.\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nThis setting ensures user and group account administration utilities are configured to store\nonly encrypted representations of passwords. Additionally, the `crypt_style`\nconfiguration option in `/etc/libuser.conf` ensures the use of a strong hashing\nalgorithm that makes password cracking attacks more difficult.\n\n## Set PAM Password Hashing Algorithm - password-auth\n\nThe PAM system service can be configured to only store encrypted representations of passwords.\nIn `/etc/pam.d/password-auth`, the `password` section of the file controls which\nPAM modules to execute during a password change.\n\nSet the `pam_unix.so` module in the `password` section to include the option\n`$ODV_var_password_hashing_algorithm_pam` and no other hashing\nalgorithms as shown below:\n\n\n         \n```\npassword    sufficient    pam_unix.so $ODV_var_password_hashing_algorithm_pam\n          *other arguments...*\n         \n```\n\n         \n\nThis will help ensure that new passwords for local users will be stored using the\n$ODV_var_password_hashing_algorithm_pam algorithm.\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nThis setting ensures user and group account administration utilities are configured to store\nonly encrypted representations of passwords. Additionally, the `crypt_style`\nconfiguration option in `/etc/libuser.conf` ensures the use of a strong hashing\nalgorithm that makes password cracking attacks more difficult.\n\n**Notes:**\n\nChanges in logindefs mentioned in this requirement are more specifically covered by 5.4.1.4",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.3.3.4.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "sha512",
+        "cis_l1_workstation": "sha512",
+        "cis_l2_server": "sha512",
+        "cis_l2_workstation": "sha512"
+      },
+      "datatype": "string",
+      "description": "Password Hashing algorithm for pam_unix.so",
+      "name": "var_password_hashing_algorithm_pam",
+      "quoting": "single",
+      "recommended": "sha512",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.3.3.4.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "set_password_hashing_algorithm_passwordauth": "CCE-85946-2",
+        "set_password_hashing_algorithm_systemauth": "CCE-83581-9"
+      },
+      "rules": [
+        "set_password_hashing_algorithm_systemauth",
+        "set_password_hashing_algorithm_passwordauth"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `set_password_hashing_algorithm_systemauth`",
+          "language": "bash",
+          "name": "Set PAM Password Hashing Algorithm - system-auth",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q pam; }; then\n\nvar_password_hashing_algorithm_pam='$ODV_var_password_hashing_algorithm_pam'\n\n\n# Allow multiple algorithms, but choose the first one for remediation\nvar_password_hashing_algorithm_pam=\"$(echo $var_password_hashing_algorithm_pam | cut -d \\| -f 1)\"\n\nPAM_FILE_PATH=\"/etc/pam.d/system-auth\"\n\n\n# Ensure all the hashing algorithm option is removed.\ndeclare -a HASHING_ALGORITHMS_OPTIONS=(\"sha512\" \"yescrypt\" \"gost_yescrypt\" \"blowfish\" \"sha256\" \"md5\" \"bigcrypt\")\n\nfor hash_option in \"${HASHING_ALGORITHMS_OPTIONS[@]}\"; do\n  if grep -qP \"^\\s*password\\s+.*\\s+pam_unix.so\\s+.*\\b$hash_option\\b\" \"$PAM_FILE_PATH\"; then\n    if [ -e \"$PAM_FILE_PATH\" ] ; then\n    PAM_FILE_PATH=\"$PAM_FILE_PATH\"\n    if [ -f /usr/bin/authselect ]; then\n        \n        if ! authselect check; then\n        echo \"\n        authselect integrity check failed. Remediation aborted!\n        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\n        It is not recommended to manually edit the PAM files when authselect tool is available.\n        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\n        exit 1\n        fi\n\n        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')\n        # If not already in use, a custom profile is created preserving the enabled features.\n        if [[ ! $CURRENT_PROFILE == custom/* ]]; then\n            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')\n            # The \"local\" profile does not contain essential security features required by multiple Benchmarks.\n            # If currently used, it is replaced by \"sssd\", which is the best option in this case.\n            if [[ $CURRENT_PROFILE == local ]]; then\n                CURRENT_PROFILE=\"sssd\"\n            fi\n            authselect create-profile hardening -b $CURRENT_PROFILE\n            CURRENT_PROFILE=\"custom/hardening\"\n            \n            authselect apply-changes -b --backup=before-hardening-custom-profile\n            authselect select $CURRENT_PROFILE\n            for feature in $ENABLED_FEATURES; do\n                authselect enable-feature $feature;\n            done\n            \n            authselect apply-changes -b --backup=after-hardening-custom-profile\n        fi\n        PAM_FILE_NAME=$(basename \"$PAM_FILE_PATH\")\n        PAM_FILE_PATH=\"/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME\"\n\n        authselect apply-changes -b\n    fi\n    \nif grep -qP \"^\\s*password\\s+.*\\s+pam_unix.so\\s.*\\b$hash_option\\b\" \"$PAM_FILE_PATH\"; then\n    sed -i -E --follow-symlinks \"s/(.*password.*.*.*pam_unix.so.*)\\b$hash_option\\b=?[[:alnum:]]*(.*)/\\1\\2/g\" \"$PAM_FILE_PATH\"\nfi\n    if [ -f /usr/bin/authselect ]; then\n        \n        authselect apply-changes -b\n    fi\nelse\n    echo \"$PAM_FILE_PATH was not found\" >&2\nfi\n  fi\ndone\n\nif [ -e \"$PAM_FILE_PATH\" ] ; then\n    PAM_FILE_PATH=\"$PAM_FILE_PATH\"\n    if [ -f /usr/bin/authselect ]; then\n        \n        if ! authselect check; then\n        echo \"\n        authselect integrity check failed. Remediation aborted!\n        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\n        It is not recommended to manually edit the PAM files when authselect tool is available.\n        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\n        exit 1\n        fi\n\n        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')\n        # If not already in use, a custom profile is created preserving the enabled features.\n        if [[ ! $CURRENT_PROFILE == custom/* ]]; then\n            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')\n            # The \"local\" profile does not contain essential security features required by multiple Benchmarks.\n            # If currently used, it is replaced by \"sssd\", which is the best option in this case.\n            if [[ $CURRENT_PROFILE == local ]]; then\n                CURRENT_PROFILE=\"sssd\"\n            fi\n            authselect create-profile hardening -b $CURRENT_PROFILE\n            CURRENT_PROFILE=\"custom/hardening\"\n            \n            authselect apply-changes -b --backup=before-hardening-custom-profile\n            authselect select $CURRENT_PROFILE\n            for feature in $ENABLED_FEATURES; do\n                authselect enable-feature $feature;\n            done\n            \n            authselect apply-changes -b --backup=after-hardening-custom-profile\n        fi\n        PAM_FILE_NAME=$(basename \"$PAM_FILE_PATH\")\n        PAM_FILE_PATH=\"/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME\"\n\n        authselect apply-changes -b\n    fi\n    \n\n        if ! grep -qP \"^\\s*password\\s+sufficient\\s+pam_unix.so\\s*.*\" \"$PAM_FILE_PATH\"; then\n            # Line matching group + control + module was not found. Check group + module.\n            if [ \"$(grep -cP '^\\s*password\\s+.*\\s+pam_unix.so\\s*' \"$PAM_FILE_PATH\")\" -eq 1 ]; then\n                # The control is updated only if one single line matches.\n                sed -i -E --follow-symlinks \"s/^(\\s*password\\s+).*(\\bpam_unix.so.*)/\\1sufficient \\2/\" \"$PAM_FILE_PATH\"\n            else\n                echo \"password    sufficient    pam_unix.so\" >> \"$PAM_FILE_PATH\"\n            fi\n        fi\n        # Check the option\n        if ! grep -qP \"^\\s*password\\s+sufficient\\s+pam_unix.so\\s*.*\\s$var_password_hashing_algorithm_pam\\b\" \"$PAM_FILE_PATH\"; then\n            sed -i -E --follow-symlinks \"/\\s*password\\s+sufficient\\s+pam_unix.so.*/ s/$/ $var_password_hashing_algorithm_pam/\" \"$PAM_FILE_PATH\"\n        fi\n    if [ -f /usr/bin/authselect ]; then\n        \n        authselect apply-changes -b\n    fi\nelse\n    echo \"$PAM_FILE_PATH was not found\" >&2\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `set_password_hashing_algorithm_passwordauth`",
+          "language": "bash",
+          "name": "Set PAM Password Hashing Algorithm - password-auth",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q pam; }; then\n\nvar_password_hashing_algorithm_pam='$ODV_var_password_hashing_algorithm_pam'\n\n\n# Allow multiple algorithms, but choose the first one for remediation\nvar_password_hashing_algorithm_pam=\"$(echo $var_password_hashing_algorithm_pam | cut -d \\| -f 1)\"\n\nPAM_FILE_PATH=\"/etc/pam.d/password-auth\"\n\nif [ -e \"$PAM_FILE_PATH\" ] ; then\n    PAM_FILE_PATH=\"$PAM_FILE_PATH\"\n    if [ -f /usr/bin/authselect ]; then\n        \n        if ! authselect check; then\n        echo \"\n        authselect integrity check failed. Remediation aborted!\n        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\n        It is not recommended to manually edit the PAM files when authselect tool is available.\n        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\n        exit 1\n        fi\n\n        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')\n        # If not already in use, a custom profile is created preserving the enabled features.\n        if [[ ! $CURRENT_PROFILE == custom/* ]]; then\n            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')\n            # The \"local\" profile does not contain essential security features required by multiple Benchmarks.\n            # If currently used, it is replaced by \"sssd\", which is the best option in this case.\n            if [[ $CURRENT_PROFILE == local ]]; then\n                CURRENT_PROFILE=\"sssd\"\n            fi\n            authselect create-profile hardening -b $CURRENT_PROFILE\n            CURRENT_PROFILE=\"custom/hardening\"\n            \n            authselect apply-changes -b --backup=before-hardening-custom-profile\n            authselect select $CURRENT_PROFILE\n            for feature in $ENABLED_FEATURES; do\n                authselect enable-feature $feature;\n            done\n            \n            authselect apply-changes -b --backup=after-hardening-custom-profile\n        fi\n        PAM_FILE_NAME=$(basename \"$PAM_FILE_PATH\")\n        PAM_FILE_PATH=\"/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME\"\n\n        authselect apply-changes -b\n    fi\n    \n\n        if ! grep -qP \"^\\s*password\\s+sufficient\\s+pam_unix.so\\s*.*\" \"$PAM_FILE_PATH\"; then\n            # Line matching group + control + module was not found. Check group + module.\n            if [ \"$(grep -cP '^\\s*password\\s+.*\\s+pam_unix.so\\s*' \"$PAM_FILE_PATH\")\" -eq 1 ]; then\n                # The control is updated only if one single line matches.\n                sed -i -E --follow-symlinks \"s/^(\\s*password\\s+).*(\\bpam_unix.so.*)/\\1sufficient \\2/\" \"$PAM_FILE_PATH\"\n            else\n                echo \"password    sufficient    pam_unix.so\" >> \"$PAM_FILE_PATH\"\n            fi\n        fi\n        # Check the option\n        if ! grep -qP \"^\\s*password\\s+sufficient\\s+pam_unix.so\\s*.*\\s$var_password_hashing_algorithm_pam\\b\" \"$PAM_FILE_PATH\"; then\n            sed -i -E --follow-symlinks \"/\\s*password\\s+sufficient\\s+pam_unix.so.*/ s/$/ $var_password_hashing_algorithm_pam/\" \"$PAM_FILE_PATH\"\n        fi\n    if [ -f /usr/bin/authselect ]; then\n        \n        authselect apply-changes -b\n    fi\nelse\n    echo \"$PAM_FILE_PATH was not found\" >&2\nfi\n\n# Ensure only the correct hashing algorithm option is used.\ndeclare -a HASHING_ALGORITHMS_OPTIONS=(\"sha512\" \"yescrypt\" \"gost_yescrypt\" \"blowfish\" \"sha256\" \"md5\" \"bigcrypt\")\n\nfor hash_option in \"${HASHING_ALGORITHMS_OPTIONS[@]}\"; do\n  if [ \"$hash_option\" != \"$var_password_hashing_algorithm_pam\" ]; then\n    if grep -qP \"^\\s*password\\s+.*\\s+pam_unix.so\\s+.*\\b$hash_option\\b\" \"$PAM_FILE_PATH\"; then\n      if [ -e \"$PAM_FILE_PATH\" ] ; then\n    PAM_FILE_PATH=\"$PAM_FILE_PATH\"\n    if [ -f /usr/bin/authselect ]; then\n        \n        if ! authselect check; then\n        echo \"\n        authselect integrity check failed. Remediation aborted!\n        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\n        It is not recommended to manually edit the PAM files when authselect tool is available.\n        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\n        exit 1\n        fi\n\n        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')\n        # If not already in use, a custom profile is created preserving the enabled features.\n        if [[ ! $CURRENT_PROFILE == custom/* ]]; then\n            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')\n            # The \"local\" profile does not contain essential security features required by multiple Benchmarks.\n            # If currently used, it is replaced by \"sssd\", which is the best option in this case.\n            if [[ $CURRENT_PROFILE == local ]]; then\n                CURRENT_PROFILE=\"sssd\"\n            fi\n            authselect create-profile hardening -b $CURRENT_PROFILE\n            CURRENT_PROFILE=\"custom/hardening\"\n            \n            authselect apply-changes -b --backup=before-hardening-custom-profile\n            authselect select $CURRENT_PROFILE\n            for feature in $ENABLED_FEATURES; do\n                authselect enable-feature $feature;\n            done\n            \n            authselect apply-changes -b --backup=after-hardening-custom-profile\n        fi\n        PAM_FILE_NAME=$(basename \"$PAM_FILE_PATH\")\n        PAM_FILE_PATH=\"/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME\"\n\n        authselect apply-changes -b\n    fi\n    \nif grep -qP \"^\\s*password\\s+.*\\s+pam_unix.so\\s.*\\b$hash_option\\b\" \"$PAM_FILE_PATH\"; then\n    sed -i -E --follow-symlinks \"s/(.*password.*.*.*pam_unix.so.*)\\b$hash_option\\b=?[[:alnum:]]*(.*)/\\1\\2/g\" \"$PAM_FILE_PATH\"\nfi\n    if [ -f /usr/bin/authselect ]; then\n        \n        authselect apply-changes -b\n    fi\nelse\n    echo \"$PAM_FILE_PATH was not found\" >&2\nfi\n    fi\n  fi\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.4",
+    "5.3.3.4.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.4.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure pam_unix includes a strong password hashing algorithm (Automated)"
+}

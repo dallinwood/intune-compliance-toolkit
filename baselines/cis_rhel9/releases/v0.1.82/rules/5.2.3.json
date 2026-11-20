@@ -1,0 +1,118 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure Sudo Logfile Exists - sudo logfile\n----\nTo determine if logfile has been configured for sudo, run the following command:\n$ sudo grep -ri \"^[\\s]*Defaults\\s*\\blogfile\\b.*\" /etc/sudoers /etc/sudoers.d/\nThe command should return a matching output.\n      Is it the case that logfile is not enabled in sudo?\n----\nExpected values: var_sudo_logfile = $ODV_var_sudo_logfile",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure Sudo Logfile Exists - sudo logfile\n\nA custom log sudo file can be configured with the 'logfile' tag. This rule configures\na sudo custom logfile at the default location suggested by CIS, which uses\n/var/log/sudo.log.\n\n**Rationale:**\n\nA sudo log file simplifies auditing of sudo commands.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.2.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "/var/log/sudo.log",
+        "cis_l1_workstation": "/var/log/sudo.log",
+        "cis_l2_server": "/var/log/sudo.log",
+        "cis_l2_workstation": "/var/log/sudo.log"
+      },
+      "datatype": "string",
+      "description": "Sudo - logfile value",
+      "name": "var_sudo_logfile",
+      "quoting": "single",
+      "recommended": "/var/log/sudo.log",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.2.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sudo_custom_logfile": "CCE-83527-2"
+      },
+      "rules": [
+        "sudo_custom_logfile"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sudo_custom_logfile`",
+          "language": "bash",
+          "name": "Ensure Sudo Logfile Exists - sudo logfile",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q sudo; }; then\n\nvar_sudo_logfile='$ODV_var_sudo_logfile'\n\n\n\n\nif /usr/sbin/visudo -qcf /etc/sudoers; then\n    cp /etc/sudoers /etc/sudoers.bak\n    if ! grep -P '^[\\s]*Defaults\\b[^!\\n]*\\blogfile\\s*=\\s*(?:\"?([^\",\\s]+)\"?).*$' /etc/sudoers; then\n        # sudoers file doesn't define Option logfile\n        echo \"Defaults logfile=${var_sudo_logfile}\" >> /etc/sudoers\n    else\n        # sudoers file defines Option logfile, remediate if appropriate value is not set\n        if ! grep -P \"^[\\s]*Defaults.*\\blogfile=${var_sudo_logfile}\\b.*$\" /etc/sudoers; then\n            \n            escaped_variable=${var_sudo_logfile//$'/'/$'\\/'}\n            sed -Ei \"s/(^[\\s]*Defaults.*\\blogfile=)[-]?.+(\\b.*$)/\\1$escaped_variable\\2/\" /etc/sudoers\n        fi\n    fi\n    \n    # Check validity of sudoers and cleanup bak\n    if /usr/sbin/visudo -qcf /etc/sudoers; then\n        rm -f /etc/sudoers.bak\n    else\n        echo \"Fail to validate remediated /etc/sudoers, reverting to original file.\"\n        mv /etc/sudoers.bak /etc/sudoers\n        false\n    fi\nelse\n    echo \"Skipping remediation, /etc/sudoers failed to validate\"\n    false\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.2",
+    "5.2.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.2.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure sudo log file exists (Automated)"
+}

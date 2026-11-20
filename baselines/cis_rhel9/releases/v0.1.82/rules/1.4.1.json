@@ -1,0 +1,106 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Set Boot Loader Password in grub2\n----\nFirst, check whether the password is defined in either /boot/grub2/user.cfg or\n/boot/grub2/grub.cfg.\nRun the following commands:\n$ sudo grep '^[\\s]*GRUB2_PASSWORD=grub\\.pbkdf2\\.sha512.*$' /boot/grub2/user.cfg\n$ sudo grep '^[\\s]*password_pbkdf2[\\s]+.*[\\s]+grub\\.pbkdf2\\.sha512.*$' /boot/grub2/grub.cfg\n\n\nSecond, check that a superuser is defined in /boot/grub2/grub.cfg.\n$ sudo grep '^[\\s]*set[\\s]+superusers=(\"?)[a-zA-Z_]+\\1$'  /boot/grub2/grub.cfg\n      Is it the case that it does not produce any output?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Set Boot Loader Password in grub2\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-setpassword\n```\n\n\nWhen prompted, enter the password that was selected.\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.\n\n**Notes:**\n\nRHEL9 unified the paths for grub2 files.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.4.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.4.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "grub2_password": "CCE-83849-0"
+      },
+      "related_rules": [
+        "grub2_uefi_password"
+      ],
+      "rules": [
+        "grub2_password"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `grub2_password`).",
+          "language": "bash",
+          "name": "Set Boot Loader Password in grub2",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.4",
+    "1.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.4.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure bootloader password is set (Automated)"
+}

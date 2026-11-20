@@ -1,0 +1,100 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Use Only Strong Ciphers\n----\nOnly strong ciphers should be used. To verify that only strong\nciphers are in use, run the following command:\n$ sudo grep Ciphers /etc/ssh/sshd_config\nThe output should contain only those ciphers which are considered strong, namely,\nchacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes128-ctr\n      Is it the case that ciphers are not configured or not using strong ciphers?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Use Only Strong Ciphers\n\nLimit the ciphers to strong algorithms.\nCounter (CTR) mode is also preferred over cipher-block chaining (CBC) mode.\nThe following line in `/etc/ssh/sshd_config`\ndemonstrates use of those ciphers:\n\n```\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n```\n\nThe man page `sshd_config(5)` contains a list of supported ciphers.\n\n**Rationale:**\n\nBased on research conducted at various institutions, it was determined that the symmetric\nportion of the SSH Transport Protocol (as described in RFC 4253) has security weaknesses\nthat allowed recovery of up to 32 bits of plaintext from a block of ciphertext that was\nencrypted with the Cipher Block Chaining (CBD) method. From that research, new Counter\nmode algorithms (as described in RFC4344) were designed that are not vulnerable to these\ntypes of attacks and these algorithms are now recommended for standard use.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.5.1.6",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.1.6",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "sshd_use_strong_ciphers"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sshd_use_strong_ciphers`",
+          "language": "bash",
+          "name": "Use Only Strong Ciphers",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nmkdir -p /etc/ssh/sshd_config.d\nchmod 0700 /etc/ssh/sshd_config.d\ntouch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nchmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nLC_ALL=C sed -i \"/^\\s*Ciphers\\s\\+/Id\" \"/etc/ssh/sshd_config\"\nLC_ALL=C sed -i \"/^\\s*Ciphers\\s\\+/Id\" \"/etc/ssh/sshd_config.d\"/*.conf\nif [ -e \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*Ciphers\\s\\+/Id\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nelse\n    touch \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n    chmod 0644 \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n\ncp \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n# Insert at the beginning of the file\nprintf '%s\\n' \"Ciphers aes128-ctr,aes192-ctr,aes256-ctr,chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com\" > \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\ncat \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\" >> \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n# Clean up after ourselves.\nrm \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.1",
+    "5.1.6"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.6",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd Ciphers are configured (Automated)"
+}

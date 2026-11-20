@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from tools import import_asd_e4eit, import_asd_ism, import_mscp, import_nist_800_53
+from tools import import_asd_e4eit, import_asd_ism, import_cis_cac, import_mscp, import_nist_800_53
 from tools.asd_e4eit_normalize import MAPPING_FILE_ID
 from tools.file_references import is_binary_payload
 from tools.mappings import validate_mappings
@@ -30,6 +30,7 @@ IMPORTERS_BY_NAME = {
         import_asd_ism.IMPORTER,
         import_nist_800_53.IMPORTER,
         import_asd_e4eit.IMPORTER,
+        *import_cis_cac.IMPORTERS.values(),
     )
 }
 

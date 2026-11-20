@@ -1,0 +1,141 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.rp_filter parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.rp_filter\nThe output of the command should indicate either:\nnet.ipv4.conf.all.rp_filter = 1\n\nThe output of the command should not indicate:\nnet.ipv4.conf.all.rp_filter = 0\n\nThe preferable way how to assure the runtime compliance is to have\ncorrect persistent configuration, and rebooting the system.\n\nThe persistent sysctl parameter configuration is performed by specifying the appropriate\nassignment in any file located in the /etc/sysctl.d directory.\nVerify that there is not any existing incorrect configuration by executing the following command:\n$ grep -r '^\\s*net.ipv4.conf.all.rp_filter\\s*=' /etc/sysctl.conf /etc/sysctl.d\nThe command should not find any assignments other than:\nnet.ipv4.conf.all.rp_filter = 1\n\n\nConflicting assignments are not allowed.\n      Is it the case that the net.ipv4.conf.all.rp_filter is not set to 1 or is configured to be 0 or 2?\n----\nExpected values: sysctl_net_ipv4_conf_all_rp_filter_value = $ODV_sysctl_net_ipv4_conf_all_rp_filter_value\n\n== Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default\n----\nThe runtime status of the net.ipv4.conf.default.rp_filter kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.rp_filter\n1.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_rp_filter_value = $ODV_sysctl_net_ipv4_conf_default_rp_filter_value",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.all.rp_filter` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.all.rp_filter=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.all.rp_filter = 1\n```\n\n**Rationale:**\n\nEnabling reverse path filtering drops packets with source addresses\nthat should not have been able to be received on the interface they were\nreceived on. It should not be used on systems which are routers for\ncomplicated networks, but is helpful for end hosts and routers serving small\nnetworks.\n\n## Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default\n\nTo set the runtime status of the `net.ipv4.conf.default.rp_filter` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.default.rp_filter=1\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.default.rp_filter = 1\n```\n\n**Rationale:**\n\nEnabling reverse path filtering drops packets with source addresses\nthat should not have been able to be received on the interface they were\nreceived on. It should not be used on systems which are routers for\ncomplicated networks, but is helpful for end hosts and routers serving small\nnetworks.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.3.3.7",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 1,
+        "cis_l1_workstation": 1,
+        "cis_l2_server": 1,
+        "cis_l2_workstation": 1
+      },
+      "datatype": "number",
+      "description": "net.ipv4.conf.all.rp_filter",
+      "name": "sysctl_net_ipv4_conf_all_rp_filter_value",
+      "quoting": "single",
+      "recommended": 1,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": 1,
+        "cis_l1_workstation": 1,
+        "cis_l2_server": 1,
+        "cis_l2_workstation": 1
+      },
+      "datatype": "number",
+      "description": "net.ipv4.conf.default.rp_filter",
+      "name": "sysctl_net_ipv4_conf_default_rp_filter_value",
+      "quoting": "single",
+      "recommended": 1,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "3.3.7",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sysctl_net_ipv4_conf_all_rp_filter": "CCE-84008-2",
+        "sysctl_net_ipv4_conf_default_rp_filter": "CCE-84009-0"
+      },
+      "rules": [
+        "sysctl_net_ipv4_conf_all_rp_filter",
+        "sysctl_net_ipv4_conf_default_rp_filter"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sysctl_net_ipv4_conf_all_rp_filter`",
+          "language": "bash",
+          "name": "Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\n# Comment out any occurrences of net.ipv4.conf.all.rp_filter from /etc/sysctl.d/*.conf files\n\nfor f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do\n\n\n  # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)\n  if [[ \"$(readlink -f \"$f\")\" == \"/etc/sysctl.conf\" ]]; then continue; fi\n\n  matching_list=$(grep -P '^(?!#).*[\\s]*net.ipv4.conf.all.rp_filter.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      escaped_entry=$(sed -e 's|/|\\\\/|g' <<< \"$entry\")\n      # comment out \"net.ipv4.conf.all.rp_filter\" matches to preserve user data\n      sed -i --follow-symlinks \"s/^${escaped_entry}$/# &/g\" $f\n    done <<< \"$matching_list\"\n  fi\ndone\n\n#\n# Set sysctl config file which to save the desired value\n#\n\nSYSCONFIG_FILE='/etc/sysctl.d/net_ipv4_conf_all_rp_filter.conf'\n\nsysctl_net_ipv4_conf_all_rp_filter_value='$ODV_sysctl_net_ipv4_conf_all_rp_filter_value'\n\n\n#\n# Set runtime for net.ipv4.conf.all.rp_filter\n#\nif ! { rpm --quiet -q kernel bootc && ! rpm --quiet -q openshift-kubelet && { [ -f \"/run/.containerenv\" ] || [ -f \"/.containerenv\" ]; }; } ; then\n    /sbin/sysctl -q -n -w net.ipv4.conf.all.rp_filter=\"$sysctl_net_ipv4_conf_all_rp_filter_value\"\nfi\n\n#\n# If net.ipv4.conf.all.rp_filter present in /etc/sysctl.conf, change value to appropriate value\n#\telse, add \"net.ipv4.conf.all.rp_filter = value\" to /etc/sysctl.conf\n#\n\nsed -i \"/^net.ipv4.conf.all.rp_filter/d\" /etc/sysctl.conf\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^net.ipv4.conf.all.rp_filter\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$sysctl_net_ipv4_conf_all_rp_filter_value\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^net.ipv4.conf.all.rp_filter\\\\>\" \"${SYSCONFIG_FILE}\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^net.ipv4.conf.all.rp_filter\\\\>.*/$escaped_formatted_output/gi\" \"${SYSCONFIG_FILE}\"\nelse\n    if [[ -s \"${SYSCONFIG_FILE}\" ]] && [[ -n \"$(tail -c 1 -- \"${SYSCONFIG_FILE}\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"${SYSCONFIG_FILE}\"\n    fi\n    cce=\"CCE-84008-2\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"${SYSCONFIG_FILE}\" >> \"${SYSCONFIG_FILE}\"\n    printf '%s\\n' \"$formatted_output\" >> \"${SYSCONFIG_FILE}\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `sysctl_net_ipv4_conf_default_rp_filter`",
+          "language": "bash",
+          "name": "Enable Kernel Parameter to Use Reverse Path Filtering on all IPv4 Interfaces by Default",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\n# Comment out any occurrences of net.ipv4.conf.default.rp_filter from /etc/sysctl.d/*.conf files\n\nfor f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf; do\n\n\n  # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)\n  if [[ \"$(readlink -f \"$f\")\" == \"/etc/sysctl.conf\" ]]; then continue; fi\n\n  matching_list=$(grep -P '^(?!#).*[\\s]*net.ipv4.conf.default.rp_filter.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      escaped_entry=$(sed -e 's|/|\\\\/|g' <<< \"$entry\")\n      # comment out \"net.ipv4.conf.default.rp_filter\" matches to preserve user data\n      sed -i --follow-symlinks \"s/^${escaped_entry}$/# &/g\" $f\n    done <<< \"$matching_list\"\n  fi\ndone\n\n#\n# Set sysctl config file which to save the desired value\n#\n\nSYSCONFIG_FILE='/etc/sysctl.d/net_ipv4_conf_default_rp_filter.conf'\n\nsysctl_net_ipv4_conf_default_rp_filter_value='$ODV_sysctl_net_ipv4_conf_default_rp_filter_value'\n\n\n#\n# Set runtime for net.ipv4.conf.default.rp_filter\n#\nif ! { rpm --quiet -q kernel bootc && ! rpm --quiet -q openshift-kubelet && { [ -f \"/run/.containerenv\" ] || [ -f \"/.containerenv\" ]; }; } ; then\n    /sbin/sysctl -q -n -w net.ipv4.conf.default.rp_filter=\"$sysctl_net_ipv4_conf_default_rp_filter_value\"\nfi\n\n#\n# If net.ipv4.conf.default.rp_filter present in /etc/sysctl.conf, change value to appropriate value\n#\telse, add \"net.ipv4.conf.default.rp_filter = value\" to /etc/sysctl.conf\n#\n\nsed -i \"/^net.ipv4.conf.default.rp_filter/d\" /etc/sysctl.conf\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^net.ipv4.conf.default.rp_filter\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$sysctl_net_ipv4_conf_default_rp_filter_value\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^net.ipv4.conf.default.rp_filter\\\\>\" \"${SYSCONFIG_FILE}\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^net.ipv4.conf.default.rp_filter\\\\>.*/$escaped_formatted_output/gi\" \"${SYSCONFIG_FILE}\"\nelse\n    if [[ -s \"${SYSCONFIG_FILE}\" ]] && [[ -n \"$(tail -c 1 -- \"${SYSCONFIG_FILE}\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"${SYSCONFIG_FILE}\"\n    fi\n    cce=\"CCE-84009-0\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"${SYSCONFIG_FILE}\" >> \"${SYSCONFIG_FILE}\"\n    printf '%s\\n' \"$formatted_output\" >> \"${SYSCONFIG_FILE}\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "3",
+    "3.3",
+    "3.3.7"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "3.3.7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure reverse path filtering is enabled (Automated)"
+}

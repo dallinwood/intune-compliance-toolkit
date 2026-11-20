@@ -1,0 +1,113 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Install the cron service\n----\nRun the following command to determine if the cronie package is installed: $ rpm -q cronie\n      Is it the case that the cronie package is not installed?\n----\n\n== Enable cron Service\n----\nRun the following command to determine the current status of the\ncrond service:\n$ sudo systemctl is-active crond\nIf the service is running, it should return the following: active\n      Is it the case that ?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Install the cron service\n\nThe Cron service should be installed.\n\n**Rationale:**\n\nThe cron service allow periodic job execution, needed for almost all administrative tasks and services (software update, log rotating, etc.). Access to cron service should be restricted to administrative accounts only.\n\n## Enable cron Service\n\nThe `crond` service is used to execute commands at\npreconfigured times. It is required by almost all systems to perform necessary\nmaintenance tasks, such as notifying root of system activity.\n\nThe `crond` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable crond.service\n```\n\n**Rationale:**\n\nDue to its usage for maintenance and security-supporting tasks,\nenabling the cron daemon is essential.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.2.4.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "2.4.1.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "package_cron_installed": "CCE-86170-8",
+        "service_crond_enabled": "CCE-84163-5"
+      },
+      "rules": [
+        "package_cron_installed",
+        "service_crond_enabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_cron_installed`",
+          "language": "bash",
+          "name": "Install the cron service",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nif ! rpm -q --quiet \"cronie\" ; then\n    dnf install -y \"cronie\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_crond_enabled`",
+          "language": "bash",
+          "name": "Enable cron Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\n\"$SYSTEMCTL_EXEC\" unmask 'crond.service'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" start 'crond.service'\nfi\n\"$SYSTEMCTL_EXEC\" enable 'crond.service'\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.4",
+    "2.4.1",
+    "2.4.1.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.4.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure cron daemon is enabled and active (Automated)"
+}

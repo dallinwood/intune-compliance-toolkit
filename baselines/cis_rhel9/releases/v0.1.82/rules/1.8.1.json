@@ -1,0 +1,90 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Remove the GDM Package Group\n----\nTo ensure the gdm package group is removed, run the following command:\n$ rpm -qi gdm\nThe output should be:\npackage gdm is not installed\n      Is it the case that gdm has not been removed?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Remove the GDM Package Group\n\nBy removing the `gdm` package, the system no longer has GNOME installed.\n\nIf X Windows is not installed then the system cannot boot into graphical user mode.\nThis prevents the system from being accidentally or maliciously booted into a `graphical.target`\nmode. To do so, run the following command:\n\n\n```\n$ sudo yum remove gdm\n```\n\n**Rationale:**\n\nUnnecessary service packages must not be installed to decrease the attack surface of the system.\nA graphical environment is unnecessary for certain types of systems including a virtualization\nhypervisor.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.8.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.8.1",
+      "levels": [
+        "l2_server"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "package_gdm_removed": "CCE-83549-6"
+      },
+      "rules": [
+        "package_gdm_removed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_gdm_removed`",
+          "language": "bash",
+          "name": "Remove the GDM Package Group",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q gdm; then\n\n# CAUTION: This remediation script will remove gdm\n# from the system, and may remove any packages\n# that depend on gdm. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\nif rpm -q --quiet \"gdm\" ; then\ndnf remove -y --noautoremove \"gdm\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.8",
+    "1.8.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.8.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure GNOME Display Manager is removed (Automated)"
+}

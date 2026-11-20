@@ -1,0 +1,103 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable the GNOME3 Login User List\n----\nTo ensure the user list is disabled, run the following command:\n$ grep disable-user-list /etc/dconf/db/distro.d/*\nThe output should be true.\nTo ensure that users cannot enable displaying the user list, run the following:\n$ grep disable-user-list /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should be /org/gnome/login-screen/disable-user-list\n      Is it the case that disable-user-list has not been configured or is not disabled?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable the GNOME3 Login User List\n\nIn the default graphical environment, users logging directly into the\nsystem are greeted with a login screen that displays all known users.\nThis functionality should be disabled by setting `disable-user-list`\nto `true`.\n\n\n         \n\nTo disable, add or edit `disable-user-list` to\n`/etc/dconf/db/distro.d/00-security-settings`. For example:\n\n```\n[org/gnome/login-screen]\ndisable-user-list=true\n```\n\nOnce the setting has been added, add a lock to\n`/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent\nuser modification. For example:\n\n```\n/org/gnome/login-screen/disable-user-list\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nLeaving the user list enabled is a security risk since it allows anyone\nwith physical access to the system to quickly enumerate known user accounts\nwithout logging in.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.8.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.8.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "dconf_gnome_disable_user_list": "CCE-88285-2"
+      },
+      "rules": [
+        "dconf_gnome_disable_user_list"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_disable_user_list`",
+          "language": "bash",
+          "name": "Disable the GNOME3 Login User List",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q gdm; then\n\n# Check for setting in any of the DConf db directories\n# If files contain ibus or distro, ignore them.\n# The assignment assumes that individual filenames don't contain :\nreadarray -t SETTINGSFILES < <(grep -r \"\\\\[org/gnome/login-screen\\\\]\" \"/etc/dconf/db/\" \\\n                                | grep -v 'distro\\|ibus\\|distro.d' | cut -d\":\" -f1)\nDCONFFILE=\"/etc/dconf/db/distro.d/00-security-settings\"\nDBDIR=\"/etc/dconf/db/distro.d\"\n\nmkdir -p \"${DBDIR}\"\nchmod 0755 \"${DBDIR}\"\n\n# Comment out the configurations in databases different from the target one\nif [ \"${#SETTINGSFILES[@]}\" -ne 0 ]\nthen\n    if grep -q \"^\\\\s*disable-user-list\\\\s*=\" \"${SETTINGSFILES[@]}\"\n    then\n        \n        sed -Ei \"s/(^\\s*)disable-user-list(\\s*=)/#\\1disable-user-list\\2/g\" \"${SETTINGSFILES[@]}\"\n    fi\nfi\n\n[ ! -z \"${DCONFFILE}\" ] && echo \"\" >> \"${DCONFFILE}\"\nif ! grep -q \"\\\\[org/gnome/login-screen\\\\]\" \"${DCONFFILE}\"\nthen\n    printf '%s\\n' \"[org/gnome/login-screen]\" >> ${DCONFFILE}\nfi\n\nescaped_value=\"$(sed -e 's/\\\\/\\\\\\\\/g' <<< \"true\")\"\nif grep -q \"^\\\\s*disable-user-list\\\\s*=\" \"${DCONFFILE}\"\nthen\n        sed -i \"s/\\\\s*disable-user-list\\\\s*=\\\\s*.*/disable-user-list=${escaped_value}/g\" \"${DCONFFILE}\"\n    else\n        sed -i \"\\\\|\\\\[org/gnome/login-screen\\\\]|a\\\\disable-user-list=${escaped_value}\" \"${DCONFFILE}\"\nfi\ndconf update\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/login-screen/disable-user-list$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|distro.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/distro.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/login-screen/disable-user-list$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/login-screen/disable-user-list$\" /etc/dconf/db/distro.d/\nthen\n    echo \"/org/gnome/login-screen/disable-user-list\" >> \"/etc/dconf/db/distro.d/locks/00-security-settings-lock\"\nfi\ndconf update\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.8",
+    "1.8.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.8.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure GDM disable-user-list option is enabled (Automated)"
+}

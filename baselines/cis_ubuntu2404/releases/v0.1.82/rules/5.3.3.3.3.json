@@ -1,0 +1,102 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Enforce Password History with use_authtok\nNo audit procedure in ComplianceAsCode.",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Enforce Password History with use_authtok\n\nThe `use_authtok` option ensures the pam_pwhistory module uses the new\npassword provided by a previously stacked PAM module during password\nchanges, rather than prompting the user again.\n\n**Rationale:**\n\nThe `use_authtok` option allows multiple PAM modules to validate the new\npassword before it is accepted, ensuring it meets all security requirements\nwithout requiring the user to re-enter it multiple times.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.5.3.3.3.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.3.3.3.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_password_pam_pwhistory_use_authtok"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_pwhistory_use_authtok`",
+          "language": "bash",
+          "name": "Enforce Password History with use_authtok",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpam-runtime' 2>/dev/null | grep -q '^installed$'; }; then\n\nif [ -f /usr/bin/authselect ]; then\n    if authselect list-features sssd | grep -q with-pwhistory; then\n        if ! authselect check; then\n        echo \"\n        authselect integrity check failed. Remediation aborted!\n        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\n        It is not recommended to manually edit the PAM files when authselect tool is available.\n        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\n        exit 1\n        fi\n        authselect enable-feature with-pwhistory\n\n        authselect apply-changes -b\n    else\n        \n        if ! authselect check; then\n        echo \"\n        authselect integrity check failed. Remediation aborted!\n        This remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\n        It is not recommended to manually edit the PAM files when authselect tool is available.\n        In cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\n        exit 1\n        fi\n\n        CURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')\n        # If not already in use, a custom profile is created preserving the enabled features.\n        if [[ ! $CURRENT_PROFILE == custom/* ]]; then\n            ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')\n            # The \"local\" profile does not contain essential security features required by multiple Benchmarks.\n            # If currently used, it is replaced by \"sssd\", which is the best option in this case.\n            if [[ $CURRENT_PROFILE == local ]]; then\n                CURRENT_PROFILE=\"sssd\"\n            fi\n            authselect create-profile hardening -b $CURRENT_PROFILE\n            CURRENT_PROFILE=\"custom/hardening\"\n            \n            authselect apply-changes -b --backup=before-hardening-custom-profile\n            authselect select $CURRENT_PROFILE\n            for feature in $ENABLED_FEATURES; do\n                authselect enable-feature $feature;\n            done\n            \n            authselect apply-changes -b --backup=after-hardening-custom-profile\n        fi\n        PAM_FILE_NAME=$(basename \"cac_pwhistory\")\n        PAM_FILE_PATH=\"/etc/authselect/$CURRENT_PROFILE/$PAM_FILE_NAME\"\n\n        authselect apply-changes -b\n        \n        if ! grep -qP \"^\\s*password\\s+requisite\\s+pam_pwhistory.so\\s*.*\" \"$PAM_FILE_PATH\"; then\n            # Line matching group + control + module was not found. Check group + module.\n            if [ \"$(grep -cP '^\\s*password\\s+.*\\s+pam_pwhistory.so\\s*' \"$PAM_FILE_PATH\")\" -eq 1 ]; then\n                # The control is updated only if one single line matches.\n                sed -i -E --follow-symlinks \"s/^(\\s*password\\s+).*(\\bpam_pwhistory.so.*)/\\1requisite \\2/\" \"$PAM_FILE_PATH\"\n            else\n                echo \"password    requisite    pam_pwhistory.so\" >> \"$PAM_FILE_PATH\"\n            fi\n        fi\n    fi\nelse\n\nconf_name=cac_pwhistory\nconf_path=\"/usr/share/pam-configs\"\n\nif [ ! -f \"$conf_path\"/\"$conf_name\" ]; then\n    cat << EOF > \"$conf_path\"/\"$conf_name\"\nName: pwhistory password history checking\nDefault: yes\nPriority: 1024\nPassword-Type: Primary\nPassword: requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass use_authtok\nPassword-Initial: requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass\nEOF\n    chmod 0644 \"$conf_path\"/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\nfi\nconf_file=/usr/share/pam-configs/cac_pwhistory\nif ! grep -qE 'pam_pwhistory\\.so\\s+[^#]*\\buse_authtok\\b' \"$conf_file\"; then\n\tsed -i -E '/^Password:/,/^[^[:space:]]/ {\n    /pam_pwhistory\\.so/ {\n        s/$/ use_authtok/g\n    }\n    }' \"$conf_file\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update --enable cac_pwhistory\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.3",
+    "5.3.3.3.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.3.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure pam_pwhistory includes use_authtok (Automated)"
+}

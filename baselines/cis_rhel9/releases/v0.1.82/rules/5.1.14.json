@@ -1,0 +1,118 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure SSH LoginGraceTime is configured\n----\nTo ensure LoginGraceTime is set correctly, run the following command:\n$ sudo grep LoginGraceTime /etc/ssh/sshd_config\nIf properly configured, the output should be:\nLoginGraceTime \nIf the option is set to a number greater than 0, then the unauthenticated session will be disconnected\nafter the configured number seconds.\n      Is it the case that it is commented out or not configured properly?\n----\nExpected values: var_sshd_set_login_grace_time = $ODV_var_sshd_set_login_grace_time",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure SSH LoginGraceTime is configured\n\nThe `LoginGraceTime` parameter to the SSH server specifies the time allowed for successful authentication to\nthe SSH server. The longer the Grace period is the more open unauthenticated connections\ncan exist. Like other session controls in this session the Grace Period should be limited to\nappropriate limits to ensure the service is available for needed access.\n\n**Rationale:**\n\nSetting the `LoginGraceTime` parameter to a low number will minimize the risk of successful\nbrute force attacks to the SSH server. It will also limit the number of concurrent\nunauthenticated connections.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.1.14",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 60,
+        "cis_l1_workstation": 60,
+        "cis_l2_server": 60,
+        "cis_l2_workstation": 60
+      },
+      "datatype": "number",
+      "description": "SSH LoginGraceTime setting",
+      "name": "var_sshd_set_login_grace_time",
+      "quoting": "single",
+      "recommended": 60,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.1.14",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sshd_set_login_grace_time": "CCE-86552-7"
+      },
+      "rules": [
+        "sshd_set_login_grace_time"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sshd_set_login_grace_time`",
+          "language": "bash",
+          "name": "Ensure SSH LoginGraceTime is configured",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nvar_sshd_set_login_grace_time='$ODV_var_sshd_set_login_grace_time'\n\nmkdir -p /etc/ssh/sshd_config.d\nchmod 0700 /etc/ssh/sshd_config.d\ntouch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nchmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nLC_ALL=C sed -i \"/^\\s*LoginGraceTime\\s\\+/Id\" \"/etc/ssh/sshd_config\"\nLC_ALL=C sed -i \"/^\\s*LoginGraceTime\\s\\+/Id\" \"/etc/ssh/sshd_config.d\"/*.conf\nif [ -e \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*LoginGraceTime\\s\\+/Id\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nelse\n    touch \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n    chmod 0644 \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n\ncp \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n# Insert at the beginning of the file\nprintf '%s\\n' \"LoginGraceTime $var_sshd_set_login_grace_time\" > \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\ncat \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\" >> \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n# Clean up after ourselves.\nrm \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.1",
+    "5.1.14"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.14",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd LoginGraceTime is configured (Automated)"
+}

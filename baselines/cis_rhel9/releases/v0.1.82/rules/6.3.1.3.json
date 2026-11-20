@@ -1,0 +1,109 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Extend Audit Backlog Limit for the Audit Daemon\n----\nInspect the form of default GRUB 2 command line for the Linux operating system\nin /etc/default/grub. If it includes audit_backlog_limit=,\nthen the parameter will be configured for newly installed kernels.\nFirst check if the GRUB recovery is enabled:\n$ sudo grep 'GRUB_DISABLE_RECOVERY' /etc/default/grub\nIf this option is set to true, then check that a line is output by the following command:\n$ sudo grep 'GRUB_CMDLINE_LINUX_DEFAULT.*audit_backlog_limit=.*' /etc/default/grub\nIf the recovery is disabled, check the line with\n$ sudo grep 'GRUB_CMDLINE_LINUX.*audit_backlog_limit=.*' /etc/default/grub.Moreover, command line parameters for currently installed kernels should be checked as well.\nRun the following command:\n$ sudo grubby --info=ALL | grep args | grep -v 'audit_backlog_limit='\nThe command should not return any output.\n      Is it the case that audit backlog limit is not configured?\n----\nExpected values: var_audit_backlog_limit = $ODV_var_audit_backlog_limit",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Extend Audit Backlog Limit for the Audit Daemon\n\nTo improve the kernel capacity to queue all log events, even those which occurred\nprior to the audit daemon, add the argument `audit_backlog_limit=$ODV_var_audit_backlog_limit` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit_backlog_limit=$ODV_var_audit_backlog_limit` is added as a kernel command line\nargument to newly installed kernels, add `audit_backlog_limit=$ODV_var_audit_backlog_limit` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit_backlog_limit=$ODV_var_audit_backlog_limit ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# grubby --update-kernel=ALL --args=\"audit_backlog_limit=$ODV_var_audit_backlog_limit\"\n```\n\nIf the system is distributed as a bootable container image, GRUB2 can't be configured using the method described above, but the following method needs to be used instead.\nThe kernel arguments should be set in `/usr/lib/bootc/kargs.d` in a TOML file that has the following form:\n\n```\n# /usr/lib/bootc/kargs.d/10-example.toml\nkargs = [\"audit_backlog_limit=$ODV_var_audit_backlog_limit\"]\n```\n\nFor more details on configuring kernel arguments in bootable container images, please refer to [Bootc documentation](https://bootc-dev.github.io/bootc//building/kernel-arguments.html).\n\n**Rationale:**\n\naudit_backlog_limit sets the queue length for audit events awaiting transfer\nto the audit daemon. Until the audit daemon is up and running, all log messages\nare stored in this queue.  If the queue is overrun during boot process, the action\ndefined by audit failure flag is taken.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.6.3.1.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l2_server": 8192,
+        "cis_l2_workstation": 8192
+      },
+      "datatype": "number",
+      "description": "Audit backlog limit",
+      "name": "var_audit_backlog_limit",
+      "quoting": "single",
+      "recommended": 8192,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.1.3",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "grub2_audit_backlog_limit_argument": "CCE-83652-8"
+      },
+      "rules": [
+        "grub2_audit_backlog_limit_argument"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `grub2_audit_backlog_limit_argument`",
+          "language": "bash",
+          "name": "Extend Audit Backlog Limit for the Audit Daemon",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q grub2-common; }; then\n\nvar_audit_backlog_limit='$ODV_var_audit_backlog_limit'\n\n\n\nif { rpm --quiet -q kernel bootc && ! rpm --quiet -q openshift-kubelet && { [ -f \"/run/.containerenv\" ] || [ -f \"/.containerenv\" ]; }; } ; then\n    KARGS_DIR=\"/usr/lib/bootc/kargs.d/\"\n    if grep -q -E \"audit_backlog_limit\" \"$KARGS_DIR/*.toml\" ; then\n        sed -i -E \"s/^(\\s*kargs\\s*=\\s*\\[.*)\\\"audit_backlog_limit=[^\\\"]*\\\"(.*]\\s*)/\\1\\\"audit_backlog_limit=$var_audit_backlog_limit\\\"\\2/\" \"$KARGS_DIR/*.toml\"\n    else\n        echo \"kargs = [\\\"audit_backlog_limit=$var_audit_backlog_limit\\\"]\" >> \"$KARGS_DIR/10-audit_backlog_limit.toml\"\n    fi\nelse\n\n    grubby --update-kernel=ALL --args=audit_backlog_limit=$var_audit_backlog_limit\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.1",
+    "6.3.1.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure audit_backlog_limit is sufficient (Automated)"
+}

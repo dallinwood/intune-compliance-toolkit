@@ -1,0 +1,167 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Configure systemd-journal-upload TLS parameters: ServerKeyFile, ServerCertificateFile and TrustedCertificateFile\n----\nTo ensure logs are sent securely to a remote host, examine the file\n/etc/systemd/journal-upload.conf(.d/*.conf).\nServerKeyFile should be present:\nServerKeyFile=\nServerCertificateFile should be present:\nServerCertificateFile=\nTrustedCertificateFile should be present:\nTrustedCertificateFile=\n      Is it the case that systemd-journal-upload TLS configuration is missing or commented in /etc/systemd/journal-upload.conf?\n----\nExpected values: var_journal_upload_server_key_file = $ODV_var_journal_upload_server_key_file, var_journal_upload_server_certificate_file = $ODV_var_journal_upload_server_certificate_file, var_journal_upload_server_trusted_certificate_file = $ODV_var_journal_upload_server_trusted_certificate_file\n\n== Configure systemd-journal-upload URL\n----\nTo ensure logs are sent to a remote host, examine the file\n/etc/systemd/journal-upload.conf(.d/*.conf).\nURL should be present:\nURL=\n      Is it the case that systemd-journal-upload URL is missing or commented in /etc/systemd/journal-upload.conf?\n----\nExpected values: var_journal_upload_url = $ODV_var_journal_upload_url",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Configure systemd-journal-upload TLS parameters: ServerKeyFile, ServerCertificateFile and TrustedCertificateFile\n\nUbuntu 24.04 must offload rsyslog messages for networked systems in real time and\noffload standalone systems at least weekly\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration.\nOffloading is a common process in information systems with limited audit storage capacity\n\n## Configure systemd-journal-upload URL\n\nUbuntu 24.04 must offload rsyslog messages for networked systems in real time and\noffload standalone systems at least weekly\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration.\nOffloading is a common process in information systems with limited audit storage capacity",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.6.1.2.1.2",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "/etc/pki/systemd/private/journal-upload.pem",
+        "cis_l1_workstation": "/etc/pki/systemd/private/journal-upload.pem",
+        "cis_l2_server": "/etc/pki/systemd/private/journal-upload.pem",
+        "cis_l2_workstation": "/etc/pki/systemd/private/journal-upload.pem"
+      },
+      "datatype": "string",
+      "description": "Remote server SSL key in PEM format for systemd-journal-upload service",
+      "name": "var_journal_upload_server_key_file",
+      "quoting": "single",
+      "recommended": "/etc/pki/systemd/private/journal-upload.pem",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "/etc/pki/systemd/certs/journal-upload.pem",
+        "cis_l1_workstation": "/etc/pki/systemd/certs/journal-upload.pem",
+        "cis_l2_server": "/etc/pki/systemd/certs/journal-upload.pem",
+        "cis_l2_workstation": "/etc/pki/systemd/certs/journal-upload.pem"
+      },
+      "datatype": "string",
+      "description": "Remote server SSL CA certificate in PEM format for systemd-journal-upload service",
+      "name": "var_journal_upload_server_certificate_file",
+      "quoting": "single",
+      "recommended": "/etc/pki/systemd/certs/journal-upload.pem",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "/etc/pki/systemd/ca/trusted.pem",
+        "cis_l1_workstation": "/etc/pki/systemd/ca/trusted.pem",
+        "cis_l2_server": "/etc/pki/systemd/ca/trusted.pem",
+        "cis_l2_workstation": "/etc/pki/systemd/ca/trusted.pem"
+      },
+      "datatype": "string",
+      "description": "Remote server SSL CA certificate for systemd-journal-upload service",
+      "name": "var_journal_upload_server_trusted_certificate_file",
+      "quoting": "single",
+      "recommended": "/etc/pki/systemd/ca/trusted.pem",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "remotelogserver",
+        "cis_l1_workstation": "remotelogserver",
+        "cis_l2_server": "remotelogserver",
+        "cis_l2_workstation": "remotelogserver"
+      },
+      "datatype": "string",
+      "description": "Remote server for systemd-journal-upload service",
+      "name": "var_journal_upload_url",
+      "quoting": "single",
+      "recommended": "remotelogserver",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.1.2.1.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "systemd_journal_upload_server_tls",
+        "systemd_journal_upload_url"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `systemd_journal_upload_server_tls`",
+          "language": "bash",
+          "name": "Configure systemd-journal-upload TLS parameters: ServerKeyFile, ServerCertificateFile and TrustedCertificateFile",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { ! (systemctl is-active rsyslog &>/dev/null); }; then\n\ndropin_conf=/etc/systemd/journal-upload.conf.d/60-journald_upload.conf\nmkdir -p /etc/systemd/journal-upload.conf.d\nchmod 0755 /etc/systemd/journal-upload.conf.d\ntouch \"${dropin_conf}\"\nchmod 0644 \"${dropin_conf}\"\n\n \nfor conf in /etc/systemd/journal-upload.conf /etc/systemd/journal-upload.conf.d/*; do\n    [[ -e \"${conf}\" ]] || continue\n    sed -i --follow-symlinks \\\n        -e 's/^ServerKeyFile\\>/#&/g' \\\n        -e 's/^ServerCertificateFile\\>/#&/g' \\\n        -e 's/^TrustedCertificateFile\\>/#&/g' \"${conf}\"\ndone\n\nvar_journal_upload_server_key_file='$ODV_var_journal_upload_server_key_file'\n\nvar_journal_upload_server_certificate_file='$ODV_var_journal_upload_server_certificate_file'\n\nvar_journal_upload_server_trusted_certificate_file='$ODV_var_journal_upload_server_trusted_certificate_file'\n\n\nfound=false\n\n# set value in all files if they contain section or key\nfor f in $(echo -n \"${dropin_conf}\"); do\n    if [ ! -e \"$f\" ]; then\n        continue\n    fi\n\n    # find key in section and change value\n    if grep -qzosP \"(?m)^[[:space:]]*\\[Upload\\]([^\\n\\[]*\\n+)+?[[:space:]]*ServerKeyFile\" \"$f\"; then\n        if ! grep -qzosP \"(?m)^[[:space:]]*ServerKeyFile[[:space:]]*=[[:space:]]*$var_journal_upload_server_key_file\"'[[:space:]]*$' \"$f\"; then\n\n            sed -i \"/^[[:space:]]*ServerKeyFile/s/\\([[:blank:]]*=[[:blank:]]*\\).*/\\1$var_journal_upload_server_key_file/\" \"$f\"\n\n        fi\n\n        found=true\n\n    # find section and add key = value to it\n    elif grep -qs \"^[[:space:]]*\\[Upload\\]\" \"$f\"; then\n\n            sed -i \"/^[[:space:]]*\\[Upload\\]/a ServerKeyFile=$var_journal_upload_server_key_file\" \"$f\"\n\n            found=true\n    fi\n\n\ndone\n\n# if section not in any file, append section with key = value to FIRST file in files parameter\nif ! $found ; then\n    file=$(echo \"${dropin_conf}\" | cut -f1 -d ' ')\n    mkdir -p \"$(dirname \"$file\")\"\n    chmod 0755 \"$(dirname \"$file\")\"\n\n    echo -e \"[Upload]\\nServerKeyFile=$var_journal_upload_server_key_file\" >> \"$file\"\n\nfi\nfound=false\n\n# set value in all files if they contain section or key\nfor f in $(echo -n \"${dropin_conf}\"); do\n    if [ ! -e \"$f\" ]; then\n        continue\n    fi\n\n    # find key in section and change value\n    if grep -qzosP \"(?m)^[[:space:]]*\\[Upload\\]([^\\n\\[]*\\n+)+?[[:space:]]*ServerCertificateFile\" \"$f\"; then\n        if ! grep -qzosP \"(?m)^[[:space:]]*ServerCertificateFile[[:space:]]*=[[:space:]]*$var_journal_upload_server_certificate_file\"'[[:space:]]*$' \"$f\"; then\n\n            sed -i \"/^[[:space:]]*ServerCertificateFile/s/\\([[:blank:]]*=[[:blank:]]*\\).*/\\1$var_journal_upload_server_certificate_file/\" \"$f\"\n\n        fi\n\n        found=true\n\n    # find section and add key = value to it\n    elif grep -qs \"^[[:space:]]*\\[Upload\\]\" \"$f\"; then\n\n            sed -i \"/^[[:space:]]*\\[Upload\\]/a ServerCertificateFile=$var_journal_upload_server_certificate_file\" \"$f\"\n\n            found=true\n    fi\n\n\ndone\n\n# if section not in any file, append section with key = value to FIRST file in files parameter\nif ! $found ; then\n    file=$(echo \"${dropin_conf}\" | cut -f1 -d ' ')\n    mkdir -p \"$(dirname \"$file\")\"\n    chmod 0755 \"$(dirname \"$file\")\"\n\n    echo -e \"[Upload]\\nServerCertificateFile=$var_journal_upload_server_certificate_file\" >> \"$file\"\n\nfi\nfound=false\n\n# set value in all files if they contain section or key\nfor f in $(echo -n \"${dropin_conf}\"); do\n    if [ ! -e \"$f\" ]; then\n        continue\n    fi\n\n    # find key in section and change value\n    if grep -qzosP \"(?m)^[[:space:]]*\\[Upload\\]([^\\n\\[]*\\n+)+?[[:space:]]*TrustedCertificateFile\" \"$f\"; then\n        if ! grep -qzosP \"(?m)^[[:space:]]*TrustedCertificateFile[[:space:]]*=[[:space:]]*$var_journal_upload_server_trusted_certificate_file\"'[[:space:]]*$' \"$f\"; then\n\n            sed -i \"/^[[:space:]]*TrustedCertificateFile/s/\\([[:blank:]]*=[[:blank:]]*\\).*/\\1$var_journal_upload_server_trusted_certificate_file/\" \"$f\"\n\n        fi\n\n        found=true\n\n    # find section and add key = value to it\n    elif grep -qs \"^[[:space:]]*\\[Upload\\]\" \"$f\"; then\n\n            sed -i \"/^[[:space:]]*\\[Upload\\]/a TrustedCertificateFile=$var_journal_upload_server_trusted_certificate_file\" \"$f\"\n\n            found=true\n    fi\n\n\ndone\n\n# if section not in any file, append section with key = value to FIRST file in files parameter\nif ! $found ; then\n    file=$(echo \"${dropin_conf}\" | cut -f1 -d ' ')\n    mkdir -p \"$(dirname \"$file\")\"\n    chmod 0755 \"$(dirname \"$file\")\"\n\n    echo -e \"[Upload]\\nTrustedCertificateFile=$var_journal_upload_server_trusted_certificate_file\" >> \"$file\"\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `systemd_journal_upload_url`",
+          "language": "bash",
+          "name": "Configure systemd-journal-upload URL",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { ! (systemctl is-active rsyslog &>/dev/null); }; then\n\ndropin_conf=/etc/systemd/journal-upload.conf.d/60-journald_upload.conf\nmkdir -p /etc/systemd/journal-upload.conf.d\nchmod 0755 /etc/systemd/journal-upload.conf.d\ntouch \"${dropin_conf}\"\nchmod 0644 \"${dropin_conf}\"\n\n\nfor conf in /etc/systemd/journal-upload.conf /etc/systemd/journal-upload.conf.d/*; do\n    [[ -e \"${conf}\" ]] || continue\n    sed -i --follow-symlinks 's/^URL\\>/#&/g' \"${conf}\"\ndone\n\nvar_journal_upload_url='$ODV_var_journal_upload_url'\n\n\nfound=false\n\n# set value in all files if they contain section or key\nfor f in $(echo -n \"${dropin_conf}\"); do\n    if [ ! -e \"$f\" ]; then\n        continue\n    fi\n\n    # find key in section and change value\n    if grep -qzosP \"(?m)^[[:space:]]*\\[Upload\\]([^\\n\\[]*\\n+)+?[[:space:]]*URL\" \"$f\"; then\n        if ! grep -qzosP \"(?m)^[[:space:]]*URL[[:space:]]*=[[:space:]]*$var_journal_upload_url\"'[[:space:]]*$' \"$f\"; then\n\n            sed -i \"/^[[:space:]]*URL/s/\\([[:blank:]]*=[[:blank:]]*\\).*/\\1$var_journal_upload_url/\" \"$f\"\n\n        fi\n\n        found=true\n\n    # find section and add key = value to it\n    elif grep -qs \"^[[:space:]]*\\[Upload\\]\" \"$f\"; then\n\n            sed -i \"/^[[:space:]]*\\[Upload\\]/a URL=$var_journal_upload_url\" \"$f\"\n\n            found=true\n    fi\n\n\ndone\n\n# if section not in any file, append section with key = value to FIRST file in files parameter\nif ! $found ; then\n    file=$(echo \"${dropin_conf}\" | cut -f1 -d ' ')\n    mkdir -p \"$(dirname \"$file\")\"\n    chmod 0755 \"$(dirname \"$file\")\"\n\n    echo -e \"[Upload]\\nURL=$var_journal_upload_url\" >> \"$file\"\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.1",
+    "6.1.2",
+    "6.1.2.1",
+    "6.1.2.1.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.1.2.1.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure systemd-journal-upload authentication is configured (Manual)"
+}

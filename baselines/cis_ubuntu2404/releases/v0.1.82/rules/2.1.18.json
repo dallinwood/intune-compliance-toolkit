@@ -1,0 +1,124 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Uninstall apache2 Package\n----\nRun the following command to determine if the apache2 package is installed: $ dpkg -l apache2\n      Is it the case that the apache2 package is installed?\n----\n\n== Uninstall nginx Package\n----\nRun the following command to determine if the nginx package is installed: $ dpkg -l nginx\n      Is it the case that the nginx package is installed?\n----\n\n== Disable apache2 Service\n----\nTo check that the apache2 service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled apache2\nOutput should indicate the apache2 service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled apache2 disabled\n\nRun the following command to verify apache2 is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active apache2\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the apache2 is masked, run the following command:\n$ sudo systemctl show apache2 | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"apache2\" is loaded and not masked?\n----\n\n== Disable nginx Service\n----\nTo check that the nginx service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled nginx\nOutput should indicate the nginx service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled nginx disabled\n\nRun the following command to verify nginx is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active nginx\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the nginx is masked, run the following command:\n$ sudo systemctl show nginx | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"nginx\" is loaded and not masked?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Uninstall apache2 Package\n\nThe `apache2` package can be removed with the following command:\n\n```\n$ apt-get remove apache2\n```\n\n**Rationale:**\n\nIf there is no need to make the web server software available,\nremoving it provides a safeguard against its activation.\n\n## Uninstall nginx Package\n\nThe `nginx` package can be removed with the following command:\n\n```\n$ apt-get remove nginx\n```\n\n**Rationale:**\n\nIf there is no need to make the web server software available,\nremoving it provides a safeguard against its activation.\n\n## Disable apache2 Service\n\nThe `apache2` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now apache2.service\n```\n\n**Rationale:**\n\nRunning web server software provides a network-based avenue\nof attack, and should be disabled if not needed.\n\n## Disable nginx Service\n\nThe `nginx` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now nginx.service\n```\n\n**Rationale:**\n\nRunning web server software provides a network-based avenue\nof attack, and should be disabled if not needed.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.2.1.18",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.1.18",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "package_httpd_removed",
+        "package_nginx_removed",
+        "service_httpd_disabled",
+        "service_nginx_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_httpd_removed`",
+          "language": "bash",
+          "name": "Uninstall apache2 Package",
+          "shell": "# CAUTION: This remediation script will remove apache2\n# from the system, and may remove any packages\n# that depend on apache2. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\n# check wether the package is virtual: if not, remove it.\n# if the package is virtual, iterate on providers\n#  if a provider is installed, remove it\nis_virtual=`apt-cache showpkg \"apache2\" | grep -Pzc 'Versions: \\n\\n'`\nif [ $is_virtual = 1 ]; then\n    rprovides_line=`apt-cache showpkg \"apache2\" | grep -n 'Reverse Provides:' | cut -f1 -d:`\n    pkglist=`apt-cache showpkg \"apache2\" | tail -n +$(($rprovides_line + 1)) | cut -f1 -d' '`\n    for package in $pkglist; do\n        not_installed=`apt-cache policy $package | grep -c 'Installed: (none)'`\n\tif [ $not_installed = 0 ]; then\n\t    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y $package\n\tfi\n    done\nelse\n    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y \"apache2\"\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `package_nginx_removed`",
+          "language": "bash",
+          "name": "Uninstall nginx Package",
+          "shell": "# CAUTION: This remediation script will remove nginx\n# from the system, and may remove any packages\n# that depend on nginx. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\n# check wether the package is virtual: if not, remove it.\n# if the package is virtual, iterate on providers\n#  if a provider is installed, remove it\nis_virtual=`apt-cache showpkg \"nginx\" | grep -Pzc 'Versions: \\n\\n'`\nif [ $is_virtual = 1 ]; then\n    rprovides_line=`apt-cache showpkg \"nginx\" | grep -n 'Reverse Provides:' | cut -f1 -d:`\n    pkglist=`apt-cache showpkg \"nginx\" | tail -n +$(($rprovides_line + 1)) | cut -f1 -d' '`\n    for package in $pkglist; do\n        not_installed=`apt-cache policy $package | grep -c 'Installed: (none)'`\n\tif [ $not_installed = 0 ]; then\n\t    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y $package\n\tfi\n    done\nelse\n    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y \"nginx\"\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_httpd_disabled`",
+          "language": "bash",
+          "name": "Disable apache2 Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'apache2.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'apache2.service'\n\"$SYSTEMCTL_EXEC\" mask 'apache2.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files apache2.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'apache2.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'apache2.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'apache2.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_nginx_disabled`",
+          "language": "bash",
+          "name": "Disable nginx Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'nginx.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'nginx.service'\n\"$SYSTEMCTL_EXEC\" mask 'nginx.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files nginx.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'nginx.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'nginx.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'nginx.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.1",
+    "2.1.18"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.1.18",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure web server services are not in use (Automated)"
+}

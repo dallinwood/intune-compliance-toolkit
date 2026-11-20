@@ -1,0 +1,112 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure Users Cannot Change GNOME3 Session Idle Settings\n----\nTo ensure that users cannot change session idle and lock settings, run the following:\n$ grep 'idle-delay' /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should return:\n/org/gnome/desktop/session/idle-delay\n      Is it the case that idle-delay is not locked?\n----\n\n== Ensure Users Cannot Change GNOME3 Screensaver Settings\n----\nTo ensure that users cannot change session idle and lock settings, run the following:\n$ grep 'lock-delay' /etc/dconf/db/distro.d/locks/*\nIf properly configured, the output should return:\n/org/gnome/desktop/screensaver/lock-delay\n      Is it the case that GNOME3 session settings are not locked or configured properly?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure Users Cannot Change GNOME3 Session Idle Settings\n\nIf not already configured, ensure that users cannot change GNOME3 session idle settings\nby adding `/org/gnome/desktop/session/idle-delay`\nto `/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/desktop/session/idle-delay\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nA session time-out lock is a temporary action taken when a user stops work and moves away from the immediate\nphysical vicinity of the information system but does not logout because of the temporary nature of the absence.\nRather than relying on the user to manually lock their operating system session prior to vacating the vicinity,\nGNOME desktops can be configured to identify when a user's session has idled and take action to initiate the\nsession lock. As such, users should not be allowed to change session settings.\n\n## Ensure Users Cannot Change GNOME3 Screensaver Settings\n\nIf not already configured, ensure that users cannot change GNOME3 screensaver lock settings\nby adding `/org/gnome/desktop/screensaver/lock-delay`\nto `/etc/dconf/db/distro.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/desktop/screensaver/lock-delay\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nA session time-out lock is a temporary action taken when a user stops work and moves away from the immediate\nphysical vicinity of the information system but does not logout because of the temporary nature of the absence.\nRather than relying on the user to manually lock their operating system session prior to vacating the vicinity,\nGNOME desktops can be configured to identify when a user's session has idled and take action to initiate the\nsession lock. As such, users should not be allowed to change session settings.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.8.5",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.8.5",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "dconf_gnome_screensaver_user_locks": "CCE-87491-7",
+        "dconf_gnome_session_idle_user_locks": "CCE-85971-0"
+      },
+      "rules": [
+        "dconf_gnome_session_idle_user_locks",
+        "dconf_gnome_screensaver_user_locks"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_session_idle_user_locks`",
+          "language": "bash",
+          "name": "Ensure Users Cannot Change GNOME3 Session Idle Settings",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q gdm; then\n\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/desktop/session/idle-delay$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|local.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/local.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/desktop/session/idle-delay$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/desktop/session/idle-delay$\" /etc/dconf/db/local.d/\nthen\n    echo \"/org/gnome/desktop/session/idle-delay\" >> \"/etc/dconf/db/local.d/locks/00-security-settings-lock\"\nfi\ndconf update\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_screensaver_user_locks`",
+          "language": "bash",
+          "name": "Ensure Users Cannot Change GNOME3 Screensaver Settings",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q gdm; then\n\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/desktop/screensaver/lock-delay$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|local.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/local.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/desktop/screensaver/lock-delay$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/desktop/screensaver/lock-delay$\" /etc/dconf/db/local.d/\nthen\n    echo \"/org/gnome/desktop/screensaver/lock-delay\" >> \"/etc/dconf/db/local.d/locks/00-security-settings-lock\"\nfi\ndconf update\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.8",
+    "1.8.5"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.8.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure GDM screen locks cannot be overridden (Automated)"
+}

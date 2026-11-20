@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Audit Configuration Files Permissions are 640 or More Restrictive\n----\nTo properly set the permissions of /etc/audit/, run the command:\n$ sudo chmod 0640 /etc/audit/\nTo properly set the permissions of /etc/audit/rules.d/, run the command:\n$ sudo chmod 0640 /etc/audit/rules.d/\n      Is it the case that ?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Audit Configuration Files Permissions are 640 or More Restrictive\n\nAll audit configuration files permissions must be 640 or more restrictive.\n\n```\nchmod 0640 /etc/audit/audit*.{rules,conf} /etc/audit/rules.d/*\n```\n\n**Rationale:**\n\nWithout the capability to restrict which roles and individuals can\nselect which events are audited, unauthorized personnel may be able\nto prevent the auditing of critical events.\nMisconfigured audits may degrade the system's performance by\noverwhelming the audit log. Misconfigured audits may also make it more\ndifficult to establish, correlate, and investigate the events relating\nto an incident or identify those responsible for one.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.6.3.4.5",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.4.5",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "file_permissions_audit_configuration": "CCE-88002-1"
+      },
+      "rules": [
+        "file_permissions_audit_configuration"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_audit_configuration`",
+          "language": "bash",
+          "name": "Audit Configuration Files Permissions are 640 or More Restrictive",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q audit && rpm --quiet -q kernel-core; then\n\nfind -P /etc/audit/ -maxdepth 1 -perm /u+xs,g+xws,o+xwrt  -type f -regextype posix-extended -regex '^.*audit(\\.rules|d\\.conf)$' -exec chmod u-xs,g-xws,o-xwrt {} \\;\n\nfind -P /etc/audit/rules.d/ -maxdepth 1 -perm /u+xs,g+xws,o+xwrt  -type f -regextype posix-extended -regex '^.*\\.rules$' -exec chmod u-xs,g-xws,o-xwrt {} \\;\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.4",
+    "6.3.4.5"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.4.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure audit configuration files mode is configured (Automated)"
+}

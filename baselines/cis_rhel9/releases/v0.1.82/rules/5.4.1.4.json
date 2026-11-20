@@ -1,0 +1,142 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Set Password Hashing Algorithm in /etc/libuser.conf\n----\nVerify that the libuser is set to encrypt password with a FIPS 140-3 approved cryptographic hashing algorithm.\n\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i crypt_style /etc/libuser.conf\n\ncrypt_style = \n      Is it the case that crypt_style is not set to sha512?\n----\nExpected values: var_password_hashing_algorithm_pam = $ODV_var_password_hashing_algorithm_pam\n\n== Set Password Hashing Algorithm in /etc/login.defs\n----\nVerify that the shadow password suite configuration is set to encrypt password with a FIPS 140-3 approved cryptographic hashing algorithm.\n\n\nCheck the hashing algorithm that is being used to hash passwords with the following command:\n\n$ sudo grep -i ENCRYPT_METHOD  /etc/login.defs\n\nENCRYPT_METHOD \n      Is it the case that ENCRYPT_METHOD is not set to $ODV_var_password_hashing_algorithm?\n----\nExpected values: var_password_hashing_algorithm = $ODV_var_password_hashing_algorithm",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Set Password Hashing Algorithm in /etc/libuser.conf\n\nIn `/etc/libuser.conf`, add or correct the following line in its `[defaults]`\nsection to ensure the system will use the $ODV_var_password_hashing_algorithm_pam\nalgorithm for password hashing:\n\n```\ncrypt_style = $ODV_var_password_hashing_algorithm_pam\n         \n```\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nThis setting ensures user and group account administration utilities are configured to store\nonly encrypted representations of passwords. Additionally, the `crypt_style`\nconfiguration option in `/etc/libuser.conf` ensures the use of a strong hashing\nalgorithm that makes password cracking attacks more difficult.\n\n## Set Password Hashing Algorithm in /etc/login.defs\n\nIn `/etc/login.defs`, add or update the following line to ensure the system will use\n$ODV_var_password_hashing_algorithm as the hashing algorithm:\n\n```\nENCRYPT_METHOD $ODV_var_password_hashing_algorithm\n         \n```\n\n**Rationale:**\n\nPasswords need to be protected at all times, and encryption is the standard method for\nprotecting passwords. If passwords are not encrypted, they can be plainly read\n(i.e., clear text) and easily compromised. Passwords that are encrypted with a weak algorithm\nare no more protected than if they are kept in plain text.\n\n\n         \n\nUsing a stronger hashing algorithm makes password cracking attacks more difficult.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.4.1.4",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "sha512",
+        "cis_l1_workstation": "sha512",
+        "cis_l2_server": "sha512",
+        "cis_l2_workstation": "sha512"
+      },
+      "datatype": "string",
+      "description": "Password Hashing algorithm for pam_unix.so",
+      "name": "var_password_hashing_algorithm_pam",
+      "quoting": "single",
+      "recommended": "sha512",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "SHA512",
+        "cis_l1_workstation": "SHA512",
+        "cis_l2_server": "SHA512",
+        "cis_l2_workstation": "SHA512"
+      },
+      "datatype": "string",
+      "description": "Password Hashing algorithm",
+      "name": "var_password_hashing_algorithm",
+      "quoting": "single",
+      "recommended": "SHA512",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.4.1.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "set_password_hashing_algorithm_libuserconf": "CCE-88865-1",
+        "set_password_hashing_algorithm_logindefs": "CCE-90590-1"
+      },
+      "rules": [
+        "set_password_hashing_algorithm_libuserconf",
+        "set_password_hashing_algorithm_logindefs"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `set_password_hashing_algorithm_libuserconf`",
+          "language": "bash",
+          "name": "Set Password Hashing Algorithm in /etc/libuser.conf",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q libuser; }; then\n\nvar_password_hashing_algorithm_pam='$ODV_var_password_hashing_algorithm_pam'\n\nLIBUSER_CONF=\"/etc/libuser.conf\"\nCRYPT_STYLE_REGEX='[[:space:]]*\\[defaults](.*(\\n)+)+?[[:space:]]*crypt_style[[:space:]]*'\n\n# Try find crypt_style in [defaults] section. If it is here, then change algorithm to sha512.\n# If it isn't here, then add it to [defaults] section.\nif grep -qzosP $CRYPT_STYLE_REGEX $LIBUSER_CONF ; then\n        sed -i \"s/\\(crypt_style[[:space:]]*=[[:space:]]*\\).*/\\1$var_password_hashing_algorithm_pam/g\" $LIBUSER_CONF\nelif grep -qs \"\\[defaults]\" $LIBUSER_CONF ; then\n        sed -i \"/[[:space:]]*\\[defaults]/a crypt_style = $var_password_hashing_algorithm_pam\" $LIBUSER_CONF\nelse\n        echo -e \"[defaults]\\ncrypt_style = $var_password_hashing_algorithm_pam\" >> $LIBUSER_CONF\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `set_password_hashing_algorithm_logindefs`",
+          "language": "bash",
+          "name": "Set Password Hashing Algorithm in /etc/login.defs",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q shadow-utils; }; then\n\nvar_password_hashing_algorithm='$ODV_var_password_hashing_algorithm'\n\n\n# Allow multiple algorithms, but choose the first one for remediation\n#\nvar_password_hashing_algorithm=\"$(echo $var_password_hashing_algorithm | cut -d \\| -f 1)\"\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^ENCRYPT_METHOD\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s %s\" \"$stripped_key\" \"$var_password_hashing_algorithm\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^ENCRYPT_METHOD\\\\>\" \"/etc/login.defs\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^ENCRYPT_METHOD\\\\>.*/$escaped_formatted_output/gi\" \"/etc/login.defs\"\nelse\n    if [[ -s \"/etc/login.defs\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/login.defs\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/login.defs\"\n    fi\n    cce=\"CCE-90590-1\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"/etc/login.defs\" >> \"/etc/login.defs\"\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/login.defs\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.1",
+    "5.4.1.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure strong password hashing algorithm is configured (Automated)"
+}

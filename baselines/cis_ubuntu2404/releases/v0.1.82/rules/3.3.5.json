@@ -1,0 +1,181 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable Accepting ICMP Redirects for All IPv6 Interfaces\n----\nThe runtime status of the net.ipv6.conf.all.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv6.conf.all.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv6_conf_all_accept_redirects_value = $ODV_sysctl_net_ipv6_conf_all_accept_redirects_value\n\n== Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv6 Interfaces\n----\nThe runtime status of the net.ipv6.conf.default.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv6.conf.default.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv6_conf_default_accept_redirects_value = $ODV_sysctl_net_ipv6_conf_default_accept_redirects_value\n\n== Disable Accepting ICMP Redirects for All IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.all.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.all.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_all_accept_redirects_value = $ODV_sysctl_net_ipv4_conf_all_accept_redirects_value\n\n== Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv4 Interfaces\n----\nThe runtime status of the net.ipv4.conf.default.accept_redirects kernel parameter can be queried\nby running the following command:\n$ sysctl net.ipv4.conf.default.accept_redirects\n0.\n\n      Is it the case that the correct value is not returned?\n----\nExpected values: sysctl_net_ipv4_conf_default_accept_redirects_value = $ODV_sysctl_net_ipv4_conf_default_accept_redirects_value",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable Accepting ICMP Redirects for All IPv6 Interfaces\n\nTo set the runtime status of the `net.ipv6.conf.all.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv6.conf.all.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv6.conf.all.accept_redirects = 0\n```\n\n**Rationale:**\n\nAn illicit ICMP redirect message could result in a man-in-the-middle attack.\n\n## Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv6 Interfaces\n\nTo set the runtime status of the `net.ipv6.conf.default.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv6.conf.default.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv6.conf.default.accept_redirects = 0\n```\n\n**Rationale:**\n\nAn illicit ICMP redirect message could result in a man-in-the-middle attack.\n\n## Disable Accepting ICMP Redirects for All IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.all.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.all.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.all.accept_redirects = 0\n```\n\n**Rationale:**\n\nICMP redirect messages are used by routers to inform hosts that a more\ndirect route exists for a particular destination. These messages modify the\nhost's route table and are unauthenticated. An illicit ICMP redirect\nmessage could result in a man-in-the-middle attack.\n\n\nThis feature of the IPv4 protocol has few legitimate uses. It should be\ndisabled unless absolutely required.\"\n\n## Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv4 Interfaces\n\nTo set the runtime status of the `net.ipv4.conf.default.accept_redirects` kernel parameter, run the following command: \n```\n$ sudo sysctl -w net.ipv4.conf.default.accept_redirects=0\n```\n\nTo make sure that the setting is persistent, add the following line to a file in the directory `/etc/sysctl.d`: \n```\nnet.ipv4.conf.default.accept_redirects = 0\n```\n\n**Rationale:**\n\nICMP redirect messages are used by routers to inform hosts that a more\ndirect route exists for a particular destination. These messages modify the\nhost's route table and are unauthenticated. An illicit ICMP redirect\nmessage could result in a man-in-the-middle attack.\n\nThis feature of the IPv4 protocol has few legitimate uses. It should\nbe disabled unless absolutely required.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.3.3.5",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 0,
+        "cis_l1_workstation": 0,
+        "cis_l2_server": 0,
+        "cis_l2_workstation": 0
+      },
+      "datatype": "number",
+      "description": "net.ipv6.conf.all.accept_redirects",
+      "name": "sysctl_net_ipv6_conf_all_accept_redirects_value",
+      "quoting": "single",
+      "recommended": 0,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": 0,
+        "cis_l1_workstation": 0,
+        "cis_l2_server": 0,
+        "cis_l2_workstation": 0
+      },
+      "datatype": "number",
+      "description": "net.ipv6.conf.default.accept_redirects",
+      "name": "sysctl_net_ipv6_conf_default_accept_redirects_value",
+      "quoting": "single",
+      "recommended": 0,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": 0,
+        "cis_l1_workstation": 0,
+        "cis_l2_server": 0,
+        "cis_l2_workstation": 0
+      },
+      "datatype": "number",
+      "description": "net.ipv4.conf.all.accept_redirects",
+      "name": "sysctl_net_ipv4_conf_all_accept_redirects_value",
+      "quoting": "single",
+      "recommended": 0,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": 0,
+        "cis_l1_workstation": 0,
+        "cis_l2_server": 0,
+        "cis_l2_workstation": 0
+      },
+      "datatype": "number",
+      "description": "net.ipv4.conf.default.accept_redirects",
+      "name": "sysctl_net_ipv4_conf_default_accept_redirects_value",
+      "quoting": "single",
+      "recommended": 0,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "3.3.5",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "sysctl_net_ipv6_conf_all_accept_redirects",
+        "sysctl_net_ipv6_conf_default_accept_redirects",
+        "sysctl_net_ipv4_conf_all_accept_redirects",
+        "sysctl_net_ipv4_conf_default_accept_redirects"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sysctl_net_ipv6_conf_all_accept_redirects`",
+          "language": "bash",
+          "name": "Disable Accepting ICMP Redirects for All IPv6 Interfaces",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\n# Comment out any occurrences of net.ipv6.conf.all.accept_redirects from /etc/sysctl.d/*.conf files\n\nfor f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /etc/ufw/sysctl.conf; do\n\n\n  # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)\n  if [[ \"$(readlink -f \"$f\")\" == \"/etc/sysctl.conf\" ]]; then continue; fi\n\n  matching_list=$(grep -P '^(?!#).*[\\s]*net.ipv6.conf.all.accept_redirects.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      escaped_entry=$(sed -e 's|/|\\\\/|g' <<< \"$entry\")\n      # comment out \"net.ipv6.conf.all.accept_redirects\" matches to preserve user data\n      sed -i --follow-symlinks \"s/^${escaped_entry}$/# &/g\" $f\n    done <<< \"$matching_list\"\n  fi\ndone\n\n#\n# Set sysctl config file which to save the desired value\n#\n\nSYSCONFIG_FILE=\"/etc/sysctl.conf\"\n\nsysctl_net_ipv6_conf_all_accept_redirects_value='$ODV_sysctl_net_ipv6_conf_all_accept_redirects_value'\n\n\n#\n# Set runtime for net.ipv6.conf.all.accept_redirects\n#\nif ! /bin/false ; then\n    /sbin/sysctl -q -n -w net.ipv6.conf.all.accept_redirects=\"$sysctl_net_ipv6_conf_all_accept_redirects_value\"\nfi\n\n#\n# If net.ipv6.conf.all.accept_redirects present in /etc/sysctl.conf, change value to appropriate value\n#\telse, add \"net.ipv6.conf.all.accept_redirects = value\" to /etc/sysctl.conf\n#\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^net.ipv6.conf.all.accept_redirects\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$sysctl_net_ipv6_conf_all_accept_redirects_value\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^net.ipv6.conf.all.accept_redirects\\\\>\" \"${SYSCONFIG_FILE}\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^net.ipv6.conf.all.accept_redirects\\\\>.*/$escaped_formatted_output/gi\" \"${SYSCONFIG_FILE}\"\nelse\n    if [[ -s \"${SYSCONFIG_FILE}\" ]] && [[ -n \"$(tail -c 1 -- \"${SYSCONFIG_FILE}\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"${SYSCONFIG_FILE}\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"${SYSCONFIG_FILE}\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `sysctl_net_ipv6_conf_default_accept_redirects`",
+          "language": "bash",
+          "name": "Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv6 Interfaces",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\n# Comment out any occurrences of net.ipv6.conf.default.accept_redirects from /etc/sysctl.d/*.conf files\n\nfor f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /etc/ufw/sysctl.conf; do\n\n\n  # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)\n  if [[ \"$(readlink -f \"$f\")\" == \"/etc/sysctl.conf\" ]]; then continue; fi\n\n  matching_list=$(grep -P '^(?!#).*[\\s]*net.ipv6.conf.default.accept_redirects.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      escaped_entry=$(sed -e 's|/|\\\\/|g' <<< \"$entry\")\n      # comment out \"net.ipv6.conf.default.accept_redirects\" matches to preserve user data\n      sed -i --follow-symlinks \"s/^${escaped_entry}$/# &/g\" $f\n    done <<< \"$matching_list\"\n  fi\ndone\n\n#\n# Set sysctl config file which to save the desired value\n#\n\nSYSCONFIG_FILE=\"/etc/sysctl.conf\"\n\nsysctl_net_ipv6_conf_default_accept_redirects_value='$ODV_sysctl_net_ipv6_conf_default_accept_redirects_value'\n\n\n#\n# Set runtime for net.ipv6.conf.default.accept_redirects\n#\nif ! /bin/false ; then\n    /sbin/sysctl -q -n -w net.ipv6.conf.default.accept_redirects=\"$sysctl_net_ipv6_conf_default_accept_redirects_value\"\nfi\n\n#\n# If net.ipv6.conf.default.accept_redirects present in /etc/sysctl.conf, change value to appropriate value\n#\telse, add \"net.ipv6.conf.default.accept_redirects = value\" to /etc/sysctl.conf\n#\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^net.ipv6.conf.default.accept_redirects\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$sysctl_net_ipv6_conf_default_accept_redirects_value\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^net.ipv6.conf.default.accept_redirects\\\\>\" \"${SYSCONFIG_FILE}\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^net.ipv6.conf.default.accept_redirects\\\\>.*/$escaped_formatted_output/gi\" \"${SYSCONFIG_FILE}\"\nelse\n    if [[ -s \"${SYSCONFIG_FILE}\" ]] && [[ -n \"$(tail -c 1 -- \"${SYSCONFIG_FILE}\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"${SYSCONFIG_FILE}\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"${SYSCONFIG_FILE}\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `sysctl_net_ipv4_conf_all_accept_redirects`",
+          "language": "bash",
+          "name": "Disable Accepting ICMP Redirects for All IPv4 Interfaces",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\n# Comment out any occurrences of net.ipv4.conf.all.accept_redirects from /etc/sysctl.d/*.conf files\n\nfor f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /etc/ufw/sysctl.conf; do\n\n\n  # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)\n  if [[ \"$(readlink -f \"$f\")\" == \"/etc/sysctl.conf\" ]]; then continue; fi\n\n  matching_list=$(grep -P '^(?!#).*[\\s]*net.ipv4.conf.all.accept_redirects.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      escaped_entry=$(sed -e 's|/|\\\\/|g' <<< \"$entry\")\n      # comment out \"net.ipv4.conf.all.accept_redirects\" matches to preserve user data\n      sed -i --follow-symlinks \"s/^${escaped_entry}$/# &/g\" $f\n    done <<< \"$matching_list\"\n  fi\ndone\n\n#\n# Set sysctl config file which to save the desired value\n#\n\nSYSCONFIG_FILE=\"/etc/sysctl.conf\"\n\nsysctl_net_ipv4_conf_all_accept_redirects_value='$ODV_sysctl_net_ipv4_conf_all_accept_redirects_value'\n\n\n#\n# Set runtime for net.ipv4.conf.all.accept_redirects\n#\nif ! /bin/false ; then\n    /sbin/sysctl -q -n -w net.ipv4.conf.all.accept_redirects=\"$sysctl_net_ipv4_conf_all_accept_redirects_value\"\nfi\n\n#\n# If net.ipv4.conf.all.accept_redirects present in /etc/sysctl.conf, change value to appropriate value\n#\telse, add \"net.ipv4.conf.all.accept_redirects = value\" to /etc/sysctl.conf\n#\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^net.ipv4.conf.all.accept_redirects\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$sysctl_net_ipv4_conf_all_accept_redirects_value\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^net.ipv4.conf.all.accept_redirects\\\\>\" \"${SYSCONFIG_FILE}\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^net.ipv4.conf.all.accept_redirects\\\\>.*/$escaped_formatted_output/gi\" \"${SYSCONFIG_FILE}\"\nelse\n    if [[ -s \"${SYSCONFIG_FILE}\" ]] && [[ -n \"$(tail -c 1 -- \"${SYSCONFIG_FILE}\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"${SYSCONFIG_FILE}\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"${SYSCONFIG_FILE}\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `sysctl_net_ipv4_conf_default_accept_redirects`",
+          "language": "bash",
+          "name": "Disable Kernel Parameter for Accepting ICMP Redirects by Default on IPv4 Interfaces",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\n# Comment out any occurrences of net.ipv4.conf.default.accept_redirects from /etc/sysctl.d/*.conf files\n\nfor f in /etc/sysctl.d/*.conf /run/sysctl.d/*.conf /usr/local/lib/sysctl.d/*.conf /etc/ufw/sysctl.conf; do\n\n\n  # skip systemd-sysctl symlink (/etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf)\n  if [[ \"$(readlink -f \"$f\")\" == \"/etc/sysctl.conf\" ]]; then continue; fi\n\n  matching_list=$(grep -P '^(?!#).*[\\s]*net.ipv4.conf.default.accept_redirects.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      escaped_entry=$(sed -e 's|/|\\\\/|g' <<< \"$entry\")\n      # comment out \"net.ipv4.conf.default.accept_redirects\" matches to preserve user data\n      sed -i --follow-symlinks \"s/^${escaped_entry}$/# &/g\" $f\n    done <<< \"$matching_list\"\n  fi\ndone\n\n#\n# Set sysctl config file which to save the desired value\n#\n\nSYSCONFIG_FILE=\"/etc/sysctl.conf\"\n\nsysctl_net_ipv4_conf_default_accept_redirects_value='$ODV_sysctl_net_ipv4_conf_default_accept_redirects_value'\n\n\n#\n# Set runtime for net.ipv4.conf.default.accept_redirects\n#\nif ! /bin/false ; then\n    /sbin/sysctl -q -n -w net.ipv4.conf.default.accept_redirects=\"$sysctl_net_ipv4_conf_default_accept_redirects_value\"\nfi\n\n#\n# If net.ipv4.conf.default.accept_redirects present in /etc/sysctl.conf, change value to appropriate value\n#\telse, add \"net.ipv4.conf.default.accept_redirects = value\" to /etc/sysctl.conf\n#\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^net.ipv4.conf.default.accept_redirects\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$sysctl_net_ipv4_conf_default_accept_redirects_value\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^net.ipv4.conf.default.accept_redirects\\\\>\" \"${SYSCONFIG_FILE}\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^net.ipv4.conf.default.accept_redirects\\\\>.*/$escaped_formatted_output/gi\" \"${SYSCONFIG_FILE}\"\nelse\n    if [[ -s \"${SYSCONFIG_FILE}\" ]] && [[ -n \"$(tail -c 1 -- \"${SYSCONFIG_FILE}\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"${SYSCONFIG_FILE}\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"${SYSCONFIG_FILE}\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "3",
+    "3.3",
+    "3.3.5"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "3.3.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure icmp redirects are not accepted (Automated)"
+}

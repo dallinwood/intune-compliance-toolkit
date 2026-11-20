@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure the audit Subsystem is Installed\n----\nRun the following command to determine if the audit package is installed: $ dpkg -l audit\n      Is it the case that the audit package is not installed?\n----\n\n== Ensure the default plugins for the audit dispatcher are Installed\n----\nIs it the case that the package is not installed?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure the audit Subsystem is Installed\n\nThe audit package should be installed.\n\n**Rationale:**\n\nThe auditd service is an access monitoring and accounting daemon, watching system calls to audit any access, in comparison with potential local access control policy such as SELinux policy.\n\n## Ensure the default plugins for the audit dispatcher are Installed\n\nThe audit-audispd-plugins package should be installed.\n\n**Rationale:**\n\nInformation stored in one location is vulnerable to accidental or incidental deletion or alteration. Off-loading is a common process in information systems with limited audit storage capacity.\n\n**Notes:**\n\nImplementation analogous to ubuntu2204/4.1.1.1.\nAdded also the missing rule for audispd.\n",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.6.2.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.2.1.1",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "package_audit_installed",
+        "package_audit-audispd-plugins_installed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_audit_installed`",
+          "language": "bash",
+          "name": "Ensure the audit Subsystem is Installed",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nDEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 install -y \"auditd\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `package_audit-audispd-plugins_installed`",
+          "language": "bash",
+          "name": "Ensure the default plugins for the audit dispatcher are Installed",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nDEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 install -y \"audispd-plugins\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.2",
+    "6.2.1",
+    "6.2.1.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.2.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure auditd packages are installed (Automated)"
+}

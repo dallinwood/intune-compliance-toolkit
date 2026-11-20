@@ -1,0 +1,109 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Configure auditd Max Log File Size\n----\nInspect /etc/audit/auditd.conf and locate the following line to\ndetermine how much data the system will retain in each audit log file:\n$ sudo grep max_log_file /etc/audit/auditd.conf\nmax_log_file = 6\n      Is it the case that the system audit data threshold has not been properly configured?\n----\nExpected values: var_auditd_max_log_file = $ODV_var_auditd_max_log_file",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Configure auditd Max Log File Size\n\nDetermine the amount of audit data (in megabytes)\nwhich should be retained in each log file. Edit the file\n`/etc/audit/auditd.conf`. Add or modify the following line, substituting\nthe correct value of $ODV_var_auditd_max_log_file for *STOREMB*:\n\n```\nmax_log_file = *STOREMB*\n       \n```\n\nSet the value to `6` (MB) or higher for general-purpose systems.\nLarger values, of course,\nsupport retention of even more audit data.\n\n**Rationale:**\n\nThe total storage for audit log files must be large enough to retain\nlog information over the period required. This is a function of the maximum\nlog file size and the number of logs retained.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.6.3.2.1",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l2_server": 6,
+        "cis_l2_workstation": 6
+      },
+      "datatype": "number",
+      "description": "Maximum audit log file size for auditd",
+      "name": "var_auditd_max_log_file",
+      "quoting": "single",
+      "recommended": 6,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.2.1",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "auditd_data_retention_max_log_file": "CCE-83683-3"
+      },
+      "rules": [
+        "auditd_data_retention_max_log_file"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `auditd_data_retention_max_log_file`",
+          "language": "bash",
+          "name": "Configure auditd Max Log File Size",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q audit && rpm --quiet -q kernel-core; then\n\nvar_auditd_max_log_file='$ODV_var_auditd_max_log_file'\n\n\nAUDITCONFIG=/etc/audit/auditd.conf\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^max_log_file\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_auditd_max_log_file\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^max_log_file\\\\>\" \"$AUDITCONFIG\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^max_log_file\\\\>.*/$escaped_formatted_output/gi\" \"$AUDITCONFIG\"\nelse\n    if [[ -s \"$AUDITCONFIG\" ]] && [[ -n \"$(tail -c 1 -- \"$AUDITCONFIG\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"$AUDITCONFIG\"\n    fi\n    cce=\"CCE-83683-3\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"$AUDITCONFIG\" >> \"$AUDITCONFIG\"\n    printf '%s\\n' \"$formatted_output\" >> \"$AUDITCONFIG\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.2",
+    "6.3.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.2.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure audit log storage size is configured (Automated)"
+}

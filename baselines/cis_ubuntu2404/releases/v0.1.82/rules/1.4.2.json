@@ -1,0 +1,108 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Verify /boot/grub/grub.cfg User Ownership\n----\nTo check the ownership of /boot/grub/grub.cfg,\nrun the command:\n$ ls -lL /boot/grub/grub.cfg\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /boot/grub/grub.cfg does not have an owner of root?\n----\n\n== Verify /boot/grub/grub.cfg Permissions\n----\nTo check the permissions of /boot/grub/grub.cfg, run the command:\n$ sudo ls -lL /boot/grub/grub.cfg\nIf properly configured, the output should indicate the following\npermissions: -rw-------\n      Is it the case that it does not?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Verify /boot/grub/grub.cfg User Ownership\n\nThe file `/boot/grub/grub.cfg` should\nbe owned by the `root` user to prevent destruction\nor modification of the file.\nTo properly set the owner of `/boot/grub/grub.cfg`, run the command:\n\n  \n```\n$ sudo chown root /boot/grub/grub.cfg \n```\n\n**Rationale:**\n\nOnly root should be able to modify important boot parameters.\n\n## Verify /boot/grub/grub.cfg Permissions\n\nFile permissions for `/boot/grub/grub.cfg` should be set to 600.\nTo properly set the permissions of `/boot/grub/grub.cfg`, run the command:\n\n```\n$ sudo chmod 600 /boot/grub/grub.cfg\n```\n\n**Rationale:**\n\nProper permissions ensure that only the root user can modify important boot\nparameters.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.1.4.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.4.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "file_owner_grub2_cfg",
+        "file_permissions_grub2_cfg"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_grub2_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub/grub.cfg User Ownership",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( dpkg-query --show --showformat='${db:Status-Status}' 'grub2-common' 2>/dev/null | grep -q '^installed$' && dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nnewown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/boot/grub/grub.cfg\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /boot/grub/grub.cfg\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_grub2_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub/grub.cfg Permissions",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( dpkg-query --show --showformat='${db:Status-Status}' 'grub2-common' 2>/dev/null | grep -q '^installed$' && dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nchmod u-xs,g-xwrs,o-xwrt /boot/grub/grub.cfg\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.4",
+    "1.4.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.4.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure access to bootloader config is configured (Automated)"
+}

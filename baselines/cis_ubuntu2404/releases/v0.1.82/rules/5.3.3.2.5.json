@@ -1,0 +1,117 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Limit the maximum number of sequential characters in passwords\nNo audit procedure in ComplianceAsCode.\nExpected values: var_password_pam_maxsequence = $ODV_var_password_pam_maxsequence",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Limit the maximum number of sequential characters in passwords\n\nThe `pwquality maxsequence` setting defines the maximum allowable length for consecutive \ncharacter sequences in a new password. Such sequences can be, e.g., 123 or abc. If the value is \nset to 0, this check will be turned off.\n\n\n          \n\nNote: Passwords that consist mainly of such sequences are unlikely to meet the simplicity criteria \nunless the sequence constitutes only a small portion of the overall password.\n\n**Rationale:**\n\nUse of a strong password helps to increase the time and resources required to\ncompromise the password. Password complexity, or strength, is a measure of the\neffectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one important factor that determines the duration required to crack it.\nA more intricate password results in a larger number of potential combinations that must be \ntested before successfully compromising the password.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.5.3.3.2.5",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 3,
+        "cis_l1_workstation": 3,
+        "cis_l2_server": 3,
+        "cis_l2_workstation": 3
+      },
+      "datatype": "number",
+      "description": "maxsequence",
+      "name": "var_password_pam_maxsequence",
+      "quoting": "single",
+      "recommended": 3,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.3.3.2.5",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_password_pam_maxsequence"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_maxsequence`",
+          "language": "bash",
+          "name": "Limit the maximum number of sequential characters in passwords",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_password_pam_maxsequence='$ODV_var_password_pam_maxsequence'\n\n\n\n\n\n\n\nconf_name=cac_pwquality\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Pwquality password strength checking\nDefault: yes\nPriority: 1025\nConflicts: cracklib, pwquality\nPassword-Type: Primary\nPassword:\n    requisite                   pam_pwquality.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\n\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^maxsequence\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_password_pam_maxsequence\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^maxsequence\\\\>\" \"/etc/security/pwquality.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^maxsequence\\\\>.*/$escaped_formatted_output/gi\" \"/etc/security/pwquality.conf\"\nelse\n    if [[ -s \"/etc/security/pwquality.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/security/pwquality.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/security/pwquality.conf\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/security/pwquality.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.2",
+    "5.3.3.2.5"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.2.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure password maximum sequential characters is configured (Automated)"
+}

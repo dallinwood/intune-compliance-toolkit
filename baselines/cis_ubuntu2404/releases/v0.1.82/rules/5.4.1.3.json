@@ -1,0 +1,116 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Set Password Warning Age\n----\nTo check the password warning age, run the command:\n$ grep PASS_WARN_AGE /etc/login.defs\nThe profile requirement is .\n      Is it the case that it is not set to the required value?\n----\nExpected values: var_accounts_password_warn_age_login_defs = $ODV_var_accounts_password_warn_age_login_defs",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Set Password Warning Age\n\nTo specify how many days prior to password\nexpiration that a warning will be issued to users,\nedit the file `/etc/login.defs` and add or correct\n the following line:\n\n```\nPASS_WARN_AGE $ODV_var_accounts_password_warn_age_login_defs\n         \n```\n\nThe profile requirement is `$ODV_var_accounts_password_warn_age_login_defs`.\n\n**Rationale:**\n\nSetting the password warning age enables users to\nmake the change at a practical time.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.5.4.1.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 7,
+        "cis_l1_workstation": 7,
+        "cis_l2_server": 7,
+        "cis_l2_workstation": 7
+      },
+      "datatype": "number",
+      "description": "warning days before password expires",
+      "name": "var_accounts_password_warn_age_login_defs",
+      "quoting": "single",
+      "recommended": 7,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.4.1.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_password_warn_age_login_defs"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_warn_age_login_defs`",
+          "language": "bash",
+          "name": "Set Password Warning Age",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'login' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_accounts_password_warn_age_login_defs='$ODV_var_accounts_password_warn_age_login_defs'\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^PASS_WARN_AGE\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s %s\" \"$stripped_key\" \"$var_accounts_password_warn_age_login_defs\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^PASS_WARN_AGE\\\\>\" \"/etc/login.defs\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^PASS_WARN_AGE\\\\>.*/$escaped_formatted_output/gi\" \"/etc/login.defs\"\nelse\n    if [[ -s \"/etc/login.defs\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/login.defs\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/login.defs\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/login.defs\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.1",
+    "5.4.1.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure password expiration warning days is configured (Automated)"
+}

@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Enable Auditing for Processes Which Start Prior to the Audit Daemon\n----\nInspect the form of default GRUB 2 command line for the Linux operating system\nin /etc/default/grub. If it includes audit=1,\nthen the parameter will be configured for newly installed kernels.\nFirst check if the GRUB recovery is enabled:\n$ sudo grep 'GRUB_DISABLE_RECOVERY' /etc/default/grub\nIf this option is set to true, then check that a line is output by the following command:\n$ sudo grep 'GRUB_CMDLINE_LINUX_DEFAULT.*audit=1.*' /etc/default/grub\nIf the recovery is disabled, check the line with\n$ sudo grep 'GRUB_CMDLINE_LINUX.*audit=1.*' /etc/default/grub.Moreover, current Grub config file grub.cfg must be checked. The file can be found\neither in /boot/grub in case of legacy BIOS systems, or in /boot/grub in case of UEFI systems.\nIf they include audit=1, then the parameter\nis configured at boot time.\n$ sudo grep vmlinuz GRUB_CFG_FILE_PATH | grep -v 'audit=1'\nFill in GRUB_CFG_FILE_PATH based on information above.\nThis command should not return any output.\n      Is it the case that auditing is not enabled at boot time?\n----\n\n== Enable Auditing to Start Prior to the Audit Daemon in zIPL\n----\nTo check that audit is enabled at boot time, check all boot entries with following command:\nsudo grep -L \"^options\\s+.*\\baudit=1\\b\" /boot/loader/entries/*.conf\nNo line should be returned, each line returned is a boot entry that doesn't enable audit.\n      Is it the case that auditing is not enabled at boot time?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Enable Auditing for Processes Which Start Prior to the Audit Daemon\n\nTo ensure all processes can be audited, even those which start\nprior to the audit daemon, add the argument `audit=1` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit=1` is added as a kernel command line\nargument to newly installed kernels, add `audit=1` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit=1 ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# update-grub\n```\n\n**Rationale:**\n\nEach process on the system carries an \"auditable\" flag which indicates whether\nits activities can be audited. Although `auditd` takes care of enabling\nthis for all processes which launch after it does, adding the kernel argument\nensures it is set for every process during boot.\n\n## Enable Auditing to Start Prior to the Audit Daemon in zIPL\n\nTo ensure all processes can be audited, even those which start prior to the audit daemon,\ncheck that all boot entries in `/boot/loader/entries/*.conf` have `audit=1`\nincluded in its options.\n\n\nTo ensure that new kernels and boot entries continue to enable audit,\nadd `audit=1` to `/etc/kernel/cmdline`.\n\n**Rationale:**\n\nEach process on the system carries an \"auditable\" flag which indicates whether\nits activities can be audited. Although `auditd` takes care of enabling\nthis for all processes which launch after it does, adding the kernel argument\nensures it is set for every process during boot.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.6.2.1.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.2.1.3",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "grub2_audit_argument",
+        "zipl_audit_argument"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `grub2_audit_argument`",
+          "language": "bash",
+          "name": "Enable Auditing for Processes Which Start Prior to the Audit Daemon",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'grub2-common' 2>/dev/null | grep -q '^installed$'; }; then\n\nif /bin/false ; then\n    KARGS_DIR=\"/usr/lib/bootc/kargs.d/\"\n    if grep -q -E \"audit\" \"$KARGS_DIR/*.toml\" ; then\n        sed -i -E \"s/^(\\s*kargs\\s*=\\s*\\[.*)\\\"audit=[^\\\"]*\\\"(.*]\\s*)/\\1\\\"audit=1\\\"\\2/\" \"$KARGS_DIR/*.toml\"\n    else\n        echo \"kargs = [\\\"audit=1\\\"]\" >> \"$KARGS_DIR/10-audit.toml\"\n    fi\nelse\n\n\n    # Correct the form of default kernel command line in GRUB\n    if grep -q '^\\s*GRUB_CMDLINE_LINUX=.*audit=.*\\\"' '/etc/default/grub' ; then\n        # modify the GRUB command-line if an audit= arg already exists\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX=\\\".*\\)audit=[^[:space:]]\\+\\(.*\\\"\\)/\\1audit=1\\2/\" '/etc/default/grub'\n    # Add to already existing parameters\n    elif grep -q '^\\s*GRUB_CMDLINE_LINUX=' '/etc/default/grub' ; then\n        # no audit=arg is present, append it\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX=\\\".*\\)\\\"/\\1 audit=1\\\"/\" '/etc/default/grub'\n    # Add parameters line if completely missing\n    else\n        echo \"GRUB_CMDLINE_LINUX=\\\"audit=1\\\"\" >> '/etc/default/grub'\n    fi\n    if grep -q '^\\s*GRUB_CMDLINE_LINUX_DEFAULT=.*audit=.*\\\"' '/etc/default/grub' ; then\n        # modify the GRUB command-line if an audit= arg already exists\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX_DEFAULT=\\\".*\\)audit=[^[:space:]]\\+\\(.*\\\"\\)/\\1audit=1\\2/\" '/etc/default/grub'\n    # Add to already existing parameters\n    elif grep -q '^\\s*GRUB_CMDLINE_LINUX_DEFAULT=' '/etc/default/grub' ; then\n        # no audit=arg is present, append it\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX_DEFAULT=\\\".*\\)\\\"/\\1 audit=1\\\"/\" '/etc/default/grub'\n    # Add parameters line if completely missing\n    else\n        echo \"GRUB_CMDLINE_LINUX_DEFAULT=\\\"audit=1\\\"\" >> '/etc/default/grub'\n    fi\n    update-grub \n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `zipl_audit_argument`).",
+          "language": "bash",
+          "name": "Enable Auditing to Start Prior to the Audit Daemon in zIPL",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.2",
+    "6.2.1",
+    "6.2.1.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.2.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure auditing for processes that start prior to auditd is enabled (Automated)"
+}

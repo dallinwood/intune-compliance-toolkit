@@ -1,0 +1,140 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure that /etc/at.deny does not exist\n----\nThe file /etc/at.deny should not exist.\nThis can be checked by running the following\n\nstat /etc/at.deny\n\nand the output should be\n\nstat: cannot stat `/etc/at.deny': No such file or directory\n\n      Is it the case that the file /etc/at.deny exists?\n----\n\n== Ensure that /etc/at.allow exists\n----\nThe file /etc/at.allow should exist.\nThis can be checked by running the following command:\n\nstat /etc/at.allow\n\nand the output should list the file.\n      Is it the case that the file /etc/at.allow does not exist?\n----\n\n== Verify Group Who Owns /etc/at.allow file\n----\nTo check the group ownership of /etc/at.allow,\nrun the command:\n$ ls -lL /etc/at.allow\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/at.allow does not have a group owner of\nroot\n?\n----\n\n== Verify User Who Owns /etc/at.allow file\n----\nTo check the ownership of /etc/at.allow,\nrun the command:\n$ ls -lL /etc/at.allow\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/at.allow does not have an owner of root?\n----\n\n== Verify Permissions on /etc/at.allow file\n----\nTo check the permissions of /etc/at.allow,\nrun the command:\n$ ls -l /etc/at.allow\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /etc/at.allow does not have unix mode -rw-r-----?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure that /etc/at.deny does not exist\n\nThe file `/etc/at.deny` should not exist.\nUse `/etc/at.allow` instead.\n\n**Rationale:**\n\nAccess to `at` should be restricted.\nIt is easier to manage an allow list than a deny list.\n\n## Ensure that /etc/at.allow exists\n\nThe file `/etc/at.allow` should exist and should be used instead\nof `/etc/at.deny`.\n\n**Rationale:**\n\nUsing the at.allow file to control who can run at jobs enforces this who can schedule jobs.\nIt is easier to manage an allow list than a deny list.\n\n## Verify Group Who Owns /etc/at.allow file\n\nIf `/etc/at.allow` exists, it must be group-owned by `root`.\nTo properly set the group owner of `/etc/at.allow`, run the command:\n\n  \n```\n$ sudo chgrp root /etc/at.allow\n```\n\n**Rationale:**\n\nIf the owner of the at.allow file is not set to root, the possibility exists for an\nunauthorized user to view or edit sensitive information.\n\n## Verify User Who Owns /etc/at.allow file\n\nIf `/etc/at.allow` exists, it must be owned by `root`.\nTo properly set the owner of `/etc/at.allow`, run the command:\n\n  \n```\n$ sudo chown root /etc/at.allow \n```\n\n**Rationale:**\n\nIf the owner of the at.allow file is not set to root, the possibility exists for an\nunauthorized user to view or edit sensitive information.\n\n## Verify Permissions on /etc/at.allow file\n\nIf `/etc/at.allow` exists, it must have permissions `0640`\nor more restrictive.\n\nTo properly set the permissions of `/etc/at.allow`, run the command:\n\n```\n$ sudo chmod 0640 /etc/at.allow\n```\n\n**Rationale:**\n\nIf the permissions of the at.allow file are not set to 0640 or more restrictive,\nthe possibility exists for an unauthorized user to view or edit sensitive information.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.2.4.2.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "2.4.2.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "file_at_allow_exists": "CCE-86856-2",
+        "file_at_deny_not_exist": "CCE-86946-1",
+        "file_groupowner_at_allow": "CCE-87103-8",
+        "file_owner_at_allow": "CCE-86346-4",
+        "file_permissions_at_allow": "CCE-86904-0"
+      },
+      "rules": [
+        "file_at_deny_not_exist",
+        "file_at_allow_exists",
+        "file_groupowner_at_allow",
+        "file_owner_at_allow",
+        "file_permissions_at_allow"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_at_deny_not_exist`",
+          "language": "bash",
+          "name": "Ensure that /etc/at.deny does not exist",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nif [[ -f  /etc/at.deny ]]; then\n        rm /etc/at.deny\n    fi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_at_allow_exists`",
+          "language": "bash",
+          "name": "Ensure that /etc/at.allow exists",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\ntouch /etc/at.allow\n    chown 0 /etc/at.allow\n    chmod 0640 /etc/at.allow\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_at_allow`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /etc/at.allow file",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nnewgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/etc/at.allow\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /etc/at.allow\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_at_allow`",
+          "language": "bash",
+          "name": "Verify User Who Owns /etc/at.allow file",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nnewown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/etc/at.allow\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /etc/at.allow\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_at_allow`",
+          "language": "bash",
+          "name": "Verify Permissions on /etc/at.allow file",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nchmod u-xs,g-xws,o-xwrt /etc/at.allow\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.4",
+    "2.4.2",
+    "2.4.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.4.2.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure at is restricted to authorized users (Automated)"
+}

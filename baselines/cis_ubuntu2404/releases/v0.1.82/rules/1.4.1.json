@@ -1,0 +1,108 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Set Boot Loader Password in grub2\n----\nFirst, check whether the password is defined in either /boot/grub/user.cfg or\n/boot/grub/grub.cfg.\nRun the following commands:\n$ sudo grep '^[\\s]*GRUB2_PASSWORD=grub\\.pbkdf2\\.sha512.*$' /boot/grub/user.cfg\n$ sudo grep '^[\\s]*password_pbkdf2[\\s]+.*[\\s]+grub\\.pbkdf2\\.sha512.*$' /boot/grub/grub.cfg\n\n\nSecond, check that a superuser is defined in /boot/grub/grub.cfg.\n$ sudo grep '^[\\s]*set[\\s]+superusers=(\"?)[a-zA-Z_]+\\1$'  /boot/grub/grub.cfg\n      Is it the case that it does not produce any output?\n----\n\n== Set the UEFI Boot Loader Password\n----\nTo verify the boot loader superuser password has been set, run the following command:\n$ sudo grep \"^[\\s]*GRUB2_PASSWORD=grub\\.pbkdf2\\.sha512.*$\" /boot/grub/user.cfg\nThe output should be similar to:\nGRUB2_PASSWORD=grub.pbkdf2.sha512.10000.C4E08AC72FBFF7E837FD267BFAD7AEB3D42DDC\n2C99F2A94DD5E2E75C2DC331B719FE55D9411745F82D1B6CFD9E927D61925F9BBDD1CFAA0080E0\n916F7AB46E0D.1302284FCCC52CD73BA3671C6C12C26FF50BA873293B24EE2A96EE3B57963E6D7\n0C83964B473EC8F93B07FE749AA6710269E904A9B08A6BBACB00A2D242AD828\n      Is it the case that no password is set?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Set Boot Loader Password in grub2\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-mkpasswd-pbkdf2\n```\n\n\nWhen prompted, enter the password that was selected.\n\n\n        \n\n\nUsing the hash from the output, modify the `/etc/grub.d/40_custom`\nfile with the following content:\n\n```\nset superusers=\"boot\"\npassword_pbkdf2 boot grub.pbkdf2.sha512.VeryLongString\n```\n\nNOTE: the bootloader superuser account and password MUST differ from the\nroot account and password.\nOnce the superuser password has been added,\nupdate the\n`grub.cfg` file by running:\n\n```\nupdate-grub \n```\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.\n\n## Set the UEFI Boot Loader Password\n\nThe grub2 boot loader should have a superuser account and password\nprotection enabled to protect boot-time settings.\n\n\n        \n\nSince plaintext passwords are a security risk, generate a hash for the password\nby running the following command:\n\n\n```\n# grub2-mkpasswd-pbkdf2\n```\n\n\nWhen prompted, enter the password that was selected.\n\n\n        \n\n\nUsing the hash from the output, modify the `/etc/grub.d/40_custom`\nfile with the following content:\n\n```\nset superusers=\"boot\"\npassword_pbkdf2 boot grub.pbkdf2.sha512.VeryLongString\n```\n\nNOTE: the bootloader superuser account and password MUST differ from the\nroot account and password.\nOnce the superuser password has been added,\nupdate the\n`grub.cfg` file by running:\n\n```\nupdate-grub \n```\n\n**Rationale:**\n\nPassword protection on the boot loader configuration ensures\nusers with physical access cannot trivially alter\nimportant bootloader settings. These include which kernel to use,\nand whether to enter single-user mode.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.1.4.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.4.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "grub2_password",
+        "grub2_uefi_password"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `grub2_password`).",
+          "language": "bash",
+          "name": "Set Boot Loader Password in grub2",
+          "shell": null,
+          "versions": null
+        },
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `grub2_uefi_password`).",
+          "language": "bash",
+          "name": "Set the UEFI Boot Loader Password",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.4",
+    "1.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.4.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure bootloader password is set (Automated)"
+}

@@ -1,0 +1,130 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Configure auditd Disk Error Action on Disk Error\n----\nVerify Red Hat Enterprise Linux 9 takes the appropriate action when an audit processing failure occurs.\n\nCheck that Red Hat Enterprise Linux 9 takes the appropriate action when an audit processing failure occurs with the following command:\n\n$ sudo grep disk_error_action /etc/audit/auditd.conf\n\ndisk_error_action = \n\nIf the value of the \"disk_error_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit process failure occurs.\n      Is it the case that there is no evidence of appropriate action?\n----\nExpected values: var_auditd_disk_error_action = $ODV_var_auditd_disk_error_action\n\n== Configure auditd Disk Full Action when Disk Space Is Full\n----\nVerify Red Hat Enterprise Linux 9 takes the appropriate action when the audit storage volume is full.\n\nCheck that Red Hat Enterprise Linux 9 takes the appropriate action when the audit storage volume is full with the following command:\n\n$ sudo grep disk_full_action /etc/audit/auditd.conf\n\ndisk_full_action = \n\nIf the value of the \"disk_full_action\" option is not \"SYSLOG\", \"SINGLE\", or \"HALT\", or the line is commented out, ask the system administrator to indicate how the system takes appropriate action when an audit storage volume is full.\n      Is it the case that there is no evidence of appropriate action?\n----\nExpected values: var_auditd_disk_full_action = $ODV_var_auditd_disk_full_action",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Configure auditd Disk Error Action on Disk Error\n\nThe `auditd` service can be configured to take an action\nwhen there is a disk error.\nEdit the file `/etc/audit/auditd.conf`. Add or modify the following line,\nsubstituting *ACTION* appropriately:\n\n```\ndisk_error_action = *ACTION*\n       \n```\n\nSet this value to `single` to cause the system to switch to single-user\nmode for corrective action. Acceptable values also include\n\n`syslog`, `exec`, `single`, and `halt`\n\nFor certain systems, the need for availability\noutweighs the need to log all actions, and a different setting should be\ndetermined. Details regarding all possible values for *ACTION* are described in the\n`auditd.conf` man page.\n\n**Rationale:**\n\nTaking appropriate action in case of disk errors will minimize the possibility of\nlosing audit records.\n\n## Configure auditd Disk Full Action when Disk Space Is Full\n\nThe `auditd` service can be configured to take an action\nwhen disk space is running low but prior to running out of space completely.\nEdit the file `/etc/audit/auditd.conf`. Add or modify the following line,\nsubstituting *ACTION* appropriately:\n\n```\ndisk_full_action = *ACTION*\n       \n```\n\nSet this value to `single` to cause the system to switch to single-user\nmode for corrective action. Acceptable values also include\n\n`syslog`, `exec`, `single`, and `halt`\n\nFor certain systems, the need for availability\noutweighs the need to log all actions, and a different setting should be\ndetermined. Details regarding all possible values for *ACTION* are described in the\n`auditd.conf` man page.\n\n**Rationale:**\n\nTaking appropriate action in case of a filled audit storage volume will minimize\nthe possibility of losing audit records.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.6.3.2.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l2_server": "syslog|single|halt",
+        "cis_l2_workstation": "syslog|single|halt"
+      },
+      "datatype": "string",
+      "description": "Action for auditd to take when disk errors",
+      "name": "var_auditd_disk_error_action",
+      "quoting": "single",
+      "recommended": "syslog|single|halt",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l2_server": "halt|single",
+        "cis_l2_workstation": "halt|single"
+      },
+      "datatype": "string",
+      "description": "Action for auditd to take when disk is full",
+      "name": "var_auditd_disk_full_action",
+      "quoting": "single",
+      "recommended": "halt|single",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.2.3",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "auditd_data_disk_error_action": "CCE-83690-8",
+        "auditd_data_disk_full_action": "CCE-83684-1"
+      },
+      "rules": [
+        "auditd_data_disk_error_action",
+        "auditd_data_disk_full_action"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `auditd_data_disk_error_action`",
+          "language": "bash",
+          "name": "Configure auditd Disk Error Action on Disk Error",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q audit && rpm --quiet -q kernel-core; then\n\nvar_auditd_disk_error_action='$ODV_var_auditd_disk_error_action'\n\n\n#\n# If disk_error_action present in /etc/audit/auditd.conf, change value\n# to var_auditd_disk_error_action, else\n# add \"disk_error_action = $var_auditd_disk_error_action\" to /etc/audit/auditd.conf\n#\nvar_auditd_disk_error_action=\"$(echo $var_auditd_disk_error_action | cut -d \\| -f 1)\"\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^disk_error_action\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_auditd_disk_error_action\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^disk_error_action\\\\>\" \"/etc/audit/auditd.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^disk_error_action\\\\>.*/$escaped_formatted_output/gi\" \"/etc/audit/auditd.conf\"\nelse\n    if [[ -s \"/etc/audit/auditd.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/audit/auditd.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/audit/auditd.conf\"\n    fi\n    cce=\"CCE-83690-8\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"/etc/audit/auditd.conf\" >> \"/etc/audit/auditd.conf\"\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/audit/auditd.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `auditd_data_disk_full_action`",
+          "language": "bash",
+          "name": "Configure auditd Disk Full Action when Disk Space Is Full",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q audit && rpm --quiet -q kernel-core; then\n\nvar_auditd_disk_full_action='$ODV_var_auditd_disk_full_action'\n\n\nvar_auditd_disk_full_action=\"$(echo $var_auditd_disk_full_action | cut -d \\| -f 1)\"\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^disk_full_action\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_auditd_disk_full_action\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^disk_full_action\\\\>\" \"/etc/audit/auditd.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^disk_full_action\\\\>.*/$escaped_formatted_output/gi\" \"/etc/audit/auditd.conf\"\nelse\n    if [[ -s \"/etc/audit/auditd.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/audit/auditd.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/audit/auditd.conf\"\n    fi\n    cce=\"CCE-83684-1\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"/etc/audit/auditd.conf\" >> \"/etc/audit/auditd.conf\"\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/audit/auditd.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.2",
+    "6.3.2.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.2.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure system is disabled when audit logs are full (Automated)"
+}

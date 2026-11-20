@@ -1,0 +1,105 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Add nosuid Option to /var/log\n----\nVerify the nosuid option is configured for the /var/log mount point,\n    run the following command:\n    $ sudo mount | grep '\\s/var/log\\s'\n    . . . /var/log . . . nosuid . . .\n\n      Is it the case that the \"/var/log\" file system does not have the \"nosuid\" option set?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Add nosuid Option to /var/log\n\nThe `nosuid` mount option can be used to prevent\nexecution of setuid programs in `/var/log`. The SUID and SGID permissions\nshould not be required in directories containing log files.\nAdd the `nosuid` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/var/log`.\n\n**Rationale:**\n\nThe presence of SUID and SGID executables should be tightly controlled. Users\nshould not be able to execute SUID or SGID binaries from partitions\ndesignated for log files.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.1.2.6.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.1.2.6.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "mount_option_var_log_nosuid": "CCE-83870-6"
+      },
+      "rules": [
+        "mount_option_var_log_nosuid"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `mount_option_var_log_nosuid`",
+          "language": "bash",
+          "name": "Add nosuid Option to /var/log",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( ! ( { rpm --quiet -q kernel-core ;} && { rpm --quiet -q bootc ;} && { ! rpm --quiet -q openshift-kubelet ;} && ([ -f /run/ostree-booted ] || [ -L /ostree ]) ) && ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ) && { ( findmnt --kernel \"/var/log\" > /dev/null || findmnt --fstab \"/var/log\" > /dev/null ); }; then\n\nfunction perform_remediation {\n\n    \n        # the mount point /var/log has to be defined in /etc/fstab\n        # before this remediation can be executed. In case it is not defined, the\n        # remediation aborts and no changes regarding the mount point are done.\n        mount_point_match_regexp=\"$(printf \"^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]\" \"/var/log\")\"\n\n    grep \"$mount_point_match_regexp\" -q /etc/fstab \\\n        || { echo \"The mount point '/var/log' is not even in /etc/fstab, so we can't set up mount options\" >&2;\n                echo \"Not remediating, because there is no record of /var/log in /etc/fstab\" >&2; return 1; }\n    \n\n\n    mount_point_match_regexp=\"$(printf \"^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]\" /var/log)\"\n\n    # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab\n    if ! grep -q \"$mount_point_match_regexp\" /etc/fstab; then\n        # runtime opts without some automatic kernel/userspace-added defaults\n        previous_mount_opts=$(grep \"$mount_point_match_regexp\" /etc/mtab | head -1 |  awk '{print $4}' \\\n                    | sed -E \"s/(rw|defaults|seclabel|nosuid)(,|$)//g;s/,$//\")\n        [ \"$previous_mount_opts\" ] && previous_mount_opts+=\",\"\n        # In iso9660 filesystems mtab could describe a \"blocksize\" value, this should be reflected in\n        # fstab as \"block\".  The next variable is to satisfy shellcheck SC2050.\n        fs_type=\"\"\n        if [  \"$fs_type\" == \"iso9660\" ] ; then\n            previous_mount_opts=$(sed 's/blocksize=/block=/' <<< \"$previous_mount_opts\")\n        fi\n        echo \" /var/log  defaults,${previous_mount_opts}nosuid 0 0\" >> /etc/fstab\n    # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it\n    elif ! grep \"$mount_point_match_regexp\" /etc/fstab | grep -q \"nosuid\"; then\n        previous_mount_opts=$(grep \"$mount_point_match_regexp\" /etc/fstab | awk '{print $4}')\n        sed -i \"s|\\(${mount_point_match_regexp}.*${previous_mount_opts}\\)|\\1,nosuid|\" /etc/fstab\n    fi\n\n\n    if mkdir -p \"/var/log\"; then\n        if mountpoint -q \"/var/log\"; then\n            mount -o remount --target \"/var/log\"\n        fi\n    fi\n}\n\nperform_remediation\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.1",
+    "1.1.2",
+    "1.1.2.6",
+    "1.1.2.6.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.1.2.6.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure nosuid option set on /var/log partition (Automated)"
+}

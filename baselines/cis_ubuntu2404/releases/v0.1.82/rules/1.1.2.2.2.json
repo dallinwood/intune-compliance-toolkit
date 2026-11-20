@@ -1,0 +1,102 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Add nodev Option to /dev/shm\n----\nVerify the nodev option is configured for the /dev/shm mount point,\n    run the following command:\n    $ sudo mount | grep '\\s/dev/shm\\s'\n    . . . /dev/shm . . . nodev . . .\n\n      Is it the case that the \"/dev/shm\" file system does not have the \"nodev\" option set?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Add nodev Option to /dev/shm\n\nThe `nodev` mount option can be used to prevent creation of device\nfiles in `/dev/shm`. Legitimate character and block devices should\nnot exist within temporary directories like `/dev/shm`.\nAdd the `nodev` option to the fourth column of\n`/etc/fstab` for the line which controls mounting of\n`/dev/shm`.\n\n**Rationale:**\n\nThe only legitimate location for device files is the `/dev` directory\nlocated on the root partition. The only exception to this is chroot jails.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.1.1.2.2.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.1.2.2.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "mount_option_dev_shm_nodev"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `mount_option_dev_shm_nodev`",
+          "language": "bash",
+          "name": "Add nodev Option to /dev/shm",
+          "shell": "# Remediation is applicable only in certain platforms\nif ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ); then\n\nfunction perform_remediation {\n\n    \n\n\n    mount_point_match_regexp=\"$(printf \"^[[:space:]]*[^#].*[[:space:]]%s[[:space:]]\" /dev/shm)\"\n\n    # If the mount point is not in /etc/fstab, get previous mount options from /etc/mtab\n    if ! grep -q \"$mount_point_match_regexp\" /etc/fstab; then\n        # runtime opts without some automatic kernel/userspace-added defaults\n        previous_mount_opts=$(grep \"$mount_point_match_regexp\" /etc/mtab | head -1 |  awk '{print $4}' \\\n                    | sed -E \"s/(rw|defaults|seclabel|nodev)(,|$)//g;s/,$//\")\n        [ \"$previous_mount_opts\" ] && previous_mount_opts+=\",\"\n        # In iso9660 filesystems mtab could describe a \"blocksize\" value, this should be reflected in\n        # fstab as \"block\".  The next variable is to satisfy shellcheck SC2050.\n        fs_type=\"tmpfs\"\n        if [  \"$fs_type\" == \"iso9660\" ] ; then\n            previous_mount_opts=$(sed 's/blocksize=/block=/' <<< \"$previous_mount_opts\")\n        fi\n        echo \"tmpfs /dev/shm tmpfs defaults,${previous_mount_opts}nodev 0 0\" >> /etc/fstab\n    # If the mount_opt option is not already in the mount point's /etc/fstab entry, add it\n    elif ! grep \"$mount_point_match_regexp\" /etc/fstab | grep -q \"nodev\"; then\n        previous_mount_opts=$(grep \"$mount_point_match_regexp\" /etc/fstab | awk '{print $4}')\n        sed -i \"s|\\(${mount_point_match_regexp}.*${previous_mount_opts}\\)|\\1,nodev|\" /etc/fstab\n    fi\n\n\n    if mkdir -p \"/dev/shm\"; then\n        if mountpoint -q \"/dev/shm\"; then\n            mount -o remount --target \"/dev/shm\"\n        fi\n    fi\n}\n\nperform_remediation\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.1",
+    "1.1.2",
+    "1.1.2.2",
+    "1.1.2.2.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.1.2.2.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure nodev option set on /dev/shm partition (Automated)"
+}

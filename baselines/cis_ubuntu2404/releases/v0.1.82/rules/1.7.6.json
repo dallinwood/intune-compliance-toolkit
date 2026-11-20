@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable GNOME3 Automounting\n----\nThese settings can be verified by running the following:\n$ gsettings get org.gnome.desktop.media-handling automount\nIf properly configured, the output for automount should be false.\nTo ensure that users cannot enable automount in GNOME3, run the following:\n$ grep 'automount' /etc/dconf/db/gdm.d/locks/*\nIf properly configured, the output for automount should be /org/gnome/desktop/media-handling/automount\n      Is it the case that GNOME automounting is not disabled?\n----\n\n== Disable GNOME3 Automount Opening\n----\nThese settings can be verified by running the following:\n$ gsettings get org.gnome.desktop.media-handling automount-open\nIf properly configured, the output for automount-openshould be false.\nTo ensure that users cannot enable automount opening in GNOME3, run the following:\n$ grep 'automount-open' /etc/dconf/db/gdm.d/locks/*\nIf properly configured, the output for automount-open should be /org/gnome/desktop/media-handling/automount-open\n      Is it the case that GNOME automounting is not disabled?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable GNOME3 Automounting\n\nThe system's default desktop environment, GNOME3, will mount\ndevices and removable media (such as DVDs, CDs and USB flash drives) whenever\nthey are inserted into the system. To disable automount within GNOME3, add or set\n`automount` to `false` in `/etc/dconf/db/gdm.d/00-security-settings`.\nFor example:\n\n```\n[org/gnome/desktop/media-handling]\nautomount=false\n```\n\nOnce the settings have been added, add a lock to\n`/etc/dconf/db/gdm.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/desktop/media-handling/automount\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nDisabling automatic mounting in GNOME3 can prevent\nthe introduction of malware via removable media.\nIt will, however, also prevent desktop users from legitimate use\nof removable media.\n\n## Disable GNOME3 Automount Opening\n\nThe system's default desktop environment, GNOME3, will mount\ndevices and removable media (such as DVDs, CDs and USB flash drives) whenever\nthey are inserted into the system. To disable automount-open within GNOME3, add or set\n`automount-open` to `false` in `/etc/dconf/db/gdm.d/00-security-settings`.\nFor example:\n\n```\n[org/gnome/desktop/media-handling]\nautomount-open=false\n```\n\nOnce the settings have been added, add a lock to\n`/etc/dconf/db/gdm.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/desktop/media-handling/automount-open\n```\n\nAfter the settings have been set, run `dconf update`.\n\n**Rationale:**\n\nAutomatically mounting file systems permits easy introduction of unknown devices, thereby facilitating malicious activity.\nDisabling automatic mounting in GNOME3 can prevent\nthe introduction of malware via removable media.\nIt will, however, also prevent desktop users from legitimate use\nof removable media.\n\n**Notes:**\n\nThe rules satisfy both controls 1.7.6 and 1.7.7\n",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.1.7.6",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.7.6",
+      "levels": [
+        "l1_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "dconf_gnome_disable_automount",
+        "dconf_gnome_disable_automount_open"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_disable_automount`",
+          "language": "bash",
+          "name": "Disable GNOME3 Automounting",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'gdm3' 2>/dev/null | grep -q '^installed$'; then\n\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/user\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:local\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:local\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/local.d\nchmod 0755 /etc/dconf/db/local.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/gdm\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:gdm\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:gdm\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/gdm.d\nchmod 0755 /etc/dconf/db/gdm.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\n\n\n# apply fix for enable_dconf_user_profile, OVAL checks it\n\n# Check for setting in any of the DConf db directories\n# If files contain ibus or distro, ignore them.\n# The assignment assumes that individual filenames don't contain :\nreadarray -t SETTINGSFILES < <(grep -r \"\\\\[org/gnome/desktop/media-handling\\\\]\" \"/etc/dconf/db/\" \\\n                                | grep -v 'distro\\|ibus\\|local.d' | cut -d\":\" -f1)\nDCONFFILE=\"/etc/dconf/db/local.d/00-security-settings\"\nDBDIR=\"/etc/dconf/db/local.d\"\n\nmkdir -p \"${DBDIR}\"\nchmod 0755 \"${DBDIR}\"\n\n# Comment out the configurations in databases different from the target one\nif [ \"${#SETTINGSFILES[@]}\" -ne 0 ]\nthen\n    if grep -q \"^\\\\s*automount\\\\s*=\" \"${SETTINGSFILES[@]}\"\n    then\n        \n        sed -Ei \"s/(^\\s*)automount(\\s*=)/#\\1automount\\2/g\" \"${SETTINGSFILES[@]}\"\n    fi\nfi\n\n[ ! -z \"${DCONFFILE}\" ] && echo \"\" >> \"${DCONFFILE}\"\nif ! grep -q \"\\\\[org/gnome/desktop/media-handling\\\\]\" \"${DCONFFILE}\"\nthen\n    printf '%s\\n' \"[org/gnome/desktop/media-handling]\" >> ${DCONFFILE}\nfi\n\nescaped_value=\"$(sed -e 's/\\\\/\\\\\\\\/g' <<< \"false\")\"\nif grep -q \"^\\\\s*automount\\\\s*=\" \"${DCONFFILE}\"\nthen\n        sed -i \"s/\\\\s*automount\\\\s*=\\\\s*.*/automount=${escaped_value}/g\" \"${DCONFFILE}\"\n    else\n        sed -i \"\\\\|\\\\[org/gnome/desktop/media-handling\\\\]|a\\\\automount=${escaped_value}\" \"${DCONFFILE}\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/desktop/media-handling/automount$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|local.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/local.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/desktop/media-handling/automount$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/desktop/media-handling/automount$\" /etc/dconf/db/local.d/\nthen\n    echo \"/org/gnome/desktop/media-handling/automount\" >> \"/etc/dconf/db/local.d/locks/00-security-settings-lock\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_disable_automount_open`",
+          "language": "bash",
+          "name": "Disable GNOME3 Automount Opening",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'gdm3' 2>/dev/null | grep -q '^installed$'; then\n\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/user\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:local\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:local\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/local.d\nchmod 0755 /etc/dconf/db/local.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/gdm\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:gdm\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:gdm\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/gdm.d\nchmod 0755 /etc/dconf/db/gdm.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\n\n\n# apply fix for enable_dconf_user_profile, OVAL checks it\n\n# Check for setting in any of the DConf db directories\n# If files contain ibus or distro, ignore them.\n# The assignment assumes that individual filenames don't contain :\nreadarray -t SETTINGSFILES < <(grep -r \"\\\\[org/gnome/desktop/media-handling\\\\]\" \"/etc/dconf/db/\" \\\n                                | grep -v 'distro\\|ibus\\|local.d' | cut -d\":\" -f1)\nDCONFFILE=\"/etc/dconf/db/local.d/00-security-settings\"\nDBDIR=\"/etc/dconf/db/local.d\"\n\nmkdir -p \"${DBDIR}\"\nchmod 0755 \"${DBDIR}\"\n\n# Comment out the configurations in databases different from the target one\nif [ \"${#SETTINGSFILES[@]}\" -ne 0 ]\nthen\n    if grep -q \"^\\\\s*automount-open\\\\s*=\" \"${SETTINGSFILES[@]}\"\n    then\n        \n        sed -Ei \"s/(^\\s*)automount-open(\\s*=)/#\\1automount-open\\2/g\" \"${SETTINGSFILES[@]}\"\n    fi\nfi\n\n[ ! -z \"${DCONFFILE}\" ] && echo \"\" >> \"${DCONFFILE}\"\nif ! grep -q \"\\\\[org/gnome/desktop/media-handling\\\\]\" \"${DCONFFILE}\"\nthen\n    printf '%s\\n' \"[org/gnome/desktop/media-handling]\" >> ${DCONFFILE}\nfi\n\nescaped_value=\"$(sed -e 's/\\\\/\\\\\\\\/g' <<< \"false\")\"\nif grep -q \"^\\\\s*automount-open\\\\s*=\" \"${DCONFFILE}\"\nthen\n        sed -i \"s/\\\\s*automount-open\\\\s*=\\\\s*.*/automount-open=${escaped_value}/g\" \"${DCONFFILE}\"\n    else\n        sed -i \"\\\\|\\\\[org/gnome/desktop/media-handling\\\\]|a\\\\automount-open=${escaped_value}\" \"${DCONFFILE}\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/desktop/media-handling/automount-open$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|local.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/local.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/desktop/media-handling/automount-open$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/desktop/media-handling/automount-open$\" /etc/dconf/db/local.d/\nthen\n    echo \"/org/gnome/desktop/media-handling/automount-open\" >> \"/etc/dconf/db/local.d/locks/00-security-settings-lock\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.7",
+    "1.7.6"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.7.6",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure GDM automatic mounting of removable media is disabled (Automated)"
+}

@@ -1,0 +1,103 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Implement Custom Crypto Policy Modules for CIS Benchmark\n----\nVerify that /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod exists and has the following content:\n\ncipher@SSH = -*-CBC\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod exists and has the following content:\n\ncipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod exists and has the following content:\n\nmac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod exists and has the following content:\n\nmac = -*-128*\n\n\n\n\nVerify that /etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod exists and has the following content:\n\nhash@rpm = -SHA1\n\n      Is it the case that the custom crypto policy modules do not exist?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Implement Custom Crypto Policy Modules for CIS Benchmark\n\nCreate a custom crypto policy module to enforce the use of strong ciphers and MACs in SSHD, disable CBC mode ciphers in SSHD and disable the use of weak MACs globally.\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-SSHCBC.pmod`:\n\n```\ncipher@SSH = -*-CBC\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod`:\n\n```\ncipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod`:\n\n```\nmac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod`:\n\n```\nmac = -*-128*\n```\n\n\n\nAdd the following line to the file `/etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod`:\n\n```\nhash@rpm = -SHA1\n```\n\n\nThen, set the system wide crypto policy to use the custom policy.\n\n```\n$ sudo update-crypto-policies --set DEFAULT:NO-SHA1:NO-SSHCBC:NO-SSHWEAKCIPHERS:NO-SSHWEAKMACS:NO-WEAKMAC:NO-RPMSHA1\n```\n\n**Rationale:**\n\nCBC mode ciphers are vulnerable to certain attacks, such as the BEAST attack.\nDisabling CBC mode ciphers helps protect against these attacks and ensures that only\nstrong, proven cryptographic algorithms are used to protect SSH communications.\nWeak ciphers that are used for authentication to the cryptographic module cannot be\nrelied upon to provide confidentiality or integrity, and system data may be compromised.\nMessage Authentication Codes (MACs) are cryptographic mechanisms used to verify the\nintegrity and authenticity of data transmitted over SSH connections. Weak MACs that\nare used for authentication to the cryptographic module cannot be relied upon to\nprovide integrity, and system data may be compromised. Implementing a custom crypto\npolicy that disables weak MAC algorithms helps ensure that only strong, proven\ncryptographic algorithms are used to protect SSH communications.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.1.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.1.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "configure_custom_crypto_policy_cis": "CCE-88900-6"
+      },
+      "rules": [
+        "configure_custom_crypto_policy_cis"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `configure_custom_crypto_policy_cis`",
+          "language": "bash",
+          "name": "Implement Custom Crypto Policy Modules for CIS Benchmark",
+          "shell": "expected_crypto_policy=\"DEFAULT:NO-SHA1\"\n\n\nexpected_crypto_policy=\"${expected_crypto_policy}:NO-SSHCBC\"\ncat << 'EOF' > /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod\ncipher@SSH = -*-CBC\nEOF\nchmod 0644 /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod\n\nexpected_crypto_policy=\"${expected_crypto_policy}:NO-SSHWEAKCIPHERS\"\ncat << 'EOF' > /etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod\ncipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305\nEOF\nchmod 0644 /etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod\n\nexpected_crypto_policy=\"${expected_crypto_policy}:NO-SSHWEAKMACS\"\ncat << 'EOF' > /etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod\nmac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*\nEOF\nchmod 0644 /etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod\n\nexpected_crypto_policy=\"${expected_crypto_policy}:NO-WEAKMAC\"\ncat << 'EOF' > /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod\nmac = -*-128*\nEOF\nchmod 0644 /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod\n\n# this module is applicable only if rpm-sequoia scope is available in crypto-policies\nif [[ -f /etc/crypto-policies/back-ends/rpm-sequoia.config ]] ; then\nexpected_crypto_policy=\"${expected_crypto_policy}:NO-RPMSHA1\"\ncat << 'EOF' > /etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod\nhash@rpm = -SHA1\nEOF\nchmod 0644 /etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod\nfi\n\n\ncurrent_crypto_policy=$(update-crypto-policies --show)\n\nif [[ \"$current_crypto_policy\" != \"$expected_crypto_policy\" ]] ; then\n    update-crypto-policies --set \"$expected_crypto_policy\"\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.1",
+    "5.1.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd Ciphers are configured (Automated)"
+}

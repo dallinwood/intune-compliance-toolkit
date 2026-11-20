@@ -1,0 +1,105 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Prevent Login to Accounts With Empty Password\n----\nTo verify that null passwords cannot be used, run the following command:\n\n$ grep nullok /etc/pam.d/system-auth /etc/pam.d/password-auth\n\nIf this produces any output, it may be possible to log into accounts\nwith empty passwords. Remove any instances of the nullok option to\nprevent logins with empty passwords.\n      Is it the case that NULL passwords can be used?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Prevent Login to Accounts With Empty Password\n\nIf an account is configured for password authentication\nbut does not have an assigned password, it may be possible to log\ninto the account without authentication. Remove any instances of the\n`nullok` in\n\n`/etc/pam.d/system-auth` and\n`/etc/pam.d/password-auth`\n\nto prevent logins with empty passwords.\n\n**Rationale:**\n\nIf an account has an empty password, anyone could log in and\nrun commands with the privileges of that account. Accounts with\nempty passwords should never be used in operational environments.\n\n**Notes:**\n\nThe rule more specifically used in this requirement also satify the requirement 5.3.2.5.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.3.3.4.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.3.3.4.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "no_empty_passwords": "CCE-83611-4"
+      },
+      "rules": [
+        "no_empty_passwords"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `no_empty_passwords`",
+          "language": "bash",
+          "name": "Prevent Login to Accounts With Empty Password",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nif [ -f /usr/bin/authselect ]; then\n    if ! authselect check; then\necho \"\nauthselect integrity check failed. Remediation aborted!\nThis remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\nIt is not recommended to manually edit the PAM files when authselect tool is available.\nIn cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\nexit 1\nfi\nauthselect enable-feature without-nullok\n\nauthselect apply-changes -b\nelse\n    \nif grep -qP \"^\\s*auth\\s+sufficient\\s+pam_unix.so\\s.*\\bnullok\\b\" \"/etc/pam.d/system-auth\"; then\n    sed -i -E --follow-symlinks \"s/(.*auth.*sufficient.*pam_unix.so.*)\\bnullok\\b=?[[:alnum:]]*(.*)/\\1\\2/g\" \"/etc/pam.d/system-auth\"\nfi\n    \nif grep -qP \"^\\s*password\\s+sufficient\\s+pam_unix.so\\s.*\\bnullok\\b\" \"/etc/pam.d/system-auth\"; then\n    sed -i -E --follow-symlinks \"s/(.*password.*sufficient.*pam_unix.so.*)\\bnullok\\b=?[[:alnum:]]*(.*)/\\1\\2/g\" \"/etc/pam.d/system-auth\"\nfi\n    \nif grep -qP \"^\\s*auth\\s+sufficient\\s+pam_unix.so\\s.*\\bnullok\\b\" \"/etc/pam.d/password-auth\"; then\n    sed -i -E --follow-symlinks \"s/(.*auth.*sufficient.*pam_unix.so.*)\\bnullok\\b=?[[:alnum:]]*(.*)/\\1\\2/g\" \"/etc/pam.d/password-auth\"\nfi\n    \nif grep -qP \"^\\s*password\\s+sufficient\\s+pam_unix.so\\s.*\\bnullok\\b\" \"/etc/pam.d/password-auth\"; then\n    sed -i -E --follow-symlinks \"s/(.*password.*sufficient.*pam_unix.so.*)\\bnullok\\b=?[[:alnum:]]*(.*)/\\1\\2/g\" \"/etc/pam.d/password-auth\"\nfi\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.4",
+    "5.3.3.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.4.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure pam_unix does not include nullok (Automated)"
+}

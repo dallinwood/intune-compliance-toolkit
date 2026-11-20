@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== System Audit Logs Must Have Mode 0640 or Less Permissive\n----\nRun the following command to check the mode of the system audit logs:\n$ sudo grep -iw log_file /etc/audit/auditd.conf\nlog_file=/var/log/audit/audit.log\n$ sudo stat -c \"%n %a\" /var/log/audit/*\n$ sudo ls -l /var/log/audit\nAudit logs must be mode 0640 or less permissive.\n      Is it the case that any permissions are more permissive?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## System Audit Logs Must Have Mode 0640 or Less Permissive\n\nVerify the audit log files have a mode of \"0640\" or less permissive by first determining\nwhere the audit logs are stored with the following command:\n\n```\n$ sudo grep -iw log_file /etc/audit/auditd.conf\nlog_file = /var/log/audit/audit.log\n```\n\nBy default, the audit log file is `/var/log/audit/audit.log`.\n\n\nConfigure the audit log to be protected from unauthorized read access by setting the correct\npermissive mode.\nIf `log_group` in `/etc/audit/auditd.conf` is set to a group other than the\n`root` group account, change the mode of the audit log files with the following command:\n\n```\n$ sudo chmod 0640 *audit_log_file*\n       \n```\n\n       \n\nOtherwise, change the mode of the audit log files with the following command:\n\n```\n$ sudo chmod 0600 *audit_log_file*\n       \n```\n\nReplace `*audit_log_file*` with the correct audit log file path.\n\n**Rationale:**\n\nIf users can write to audit logs, audit trails can be modified or destroyed.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.6.3.4.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.4.2",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "file_permissions_var_log_audit": "CCE-83720-3"
+      },
+      "rules": [
+        "file_permissions_var_log_audit"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_audit`",
+          "language": "bash",
+          "name": "System Audit Logs Must Have Mode 0640 or Less Permissive",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q audit && rpm --quiet -q kernel-core; then\n\nif LC_ALL=C grep -iw ^log_file /etc/audit/auditd.conf; then\n    FILE=$(awk -F \"=\" '/^log_file/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')\nelse\n    FILE=\"/var/log/audit/audit.log\"\nfi\n\nif LC_ALL=C grep -m 1 -q ^log_group /etc/audit/auditd.conf; then\n    GROUP=$(awk -F \"=\" '/log_group/ {print $2}' /etc/audit/auditd.conf | tr -d ' ')\n    if ! [ \"$GROUP\" == 'root' ] ; then\n       chmod 0640 \"$FILE\"\n    else\n       chmod 0600 \"$FILE\"\n    fi\nelse\n    chmod 0600 \"$FILE\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.4",
+    "6.3.4.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.4.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure audit log files mode is configured (Automated)"
+}

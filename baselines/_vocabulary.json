@@ -6,7 +6,9 @@
       { "label": "ASD ISM", "terms": ["asd_ism"] },
       { "label": "NIST mSCP", "terms": ["mscp"] },
       { "label": "NIST SP 800-53", "terms": ["nist_800_53"] },
-      { "label": "ASD E4EIT", "terms": ["asd_e4eit"] }
+      { "label": "ASD E4EIT", "terms": ["asd_e4eit"] },
+      { "label": "CIS RHEL 9 (CaC)", "terms": ["cis_rhel9"] },
+      { "label": "CIS Ubuntu 24.04 (CaC)", "terms": ["cis_ubuntu2404"] }
     ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
@@ -36,7 +38,11 @@
       { "label": "E4EIT Business systems", "terms": ["e4eit_business_systems"], "metadata": ["benchmark"] },
       { "label": "E4EIT Governance and culture", "terms": ["e4eit_governance_and_culture"], "metadata": ["benchmark"] },
       { "label": "E4EIT User devices", "terms": ["e4eit_user_devices"], "metadata": ["benchmark"] },
-      { "label": "E4EIT Visibility and response", "terms": ["e4eit_visibility_and_response"], "metadata": ["benchmark"] }
+      { "label": "E4EIT Visibility and response", "terms": ["e4eit_visibility_and_response"], "metadata": ["benchmark"] },
+      { "label": "CIS L1 Server", "terms": ["cis_l1_server"], "metadata": ["benchmark"] },
+      { "label": "CIS L2 Server", "terms": ["cis_l2_server"], "metadata": ["benchmark"] },
+      { "label": "CIS L1 Workstation", "terms": ["cis_l1_workstation"], "metadata": ["benchmark"] },
+      { "label": "CIS L2 Workstation", "terms": ["cis_l2_workstation"], "metadata": ["benchmark"] }
     ],
     "severities": [
       { "label": "low", "terms": ["low"], "metadata": ["severity"] },
@@ -46,7 +52,9 @@
     "versions": [
       { "label": "macOS 27", "terms": ["macOS 27.0"], "metadata": ["platform"] },
       { "label": "macOS 26", "terms": ["macOS 26.0"], "metadata": ["platform"] },
-      { "label": "macOS 15", "terms": ["macOS 15.0"], "metadata": ["platform"] }
+      { "label": "macOS 15", "terms": ["macOS 15.0"], "metadata": ["platform"] },
+      { "label": "RHEL 9", "terms": ["Linux RHEL-9"], "metadata": ["platform"] },
+      { "label": "Ubuntu 24.04", "terms": ["Linux Ubuntu-24.04"], "metadata": ["platform"] }
     ],
     "sections": [
       { "label": "Operating system", "terms": ["os"] },

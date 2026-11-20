@@ -1,0 +1,103 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable storing core dump\n----\nVerify Red Hat Enterprise Linux 9 disables storing core dumps for all users by issuing the following command:\n\n$ grep -i storage /etc/systemd/coredump.conf /etc/systemd/coredump.conf.d/*.conf\n\nStorage=none\n      Is it the case that Storage is not set to none or is commented out and the need for core dumps is not documented with the Information System Security Officer (ISSO) as an operational requirement for all domains that have the \"core\" item assigned?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable storing core dump\n\nThe `Storage` option in `[Coredump]` section\nof `/etc/systemd/coredump.conf` or a drop-in file in\n`/etc/systemd/coredump.conf.d/*.conf`\ncan be set to `none` to disable storing core dumps permanently.\n\n**Rationale:**\n\nA core dump includes a memory image taken at the time the operating system\nterminates an application. The memory image could contain sensitive data\nand is generally useful only for developers or system operators trying to\ndebug problems. Enabling core dumps on production systems is not recommended,\nhowever there may be overriding operational requirements to enable advanced\ndebugging. Permitting temporary enablement of core dumps during such situations\nshould be reviewed through local needs and policy.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.1.5.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.5.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "coredump_disable_storage": "CCE-83979-5"
+      },
+      "rules": [
+        "coredump_disable_storage"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `coredump_disable_storage`",
+          "language": "bash",
+          "name": "Disable storing core dump",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q systemd; }; then\n\nfound=false\n\n# set value in all files if they contain section or key\nfor f in $(echo -n \"/etc/systemd/coredump.conf.d/complianceascode_hardening.conf /etc/systemd/coredump.conf.d/*.conf /etc/systemd/coredump.conf\"); do\n    if [ ! -e \"$f\" ]; then\n        continue\n    fi\n\n    # find key in section and change value\n    if grep -qzosP \"(?m)^[[:space:]]*\\[Coredump\\]([^\\n\\[]*\\n+)+?[[:space:]]*Storage\" \"$f\"; then\n        if ! grep -qzosP \"(?m)^[[:space:]]*Storage[[:space:]]*=[[:space:]]*none\"'[[:space:]]*$' \"$f\"; then\n\n            sed -i \"/^[[:space:]]*Storage/s/\\([[:blank:]]*=[[:blank:]]*\\).*/\\1none/\" \"$f\"\n\n        fi\n\n        found=true\n\n    # find section and add key = value to it\n    elif grep -qs \"^[[:space:]]*\\[Coredump\\]\" \"$f\"; then\n\n            sed -i \"/^[[:space:]]*\\[Coredump\\]/a Storage=none\" \"$f\"\n\n            found=true\n    fi\n\n\ndone\n\n# if section not in any file, append section with key = value to FIRST file in files parameter\nif ! $found ; then\n    file=$(echo \"/etc/systemd/coredump.conf.d/complianceascode_hardening.conf /etc/systemd/coredump.conf.d/*.conf /etc/systemd/coredump.conf\" | cut -f1 -d ' ')\n    mkdir -p \"$(dirname \"$file\")\"\n    chmod 0755 \"$(dirname \"$file\")\"\n\n    echo -e \"[Coredump]\\nStorage=none\" >> \"$file\"\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "1",
+    "1.5",
+    "1.5.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.5.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure core dump storage is disabled (Automated)"
+}

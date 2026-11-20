@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure journald is configured to write log files to persistent disk\n----\nStoring logs with persistent storage ensures they are available after a reboot or system crash.\nRun the command below to verify that logs are being persistently stored to disk.\n\ngrep \"^\\sStorage\" /etc/systemd/journald.conf /etc/systemd/journald.conf.d/*.conf\n\n\nand it should return\n\nStorage=persistent\n\n      Is it the case that is commented out or not configured correctly?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure journald is configured to write log files to persistent disk\n\nThe journald system may store log files in volatile memory or locally on disk.\nIf the logs are only stored in volatile memory they will be lost upon reboot.\n\n**Rationale:**\n\nLog files contain valuable data and need to be persistent to aid in possible investigations.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.6.1.2.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.1.2.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "journald_storage"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `journald_storage`",
+          "language": "bash",
+          "name": "Ensure journald is configured to write log files to persistent disk",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { ! (systemctl is-active rsyslog &>/dev/null); }; then\n\nfound=false\n\n# set value in all files if they contain section or key\nfor f in $(echo -n \"/etc/systemd/journald.conf.d/complianceascode_hardening.conf /etc/systemd/journald.conf.d/*.conf /etc/systemd/journald.conf\"); do\n    if [ ! -e \"$f\" ]; then\n        continue\n    fi\n\n    # find key in section and change value\n    if grep -qzosP \"(?m)^[[:space:]]*\\[Journal\\]([^\\n\\[]*\\n+)+?[[:space:]]*Storage\" \"$f\"; then\n        if ! grep -qzosP \"(?m)^[[:space:]]*Storage[[:space:]]*=[[:space:]]*persistent\"'[[:space:]]*$' \"$f\"; then\n\n            sed -i \"/^[[:space:]]*Storage/s/\\([[:blank:]]*=[[:blank:]]*\\).*/\\1persistent/\" \"$f\"\n\n        fi\n\n        found=true\n\n    # find section and add key = value to it\n    elif grep -qs \"^[[:space:]]*\\[Journal\\]\" \"$f\"; then\n\n            sed -i \"/^[[:space:]]*\\[Journal\\]/a Storage=persistent\" \"$f\"\n\n            found=true\n    fi\n\n\ndone\n\n# if section not in any file, append section with key = value to FIRST file in files parameter\nif ! $found ; then\n    file=$(echo \"/etc/systemd/journald.conf.d/complianceascode_hardening.conf /etc/systemd/journald.conf.d/*.conf /etc/systemd/journald.conf\" | cut -f1 -d ' ')\n    mkdir -p \"$(dirname \"$file\")\"\n    chmod 0755 \"$(dirname \"$file\")\"\n\n    echo -e \"[Journal]\\nStorage=persistent\" >> \"$file\"\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.1",
+    "6.1.2",
+    "6.1.2.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.1.2.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure journald Storage is configured (Automated)"
+}

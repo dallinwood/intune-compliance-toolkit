@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable Bluetooth Service\n----\nTo check that the bluetooth service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled bluetooth\nOutput should indicate the bluetooth service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled bluetooth disabled\n\nRun the following command to verify bluetooth is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active bluetooth\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the bluetooth is masked, run the following command:\n$ sudo systemctl show bluetooth | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"bluetooth\" is loaded and not masked?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable Bluetooth Service\n\nThe `bluetooth` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now bluetooth.service\n```\n\n         \n```\n$ sudo service bluetooth stop\n```\n\n**Rationale:**\n\nDisabling the `bluetooth` service prevents the system from attempting\nconnections to Bluetooth devices, which entails some security risk.\nNevertheless, variation in this risk decision may be expected due to the\nutility of Bluetooth connectivity and its limited range.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.3.1.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "3.1.3",
+      "levels": [
+        "l1_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "service_bluetooth_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `service_bluetooth_disabled`",
+          "language": "bash",
+          "name": "Disable Bluetooth Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'bluetooth.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'bluetooth.service'\n\"$SYSTEMCTL_EXEC\" mask 'bluetooth.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files bluetooth.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'bluetooth.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'bluetooth.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'bluetooth.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "3",
+    "3.1",
+    "3.1.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "3.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure bluetooth services are not in use (Automated)"
+}

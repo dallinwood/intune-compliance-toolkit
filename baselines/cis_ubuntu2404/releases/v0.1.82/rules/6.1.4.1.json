@@ -1,0 +1,469 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Verify Groupownership of Files in /var/log/apt\n----\nTo check the group ownership of /var/log/apt/*,\nrun the command:\n$ ls -lL /var/log/apt/*\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/apt/* does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Groupownership of Files in /var/log/gdm\n----\nTo check the group ownership of /var/log/gdm/*,\nrun the command:\n$ ls -lL /var/log/gdm/*\nIf properly configured, the output should indicate the following group-owner:\n\n  gdm\n   or \n\n  root\n  \n      Is it the case that /var/log/gdm/* does not have a group owner of\ngdm or\nroot\n?\n----\n\n== Verify Groupownership of Files in /var/log/gdm3\n----\nTo check the group ownership of /var/log/gdm3/*,\nrun the command:\n$ ls -lL /var/log/gdm3/*\nIf properly configured, the output should indicate the following group-owner:\n\n  gdm\n   or \n\n  gdm3\n   or \n\n  root\n  \n      Is it the case that /var/log/gdm3/* does not have a group owner of\ngdm or\ngdm3 or\nroot\n?\n----\n\n== Verify Groupownership of Files in /var/log/landscape\n----\nTo check the group ownership of /var/log/landscape/*,\nrun the command:\n$ ls -lL /var/log/landscape/*\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n   or \n\n  landscape\n  \n      Is it the case that /var/log/landscape/* does not have a group owner of\nroot or\nlandscape\n?\n----\n\n== Verify Grouponwership of Files in /var/log/sssd\n----\nTo check the group ownership of /var/log/sssd/*,\nrun the command:\n$ ls -lL /var/log/sssd/*\nIf properly configured, the output should indicate the following group-owner:\n\n  sssd\n   or \n\n  root\n  \n      Is it the case that /var/log/sssd/* does not have a group owner of\nsssd or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/auth.log File\n----\nTo check the group ownership of /var/log/auth.log,\nrun the command:\n$ ls -lL /var/log/auth.log\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/auth.log does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/cloud-init.log* File\n----\nTo check the group ownership of /var/log/cloud-init.log*,\nrun the command:\n$ ls -lL /var/log/cloud-init.log*\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n \n      Is it the case that /var/log/cloud-init.log* does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/*.journal(~) File\n----\nTo check the group ownership of /var/log/*.journal(~),\nrun the command:\n$ ls -lL /var/log/*.journal(~)\nIf properly configured, the output should indicate the following group-owner:\n\n  systemd-journal\n   or \n\n  root\n  \n      Is it the case that /var/log/*.journal(~) does not have a group owner of\nsystemd-journal or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/lastlog File\n----\nTo check the group ownership of /var/log/lastlog,\nrun the command:\n$ ls -lL /var/log/lastlog\nIf properly configured, the output should indicate the following group-owner:\n\n  utmp\n   or \n\n  root\n  \n      Is it the case that /var/log/lastlog does not have a group owner of\nutmp or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/localmessages* File\n----\nTo check the group ownership of /var/log/localmessages*,\nrun the command:\n$ ls -lL /var/log/localmessages*\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/localmessages* does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/messages File\n----\nTo check the group ownership of /var/log/messages,\nrun the command:\n$ ls -lL /var/log/messages\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/messages does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/secure File\n----\nTo check the group ownership of /var/log/secure,\nrun the command:\n$ ls -lL /var/log/secure\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/secure does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/syslog File\n----\nTo check the group ownership of /var/log/syslog,\nrun the command:\n$ ls -lL /var/log/syslog\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/syslog does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/waagent.log File\n----\nTo check the group ownership of /var/log/waagent.log,\nrun the command:\n$ ls -lL /var/log/waagent.log\nIf properly configured, the output should indicate the following group-owner:\n\n  adm\n   or \n\n  root\n  \n      Is it the case that /var/log/waagent.log does not have a group owner of\nadm or\nroot\n?\n----\n\n== Verify Group Who Owns /var/log/(b|w)tmp(.*|-*) File\n----\nTo check the group ownership of /var/log/(b|w)tmp(.*|-*),\nrun the command:\n$ ls -lL /var/log/(b|w)tmp(.*|-*)\nIf properly configured, the output should indicate the following group-owner:\n\n  utmp\n   or \n\n  root\n  \n      Is it the case that /var/log/(b|w)tmp(.*|-*) does not have a group owner of\nutmp or\nroot\n?\n----\n\n== Verify Ownership of Files in /var/log/apt\n----\nTo check the ownership of /var/log/apt/*,\nrun the command:\n$ ls -lL /var/log/apt/*\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /var/log/apt/* does not have an owner of root?\n----\n\n== Verify Ownership of Files in /var/log/gdm\n----\nTo check the ownership of /var/log/gdm/*,\nrun the command:\n$ ls -lL /var/log/gdm/*\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /var/log/gdm/* does not have an owner of root?\n----\n\n== Verify Ownership of Files in /var/log/gdm3\n----\nTo check the ownership of /var/log/gdm3/*,\nrun the command:\n$ ls -lL /var/log/gdm3/*\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /var/log/gdm3/* does not have an owner of root?\n----\n\n== Verify Ownership of Files in /var/log/landscape\n----\nTo check the ownership of /var/log/landscape/*,\nrun the command:\n$ ls -lL /var/log/landscape/*\nIf properly configured, the output should indicate the following owner:\nroot|landscape\n      Is it the case that /var/log/landscape/* does not have an owner of root|landscape?\n----\n\n== Verify Ownership of Files in /var/log/sssd\n----\nTo check the ownership of /var/log/sssd/*,\nrun the command:\n$ ls -lL /var/log/sssd/*\nIf properly configured, the output should indicate the following owner:\nsssd|root\n      Is it the case that /var/log/sssd/* does not have an owner of sssd|root?\n----\n\n== Verify User Who Owns /var/log/auth.log File\n----\nTo check the ownership of /var/log/auth.log,\nrun the command:\n$ ls -lL /var/log/auth.log\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/auth.log does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/cloud-init.log File\n----\nTo check the ownership of /var/log/cloud-init.log,\nrun the command:\n$ ls -lL /var/log/cloud-init.log\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/cloud-init.log does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/*.journal(~) Files\n----\nTo check the ownership of /var/log/*.journal(~),\nrun the command:\n$ ls -lL /var/log/*.journal(~)\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /var/log/*.journal(~) does not have an owner of root?\n----\n\n== Verify User Who Owns /var/log/lastlog File\n----\nTo check the ownership of /var/log/lastlog,\nrun the command:\n$ ls -lL /var/log/lastlog\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /var/log/lastlog does not have an owner of root?\n----\n\n== Verify User Who Owns /var/log/localmessages File\n----\nTo check the ownership of /var/log/localmessages,\nrun the command:\n$ ls -lL /var/log/localmessages\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/localmessages does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/messages File\n----\nTo check the ownership of /var/log/messages,\nrun the command:\n$ ls -lL /var/log/messages\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/messages does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/secure File\n----\nTo check the ownership of /var/log/secure,\nrun the command:\n$ ls -lL /var/log/secure\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/secure does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/syslog File\n----\nTo check the ownership of /var/log/syslog,\nrun the command:\n$ ls -lL /var/log/syslog\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/syslog does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/waagent.log File\n----\nTo check the ownership of /var/log/waagent.log,\nrun the command:\n$ ls -lL /var/log/waagent.log\nIf properly configured, the output should indicate the following owner:\nsyslog|root\n      Is it the case that /var/log/waagent.log does not have an owner of syslog|root?\n----\n\n== Verify User Who Owns /var/log/(b|w)tmp(.*|-*) File\n----\nTo check the ownership of /var/log/(b|w)tmp(.*|-*),\nrun the command:\n$ ls -lL /var/log/(b|w)tmp(.*|-*)\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /var/log/(b|w)tmp(.*|-*) does not have an owner of root?\n----\n\n== Verify Permissions on files in the /var/log/apt/.* directory\n----\nTo check the permissions of /var/log/apt/.*,\nrun the command:\n$ ls -l /var/log/apt/.*\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /var/log/apt/.* does not have unix mode -rw-r--r--?\n----\n\n== Verify Permissions on /var/log/auth.log File\n----\nTo check the permissions of /var/log/auth.log,\nrun the command:\n$ ls -l /var/log/auth.log\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /var/log/auth.log does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /var/log/cloud-init.log(.*) Files\n----\nTo check the permissions of /var/log/cloud-init.log,\nrun the command:\n$ ls -l /var/log/cloud-init.log\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /var/log/cloud-init.log does not have unix mode -rw-r--r--?\n----\n\n== Verify Permissions of Files in /var/log/gdm\n----\nTo check the permissions of /var/log/gdm/*,\nrun the command:\n$ ls -l /var/log/gdm/*\nIf properly configured, the output should indicate the following permissions:\n-rw-rw----\n      Is it the case that /var/log/gdm/* does not have unix mode -rw-rw----?\n----\n\n== Verify Permissions of Files in /var/log/gdm3\n----\nTo check the permissions of /var/log/gdm3/*,\nrun the command:\n$ ls -l /var/log/gdm3/*\nIf properly configured, the output should indicate the following permissions:\n-rw-rw----\n      Is it the case that /var/log/gdm3/* does not have unix mode -rw-rw----?\n----\n\n== Verify Permissions on /var/log/lastlog(.*) Files\n----\nTo check the permissions of /var/log/lastlog,\nrun the command:\n$ ls -l /var/log/lastlog\nIf properly configured, the output should indicate the following permissions:\n-rw-rw-r--\n      Is it the case that /var/log/lastlog does not have unix mode -rw-rw-r--?\n----\n\n== Verify Permissions on /var/log/cloud-init.log(.*) Files\n----\nTo check the permissions of /var/log/cloud-init.log,\nrun the command:\n$ ls -l /var/log/cloud-init.log\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /var/log/cloud-init.log does not have unix mode -rw-r--r--?\n----\n\n== Verify Permissions on /var/log/localmessages(.*) Files\n----\nTo check the permissions of /var/log/localmessages,\nrun the command:\n$ ls -l /var/log/localmessages\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /var/log/localmessages does not have unix mode -rw-r--r--?\n----\n\n== Verify Permissions on /var/log/messages File\n----\nTo check the permissions of /var/log/messages,\nrun the command:\n$ ls -l /var/log/messages\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /var/log/messages does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /var/log/secure File\n----\nTo check the permissions of /var/log/secure,\nrun the command:\n$ ls -l /var/log/secure\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /var/log/secure does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions of Files in /var/log/sssd\n----\nTo check the permissions of /var/log/sssd/*,\nrun the command:\n$ ls -l /var/log/sssd/*\nIf properly configured, the output should indicate the following permissions:\n-rw-rw----\n      Is it the case that /var/log/sssd/* does not have unix mode -rw-rw----?\n----\n\n== Verify Permissions on /var/log/syslog File\n----\nTo check the permissions of /var/log/syslog,\nrun the command:\n$ ls -l /var/log/syslog\nIf properly configured, the output should indicate the following permissions:\n-rw-r-----\n      Is it the case that /var/log/syslog does not have unix mode -rw-r-----?\n----\n\n== Verify Permissions on /var/log/waagent.log(.*) Files\n----\nTo check the permissions of /var/log/waagent.log,\nrun the command:\n$ ls -l /var/log/waagent.log\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /var/log/waagent.log does not have unix mode -rw-r--r--?\n----\n\n== Verify Permissions on /var/log/wtmp(.*) Files\n----\nTo check the permissions of /var/log/(b|w)tmp(.*|-*),\nrun the command:\n$ ls -l /var/log/(b|w)tmp(.*|-*)\nIf properly configured, the output should indicate the following permissions:\n-rw-rw-r--\n      Is it the case that /var/log/(b|w)tmp(.*|-*) does not have unix mode -rw-rw-r--?\n----\n\n== Verify ownership of log files\n----\nVerify the operating system has all system log files under the\n/var/log directory, that are not excluded, with a group owner set to root | adm,\n      Is it the case that not all log files group-owned by root or adm?\n----\n\n== Verify ownership of log files\n----\nVerify the operating system has all system log files under the\n/var/log directory, that are not excluded, with an owner set to root | syslog,\n      Is it the case that not all log files owned by root or syslog?\n----\n\n== Verify permissions of log files\n----\nVerify the operating system has all system log files under the\n/var/log directory with a permission set to 640,\nby using the following command:\n\nsudo find /var/log -perm /137 -type f -exec stat -c \"%n %a\" {} \\;\n\n      Is it the case that not all log files have permission 640 or stricter?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Verify Groupownership of Files in /var/log/apt\n\nTo properly set the group owner of `/var/log/apt/*`, run the command:\n\n```\n$ sudo chgrp adm /var/log/apt/*\n```\n or\n\n```\n$ sudo chgrp root /var/log/apt/*\n```\n\n**Rationale:**\n\nThe `/var/log/apt` directory contains information about APT\nand should only be accessed by authorized personnel.\n\n## Verify Groupownership of Files in /var/log/gdm\n\nTo properly set the group owner of `/var/log/gdm/*`, run the command:\n\n```\n$ sudo chgrp gdm /var/log/gdm/*\n```\n or\n\n```\n$ sudo chgrp root /var/log/gdm/*\n```\n\n**Rationale:**\n\nThe `/var/log/gdm` directory contains information about the GDM daemon\nand should only be accessed by authorized personnel.\n\n## Verify Groupownership of Files in /var/log/gdm3\n\nTo properly set the group owner of `/var/log/gdm3/*`, run the command:\n\n```\n$ sudo chgrp gdm /var/log/gdm3/*\n```\n or\n\n```\n$ sudo chgrp gdm3 /var/log/gdm3/*\n```\n or\n\n```\n$ sudo chgrp root /var/log/gdm3/*\n```\n\n**Rationale:**\n\nThe `/var/log/gdm3` directory contains information about the GDM daemon\nand should only be accessed by authorized personnel.\n\n## Verify Groupownership of Files in /var/log/landscape\n\nTo properly set the group owner of `/var/log/landscape/*`, run the command:\n\n```\n$ sudo chgrp root /var/log/landscape/*\n```\n or\n\n```\n$ sudo chgrp landscape /var/log/landscape/*\n```\n\n**Rationale:**\n\nThe `/var/log/landscape` directory contains information about\nthe landscape-client and should only be accessed by authorized personnel.\n\n## Verify Grouponwership of Files in /var/log/sssd\n\nTo properly set the group owner of `/var/log/sssd/*`, run the command:\n\n```\n$ sudo chgrp sssd /var/log/sssd/*\n```\n or\n\n```\n$ sudo chgrp root /var/log/sssd/*\n```\n\n**Rationale:**\n\nThe `/var/log/sssd` directory contains debug logs for the System\nSecurity Services Daemon (SSSD) and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/auth.log File\n\nTo properly set the group owner of `/var/log/auth.log`, run the command:\n\n```\n$ sudo chgrp adm /var/log/auth.log\n```\n or\n\n```\n$ sudo chgrp root /var/log/auth.log\n```\n\n**Rationale:**\n\nThe `/var/log/auth.log` file contains records information about user\nlogin attempts and authentication processes and should only be accessed by\nauthorized personnel.\n\n## Verify Group Who Owns /var/log/cloud-init.log* File\n\nTo properly set the group owner of `/var/log/cloud-init.log*`, run the command:\n\n```\n$ sudo chgrp adm /var/log/cloud-init.log*\n```\n or\n\n```\n$ sudo chgrp root /var/log/cloud-init.log*\n```\n\n**Rationale:**\n\nThe `/var/log/cloud-init.log*` file contains detailed debugging information that\nhelps users troubleshoot cloud-init and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/*.journal(~) File\n\nTo properly set the group owner of `/var/log/*.journal(~)`, run the command:\n\n```\n$ sudo chgrp systemd-journal /var/log/*.journal(~)\n```\n or\n\n```\n$ sudo chgrp root /var/log/*.journal(~)\n```\n\n**Rationale:**\n\nThe `/var/log/*.journal(~)` files are system logs managed by the \"systemd\" service.\n\n## Verify Group Who Owns /var/log/lastlog File\n\nTo properly set the group owner of `/var/log/lastlog`, run the command:\n\n```\n$ sudo chgrp utmp /var/log/lastlog\n```\n or\n\n```\n$ sudo chgrp root /var/log/lastlog\n```\n\n**Rationale:**\n\nThe `/var/log/lastlog` file contains logs of reports the most recent login of all users\nand should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/localmessages* File\n\nTo properly set the group owner of `/var/log/localmessages*`, run the command:\n\n```\n$ sudo chgrp adm /var/log/localmessages*\n```\n or\n\n```\n$ sudo chgrp root /var/log/localmessages*\n```\n\n**Rationale:**\n\nThe `/var/log/localmessages*` file contains log messages from certain boot scripts,\nincluding the DHCP client, and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/messages File\n\nTo properly set the group owner of `/var/log/messages`, run the command:\n\n```\n$ sudo chgrp adm /var/log/messages\n```\n or\n\n```\n$ sudo chgrp root /var/log/messages\n```\n\n**Rationale:**\n\nThe `/var/log/messages` file contains logs of error messages in\nthe system and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/secure File\n\nTo properly set the group owner of `/var/log/secure`, run the command:\n\n```\n$ sudo chgrp adm /var/log/secure\n```\n or\n\n```\n$ sudo chgrp root /var/log/secure\n```\n\n**Rationale:**\n\nThe `/var/log/secure` file contains information related to authentication\nand authorization privileges and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/syslog File\n\nTo properly set the group owner of `/var/log/syslog`, run the command:\n\n```\n$ sudo chgrp adm /var/log/syslog\n```\n or\n\n```\n$ sudo chgrp root /var/log/syslog\n```\n\n**Rationale:**\n\nThe `/var/log/syslog` file contains logs of error messages in\nthe system and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/waagent.log File\n\nTo properly set the group owner of `/var/log/waagent.log`, run the command:\n\n```\n$ sudo chgrp adm /var/log/waagent.log\n```\n or\n\n```\n$ sudo chgrp root /var/log/waagent.log\n```\n\n**Rationale:**\n\nThe `/var/log/waagent.log` file contains Azure Linux Guest Agent records\nevents that can be used for troubleshooting and should only be accessed by authorized personnel.\n\n## Verify Group Who Owns /var/log/(b|w)tmp(.*|-*) File\n\nTo properly set the group owner of `/var/log/(b|w)tmp(.*|-*)`, run the command:\n\n```\n$ sudo chgrp utmp /var/log/(b|w)tmp(.*|-*)\n```\n or\n\n```\n$ sudo chgrp root /var/log/(b|w)tmp(.*|-*)\n```\n\n**Rationale:**\n\nThe `/var/log/(b|w)tmp(.*|-*)` file contains logs of reports the most recent login of all users\nand should only be accessed by authorized personnel.\n\n## Verify Ownership of Files in /var/log/apt\n\nTo properly set the owner of `/var/log/apt/*`, run the command:\n\n```\n$ sudo chown root /var/log/apt/* \n```\n\n**Rationale:**\n\nThe `/var/log/apt` directory contains information about APT\nand should only be accessed by authorized personnel.\n\n## Verify Ownership of Files in /var/log/gdm\n\nTo properly set the owner of `/var/log/gdm/*`, run the command:\n\n```\n$ sudo chown root /var/log/gdm/* \n```\n\n**Rationale:**\n\nThe `/var/log/gdm` directory contains information about the GDM daemon\nand should only be accessed by authorized personnel.\n\n## Verify Ownership of Files in /var/log/gdm3\n\nTo properly set the owner of `/var/log/gdm3/*`, run the command:\n\n```\n$ sudo chown root /var/log/gdm3/* \n```\n\n**Rationale:**\n\nThe `/var/log/gdm3` directory contains information about the GDM daemon\nand should only be accessed by authorized personnel.\n\n## Verify Ownership of Files in /var/log/landscape\n\nTo properly set the owner of `/var/log/landscape/*`, run the command:\n\n```\n$ sudo chown root /var/log/landscape/* \n```\n or\n\n```\n$ sudo chown landscape /var/log/landscape/* \n```\n\n**Rationale:**\n\nThe `/var/log/landscape` directory contains information about\nthe landscape-client and should only be accessed by authorized personnel.\n\n## Verify Ownership of Files in /var/log/sssd\n\nTo properly set the owner of `/var/log/sssd/*`, run the command:\n\n```\n$ sudo chown sssd /var/log/sssd/* \n```\n or\n\n```\n$ sudo chown root /var/log/sssd/* \n```\n\n**Rationale:**\n\nThe `/var/log/sssd` directory contains debug logs for the System\nSecurity Services Daemon (SSSD) and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/auth.log File\n\nTo properly set the owner of `/var/log/auth.log`, run the command:\n\n```\n$ sudo chown syslog /var/log/auth.log \n```\n or\n\n```\n$ sudo chown root /var/log/auth.log \n```\n\n**Rationale:**\n\nThe `/var/log/auth.log` file contains records information about user\nlogin attempts and authentication processes and should only be accessed by\nauthorized personnel.\n\n## Verify User Who Owns /var/log/cloud-init.log File\n\nTo properly set the owner of `/var/log/cloud-init.log`, run the command:\n\n```\n$ sudo chown syslog /var/log/cloud-init.log \n```\n or\n\n```\n$ sudo chown root /var/log/cloud-init.log \n```\n\n**Rationale:**\n\nThe `/var/log/cloud-init.log` file contains detailed debugging information that\nhelps users troubleshoot cloud-init and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/*.journal(~) Files\n\nTo properly set the owner of `/var/log/*.journal(~)`, run the command:\n\n```\n$ sudo chown root /var/log/*.journal(~) \n```\n\n**Rationale:**\n\nThe `/var/log/*.journal(~)` files are system logs managed by the \"systemd\" service.\n\n## Verify User Who Owns /var/log/lastlog File\n\nTo properly set the owner of `/var/log/lastlog`, run the command:\n\n```\n$ sudo chown root /var/log/lastlog \n```\n\n**Rationale:**\n\nThe `/var/log/lastlog` file contains logs of reports the most recent login of all users\nand should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/localmessages File\n\nTo properly set the owner of `/var/log/localmessages`, run the command:\n\n```\n$ sudo chown syslog /var/log/localmessages \n```\n or\n\n```\n$ sudo chown root /var/log/localmessages \n```\n\n**Rationale:**\n\nThe `/var/log/localmessages` file contains log messages from certain boot scripts,\nincluding the DHCP client, and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/messages File\n\nTo properly set the owner of `/var/log/messages`, run the command:\n\n```\n$ sudo chown syslog /var/log/messages \n```\n or\n\n```\n$ sudo chown root /var/log/messages \n```\n\n**Rationale:**\n\nThe `/var/log/messages` file contains logs of error messages in\nthe system and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/secure File\n\nTo properly set the owner of `/var/log/secure`, run the command:\n\n```\n$ sudo chown syslog /var/log/secure \n```\n or\n\n```\n$ sudo chown root /var/log/secure \n```\n\n**Rationale:**\n\nThe `/var/log/secure` file contains information related to authentication\nand authorization privileges and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/syslog File\n\nTo properly set the owner of `/var/log/syslog`, run the command:\n\n```\n$ sudo chown syslog /var/log/syslog \n```\n or\n\n```\n$ sudo chown root /var/log/syslog \n```\n\n**Rationale:**\n\nThe `/var/log/syslog` file contains logs of error messages in\nthe system and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/waagent.log File\n\nTo properly set the owner of `/var/log/waagent.log`, run the command:\n\n```\n$ sudo chown syslog /var/log/waagent.log \n```\n or\n\n```\n$ sudo chown root /var/log/waagent.log \n```\n\n**Rationale:**\n\nThe `/var/log/waagent.log` file contains Azure Linux Guest Agent records\nevents that can be used for troubleshooting and should only be accessed by authorized personnel.\n\n## Verify User Who Owns /var/log/(b|w)tmp(.*|-*) File\n\nTo properly set the owner of `/var/log/(b|w)tmp(.*|-*)`, run the command:\n\n```\n$ sudo chown root /var/log/(b|w)tmp(.*|-*) \n```\n\n**Rationale:**\n\nThe `/var/log/(b|w)tmp(.*|-*)` file contains logs of reports the most recent login of all users\nand should only be accessed by authorized personnel.\n\n## Verify Permissions on files in the /var/log/apt/.* directory\n\nTo properly set the permissions of `/var/log/apt/.*`, run the command:\n\n```\n$ sudo chmod 0644 /var/log/apt/.*\n```\n\n**Rationale:**\n\nThe `/var/log/apt` directory contains information about APT\nand should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/auth.log File\n\nTo properly set the permissions of `/var/log/auth.log`, run the command:\n\n```\n$ sudo chmod 0640 /var/log/auth.log\n```\n\n**Rationale:**\n\nThe `/var/log/auth.log` file contains records information about user\nlogin attempts and authentication processes and should only be accessed by\nauthorized personnel.\n\n## Verify Permissions on /var/log/cloud-init.log(.*) Files\n\nTo properly set the permissions of `/var/log/cloud-init.log`, run the command:\n\n```\n$ sudo chmod 0644 /var/log/cloud-init.log\n```\n\n**Rationale:**\n\nThe `/var/log/cloud-init.log` file contains detailed debugging information that\nhelps users troubleshoot cloud-init and should only be accessed by authorized personnel.\n\n## Verify Permissions of Files in /var/log/gdm\n\nTo properly set the permissions of `/var/log/gdm/*`, run the command:\n\n```\n$ sudo chmod 0660 /var/log/gdm/*\n```\n\n**Rationale:**\n\nThe `/var/log/gdm` directory contains information about the GDM daemon\nand should only be accessed by authorized personnel.\n\n## Verify Permissions of Files in /var/log/gdm3\n\nTo properly set the permissions of `/var/log/gdm3/*`, run the command:\n\n```\n$ sudo chmod 0660 /var/log/gdm3/*\n```\n\n**Rationale:**\n\nThe `/var/log/gdm3` directory contains information about the GDM daemon\nand should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/lastlog(.*) Files\n\nTo properly set the permissions of `/var/log/lastlog`, run the command:\n\n```\n$ sudo chmod 0664 /var/log/lastlog\n```\n\n**Rationale:**\n\nThe `/var/log/lastlog` file contains logs of reports the most recent login of all users\nand should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/cloud-init.log(.*) Files\n\nTo properly set the permissions of `/var/log/cloud-init.log`, run the command:\n\n```\n$ sudo chmod 0644 /var/log/cloud-init.log\n```\n\n**Rationale:**\n\nThe `/var/log/cloud-init.log` file contains detailed debugging information that\nhelps users troubleshoot cloud-init and should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/localmessages(.*) Files\n\nTo properly set the permissions of `/var/log/localmessages`, run the command:\n\n```\n$ sudo chmod 0644 /var/log/localmessages\n```\n\n**Rationale:**\n\nThe `/var/log/localmessages` file contains log messages from certain boot scripts,\nincluding the DHCP client, and should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/messages File\n\nTo properly set the permissions of `/var/log/messages`, run the command:\n\n```\n$ sudo chmod 0640 /var/log/messages\n```\n\n**Rationale:**\n\nThe `/var/log/messages` file contains logs of error messages in\nthe system and should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/secure File\n\nTo properly set the permissions of `/var/log/secure`, run the command:\n\n```\n$ sudo chmod 0640 /var/log/secure\n```\n\n**Rationale:**\n\nThe `/var/log/secure` file contains information related to authentication\nand authorization privileges and should only be accessed by authorized personnel.\n\n## Verify Permissions of Files in /var/log/sssd\n\nTo properly set the permissions of `/var/log/sssd/*`, run the command:\n\n```\n$ sudo chmod 0660 /var/log/sssd/*\n```\n\n**Rationale:**\n\nThe `/var/log/sssd` directory contains debug logs for the System\nSecurity Services Daemon (SSSD) and should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/syslog File\n\nTo properly set the permissions of `/var/log/syslog`, run the command:\n\n```\n$ sudo chmod 0640 /var/log/syslog\n```\n\n**Rationale:**\n\nThe `/var/log/syslog` file contains logs of error messages in\nthe system and should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/waagent.log(.*) Files\n\nTo properly set the permissions of `/var/log/waagent.log`, run the command:\n\n```\n$ sudo chmod 0644 /var/log/waagent.log\n```\n\n**Rationale:**\n\nThe `/var/log/waagent.log` file contains Azure Linux Guest Agent records\nevents that can be used for troubleshooting and should only be accessed by authorized personnel.\n\n## Verify Permissions on /var/log/wtmp(.*) Files\n\nTo properly set the permissions of `/var/log/(b|w)tmp(.*|-*)`, run the command:\n\n```\n$ sudo chmod 0664 /var/log/(b|w)tmp(.*|-*)\n```\n\n**Rationale:**\n\nThe `/var/log/(b|w)tmp(.*|-*)` files contains logs of reports the most recent login of all users\nand should only be accessed by authorized personnel.\n\n## Verify ownership of log files\n\nAny operating system providing too much information in error messages\nrisks compromising the data and security of the structure, and content\nof error messages needs to be carefully considered by the organization.\n\nOrganizations carefully consider the structure/content of error messages.\nThe extent to which information systems are able to identify and handle\nerror conditions is guided by organizational policy and operational\nrequirements. Information that could be exploited by adversaries includes,\nfor example, erroneous logon attempts with passwords entered by mistake\nas the username, mission/business information that can be derived from\n(if not stated explicitly by) information recorded, and personal\ninformation, such as account numbers, social security numbers, and credit\ncard numbers.\n\n**Rationale:**\n\nThe Ubuntu 24.04 must generate error messages that provide information\nnecessary for corrective actions without revealing information that could\nbe exploited by adversaries.\n\n## Verify ownership of log files\n\nAny operating system providing too much information in error messages\nrisks compromising the data and security of the structure, and content\nof error messages needs to be carefully considered by the organization.\n\nOrganizations carefully consider the structure/content of error messages.\nThe extent to which information systems are able to identify and handle\nerror conditions is guided by organizational policy and operational\nrequirements. Information that could be exploited by adversaries includes,\nfor example, erroneous logon attempts with passwords entered by mistake\nas the username, mission/business information that can be derived from\n(if not stated explicitly by) information recorded, and personal\ninformation, such as account numbers, social security numbers, and credit\ncard numbers.\n\n**Rationale:**\n\nThe Ubuntu 24.04 must generate error messages that provide information\nnecessary for corrective actions without revealing information that could\nbe exploited by adversaries.\n\n## Verify permissions of log files\n\nAny operating system providing too much information in error messages\nrisks compromising the data and security of the structure, and content\nof error messages needs to be carefully considered by the organization.\n\nOrganizations carefully consider the structure/content of error messages.\nThe extent to which information systems are able to identify and handle\nerror conditions is guided by organizational policy and operational\nrequirements. Information that could be exploited by adversaries includes,\nfor example, erroneous logon attempts with passwords entered by mistake\nas the username, mission/business information that can be derived from\n(if not stated explicitly by) information recorded, and personal\ninformation, such as account numbers, social security numbers, and credit\ncard numbers.\n\n**Rationale:**\n\nThe Ubuntu 24.04 must generate error messages that provide information\nnecessary for corrective actions without revealing information that could\nbe exploited by adversaries.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.6.1.4.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.1.4.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "file_groupownerships_var_log_apt",
+        "file_groupownerships_var_log_gdm",
+        "file_groupownerships_var_log_gdm3",
+        "file_groupownerships_var_log_landscape",
+        "file_groupownerships_var_log_sssd",
+        "file_groupowner_var_log_auth",
+        "file_groupowner_var_log_cloud_init",
+        "file_groupowner_var_log_journal",
+        "file_groupowner_var_log_lastlog",
+        "file_groupowner_var_log_localmessages",
+        "file_groupowner_var_log_messages",
+        "file_groupowner_var_log_secure",
+        "file_groupowner_var_log_syslog",
+        "file_groupowner_var_log_waagent",
+        "file_groupowner_var_log_wbtmp",
+        "file_ownerships_var_log_apt",
+        "file_ownerships_var_log_gdm",
+        "file_ownerships_var_log_gdm3",
+        "file_ownerships_var_log_landscape",
+        "file_ownerships_var_log_sssd",
+        "file_owner_var_log_auth",
+        "file_owner_var_log_cloud_init",
+        "file_owner_var_log_journal",
+        "file_owner_var_log_lastlog",
+        "file_owner_var_log_localmessages",
+        "file_owner_var_log_messages",
+        "file_owner_var_log_secure",
+        "file_owner_var_log_syslog",
+        "file_owner_var_log_waagent",
+        "file_owner_var_log_wbtmp",
+        "file_permissions_var_log_apt",
+        "file_permissions_var_log_auth",
+        "file_permissions_var_log_cloud-init",
+        "file_permissions_var_log_gdm",
+        "file_permissions_var_log_gdm3",
+        "file_permissions_var_log_lastlog",
+        "file_permissions_var_log_cloud-init",
+        "file_permissions_var_log_localmessages",
+        "file_permissions_var_log_messages",
+        "file_permissions_var_log_secure",
+        "file_permissions_var_log_sssd",
+        "file_permissions_var_log_syslog",
+        "file_permissions_var_log_waagent",
+        "file_permissions_var_log_wbtmp",
+        "file_groupownerships_var_log",
+        "file_ownerships_var_log",
+        "permissions_local_var_log"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownerships_var_log_apt`",
+          "language": "bash",
+          "name": "Verify Groupownership of Files in /var/log/apt",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nfind -P /var/log/apt/ -maxdepth 1 -type f  ! -group adm ! -group root -regextype posix-extended -regex '.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownerships_var_log_gdm`",
+          "language": "bash",
+          "name": "Verify Groupownership of Files in /var/log/gdm",
+          "shell": "newgroup=\"\"\nif getent group \"gdm\" >/dev/null 2>&1; then\n  newgroup=\"gdm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"gdm and root is not a defined group on the system\"\nelse\nfind -P /var/log/gdm/  -type f  ! -group gdm ! -group root -regextype posix-extended -regex '.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownerships_var_log_gdm3`",
+          "language": "bash",
+          "name": "Verify Groupownership of Files in /var/log/gdm3",
+          "shell": "newgroup=\"\"\nif getent group \"gdm\" >/dev/null 2>&1; then\n  newgroup=\"gdm\"\nelif getent group \"gdm3\" >/dev/null 2>&1; then\n  newgroup=\"gdm3\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"gdm and gdm3 and root is not a defined group on the system\"\nelse\nfind -P /var/log/gdm3/  -type f  ! -group gdm ! -group gdm3 ! -group root -regextype posix-extended -regex '.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownerships_var_log_landscape`",
+          "language": "bash",
+          "name": "Verify Groupownership of Files in /var/log/landscape",
+          "shell": "newgroup=\"\"\nif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nelif getent group \"landscape\" >/dev/null 2>&1; then\n  newgroup=\"landscape\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"root and landscape is not a defined group on the system\"\nelse\nfind -P /var/log/landscape/ -maxdepth 1 -type f  ! -group root ! -group landscape -regextype posix-extended -regex '^.*$' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownerships_var_log_sssd`",
+          "language": "bash",
+          "name": "Verify Grouponwership of Files in /var/log/sssd",
+          "shell": "newgroup=\"\"\nif getent group \"sssd\" >/dev/null 2>&1; then\n  newgroup=\"sssd\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"sssd and root is not a defined group on the system\"\nelse\nfind -P /var/log/sssd/  -type f  ! -group sssd ! -group root -regextype posix-extended -regex '.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_auth`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/auth.log File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/var/log/auth.log\" | grep -E -w -q \"adm|root\"; then\n    chgrp --no-dereference \"$newgroup\" /var/log/auth.log\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_cloud_init`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/cloud-init.log* File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nfind -P /var/log/ -maxdepth 1 -type f  ! -group adm ! -group root -regextype posix-extended -regex '.*cloud-init\\.log.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_journal`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/*.journal(~) File",
+          "shell": "newgroup=\"\"\nif getent group \"systemd-journal\" >/dev/null 2>&1; then\n  newgroup=\"systemd-journal\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"systemd-journal and root is not a defined group on the system\"\nelse\nfind -P /var/log/  -type f  ! -group systemd-journal ! -group root -regextype posix-extended -regex '.*\\.journal[~]?' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_lastlog`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/lastlog File",
+          "shell": "newgroup=\"\"\nif getent group \"utmp\" >/dev/null 2>&1; then\n  newgroup=\"utmp\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"utmp and root is not a defined group on the system\"\nelse\nfind -P /var/log/ -maxdepth 1 -type f  ! -group utmp ! -group root -regextype posix-extended -regex '.*lastlog(\\.[^\\/]+)?' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_localmessages`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/localmessages* File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nfind -P /var/log/ -maxdepth 1 -type f  ! -group adm ! -group root -regextype posix-extended -regex '.*localmessages.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_messages`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/messages File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/var/log/messages\" | grep -E -w -q \"adm|root\"; then\n    chgrp --no-dereference \"$newgroup\" /var/log/messages\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_secure`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/secure File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nfind -P /var/log/ -maxdepth 1 -type f  ! -group adm ! -group root -regextype posix-extended -regex '.*secure(.*[-\\.].*)?' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_syslog`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/syslog File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/var/log/syslog\" | grep -E -w -q \"adm|root\"; then\n    chgrp --no-dereference \"$newgroup\" /var/log/syslog\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_waagent`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/waagent.log File",
+          "shell": "newgroup=\"\"\nif getent group \"adm\" >/dev/null 2>&1; then\n  newgroup=\"adm\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"adm and root is not a defined group on the system\"\nelse\nfind -P /var/log/ -maxdepth 1 -type f  ! -group adm ! -group root -regextype posix-extended -regex '.*waagent.log.*' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_var_log_wbtmp`",
+          "language": "bash",
+          "name": "Verify Group Who Owns /var/log/(b|w)tmp(.*|-*) File",
+          "shell": "newgroup=\"\"\nif getent group \"utmp\" >/dev/null 2>&1; then\n  newgroup=\"utmp\"\nelif getent group \"root\" >/dev/null 2>&1; then\n  newgroup=\"root\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"utmp and root is not a defined group on the system\"\nelse\nfind -P /var/log/ -maxdepth 1 -type f  ! -group utmp ! -group root -regextype posix-extended -regex '.*(b|w)tmp((\\.|-)[^\\/]+)?' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownerships_var_log_apt`",
+          "language": "bash",
+          "name": "Verify Ownership of Files in /var/log/apt",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /var/log/apt/ -maxdepth 1 -type f  ! -user 0 -regextype posix-extended -regex '^.*$' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownerships_var_log_gdm`",
+          "language": "bash",
+          "name": "Verify Ownership of Files in /var/log/gdm",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /var/log/gdm/  -type f  ! -user 0 -regextype posix-extended -regex '.*' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownerships_var_log_gdm3`",
+          "language": "bash",
+          "name": "Verify Ownership of Files in /var/log/gdm3",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /var/log/gdm3/  -type f  ! -user 0 -regextype posix-extended -regex '.*' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownerships_var_log_landscape`",
+          "language": "bash",
+          "name": "Verify Ownership of Files in /var/log/landscape",
+          "shell": "newown=\"\"\nif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nelif id \"landscape\" >/dev/null 2>&1; then\n  newown=\"landscape\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"root and landscape is not a defined user on the system\"\nelse\n\nfind -P /var/log/landscape/ -maxdepth 1 -type f  ! -user root ! -user landscape -regextype posix-extended -regex '^.*$' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownerships_var_log_sssd`",
+          "language": "bash",
+          "name": "Verify Ownership of Files in /var/log/sssd",
+          "shell": "newown=\"\"\nif id \"sssd\" >/dev/null 2>&1; then\n  newown=\"sssd\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"sssd and root is not a defined user on the system\"\nelse\n\nfind -P /var/log/sssd/  -type f  ! -user sssd ! -user root -regextype posix-extended -regex '.*' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_auth`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/auth.log File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/var/log/auth.log\" | grep -E -w -q \"syslog|root\"; then\n    chown --no-dereference \"$newown\" /var/log/auth.log\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_cloud_init`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/cloud-init.log File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\n\nfind -P /var/log/ -maxdepth 1 -type f  ! -user syslog ! -user root -regextype posix-extended -regex '.*cloud-init\\.log.*' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_journal`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/*.journal(~) Files",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /var/log/  -type f  ! -user 0 -regextype posix-extended -regex '.*\\.journal(~)?$' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_lastlog`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/lastlog File",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /var/log/ -maxdepth 1 -type f  ! -user 0 -regextype posix-extended -regex '.*lastlog(\\.[^\\/]+)?$' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_localmessages`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/localmessages File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\n\nfind -P /var/log/ -maxdepth 1 -type f  ! -user syslog ! -user root -regextype posix-extended -regex '.*localmessages.*' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_messages`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/messages File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/var/log/messages\" | grep -E -w -q \"syslog|root\"; then\n    chown --no-dereference \"$newown\" /var/log/messages\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_secure`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/secure File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\n\nfind -P /var/log/ -maxdepth 1 -type f  ! -user syslog ! -user root -regextype posix-extended -regex '.*secure(.*[-\\.].*)?' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_syslog`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/syslog File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/var/log/syslog\" | grep -E -w -q \"syslog|root\"; then\n    chown --no-dereference \"$newown\" /var/log/syslog\nfi\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_waagent`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/waagent.log File",
+          "shell": "newown=\"\"\nif id \"syslog\" >/dev/null 2>&1; then\n  newown=\"syslog\"\nelif id \"root\" >/dev/null 2>&1; then\n  newown=\"root\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"syslog and root is not a defined user on the system\"\nelse\n\nfind -P /var/log/ -maxdepth 1 -type f  ! -user syslog ! -user root -regextype posix-extended -regex '.*waagent.log.*' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_var_log_wbtmp`",
+          "language": "bash",
+          "name": "Verify User Who Owns /var/log/(b|w)tmp(.*|-*) File",
+          "shell": "newown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /var/log/ -maxdepth 1 -type f  ! -user 0 -regextype posix-extended -regex '.*(b|w)tmp((\\.|-)[^\\/]+)?$' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_apt`",
+          "language": "bash",
+          "name": "Verify Permissions on files in the /var/log/apt/.* directory",
+          "shell": "find -P /var/log/apt/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '^.*$' -exec chmod u-xs,g-xws,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_auth`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/auth.log File",
+          "shell": "chmod u-xs,g-xws,o-xwrt /var/log/auth.log",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_cloud-init`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/cloud-init.log(.*) Files",
+          "shell": "find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '.*cloud-init.log([^\\/]+)?$' -exec chmod u-xs,g-xws,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_gdm`",
+          "language": "bash",
+          "name": "Verify Permissions of Files in /var/log/gdm",
+          "shell": "find -P /var/log/gdm/  -perm /u+xs,g+xs,o+xwrt  -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xs,o-xwrt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_gdm3`",
+          "language": "bash",
+          "name": "Verify Permissions of Files in /var/log/gdm3",
+          "shell": "find -P /var/log/gdm3/  -perm /u+xs,g+xs,o+xwrt  -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xs,o-xwrt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_lastlog`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/lastlog(.*) Files",
+          "shell": "find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xs,o+xwt  -type f -regextype posix-extended -regex '.*lastlog(\\.[^\\/]+)?$' -exec chmod u-xs,g-xs,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_cloud-init`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/cloud-init.log(.*) Files",
+          "shell": "find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '.*cloud-init.log([^\\/]+)?$' -exec chmod u-xs,g-xws,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_localmessages`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/localmessages(.*) Files",
+          "shell": "find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '.*localmessages([^\\/]+)?$' -exec chmod u-xs,g-xws,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_messages`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/messages File",
+          "shell": "chmod u-xs,g-xws,o-xwrt /var/log/messages",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_secure`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/secure File",
+          "shell": "chmod u-xs,g-xws,o-xwrt /var/log/secure",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_sssd`",
+          "language": "bash",
+          "name": "Verify Permissions of Files in /var/log/sssd",
+          "shell": "find -P /var/log/sssd/  -perm /u+xs,g+xs,o+xwrt  -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xs,o-xwrt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_syslog`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/syslog File",
+          "shell": "chmod u-xs,g-xws,o-xwrt /var/log/syslog",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_waagent`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/waagent.log(.*) Files",
+          "shell": "find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '.*waagent.log([^\\/]+)?$' -exec chmod u-xs,g-xws,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_var_log_wbtmp`",
+          "language": "bash",
+          "name": "Verify Permissions on /var/log/wtmp(.*) Files",
+          "shell": "find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xs,o+xwt  -type f -regextype posix-extended -regex '.*(b|w)tmp((\\.|-)[^\\/]+)?$' -exec chmod u-xs,g-xs,o-xwt {} \\;",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownerships_var_log`",
+          "language": "bash",
+          "name": "Verify ownership of log files",
+          "shell": "# see https://workbench.cisecurity.org/benchmarks/18959/tickets/23964\n# regarding sssd and gdm exclusions\n\ndeclare -A valid_shells\nwhile read -r line; do\n    [[ \"$line\" == /* ]] && valid_shells[\"$line\"]=1\ndone < /etc/shells\n\ndeclare -A users_with_valid_shells\nwhile IFS=: read -r user _ _ _ _ _ shell; do\n    if [[ ${valid_shells[\"$shell\"]} == 1 ]]; then\n        users_with_valid_shells[\"$user\"]=1\n    fi\ndone < /etc/passwd\n\nfind -P /var/log/ -type f -regextype posix-extended \\\n    ! -group root ! -group adm  \\\n    ! -name 'gdm' ! -name 'gdm3' \\\n    ! -name 'sssd' ! -name 'SSSD' \\\n    ! -name 'auth.log' \\\n    ! -name 'messages' \\\n    ! -name 'syslog' \\\n    ! -path '/var/log/apt/*' \\\n    ! -path '/var/log/landscape/*' \\\n    ! -path '/var/log/gdm/*' \\\n    ! -path '/var/log/gdm3/*' \\\n    ! -path '/var/log/sssd/*' \\\n    ! -path '/var/log/[bw]tmp*' \\\n    ! -path '/var/log/cloud-init.log*' \\\n    ! -regex '.*\\.journal[~]?' \\\n    ! -regex '.*/lastlog(\\.[^\\/]+)?$' \\\n    ! -regex '.*/localmessages(.*)' \\\n    ! -regex '.*/secure(.*)' \\\n    ! -regex '.*/waagent.log(.*)' \\\n    -print0 | while IFS= read -r -d '' log_file\n    do\n        # Set to root if owned by a user with a valid shell\n        user=$(stat -c \"%U\" \"$log_file\")\n        if [[ \"${users_with_valid_shells[\"$user\"]}\" == \"1\" ]]; then\n            chgrp --no-dereference root \"$log_file\"\n        fi\n    done",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownerships_var_log`",
+          "language": "bash",
+          "name": "Verify ownership of log files",
+          "shell": "# see https://workbench.cisecurity.org/benchmarks/18959/tickets/23964\n# regarding sssd and gdm exclusions\n\ndeclare -A valid_shells\nwhile read -r line; do\n    [[ \"$line\" == /* ]] && valid_shells[\"$line\"]=1\ndone < /etc/shells\n\ndeclare -A users_with_valid_shells\nwhile IFS=: read -r user _ _ _ _ _ shell; do\n    if [[ ${valid_shells[\"$shell\"]} == 1 ]]; then\n        users_with_valid_shells[\"$user\"]=1\n    fi\ndone < /etc/passwd\n\nfind -P /var/log/ -type f -regextype posix-extended \\\n    ! -user root ! -user syslog  \\\n    ! -name 'gdm' ! -name 'gdm3' \\\n    ! -name 'sssd' ! -name 'SSSD' \\\n    ! -name 'auth.log' \\\n    ! -name 'messages' \\\n    ! -name 'syslog' \\\n    ! -path '/var/log/apt/*' \\\n    ! -path '/var/log/landscape/*' \\\n    ! -path '/var/log/gdm/*' \\\n    ! -path '/var/log/gdm3/*' \\\n    ! -path '/var/log/sssd/*' \\\n    ! -path '/var/log/[bw]tmp*' \\\n    ! -path '/var/log/cloud-init.log*' \\\n    ! -regex '.*\\.journal[~]?' \\\n    ! -regex '.*/lastlog(\\.[^\\/]+)?$' \\\n    ! -regex '.*/localmessages(.*)' \\\n    ! -regex '.*/secure(.*)' \\\n    ! -regex '.*/waagent.log(.*)' \\\n    -print0 | while IFS= read -r -d '' log_file\n    do\n        # Set to root if owned by a user with a valid shell\n        user=$(stat -c \"%U\" \"$log_file\")\n        if [[ \"${users_with_valid_shells[\"$user\"]}\" == \"1\" ]]; then\n            chown --no-dereference root \"$log_file\"\n        fi\n    done",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `permissions_local_var_log`",
+          "language": "bash",
+          "name": "Verify permissions of log files",
+          "shell": "find -P /var/log/  -perm /u+xs,g+xws,o+xwrt ! -name 'history.log*' ! -name 'eipp.log.xz*' ! -name '[bw]tmp' ! -name '[bw]tmp.*' ! -name '[bw]tmp-*' ! -name 'lastlog' ! -name 'lastlog.*' ! -name 'cloud-init.log*' ! -name 'localmessages*' ! -name 'waagent.log*' -type f -regextype posix-extended -regex '.*' -exec chmod u-xs,g-xws,o-xwrt {} \\;",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "6",
+    "6.1",
+    "6.1.4",
+    "6.1.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.1.4.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure access to all logfiles has been configured (Automated)"
+}

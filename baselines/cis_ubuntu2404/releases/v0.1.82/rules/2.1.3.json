@@ -1,0 +1,116 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Uninstall DHCP Server Package\n----\nRun the following command to determine if the isc-dhcp-server package is installed: $ dpkg -l isc-dhcp-server\n      Is it the case that the isc-dhcp-server package is installed?\n----\n\n== Disable DHCP Service\n----\nTo check that the dhcpd service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled dhcpd\nOutput should indicate the dhcpd service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled dhcpd disabled\n\nRun the following command to verify dhcpd is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active dhcpd\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the dhcpd is masked, run the following command:\n$ sudo systemctl show dhcpd | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"dhcpd\" is loaded and not masked?\n----\n\n== Disable DHCPD6 Service\nNo audit procedure in ComplianceAsCode.",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Uninstall DHCP Server Package\n\nIf the system does not need to act as a DHCP server,\nthe isc-dhcp-server package can be uninstalled.\nThe `isc-dhcp-server` package can be removed with the following command:\n\n```\n$ apt-get remove isc-dhcp-server\n```\n\n**Rationale:**\n\nRemoving the DHCP server ensures that it cannot be easily or\naccidentally reactivated and disrupt network operation.\n\n## Disable DHCP Service\n\nThe `dhcpd` service should be disabled on\nany system that does not need to act as a DHCP server.\n\n\nThe `isc-dhcp-server` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now isc-dhcp-server.service\n```\n\n**Rationale:**\n\nUnmanaged or unintentionally activated DHCP servers may provide faulty information\nto clients, interfering with the operation of a legitimate site\nDHCP server if there is one.\n\n## Disable DHCPD6 Service\n\nThe `dhcp6` service should be disabled on\nany system that does not need to act as a DHCP server.\n\n\nThe `isc-dhcp-server6` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now isc-dhcp-server6.service\n```\n\n**Rationale:**\n\nUnmanaged or unintentionally activated DHCP servers may provide faulty information\nto clients, interfering with the operation of a legitimate site\nDHCP server if there is one.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.2.1.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.1.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "package_dhcp_removed",
+        "service_dhcpd_disabled",
+        "service_dhcpd6_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_dhcp_removed`",
+          "language": "bash",
+          "name": "Uninstall DHCP Server Package",
+          "shell": "# CAUTION: This remediation script will remove isc-dhcp-server\n# from the system, and may remove any packages\n# that depend on isc-dhcp-server. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\n# check wether the package is virtual: if not, remove it.\n# if the package is virtual, iterate on providers\n#  if a provider is installed, remove it\nis_virtual=`apt-cache showpkg \"isc-dhcp-server\" | grep -Pzc 'Versions: \\n\\n'`\nif [ $is_virtual = 1 ]; then\n    rprovides_line=`apt-cache showpkg \"isc-dhcp-server\" | grep -n 'Reverse Provides:' | cut -f1 -d:`\n    pkglist=`apt-cache showpkg \"isc-dhcp-server\" | tail -n +$(($rprovides_line + 1)) | cut -f1 -d' '`\n    for package in $pkglist; do\n        not_installed=`apt-cache policy $package | grep -c 'Installed: (none)'`\n\tif [ $not_installed = 0 ]; then\n\t    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y $package\n\tfi\n    done\nelse\n    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y \"isc-dhcp-server\"\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_dhcpd_disabled`",
+          "language": "bash",
+          "name": "Disable DHCP Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'isc-dhcp-server.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'isc-dhcp-server.service'\n\"$SYSTEMCTL_EXEC\" mask 'isc-dhcp-server.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files isc-dhcp-server.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'isc-dhcp-server.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'isc-dhcp-server.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'isc-dhcp-server.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_dhcpd6_disabled`",
+          "language": "bash",
+          "name": "Disable DHCPD6 Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'isc-dhcp-server6.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'isc-dhcp-server6.service'\n\"$SYSTEMCTL_EXEC\" mask 'isc-dhcp-server6.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files isc-dhcp-server6.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'isc-dhcp-server6.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'isc-dhcp-server6.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'isc-dhcp-server6.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.1",
+    "2.1.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure dhcp server services are not in use (Automated)"
+}

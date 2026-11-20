@@ -1,0 +1,116 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Configure Systemd Timesyncd Servers\n----\nReview /etc/systemd/timesyncd.conf and ensure that the NTP servers, NTP FallbackNTP\nservers are listed in accordance with local policy.\n      Is it the case that a remote time server is not configured?\n----\nExpected values: var_multiple_time_servers = $ODV_var_multiple_time_servers",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Configure Systemd Timesyncd Servers\n\n`systemd-timesyncd` is a daemon that has been added for synchronizing the system clock\nacross the network. The `systemd-timesyncd` daemon implements:\n  - Implements an SNTP client\n  - Runs with minimal privileges\n  - Saves the current clock to disk every time a new NTP sync has been acquired\n  - Is hooked up with networkd to only operate when network connectivity is available\nAdd or edit server or pool lines to `/etc/systemd/timesyncd.conf` as appropriate:\n\n```\nserver <remote-server>\n```\n\nMultiple servers may be configured.\n\n**Rationale:**\n\nConfiguring `systemd-timesyncd` ensures time synchronization is working properly.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.2.3.2.1",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "0.ubuntu.pool.ntp.org,1.ubuntu.pool.ntp.org,2.ubuntu.pool.ntp.org,3.ubuntu.pool.ntp.org",
+        "cis_l1_workstation": "0.ubuntu.pool.ntp.org,1.ubuntu.pool.ntp.org,2.ubuntu.pool.ntp.org,3.ubuntu.pool.ntp.org",
+        "cis_l2_server": "0.ubuntu.pool.ntp.org,1.ubuntu.pool.ntp.org,2.ubuntu.pool.ntp.org,3.ubuntu.pool.ntp.org",
+        "cis_l2_workstation": "0.ubuntu.pool.ntp.org,1.ubuntu.pool.ntp.org,2.ubuntu.pool.ntp.org,3.ubuntu.pool.ntp.org"
+      },
+      "datatype": "string",
+      "description": "Vendor Approved Time Servers",
+      "name": "var_multiple_time_servers",
+      "quoting": "single",
+      "recommended": "0.ubuntu.pool.ntp.org,1.ubuntu.pool.ntp.org,2.ubuntu.pool.ntp.org,3.ubuntu.pool.ntp.org",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.3.2.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "service_timesyncd_configured"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `service_timesyncd_configured`",
+          "language": "bash",
+          "name": "Configure Systemd Timesyncd Servers",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'systemd-timesyncd' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_multiple_time_servers='$ODV_var_multiple_time_servers'\n\nIFS=',' read -r -a time_servers_array <<< \"$var_multiple_time_servers\"\npreferred_ntp_servers_array=(\"${time_servers_array[@]:0:2}\")\npreferred_ntp_servers=$( echo \"${preferred_ntp_servers_array[@]}\" )\nfallback_ntp_servers_array=(\"${time_servers_array[@]:2}\")\nfallback_ntp_servers=$( echo \"${fallback_ntp_servers_array[@]}\" )\n\nIFS=\" \" mapfile -t current_cfg_arr < <(ls -1 /etc/systemd/timesyncd.conf.d/* 2>/dev/null)\n\ncurrent_cfg_arr+=( \"/etc/systemd/timesyncd.conf\" )\n# Comment existing NTP FallbackNTP settings\nfor current_cfg in \"${current_cfg_arr[@]}\"\ndo\n    sed -i 's/^NTP/#&/g' \"$current_cfg\"\n    sed -i 's/^FallbackNTP/#&/g' \"$current_cfg\"\ndone\n\n# Set primary fallback NTP servers in drop-in configuration\n# Create /etc/systemd/timesyncd.conf.d if it doesn't exist\nif [ ! -d \"/etc/systemd/timesyncd.conf.d\" ]\nthen \n    mkdir /etc/systemd/timesyncd.conf.d\n    chmod 0755 /etc/systemd/timesyncd.conf.d\nfi\n\n\n# Try find '[Time]' and 'NTP' in '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf', if it exists, set\n# to '$preferred_ntp_servers', if it isn't here, add it, if '[Time]' doesn't exist, add it there\nif grep -qzosP '[[:space:]]*\\[Time]([^\\n\\[]*\\n+)+?[[:space:]]*NTP' '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'; then\n    \n    sed -i \"s/NTP[^(\\n)]*/NTP=$preferred_ntp_servers/\" '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'\nelif grep -qs '[[:space:]]*\\[Time]' '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'; then\n    sed -i \"/[[:space:]]*\\[Time]/a NTP=$preferred_ntp_servers\" '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'\nelse\n    if test -d \"/etc/systemd/timesyncd.conf.d\"; then\n        printf '%s\\n' '[Time]' \"NTP=$preferred_ntp_servers\" >> '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'\n    else\n        echo \"Config file directory '/etc/systemd/timesyncd.conf.d' doesnt exist, not remediating, assuming non-applicability.\" >&2\n    fi\nfi\n\n# Try find '[Time]' and 'FallbackNTP' in '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf', if it exists, set\n# to '$fallback_ntp_servers', if it isn't here, add it, if '[Time]' doesn't exist, add it there\nif grep -qzosP '[[:space:]]*\\[Time]([^\\n\\[]*\\n+)+?[[:space:]]*FallbackNTP' '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'; then\n    \n    sed -i \"s/FallbackNTP[^(\\n)]*/FallbackNTP=$fallback_ntp_servers/\" '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'\nelif grep -qs '[[:space:]]*\\[Time]' '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'; then\n    sed -i \"/[[:space:]]*\\[Time]/a FallbackNTP=$fallback_ntp_servers\" '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'\nelse\n    if test -d \"/etc/systemd/timesyncd.conf.d\"; then\n        printf '%s\\n' '[Time]' \"FallbackNTP=$fallback_ntp_servers\" >> '/etc/systemd/timesyncd.conf.d/oscap-remedy.conf'\n    else\n        echo \"Config file directory '/etc/systemd/timesyncd.conf.d' doesnt exist, not remediating, assuming non-applicability.\" >&2\n    fi\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.3",
+    "2.3.2",
+    "2.3.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.2.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure systemd-timesyncd configured with authorized timeserver (Automated)"
+}

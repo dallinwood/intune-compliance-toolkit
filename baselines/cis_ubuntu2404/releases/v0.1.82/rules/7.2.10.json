@@ -1,0 +1,163 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Remove Rsh Trust Files\n----\nThe existence of the file /etc/hosts.equiv or a file named\n.rhosts inside a user home directory indicates the presence\nof an Rsh trust relationship.\n      Is it the case that these files exist?\n----\n\n== Verify No .forward Files Exist\n----\nTo check the system for the existence of any .forward files,\nrun the following command:\n$ sudo find /home -xdev -name .forward\n      Is it the case that any .forward files exist?\n----\n\n== Verify No netrc Files Exist\n----\nTo check the system for the existence of any .netrc files,\nrun the following command:\n$ sudo find /home -xdev -name .netrc\n      Is it the case that any .netrc files exist?\n----\n\n== User Initialization Files Must Be Owned By the Primary User\n----\nTo verify all local initialization files for interactive users are owned by the\nprimary user, run the following command:\n$ sudo ls -al /home/USER/.*\nThe user initialization files should be owned by USER.\n      Is it the case that they are not?\n----\n\n== User Initialization Files Must Be Group-Owned By The Primary Group\n----\nTo verify the local initialization files of all local interactive users are group-\nowned by the appropriate user, inspect the primary group of the respective\nusers in /etc/passwd and verify all initialization files under the\nrespective users home directory. Check the group owner of all local interactive users\ninitialization files.\n      Is it the case that they are not?\n----\n\n== Ensure All User Initialization Files Have Mode 0740 Or Less Permissive\n----\nTo verify that all user initialization files have a mode of 0740 or\nless permissive, run the following command:\n$ sudo find /home -type f -name '\\.*' \\( -perm -0002 -o -perm -0020 \\)\nThere should be no output.\n      Is it the case that they are not 0740 or more permissive?\n----\nExpected values: var_user_initialization_files_regex = $ODV_var_user_initialization_files_regex\n\n== Ensure User Bash History File Has Correct Permissions\n----\nTo verify that .bash_history has a mode of 0600 or\nless permissive, run the following command:\n$ sudo find /home -type f -name '\\.bash_history' -perm /0177\nThere should be no output.\n      Is it the case that file is not 0600 or more permissive?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Remove Rsh Trust Files\n\nThe files `/etc/hosts.equiv` and `~/.rhosts` (in\neach user's home directory) list remote hosts and users that are trusted by the\nlocal system when using the rshd daemon.\nTo remove these files, run the following command to delete them from any\nlocation:\n\n```\n$ sudo rm /etc/hosts.equiv\n```\n\n        \n```\n$ rm ~/.rhosts\n```\n\n**Rationale:**\n\nThis action is only meaningful if `.rhosts` support is permitted\nthrough PAM. Trust files are convenient, but when used in conjunction with\nthe R-services, they can allow unauthenticated access to a system.\n\n## Verify No .forward Files Exist\n\nThe `.forward` file specifies an email address to forward the user's mail to.\n\n**Rationale:**\n\nUse of the `.forward` file poses a security risk in that sensitive data may\nbe inadvertently transferred outside the organization. The .forward file\nalso poses a risk as it can be used to execute commands that may perform\nunintended actions.\n\n## Verify No netrc Files Exist\n\nThe `.netrc` files contain login information\nused to auto-login into FTP servers and reside in the user's home\ndirectory. These files may contain unencrypted passwords to\nremote FTP servers making them susceptible to access by unauthorized\nusers and should not be used.  Any `.netrc` files should be removed.\n\n**Rationale:**\n\nUnencrypted passwords for remote FTP servers may be stored in `.netrc`\nfiles.\n\n## User Initialization Files Must Be Owned By the Primary User\n\nSet the owner of the user initialization files for interactive users to\nthe primary owner with the following command:\n\n```\n$ sudo chown *USER* /home/*USER*/.*\n```\n\n\nThis rule ensures every initialization file related to an interactive user\nis owned by an interactive user.\n\n**Rationale:**\n\nLocal initialization files are used to configure the user's shell environment\nupon logon. Malicious modification of these files could compromise accounts upon\nlogon.\n\n## User Initialization Files Must Be Group-Owned By The Primary Group\n\nChange the group owner of interactive users files to the group found\nin \n```\n/etc/passwd\n```\n for the user. To change the group owner of a local\ninteractive user home directory, use the following command:\n\n```\n$ sudo chgrp *USER_GROUP* /home/*USER*/.*INIT_FILE*\n        \n```\n\n\nThis rule ensures every initialization file related to an interactive user\nis group-owned by an interactive user.\n\n**Rationale:**\n\nLocal initialization files for interactive users are used to configure the\nuser's shell environment upon logon. Malicious modification of these files could\ncompromise accounts upon logon.\n\n## Ensure All User Initialization Files Have Mode 0740 Or Less Permissive\n\nSet the mode of the user initialization files to `0740` or less permissisive with the\nfollowing command:\n\n```\n$ sudo chmod u-s,g-wxs,o= /home/*USER*/.*INIT_FILE*\n        \n```\n\n**Rationale:**\n\nLocal initialization files are used to configure the user's shell environment\nupon logon. Malicious modification of these files could compromise accounts upon\nlogon.\n\n## Ensure User Bash History File Has Correct Permissions\n\nSet the mode of the bash history file to `0600` with the\nfollowing command:\n\n```\n$ sudo chmod 0600 /home/*USER*/.bash_history\n```\n\n**Rationale:**\n\nIncorrect permissions may enable malicious users to recover\nother users' command history.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.7.2.10",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "^\\.[\\w\\- ]+$",
+        "cis_l1_workstation": "^\\.[\\w\\- ]+$",
+        "cis_l2_server": "^\\.[\\w\\- ]+$",
+        "cis_l2_workstation": "^\\.[\\w\\- ]+$"
+      },
+      "datatype": "string",
+      "description": "Interactive users initialization files",
+      "name": "var_user_initialization_files_regex",
+      "quoting": "single",
+      "recommended": "^\\.[\\w\\- ]+$",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "7.2.10",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "no_rsh_trust_files",
+        "no_forward_files",
+        "no_netrc_files",
+        "accounts_user_dot_user_ownership",
+        "accounts_user_dot_group_ownership",
+        "file_permission_user_init_files",
+        "file_permission_user_bash_history"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `no_rsh_trust_files`",
+          "language": "bash",
+          "name": "Remove Rsh Trust Files",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'rsh-server' 2>/dev/null | grep -q '^installed$'; then\n\nfind /root -xdev -type f -name \".rhosts\" -exec rm -f {} \\;\nfind /home -maxdepth 2 -xdev -type f -name \".rhosts\" -exec rm -f {} \\;\nrm -f /etc/hosts.equiv\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `no_forward_files`).",
+          "language": "bash",
+          "name": "Verify No .forward Files Exist",
+          "shell": null,
+          "versions": null
+        },
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `no_netrc_files`).",
+          "language": "bash",
+          "name": "Verify No netrc Files Exist",
+          "shell": null,
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_user_dot_user_ownership`",
+          "language": "bash",
+          "name": "User Initialization Files Must Be Owned By the Primary User",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nawk -F: '{if ($3 >= 1000 && $3 != 65534) print $3\":\"$6}' /etc/passwd | while IFS=: read -r uid home; do find -P \"$home\" -maxdepth 1 -type f -name \"\\.[^.]*\" -exec chown -f --no-dereference -- $uid \"{}\" \\;; done\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_user_dot_group_ownership`",
+          "language": "bash",
+          "name": "User Initialization Files Must Be Group-Owned By The Primary Group",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nawk -F: '{if ($4 >= 1000 && $4 != 65534) print $4\":\"$6}' /etc/passwd | while IFS=: read -r gid home; do find -P \"$home\" -maxdepth 1 -type f -name \"\\.[^.]*\" -exec chgrp -f --no-dereference -- $gid \"{}\" \\;; done\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permission_user_init_files`",
+          "language": "bash",
+          "name": "Ensure All User Initialization Files Have Mode 0740 Or Less Permissive",
+          "shell": "var_user_initialization_files_regex='$ODV_var_user_initialization_files_regex'\n\n\nreadarray -t interactive_users < <(awk -F: '$3>=1000   {print $1}' /etc/passwd)\nreadarray -t interactive_users_home < <(awk -F: '$3>=1000   {print $6}' /etc/passwd)\nreadarray -t interactive_users_shell < <(awk -F: '$3>=1000   {print $7}' /etc/passwd)\n\nUSERS_IGNORED_REGEX='nobody|nfsnobody'\n\nfor (( i=0; i<\"${#interactive_users[@]}\"; i++ )); do\n    if ! grep -qP \"$USERS_IGNORED_REGEX\" <<< \"${interactive_users[$i]}\" && \\\n        [ \"${interactive_users_shell[$i]}\" != \"/sbin/nologin\" ]; then\n        \n        readarray -t init_files < <(find \"${interactive_users_home[$i]}\" -maxdepth 1 -type f \\\n            -exec basename {} \\; | grep -P \"$var_user_initialization_files_regex\")\n        for file in \"${init_files[@]}\"; do\n            chmod u-s,g-wxs,o= \"${interactive_users_home[$i]}/$file\"\n        done\n    fi\ndone",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permission_user_bash_history`",
+          "language": "bash",
+          "name": "Ensure User Bash History File Has Correct Permissions",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'bash' 2>/dev/null | grep -q '^installed$'; then\n\nreadarray -t interactive_users < <(awk -F: '$3>=1000   {print $1}' /etc/passwd)\nreadarray -t interactive_users_home < <(awk -F: '$3>=1000   {print $6}' /etc/passwd)\nreadarray -t interactive_users_shell < <(awk -F: '$3>=1000   {print $7}' /etc/passwd)\n\nUSERS_IGNORED_REGEX='nobody|nfsnobody'\n\nfor (( i=0; i<\"${#interactive_users[@]}\"; i++ )); do\n    if ! grep -qP \"$USERS_IGNORED_REGEX\" <<< \"${interactive_users[$i]}\" && \\\n        [ \"${interactive_users_shell[$i]}\" != \"/sbin/nologin\" ] && \\\n        [ ! -L \"${interactive_users_home[$i]}/.bash_history\" ]; then\n\n        chmod u-sx,go= \"${interactive_users_home[$i]}/.bash_history\"\n    fi\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "7",
+    "7.2",
+    "7.2.10"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "7.2.10",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure local interactive user dot files access is configured (Automated)"
+}

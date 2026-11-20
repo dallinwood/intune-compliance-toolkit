@@ -1,0 +1,108 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Uninstall tftpd-hpa Package\n----\nRun the following command to determine if the tftpd-hpa package is installed: $ dpkg -l tftpd-hpa\n      Is it the case that the tftpd-hpa package is installed?\n----\n\n== Disable tftpd-hpa Service\n----\nTo check that the tftpd-hpa service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled tftpd-hpa\nOutput should indicate the tftpd-hpa service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled tftpd-hpa disabled\n\nRun the following command to verify tftpd-hpa is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active tftpd-hpa\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the tftpd-hpa is masked, run the following command:\n$ sudo systemctl show tftpd-hpa | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"tftpd-hpa\" is loaded and not masked?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Uninstall tftpd-hpa Package\n\nThe `tftpd-hpa` package can be removed with the following command: \n```\n $ apt-get remove tftpd-hpa\n```\n\n**Rationale:**\n\nRemoving the `tftpd-hpa` package decreases the risk of the accidental\n(or intentional) activation of tftp services.\n\n\n        \n\nIf TFTP is required for operational support (such as transmission of router\nconfigurations), its use must be documented with the Information Systems\nSecurity Manager (ISSM), restricted to only authorized personnel, and have\naccess control rules established.\n\n## Disable tftpd-hpa Service\n\nThe `tftpd-hpa` service should be disabled.\n\nThe `tftpd-hpa` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now tftpd-hpa.service\n```\n\n**Rationale:**\n\nDisabling the `tftpd-hpa` service ensures the system is not acting\nas a TFTP server, which does not provide encryption or authentication.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.2.1.16",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.1.16",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "package_tftp-server_removed",
+        "service_tftp_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_tftp-server_removed`",
+          "language": "bash",
+          "name": "Uninstall tftpd-hpa Package",
+          "shell": "# CAUTION: This remediation script will remove tftpd-hpa\n# from the system, and may remove any packages\n# that depend on tftpd-hpa. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\n# check wether the package is virtual: if not, remove it.\n# if the package is virtual, iterate on providers\n#  if a provider is installed, remove it\nis_virtual=`apt-cache showpkg \"tftpd-hpa\" | grep -Pzc 'Versions: \\n\\n'`\nif [ $is_virtual = 1 ]; then\n    rprovides_line=`apt-cache showpkg \"tftpd-hpa\" | grep -n 'Reverse Provides:' | cut -f1 -d:`\n    pkglist=`apt-cache showpkg \"tftpd-hpa\" | tail -n +$(($rprovides_line + 1)) | cut -f1 -d' '`\n    for package in $pkglist; do\n        not_installed=`apt-cache policy $package | grep -c 'Installed: (none)'`\n\tif [ $not_installed = 0 ]; then\n\t    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y $package\n\tfi\n    done\nelse\n    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y \"tftpd-hpa\"\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_tftp_disabled`",
+          "language": "bash",
+          "name": "Disable tftpd-hpa Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'tftpd-hpa.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'tftpd-hpa.service'\n\"$SYSTEMCTL_EXEC\" mask 'tftpd-hpa.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files tftpd-hpa.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'tftpd-hpa.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'tftpd-hpa.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'tftpd-hpa.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.1",
+    "2.1.16"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.1.16",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure tftp server services are not in use (Automated)"
+}

@@ -258,6 +258,62 @@
       "rule_count": 1143
     },
     {
+      "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+      "display_name": "CIS Red Hat Enterprise Linux 9 (ComplianceAsCode)",
+      "index_path": "cis_rhel9/releases/v0.1.82/_index.json",
+      "license": {
+        "modified": true,
+        "name": "BSD-3-Clause",
+        "rights_holder": "Red Hat, Inc.",
+        "url": "https://opensource.org/license/bsd-3-clause"
+      },
+      "name": "cis_rhel9",
+      "release_tag": "v0.1.82",
+      "releases": [
+        {
+          "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+          "importer_format": "cac-cis-1",
+          "index_path": "cis_rhel9/releases/v0.1.82/_index.json",
+          "label": "v2.0.0",
+          "published_date": "2026-09-01",
+          "retrieved_date": "2026-11-20",
+          "rule_count": 298,
+          "tag": "v0.1.82"
+        }
+      ],
+      "repository_url": "https://github.com/ComplianceAsCode/content",
+      "retrieved_date": "2026-11-20",
+      "rule_count": 298
+    },
+    {
+      "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+      "display_name": "CIS Ubuntu 24.04 LTS (ComplianceAsCode)",
+      "index_path": "cis_ubuntu2404/releases/v0.1.82/_index.json",
+      "license": {
+        "modified": true,
+        "name": "BSD-3-Clause",
+        "rights_holder": "Red Hat, Inc.",
+        "url": "https://opensource.org/license/bsd-3-clause"
+      },
+      "name": "cis_ubuntu2404",
+      "release_tag": "v0.1.82",
+      "releases": [
+        {
+          "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+          "importer_format": "cac-cis-1",
+          "index_path": "cis_ubuntu2404/releases/v0.1.82/_index.json",
+          "label": "v1.0.0",
+          "published_date": "2026-09-01",
+          "retrieved_date": "2026-11-20",
+          "rule_count": 312,
+          "tag": "v0.1.82"
+        }
+      ],
+      "repository_url": "https://github.com/ComplianceAsCode/content",
+      "retrieved_date": "2026-11-20",
+      "rule_count": 312
+    },
+    {
       "commit_sha": "ed2c210123db4fa9a195c0e4b065c7832051d328",
       "display_name": "NIST macOS Security Compliance Project",
       "index_path": "mscp/releases/release_27.1/_index.json",

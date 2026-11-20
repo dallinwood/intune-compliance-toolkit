@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Disable the Automounter\n----\nTo check that the autofs service is disabled in system boot configuration,\nrun the following command:\n$ sudo systemctl is-enabled autofs\nOutput should indicate the autofs service has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled autofs disabled\n\nRun the following command to verify autofs is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active autofs\n\nIf the service is not running the command will return the following output:\ninactive\n\nThe service will also be masked, to check that the autofs is masked, run the following command:\n$ sudo systemctl show autofs | grep \"LoadState\\|UnitFileState\"\n\nIf the service is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the \"autofs\" is loaded and not masked?\n----\n\n== Remove autofs Package\n----\nThe autofs package can be removed with the following command:  $ apt-get remove autofs\n      Is it the case that ?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Disable the Automounter\n\nThe `autofs` daemon mounts and unmounts filesystems, such as user\nhome directories shared via NFS, on demand. In addition, autofs can be used to handle\nremovable media, and the default configuration provides the cdrom device as `/misc/cd`.\nHowever, this method of providing access to removable media is not common, so autofs\ncan almost always be disabled if NFS is not in use. Even if NFS is required, it may be\npossible to configure filesystem mounts statically by editing `/etc/fstab`\nrather than relying on the automounter.\n\n\n        \n\n\nThe `autofs` service can be disabled with the following command:\n\n```\n$ sudo systemctl mask --now autofs.service\n```\n\n**Rationale:**\n\nDisabling the automounter permits the administrator to\nstatically control filesystem mounting through `/etc/fstab`.\n\n\n        \n\nAdditionally, automatically mounting filesystems permits easy introduction of\nunknown devices, thereby facilitating malicious activity.\n\n## Remove autofs Package\n\nautofs allows automatic mounting of devices, typically including CD/DVDs and USB\ndrives.\n The `autofs` package can be removed with the following command:\n \n```\n $ apt-get remove autofs\n```\n\n**Rationale:**\n\nWith automounting enabled anyone with physical access could attach a USB drive or\ndisc and have its contents available in the filesystem even if they lacked permissions to\nmount it themselves.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.2.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.1.1",
+      "levels": [
+        "l1_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "service_autofs_disabled",
+        "package_autofs_removed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `service_autofs_disabled`",
+          "language": "bash",
+          "name": "Disable the Automounter",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( ( dpkg-query --show --showformat='${db:Status-Status}' 'autofs' 2>/dev/null | grep -q '^installed$' && dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' ) ); then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" stop 'autofs.service'\nfi\n\"$SYSTEMCTL_EXEC\" disable 'autofs.service'\n\"$SYSTEMCTL_EXEC\" mask 'autofs.service'\n# Disable socket activation if we have a unit file for it\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files autofs.socket; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop 'autofs.socket'\n    fi\n    \"$SYSTEMCTL_EXEC\" mask 'autofs.socket'\nfi\n# The service may not be running because it has been started and failed,\n# so let's reset the state so OVAL checks pass.\n# Service should be 'inactive', not 'failed' after reboot though.\n\"$SYSTEMCTL_EXEC\" reset-failed 'autofs.service' || true\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `package_autofs_removed`",
+          "language": "bash",
+          "name": "Remove autofs Package",
+          "shell": "# CAUTION: This remediation script will remove autofs\n# from the system, and may remove any packages\n# that depend on autofs. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\n# check wether the package is virtual: if not, remove it.\n# if the package is virtual, iterate on providers\n#  if a provider is installed, remove it\nis_virtual=`apt-cache showpkg \"autofs\" | grep -Pzc 'Versions: \\n\\n'`\nif [ $is_virtual = 1 ]; then\n    rprovides_line=`apt-cache showpkg \"autofs\" | grep -n 'Reverse Provides:' | cut -f1 -d:`\n    pkglist=`apt-cache showpkg \"autofs\" | tail -n +$(($rprovides_line + 1)) | cut -f1 -d' '`\n    for package in $pkglist; do\n        not_installed=`apt-cache policy $package | grep -c 'Installed: (none)'`\n\tif [ $not_installed = 0 ]; then\n\t    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y $package\n\tfi\n    done\nelse\n    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 remove -y \"autofs\"\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "2",
+    "2.1",
+    "2.1.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure autofs services are not in use (Automated)"
+}

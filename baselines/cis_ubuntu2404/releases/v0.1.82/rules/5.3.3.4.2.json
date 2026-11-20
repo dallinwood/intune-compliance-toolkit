@@ -1,0 +1,102 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Avoid using remember in pam_unix module\n----\nTo verify that the remember option is not present in pam_unix.so configuration,\nrun the following command:\n\n$ grep -rE \"^\\s*password\\s+.*pam_unix\\.so.*\\bremember=\" /etc/pam.d/common-*\n\nThe command should not return any output. If any lines are returned, it means the remember\noption is configured in pam_unix.so, which is not compliant with this requirement.\n      Is it the case that the remember option is found in pam_unix.so configuration?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Avoid using remember in pam_unix module\n\nThe `remember` option stores the last n passwords for each user in `/etc/security/opasswd`,\nenforcing password history and preventing users from reusing the same passwords. However, this feature\nrelies on the MD5 password hash algorithm, which is less secure. Instead, the `pam_pwhistory`\nmodule should be used. This module also stores the last n passwords in `/etc/security/opasswd`\nand it uses the password hash algorithm configured in the pam_unix module, such as yescrypt or SHA512,\noffering enhanced security.\n\n\n\n         \n\nOn Debian-based systems, the `remember` option should be removed from the PAM configuration\nin `/etc/pam.d/common-*` files.\n\n**Rationale:**\n\nRemoving the `remember` argument ensures the use of a stronger password hashing algorithm.\nA more robust hash algorithm increases the difficulty for attackers to crack stored\npasswords in `/etc/security/opasswd`, thereby improving system security and\nprotecting user credentials.",
+  "discussion_format": "markdown",
+  "id": "cis_ubuntu2404.5.3.3.4.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.3.3.4.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_password_pam_unix_no_remember"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_unix_no_remember`",
+          "language": "bash",
+          "name": "Avoid using remember in pam_unix module",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'libpam-runtime' 2>/dev/null | grep -q '^installed$'; then\n\n# Debian-based systems: Use pam-auth-update\nconf_name=cac_unix\nconf_path=\"/usr/share/pam-configs\"\n\nif [ ! -f \"$conf_path\"/\"$conf_name\" ]; then\n    if [ -f \"$conf_path\"/unix ]; then\n        if grep -q \"$(md5sum \"$conf_path\"/unix | cut -d ' ' -f 1)\" /var/lib/dpkg/info/libpam-runtime.md5sums;then\n            cp \"$conf_path\"/unix \"$conf_path\"/\"$conf_name\"\n            chmod 0644 \"$conf_path\"/\"$conf_name\"\n            sed -i 's/Priority: [0-9]\\+/Priority: 257\\\nConflicts: unix/' \"$conf_path\"/\"$conf_name\"\n            DEBIAN_FRONTEND=noninteractive pam-auth-update\n        else\n            echo \"Not applicable - checksum of $conf_path/unix does not match the original.\" >&2\n        fi\n    else\n        echo \"Not applicable - $conf_path/unix does not exist\" >&2\n    fi\nfi\nconfig_file=\"/usr/share/pam-configs/cac_unix\"\nsed -i -E '/^Password(-Initial)?:/,/^[^[:space:]]/ {\n    /pam_unix\\.so/ {\n        s/\\s*\\bremember=\\d+\\b//g\n    }\n}' \"$config_file\"\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.4",
+    "5.3.3.4.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.4.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure pam_unix does not include remember (Automated)"
+}

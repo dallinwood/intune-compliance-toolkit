@@ -1,0 +1,114 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": {
+      "by_version": {},
+      "default": {
+        "additional_info": "== Ensure Active Authselect Profile Includes PAM Modules\n----\nRun the following command to verify the active authselect profile includes lines for the\npwquality, pwhistory, faillock, and unix modules:\n\n# grep -P '\\b(pam_pwquality\\.so|pam_pwhistory\\.so|pam_faillock\\.so|pam_unix\\.so)\\b' /etc/authselect/\"$(head -1 /etc/authselect/authselect.conf)\"/{system,password}-auth\n\nThe output should show entries for all four modules in both system-auth and password-auth files.\n      Is it the case that the active authselect profile does not include all required PAM modules?\n----",
+        "result": null,
+        "shell": null
+      },
+      "language": "bash"
+    }
+  },
+  "discussion": "## Ensure Active Authselect Profile Includes PAM Modules\n\nThe active authselect profile must include the required PAM modules:\n`pam_pwquality.so`, `pam_pwhistory.so`, `pam_faillock.so`, and `pam_unix.so`\nin both `system-auth` and `password-auth` files.\n\nA custom authselect profile can be created by copying and customizing one of the default profiles.\nThe default profiles include: `local`, `sssd`, and `winbind`. These profiles can be customized\nto follow site specific requirements.\n\n**Rationale:**\n\nA custom profile is required to customize many of the PAM options.\nModifications made to a default profile may be overwritten during an update.\nWhen you deploy a profile, the profile is applied to every user logging into the given host.\n\n**Notes:**\n\nThis rule verifies that the active authselect profile includes the required PAM modules:\npam_pwquality.so, pam_pwhistory.so, pam_faillock.so, and pam_unix.so in both system-auth\nand password-auth files. The rule checks the authselect profile source files directly,\nnot the symlinked files in /etc/pam.d/. Other rules ensure these modules are properly\nconfigured with correct options.",
+  "discussion_format": "markdown",
+  "id": "cis_rhel9.5.3.2.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.3.2.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "accounts_password_pam_modules_in_authselect_profile": "CCE-90719-6"
+      },
+      "related_rules": [
+        "enable_authselect",
+        "account_password_pam_faillock_password_auth",
+        "account_password_pam_faillock_system_auth",
+        "accounts_password_pam_pwquality_password_auth",
+        "accounts_password_pam_pwquality_system_auth",
+        "accounts_password_pam_pwhistory_remember_password_auth",
+        "accounts_password_pam_pwhistory_remember_system_auth",
+        "accounts_password_pam_unix_enabled"
+      ],
+      "rules": [
+        "accounts_password_pam_modules_in_authselect_profile"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_modules_in_authselect_profile`",
+          "language": "bash",
+          "name": "Ensure Active Authselect Profile Includes PAM Modules",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q pam; then\n\nif ! authselect check; then\necho \"\nauthselect integrity check failed. Remediation aborted!\nThis remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\nIt is not recommended to manually edit the PAM files when authselect tool is available.\nIn cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\nexit 1\nfi\n\nCURRENT_PROFILE=$(authselect current -r | awk '{ print $1 }')\n# If not already in use, a custom profile is created preserving the enabled features.\nif [[ ! $CURRENT_PROFILE == custom/* ]]; then\n    ENABLED_FEATURES=$(authselect current | tail -n+3 | awk '{ print $2 }')\n    # The \"local\" profile does not contain essential security features required by multiple Benchmarks.\n    # If currently used, it is replaced by \"sssd\", which is the best option in this case.\n    if [[ $CURRENT_PROFILE == local ]]; then\n        CURRENT_PROFILE=\"sssd\"\n    fi\n    authselect create-profile hardening -b $CURRENT_PROFILE\n    CURRENT_PROFILE=\"custom/hardening\"\n    \n    authselect apply-changes -b --backup=before-hardening-custom-profile\n    authselect select $CURRENT_PROFILE\n    for feature in $ENABLED_FEATURES; do\n        authselect enable-feature $feature;\n    done\n    \n    authselect apply-changes -b --backup=after-hardening-custom-profile\nfi\n\n# Function to add a missing PAM module to a file\n# This function handles module placement based on typical PAM stack ordering\nadd_pam_module() {\n    local authselect_file=\"$1\"\n    local module=\"$2\"\n\n    # Check if module already exists in any group\n    if grep -Pq \"^\\s*\\S+\\s+\\S+\\s+$module\" \"$authselect_file\"; then\n        return 0\n    fi\n\n    # Special handling for pam_faillock.so - needs entries in auth and account groups\n    if [ \"$module\" = \"pam_faillock.so\" ]; then\n        # Add preauth entry in auth section (at the beginning of auth section)\n        if ! grep -Pq \"^\\s*auth\\s+\\S+\\s+$module\" \"$authselect_file\"; then\n            if grep -qP \"^auth\" \"$authselect_file\"; then\n                FIRST_AUTH_LINE=$(grep -nP \"^auth\" \"$authselect_file\" | head -n 1 | cut -d: -f 1)\n                if [ ! -z \"$FIRST_AUTH_LINE\" ]; then\n                    sed -i --follow-symlinks \"${FIRST_AUTH_LINE}i auth     required    pam_faillock.so preauth\" \"$authselect_file\"\n                fi\n            else\n                # If no auth section exists, create it at the beginning\n                sed -i --follow-symlinks \"1i auth     required    pam_faillock.so preauth\" \"$authselect_file\"\n            fi\n        fi\n        # Add entry in account section\n        if ! grep -Pq \"^\\s*account\\s+\\S+\\s+$module\" \"$authselect_file\"; then\n            if grep -qP \"^account\" \"$authselect_file\"; then\n                FIRST_ACCOUNT_LINE=$(grep -nP \"^account\" \"$authselect_file\" | head -n 1 | cut -d: -f 1)\n                if [ ! -z \"$FIRST_ACCOUNT_LINE\" ]; then\n                    sed -i --follow-symlinks \"${FIRST_ACCOUNT_LINE}a account     required    pam_faillock.so\" \"$authselect_file\"\n                fi\n            else\n                # If no account section exists, add it after auth section\n                if grep -qP \"^auth\" \"$authselect_file\"; then\n                    LAST_AUTH_LINE=$(grep -nP \"^auth\" \"$authselect_file\" | tail -n 1 | cut -d: -f 1)\n                    if [ ! -z \"$LAST_AUTH_LINE\" ]; then\n                        sed -i --follow-symlinks \"${LAST_AUTH_LINE}a account     required    pam_faillock.so\" \"$authselect_file\"\n                    fi\n                else\n                    echo \"account     required    pam_faillock.so\" >> \"$authselect_file\"\n                fi\n            fi\n        fi\n        return 0\n    fi\n\n    # Handle pam_pwquality.so - goes in password section, before other password modules\n    if [ \"$module\" = \"pam_pwquality.so\" ]; then\n        if grep -qP \"^password\" \"$authselect_file\"; then\n            FIRST_PASSWORD_LINE=$(grep -nP \"^password\" \"$authselect_file\" | head -n 1 | cut -d: -f 1)\n            if [ ! -z \"$FIRST_PASSWORD_LINE\" ]; then\n                sed -i --follow-symlinks \"${FIRST_PASSWORD_LINE}i password     requisite    pam_pwquality.so\" \"$authselect_file\"\n            fi\n        else\n            # If no password section exists, add it after account section\n            if grep -qP \"^account\" \"$authselect_file\"; then\n                LAST_ACCOUNT_LINE=$(grep -nP \"^account\" \"$authselect_file\" | tail -n 1 | cut -d: -f 1)\n                if [ ! -z \"$LAST_ACCOUNT_LINE\" ]; then\n                    sed -i --follow-symlinks \"${LAST_ACCOUNT_LINE}a password     requisite    pam_pwquality.so\" \"$authselect_file\"\n                fi\n            else\n                echo \"password     requisite    pam_pwquality.so\" >> \"$authselect_file\"\n            fi\n        fi\n        return 0\n    fi\n\n    # Handle pam_pwhistory.so - goes in password section, after pam_pwquality\n    if [ \"$module\" = \"pam_pwhistory.so\" ]; then\n        if grep -qP \"pam_pwquality\\.so\" \"$authselect_file\"; then\n            # Add after pam_pwquality\n            PWQUALITY_LINE=$(grep -nP \"pam_pwquality\\.so\" \"$authselect_file\" | tail -n 1 | cut -d: -f 1)\n            if [ ! -z \"$PWQUALITY_LINE\" ]; then\n                sed -i --follow-symlinks \"${PWQUALITY_LINE}a password     requisite    pam_pwhistory.so\" \"$authselect_file\"\n            fi\n        elif grep -qP \"^password\" \"$authselect_file\"; then\n            # Add at the beginning of password section if pam_pwquality not found\n            FIRST_PASSWORD_LINE=$(grep -nP \"^password\" \"$authselect_file\" | head -n 1 | cut -d: -f 1)\n            if [ ! -z \"$FIRST_PASSWORD_LINE\" ]; then\n                sed -i --follow-symlinks \"${FIRST_PASSWORD_LINE}i password     requisite    pam_pwhistory.so\" \"$authselect_file\"\n            fi\n        else\n            echo \"password     requisite    pam_pwhistory.so\" >> \"$authselect_file\"\n        fi\n        return 0\n    fi\n\n    # Handle pam_unix.so - typically appears in multiple groups (auth, account, password, session)\n    # We'll add it to password group if missing, as that's most critical for this rule\n    if [ \"$module\" = \"pam_unix.so\" ]; then\n        # Check if it exists in password group\n        if ! grep -Pq \"^\\s*password\\s+\\S+\\s+$module\" \"$authselect_file\"; then\n            if grep -qP \"pam_pwhistory\\.so\" \"$authselect_file\"; then\n                # Add after pam_pwhistory\n                PWHISTORY_LINE=$(grep -nP \"pam_pwhistory\\.so\" \"$authselect_file\" | tail -n 1 | cut -d: -f 1)\n                if [ ! -z \"$PWHISTORY_LINE\" ]; then\n                    sed -i --follow-symlinks \"${PWHISTORY_LINE}a password     sufficient    pam_unix.so\" \"$authselect_file\"\n                fi\n            elif grep -qP \"^password\" \"$authselect_file\"; then\n                # Add at the end of password section\n                LAST_PASSWORD_LINE=$(grep -nP \"^password\" \"$authselect_file\" | tail -n 1 | cut -d: -f 1)\n                if [ ! -z \"$LAST_PASSWORD_LINE\" ]; then\n                    sed -i --follow-symlinks \"${LAST_PASSWORD_LINE}a password     sufficient    pam_unix.so\" \"$authselect_file\"\n                fi\n            else\n                echo \"password     sufficient    pam_unix.so\" >> \"$authselect_file\"\n            fi\n        fi\n        return 0\n    fi\n}\n\n# Check and ensure modules are present in both system-auth and password-auth\npam_profile=\"$(head -1 /etc/authselect/authselect.conf)\"\npam_profile_path=\"/etc/authselect/$pam_profile\"\nfor authselect_file in \"$pam_profile_path\"/system-auth \"$pam_profile_path\"/password-auth; do\n    if [ ! -f \"$authselect_file\" ]; then\n        echo \"Warning: $authselect_file not found\"\n        continue\n    fi\n    for module in pam_pwquality.so pam_pwhistory.so pam_faillock.so pam_unix.so; do\n        if ! grep -Pq \"^\\s*\\S+\\s+\\S+\\s+$module\" \"$authselect_file\"; then\n            add_pam_module \"$authselect_file\" \"$module\"\n        fi\n    done\ndone\n\nauthselect apply-changes\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 6,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.2",
+    "5.3.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.2.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure active authselect profile includes pam modules (Automated)"
+}
