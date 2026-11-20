@@ -46,3 +46,13 @@ Maintainer-visible bug: CIS discussions (markdown) show raw ```` ``` ```` fences
 - [ ] **Step 1: Write or adjust the specs; run them; implement; run the full e2e suite once and rerun failures alone.**
 - [ ] **Step 2: Screenshot** the rules page with the sidebar scrolled at 1440px and at a short height (e.g. 1440x700), and at 375px.
 - [ ] **Step 3: Commit** `fix: let the filter sidebar scroll and keep the go-back scroll working`.
+
+### Task 4: mSCP text-only remediation steps use `instructions`
+
+Maintainer request (2026-11-20): other frameworks with plain-English steps must use `instructions` too (e.g. `mscp.os_external_storage_access_defined`, whose Fix shows a Bash pill over "This is implemented by Declarative Device Management (DDM)."). Measured on the committed data: mSCP has 84 remediation steps with `shell: null` and no `shell_file`, all `bash`; no mSCP check is scriptless; ASD ISM, ASD E4EIT, NIST 800-53 and the overlays have none. Needs Task 1 (the schema value). Runs alongside Task 2 (disjoint files).
+
+**Files:** `tools/mscp_normalize.py` (a remediation step with no `shell` and no `shell_file` gets `language: "instructions"`; same rule for a check entry, should one ever appear), `tests/test_mscp_normalize.py`; regenerate both stored mSCP releases (`.venv/Scripts/python.exe tools/import_mscp.py --offline`); update any web UI test or e2e expectation that pins the Bash label on such a step.
+
+- [ ] **Step 1: Failing test:** a mSCP rule whose fix is a profile/DDM payload gets a step with `language == "instructions"`; a step with a real `shell` keeps `bash`.
+- [ ] **Step 2: Implement, regenerate, run** `.venv/Scripts/python.exe -m pytest -W error -n auto --all-releases` and the web UI unit suite. Confirm with a script that no committed rule of any source has a `bash`/`zsh`/`powershell`/`python` check or step without a script.
+- [ ] **Step 3: Commit** `fix: mark mSCP plain-English remediation steps as instructions`. The controller restarts the dev server and screenshots `mscp.os_external_storage_access_defined` at both widths.
