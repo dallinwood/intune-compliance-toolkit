@@ -174,6 +174,7 @@ export interface ManifestRelease {
 export interface ManifestSource {
   name: string
   display_name: string
+  provenance: 'official' | 'community'
   release_tag: string
   commit_sha: string
   retrieved_date: string

@@ -3,6 +3,7 @@ import { useId, useMemo, type MouseEvent, type ReactNode } from 'react'
 import { buttonVariants } from '@/components/ui/button'
 import { NativeSelect } from '@/components/ui/native-select'
 import { PageTitle } from '@/components/ui/page-title'
+import { ProvenanceBadge } from './ProvenanceBadge'
 import { cn, isPlainLeftClick } from '@/lib/utils'
 import { pluralize } from '../../lib/format'
 import type { ResolvedFrameworkPage } from '../../logic/frameworkTabs'
@@ -126,7 +127,7 @@ export function FrameworkPage({ page, context }: { page: ResolvedFrameworkPage<M
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="shrink-0 border-b border-border px-4 pt-0.5">
         <BackToGridLink />
-        <PageTitle title={isAll ? 'All rules' : source.display_name} subtitle={subtitle} />
+        <PageTitle title={isAll ? 'All rules' : source.display_name} adornment={isAll ? undefined : <ProvenanceBadge provenance={source.provenance} />} subtitle={subtitle} />
         {!isAll && <div className="mt-1"><SourceLine source={source} /></div>}
         <div className="mt-1">
           <SubTabs frameworkName={frameworkName} tabs={tabs} activeTab={activeTab} />

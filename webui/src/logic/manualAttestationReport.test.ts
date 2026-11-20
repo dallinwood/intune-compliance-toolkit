@@ -10,6 +10,7 @@ function manifestSource(name: string, displayName: string, repositoryUrl: string
   return {
     name,
     display_name: displayName,
+    provenance: 'official',
     release_tag: 'release_1',
     commit_sha: 'abc',
     index_path: `${name}/_index.json`,

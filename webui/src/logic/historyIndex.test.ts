@@ -22,6 +22,7 @@ import { applicabilityOfVersions, inlineRule, macosCheck, ruleCheck } from './te
 const SOURCE: ManifestSource = {
   name: 'mscp',
   display_name: 'Example source',
+  provenance: 'official',
   release_tag: 'R3',
   commit_sha: 'c'.repeat(40),
   retrieved_date: '2026-02-01',

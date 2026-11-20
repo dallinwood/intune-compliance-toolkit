@@ -7,6 +7,7 @@ import { buildRuleRows, coveredVersionsOf } from './ruleRows'
 const SOURCE: ManifestSource = {
   name: 'mscp',
   display_name: 'NIST macOS Security Compliance Project',
+  provenance: 'official',
   release_tag: 'release_27.0',
   commit_sha: 'c'.repeat(40),
   retrieved_date: '2026-10-20',

@@ -88,6 +88,7 @@ const ISM_1622 = 'asd_ism.ism-1622'
 const ISM_SOURCE: ManifestSource = {
   name: 'asd_ism',
   display_name: 'ASD Information Security Manual',
+  provenance: 'official',
   release_tag: 'v2026.09.4',
   commit_sha: 'a'.repeat(40),
   retrieved_date: '2026-10-23',

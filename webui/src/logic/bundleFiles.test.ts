@@ -72,6 +72,7 @@ describe('buildBundleFiles', () => {
     const sourceNamed = (name: string, displayName: string, repositoryUrl: string) => ({
       name,
       display_name: displayName,
+      provenance: 'official' as const,
       release_tag: 'release_1',
       commit_sha: 'abc',
       retrieved_date: '2026-10-20',

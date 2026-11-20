@@ -1,7 +1,7 @@
 # Design: official and community framework labels
 
 Date: 2026-11-20
-Status: Approved 2026-11-20, not yet implemented. Queued after the CIS ComplianceAsCode plan.
+Status: Implemented 2026-11-20
 
 ## Intent
 
@@ -47,3 +47,4 @@ labelled so users can tell them apart, and the official ones listed first.
 ## Progress log
 
 - 2026-11-20: Task 1 done. `SourceImporter.provenance` (and `BenchmarkSpec.provenance` for CaC benchmarks) is written on each manifest source entry; the schema requires it. Existing sources were filled by re-running each importer offline for its current release. Commit: feat: record whether each framework is official or community.
+- 2026-11-20: Task 2 done. The Frameworks home lists official cards first, then a "Community" separator heading and the community cards (the official group needs no heading); each card and the framework page title carry an Official or Community badge (not the all-rules view). Grouping is the pure `groupByProvenance`; Vitest and a new `e2e/provenance.spec.ts` cover it, with screenshots checked at 375px and 1440px in light and dark. Commit: feat: label frameworks official or community and list official ones first.
