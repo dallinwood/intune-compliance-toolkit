@@ -261,6 +261,8 @@ interface RevealState {
 function useRevealOpenRule({ openRule, request, pages, currentPage, shownItems, isCatchingUp }: RevealState, setPage: (page: number) => void) {
   const pagedFor = useRef<number | null>(null)
   const scrolledFor = useRef<number | null>(null)
+  const stopKeeping = useRef<(() => void) | null>(null)
+  useEffect(() => () => stopKeeping.current?.(), [])
   useEffect(() => {
     if (openRule === null || isCatchingUp) return
     if (pages && pagedFor.current !== request) {
@@ -277,7 +279,32 @@ function useRevealOpenRule({ openRule, request, pages, currentPage, shownItems, 
     if (!row) return
     scrolledFor.current = request
     row.scrollIntoView({ block: 'start' })
+    keepRowAtTopWhileContentLoads(row, stopKeeping)
   }, [openRule, request, pages, currentPage, setPage, shownItems, isCatchingUp])
+}
+
+const CONTENT_SETTLE_WINDOW_MS = 1500
+
+// The opened rule's details render after its row does, so at first the table
+// may be too short to scroll the row to the top, and the browser later
+// restores the old offset once the details arrive. Scroll to the row again
+// as the table grows, until the content settles or the user scrolls.
+function keepRowAtTopWhileContentLoads(row: Element, stopKeeping: { current: (() => void) | null }) {
+  stopKeeping.current?.()
+  const growingTable = row.closest('table')
+  if (!growingTable) return
+  const observer = new ResizeObserver(() => row.scrollIntoView({ block: 'start' }))
+  observer.observe(growingTable)
+  const settleTimer = window.setTimeout(stop, CONTENT_SETTLE_WINDOW_MS)
+  const userInputEvents = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const
+  userInputEvents.forEach((eventName) => window.addEventListener(eventName, stop, { passive: true, once: true }))
+  function stop() {
+    observer.disconnect()
+    window.clearTimeout(settleTimer)
+    userInputEvents.forEach((eventName) => window.removeEventListener(eventName, stop))
+    stopKeeping.current = null
+  }
+  stopKeeping.current = stop
 }
 
 // Re-subscribes on every reveal (onReveal changes identity), so a sentinel

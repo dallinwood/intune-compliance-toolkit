@@ -4,14 +4,34 @@ import { ALL_RULES_PATH } from './locations'
 
 test.use({ viewport: { width: 1280, height: 800 } })
 
-test('the filter list fits the sidebar on the full library, so only the table scrolls', async ({ page }) => {
+test('the sidebar scrolls on its own when its filters are taller than the space, without scrolling the table', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 600 })
   await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
-  const dimensions = await page.getByTestId('sidebar-scroll-area').evaluate((element) => ({
-    scrollHeight: element.scrollHeight,
-    clientHeight: element.clientHeight,
-  }))
-  expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight)
+  const sidebarScrollArea = page.getByTestId('sidebar-scroll-area')
+  const tableScrollArea = page.locator('main')
+  const scrollPositions = () =>
+    page.evaluate(() => ({
+      sidebar: document.querySelector('[data-testid="sidebar-scroll-area"]')!.scrollTop,
+      table: document.querySelector('main')!.scrollTop,
+    }))
+
+  const sidebarDimensions = await sidebarScrollArea.evaluate((element) => ({ scrollHeight: element.scrollHeight, clientHeight: element.clientHeight }))
+  expect(sidebarDimensions.scrollHeight).toBeGreaterThan(sidebarDimensions.clientHeight)
+  expect(await scrollPositions()).toEqual({ sidebar: 0, table: 0 })
+
+  const sidebarBox = (await sidebarScrollArea.boundingBox())!
+  await page.mouse.move(sidebarBox.x + sidebarBox.width / 2, sidebarBox.y + sidebarBox.height / 2)
+  await page.mouse.wheel(0, 120)
+  await expect.poll(async () => (await scrollPositions()).sidebar).toBeGreaterThan(0)
+  expect((await scrollPositions()).table).toBe(0)
+  const sidebarAfterSidebarWheel = (await scrollPositions()).sidebar
+
+  const tableBox = (await tableScrollArea.boundingBox())!
+  await page.mouse.move(tableBox.x + tableBox.width / 2, tableBox.y + tableBox.height / 2)
+  await page.mouse.wheel(0, 120)
+  await expect.poll(async () => (await scrollPositions()).table).toBeGreaterThan(0)
+  expect((await scrollPositions()).sidebar).toBe(sidebarAfterSidebarWheel)
 })
 
 test('a group restored from the URL with a selection starts open, and shows its count once closed', async ({ page }) => {
