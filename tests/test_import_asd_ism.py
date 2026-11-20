@@ -117,6 +117,7 @@ def test_generate_release_writes_rules_index_and_manifest(workspace):
     assert entry == {
         "name": "asd_ism",
         "display_name": "ASD Information Security Manual",
+        "provenance": "official",
         "release_tag": "v2026.09.4",
         "commit_sha": COMMIT_SHA,
         "retrieved_date": "2026-10-23",

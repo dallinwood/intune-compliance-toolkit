@@ -46,4 +46,4 @@ labelled so users can tell them apart, and the official ones listed first.
 
 ## Progress log
 
-(none yet)
+- 2026-11-20: Task 1 done. `SourceImporter.provenance` (and `BenchmarkSpec.provenance` for CaC benchmarks) is written on each manifest source entry; the schema requires it. Existing sources were filled by re-running each importer offline for its current release. Commit: feat: record whether each framework is official or community.

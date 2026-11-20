@@ -19,6 +19,7 @@ LICENSE = {
 class BenchmarkSpec:
     source_name: str
     display_name: str
+    provenance: str
     product: str
     controls_path: str
     level_profiles: Mapping[str, str]
@@ -31,6 +32,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
     "cis_rhel9": BenchmarkSpec(
         source_name="cis_rhel9",
         display_name="CIS Red Hat Enterprise Linux 9 (ComplianceAsCode)",
+        provenance="community",
         product="rhel9",
         controls_path="products/rhel9/controls/cis_rhel9.yml",
         level_profiles={
@@ -46,6 +48,7 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
     "cis_ubuntu2404": BenchmarkSpec(
         source_name="cis_ubuntu2404",
         display_name="CIS Ubuntu 24.04 LTS (ComplianceAsCode)",
+        provenance="community",
         product="ubuntu2404",
         controls_path="controls/cis_ubuntu2404.yml",
         level_profiles={

@@ -105,6 +105,7 @@ def test_generate_release_writes_rules_index_and_manifest(workspace):
     assert entry == {
         "name": "nist_800_53",
         "display_name": "NIST SP 800-53 Rev. 5",
+        "provenance": "official",
         "release_tag": "v1.6.0",
         "commit_sha": COMMIT_SHA,
         "retrieved_date": "2026-11-11",

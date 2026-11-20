@@ -119,6 +119,7 @@ def write_ism_mapping(sources_dir: Path, baselines_dir: Path) -> None:
 IMPORTER = SourceImporter(
     name=SOURCE_NAME,
     display_name=SOURCE_DISPLAY_NAME,
+    provenance="official",
     repository_url=REPOSITORY_URL,
     license=LICENSE,
     fetch=fetch,

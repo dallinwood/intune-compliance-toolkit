@@ -145,6 +145,7 @@ def test_manifest_preserves_other_sources(workspace):
     windows_source = {
         "name": "windows",
         "display_name": "Windows",
+        "provenance": "community",
         "release_tag": "v1",
         "commit_sha": "d" * 40,
         "retrieved_date": "2026-01-01",

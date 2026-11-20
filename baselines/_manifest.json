@@ -12,6 +12,7 @@
         "url": "https://creativecommons.org/licenses/by/4.0/"
       },
       "name": "asd_e4eit",
+      "provenance": "official",
       "release_tag": "v2026.10.15",
       "releases": [
         {
@@ -40,6 +41,7 @@
         "url": "https://creativecommons.org/licenses/by/4.0/"
       },
       "name": "asd_ism",
+      "provenance": "official",
       "release_tag": "v2026.09.4",
       "releases": [
         {
@@ -268,6 +270,7 @@
         "url": "https://opensource.org/license/bsd-3-clause"
       },
       "name": "cis_rhel9",
+      "provenance": "community",
       "release_tag": "v0.1.82",
       "releases": [
         {
@@ -296,6 +299,7 @@
         "url": "https://opensource.org/license/bsd-3-clause"
       },
       "name": "cis_ubuntu2404",
+      "provenance": "community",
       "release_tag": "v0.1.82",
       "releases": [
         {
@@ -324,6 +328,7 @@
         "url": "https://creativecommons.org/licenses/by/4.0/"
       },
       "name": "mscp",
+      "provenance": "official",
       "release_tag": "release_27.1",
       "releases": [
         {
@@ -362,6 +367,7 @@
         "url": "https://creativecommons.org/publicdomain/zero/1.0/"
       },
       "name": "nist_800_53",
+      "provenance": "official",
       "release_tag": "v1.6.0",
       "releases": [
         {

@@ -72,6 +72,7 @@ def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int
 IMPORTER = SourceImporter(
     name=SOURCE_NAME,
     display_name=SOURCE_DISPLAY_NAME,
+    provenance="official",
     repository_url=REPOSITORY_URL,
     license=LICENSE,
     fetch=fetch,

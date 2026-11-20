@@ -18,6 +18,7 @@ FIXTURE_PATH = Path(__file__).parent / "fixtures" / "cis_cac" / "controls.yml"
 FIXTURE_SPEC = BenchmarkSpec(
     source_name="cis_fixture",
     display_name="CIS Fixture",
+    provenance="community",
     product="fixture",
     controls_path="controls/cis_fixture.yml",
     level_profiles={

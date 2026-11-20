@@ -47,6 +47,7 @@ def build_importer(spec: BenchmarkSpec) -> SourceImporter:
     return SourceImporter(
         name=spec.source_name,
         display_name=spec.display_name,
+        provenance=spec.provenance,
         repository_url=REPOSITORY_URL,
         license=LICENSE,
         fetch=fetch_release,

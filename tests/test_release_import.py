@@ -114,6 +114,7 @@ def stub_fetch(tag: str, release_sources_dir: Path, today: str) -> SourceLock:
 STUB_IMPORTER = SourceImporter(
     name="stub",
     display_name="Stub source",
+    provenance="community",
     repository_url="https://example.com/stub",
     license=LICENSE,
     fetch=stub_fetch,
@@ -415,3 +416,12 @@ def test_mscp_and_nist_importers_regenerate_the_mapping_and_asd_ism_does_not():
     assert import_mscp.IMPORTER.after_import is not None
     assert import_mscp.IMPORTER.after_import is import_nist_800_53.IMPORTER.after_import
     assert import_asd_ism.IMPORTER.after_import is None
+
+
+def test_published_source_entry_records_the_importer_provenance(workspace):
+    sources_dir, baselines_dir = workspace
+
+    import_stored_release(STUB_IMPORTER, sources_dir, baselines_dir, "A")
+
+    (source,) = read_manifest(baselines_dir)["sources"]
+    assert source["provenance"] == "community"

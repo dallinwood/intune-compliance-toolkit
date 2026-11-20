@@ -150,6 +150,25 @@ def test_regenerating_a_release_keeps_the_maintainer_folders(tmp_path):
         assert files_under(regenerated_dir / maintainer_dir_name) == files_under(BASELINES_DIR / maintainer_dir_name)
 
 
+EXPECTED_PROVENANCE = {
+    "mscp": "official",
+    "nist_800_53": "official",
+    "asd_ism": "official",
+    "asd_e4eit": "official",
+    "cis_rhel9": "community",
+    "cis_ubuntu2404": "community",
+}
+
+
+def test_every_manifest_source_has_the_expected_provenance():
+    provenance_by_source = {source["name"]: source.get("provenance") for source in committed_manifest()["sources"]}
+    assert provenance_by_source == EXPECTED_PROVENANCE
+
+
+def test_every_importer_declares_the_expected_provenance():
+    assert {name: importer.provenance for name, importer in IMPORTERS_BY_NAME.items()} == EXPECTED_PROVENANCE
+
+
 def test_every_manifest_source_has_an_importer():
     manifest = json.loads((BASELINES_DIR / "_manifest.json").read_text(encoding="utf-8"))
     assert sorted(source["name"] for source in manifest["sources"]) == sorted(IMPORTERS_BY_NAME)

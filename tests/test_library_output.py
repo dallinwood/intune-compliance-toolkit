@@ -61,6 +61,7 @@ def source_fields_for(source_name: str) -> dict:
     return {
         "name": source_name,
         "display_name": f"{source_name} display name",
+        "provenance": "community",
         "repository_url": "https://example.com/repository",
         "license": LICENSE,
     }

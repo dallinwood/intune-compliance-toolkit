@@ -36,6 +36,7 @@ DEFAULT_BASELINES_DIR = REPOSITORY_ROOT / "baselines"
 class SourceImporter:
     name: str
     display_name: str
+    provenance: str
     repository_url: str
     license: dict
     fetch: Callable[[str, Path, str], SourceLock]
@@ -53,6 +54,7 @@ def generate_release(
     source_fields = {
         "name": importer.name,
         "display_name": importer.display_name,
+        "provenance": importer.provenance,
         "repository_url": importer.repository_url,
         "license": importer.license,
     }

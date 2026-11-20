@@ -135,6 +135,7 @@ def make_manifest(releases=None):
             {
                 "name": "mscp",
                 "display_name": "NIST macOS Security Compliance Project",
+                "provenance": "official",
                 "release_tag": newest["tag"],
                 "commit_sha": newest["commit_sha"],
                 "retrieved_date": newest["retrieved_date"],
@@ -574,6 +575,26 @@ def test_validate_library_reports_top_level_fields_that_differ_from_the_newest_r
 def release_with(tag: str, published_date: str, label: str, **overrides) -> dict:
     return {**MSCP_RELEASE, "tag": tag, "label": label, "published_date": published_date,
             "index_path": f"mscp/releases/{tag}/_index.json", **overrides}
+
+
+def test_manifest_rejects_a_source_missing_provenance():
+    manifest = make_manifest()
+    del manifest["sources"][0]["provenance"]
+    assert schema_errors(manifest, "manifest") != []
+
+
+@pytest.mark.parametrize("provenance", ["Official", "unofficial", "", None])
+def test_manifest_rejects_an_unknown_provenance(provenance):
+    manifest = make_manifest()
+    manifest["sources"][0]["provenance"] = provenance
+    assert schema_errors(manifest, "manifest") != []
+
+
+@pytest.mark.parametrize("provenance", ["official", "community"])
+def test_manifest_accepts_each_provenance(provenance):
+    manifest = make_manifest()
+    manifest["sources"][0]["provenance"] = provenance
+    assert schema_errors(manifest, "manifest") == []
 
 
 def manifest_errors_for(releases: list[dict]) -> list[str]:
