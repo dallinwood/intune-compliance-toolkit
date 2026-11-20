@@ -145,12 +145,14 @@
       "additionalProperties": false,
       "required": ["result", "additional_info"],
       "oneOf": [
-        { "required": ["shell"], "not": { "required": ["shell_file"] } },
-        { "required": ["shell_file"], "not": { "required": ["shell"] } }
+        { "required": ["shell"], "not": { "anyOf": [{ "required": ["shell_file"] }, { "required": ["registry"] }] } },
+        { "required": ["shell_file"], "not": { "anyOf": [{ "required": ["shell"] }, { "required": ["registry"] }] } },
+        { "required": ["registry"], "not": { "anyOf": [{ "required": ["shell"] }, { "required": ["shell_file"] }] } }
       ],
       "properties": {
         "shell": { "type": ["string", "null"] },
         "shell_file": { "$ref": "#/$defs/script_file" },
+        "registry": { "$ref": "#/$defs/registry_settings" },
         "additional_info": { "type": ["string", "null"] },
         "result": {
           "type": ["object", "null"],
@@ -188,7 +190,53 @@
         { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/version" } }
       ]
     },
-    "language": { "enum": ["bash", "powershell", "zsh", "python", "instructions"] },
+    "language": { "enum": ["bash", "powershell", "zsh", "python", "instructions", "registry", "ansible", "goss"] },
+    "registry_settings": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/registry_setting" } },
+    "registry_setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hive", "path", "value_name", "type", "data", "state"],
+      "properties": {
+        "hive": { "enum": ["HKLM", "HKCU", "HKU", "HKCR"] },
+        "path": { "type": "string", "pattern": "^[^\\\\\\n](?:[^\\n]*[^\\\\\\n])?(?![\\s\\S])" },
+        "value_name": { "type": "string" },
+        "type": { "enum": ["REG_DWORD", "REG_QWORD", "REG_SZ", "REG_EXPAND_SZ", "REG_MULTI_SZ", "REG_BINARY", null] },
+        "data": {},
+        "state": { "enum": ["present", "absent"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "state": { "const": "absent" } }, "required": ["state"] },
+          "then": { "properties": { "type": { "type": "null" }, "data": { "type": "null" } } },
+          "else": {
+            "properties": { "type": { "type": "string" } },
+            "allOf": [
+              {
+                "if": { "properties": { "type": { "const": "REG_DWORD" } }, "required": ["type"] },
+                "then": { "properties": { "data": { "oneOf": [{ "type": "integer", "minimum": 0, "maximum": 4294967295 }, { "$ref": "#/$defs/odv_reference" }] } } }
+              },
+              {
+                "if": { "properties": { "type": { "const": "REG_QWORD" } }, "required": ["type"] },
+                "then": { "properties": { "data": { "oneOf": [{ "type": "integer", "minimum": 0, "maximum": 18446744073709551615 }, { "$ref": "#/$defs/odv_reference" }] } } }
+              },
+              {
+                "if": { "properties": { "type": { "enum": ["REG_SZ", "REG_EXPAND_SZ"] } }, "required": ["type"] },
+                "then": { "properties": { "data": { "type": "string" } } }
+              },
+              {
+                "if": { "properties": { "type": { "const": "REG_MULTI_SZ" } }, "required": ["type"] },
+                "then": { "properties": { "data": { "type": "array", "items": { "type": "string", "not": { "pattern": "^\\$ODV" } } } } }
+              },
+              {
+                "if": { "properties": { "type": { "const": "REG_BINARY" } }, "required": ["type"] },
+                "then": { "properties": { "data": { "type": "string", "pattern": "^(?:[0-9a-fA-F]{2})*(?![\\s\\S])" } } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "odv_reference": { "type": "string", "pattern": "^\\$ODV_[a-z][a-z0-9_]*(?![\\s\\S])" },
     "target_check": {
       "type": "object",
       "additionalProperties": false,
@@ -206,6 +254,30 @@
         }
       },
       "allOf": [
+        {
+          "if": { "properties": { "language": { "const": "registry" } }, "required": ["language"] },
+          "then": {
+            "properties": {
+              "default": { "$ref": "#/$defs/registry_check_entry" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/registry_check_entry" } }
+            }
+          },
+          "else": {
+            "properties": {
+              "default": { "$ref": "#/$defs/no_registry_body" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/no_registry_body" } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "language": { "enum": ["ansible", "goss"] } }, "required": ["language"] },
+          "then": {
+            "properties": {
+              "default": { "$ref": "#/$defs/display_text_body" },
+              "by_version": { "additionalProperties": { "$ref": "#/$defs/display_text_body" } }
+            }
+          }
+        },
         {
           "if": { "properties": { "language": { "const": "powershell" } }, "required": ["language"] },
           "then": {
@@ -250,6 +322,10 @@
       "required": ["shell", "result"],
       "properties": { "shell": { "type": "null" }, "result": { "type": "null" } }
     },
+    "registry_body": { "required": ["registry"] },
+    "registry_check_entry": { "required": ["registry", "result"], "properties": { "result": { "type": "null" } } },
+    "no_registry_body": { "not": { "type": "object", "required": ["registry"] } },
+    "display_text_body": { "required": ["shell"], "properties": { "shell": { "type": "string" } } },
     "instructions_step": {
       "required": ["shell"],
       "properties": { "shell": { "type": "null" } }
@@ -269,18 +345,29 @@
       "additionalProperties": false,
       "required": ["name", "language", "additional_info", "versions"],
       "oneOf": [
-        { "required": ["shell"], "not": { "required": ["shell_file"] } },
-        { "required": ["shell_file"], "not": { "required": ["shell"] } }
+        { "required": ["shell"], "not": { "anyOf": [{ "required": ["shell_file"] }, { "required": ["registry"] }] } },
+        { "required": ["shell_file"], "not": { "anyOf": [{ "required": ["shell"] }, { "required": ["registry"] }] } },
+        { "required": ["registry"], "not": { "anyOf": [{ "required": ["shell"] }, { "required": ["shell_file"] }] } }
       ],
       "properties": {
         "name": { "type": ["string", "null"] },
         "language": { "$ref": "#/$defs/language" },
         "shell": { "type": ["string", "null"] },
         "shell_file": { "$ref": "#/$defs/script_file" },
+        "registry": { "$ref": "#/$defs/registry_settings" },
         "additional_info": { "type": ["string", "null"] },
         "versions": { "$ref": "#/$defs/versions" }
       },
       "allOf": [
+        {
+          "if": { "properties": { "language": { "const": "registry" } }, "required": ["language"] },
+          "then": { "$ref": "#/$defs/registry_body" },
+          "else": { "$ref": "#/$defs/no_registry_body" }
+        },
+        {
+          "if": { "properties": { "language": { "enum": ["ansible", "goss"] } }, "required": ["language"] },
+          "then": { "$ref": "#/$defs/display_text_body" }
+        },
         {
           "if": { "properties": { "language": { "const": "powershell" } }, "required": ["language"] },
           "then": { "$ref": "#/$defs/shell_file_ps1" }

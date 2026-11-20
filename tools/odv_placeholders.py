@@ -52,6 +52,13 @@ SCRIPT_EXTENSIONS = (".sh", ".ps1", ".py")
 
 ANSI_C_QUOTE = "ansi-c"
 
+# Shown verbatim and never run. Their text is in the upstream tool's own
+# variable syntax (Jinja, Go templates), so no scan reads it.
+DISPLAY_ONLY_LANGUAGES = ("ansible", "goss")
+NUMBER_REGISTRY_TYPES = ("REG_DWORD", "REG_QWORD")
+TEXT_REGISTRY_TYPES = ("REG_SZ", "REG_EXPAND_SZ")
+TEXT_ODV_DATATYPES = ("string", "enum", "regex")
+
 
 def placeholder(name: str) -> str:
     return "$ODV_" + name
@@ -327,6 +334,8 @@ def iter_check_items(rule: dict) -> Iterator[dict]:
 
 def iter_inline_shell_texts(rule: dict) -> Iterator[ShellText]:
     for check_item in iter_check_items(rule):
+        if check_item.get("language") in DISPLAY_ONLY_LANGUAGES:
+            continue
         quote_dialect = QUOTE_DIALECT_BY_INLINE_LANGUAGE.get(check_item.get("language"))
         default_check = check_item.get("default")
         if default_check and default_check.get("shell"):
@@ -336,8 +345,46 @@ def iter_inline_shell_texts(rule: dict) -> Iterator[ShellText]:
                 yield ShellText(version_check["shell"], "", quote_dialect)
     for target_remediation in (rule.get("remediation") or {}).values():
         for step in target_remediation.get("steps") or []:
-            if step.get("shell"):
+            if step.get("shell") and step.get("language") not in DISPLAY_ONLY_LANGUAGES:
                 yield ShellText(step["shell"], "", QUOTE_DIALECT_BY_INLINE_LANGUAGE.get(step.get("language")))
+
+
+def iter_registry_settings(rule: dict) -> Iterator[dict]:
+    for check_item in iter_check_items(rule):
+        entries = [check_item.get("default"), *(check_item.get("by_version") or {}).values()]
+        for entry in entries:
+            yield from (entry or {}).get("registry") or []
+    for target_remediation in (rule.get("remediation") or {}).values():
+        for step in target_remediation.get("steps") or []:
+            yield from step.get("registry") or []
+
+
+def without_display_only_text(rule: dict) -> dict:
+    """The rule with the text of its ansible and goss items blanked, so no placeholder scan reads it."""
+
+    def blanked(entry):
+        return {**entry, "shell": None} if isinstance(entry, dict) and "shell" in entry else entry
+
+    check = {}
+    for target, check_items in (rule.get("check") or {}).items():
+        check[target] = [
+            {
+                **check_item,
+                "default": blanked(check_item.get("default")),
+                "by_version": {version: blanked(entry) for version, entry in (check_item.get("by_version") or {}).items()},
+            }
+            if check_item.get("language") in DISPLAY_ONLY_LANGUAGES
+            else check_item
+            for check_item in check_items
+        ]
+    remediation = {}
+    for target, target_remediation in (rule.get("remediation") or {}).items():
+        steps = [
+            blanked(step) if step.get("language") in DISPLAY_ONLY_LANGUAGES else step
+            for step in target_remediation.get("steps") or []
+        ]
+        remediation[target] = {**target_remediation, "steps": steps}
+    return {**rule, "check": check or rule.get("check"), "remediation": remediation or rule.get("remediation")}
 
 
 def iter_script_paths(rule: dict) -> Iterator[str]:
@@ -395,7 +442,9 @@ def declared_name_errors(rule_id: str, odvs: list[dict]) -> list[str]:
 
 def usage_errors(rule: dict, declared_names: set[str], file_texts: list[str]) -> list[str]:
     rule_id = rule["id"]
-    rule_without_declarations = {key: value for key, value in rule.items() if key != "odvs"}
+    rule_without_declarations = {
+        key: value for key, value in without_display_only_text(rule).items() if key != "odvs"
+    }
     errors = []
     used_names: set[str] = set()
     for text in [*iter_strings(rule_without_declarations), *file_texts]:
@@ -460,6 +509,46 @@ def quoting_errors(rule: dict, script_texts: list[ShellText]) -> list[str]:
     return errors
 
 
+def registry_odv_errors(rule: dict) -> list[str]:
+    """A registry setting may hold an ODV only as its whole number or text data, of a fitting datatype."""
+    rule_id = rule["id"]
+    datatype_by_name = {odv["name"]: odv.get("datatype") for odv in rule["odvs"] if isinstance(odv.get("name"), str)}
+    errors = []
+    for setting in iter_registry_settings(rule):
+        registry_type = setting.get("type")
+        for field in ("path", "value_name"):
+            if isinstance(setting.get(field), str) and ODV_OCCURRENCE_PATTERN.search(setting[field]):
+                errors.append(f"{rule_id}: a registry {field} cannot hold an ODV placeholder, only data can")
+        data = setting.get("data")
+        if isinstance(data, list):
+            if any(ODV_OCCURRENCE_PATTERN.search(item) for item in data if isinstance(item, str)):
+                errors.append(f"{rule_id}: {registry_type} data takes no ODV placeholder")
+            continue
+        if not isinstance(data, str) or not ODV_OCCURRENCE_PATTERN.search(data):
+            continue
+        if registry_type == "REG_BINARY":
+            errors.append(f"{rule_id}: {registry_type} data takes no ODV placeholder")
+            continue
+        well_formed = PLACEHOLDER_PATTERN.fullmatch(data)
+        if well_formed is None:
+            errors.append(
+                f"{rule_id}: registry data {data!r} mixes an ODV placeholder with other text; "
+                "an ODV must be the whole value"
+            )
+            continue
+        datatype = datatype_by_name.get(well_formed.group(1))
+        if datatype is None:
+            continue
+        fits_number = registry_type in NUMBER_REGISTRY_TYPES and datatype == "number"
+        fits_text = registry_type in TEXT_REGISTRY_TYPES and datatype in TEXT_ODV_DATATYPES
+        if not (fits_number or fits_text):
+            errors.append(
+                f"{rule_id}: {placeholder(well_formed.group(1))} has datatype {datatype!r}, "
+                f"which does not fit {registry_type} data"
+            )
+    return errors
+
+
 def display_value_errors(rule: dict) -> list[str]:
     rule_id = rule["id"]
     errors = []
@@ -490,5 +579,6 @@ def placeholder_errors(rule: dict, read_script: Callable[[str], str] | None = No
         + script_errors
         + usage_errors(rule, declared_names, file_texts)
         + quoting_errors({**rule, "odvs": odvs}, script_texts)
+        + registry_odv_errors({**rule, "odvs": odvs})
         + display_value_errors({**rule, "odvs": odvs})
     )

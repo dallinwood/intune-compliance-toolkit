@@ -423,3 +423,118 @@ def test_a_script_file_in_a_second_check_item_is_read():
     rule = build_rule("echo nothing", [build_odv()])
     rule["check"]["macos"].append({"name": "Second", "language": "bash", "default": {"shell_file": "scripts/second.sh"}, "by_version": {}})
     assert placeholder_errors(rule, build_reader({"scripts/second.sh": "echo $ODV_v"})) == []
+
+
+def registry_setting(registry_type: str, data) -> dict:
+    return {
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Example",
+        "value_name": "Setting",
+        "type": registry_type,
+        "data": data,
+        "state": "present",
+    }
+
+
+def build_registry_rule(setting: dict, odvs: list[dict]) -> dict:
+    return {
+        "id": "rule_1",
+        "odvs": odvs,
+        "check": {
+            "Windows": [
+                {
+                    "name": None,
+                    "language": "registry",
+                    "default": {"registry": [setting], "result": None, "additional_info": None},
+                    "by_version": {},
+                }
+            ]
+        },
+        "remediation": None,
+    }
+
+
+def numeric_odv(name: str = "max_age") -> dict:
+    return {**build_odv(name, recommended=30), "datatype": "number"}
+
+
+@pytest.mark.parametrize(
+    ("registry_type", "datatype"),
+    [
+        ("REG_DWORD", "number"),
+        ("REG_QWORD", "number"),
+        ("REG_SZ", "string"),
+        ("REG_SZ", "enum"),
+        ("REG_SZ", "regex"),
+        ("REG_EXPAND_SZ", "string"),
+    ],
+)
+def test_registry_odv_of_a_fitting_datatype_is_accepted(registry_type, datatype):
+    odv = {**build_odv("limit"), "datatype": datatype}
+    assert placeholder_errors(build_registry_rule(registry_setting(registry_type, "$ODV_limit"), [odv])) == []
+
+
+@pytest.mark.parametrize(
+    ("registry_type", "datatype"),
+    [
+        ("REG_DWORD", "string"),
+        ("REG_DWORD", "enum"),
+        ("REG_QWORD", "regex"),
+        ("REG_SZ", "number"),
+        ("REG_EXPAND_SZ", "number"),
+    ],
+)
+def test_registry_odv_of_an_ill_fitting_datatype_is_rejected(registry_type, datatype):
+    odv = {**build_odv("limit"), "datatype": datatype}
+    errors = placeholder_errors(build_registry_rule(registry_setting(registry_type, "$ODV_limit"), [odv]))
+    assert any("limit" in error and datatype in error and registry_type in error for error in errors)
+
+
+def test_registry_odv_naming_no_declared_odv_is_rejected():
+    errors = placeholder_errors(build_registry_rule(registry_setting("REG_DWORD", "$ODV_missing"), []))
+    assert any("$ODV_missing" in error and "no declared ODV" in error for error in errors)
+
+
+def test_registry_odv_must_be_the_whole_value():
+    errors = placeholder_errors(build_registry_rule(registry_setting("REG_SZ", "prefix $ODV_v"), [build_odv()]))
+    assert any("whole" in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    "setting",
+    [registry_setting("REG_MULTI_SZ", ["$ODV_v"]), registry_setting("REG_BINARY", "$ODV_v")],
+)
+def test_registry_multi_string_and_binary_take_no_odv(setting):
+    errors = placeholder_errors(build_registry_rule(setting, [build_odv()]))
+    assert any(setting["type"] in error and "no ODV" in error for error in errors)
+
+
+@pytest.mark.parametrize("field", ["path", "value_name"])
+def test_registry_odv_in_the_path_or_value_name_is_rejected(field):
+    setting = {**registry_setting("REG_DWORD", 1), field: "$ODV_v"}
+    errors = placeholder_errors(build_registry_rule(setting, [numeric_odv("v")]))
+    assert any(field in error for error in errors)
+
+
+def test_a_registry_odv_counts_as_used():
+    rule = build_registry_rule(registry_setting("REG_DWORD", "$ODV_max_age"), [numeric_odv()])
+    assert not any("never used" in error for error in placeholder_errors(rule))
+
+
+@pytest.mark.parametrize("language", ["ansible", "goss"])
+def test_display_only_text_is_not_scanned(language):
+    display_text = "- name: x\n  value: '{{ item.value }}'\n  cost: $5 $ODV_unknown $ODV\n"
+    rule = build_rule("echo '$ODV_v'", [build_odv("v", quoting="single")])
+    rule["check"]["macos"].append(
+        {"name": None, "language": language, "default": {"shell": display_text}, "by_version": {}}
+    )
+    rule["remediation"] = {"Windows": {"steps": [{"language": language, "shell": display_text}], "payloads": []}}
+    assert placeholder_errors(rule) == []
+
+
+def test_a_quoted_odv_in_display_only_text_is_not_a_quoting_error():
+    rule = build_rule("echo '$ODV_v'", [build_odv("v", quoting="single")])
+    rule["check"]["macos"].append(
+        {"name": None, "language": "ansible", "default": {"shell": "value: $ODV_v"}, "by_version": {}}
+    )
+    assert placeholder_errors(rule) == []

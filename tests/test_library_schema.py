@@ -1129,3 +1129,177 @@ def test_instructions_constraints_apply_to_every_check_item():
     second_item["default"]["shell"] = "echo hi"
     rule["check"]["macOS"].append(second_item)
     assert schema_errors(rule)
+
+
+def registry_setting(**overrides) -> dict:
+    setting = {
+        "hive": "HKLM",
+        "path": "SOFTWARE\\Policies\\Example",
+        "value_name": "Enabled",
+        "type": "REG_DWORD",
+        "data": 1,
+        "state": "present",
+    }
+    setting.update(overrides)
+    return setting
+
+
+def registry_rule(*settings: dict) -> dict:
+    rule = make_rule()
+    registry_entry = {"registry": list(settings), "additional_info": None, "result": None}
+    rule["check"] = {
+        "Windows": [{"name": None, "language": "registry", "default": registry_entry, "by_version": {"11": dict(registry_entry)}}]
+    }
+    rule["remediation"] = {
+        "Windows": {
+            "steps": [
+                {"name": None, "language": "registry", "registry": list(settings), "additional_info": None, "versions": None}
+            ],
+            "payloads": [],
+        }
+    }
+    return rule
+
+
+VALID_REGISTRY_SETTINGS = [
+    registry_setting(),
+    registry_setting(type="REG_DWORD", data=4294967295),
+    registry_setting(type="REG_DWORD", data="$ODV_max_age"),
+    registry_setting(type="REG_QWORD", data=18446744073709551615),
+    registry_setting(type="REG_SZ", data="text"),
+    registry_setting(type="REG_SZ", data="$ODV_banner"),
+    registry_setting(type="REG_EXPAND_SZ", data="%SystemRoot%\\system32"),
+    registry_setting(type="REG_MULTI_SZ", data=["a", "b"]),
+    registry_setting(type="REG_MULTI_SZ", data=[]),
+    registry_setting(type="REG_BINARY", data="00ffA1"),
+    registry_setting(type="REG_BINARY", data=""),
+    registry_setting(type=None, data=None, state="absent"),
+    registry_setting(value_name="", type="REG_SZ", data="x"),
+    registry_setting(hive="HKU", path=".DEFAULT\\Software\\X"),
+    registry_setting(hive="HKCU"),
+    registry_setting(hive="HKCR"),
+]
+
+
+@pytest.mark.parametrize("setting", VALID_REGISTRY_SETTINGS, ids=lambda setting: f"{setting['type']}-{setting['state']}-{setting['data']!r}")
+def test_registry_settings_are_valid(setting):
+    assert schema_errors(registry_rule(setting)) == []
+
+
+INVALID_REGISTRY_SETTINGS = {
+    "string data for a dword": registry_setting(data="1"),
+    "integer data for a string": registry_setting(type="REG_SZ", data=1),
+    "string data for a multi string": registry_setting(type="REG_MULTI_SZ", data="a"),
+    "an odv for a multi string": registry_setting(type="REG_MULTI_SZ", data=["$ODV_x"]),
+    "list data for a binary": registry_setting(type="REG_BINARY", data=["00"]),
+    "data on an absent setting": registry_setting(type=None, data=1, state="absent"),
+    "a type on an absent setting": registry_setting(type="REG_DWORD", data=None, state="absent"),
+    "a null type on a present setting": registry_setting(type=None, data=1),
+    "null data on a present setting": registry_setting(data=None),
+    "a negative dword": registry_setting(data=-1),
+    "a dword over 32 bits": registry_setting(data=4294967296),
+    "a qword over 64 bits": registry_setting(type="REG_QWORD", data=18446744073709551616),
+    "a negative qword": registry_setting(type="REG_QWORD", data=-1),
+    "a boolean dword": registry_setting(data=True),
+    "an odd-length binary": registry_setting(type="REG_BINARY", data="abc"),
+    "a non-hex binary": registry_setting(type="REG_BINARY", data="zz"),
+    "an odv for a binary": registry_setting(type="REG_BINARY", data="$ODV_x"),
+    "an unknown type": registry_setting(type="REG_NONE", data=1),
+    "an unknown hive": registry_setting(hive="HKEY_LOCAL_MACHINE"),
+    "an unknown state": registry_setting(state="maybe"),
+    "a leading backslash in the path": registry_setting(path="\\SOFTWARE"),
+    "a trailing backslash in the path": registry_setting(path="SOFTWARE\\"),
+    "an empty path": registry_setting(path=""),
+    "an extra key": {**registry_setting(), "comment": "x"},
+    "a missing key": {key: value for key, value in registry_setting().items() if key != "state"},
+}
+
+
+@pytest.mark.parametrize("setting", INVALID_REGISTRY_SETTINGS.values(), ids=INVALID_REGISTRY_SETTINGS.keys())
+def test_invalid_registry_settings_are_rejected(setting):
+    assert schema_errors(registry_rule(setting)) != []
+
+
+def test_an_empty_registry_list_is_rejected():
+    assert schema_errors(registry_rule()) != []
+
+
+def test_a_registry_body_with_shell_is_rejected():
+    rule = registry_rule(registry_setting())
+    rule["check"]["Windows"][0]["default"]["shell"] = "echo hi"
+    assert schema_errors(rule) != []
+    rule = registry_rule(registry_setting())
+    rule["remediation"]["Windows"]["steps"][0]["shell"] = "echo hi"
+    assert schema_errors(rule) != []
+
+
+def test_a_registry_body_with_shell_file_is_rejected():
+    rule = registry_rule(registry_setting())
+    rule["check"]["Windows"][0]["default"]["shell_file"] = "baselines/x/check.ps1"
+    assert schema_errors(rule) != []
+    rule = registry_rule(registry_setting())
+    rule["remediation"]["Windows"]["steps"][0]["shell_file"] = "baselines/x/fix.ps1"
+    assert schema_errors(rule) != []
+
+
+def test_a_registry_language_without_a_registry_body_is_rejected():
+    rule = registry_rule(registry_setting())
+    entry = rule["check"]["Windows"][0]["default"]
+    del entry["registry"]
+    entry["shell"] = "echo hi"
+    assert schema_errors(rule) != []
+    rule = registry_rule(registry_setting())
+    step = rule["remediation"]["Windows"]["steps"][0]
+    del step["registry"]
+    step["shell"] = "echo hi"
+    assert schema_errors(rule) != []
+
+
+def test_a_registry_check_must_have_no_result():
+    rule = registry_rule(registry_setting())
+    rule["check"]["Windows"][0]["default"]["result"] = {"type": "integer", "value": 1}
+    assert schema_errors(rule) != []
+
+
+@pytest.mark.parametrize("language", ["powershell", "bash", "zsh", "python", "instructions", "ansible", "goss"])
+def test_a_registry_body_on_another_language_is_rejected(language):
+    rule = registry_rule(registry_setting())
+    rule["check"]["Windows"][0]["language"] = language
+    assert schema_errors(rule) != []
+    rule = registry_rule(registry_setting())
+    rule["remediation"]["Windows"]["steps"][0]["language"] = language
+    assert schema_errors(rule) != []
+
+
+def display_language_rule(language: str, **body) -> dict:
+    rule = make_rule()
+    check_entry = {"shell": "- name: x\n  win_regedit: {}", "additional_info": None, "result": None}
+    check_entry.update(body)
+    rule["check"] = {"Windows": [{"name": None, "language": language, "default": check_entry, "by_version": {}}]}
+    step = {"name": None, "language": language, "shell": "- name: x", "additional_info": None, "versions": None}
+    step.update(body)
+    rule["remediation"] = {"Windows": {"steps": [step], "payloads": []}}
+    return rule
+
+
+@pytest.mark.parametrize("language", ["ansible", "goss"])
+def test_display_languages_take_an_inline_shell(language):
+    assert schema_errors(display_language_rule(language)) == []
+
+
+@pytest.mark.parametrize("language", ["ansible", "goss"])
+def test_display_languages_reject_shell_file(language):
+    rule = display_language_rule(language)
+    del rule["check"]["Windows"][0]["default"]["shell"]
+    rule["check"]["Windows"][0]["default"]["shell_file"] = "baselines/x/check.sh"
+    assert schema_errors(rule) != []
+    step = rule["remediation"]["Windows"]["steps"][0]
+    del step["shell"]
+    step["shell_file"] = "baselines/x/fix.sh"
+    assert schema_errors(rule) != []
+
+
+@pytest.mark.parametrize("language", ["ansible", "goss"])
+def test_display_languages_reject_a_registry_body(language):
+    rule = display_language_rule(language, registry=[registry_setting()])
+    assert schema_errors(rule) != []

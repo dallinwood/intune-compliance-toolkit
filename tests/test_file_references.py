@@ -198,3 +198,43 @@ def test_every_check_item_has_its_script_reference_checked(tmp_path):
     }
     errors = file_reference_errors(rule, tmp_path)
     assert len(errors) == 1 and "check.macOS[1].default" in errors[0]
+
+
+REGISTRY_SETTING = {
+    "hive": "HKLM",
+    "path": "SOFTWARE\\Example",
+    "value_name": "Setting",
+    "type": "REG_DWORD",
+    "data": 1,
+    "state": "present",
+}
+
+
+def test_a_registry_step_has_no_file_to_check(tmp_path):
+    step = {"name": None, "language": "registry", "registry": [REGISTRY_SETTING], "additional_info": None, "versions": None}
+    assert file_reference_errors(rule_with_step(step), tmp_path) == []
+
+
+def test_a_registry_check_entry_has_no_file_to_check(tmp_path):
+    entry = {"registry": [REGISTRY_SETTING], "result": None, "additional_info": None}
+    rule = {"check": {"Windows": [{"name": None, "language": "registry", "default": entry, "by_version": {}}]}, "remediation": None}
+    assert file_reference_errors(rule, tmp_path) == []
+
+
+def test_a_registry_language_without_registry_settings_is_an_error(tmp_path):
+    step = {"name": None, "language": "registry", "shell": "1", "additional_info": None, "versions": None}
+    assert any("registry" in error for error in file_reference_errors(rule_with_step(step), tmp_path))
+
+
+def test_registry_settings_on_another_language_are_an_error(tmp_path):
+    step = powershell_step(registry=[REGISTRY_SETTING])
+    assert any("registry" in error for error in file_reference_errors(rule_with_step(step), tmp_path))
+
+
+@pytest.mark.parametrize("language", ["ansible", "goss"])
+def test_a_display_only_language_takes_inline_text_only(language, tmp_path):
+    write_file(tmp_path, "baselines/_overlays/scripts/Fix.sh", b"1\n")
+    inline = {"name": None, "language": language, "shell": "- name: x", "additional_info": None, "versions": None}
+    assert file_reference_errors(rule_with_step(inline), tmp_path) == []
+    from_file = {"name": None, "language": language, "shell_file": "baselines/_overlays/scripts/Fix.sh", "additional_info": None, "versions": None}
+    assert any("no known script extension" in error for error in file_reference_errors(rule_with_step(from_file), tmp_path))

@@ -337,3 +337,41 @@ def test_overlay_odv_that_no_text_uses_is_rejected(tmp_path):
     errors, _ = validate_overlays(overlays_dir, baselines_dir)
 
     assert len(errors) == 1 and "max_age" in errors[0] and "never used" in errors[0]
+
+
+@pytest.mark.parametrize("case", CASES["rule_shape_cases"], ids=lambda case: case["name"])
+def test_shared_rule_shape_case(case):
+    from tests.test_library_schema import make_rule
+    from tools.validate_library import schema_errors
+
+    merged = apply_overlay_fields(case["rule"], case["fields"])
+    rule = make_rule(check=merged["check"])
+    assert (schema_errors(rule) != []) == case["error"]
+
+
+REGISTRY_ITEM = {
+    "name": "Registry settings",
+    "language": "registry",
+    "default": {
+        "registry": [
+            {"hive": "HKLM", "path": "SOFTWARE", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present"}
+        ],
+        "result": None,
+        "additional_info": None,
+    },
+    "by_version": {},
+}
+
+
+def test_an_overlay_can_replace_a_check_list_with_a_registry_item(tmp_path):
+    write_overlay(tmp_path, "registry.json", ism_1622_overlay("registry", {"check": {"Windows": {"$replace": [REGISTRY_ITEM]}}}))
+    assert validate_overlays(tmp_path, BASELINES_DIR) == ([], [])
+    assert overlays.merged_rules(tmp_path, BASELINES_DIR)[ISM_1622]["check"]["Windows"] == [REGISTRY_ITEM]
+
+
+def test_an_overlay_with_an_invalid_registry_setting_is_an_error(tmp_path):
+    broken_setting = {**REGISTRY_ITEM["default"]["registry"][0], "data": "1"}
+    broken_item = {**REGISTRY_ITEM, "default": {**REGISTRY_ITEM["default"], "registry": [broken_setting]}}
+    write_overlay(tmp_path, "registry.json", ism_1622_overlay("registry", {"check": {"Windows": {"$replace": [broken_item]}}}))
+    errors, _ = validate_overlays(tmp_path, BASELINES_DIR)
+    assert errors and all("check" in error for error in errors)

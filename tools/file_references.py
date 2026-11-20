@@ -27,6 +27,7 @@ SCRIPT_EXTENSIONS_BY_LANGUAGE = {
     "zsh": (".sh",),
     "python": (".py",),
 }
+REGISTRY_LANGUAGE = "registry"
 TEXT_PAYLOAD_EXTENSIONS = (".mobileconfig", ".plist", ".json", ".xml", ".reg", ".admx", ".adml")
 BINARY_PAYLOAD_EXTENSIONS = (".pol", ".intunewin")
 PAYLOAD_EXTENSIONS = TEXT_PAYLOAD_EXTENSIONS + BINARY_PAYLOAD_EXTENSIONS
@@ -53,6 +54,16 @@ def exactly_one_problem(entry: dict, inline_key: str, file_key: str) -> str | No
     present = [key for key in (inline_key, file_key) if key in entry]
     if len(present) != 1:
         return f"needs exactly one of {inline_key} and {file_key}, has {present or 'neither'}"
+    return None
+
+
+def registry_body_problem(entry: dict, language: object) -> str | None:
+    """The registry language holds a registry list and no script; no other language holds one."""
+    if language == REGISTRY_LANGUAGE:
+        if "registry" not in entry or "shell" in entry or "shell_file" in entry:
+            return "needs a registry list and neither shell nor shell_file for the registry language"
+    elif "registry" in entry:
+        return f"has a registry list, which only the registry language takes, not {language!r}"
     return None
 
 
@@ -179,7 +190,9 @@ def file_reference_errors(rule: dict, repository_root: Path) -> list[str]:
     """Every problem with the rule's shell_file and data_file references."""
     errors: list[str] = []
     for where, entry, language, is_check in _script_entries(rule):
-        problem = exactly_one_problem(entry, "shell", "shell_file")
+        problem = registry_body_problem(entry, language)
+        if problem is None and language != REGISTRY_LANGUAGE:
+            problem = exactly_one_problem(entry, "shell", "shell_file")
         if problem is None and "shell_file" in entry:
             path = entry["shell_file"]
             problem = script_file_problem(path, language) or _script_content_problem(path, repository_root, is_check)

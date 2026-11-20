@@ -1,5 +1,5 @@
 {
-  "description": "Shared overlay merge cases, run by tests/test_overlays.py and webui/src/logic/overlays.test.ts so the Python and TypeScript merges cannot drift. A merge case applies `fields` to `rule` (only `known_fields` when given) and expects `expected` or, with `error: true`, a rejected overlay. An index case applies `fields` to the index `entry` and recomputes `section` and `has_odv` (`odvs` is replace-only: `$merge`, `$append` and a bare list are rejected). A file reference case checks one check entry or step (`kind` script, with its `language`) or one payload (`kind` payload) for the path, extension and exactly-one rules of `shell_file` and `data_file`; whether the file exists is checked by the Python side only.",
+  "description": "Shared overlay merge cases, run by tests/test_overlays.py and webui/src/logic/overlays.test.ts so the Python and TypeScript merges cannot drift. A merge case applies `fields` to `rule` (only `known_fields` when given) and expects `expected` or, with `error: true`, a rejected overlay. An index case applies `fields` to the index `entry` and recomputes `section` and `has_odv` (`odvs` is replace-only: `$merge`, `$append` and a bare list are rejected). A file reference case checks one check entry or step (`kind` script, with its `language`) or one payload (`kind` payload) for the path, extension and exactly-one rules of `shell_file` and `data_file`; whether the file exists is checked by the Python side only. A rule shape case applies `fields` to `rule` (a merge, as in a merge case), then puts the merged `check` into a complete rule and expects the schema (Python) or the shape checks of overlayShape.ts (web UI) to reject it when `error` is true.",
   "merge_cases": [
     {
       "name": "empty fields leave the rule unchanged",
@@ -716,8 +716,95 @@
       "error": true
     }
   ],
+  "rule_shape_cases": [
+    {
+      "name": "$replace of a target's check list with a registry item is valid",
+      "rule": { "id": "x.rule", "check": { "Windows": [{ "name": null, "language": "powershell", "default": { "shell": "echo old", "result": null, "additional_info": null }, "by_version": {} }] } },
+      "fields": {
+        "check": {
+          "Windows": {
+            "$replace": [
+              {
+                "name": "Registry settings",
+                "language": "registry",
+                "default": {
+                  "registry": [
+                    { "hive": "HKLM", "path": "SOFTWARE\\Policies\\Example", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present" },
+                    { "hive": "HKLM", "path": "SOFTWARE\\Policies\\Example", "value_name": "", "type": null, "data": null, "state": "absent" }
+                  ],
+                  "result": null,
+                  "additional_info": null
+                },
+                "by_version": {}
+              },
+              { "name": "goss", "language": "goss", "default": { "shell": "registry:\n  HKLM:\\SOFTWARE\\Example:\n    exists: true", "result": null, "additional_info": null }, "by_version": {} }
+            ]
+          }
+        }
+      },
+      "error": false
+    },
+    {
+      "name": "a registry setting whose data does not match its type is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": {
+        "check": {
+          "Windows": [
+            {
+              "name": null,
+              "language": "registry",
+              "default": {
+                "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\Example", "value_name": "Enabled", "type": "REG_DWORD", "data": "1", "state": "present" }],
+                "result": null,
+                "additional_info": null
+              },
+              "by_version": {}
+            }
+          ]
+        }
+      },
+      "error": true
+    },
+    {
+      "name": "a registry check item with a shell body is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": {
+        "check": {
+          "Windows": [
+            { "name": null, "language": "registry", "default": { "shell": "echo hi", "result": null, "additional_info": null }, "by_version": {} }
+          ]
+        }
+      },
+      "error": true
+    },
+    {
+      "name": "a registry body on a powershell item is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": {
+        "check": {
+          "Windows": [
+            {
+              "name": null,
+              "language": "powershell",
+              "default": {
+                "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\Example", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present" }],
+                "result": null,
+                "additional_info": null
+              },
+              "by_version": {}
+            }
+          ]
+        }
+      },
+      "error": true
+    }
+  ],
   "file_reference_cases": [
     {"name": "an inline shell is valid", "kind": "script", "entry": {"shell": "echo ok"}, "language": "bash", "error": false},
+    {"name": "inline Ansible text is valid", "kind": "script", "entry": {"shell": "- name: x"}, "language": "ansible", "error": false},
+    {"name": "inline goss text is valid", "kind": "script", "entry": {"shell": "file: {}"}, "language": "goss", "error": false},
+    {"name": "a shell_file for an ansible entry is invalid", "kind": "script", "entry": {"shell_file": "baselines/x/scripts/check.sh"}, "language": "ansible", "error": true},
+    {"name": "a shell_file for a goss entry is invalid", "kind": "script", "entry": {"shell_file": "baselines/x/scripts/check.ps1"}, "language": "goss", "error": true},
     {"name": "a null inline shell is valid", "kind": "script", "entry": {"shell": null}, "language": "bash", "error": false},
     {"name": "a PowerShell file for a powershell entry is valid", "kind": "script", "entry": {"shell_file": "baselines/_overlays/scripts/Example.ps1"}, "language": "powershell", "error": false},
     {"name": "a .sh file for a bash entry is valid", "kind": "script", "entry": {"shell_file": "baselines/mscp/scripts/check.sh"}, "language": "bash", "error": false},
