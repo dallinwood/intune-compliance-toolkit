@@ -114,7 +114,31 @@ derived from the catalog. This content was modified by this project. It stays in
 the public domain in the United States and under CC0 1.0 elsewhere, and is
 provided as-is.
 
-baselines/_overlays/scripts/*.ps1 (referenced by baselines/_overlays/rules/asd-blueprint-*.json)
+sources/cis_rhel9/releases/<tag>/upstream/ and sources/cis_ubuntu2404/releases/<tag>/upstream/
+are unmodified copies of parts of the ComplianceAsCode project (the compiled
+SCAP datastream for the product, the CIS control file, and the project's
+licence), which carries the CIS Benchmark recommendations as rules:
+
+  Project:  https://github.com/ComplianceAsCode/content
+  Release:  v0.1.82 (see source.json in each release folder for the exact commit)
+  Licence:  BSD 3-Clause
+            Copyright (c) 2012-2017, Red Hat, Inc.
+
+The licence text is in sources/cis_rhel9/releases/<tag>/upstream/LICENSE and
+sources/cis_ubuntu2404/releases/<tag>/upstream/LICENSE. Its third condition
+reads: "Neither the name of the Red Hat nor the names of its contributors may
+be used to endorse or promote products derived from this software without
+specific prior written permission."
+
+baselines/cis_rhel9/ and baselines/cis_ubuntu2404/ are adapted from that
+material: the controls were normalized to this project's rule format, the
+values the benchmark parameterizes were made customisable, and each rule's
+audit and fix text was assembled from the datastream. This content was
+modified by this project. It remains licensed under the BSD 3-Clause licence
+and is provided as-is, with the disclaimer of warranties and limitation of
+liability in that licence.
+
+baselines/_overlays/scripts/*.ps1(referenced by baselines/_overlays/rules/asd-blueprint-*.json)
 are PowerShell scripts from ASD's Blueprint for Secure Cloud:
 
   Project:  https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud
@@ -180,3 +204,6 @@ ASD does not endorse or sponsor this project, and no endorsement is implied.
 
 NIST does not endorse or sponsor this project's use of the SP 800-53 content, and no
 endorsement is implied.
+
+Red Hat, Inc. and the other ComplianceAsCode contributors do not endorse or
+sponsor this project, and no endorsement is implied.

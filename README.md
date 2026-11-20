@@ -57,6 +57,22 @@ That content stays in the public domain and under CC0 1.0. The upstream licence
 text is vendored in `sources/nist_800_53/releases/<tag>/upstream/LICENSE.md`.
 NIST does not endorse this project.
 
+The CIS rule content in `sources/cis_rhel9/`, `sources/cis_ubuntu2404/`,
+`baselines/cis_rhel9/` and `baselines/cis_ubuntu2404/` comes from the
+[ComplianceAsCode project](https://github.com/ComplianceAsCode/content),
+licensed under the BSD 3-Clause licence, Copyright (c) 2012-2017, Red Hat, Inc.
+`sources/cis_*/releases/<tag>/upstream/` is an unmodified copy of the parts of
+each imported release this project uses. This project has modified the content
+in `baselines/cis_rhel9/` and `baselines/cis_ubuntu2404/`: it was normalized to
+a rule format, the values the benchmark parameterizes were made customisable,
+and each rule's audit and fix text was assembled from the datastream. That
+content remains under the BSD 3-Clause licence and is provided as-is, with the
+disclaimer of warranties in that licence. The names of Red Hat and the
+ComplianceAsCode contributors are not used to endorse or promote this project,
+and they do not endorse it. The upstream licence text is vendored in
+`sources/cis_*/releases/<tag>/upstream/LICENSE`. See `NOTICE` for the full
+attribution of the sources.
+
 ## Web UI
 
 The web UI in `webui/` browses the imported rules and generates Intune custom
@@ -338,6 +354,32 @@ library validator also rejects two releases with the same label.
 The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
 and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
 Review their diff with the rest.
+
+## Updating the CIS (ComplianceAsCode) rules
+
+Requires Python 3.10 or newer.
+
+1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
+2. `python tools/import_cis_cac.py --benchmark <source> --tag <CaC tag>`, for
+   example `--benchmark cis_rhel9 --tag v0.1.82`. The source is a key of
+   `BENCHMARKS` in `tools/cac_benchmarks.py` (`cis_rhel9`, `cis_ubuntu2404`)
+   and the tag is a release of the
+   [ComplianceAsCode/content](https://github.com/ComplianceAsCode/content)
+   repository. Each release is kept in its own folder
+   (`sources/<source>/releases/<tag>/`, `baselines/<source>/releases/<tag>/`),
+   so importing a new tag adds a release and never replaces an older one. To
+   regenerate every stored release from the vendored copies without fetching,
+   use `--offline`.
+3. Review `git diff sources/<source>/` and `git diff baselines/<source>/`.
+4. `python -m pytest -W error -n auto`
+5. `cd webui && bun run test`, then `bun run test:e2e` with `bun run dev`
+   running.
+6. Commit the result.
+
+To add a benchmark for another product, add one `BenchmarkSpec` to `BENCHMARKS`
+in `tools/cac_benchmarks.py` (source name, display name, ComplianceAsCode
+product, controls file path, the profile for each CIS level, target, version
+and any helper control ids), then import it with the command above.
 
 ## Writing overlays
 
