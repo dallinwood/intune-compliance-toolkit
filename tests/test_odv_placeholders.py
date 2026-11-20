@@ -356,3 +356,47 @@ def test_payload_file_unknown_and_malformed_placeholders_reported():
     errors = placeholder_errors(rule, reader)
     assert any("$ODV_other" in error and "no declared" in error for error in errors)
     assert any("malformed" in error and "$ODVX" in error for error in errors)
+
+
+def test_placeholder_in_case_statement_inside_double_quoted_substitution_is_error():
+    rule = build_rule("x=\"$(case a in a) echo '$ODV_v';; esac)\"", [build_odv(quoting="double")])
+    assert any("$ODV_v" in error for error in placeholder_errors(rule))
+
+
+def test_placeholder_in_case_statement_is_error():
+    rule = build_rule("case \"$x\" in\n  a) y='$ODV_v' ;;\nesac", [build_odv(quoting="single")])
+    assert any("case statement" in error for error in placeholder_errors(rule))
+
+
+def test_text_after_case_statement_is_checked():
+    rule = build_rule("case \"$x\" in\n  a) y=1 ;;\nesac\ny='$ODV_v'", [build_odv(quoting="single")])
+    assert placeholder_errors(rule) == []
+
+
+def test_case_inside_a_word_is_not_a_case_statement():
+    rule = build_rule("echo showcase; y='$ODV_v'", [build_odv(quoting="single")])
+    assert placeholder_errors(rule) == []
+
+
+def test_placeholder_after_comment_inside_double_quoted_substitution_is_error():
+    rule = build_rule("x=\"$(echo a # )\n echo '$ODV_v')\"", [build_odv(quoting="double")])
+    assert any("$ODV_v" in error for error in placeholder_errors(rule))
+
+
+def test_placeholder_in_powershell_expandable_here_string_is_error():
+    rule = build_script_rule("check.ps1", "single")
+    errors = placeholder_errors(rule, lambda path: "$x = @\"\n\" '$ODV_v' \"\n\"@")
+    assert any("here-string" in error for error in errors)
+
+
+def test_placeholder_in_powershell_literal_here_string_is_error():
+    rule = build_script_rule("check.ps1", "single")
+    errors = placeholder_errors(rule, lambda path: "$x = @'\n'$ODV_v'\n'@")
+    assert any("here-string" in error for error in errors)
+
+
+def test_text_after_powershell_here_string_is_checked():
+    rule = build_script_rule("check.ps1", "single")
+    assert placeholder_errors(rule, lambda path: "$x = @\"\nit's\n\"@\n$y = '$ODV_v'") == []
+    errors = placeholder_errors(rule, lambda path: "$x = @\"\nit's\n\"@\n$y = $ODV_v")
+    assert any("outside single quotes" in error for error in errors)

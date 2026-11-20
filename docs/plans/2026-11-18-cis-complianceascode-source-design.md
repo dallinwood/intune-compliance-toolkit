@@ -190,10 +190,16 @@ in `references.cis.levels`, so the UI can still show "Level 1".
   gets a line after its text listing them, e.g. "Expected values: var_password_pam_minlen =
   $ODV_var_password_pam_minlen", which the UI shows with the chosen value. Dropped values can't
   be put back into the sentence itself; the listed values make the audit usable anyway. Stored as
-  `language: bash`, `shell: null`, `result: null`, the text in `additional_info`. The schema
-  allows only one check entry per target, so multiple CaC rules are concatenated into it.
-- A linked CaC rule with no bash fix, or no OCIL text, is listed in the step or audit text as
-  "No fix in ComplianceAsCode" / "No audit procedure in ComplianceAsCode" rather than dropped.
+  `language: instructions` (see `2026-11-20-instructions-language-design.md`), `shell: null`,
+  `result: null`, the text in `additional_info`. The schema allows only one check entry per
+  target, so multiple CaC rules are concatenated into it. Each OCIL text sits in a `----`
+  listing block, so an OCIL line that is itself `----` fails the import.
+- A linked CaC rule with no bash fix still gets its step, as `language: instructions`,
+  `shell: null` and "No fix in ComplianceAsCode (rule `<id>`)." in `additional_info`. In the
+  audit, a linked rule with no OCIL text is listed as "No audit procedure in ComplianceAsCode"
+  when another linked rule has one; when none of the linked rules has OCIL text the rule gets
+  `check: null` (maintainer ruling, recorded in the instructions-language design), so the UI
+  shows that there is no audit rather than a check made only of "No audit procedure" lines.
 - Controls with no `rules` get `check: null` and `remediation: null`.
 - `related_rules` (CaC rules that partly cover a control) are listed in references only; their
   checks and fixes are not included.
@@ -214,6 +220,12 @@ readable text.
 | `inherently met` | `manual`, `inherent` |
 
 Any other status fails the import.
+
+A control whose status is `automated`, `partial` or `supported` but which links no rule (its
+`rules` list is empty, or holds only variable settings) gets `manual`, `no_check` instead of
+`openscap`: CaC has no rule to check it with, so "Checkable with OpenSCAP" would be a claim that
+does not hold (controller ruling 2026-11-20, after the final review; 15 RHEL 9 and 2 Ubuntu
+24.04 controls in v0.1.82).
 
 `openscap` is a new `manual_reason`, labelled "Checkable with OpenSCAP": CaC can check this
 rule with OpenSCAP, but this toolkit has no runnable check for it. Adding it touches the
@@ -349,3 +361,4 @@ For the maintainer to check while reading:
 - 2026-11-20: Sections now stop at a recommendation's parent number (`1.1.1.1` sits in `1 > 1.1 > 1.1.1`); including the number itself gave every recommendation its own one-rule section. Both releases regenerated. Commit: `fix: stop CIS sections at the recommendation's parent`.
 - 2026-11-20: Credited ComplianceAsCode in `NOTICE` and `README.md` (BSD-3-Clause, no-endorsement clause, the update section). Commit: `docs: credit ComplianceAsCode for the CIS rule sources`.
 - 2026-11-20: The rule detail shows a text-only audit (no script, procedure in `additional_info`) under an "Audit procedure" label instead of "No check script.", and its check button reads "Audit" rather than the "Bash" language pill; checks with a script look as before. Added e2e tests for the audit procedure, the customisable value and the mSCP Bash label, and checked 375px and 1440px screenshots. Commit: `feat: show text-only audits as an audit procedure`.
+- 2026-11-20: Hardened the importer after the final review: the datastream must be UTF-8 before the DOCTYPE/ENTITY search; the quote scanner treats case statements, comments and heredocs inside `$( )`, and PowerShell here-strings, as unchecked text; automated controls with no linked rule get `no_check` rather than `openscap` (section 5.5); an OCIL `----` line fails the import; rule titles keep the text of child elements; `import_cis_cac.py --help` works without `--benchmark`; section 5.4 updated to the `instructions` language. Both releases regenerated. Commit: `fix: harden the CIS importer after review`.

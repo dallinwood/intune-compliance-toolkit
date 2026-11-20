@@ -80,9 +80,13 @@ def display_gate_problem(quoting: str, value: str | int) -> str | None:
 COMMENT = "comment"
 HEREDOC_BODY = "heredoc body"
 COMMAND_SUBSTITUTION = "command substitution in double quotes"
+CASE_STATEMENT = "case statement"
+HERE_STRING = "PowerShell here-string"
 # Text the scan does not model, so a quoted placeholder there is always an error.
-UNMODELLED_STATES = (COMMENT, HEREDOC_BODY, COMMAND_SUBSTITUTION)
+UNMODELLED_STATES = (COMMENT, HEREDOC_BODY, COMMAND_SUBSTITUTION, CASE_STATEMENT, HERE_STRING)
 WORD_BOUNDARY_CHARACTERS = " \t\r\n;&|()"
+# `case` and `esac` as whole shell words. The patterns of a case statement end in an unmatched `)`.
+CASE_KEYWORD_PATTERN = re.compile(r"(?<![^ \t\r\n;&|()])(case|esac)(?![^ \t\r\n;&|()])")
 HEREDOC_WORD_END_CHARACTERS = " \t\r\n;&|()<>"
 
 
@@ -96,12 +100,24 @@ class QuoteScan:
 
 
 def find_substitution_end(text: str, index: int) -> int:
-    """Index of the `)` closing a `$(` whose contents start at index, or len(text) when it never closes."""
+    """Index of the `)` closing a `$(` whose contents start at index, or len(text) when it never closes.
+
+    Also len(text) when the contents hold a comment, heredoc or case statement, whose
+    text or patterns can carry a `)` that this count cannot attribute.
+    """
     depth = 1
+    contents_start = index
     while index < len(text):
         character = text[index]
+        starts_word = index == contents_start or text[index - 1] in WORD_BOUNDARY_CHARACTERS
         if character == "\\":
             index += 1
+        elif (character == "#" and starts_word) or CASE_KEYWORD_PATTERN.match(text, index):
+            return len(text)
+        elif text.startswith("<<<", index):
+            index += 2
+        elif text.startswith("<<", index):
+            return len(text)
         elif character in "'`":
             closing = text.find(character, index + 1)
             index = len(text) if closing == -1 else closing
@@ -128,6 +144,29 @@ def find_double_quote_end(text: str, index: int) -> int:
         elif text.startswith("$(", index):
             index = find_substitution_end(text, index + 2)
         index += 1
+    return len(text)
+
+
+def find_case_statement_end(text: str, index: int) -> int:
+    """Index just past the `esac` closing the `case` at index, or len(text) when it never closes."""
+    depth = 0
+    for keyword in CASE_KEYWORD_PATTERN.finditer(text, index):
+        depth += 1 if keyword.group(1) == "case" else -1
+        if depth == 0:
+            return keyword.end()
+    return len(text)
+
+
+def find_here_string_end(text: str, index: int, closing_quotes: str) -> int:
+    """Index just past the closing quote and `@` of a PowerShell here-string whose body starts at index, or len(text).
+
+    Only a closing quote and `@` at the very start of a line count, so the body is never cut short.
+    """
+    line_start = text.find("\n", index) + 1
+    while 0 < line_start < len(text):
+        if text[line_start] in closing_quotes and text.startswith("@", line_start + 1):
+            return line_start + 2
+        line_start = text.find("\n", line_start) + 1
     return len(text)
 
 
@@ -217,6 +256,15 @@ def scan_quotes(text: str, dialect: QuoteDialect) -> QuoteScan:
             comment_end = text.find("\n", index)
             next_index = len(text) if comment_end == -1 else comment_end
             mark(index, next_index, COMMENT)
+        elif is_bash and CASE_KEYWORD_PATTERN.match(text, index):
+            next_index = find_case_statement_end(text, index)
+            mark(index, next_index, CASE_STATEMENT)
+        elif not is_bash and character == "@" and text[index + 1 : index + 2] in tuple(dialect.double_quotes):
+            next_index = find_here_string_end(text, index + 2, dialect.double_quotes)
+            mark(index, next_index, HERE_STRING)
+        elif not is_bash and character == "@" and text[index + 1 : index + 2] in tuple(dialect.single_quotes):
+            next_index = find_here_string_end(text, index + 2, dialect.single_quotes)
+            mark(index, next_index, HERE_STRING)
         elif not is_bash and text.startswith("<#", index):
             comment_end = text.find("#>", index + 2)
             next_index = len(text) if comment_end == -1 else comment_end + 2

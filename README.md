@@ -376,10 +376,21 @@ Requires Python 3.10 or newer.
    running.
 6. Commit the result.
 
-To add a benchmark for another product, add one `BenchmarkSpec` to `BENCHMARKS`
-in `tools/cac_benchmarks.py` (source name, display name, ComplianceAsCode
-product, controls file path, the profile for each CIS level, target, version
-and any helper control ids), then import it with the command above.
+To add a benchmark for another product:
+
+1. Add one `BenchmarkSpec` to `BENCHMARKS` in `tools/cac_benchmarks.py` (source
+   name, display name, ComplianceAsCode product, controls file path, the profile
+   for each CIS level, target, version and any helper control ids).
+2. Import it with the command above.
+3. Add its labels to `baselines/_vocabulary.json`: a `sources` entry for the
+   source name and a `versions` entry for its `Linux <version>` platform, or the
+   web UI shows the raw ids.
+4. Nothing to add for the committed-library test or `.gitattributes`:
+   `tests/test_committed_library.py` registers every importer in
+   `import_cis_cac.IMPORTERS`, and `.gitattributes` already covers
+   `sources/cis_*`.
+5. Update the library-size constants in the e2e specs (`webui/e2e/`, e.g.
+   `3,177 of 3,177 rules`) to the new total.
 
 ## Writing overlays
 

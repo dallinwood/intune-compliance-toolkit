@@ -39,6 +39,57 @@ def test_rejects_doctype_and_entity():
             Datastream(declaration + b"<root/>")
 
 
+def test_accepts_the_utf8_fixture():
+    Datastream((FIXTURE_DIRECTORY / "ssg-fixture-ds.xml").read_bytes())
+
+
+@pytest.mark.parametrize("encoding", ["utf-16", "utf-16-le", "utf-16-be", "utf-32"])
+def test_rejects_a_document_that_is_not_utf8(encoding):
+    document = f'<?xml version="1.0" encoding="{encoding.upper()}"?><!DOCTYPE r [<!ENTITY a "xyz">]><r>&a;</r>'
+    with pytest.raises(UnsupportedUpstreamData, match="UTF-8"):
+        Datastream(document.encode(encoding))
+
+
+def test_rejects_a_non_utf8_encoding_declaration():
+    with pytest.raises(UnsupportedUpstreamData, match="ISO-8859-1"):
+        Datastream(b'<?xml version="1.0" encoding="ISO-8859-1"?><r/>')
+
+
+def test_rejects_bytes_that_do_not_decode_as_utf8():
+    with pytest.raises(UnsupportedUpstreamData, match="UTF-8"):
+        Datastream(b"<r>\xff</r>")
+
+
+def test_rule_title_keeps_the_text_of_child_elements():
+    datastream = Datastream(
+        b"""<ds:data-stream-collection
+            xmlns:ds="http://scap.nist.gov/schema/scap/source/1.2"
+            xmlns:html="http://www.w3.org/1999/xhtml"
+            xmlns:xccdf-1.2="http://checklists.nist.gov/xccdf/1.2">
+          <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_generated">
+            <xccdf-1.2:title>Set <html:code>minlen</html:code> to the minimum</xccdf-1.2:title>
+            <xccdf-1.2:description>Text.</xccdf-1.2:description>
+          </xccdf-1.2:Rule>
+        </ds:data-stream-collection>"""
+    )
+    assert datastream.rule("generated").title == "Set minlen to the minimum"
+
+
+def test_rule_title_with_a_variable_fails():
+    datastream = Datastream(
+        b"""<ds:data-stream-collection
+            xmlns:ds="http://scap.nist.gov/schema/scap/source/1.2"
+            xmlns:xccdf-1.2="http://checklists.nist.gov/xccdf/1.2">
+          <xccdf-1.2:Rule id="xccdf_org.ssgproject.content_rule_generated">
+            <xccdf-1.2:title>Set <xccdf-1.2:sub idref="xccdf_org.ssgproject.content_value_v"/></xccdf-1.2:title>
+            <xccdf-1.2:description>Text.</xccdf-1.2:description>
+          </xccdf-1.2:Rule>
+        </ds:data-stream-collection>"""
+    )
+    with pytest.raises(UnsupportedUpstreamData, match="title"):
+        datastream.rule("generated")
+
+
 def test_fixture_covers_every_rule_in_the_control_fixture(datastream):
     controls = yaml.safe_load((FIXTURE_DIRECTORY / "controls.yml").read_text(encoding="utf-8"))
     rule_ids = {

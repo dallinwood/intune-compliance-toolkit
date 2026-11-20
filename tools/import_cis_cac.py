@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 if __name__ == "__main__":
@@ -16,7 +17,7 @@ from tools.cac_normalize import normalize_benchmark
 from tools.github_fetch import default_opener
 from tools.library_output import SCHEMA_VERSION, index_entry
 from tools.json_output import write_json
-from tools.release_import import SourceImporter, run_cli
+from tools.release_import import SourceImporter, build_argument_parser, run_cli
 from tools.source_lock import SourceLock
 
 
@@ -59,9 +60,20 @@ IMPORTERS: dict[str, SourceImporter] = {name: build_importer(spec) for name, spe
 
 def main(argv: list[str] | None = None) -> int:
     benchmark_parser = argparse.ArgumentParser(add_help=False)
-    benchmark_parser.add_argument("--benchmark", required=True, choices=sorted(IMPORTERS))
+    benchmark_parser.add_argument("--benchmark", choices=sorted(IMPORTERS))
     benchmark_arguments, remaining_arguments = benchmark_parser.parse_known_args(argv)
+    if benchmark_arguments.benchmark is None:
+        # Exits: with --help it prints every option, otherwise it reports the missing --benchmark.
+        usage_parser().parse_args(argv)
     return run_cli(IMPORTERS[benchmark_arguments.benchmark], remaining_arguments)
+
+
+def usage_parser() -> argparse.ArgumentParser:
+    any_benchmark = replace(next(iter(IMPORTERS.values())), name="<benchmark>", display_name="a CIS benchmark")
+    parser = build_argument_parser(any_benchmark)
+    parser.description = __doc__
+    parser.add_argument("--benchmark", required=True, choices=sorted(IMPORTERS), help="the benchmark to import")
+    return parser
 
 
 if __name__ == "__main__":

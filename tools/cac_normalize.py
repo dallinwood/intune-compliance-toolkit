@@ -77,7 +77,7 @@ def _assemble_rule_unchecked(
             "upstream_url": f"{REPOSITORY_URL}/blob/{lock.commit_sha}/{spec.controls_path}",
             "license": dict(LICENSE),
         },
-        "assessment": assessment(control.status, where),
+        "assessment": assessment(control.status, where, links_rules=bool(control.rule_ids)),
         "architecture": None,
         "applicability": [
             {
@@ -91,7 +91,7 @@ def _assemble_rule_unchecked(
         ],
         "tags": [],
         "references": _references(control, benchmark_version, linked_rules),
-        "check": _check(spec, linked_rules),
+        "check": _check(spec, linked_rules, where),
         "odvs": _odvs(control, linked_rules, datastream, spec, where),
         "remediation": _remediation(spec, linked_rules),
     }
@@ -115,7 +115,7 @@ def _discussion(control: Control, linked_rules: list[DatastreamRule]) -> str:
     return PARAGRAPH_SEPARATOR.join(sections)
 
 
-def _check(spec: BenchmarkSpec, linked_rules: list[DatastreamRule]) -> dict | None:
+def _check(spec: BenchmarkSpec, linked_rules: list[DatastreamRule], where: str) -> dict | None:
     if not any(linked_rule.ocil_text for linked_rule in linked_rules):
         return None
     return {
@@ -124,16 +124,23 @@ def _check(spec: BenchmarkSpec, linked_rules: list[DatastreamRule]) -> dict | No
             "default": {
                 "shell": None,
                 "result": None,
-                "additional_info": PARAGRAPH_SEPARATOR.join(_audit_text(linked_rule) for linked_rule in linked_rules),
+                "additional_info": PARAGRAPH_SEPARATOR.join(
+                    _audit_text(linked_rule, where) for linked_rule in linked_rules
+                ),
             },
             "by_version": {},
         }
     }
 
 
-def _audit_text(linked_rule: DatastreamRule) -> str:
+def _audit_text(linked_rule: DatastreamRule, where: str) -> str:
     lines = [f"== {linked_rule.title}"]
     if linked_rule.ocil_text:
+        if any(line.strip() == AUDIT_BLOCK_FENCE for line in linked_rule.ocil_text.splitlines()):
+            raise UnsupportedUpstreamData(
+                f"{where}: audit text of rule {linked_rule.rule_id} has a {AUDIT_BLOCK_FENCE} line, "
+                "which would end the block it is shown in"
+            )
         lines += [AUDIT_BLOCK_FENCE, linked_rule.ocil_text, AUDIT_BLOCK_FENCE]
     else:
         lines.append(NO_AUDIT_TEXT)

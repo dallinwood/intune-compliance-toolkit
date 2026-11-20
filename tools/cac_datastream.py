@@ -1,5 +1,6 @@
 """Read rules, values and audit text from a ComplianceAsCode SCAP datastream."""
 
+import codecs
 import re
 import xml.etree.ElementTree as ElementTree
 from dataclasses import dataclass
@@ -23,6 +24,10 @@ VALUE_DATATYPES = ("number", "string")
 ESCAPED_PLACEHOLDER_PATTERN = re.compile(r'<sub idref="([a-z][a-z0-9_]*)"\s*/>')
 UNESCAPED_DOUBLE_QUOTE_PATTERN = re.compile(r'(?<!\\)"')
 NEWLINE = "\n"
+UTF8_ENCODING_NAMES = ("utf-8", "utf8")
+# A UTF-16 or UTF-32 document can carry a DTD that a search of its bytes for ASCII text would miss.
+NON_UTF8_BYTE_ORDER_MARKS = (codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE, codecs.BOM_UTF32_LE, codecs.BOM_UTF32_BE)
+XML_DECLARATION_ENCODING_PATTERN = re.compile(r"""\A\ufeff?<\?xml[^>]*?\sencoding\s*=\s*["']([^"']*)["']""")
 
 
 @dataclass(frozen=True)
@@ -133,9 +138,27 @@ def classify_fix_quoting(rule_id: str, fix_text: str, placeholder_spans: list[tu
     return quoting_by_name
 
 
+def decode_utf8_document(xml_bytes: bytes) -> str:
+    """The document's text, provided the XML parser will read it as UTF-8 too, so a search of the text sees every declaration."""
+    if xml_bytes.startswith(NON_UTF8_BYTE_ORDER_MARKS):
+        raise UnsupportedUpstreamData("datastream has a UTF-16 or UTF-32 byte order mark; only UTF-8 is supported")
+    try:
+        xml_text = xml_bytes.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise UnsupportedUpstreamData(f"datastream is not UTF-8: {error}") from error
+    # XML never allows NUL, and ASCII text in UTF-16 or UTF-32 without a byte order mark is full of it.
+    if "\0" in xml_text:
+        raise UnsupportedUpstreamData("datastream contains NUL characters, so it is not UTF-8")
+    declaration = XML_DECLARATION_ENCODING_PATTERN.match(xml_text)
+    if declaration is not None and declaration.group(1).lower() not in UTF8_ENCODING_NAMES:
+        raise UnsupportedUpstreamData(f"datastream declares encoding {declaration.group(1)!r}; only UTF-8 is supported")
+    return xml_text
+
+
 class Datastream:
     def __init__(self, xml_bytes: bytes) -> None:
-        if b"<!DOCTYPE" in xml_bytes or b"<!ENTITY" in xml_bytes:
+        xml_text = decode_utf8_document(xml_bytes)
+        if "<!DOCTYPE" in xml_text or "<!ENTITY" in xml_text:
             raise UnsupportedUpstreamData("datastream declares a DOCTYPE or ENTITY, which is not allowed")
         try:
             root = ElementTree.fromstring(xml_bytes)
@@ -180,7 +203,7 @@ class Datastream:
         )
         return DatastreamRule(
             rule_id=rule_id,
-            title=(title_element.text or "").strip(),
+            title=self.read_title(rule_id, title_element),
             description_markdown=description_markdown,
             rationale_markdown=rationale_markdown,
             cce=self.read_cce(rule_id, rule_element),
@@ -193,6 +216,12 @@ class Datastream:
             ocil_text=ocil_text,
             variables=variables,
         )
+
+    def read_title(self, rule_id: str, title_element: ElementTree.Element) -> str:
+        for child in title_element.iter():
+            if child is not title_element and not child.tag.startswith(f"{{{XHTML_NAMESPACE}}}"):
+                raise UnsupportedUpstreamData(f"{rule_id}: unsupported element {child.tag} in the title")
+        return "".join(title_element.itertext()).strip()
 
     def read_cce(self, rule_id: str, rule_element: ElementTree.Element) -> str | None:
         cce_ids = [

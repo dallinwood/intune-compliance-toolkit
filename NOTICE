@@ -138,7 +138,7 @@ modified by this project. It remains licensed under the BSD 3-Clause licence
 and is provided as-is, with the disclaimer of warranties and limitation of
 liability in that licence.
 
-baselines/_overlays/scripts/*.ps1(referenced by baselines/_overlays/rules/asd-blueprint-*.json)
+baselines/_overlays/scripts/*.ps1 (referenced by baselines/_overlays/rules/asd-blueprint-*.json)
 are PowerShell scripts from ASD's Blueprint for Secure Cloud:
 
   Project:  https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud

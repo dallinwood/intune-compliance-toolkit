@@ -10,12 +10,13 @@ CIS_ID_PATTERN = re.compile(r"^[0-9]+(?:\.[0-9]+)*(?![\s\S])")
 KNOWN_CONTROL_KEYS = {"id", "title", "levels", "status", "rules", "related_rules", "notes"}
 VARIABLE_SETTING_MARKER = "="
 OPENSCAP_ASSESSMENT = {"status": "manual", "manual_reason": "openscap"}
+NO_CHECK_ASSESSMENT = {"status": "manual", "manual_reason": "no_check"}
 ASSESSMENT_BY_STATUS = {
     "automated": OPENSCAP_ASSESSMENT,
     "partial": OPENSCAP_ASSESSMENT,
     "supported": OPENSCAP_ASSESSMENT,
     "manual": {"status": "manual", "manual_reason": "manual"},
-    "pending": {"status": "manual", "manual_reason": "no_check"},
+    "pending": NO_CHECK_ASSESSMENT,
     "not applicable": {"status": "manual", "manual_reason": "n_a"},
     "inherently met": {"status": "manual", "manual_reason": "inherent"},
 }
@@ -77,13 +78,13 @@ def _read_control(raw_control: dict, control_id: str, spec: BenchmarkSpec) -> Co
     levels = _string_list(raw_control.get("levels"), "levels", where)
     if not levels or any(level not in LEVELS for level in levels):
         raise UnsupportedUpstreamData(f"{where}: unsupported levels {levels!r}")
-    status = raw_control.get("status")
-    assessment(status, where)
     rule_ids = tuple(
         rule_id
         for rule_id in _string_list(raw_control.get("rules"), "rules", where)
         if VARIABLE_SETTING_MARKER not in rule_id
     )
+    status = raw_control.get("status")
+    assessment(status, where, links_rules=bool(rule_ids))
     related_rule_ids = tuple(_string_list(raw_control.get("related_rules"), "related_rules", where))
     notes = raw_control.get("notes")
     if notes is not None and not isinstance(notes, str):
@@ -119,7 +120,11 @@ def benchmark_name(level: str) -> str:
     return f"cis_{level}"
 
 
-def assessment(status: str, where: str) -> dict:
+def assessment(status: str, where: str, links_rules: bool) -> dict:
     if not isinstance(status, str) or status not in ASSESSMENT_BY_STATUS:
         raise UnsupportedUpstreamData(f"{where}: unsupported status {status!r}")
-    return dict(ASSESSMENT_BY_STATUS[status])
+    mapped_assessment = ASSESSMENT_BY_STATUS[status]
+    # OpenSCAP can only check what a linked rule describes, so an automated status with no rule has nothing to check.
+    if mapped_assessment is OPENSCAP_ASSESSMENT and not links_rules:
+        return dict(NO_CHECK_ASSESSMENT)
+    return dict(mapped_assessment)

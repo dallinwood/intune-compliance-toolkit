@@ -94,12 +94,28 @@ def test_levels_with_inheritance():
     ],
 )
 def test_assessment_mapping(status, expected):
-    assert assessment(status, "control 1.1") == expected
+    assert assessment(status, "control 1.1", links_rules=True) == expected
+
+
+@pytest.mark.parametrize(
+    "status, expected_reason",
+    [
+        ("automated", "no_check"),
+        ("partial", "no_check"),
+        ("supported", "no_check"),
+        ("manual", "manual"),
+        ("pending", "no_check"),
+        ("not applicable", "n_a"),
+        ("inherently met", "inherent"),
+    ],
+)
+def test_assessment_without_linked_rules_never_claims_openscap(status, expected_reason):
+    assert assessment(status, "control 1.1", links_rules=False) == {"status": "manual", "manual_reason": expected_reason}
 
 
 def test_assessment_rejects_unknown_status():
     with pytest.raises(UnsupportedUpstreamData, match="bogus"):
-        assessment("bogus", "control 1.1")
+        assessment("bogus", "control 1.1", links_rules=True)
 
 
 def test_benchmark_name():

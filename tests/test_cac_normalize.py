@@ -149,6 +149,31 @@ def test_ruleless_controls(upstream_dir):
     assert rules["4.1"]["discussion"] == "ComplianceAsCode links no rule to this recommendation."
 
 
+def test_automated_control_without_linked_rules_has_no_check_reason(upstream_dir):
+    controls_path = upstream_dir / FIXTURE_SPEC.controls_path
+    added_control = (
+        "\n    - id: '6.1'\n      title: Ensure ypserv is absent (Automated)\n"
+        "      levels: [l1_server]\n      status: automated\n      rules:\n          - var_unused=1\n"
+    )
+    controls_path.write_text(controls_path.read_text(encoding="utf-8") + added_control, encoding="utf-8")
+    rule = rules_by_cis_id(upstream_dir)["6.1"]
+    assert rule["assessment"] == {"status": "manual", "manual_reason": "no_check"}
+    assert rule["check"] is None
+    assert rule["remediation"] is None
+
+
+def test_audit_fence_line_in_audit_text_fails(upstream_dir):
+    edit_datastream(upstream_dir, "Verify minlen with:\n", "Verify minlen with:\n  ----  \n")
+    with pytest.raises(UnsupportedUpstreamData, match="1.2.1.*----"):
+        normalize_benchmark(upstream_dir, FIXTURE_SPEC, LOCK)
+
+
+def test_longer_dash_line_in_audit_text_is_kept(upstream_dir):
+    edit_datastream(upstream_dir, "Verify minlen with:\n", "Verify minlen with:\n-----\n")
+    rule = rules_by_cis_id(upstream_dir)["1.2.1"]
+    assert "\n-----\n" in rule["check"]["Linux"]["default"]["additional_info"]
+
+
 def test_cis_reference_mismatch_fails(upstream_dir):
     path = upstream_dir / "release" / "ssg-fixture-ds.xml"
     text = path.read_text(encoding="utf-8")

@@ -59,3 +59,13 @@ def test_main_requires_known_benchmark(tmp_path):
         import_cis_cac.main(["--benchmark", "cis_unknown", "--offline"])
     with pytest.raises(SystemExit):
         import_cis_cac.main(["--offline"])
+
+
+def test_help_without_benchmark_lists_every_option(capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        import_cis_cac.main(["--help"])
+    assert exit_info.value.code == 0
+    usage = capsys.readouterr().out
+    for option in ("--benchmark", "--tag", "--offline", "--release", "--sources-dir", "--baselines-dir"):
+        assert option in usage
+    assert "cis_rhel9" in usage
