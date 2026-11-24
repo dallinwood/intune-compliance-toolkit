@@ -1,5 +1,28 @@
 ---
 
+- name: "2.2.1 | PATCH | Ensure Access Credential Manager as a trusted caller is set to No One"
+  when: win22cis_rule_2_2_1
+  tags:
+    - level1-domaincontroller
+    - level1-memberserver
+    - rule_2.2.1
+    - patch
+    - userrights
+    - NIST800-171_3.1.1
+    - NIST800-171_3.1.5
+    - NIST800-171_3.3.8
+    - NIST800-171_3.3.9
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-6
+    - NIST800-53R5_AC-6_1
+    - NIST800-53R5_AC-6_7
+    - NIST800-53R5_AU-9_4
+  ansible.windows.win_user_right:
+    name: SeTrustedCredManAccessPrivilege
+    users: []
+    action: set
+
 - name: "2.2.2 | PATCH | Ensure Access this computer from the network is set to Administrators, Authenticated Users, & ENTERPRISE DOMAIN CONTROLLERS DC only | Domain Controller"
   when:
     - win22cis_rule_2_2_2
@@ -26,3 +49,90 @@
       - Authenticated Users
       - ENTERPRISE DOMAIN CONTROLLERS
     action: set
+
+- name: "2.2.8 | PATCH |  Ensure Allow log on locally is set to Administrators (MS only)"
+  when:
+    - win22cis_rule_2_2_8
+    - not prelim_win22cis_is_domain_controller
+  tags:
+    - level1-memberserver
+    - rule_2.2.8
+    - patch
+    - userrights
+    - NIST800-171_3.1.1
+    - NIST800-171_3.1.5
+    - NIST800-171_3.3.8
+    - NIST800-171_3.3.9
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-6
+    - NIST800-53R5_AC-6_1
+    - NIST800-53R5_AC-6_7
+    - NIST800-53R5_AU-9_4
+  ansible.windows.win_user_right:
+    name: SeInteractiveLogonRight
+    users:
+      - Administrators
+    action: set
+
+- name: "2.2.19 | PATCH | Ensure Create symbolic links is set to Administrators NT VIRTUAL MACHINE-Virtual Machines MS only | Member Server"
+  when:
+    - win22cis_rule_2_2_19
+    - not prelim_win22cis_is_domain_controller
+  tags:
+    - level1-memberserver
+    - rule_2.2.19
+    - patch
+    - userrights
+    - NIST800-171_3.1.1
+    - NIST800-171_3.1.5
+    - NIST800-171_3.3.8
+    - NIST800-171_3.3.9
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-6
+    - NIST800-53R5_AC-6_1
+    - NIST800-53R5_AC-6_7
+    - NIST800-53R5_AU-9_4
+  block:
+    - name: "2.2.19 | PATCH | Ensure Create symbolic links is set to Administrators NT VIRTUAL MACHINE-Virtual Machines  |  Without Hyper-v | Member Server"
+      when: not win22cis_hyperv_installed
+      ansible.windows.win_user_right:
+        name: SeCreateSymbolicLinkPrivilege
+        users:
+          - Administrators
+        action: set
+
+    - name: "2.2.19 | PATCH | Ensure Create symbolic links is set to Administrators NT VIRTUAL MACHINE-Virtual Machines MS only | With Hyper-v | Member Server"
+      when: win22cis_hyperv_installed
+      ansible.windows.win_user_right:
+        name: SeCreateSymbolicLinkPrivilege
+        users:
+          - Administrators
+          - NT VIRTUAL MACHINE\Virtual Machines
+        action: set
+
+- name: "2.2.21 | PATCH | Ensure Deny access to this computer from the network to include Guests DC only | Domain Controller"
+  when:
+    - win22cis_rule_2_2_21
+    - prelim_win22cis_is_domain_controller
+  tags:
+    - level1-domaincontroller
+    - rule_2.2.21
+    - patch
+    - userrights
+    - NIST800-171_3.1.1
+    - NIST800-171_3.1.5
+    - NIST800-171_3.3.8
+    - NIST800-171_3.3.9
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-6
+    - NIST800-53R5_AC-6_1
+    - NIST800-53R5_AC-6_7
+    - NIST800-53R5_AU-9_4
+  ansible.windows.win_user_right:
+    name: SeDenyNetworkLogonRight
+    users:
+      - Guests
+    action: add

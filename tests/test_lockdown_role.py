@@ -122,7 +122,8 @@ class TestTaskNames:
 class TestLoadRoleTasks:
     def test_tasks_follow_the_order_the_role_runs_them(self, role_tasks):
         first_seen = list(dict.fromkeys(task.rule_id for task in role_tasks))
-        assert first_seen[:5] == ["1.1.1", "1.2.2", "1.2.1", "2.2.2", "2.3.7.5"]
+        assert first_seen[:5] == ["1.1.1", "1.2.2", "1.2.1", "2.2.1", "2.2.2"]
+        assert first_seen.index("2.3.1.1") < first_seen.index("2.3.7.5")
         assert first_seen.index("5.1") < first_seen.index("17.1.1") < first_seen.index("18.4.2")
         assert first_seen[-1] == "19.5.1.1"
 
@@ -249,6 +250,8 @@ class TestOdvs:
             "cached_logons_count",
             "idle_rdp_session_disconnect_time",
             "domain_firewall_log_size",
+            "admin_username",
+            "hyperv_installed",
         ]
 
     def test_description_rule_and_default(self, odvs):
@@ -277,14 +280,16 @@ class TestOdvs:
         assert (cached.min, cached.max) == (None, 4)
         assert (odvs["account_lockout_duration"].min, odvs["account_lockout_duration"].max) == (15, None)
 
-    def test_an_exact_value_check_is_a_degenerate_range(self, odvs):
-        assert (odvs["max_passwords_saved"].min, odvs["max_passwords_saved"].max) == (24, 24)
+    def test_an_exact_value_check_is_not_a_range(self, odvs):
+        # PATCH applies only when the value == 24, and the AUDIT warning (> 24 or <= 23) leaves
+        # exactly 24 valid: neither is a range, so the ODV has no min and max.
+        assert (odvs["max_passwords_saved"].min, odvs["max_passwords_saved"].max) == (None, None)
 
     def test_a_variable_no_task_checks_has_no_range(self, odvs):
         firewall = odvs["domain_firewall_log_size"]
         assert (firewall.min, firewall.max) == (None, None)
 
-    def test_audit_warning_conditions_do_not_set_the_range(self, odvs):
+    def test_audit_warning_conditions_agree_with_the_patch_range_here(self, odvs):
         lockout = odvs["bad_login_lockout_count"]
         assert (lockout.min, lockout.max) == (1, 5)
 
@@ -517,8 +522,11 @@ class TestWhichRulesAreRegistryOnly:
             tasks_by_rule["18.4.2"][0],
             when=["win22cis_rule_18_4_2", "prelim_win22cis_is_domain_controller"],
         )
-        assert translate_registry([gated], odvs, PREFIX) is None
-        assert registry_blocker([gated], odvs, PREFIX) == "when: prelim_win22cis_is_domain_controller"
+        no_gates_tolerated = frozenset()
+        assert translate_registry([gated], odvs, PREFIX, no_gates_tolerated) is None
+        assert registry_blocker([gated], odvs, PREFIX, no_gates_tolerated) == (
+            "when: prelim_win22cis_is_domain_controller"
+        )
 
     def test_a_listed_condition_can_be_tolerated(self, tasks_by_rule, odvs):
         gated = replace(
@@ -548,7 +556,7 @@ class TestWhichRulesAreRegistryOnly:
 
     def test_a_flag_variable_is_not_a_range_check(self, odvs):
         task = hand_built_registry_task({"data": 1, "type": "dword"}, when=["win22cis_rule_9_9_9", "win22cis_ngws"])
-        assert translate_one(task, odvs) is None
+        assert translate_registry([task], odvs, PREFIX, frozenset()) is None
 
     def test_a_unknown_variable_in_a_condition_raises(self, odvs):
         task = hand_built_registry_task(

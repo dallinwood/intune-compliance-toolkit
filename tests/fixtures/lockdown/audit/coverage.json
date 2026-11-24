@@ -1,0 +1,125 @@
+[
+  {
+    "rule_id": "1.1.1",
+    "title": "Ensure 'Enforce password history' is set to '24 or more password(s)'",
+    "emitted": true,
+    "gate": "win22cis_level_1",
+    "file": "section_1/section_1.1.x/cis_1.1.1.yml",
+    "assertions": 1,
+    "resources": [
+      "command"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "2.2.1",
+    "title": "Ensure 'Access Credential Manager as a trusted caller' is set to 'No One'",
+    "emitted": true,
+    "gate": "win22cis_level_1",
+    "file": "section_2/section_2.2/cis_2.2.1.yml",
+    "assertions": 1,
+    "resources": [
+      "file"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "2.2.2",
+    "title": "Ensure 'Access this computer from the network' is set to 'Administrators, Authenticated Users, ENTERPRISE DOMAIN CONTROLLERS' (DC only)",
+    "emitted": true,
+    "gate": "and (eq .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_1",
+    "file": "section_2/section_2.2/cis_2.2.2.yml",
+    "assertions": 1,
+    "resources": [
+      "file"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "2.2.34",
+    "title": "Ensure 'Increase scheduling priority' is set to 'Administrators, Window Manager\\Window Manager Group'",
+    "emitted": false,
+    "reason": "NO_ASSERTABLE_STATE"
+  },
+  {
+    "rule_id": "2.2.44",
+    "title": "Ensure 'Profile system performance' is set to 'Administrators, NT SERVICE\\WdiServiceHost'",
+    "emitted": true,
+    "gate": "win22cis_level_1",
+    "file": "section_2/section_2.2/cis_2.2.44.yml",
+    "assertions": 1,
+    "resources": [
+      "file"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "2.3.1.1",
+    "title": "Ensure 'Accounts: Guest account status' is set to 'Disabled' (MS only)",
+    "emitted": true,
+    "gate": "and (ne .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_1",
+    "file": "section_2/section_2.3.1/cis_2.3.1.1.yml",
+    "assertions": 1,
+    "resources": [
+      "file"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "2.3.9.5",
+    "title": "Ensure 'Microsoft network server: Server SPN target name validation level' is set to 'Accept if provided by client' or higher (MS only)",
+    "emitted": true,
+    "gate": "and (ne .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_1",
+    "file": "section_2/section_2.3.9/cis_2.3.9.5.yml",
+    "assertions": 1,
+    "resources": [
+      "registry"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "5.1",
+    "title": "Ensure 'Print Spooler (Spooler)' is set to 'Disabled' (DC only)",
+    "emitted": true,
+    "gate": "and (eq .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_1",
+    "file": "section_5/section_5.x/cis_5.1.yml",
+    "assertions": 1,
+    "resources": [
+      "file"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "17.1.1",
+    "title": "Ensure 'Audit Credential Validation' is set to 'Success and Failure'",
+    "emitted": true,
+    "gate": "win22cis_level_1",
+    "file": "section_17/section_17.1/cis_17.1.1.yml",
+    "assertions": 1,
+    "resources": [
+      "file"
+    ],
+    "hand_finish": false,
+    "reason": null
+  },
+  {
+    "rule_id": "18.4.2",
+    "title": "Ensure 'Configure SMB v1 client driver' is set to 'Enabled: Disable driver (recommended)'",
+    "emitted": true,
+    "gate": "win22cis_level_1",
+    "file": "section_18/section_18.4/cis_18.4.2.yml",
+    "assertions": 1,
+    "resources": [
+      "registry"
+    ],
+    "hand_finish": false,
+    "reason": null
+  }
+]

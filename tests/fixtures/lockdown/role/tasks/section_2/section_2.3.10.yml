@@ -1,5 +1,22 @@
 ---
 
+- name: "2.3.10.1 | PATCH | Ensure Network access Allow anonymous SID/Name translation is set to Disabled"
+  when: win22cis_rule_2_3_10_1
+  tags:
+    - level1-domaincontroller
+    - level1-memberserver
+    - rule_2.3.10.1
+    - patch
+    - securitypolicy
+    - NIST800-171_3.1.7
+    - NIST800-171_3.5.3
+    - NIST800-53R5_AC-6_10
+    - NIST800-53R5_IA-2_2
+  community.windows.win_security_policy:
+    section: System Access
+    key: LSAAnonymousNameLookup
+    value: 0
+
 - name: "2.3.10.6 | PATCH | Ensure Network access Named Pipes that can be accessed anonymously is configured (DC only) | Domain Controller"
   when:
     - win22cis_rule_2_3_10_6
