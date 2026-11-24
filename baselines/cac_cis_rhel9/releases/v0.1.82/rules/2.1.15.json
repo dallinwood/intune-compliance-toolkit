@@ -1,0 +1,108 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Uninstall telnet-server Package\n----\nRun the following command to determine if the telnet-server package is installed: $ rpm -q telnet-server\n      Is it the case that the telnet-server package is installed?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Uninstall telnet-server Package\n\nThe `telnet-server` package can be removed with the following command:\n\n```\n$ sudo dnf remove telnet-server\n```\n\n**Rationale:**\n\nIt is detrimental for operating systems to provide, or install by default,\nfunctionality exceeding requirements or mission objectives. These\nunnecessary capabilities are often overlooked and therefore may remain\ninsecure. They increase the risk to the platform by providing additional\nattack vectors.\n\n\nThe telnet service provides an unencrypted remote access service which does\nnot provide for the confidentiality and integrity of user passwords or the\nremote session. If a privileged user were to login using this service, the\nprivileged user password could be compromised.\n\n\nRemoving the `telnet-server` package decreases the risk of the\ntelnet service's accidental (or intentional) activation.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.2.1.15",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "2.1.15",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "package_telnet-server_removed": "CCE-84149-4"
+      },
+      "related_rules": [
+        "service_telnet_disabled"
+      ],
+      "rules": [
+        "package_telnet-server_removed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_telnet-server_removed`",
+          "language": "bash",
+          "name": "Uninstall telnet-server Package",
+          "shell": "# CAUTION: This remediation script will remove telnet-server\n# from the system, and may remove any packages\n# that depend on telnet-server. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\nif rpm -q --quiet \"telnet-server\" ; then\ndnf remove -y --noautoremove \"telnet-server\"\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.1.15",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure telnet server services are not in use (Automated)"
+}

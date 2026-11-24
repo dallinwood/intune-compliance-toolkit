@@ -1,0 +1,113 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\n$mismatchCount = 0\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $exportPath = Join-Path $workDirectory 'export.inf'\n    secedit /export /cfg $exportPath /areas SECURITYPOLICY | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /export failed' }\n    $exported = @{}\n    $section = ''\n    foreach ($line in Get-Content -LiteralPath $exportPath) {\n        if ($line -match '^\\[(.+)\\]\\s*$') { $section = $Matches[1] }\n        elseif ($line -match '^\\s*([^=]+?)\\s*=\\s*(.*?)\\s*$') { $exported[$section + '|' + $Matches[1]] = $Matches[2] }\n    }\n    $current = $exported['System Access|MinimumPasswordAge']\n    if ($current -ne [string]$ODV_minimum_password_age) {\n        Write-Output 'Mismatch: [System Access] MinimumPasswordAge'\n        $mismatchCount++\n    }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win22cis_level_1 }}\n  {{ if .Vars.win22cis_rule_1_1_3 }}\ncommand:\n  win22cis_1_1_3_minimumpasswordage:\n    title: \"1.1.3 | Ensure 'Minimum password age' is set to '1 or more day(s)' | MinimumPasswordAge\"\n    exec: |-\n      powershell -NoProfile -NonInteractive -Command \"$p = Join-Path '{{ .Vars.win22cis_snapshot_dir }}' 'SystemAccess.MinimumPasswordAge'; if (-not (Test-Path -LiteralPath $p)) { 'NONCOMPLIANT not_collected' } else { $r = (Get-Content -LiteralPath $p -Raw).Trim(); if ($r -notmatch '^[0-9]+$') { 'NONCOMPLIANT actual=' + $r } else { $v = [int]$r; if ($v -ge {{ .Vars.win22cis_minimum_password_age }}) { 'COMPLIANT' } else { 'NONCOMPLIANT actual=' + $v } } }\"\n    exit-status: 0\n    stdout:\n      - '/^COMPLIANT$/'\n    stderr:\n      have-len: 0\n    timeout: {{ .Vars.timeout_ms }}\n    skip: {{ if eq .Vars.win22cis_system_role \"standalone\" }}false{{ else }}true{{ end }}\n    meta:\n      skip_reason: \"domain scoped - on a domain joined host the Default Domain Policy sets this [System Access] value, so the role does not apply it\"\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 1.1.3\n      NIST800-53R5:\n        - IA-5(1)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_1/section_1.1.x.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_1/section_1.1.x/cis_1.1.3.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nThe role skips this on domain-joined hosts, where domain policy governs it.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2022.1.1.3",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "number",
+      "description": "win22cis_minimum_password_age is the policy setting that determines the number of days that you must use a password before you can change it. The range of values for this policy setting is between 1 and 999 days. (You may also set the value to 0 to allow immediate password changes.) The default value for this setting is 0 days. The recommended state for this setting is: 1 or more day(s)",
+      "name": "minimum_password_age",
+      "quoting": "unquoted",
+      "recommended": 1,
+      "validation": {
+        "min": 1
+      }
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "1.1.3"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $infLines = @(\n        '[Unicode]',\n        'Unicode=yes',\n        '[System Access]',\n        ('MinimumPasswordAge = ' + $ODV_minimum_password_age),\n        '[Version]',\n        'signature=\"$CHICAGO$\"',\n        'Revision=1'\n    )\n    $infPath = Join-Path $workDirectory 'policy.inf'\n    Set-Content -LiteralPath $infPath -Value $infLines -Encoding Unicode\n    secedit /configure /db (Join-Path $workDirectory 'policy.sdb') /cfg $infPath /areas SECURITYPOLICY | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /configure failed' }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"1.1.3 | PATCH | Ensure Minimum password age is set to 1 or more days\"\n  when:\n    - win22cis_rule_1_1_3\n    - not prelim_win22cis_account_policy_is_domain_scoped\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_1.1.3\n    - patch\n    - password\n    - NIST800-171_3.5.2\n    - NIST800-53R5_IA-5_1\n  block:\n    - name: \"1.1.3 | PATCH | Ensure Minimum password age is set to 1 or more days | Set Variable\"\n      when:\n        - win22cis_minimum_password_age >= 1\n        - win22cis_minimum_password_age < win22cis_maximum_password_age\n      community.windows.win_security_policy:\n        section: System Access\n        key: MinimumPasswordAge\n        value: \"{{ win22cis_minimum_password_age }}\"\n\n    - name: \"1.1.3 | AUDIT | Ensure Minimum password age is set to 1 or more days | Warning check for minimum password age\"\n      when:\n        - win22cis_minimum_password_age < 1 or\n          win22cis_minimum_password_age >= win22cis_maximum_password_age\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid age set for win22cis_maximum_password_age please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n          - \"Also verify your win22cis_minimum_password_age is less then the win22cis_maximum_password_age\"\n\n    - name: \"1.1.3 | AUDIT | Ensure Minimum password age is set to 1 or more days | Set warning count\"\n      when:\n        - win22cis_minimum_password_age < 1 or\n          win22cis_minimum_password_age >= win22cis_maximum_password_age\n      vars:\n        warn_control_id: '1.1.3'\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.1"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_1/section_1.1.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_1/section_1.1.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Minimum password age' is set to '1 or more day(s)'"
+}

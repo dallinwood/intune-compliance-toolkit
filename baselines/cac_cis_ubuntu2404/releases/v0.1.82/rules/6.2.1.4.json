@@ -1,0 +1,116 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Extend Audit Backlog Limit for the Audit Daemon\n----\nInspect the form of default GRUB 2 command line for the Linux operating system\nin /etc/default/grub. If it includes audit_backlog_limit=,\nthen the parameter will be configured for newly installed kernels.\nFirst check if the GRUB recovery is enabled:\n$ sudo grep 'GRUB_DISABLE_RECOVERY' /etc/default/grub\nIf this option is set to true, then check that a line is output by the following command:\n$ sudo grep 'GRUB_CMDLINE_LINUX_DEFAULT.*audit_backlog_limit=.*' /etc/default/grub\nIf the recovery is disabled, check the line with\n$ sudo grep 'GRUB_CMDLINE_LINUX.*audit_backlog_limit=.*' /etc/default/grub.Moreover, current Grub config file grub.cfg must be checked. The file can be found\neither in /boot/grub in case of legacy BIOS systems, or in /boot/grub in case of UEFI systems.\nIf they include audit_backlog_limit=, then the parameter\nis configured at boot time.\n$ sudo grep vmlinuz GRUB_CFG_FILE_PATH | grep -v 'audit_backlog_limit='\nFill in GRUB_CFG_FILE_PATH based on information above.\nThis command should not return any output.\n      Is it the case that audit backlog limit is not configured?\n----\nExpected values: var_audit_backlog_limit = $ODV_var_audit_backlog_limit\n\n== Extend Audit Backlog Limit for the Audit Daemon in zIPL\n----\nTo check that all boot entries extend the backlog limit;\nCheck that all boot entries extend the log events queue:\nsudo grep -L \"^options\\s+.*\\baudit_backlog_limit=8192\\b\" /boot/loader/entries/*.conf\nNo line should be returned, each line returned is a boot entry that does not extend the log events queue.\n      Is it the case that audit backlog limit is not configured?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Extend Audit Backlog Limit for the Audit Daemon\n\nTo improve the kernel capacity to queue all log events, even those which occurred\nprior to the audit daemon, add the argument `audit_backlog_limit=$ODV_var_audit_backlog_limit` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit_backlog_limit=$ODV_var_audit_backlog_limit` is added as a kernel command line\nargument to newly installed kernels, add `audit_backlog_limit=$ODV_var_audit_backlog_limit` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit_backlog_limit=$ODV_var_audit_backlog_limit ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# update-grub\n```\n\n**Rationale:**\n\naudit_backlog_limit sets the queue length for audit events awaiting transfer\nto the audit daemon. Until the audit daemon is up and running, all log messages\nare stored in this queue.  If the queue is overrun during boot process, the action\ndefined by audit failure flag is taken.\n\n## Extend Audit Backlog Limit for the Audit Daemon in zIPL\n\nTo improve the kernel capacity to queue all log events, even those which start prior to the audit daemon,\ncheck that all boot entries in `/boot/loader/entries/*.conf` have `audit_backlog_limit=8192`\nincluded in its options.\n\nTo ensure that new kernels and boot entries continue to extend the audit log events queue,\nadd `audit_backlog_limit=8192` to `/etc/kernel/cmdline`.\n\n**Rationale:**\n\naudit_backlog_limit sets the queue length for audit events awaiting transfer\nto the audit daemon. Until the audit daemon is up and running, all log messages\nare stored in this queue.  If the queue is overrun during boot process, the action\ndefined by audit failure flag is taken.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.6.2.1.4",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l2_server": 8192,
+        "cis_l2_workstation": 8192
+      },
+      "datatype": "number",
+      "description": "Audit backlog limit",
+      "name": "var_audit_backlog_limit",
+      "quoting": "single",
+      "recommended": 8192,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.2.1.4",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "grub2_audit_backlog_limit_argument",
+        "zipl_audit_backlog_limit_argument"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `grub2_audit_backlog_limit_argument`",
+          "language": "bash",
+          "name": "Extend Audit Backlog Limit for the Audit Daemon",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'grub2-common' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_audit_backlog_limit='$ODV_var_audit_backlog_limit'\n\n\n\nif /bin/false ; then\n    KARGS_DIR=\"/usr/lib/bootc/kargs.d/\"\n    if grep -q -E \"audit_backlog_limit\" \"$KARGS_DIR/*.toml\" ; then\n        sed -i -E \"s/^(\\s*kargs\\s*=\\s*\\[.*)\\\"audit_backlog_limit=[^\\\"]*\\\"(.*]\\s*)/\\1\\\"audit_backlog_limit=$var_audit_backlog_limit\\\"\\2/\" \"$KARGS_DIR/*.toml\"\n    else\n        echo \"kargs = [\\\"audit_backlog_limit=$var_audit_backlog_limit\\\"]\" >> \"$KARGS_DIR/10-audit_backlog_limit.toml\"\n    fi\nelse\n\n\n    # Correct the form of default kernel command line in GRUB\n    if grep -q '^\\s*GRUB_CMDLINE_LINUX=.*audit_backlog_limit=.*\\\"' '/etc/default/grub' ; then\n        # modify the GRUB command-line if an audit_backlog_limit= arg already exists\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX=\\\".*\\)audit_backlog_limit=[^[:space:]]\\+\\(.*\\\"\\)/\\1audit_backlog_limit=$var_audit_backlog_limit\\2/\" '/etc/default/grub'\n    # Add to already existing parameters\n    elif grep -q '^\\s*GRUB_CMDLINE_LINUX=' '/etc/default/grub' ; then\n        # no audit_backlog_limit=arg is present, append it\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX=\\\".*\\)\\\"/\\1 audit_backlog_limit=$var_audit_backlog_limit\\\"/\" '/etc/default/grub'\n    # Add parameters line if completely missing\n    else\n        echo \"GRUB_CMDLINE_LINUX=\\\"audit_backlog_limit=$var_audit_backlog_limit\\\"\" >> '/etc/default/grub'\n    fi\n    if grep -q '^\\s*GRUB_CMDLINE_LINUX_DEFAULT=.*audit_backlog_limit=.*\\\"' '/etc/default/grub' ; then\n        # modify the GRUB command-line if an audit_backlog_limit= arg already exists\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX_DEFAULT=\\\".*\\)audit_backlog_limit=[^[:space:]]\\+\\(.*\\\"\\)/\\1audit_backlog_limit=$var_audit_backlog_limit\\2/\" '/etc/default/grub'\n    # Add to already existing parameters\n    elif grep -q '^\\s*GRUB_CMDLINE_LINUX_DEFAULT=' '/etc/default/grub' ; then\n        # no audit_backlog_limit=arg is present, append it\n        sed -i \"s/\\(^\\s*GRUB_CMDLINE_LINUX_DEFAULT=\\\".*\\)\\\"/\\1 audit_backlog_limit=$var_audit_backlog_limit\\\"/\" '/etc/default/grub'\n    # Add parameters line if completely missing\n    else\n        echo \"GRUB_CMDLINE_LINUX_DEFAULT=\\\"audit_backlog_limit=$var_audit_backlog_limit\\\"\" >> '/etc/default/grub'\n    fi\n    update-grub \n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `zipl_audit_backlog_limit_argument`).",
+          "language": "instructions",
+          "name": "Extend Audit Backlog Limit for the Audit Daemon in zIPL",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "6",
+    "6.2",
+    "6.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.2.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure audit_backlog_limit is sufficient (Automated)"
+}

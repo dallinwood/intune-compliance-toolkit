@@ -2509,7 +2509,7 @@ test('an unknown view in the URL opens Frameworks and is replaced in the URL', a
 
 test.describe('CIS rules from ComplianceAsCode', () => {
   async function openCisRule(page: Page, title: string) {
-    await page.goto('/frameworks?framework=cis_rhel9&tab=rules')
+    await page.goto('/frameworks?framework=cac_cis_rhel9&tab=rules')
     await page.getByPlaceholder('Search title or id…').fill(title)
     await page.getByRole('button', { name: 'Expand all' }).click({ timeout: 30_000 })
     await page.locator('table tbody tr').filter({ hasText: title }).getByRole('button').click()

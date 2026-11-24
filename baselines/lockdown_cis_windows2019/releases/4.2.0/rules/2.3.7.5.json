@@ -1,0 +1,147 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": "$ODV_legal_notice_caption",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+              "state": "present",
+              "type": "REG_SZ",
+              "value_name": "LegalNoticeCaption"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('LegalNoticeCaption', $null, 'DoNotExpandEnvironmentNames') }\n$kind = $null\nif ($null -ne $current) { $kind = $key.GetValueKind('LegalNoticeCaption') }\nif (-not ($current -is [string] -and $kind -ceq 'String' -and $current -ceq '$ODV_legal_notice_caption')) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System [LegalNoticeCaption]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_2_3_7_5 }}\nregistry:\n  HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\LegalNoticeCaption:\n    title: \"2.3.7.5 | Configure 'Interactive logon: Message title for users attempting to log on' | LegalNoticeCaption\"\n    exists: true\n    value: '{{ .Vars.win19cis_legal_notice_caption }}'\n    type: REG_SZ\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 2.3.7.5\n      NIST800-53R5:\n        - AC-8\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_2/section_2.3.7.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_2/section_2.3.7/cis_2.3.7.5.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2019.2.3.7.5",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "string",
+      "description": "win19cis_legal_notice_caption is the policy setting that specifies the text displayed in the title bar of the window that users see when they log on to the system. Configure this setting in a manner that is consistent with the security and operational requirements of your organization.",
+      "name": "legal_notice_caption",
+      "quoting": "single",
+      "recommended": "DoD Notice and Consent Banner",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "2.3.7.5"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": "$ODV_legal_notice_caption",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+              "state": "present",
+              "type": "REG_SZ",
+              "value_name": "LegalNoticeCaption"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'LegalNoticeCaption' -Value '$ODV_legal_notice_caption' -PropertyType String -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"2.3.7.5 | PATCH | Configure Interactive logon Message title for users attempting to log on\"\n  when: win19cis_rule_2_3_7_5\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_2.3.7.5\n    - patch\n    - logon\n    - NIST800-171_3.1.9\n    - NIST800-53R5_AC-8\n  ansible.windows.win_regedit:\n    path: HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\n    name: LegalNoticeCaption\n    data: \"{{ win19cis_legal_notice_caption }}\"\n    type: string\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.3",
+    "2.3.7"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_2/section_2.3.7.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.7.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_2/section_2.3.7.yml"
+  },
+  "tags": [],
+  "title": "Configure 'Interactive logon: Message title for users attempting to log on'"
+}

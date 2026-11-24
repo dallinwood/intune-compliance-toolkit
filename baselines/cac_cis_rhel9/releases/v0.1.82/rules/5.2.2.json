@@ -1,0 +1,105 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty\n----\nTo determine if use_pty has been configured for sudo, run the following command:\n$ sudo grep -ri \"^[\\s]*Defaults.*\\buse_pty\\b.*\" /etc/sudoers /etc/sudoers.d/\nThe command should return a matching output.\n      Is it the case that use_pty is not enabled in sudo?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty\n\nThe sudo `use_pty` tag, when specified, will only execute sudo\ncommands from users logged in to a real tty.\nThis should be enabled by making sure that the `use_pty` tag exists in\n`/etc/sudoers` configuration file or any sudo configuration snippets\nin `/etc/sudoers.d/`.\n\n**Rationale:**\n\nRequiring that sudo commands be run in a pseudo-terminal can prevent an attacker from retaining\naccess to the user's terminal after the main program has finished executing.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.5.2.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.2.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sudo_add_use_pty": "CCE-83538-9"
+      },
+      "rules": [
+        "sudo_add_use_pty"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sudo_add_use_pty`",
+          "language": "bash",
+          "name": "Ensure Only Users Logged In To Real tty Can Execute Sudo - sudo use_pty",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q sudo; }; then\n\nif /usr/sbin/visudo -qcf /etc/sudoers; then\n    cp /etc/sudoers /etc/sudoers.bak\n    if ! grep -P '^[\\s]*Defaults\\b[^!\\n]*\\buse_pty.*$' /etc/sudoers; then\n        # sudoers file doesn't define Option use_pty\n        echo \"Defaults use_pty\" >> /etc/sudoers\n    fi\n    \n    # Check validity of sudoers and cleanup bak\n    if /usr/sbin/visudo -qcf /etc/sudoers; then\n        rm -f /etc/sudoers.bak\n    else\n        echo \"Fail to validate remediated /etc/sudoers, reverting to original file.\"\n        mv /etc/sudoers.bak /etc/sudoers\n        false\n    fi\nelse\n    echo \"Skipping remediation, /etc/sudoers failed to validate\"\n    false\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.2.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure sudo commands use pty (Automated)"
+}

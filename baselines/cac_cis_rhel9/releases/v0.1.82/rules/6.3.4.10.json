@@ -1,0 +1,98 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify that audit tools are owned by group root\n----\nVerify it by running the following command:\n$ stat -c \"%n %G\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules /sbin/audisp-syslog\n\n/sbin/auditctl root\n\n/sbin/aureport root\n\n/sbin/ausearch root\n\n/sbin/autrace root\n\n/sbin/auditd root\n\n/sbin/augenrules root\n\n/sbin/audisp-syslog root\n\n\n\nIf the command does not return all the above lines, the missing ones\nneed to be added.\n\nRun the following command to correct the permissions of the missing\nentries:\n$ sudo chown :root [audit_tool] \n\nReplace \"[audit_tool]\" with each audit tool not group-owned by root.\n      Is it the case that ?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Verify that audit tools are owned by group root\n\nThe Red Hat Enterprise Linux 9 operating system audit tools must have the proper\nownership configured to protected against unauthorized access.\n\nVerify it by running the following command:\n\n```\n$ stat -c \"%n %G\" /sbin/auditctl /sbin/aureport /sbin/ausearch /sbin/autrace /sbin/auditd /sbin/augenrules /sbin/audisp-syslog\n\n/sbin/auditctl root\n\n/sbin/aureport root\n\n/sbin/ausearch root\n\n/sbin/autrace root\n\n/sbin/auditd root\n\n/sbin/augenrules root\n\n/sbin/audisp-syslog root\n```\n\n\nAudit tools needed to successfully view and manipulate audit information\nsystem activity and records. Audit tools include custom queries and report\ngenerators\n\n**Rationale:**\n\nProtecting audit information also includes identifying and protecting the\ntools used to view and manipulate log data. Therefore, protecting audit\ntools is necessary to prevent unauthorized operation on audit information.\n\nOperating systems providing tools to interface with audit information\nwill leverage user permissions and roles identifying the user accessing the\ntools and the corresponding rights the user enjoys to make access decisions\nregarding the access to audit tools.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.6.3.4.10",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.4.10",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "file_groupownership_audit_binaries": "CCE-86457-9"
+      },
+      "rules": [
+        "file_groupownership_audit_binaries"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownership_audit_binaries`",
+          "language": "bash",
+          "name": "Verify that audit tools are owned by group root",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nnewgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/sbin/auditctl\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/auditctl\nfi\nif ! stat -c \"%g %G\" \"/sbin/aureport\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/aureport\nfi\nif ! stat -c \"%g %G\" \"/sbin/ausearch\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/ausearch\nfi\nif ! stat -c \"%g %G\" \"/sbin/autrace\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/autrace\nfi\nif ! stat -c \"%g %G\" \"/sbin/auditd\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/auditd\nfi\nif ! stat -c \"%g %G\" \"/sbin/augenrules\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/augenrules\nfi\nif ! stat -c \"%g %G\" \"/sbin/audisp-syslog\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /sbin/audisp-syslog\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.4.10",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure audit tools group owner is configured (Automated)"
+}

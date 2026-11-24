@@ -1,0 +1,107 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure /tmp Located On Separate Partition\n----\nVerify that a separate file system/partition has been created for /tmp with the following command:\n\n$ mountpoint /tmp\n\n      Is it the case that \"/tmp is not a mountpoint\" is returned?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure /tmp Located On Separate Partition\n\nThe `/tmp` directory is a world-writable directory used\nfor temporary file storage. Ensure it has its own partition or\nlogical volume at installation time, or migrate it using LVM.\n\n**Rationale:**\n\nThe `/tmp` partition is used as temporary storage by many programs.\nPlacing `/tmp` in its own partition enables the setting of more\nrestrictive mount options, which can help protect programs which use it.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.1.1.2.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.1.2.1.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "partition_for_tmp": "CCE-90845-9"
+      },
+      "rules": [
+        "partition_for_tmp"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `partition_for_tmp`).",
+          "language": "instructions",
+          "name": "Ensure /tmp Located On Separate Partition",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.1",
+    "1.1.2",
+    "1.1.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.1.2.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure /tmp is a separate partition (Automated)"
+}

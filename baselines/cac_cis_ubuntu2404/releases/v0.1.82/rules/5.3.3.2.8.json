@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure PAM Enforces Password Requirements - Enforce for root User\n----\nVerify that Ubuntu 24.04 enforces password complexity rules for the root account.\n\nCheck if root user is required to use complex passwords with the following command:\n\n$ grep enforce_for_root /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\n/etc/security/pwquality.conf:enforce_for_root\n      Is it the case that \"enforce_for_root\" is commented or missing?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure PAM Enforces Password Requirements - Enforce for root User\n\nThe pam_pwquality module's `enforce_for_root` parameter controls requirements for\nenforcing password complexity for the root user. Enable the `enforce_for_root`\nsetting in `/etc/security/pwquality.conf` to require the `root` user\nto use complex passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise\nthe password. Password complexity, or strength, is a measure of the effectiveness of a\npassword in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determines how long it takes to crack a\npassword. The more complex the password, the greater the number of possible combinations\nthat need to be tested before the password is compromised.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.3.3.2.8",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.3.3.2.8",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_password_pam_enforce_root"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_enforce_root`",
+          "language": "bash",
+          "name": "Ensure PAM Enforces Password Requirements - Enforce for root User",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nif [ -e \"/etc/security/pwquality.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*enforce_for_root/Id\" \"/etc/security/pwquality.conf\"\nelse\n    touch \"/etc/security/pwquality.conf\"\n    chmod 0644 \"/etc/security/pwquality.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/security/pwquality.conf\"\n\ncp \"/etc/security/pwquality.conf\" \"/etc/security/pwquality.conf.bak\"\n# Insert at the end of the file\nprintf '%s\\n' \"enforce_for_root\" >> \"/etc/security/pwquality.conf\"\n# Clean up after ourselves.\nrm \"/etc/security/pwquality.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.2.8",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure password quality is enforced for the root user (Automated)"
+}

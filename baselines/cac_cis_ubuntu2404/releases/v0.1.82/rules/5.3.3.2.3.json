@@ -1,0 +1,207 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure PAM Enforces Password Requirements - Minimum Different Categories\n----\nVerify the value of the \"minclass\" option in \"/etc/security/pwquality.conf\" with the following command:\n\n$ grep minclass /etc/security/pwquality.conf\n\nminclass = \n      Is it the case that the value of \"minclass\" is set to less than \"$ODV_var_password_pam_minclass\" or is commented out?\n----\nExpected values: var_password_pam_minclass = $ODV_var_password_pam_minclass\n\n== Ensure PAM Enforces Password Requirements - Minimum Digit Characters\n----\nVerify that Ubuntu 24.04 enforces password complexity by requiring that at least one numeric character be used.\n\nCheck the value for \"dcredit\" with the following command:\n\n$ sudo grep dcredit /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\n/etc/security/pwquality.conf:dcredit = \n      Is it the case that the value of \"dcredit\" is a positive number or is commented out?\n----\nExpected values: var_password_pam_dcredit = $ODV_var_password_pam_dcredit\n\n== Ensure PAM Enforces Password Requirements - Minimum Lowercase Characters\n----\nVerify that Ubuntu 24.04 enforces password complexity by requiring that at least one lower-case character.\n\nCheck the value for \"lcredit\" with the following command:\n\n$ sudo grep lcredit /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\n/etc/security/pwquality.conf:lcredit = -1\n      Is it the case that the value of \"lcredit\" is a positive number or is commented out?\n----\nExpected values: var_password_pam_lcredit = $ODV_var_password_pam_lcredit\n\n== Ensure PAM Enforces Password Requirements - Minimum Special Characters\n----\nVerify that Ubuntu 24.04 enforces password complexity by requiring that at least one special character with the following command:\n\n$ sudo grep ocredit /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\nocredit = \n      Is it the case that value of \"ocredit\" is a positive number or is commented out?\n----\nExpected values: var_password_pam_ocredit = $ODV_var_password_pam_ocredit\n\n== Ensure PAM Enforces Password Requirements - Minimum Uppercase Characters\n----\nVerify that Ubuntu 24.04 enforces password complexity by requiring that at least one upper-case character.\n\nCheck the value for \"ucredit\" with the following command:\n\n$ sudo grep ucredit /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\nucredit = -1\n      Is it the case that the value of \"ucredit\" is a positive number or is commented out?\n----\nExpected values: var_password_pam_ucredit = $ODV_var_password_pam_ucredit",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure PAM Enforces Password Requirements - Minimum Different Categories\n\nThe pam_pwquality module's `minclass` parameter controls\nrequirements for usage of different character classes, or types, of character\nthat must exist in a password before it is considered valid. For example,\nsetting this value to three (3) requires that any password must have characters\nfrom at least three different categories in order to be approved. The default\nvalue is zero (0), meaning there are no required classes. There are four\ncategories available:\n\n```\n* Upper-case characters\n* Lower-case characters\n* Digits\n* Special characters (for example, punctuation)\n```\n\nModify the `minclass` setting in `/etc/security/pwquality.conf` entry\nto require $ODV_var_password_pam_minclass\ndiffering categories of characters when changing passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise the password.\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts\nat guessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes to crack a password. The\nmore complex the password, the greater the number of possible combinations that need to be tested before\nthe password is compromised.\n\n\n          \n\nRequiring a minimum number of character categories makes password guessing attacks more difficult\nby ensuring a larger search space.\n\n## Ensure PAM Enforces Password Requirements - Minimum Digit Characters\n\nThe pam_pwquality module's `dcredit` parameter controls requirements for\nusage of digits in a password. When set to a negative number, any password will be required to\ncontain that many digits. When set to a positive number, pam_pwquality will grant +1 additional\nlength credit for each digit. Modify the `dcredit` setting in\n`/etc/security/pwquality.conf` to require the use of a digit in passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required\nto compromise the password. Password complexity, or strength, is a measure of\nthe effectiveness of a password in resisting attempts at guessing and brute-force\nattacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes\nto crack a password. The more complex the password, the greater the number of\npossible combinations that need to be tested before the password is compromised.\nRequiring digits makes password guessing attacks more difficult by ensuring a larger\nsearch space.\n\n## Ensure PAM Enforces Password Requirements - Minimum Lowercase Characters\n\nThe pam_pwquality module's `lcredit` parameter controls requirements for\nusage of lowercase letters in a password. When set to a negative number, any password will be required to\ncontain that many lowercase characters. When set to a positive number, pam_pwquality will grant +1 additional\nlength credit for each lowercase character. Modify the `lcredit` setting in\n`/etc/security/pwquality.conf` to require the use of a lowercase character in passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required\nto compromise the password. Password complexity, or strength, is a measure of\nthe effectiveness of a password in resisting attempts at guessing and brute-force\nattacks.\n\n\nPassword complexity is one factor of several that determines how long it takes\nto crack a password. The more complex the password, the greater the number of\npossible combinations that need to be tested before the password is compromised.\nRequiring a minimum number of lowercase characters makes password guessing attacks\nmore difficult by ensuring a larger search space.\n\n## Ensure PAM Enforces Password Requirements - Minimum Special Characters\n\nThe pam_pwquality module's `ocredit=` parameter controls requirements for\nusage of special (or \"other\") characters in a password. When set to a negative number,\nany password will be required to contain that many special characters.\nWhen set to a positive number, pam_pwquality will grant +1\nadditional length credit for each special character. Modify the `ocredit` setting\nin `/etc/security/pwquality.conf` to equal $ODV_var_password_pam_ocredit\nto require use of a special character in passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required\nto compromise the password. Password complexity, or strength, is a measure of\nthe effectiveness of a password in resisting attempts at guessing and brute-force\nattacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes\nto crack a password. The more complex the password, the greater the number of\npossible combinations that need to be tested before the password is compromised.\nRequiring a minimum number of special characters makes password guessing attacks\nmore difficult by ensuring a larger search space.\n\n## Ensure PAM Enforces Password Requirements - Minimum Uppercase Characters\n\nThe pam_pwquality module's `ucredit=` parameter controls requirements for\nusage of uppercase letters in a password. When set to a negative number, any password will be required to\ncontain that many uppercase characters. When set to a positive number, pam_pwquality will grant +1 additional\nlength credit for each uppercase character. Modify the `ucredit` setting in\n`/etc/security/pwquality.conf` to require the use of an uppercase character in passwords.\n\n**Rationale:**\n\nUse of a complex password helps to increase the time and resources required to compromise the password.\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts\nat guessing and brute-force attacks.\n\n\n          \n\nPassword complexity is one factor of several that determines how long it takes to crack a password. The more\ncomplex the password, the greater the number of possible combinations that need to be tested before\nthe password is compromised.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.3.3.2.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 4,
+        "cis_l1_workstation": 4,
+        "cis_l2_server": 4,
+        "cis_l2_workstation": 4
+      },
+      "datatype": "number",
+      "description": "minclass",
+      "name": "var_password_pam_minclass",
+      "quoting": "single",
+      "recommended": 4,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": -1,
+        "cis_l1_workstation": -1,
+        "cis_l2_server": -1,
+        "cis_l2_workstation": -1
+      },
+      "datatype": "number",
+      "description": "dcredit",
+      "name": "var_password_pam_dcredit",
+      "quoting": "single",
+      "recommended": -1,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": -1,
+        "cis_l1_workstation": -1,
+        "cis_l2_server": -1,
+        "cis_l2_workstation": -1
+      },
+      "datatype": "number",
+      "description": "lcredit",
+      "name": "var_password_pam_lcredit",
+      "quoting": "single",
+      "recommended": -1,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": -1,
+        "cis_l1_workstation": -1,
+        "cis_l2_server": -1,
+        "cis_l2_workstation": -1
+      },
+      "datatype": "number",
+      "description": "ocredit",
+      "name": "var_password_pam_ocredit",
+      "quoting": "single",
+      "recommended": -1,
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": -1,
+        "cis_l1_workstation": -1,
+        "cis_l2_server": -1,
+        "cis_l2_workstation": -1
+      },
+      "datatype": "number",
+      "description": "ucredit",
+      "name": "var_password_pam_ucredit",
+      "quoting": "single",
+      "recommended": -1,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.3.3.2.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_password_pam_minclass",
+        "accounts_password_pam_dcredit",
+        "accounts_password_pam_lcredit",
+        "accounts_password_pam_ocredit",
+        "accounts_password_pam_ucredit"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_minclass`",
+          "language": "bash",
+          "name": "Ensure PAM Enforces Password Requirements - Minimum Different Categories",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_password_pam_minclass='$ODV_var_password_pam_minclass'\n\n\n\n\n\n\n\nconf_name=cac_pwquality\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Pwquality password strength checking\nDefault: yes\nPriority: 1025\nConflicts: cracklib, pwquality\nPassword-Type: Primary\nPassword:\n    requisite                   pam_pwquality.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\n\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^minclass\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_password_pam_minclass\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^minclass\\\\>\" \"/etc/security/pwquality.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^minclass\\\\>.*/$escaped_formatted_output/gi\" \"/etc/security/pwquality.conf\"\nelse\n    if [[ -s \"/etc/security/pwquality.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/security/pwquality.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/security/pwquality.conf\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/security/pwquality.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_dcredit`",
+          "language": "bash",
+          "name": "Ensure PAM Enforces Password Requirements - Minimum Digit Characters",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_password_pam_dcredit='$ODV_var_password_pam_dcredit'\n\n\n\n\n\n\n\nconf_name=cac_pwquality\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Pwquality password strength checking\nDefault: yes\nPriority: 1025\nConflicts: cracklib, pwquality\nPassword-Type: Primary\nPassword:\n    requisite                   pam_pwquality.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\n\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^dcredit\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_password_pam_dcredit\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^dcredit\\\\>\" \"/etc/security/pwquality.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^dcredit\\\\>.*/$escaped_formatted_output/gi\" \"/etc/security/pwquality.conf\"\nelse\n    if [[ -s \"/etc/security/pwquality.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/security/pwquality.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/security/pwquality.conf\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/security/pwquality.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_lcredit`",
+          "language": "bash",
+          "name": "Ensure PAM Enforces Password Requirements - Minimum Lowercase Characters",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_password_pam_lcredit='$ODV_var_password_pam_lcredit'\n\n\n\n\n\n\n\nconf_name=cac_pwquality\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Pwquality password strength checking\nDefault: yes\nPriority: 1025\nConflicts: cracklib, pwquality\nPassword-Type: Primary\nPassword:\n    requisite                   pam_pwquality.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\n\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^lcredit\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_password_pam_lcredit\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^lcredit\\\\>\" \"/etc/security/pwquality.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^lcredit\\\\>.*/$escaped_formatted_output/gi\" \"/etc/security/pwquality.conf\"\nelse\n    if [[ -s \"/etc/security/pwquality.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/security/pwquality.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/security/pwquality.conf\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/security/pwquality.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_ocredit`",
+          "language": "bash",
+          "name": "Ensure PAM Enforces Password Requirements - Minimum Special Characters",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_password_pam_ocredit='$ODV_var_password_pam_ocredit'\n\n\n\n\n\n\n\nconf_name=cac_pwquality\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Pwquality password strength checking\nDefault: yes\nPriority: 1025\nConflicts: cracklib, pwquality\nPassword-Type: Primary\nPassword:\n    requisite                   pam_pwquality.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\n\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^ocredit\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_password_pam_ocredit\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^ocredit\\\\>\" \"/etc/security/pwquality.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^ocredit\\\\>.*/$escaped_formatted_output/gi\" \"/etc/security/pwquality.conf\"\nelse\n    if [[ -s \"/etc/security/pwquality.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/security/pwquality.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/security/pwquality.conf\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/security/pwquality.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_pam_ucredit`",
+          "language": "bash",
+          "name": "Ensure PAM Enforces Password Requirements - Minimum Uppercase Characters",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpwquality1' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_password_pam_ucredit='$ODV_var_password_pam_ucredit'\n\n\n\n\n\n\n\nconf_name=cac_pwquality\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Pwquality password strength checking\nDefault: yes\nPriority: 1025\nConflicts: cracklib, pwquality\nPassword-Type: Primary\nPassword:\n    requisite                   pam_pwquality.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\n\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^ucredit\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s = %s\" \"$stripped_key\" \"$var_password_pam_ucredit\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^ucredit\\\\>\" \"/etc/security/pwquality.conf\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^ucredit\\\\>.*/$escaped_formatted_output/gi\" \"/etc/security/pwquality.conf\"\nelse\n    if [[ -s \"/etc/security/pwquality.conf\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/security/pwquality.conf\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/security/pwquality.conf\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/security/pwquality.conf\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.2.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure password complexity is configured (Manual)"
+}

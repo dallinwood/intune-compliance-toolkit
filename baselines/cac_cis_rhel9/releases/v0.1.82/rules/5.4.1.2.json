@@ -1,0 +1,120 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Password Minimum Age\n----\nVerify Red Hat Enterprise Linux 9 enforces 24 hours/one day as the minimum password lifetime for new user accounts.\n\nCheck for the value of \"PASS_MIN_DAYS\" in \"/etc/login.defs\" with the following command:\n\n$ grep -i pass_min_days /etc/login.defs\n\nPASS_MIN_DAYS \n      Is it the case that the \"PASS_MIN_DAYS\" parameter value is not \"$ODV_var_accounts_minimum_age_login_defs\" or greater, or is commented out?\n----\nExpected values: var_accounts_minimum_age_login_defs = $ODV_var_accounts_minimum_age_login_defs\n\n== Set Existing Passwords Minimum Age\n----\nVerify that Red Hat Enterprise Linux 9 has configured the minimum time period between password changes for each user account is one day or greater with the following command:\n\n$ sudo awk -F: '$4 < 1 {print $1 \" \" $4}' /etc/shadow\n      Is it the case that any results are returned that are not associated with a system account?\n----\nExpected values: var_accounts_minimum_age_login_defs = $ODV_var_accounts_minimum_age_login_defs",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Set Password Minimum Age\n\nTo specify password minimum age for new accounts,\nedit the file `/etc/login.defs`\nand add or correct the following line:\n\n```\nPASS_MIN_DAYS $ODV_var_accounts_minimum_age_login_defs\n         \n```\n\nA value of 1 day is considered sufficient for many\nenvironments.\nThe profile requirement is `$ODV_var_accounts_minimum_age_login_defs`.\n\n**Rationale:**\n\nEnforcing a minimum password lifetime helps to prevent repeated password\nchanges to defeat the password reuse or history enforcement requirement. If\nusers are allowed to immediately and continually change their password,\nthen the password could be repeatedly changed in a short period of time to\ndefeat the organization's policy regarding password reuse.\n\n\n         \n\nSetting the minimum password age protects against users cycling back to a\nfavorite password after satisfying the password reuse requirement.\n\n## Set Existing Passwords Minimum Age\n\nConfigure non-compliant accounts to enforce a 24 hours/1 day minimum password\nlifetime by running the following command:\n\n```\n$ sudo chage -m 1 *USER*\n         \n```\n\n**Rationale:**\n\nEnforcing a minimum password lifetime helps to prevent repeated password\nchanges to defeat the password reuse or history enforcement requirement. If\nusers are allowed to immediately and continually change their password, the\npassword could be repeatedly changed in a short period of time to defeat the\norganization's policy regarding password reuse.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.5.4.1.2",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l2_server": 1,
+        "cis_l2_workstation": 1
+      },
+      "datatype": "number",
+      "description": "minimum password age",
+      "name": "var_accounts_minimum_age_login_defs",
+      "quoting": "single",
+      "recommended": 1,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.4.1.2",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "accounts_minimum_age_login_defs": "CCE-83610-6",
+        "accounts_password_set_min_life_existing": "CCE-89069-9"
+      },
+      "rules": [
+        "accounts_minimum_age_login_defs",
+        "accounts_password_set_min_life_existing"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_minimum_age_login_defs`",
+          "language": "bash",
+          "name": "Set Password Minimum Age",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q shadow-utils; }; then\n\nvar_accounts_minimum_age_login_defs='$ODV_var_accounts_minimum_age_login_defs'\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^PASS_MIN_DAYS\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s %s\" \"$stripped_key\" \"$var_accounts_minimum_age_login_defs\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^PASS_MIN_DAYS\\\\>\" \"/etc/login.defs\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^PASS_MIN_DAYS\\\\>.*/$escaped_formatted_output/gi\" \"/etc/login.defs\"\nelse\n    if [[ -s \"/etc/login.defs\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/login.defs\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/login.defs\"\n    fi\n    cce=\"CCE-83610-6\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"/etc/login.defs\" >> \"/etc/login.defs\"\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/login.defs\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_set_min_life_existing`",
+          "language": "bash",
+          "name": "Set Existing Passwords Minimum Age",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nvar_accounts_minimum_age_login_defs='$ODV_var_accounts_minimum_age_login_defs'\n\n\nwhile IFS= read -r i; do\n    \n    chage -m $var_accounts_minimum_age_login_defs $i\n\ndone <   <(awk -v var=\"$var_accounts_minimum_age_login_defs\" -F: '(/^[^:]+:[^!*]/ && ($4 < var || $4 == \"\")) {print $1}' /etc/shadow)\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.1.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure minimum password days is configured (Automated)"
+}

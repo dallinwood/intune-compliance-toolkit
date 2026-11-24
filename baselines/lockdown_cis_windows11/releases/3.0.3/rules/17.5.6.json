@@ -1,0 +1,87 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_17_5_6 }}\nfile:\n  win11cis_17_5_6_special_logon:\n    title: \"17.5.6 | Ensure 'Audit Special Logon' is set to include 'Success' | Special Logon\"\n    path: '{{ .Vars.win11cis_snapshot_dir }}\\AuditPolicy.17.5.6'\n    exists: true\n    contents:\n      - '/^[13]$/'\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 17.5.6\n      NIST800-53R5:\n        - AU-12\n        - AU-3\n        - AU-3(1)\n        - AU-7\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_17/cis_17.5.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_17/cis_17.5.x/cis_17.5.6.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role fixes this with commands that have no matching check, so the commands are shown as the fix, plus the original Ansible and goss test.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows11.17.5.6",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "17.5.6"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "AuditPol /set /subcategory:\"Special Logon\" /success:enable\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"17.5.6 | PATCH | Ensure Audit Special Logon is set to include Success\"\n  when: win11cis_rule_17_5_6\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_17.5.6\n    - audit_special_logon\n    - NIST800-171_3.3.1\n    - NIST800-171_3.3.2\n    - NIST800-171_3.3.6\n    - NIST800-53R5_AU-12\n    - NIST800-53R5_AU-3\n    - NIST800-53R5_AU-3_1\n    - NIST800-53R5_AU-7\n  block:\n    - name: \"17.5.6 | AUDIT | Ensure Audit Special Logon is set to include Success | Get current audit events\"\n      ansible.windows.win_shell: AuditPol /get /subcategory:\"Special Logon\" -r | ConvertFrom-Csv | Select-Object -expand \"Inclusion Setting\"\n      changed_when: false\n      check_mode: false\n      failed_when: false\n      register: discovered_17_5_6_audit\n\n    - name: \"17.5.6 | PATCH | Ensure Audit Special Logon is set to include Success | Success\"\n      when: \"'Success' not in discovered_17_5_6_audit.stdout\"\n      ansible.windows.win_shell: AuditPol /set /subcategory:\"Special Logon\" /success:enable\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "17",
+    "17.5"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_17/cis_17.5.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "17.5.6",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_17/cis_17.5.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Audit Special Logon' is set to include 'Success'"
+}

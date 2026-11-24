@@ -1,0 +1,89 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Ensure Only One Firewall Service is Active\n\nThe system must have exactly one active firewall service running to avoid conflicts\nand ensure consistent packet filtering. Only one of the following services should\nbe enabled and active at any time:\n\n\n- ufw - Uncomplicated Firewall (Ubuntu/Debian default)\n- iptables - Classic Linux firewall\n- nftables - Next Generation Firewall replacement for iptables\n\nHaving zero active firewalls leaves the system vulnerable, while having multiple\nactive firewalls can lead to rule conflicts and security gaps.\n\n**Rationale:**\n\nRunning multiple firewall services simultaneously can lead to conflicts in rule\nprocessing, unpredictable behavior, and potential security gaps. A single\nfirewall service ensures consistent and predictable packet filtering.\n\nHaving no active firewall service leaves the system exposed to network-based\nattacks and unauthorized access.\n\n**Notes:**\n\nRemediation is not automated. To select which firewall to\ninstall and configure, use the profile variable var_network_filtering_service.\n",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.4.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "4.1.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "firewall_single_service_active"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `firewall_single_service_active`).",
+          "language": "instructions",
+          "name": "Ensure Only One Firewall Service is Active",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "4",
+    "4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "4.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure a single firewall configuration utility is in use (Automated)"
+}

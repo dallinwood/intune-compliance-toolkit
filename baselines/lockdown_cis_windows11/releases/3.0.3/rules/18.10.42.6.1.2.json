@@ -1,0 +1,83 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_18_10_42_6_1_2 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\26190899-1602-49e8-8b27-eb1d0a1ce869:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 26190899-1602-49e8-8b27-eb1d0a1ce869\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\3b576869-a4ec-4529-8536-b80a7769e899:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 3b576869-a4ec-4529-8536-b80a7769e899\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\56a863a9-875e-4185-98a7-b882c64b5ce5:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 56a863a9-875e-4185-98a7-b882c64b5ce5\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\5beb7efe-fd9a-4556-801d-275e5ffc04cc:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 5beb7efe-fd9a-4556-801d-275e5ffc04cc\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\be9ba2d9-53ea-4cdc-84e5-9b1eeee46550:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | be9ba2d9-53ea-4cdc-84e5-9b1eeee46550\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\d3e037e1-3eb8-44c8-a917-57927947596d:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | d3e037e1-3eb8-44c8-a917-57927947596d\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\d4f940ab-401b-4efc-aadc-ad5f3c50688a:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | d4f940ab-401b-4efc-aadc-ad5f3c50688a\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\\e6db77e5-3df2-4cf1-b95a-636979351e5b:\n    title: \"18.10.42.6.1.2 | Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured | e6db77e5-3df2-4cf1-b95a-636979351e5b\"\n    exists: true\n    value: \"1\"\n    type: REG_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 18.10.42.6.1.2\n      NIST800-53R5:\n        - SI-16\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.10/cis_18.10.42.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_18/cis_18.10.42.x/cis_18.10.42.6.1.2.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows11.18.10.42.6.1.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "18.10.42.6.1.2"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.10.42.6.1.2 | PATCH | Ensure Configure Attack Surface Reduction rules Set the state for each ASR rule is configured\"\n  when: win11cis_rule_18_10_42_6_1_2\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_18.10.42.6.1.2\n    - microsoft_defender_exploit_guard\n    - attack_surface_reduction\n    - defender\n    - NIST800-53R5_SI-16\n  ansible.windows.win_regedit:\n    path: HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\\Rules\n    name: \"{{ item }}\"\n    data: 1\n    type: string\n  loop:\n    - 26190899-1602-49e8-8b27-eb1d0a1ce869\n    - 3b576869-a4ec-4529-8536-b80a7769e899\n    - 56a863a9-875e-4185-98a7-b882c64b5ce5\n    - 5beb7efe-fd9a-4556-801d-275e5ffc04cc\n    - 75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84\n    - 7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c\n    - 92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b\n    - 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2\n    - b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4\n    - be9ba2d9-53ea-4cdc-84e5-9b1eeee46550\n    - d3e037e1-3eb8-44c8-a917-57927947596d\n    - d4f940ab-401b-4efc-aadc-ad5f3c50688a\n    - e6db77e5-3df2-4cf1-b95a-636979351e5b\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.10",
+    "18.10.42",
+    "18.10.42.6",
+    "18.10.42.6.1"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_18/section_18.10/cis_18.10.42.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.10.42.6.1.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_18/section_18.10/cis_18.10.42.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured"
+}

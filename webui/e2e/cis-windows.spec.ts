@@ -9,8 +9,8 @@ const WINDOWS_CIS_TITLES = [
   'CIS Windows Server 2019 (ansible-lockdown)',
 ]
 
-const REGISTRY_RULE_ID = 'cis_windows11.18.1.1.1'
-const ANSIBLE_ONLY_RULE_ID = 'cis_windows11.5.3'
+const REGISTRY_RULE_ID = 'lockdown_cis_windows11.18.1.1.1'
+const ANSIBLE_ONLY_RULE_ID = 'lockdown_cis_windows11.5.3'
 const ANSIBLE_ONLY_RULE_TITLE = "Ensure 'Computer Browser (Browser)' is set to 'Disabled' or 'Not Installed'"
 
 async function openRule(page: Page, ruleId: string) {

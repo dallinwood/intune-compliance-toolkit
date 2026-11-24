@@ -69,19 +69,19 @@ SOURCES: dict[str, LockdownSpec] = {
     spec.source_name: spec
     for spec in (
         build_spec(
-            "cis_windows11", "CIS Windows 11 (ansible-lockdown)", "Windows-11-CIS", "3.0.3",
+            "lockdown_cis_windows11", "CIS Windows 11 (ansible-lockdown)", "Windows-11-CIS", "3.0.3",
             "benchmark_v3.0.0", "v3.0.0", "win11cis", "11",
         ),
         build_spec(
-            "cis_windows2025", "CIS Windows Server 2025 (ansible-lockdown)", "Windows-2025-CIS", "1.2.2",
+            "lockdown_cis_windows2025", "CIS Windows Server 2025 (ansible-lockdown)", "Windows-2025-CIS", "1.2.2",
             "benchmark_v1.0.0", "v1.0.0", "win25cis", "Server-2025",
         ),
         build_spec(
-            "cis_windows2022", "CIS Windows Server 2022 (ansible-lockdown)", "Windows-2022-CIS", "4.2.0",
+            "lockdown_cis_windows2022", "CIS Windows Server 2022 (ansible-lockdown)", "Windows-2022-CIS", "4.2.0",
             "benchmark_v4.0.0", "v4.0.0", "win22cis", "Server-2022",
         ),
         build_spec(
-            "cis_windows2019", "CIS Windows Server 2019 (ansible-lockdown)", "Windows-2019-CIS", "4.2.0",
+            "lockdown_cis_windows2019", "CIS Windows Server 2019 (ansible-lockdown)", "Windows-2019-CIS", "4.2.0",
             "latest", "v4.0.0", "win19cis", "Server-2019",
         ),
     )

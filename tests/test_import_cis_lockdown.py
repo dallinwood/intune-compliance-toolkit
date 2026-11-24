@@ -53,13 +53,13 @@ def test_the_offline_import_writes_a_valid_library(sources_dir, tmp_path, capsys
     assert validate_library(baselines_dir) == []
     manifest = json.loads((baselines_dir / "_manifest.json").read_text(encoding="utf-8"))
     (source,) = manifest["sources"]
-    assert source["name"] == "cis_windows2022"
+    assert source["name"] == "lockdown_cis_windows2022"
     assert source["provenance"] == "community"
     assert source["license"]["name"] == "MIT"
     (release,) = source["releases"]
     assert release["tag"] == "4.2.0" and release["label"] == "v4.0.0" and release["commit_sha"] == "a" * 40
-    index = json.loads((baselines_dir / "cis_windows2022" / "releases" / "4.2.0" / "_index.json").read_text(encoding="utf-8"))
-    assert index["source"] == "cis_windows2022"
+    index = json.loads((baselines_dir / "lockdown_cis_windows2022" / "releases" / "4.2.0" / "_index.json").read_text(encoding="utf-8"))
+    assert index["source"] == "lockdown_cis_windows2022"
     assert release["rule_count"] == len(index["rules"]) == 28
     assert "Imported 28 CIS Windows Server 2022 (ansible-lockdown) rules from 4.2.0" in capsys.readouterr().out
 
@@ -67,7 +67,7 @@ def test_the_offline_import_writes_a_valid_library(sources_dir, tmp_path, capsys
 def test_every_rule_file_is_named_by_its_cis_id(sources_dir, tmp_path):
     baselines_dir = tmp_path / "baselines"
     run_offline(sources_dir, baselines_dir)
-    release_dir = baselines_dir / "cis_windows2022" / "releases" / "4.2.0"
+    release_dir = baselines_dir / "lockdown_cis_windows2022" / "releases" / "4.2.0"
     assert (release_dir / "rules" / "18.4.2.json").is_file()
     assert (release_dir / "rules" / "2.3.10.6.json").is_file()
 

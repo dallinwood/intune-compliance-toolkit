@@ -6,23 +6,23 @@ const entry = (name: string, provenance: 'official' | 'community') => ({ name, p
 describe('groupByProvenance', () => {
   it('splits official from community, each keeping its current order', () => {
     const groups = groupByProvenance([
-      entry('cis_rhel9', 'community'),
+      entry('cac_cis_rhel9', 'community'),
       entry('mscp', 'official'),
-      entry('cis_ubuntu2404', 'community'),
+      entry('cac_cis_ubuntu2404', 'community'),
       entry('asd_ism', 'official'),
     ])
 
     expect(groups.official.map((source) => source.name)).toEqual(['mscp', 'asd_ism'])
-    expect(groups.community.map((source) => source.name)).toEqual(['cis_rhel9', 'cis_ubuntu2404'])
+    expect(groups.community.map((source) => source.name)).toEqual(['cac_cis_rhel9', 'cac_cis_ubuntu2404'])
   })
 
   it('keeps a source whose provenance is missing or unknown, in the community group', () => {
     const missing = { name: 'no_provenance' } as unknown as ReturnType<typeof entry>
     const unknown = { name: 'odd', provenance: 'vendor' } as unknown as ReturnType<typeof entry>
-    const groups = groupByProvenance([entry('mscp', 'official'), missing, unknown, entry('cis_rhel9', 'community')])
+    const groups = groupByProvenance([entry('mscp', 'official'), missing, unknown, entry('cac_cis_rhel9', 'community')])
 
     expect(groups.official.map((source) => source.name)).toEqual(['mscp'])
-    expect(groups.community.map((source) => source.name)).toEqual(['no_provenance', 'odd', 'cis_rhel9'])
+    expect(groups.community.map((source) => source.name)).toEqual(['no_provenance', 'odd', 'cac_cis_rhel9'])
   })
 
   it('returns empty groups when a kind is absent', () => {

@@ -1,0 +1,125 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure the Group Used by pam_wheel.so Module Exists on System and is Empty\n----\nRun the following command to check if the  group exists:\ngrep  /etc/group\nThe output should contain the following line:\n:x:\n      Is it the case that group  exists and has no user members?\n----\nExpected values: var_pam_wheel_group_for_su = $ODV_var_pam_wheel_group_for_su\n\n== Enforce Usage of pam_wheel with Group Parameter for su Authentication\n----\nRun the following command to check if the line is present:\ngrep pam_wheel /etc/pam.d/su\nThe output should contain the following line:\nauth required pam_wheel.so use_uid group=\n      Is it the case that the line is not in the file or it is commented?\n----\nExpected values: var_pam_wheel_group_for_su = $ODV_var_pam_wheel_group_for_su",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure the Group Used by pam_wheel.so Module Exists on System and is Empty\n\nEnsure that the group `$ODV_var_pam_wheel_group_for_su` referenced by\n`var_pam_wheel_group_for_su` variable and used as value for the `pam_wheel.so`\n         `group` option exists and has no members. This empty group used by\n`pam_wheel.so` in `/etc/pam.d/su` ensures that no user can run commands with\naltered privileges through the `su` command.\n\n**Rationale:**\n\nThe `su` program allows to run commands with a substitute user and group ID.\nIt is commonly used to run commands as the root user.\nLimiting access to such command is considered a good security practice.\n\n## Enforce Usage of pam_wheel with Group Parameter for su Authentication\n\nTo ensure that only users who are members of the group set in the `group` option of\n`pam_wheel.so` module can run commands with altered privileges through the `su`\ncommand, make sure that the following line exists in the file `/etc/pam.d/su`:\n\n```\nauth required pam_wheel.so use_uid group=$ODV_var_pam_wheel_group_for_su\n         \n```\n\n**Rationale:**\n\nThe `su` program allows to run commands with a substitute user and group ID.\nIt is commonly used to run commands as the root user.\nLimiting access to such command is considered a good security practice.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.2.7",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "sugroup",
+        "cis_l1_workstation": "sugroup",
+        "cis_l2_server": "sugroup",
+        "cis_l2_workstation": "sugroup"
+      },
+      "datatype": "string",
+      "description": "Group Name Used by pam_wheel Group Parameter",
+      "name": "var_pam_wheel_group_for_su",
+      "quoting": "single",
+      "recommended": "sugroup",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.2.7",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "ensure_pam_wheel_group_empty",
+        "use_pam_wheel_group_for_su"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `ensure_pam_wheel_group_empty`",
+          "language": "bash",
+          "name": "Ensure the Group Used by pam_wheel.so Module Exists on System and is Empty",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( ( dpkg-query --show --showformat='${db:Status-Status}' 'libpam-runtime' 2>/dev/null | grep -q '^installed$' && dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' ) ); then\n\nvar_pam_wheel_group_for_su='$ODV_var_pam_wheel_group_for_su'\n\n\n# Workaround for https://github.com/OpenSCAP/openscap/issues/2242: Use full\n# path to groupadd command to avoid the issue with the command not being found.\nif ! grep -q \"^${var_pam_wheel_group_for_su}:[^:]*:[^:]*:[^:]*\" /etc/group; then\n    /usr/sbin/groupadd ${var_pam_wheel_group_for_su}\nfi\n\n# group must be empty\ngpasswd -M '' ${var_pam_wheel_group_for_su}\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `use_pam_wheel_group_for_su`",
+          "language": "bash",
+          "name": "Enforce Usage of pam_wheel with Group Parameter for su Authentication",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'libpam-runtime' 2>/dev/null | grep -q '^installed$'; then\n\ndeclare -a VALUES=()\ndeclare -a VALUE_NAMES=()\ndeclare -a ARGS=()\ndeclare -a NEW_ARGS=()\ndeclare -a DEL_ARGS=()\n\n\n\n\n\n\nvar_pam_wheel_group_for_su='$ODV_var_pam_wheel_group_for_su'\n\nVALUES+=(\"$var_pam_wheel_group_for_su\")\nVALUE_NAMES+=(\"group\")\nARGS+=(\"\")\nNEW_ARGS+=(\"\")\n\nVALUES+=(\"\")\nVALUE_NAMES+=(\"\")\nARGS+=(\"use_uid\")\nNEW_ARGS+=(\"use_uid\")\n\n\nfor idx in \"${!VALUES[@]}\"\ndo\n    if [ -e \"/etc/pam.d/su\" ] ; then\n        valueRegex=\"${VALUES[$idx]}\" defaultValue=\"${VALUES[$idx]}\"\n        # non-empty values need to be preceded by an equals sign\n        [ -n \"${valueRegex}\" ] && valueRegex=\"=${valueRegex}\"\n        # add an equals sign to non-empty values\n        [ -n \"${defaultValue}\" ] && defaultValue=\"=${defaultValue}\"\n\n        # fix the value for 'option' if one exists but does not match 'valueRegex'\n        if grep -q -P \"^\\\\s*auth\\\\s+required\\\\s+pam_wheel.so(\\\\s.+)?\\\\s+${VALUE_NAMES[$idx]}(?\"'!'\"${valueRegex}(\\\\s|\\$))\" < \"/etc/pam.d/su\" ; then\n            sed --follow-symlinks -i -E -e \"s/^(\\\\s*auth\\\\s+required\\\\s+pam_wheel.so(\\\\s.+)?\\\\s)${VALUE_NAMES[$idx]}=[^[:space:]]*/\\\\1${VALUE_NAMES[$idx]}${defaultValue}/\" \"/etc/pam.d/su\"\n\n        # add 'option=default' if option is not set\n        elif grep -q -E \"^\\\\s*auth\\\\s+required\\\\s+pam_wheel.so\" < \"/etc/pam.d/su\" &&\n                grep    -E \"^\\\\s*auth\\\\s+required\\\\s+pam_wheel.so\" < \"/etc/pam.d/su\" | grep -q -E -v \"\\\\s${VALUE_NAMES[$idx]}(=|\\\\s|\\$)\" ; then\n\n            sed --follow-symlinks -i -E -e \"s/^(\\\\s*auth\\\\s+required\\\\s+pam_wheel.so[^\\\\n]*)/\\\\1 ${VALUE_NAMES[$idx]}${defaultValue}/\" \"/etc/pam.d/su\"\n        # add a new entry if none exists\n        elif ! grep -q -P \"^\\\\s*auth\\\\s+required\\\\s+pam_wheel.so(\\\\s.+)?\\\\s+${VALUE_NAMES[$idx]}${valueRegex}(\\\\s|\\$)\" < \"/etc/pam.d/su\" ; then\n            echo \"auth required pam_wheel.so ${VALUE_NAMES[$idx]}${defaultValue}\" >> \"/etc/pam.d/su\"\n        fi\n    else\n        echo \"/etc/pam.d/su doesn't exist\" >&2\n    fi\ndone\n\nfor idx in \"${!ARGS[@]}\"\ndo\n    if ! grep -q -P \"^\\s*auth\\s+required\\s+pam_wheel.so.*\\s+${ARGS[$idx]}\\s*$\" /etc/pam.d/su ; then\n        sed --follow-symlinks -i -E -e \"s/^\\\\s*auth\\\\s+required\\\\s+pam_wheel.so.*\\$/& ${NEW_ARGS[$idx]}/\" /etc/pam.d/su\n        if [ -n \"${DEL_ARGS[$idx]}\" ]; then\n            sed --follow-symlinks -i -E -e \"s/\\s+${DEL_ARGS[$idx]}\\S+\\s+/ /g\" /etc/pam.d/su\n        fi\n    fi\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.2.7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure access to the su command is restricted (Automated)"
+}

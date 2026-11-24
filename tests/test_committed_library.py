@@ -156,12 +156,12 @@ EXPECTED_PROVENANCE = {
     "nist_800_53": "official",
     "asd_ism": "official",
     "asd_e4eit": "official",
-    "cis_rhel9": "community",
-    "cis_ubuntu2404": "community",
-    "cis_windows11": "community",
-    "cis_windows2025": "community",
-    "cis_windows2022": "community",
-    "cis_windows2019": "community",
+    "cac_cis_rhel9": "community",
+    "cac_cis_ubuntu2404": "community",
+    "lockdown_cis_windows11": "community",
+    "lockdown_cis_windows2025": "community",
+    "lockdown_cis_windows2022": "community",
+    "lockdown_cis_windows2019": "community",
 }
 
 
@@ -365,10 +365,10 @@ def test_committed_mappings_have_no_errors():
 
 LOCKDOWN_SOURCES = {
     # source: (upstream rule count today, role tag, role repository, Audit repository, benchmark version)
-    "cis_windows11": (539, "3.0.3", "ansible-lockdown/Windows-11-CIS", "ansible-lockdown/Windows-11-CIS-Audit", "v3.0.0"),
-    "cis_windows2025": (463, "1.2.2", "ansible-lockdown/Windows-2025-CIS", "ansible-lockdown/Windows-2025-CIS-Audit", "v1.0.0"),
-    "cis_windows2022": (445, "4.2.0", "ansible-lockdown/Windows-2022-CIS", "ansible-lockdown/Windows-2022-CIS-Audit", "v4.0.0"),
-    "cis_windows2019": (434, "4.2.0", "ansible-lockdown/Windows-2019-CIS", "ansible-lockdown/Windows-2019-CIS-Audit", "v4.0.0"),
+    "lockdown_cis_windows11": (539, "3.0.3", "ansible-lockdown/Windows-11-CIS", "ansible-lockdown/Windows-11-CIS-Audit", "v3.0.0"),
+    "lockdown_cis_windows2025": (463, "1.2.2", "ansible-lockdown/Windows-2025-CIS", "ansible-lockdown/Windows-2025-CIS-Audit", "v1.0.0"),
+    "lockdown_cis_windows2022": (445, "4.2.0", "ansible-lockdown/Windows-2022-CIS", "ansible-lockdown/Windows-2022-CIS-Audit", "v4.0.0"),
+    "lockdown_cis_windows2019": (434, "4.2.0", "ansible-lockdown/Windows-2019-CIS", "ansible-lockdown/Windows-2019-CIS-Audit", "v4.0.0"),
 }
 LOCKDOWN_RULE_COUNT_TOLERANCE = 0.05
 LOCKDOWN_MINIMUM_AUTOMATED_SHARE = 0.8

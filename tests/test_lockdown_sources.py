@@ -6,10 +6,10 @@ import pytest
 from tools.lockdown_sources import SOURCES
 
 ROLE_REPOSITORIES = {
-    "cis_windows11": ("Windows-11-CIS", "3.0.3", "benchmark_v3.0.0", "v3.0.0", "win11cis", "11"),
-    "cis_windows2025": ("Windows-2025-CIS", "1.2.2", "benchmark_v1.0.0", "v1.0.0", "win25cis", "Server-2025"),
-    "cis_windows2022": ("Windows-2022-CIS", "4.2.0", "benchmark_v4.0.0", "v4.0.0", "win22cis", "Server-2022"),
-    "cis_windows2019": ("Windows-2019-CIS", "4.2.0", "latest", "v4.0.0", "win19cis", "Server-2019"),
+    "lockdown_cis_windows11": ("Windows-11-CIS", "3.0.3", "benchmark_v3.0.0", "v3.0.0", "win11cis", "11"),
+    "lockdown_cis_windows2025": ("Windows-2025-CIS", "1.2.2", "benchmark_v1.0.0", "v1.0.0", "win25cis", "Server-2025"),
+    "lockdown_cis_windows2022": ("Windows-2022-CIS", "4.2.0", "benchmark_v4.0.0", "v4.0.0", "win22cis", "Server-2022"),
+    "lockdown_cis_windows2019": ("Windows-2019-CIS", "4.2.0", "latest", "v4.0.0", "win19cis", "Server-2019"),
 }
 
 
@@ -32,13 +32,13 @@ def test_each_source_has_the_planned_pins(source_name):
 
 
 def test_display_names_say_where_the_benchmark_comes_from():
-    assert SOURCES["cis_windows11"].display_name == "CIS Windows 11 (ansible-lockdown)"
-    assert SOURCES["cis_windows2025"].display_name == "CIS Windows Server 2025 (ansible-lockdown)"
-    assert SOURCES["cis_windows2022"].display_name == "CIS Windows Server 2022 (ansible-lockdown)"
-    assert SOURCES["cis_windows2019"].display_name == "CIS Windows Server 2019 (ansible-lockdown)"
+    assert SOURCES["lockdown_cis_windows11"].display_name == "CIS Windows 11 (ansible-lockdown)"
+    assert SOURCES["lockdown_cis_windows2025"].display_name == "CIS Windows Server 2025 (ansible-lockdown)"
+    assert SOURCES["lockdown_cis_windows2022"].display_name == "CIS Windows Server 2022 (ansible-lockdown)"
+    assert SOURCES["lockdown_cis_windows2019"].display_name == "CIS Windows Server 2019 (ansible-lockdown)"
 
 
 def test_the_rights_holder_is_the_one_in_the_license_files():
     license_text = (Path(__file__).parent / "fixtures" / "lockdown" / "role" / "LICENSE").read_text(encoding="utf-8")
     copyright_line = re.search(r"Copyright \(c\) \d+ (.+)", license_text)[1]
-    assert SOURCES["cis_windows2022"].license["rights_holder"] == copyright_line.strip()
+    assert SOURCES["lockdown_cis_windows2022"].license["rights_holder"] == copyright_line.strip()

@@ -1,0 +1,101 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nfunction ConvertTo-AccountSid {\n    param([string]$Account)\n    if ($Account -match '^\\*?(S-1-[0-9-]+)$') { return $Matches[1] }\n    return ([System.Security.Principal.NTAccount]$Account).Translate([System.Security.Principal.SecurityIdentifier]).Value\n}\n\n$mismatchCount = 0\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $exportPath = Join-Path $workDirectory 'export.inf'\n    secedit /export /cfg $exportPath /areas USER_RIGHTS | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /export failed' }\n    $holdersByRight = @{}\n    foreach ($line in Get-Content -LiteralPath $exportPath) {\n        if ($line -match '^(Se\\w+)\\s*=\\s*(.*)$') {\n            $holdersByRight[$Matches[1]] = @($Matches[2].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ } | ForEach-Object { ConvertTo-AccountSid $_ })\n        }\n    }\n    $holders = @()\n    if ($holdersByRight.ContainsKey('SeSystemEnvironmentPrivilege')) { $holders = $holdersByRight['SeSystemEnvironmentPrivilege'] }\n    $expected = @('Administrators' | ForEach-Object { ConvertTo-AccountSid $_ })\n    if ((($expected | Sort-Object -Unique) -join ',') -ne (($holders | Sort-Object -Unique) -join ',')) {\n        Write-Output 'Mismatch: SeSystemEnvironmentPrivilege'\n        $mismatchCount++\n    }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win22cis_level_1 }}\n  {{ if .Vars.win22cis_rule_2_2_41 }}\nfile:\n  win22cis_2_2_41_sesystemenvironmentprivilege:\n    title: \"2.2.41 | Ensure 'Modify firmware environment values' is set to 'Administrators' | SeSystemEnvironmentPrivilege\"\n    path: '{{ .Vars.win22cis_snapshot_dir }}\\PrivilegeRights.SeSystemEnvironmentPrivilege'\n    exists: true\n    contents:\n      - '/^S-1-5-32-544$/'\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 2.2.41\n      NIST800-53R5:\n        - AC-2\n        - AC-3\n        - AC-6\n        - AC-6(1)\n        - AC-6(7)\n        - AU-9(4)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_2/section_2.2.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_2/section_2.2/cis_2.2.41.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2022.2.2.41",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "2.2.41"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nfunction ConvertTo-AccountSid {\n    param([string]$Account)\n    if ($Account -match '^\\*?(S-1-[0-9-]+)$') { return $Matches[1] }\n    return ([System.Security.Principal.NTAccount]$Account).Translate([System.Security.Principal.SecurityIdentifier]).Value\n}\n\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $desiredByRight = [ordered]@{}\n    $desiredByRight['SeSystemEnvironmentPrivilege'] = @('Administrators' | ForEach-Object { ConvertTo-AccountSid $_ })\n    $infLines = @('[Unicode]', 'Unicode=yes', '[Privilege Rights]')\n    foreach ($right in $desiredByRight.Keys) {\n        $infLines += ($right + ' = ' + (@($desiredByRight[$right] | ForEach-Object { '*' + $_ }) -join ','))\n    }\n    $infLines += @('[Version]', 'signature=\"$CHICAGO$\"', 'Revision=1')\n    $infPath = Join-Path $workDirectory 'rights.inf'\n    Set-Content -LiteralPath $infPath -Value $infLines -Encoding Unicode\n    secedit /configure /db (Join-Path $workDirectory 'rights.sdb') /cfg $infPath /areas USER_RIGHTS | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /configure failed' }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"2.2.41 | PATCH | Ensure Modify firmware environment values is set to Administrators\"\n  when: win22cis_rule_2_2_41\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_2.2.41\n    - patch\n    - userrights\n    - administrators\n    - NIST800-171_3.1.1\n    - NIST800-171_3.1.5\n    - NIST800-171_3.3.8\n    - NIST800-171_3.3.9\n    - NIST800-53R5_AC-2\n    - NIST800-53R5_AC-3\n    - NIST800-53R5_AC-6\n    - NIST800-53R5_AC-6_1\n    - NIST800-53R5_AC-6_7\n    - NIST800-53R5_AU-9_4\n  ansible.windows.win_user_right:\n    name: SeSystemEnvironmentPrivilege\n    users:\n      - Administrators\n    action: set\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.2"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_2/section_2.2.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.2.41",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_2/section_2.2.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Modify firmware environment values' is set to 'Administrators'"
+}

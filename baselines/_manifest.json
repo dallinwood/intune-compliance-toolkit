@@ -262,21 +262,21 @@
     {
       "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
       "display_name": "CIS Red Hat Enterprise Linux 9 (ComplianceAsCode)",
-      "index_path": "cis_rhel9/releases/v0.1.82/_index.json",
+      "index_path": "cac_cis_rhel9/releases/v0.1.82/_index.json",
       "license": {
         "modified": true,
         "name": "BSD-3-Clause",
         "rights_holder": "Red Hat, Inc.",
         "url": "https://opensource.org/license/bsd-3-clause"
       },
-      "name": "cis_rhel9",
+      "name": "cac_cis_rhel9",
       "provenance": "community",
       "release_tag": "v0.1.82",
       "releases": [
         {
           "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
           "importer_format": "cac-cis-1",
-          "index_path": "cis_rhel9/releases/v0.1.82/_index.json",
+          "index_path": "cac_cis_rhel9/releases/v0.1.82/_index.json",
           "label": "v2.0.0",
           "published_date": "2026-09-01",
           "retrieved_date": "2026-11-20",
@@ -291,21 +291,21 @@
     {
       "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
       "display_name": "CIS Ubuntu 24.04 LTS (ComplianceAsCode)",
-      "index_path": "cis_ubuntu2404/releases/v0.1.82/_index.json",
+      "index_path": "cac_cis_ubuntu2404/releases/v0.1.82/_index.json",
       "license": {
         "modified": true,
         "name": "BSD-3-Clause",
         "rights_holder": "Red Hat, Inc.",
         "url": "https://opensource.org/license/bsd-3-clause"
       },
-      "name": "cis_ubuntu2404",
+      "name": "cac_cis_ubuntu2404",
       "provenance": "community",
       "release_tag": "v0.1.82",
       "releases": [
         {
           "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
           "importer_format": "cac-cis-1",
-          "index_path": "cis_ubuntu2404/releases/v0.1.82/_index.json",
+          "index_path": "cac_cis_ubuntu2404/releases/v0.1.82/_index.json",
           "label": "v1.0.0",
           "published_date": "2026-09-01",
           "retrieved_date": "2026-11-20",
@@ -320,21 +320,21 @@
     {
       "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
       "display_name": "CIS Windows 11 (ansible-lockdown)",
-      "index_path": "cis_windows11/releases/3.0.3/_index.json",
+      "index_path": "lockdown_cis_windows11/releases/3.0.3/_index.json",
       "license": {
         "modified": true,
         "name": "MIT",
         "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
         "url": "https://opensource.org/license/mit"
       },
-      "name": "cis_windows11",
+      "name": "lockdown_cis_windows11",
       "provenance": "community",
       "release_tag": "3.0.3",
       "releases": [
         {
           "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
           "importer_format": "lockdown-cis-1",
-          "index_path": "cis_windows11/releases/3.0.3/_index.json",
+          "index_path": "lockdown_cis_windows11/releases/3.0.3/_index.json",
           "label": "v3.0.0",
           "published_date": "2026-11-10",
           "retrieved_date": "2026-11-24",
@@ -349,21 +349,21 @@
     {
       "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
       "display_name": "CIS Windows Server 2019 (ansible-lockdown)",
-      "index_path": "cis_windows2019/releases/4.2.0/_index.json",
+      "index_path": "lockdown_cis_windows2019/releases/4.2.0/_index.json",
       "license": {
         "modified": true,
         "name": "MIT",
         "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
         "url": "https://opensource.org/license/mit"
       },
-      "name": "cis_windows2019",
+      "name": "lockdown_cis_windows2019",
       "provenance": "community",
       "release_tag": "4.2.0",
       "releases": [
         {
           "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
           "importer_format": "lockdown-cis-1",
-          "index_path": "cis_windows2019/releases/4.2.0/_index.json",
+          "index_path": "lockdown_cis_windows2019/releases/4.2.0/_index.json",
           "label": "v4.0.0",
           "published_date": "2026-11-18",
           "retrieved_date": "2026-11-24",
@@ -378,21 +378,21 @@
     {
       "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
       "display_name": "CIS Windows Server 2022 (ansible-lockdown)",
-      "index_path": "cis_windows2022/releases/4.2.0/_index.json",
+      "index_path": "lockdown_cis_windows2022/releases/4.2.0/_index.json",
       "license": {
         "modified": true,
         "name": "MIT",
         "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
         "url": "https://opensource.org/license/mit"
       },
-      "name": "cis_windows2022",
+      "name": "lockdown_cis_windows2022",
       "provenance": "community",
       "release_tag": "4.2.0",
       "releases": [
         {
           "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
           "importer_format": "lockdown-cis-1",
-          "index_path": "cis_windows2022/releases/4.2.0/_index.json",
+          "index_path": "lockdown_cis_windows2022/releases/4.2.0/_index.json",
           "label": "v4.0.0",
           "published_date": "2026-10-08",
           "retrieved_date": "2026-11-24",
@@ -407,21 +407,21 @@
     {
       "commit_sha": "2389a564b8114ad1d8a35a6be3d27629ffd70f16",
       "display_name": "CIS Windows Server 2025 (ansible-lockdown)",
-      "index_path": "cis_windows2025/releases/1.2.2/_index.json",
+      "index_path": "lockdown_cis_windows2025/releases/1.2.2/_index.json",
       "license": {
         "modified": true,
         "name": "MIT",
         "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
         "url": "https://opensource.org/license/mit"
       },
-      "name": "cis_windows2025",
+      "name": "lockdown_cis_windows2025",
       "provenance": "community",
       "release_tag": "1.2.2",
       "releases": [
         {
           "commit_sha": "2389a564b8114ad1d8a35a6be3d27629ffd70f16",
           "importer_format": "lockdown-cis-1",
-          "index_path": "cis_windows2025/releases/1.2.2/_index.json",
+          "index_path": "lockdown_cis_windows2025/releases/1.2.2/_index.json",
           "label": "v1.0.0",
           "published_date": "2026-11-04",
           "retrieved_date": "2026-11-24",

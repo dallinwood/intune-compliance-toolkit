@@ -7,12 +7,12 @@
       { "label": "NIST mSCP", "terms": ["mscp"] },
       { "label": "NIST SP 800-53", "terms": ["nist_800_53"] },
       { "label": "ASD E4EIT", "terms": ["asd_e4eit"] },
-      { "label": "CIS RHEL 9 (CaC)", "terms": ["cis_rhel9"] },
-      { "label": "CIS Ubuntu 24.04 (CaC)", "terms": ["cis_ubuntu2404"] },
-      { "label": "CIS Windows 11 (ansible-lockdown)", "terms": ["cis_windows11"] },
-      { "label": "CIS Windows Server 2025 (ansible-lockdown)", "terms": ["cis_windows2025"] },
-      { "label": "CIS Windows Server 2022 (ansible-lockdown)", "terms": ["cis_windows2022"] },
-      { "label": "CIS Windows Server 2019 (ansible-lockdown)", "terms": ["cis_windows2019"] }
+      { "label": "CIS RHEL 9 (CaC)", "terms": ["cac_cis_rhel9"] },
+      { "label": "CIS Ubuntu 24.04 (CaC)", "terms": ["cac_cis_ubuntu2404"] },
+      { "label": "CIS Windows 11 (ansible-lockdown)", "terms": ["lockdown_cis_windows11"] },
+      { "label": "CIS Windows Server 2025 (ansible-lockdown)", "terms": ["lockdown_cis_windows2025"] },
+      { "label": "CIS Windows Server 2022 (ansible-lockdown)", "terms": ["lockdown_cis_windows2022"] },
+      { "label": "CIS Windows Server 2019 (ansible-lockdown)", "terms": ["lockdown_cis_windows2019"] }
     ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },

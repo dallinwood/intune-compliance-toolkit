@@ -37,7 +37,7 @@ test('a framework page shows its provenance badge by the title', async ({ page }
   await page.goto('/frameworks?framework=nist_800_53&tab=rules')
   await expect(page.getByRole('heading', { level: 2, name: /NIST SP 800-53/ }).locator('..').getByText('Official', { exact: true })).toBeVisible()
 
-  await page.goto('/frameworks?framework=cis_rhel9&tab=rules')
+  await page.goto('/frameworks?framework=cac_cis_rhel9&tab=rules')
   await expect(page.getByRole('heading', { level: 2, name: /^CIS/ }).locator('..').getByText('Community', { exact: true })).toBeVisible()
 })
 
@@ -49,7 +49,7 @@ test('the all-rules page has no provenance badge beside its title', async ({ pag
 
   // The same locator finds the badge on a framework page, so the zero above
   // is a real absence and not a locator that matches nothing anywhere.
-  await page.goto('/frameworks?framework=cis_rhel9&tab=rules')
+  await page.goto('/frameworks?framework=cac_cis_rhel9&tab=rules')
   const frameworkTitle = page.getByRole('heading', { level: 2, name: /^CIS/ })
   await expect(frameworkTitle.locator('..').getByText(/^(Official|Community)$/)).toHaveCount(1)
 })

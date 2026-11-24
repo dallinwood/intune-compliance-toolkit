@@ -57,13 +57,13 @@ That content stays in the public domain and under CC0 1.0. The upstream licence
 text is vendored in `sources/nist_800_53/releases/<tag>/upstream/LICENSE.md`.
 NIST does not endorse this project.
 
-The CIS rule content in `sources/cis_rhel9/`, `sources/cis_ubuntu2404/`,
-`baselines/cis_rhel9/` and `baselines/cis_ubuntu2404/` comes from the
+The CIS rule content in `sources/cac_cis_rhel9/`, `sources/cac_cis_ubuntu2404/`,
+`baselines/cac_cis_rhel9/` and `baselines/cac_cis_ubuntu2404/` comes from the
 [ComplianceAsCode project](https://github.com/ComplianceAsCode/content),
 licensed under the BSD 3-Clause licence, Copyright (c) 2012-2017, Red Hat, Inc.
 `sources/cis_*/releases/<tag>/upstream/` is an unmodified copy of the parts of
 each imported release this project uses. This project has modified the content
-in `baselines/cis_rhel9/` and `baselines/cis_ubuntu2404/`: it was normalized to
+in `baselines/cac_cis_rhel9/` and `baselines/cac_cis_ubuntu2404/`: it was normalized to
 a rule format, the values the benchmark parameterizes were made customisable,
 and each rule's audit and fix text was assembled from the datastream. That
 content remains under the BSD 3-Clause licence and is provided as-is, with the
@@ -73,8 +73,8 @@ and they do not endorse it. The upstream licence text is vendored in
 `sources/cis_*/releases/<tag>/upstream/LICENSE`. See `NOTICE` for the full
 attribution of the sources.
 
-The Windows CIS rule content in `sources/cis_windows11/`,
-`sources/cis_windows2025/`, `sources/cis_windows2022/`, `sources/cis_windows2019/`
+The Windows CIS rule content in `sources/lockdown_cis_windows11/`,
+`sources/lockdown_cis_windows2025/`, `sources/lockdown_cis_windows2022/`, `sources/lockdown_cis_windows2019/`
 and the matching `baselines/` folders comes from the
 [ansible-lockdown](https://github.com/ansible-lockdown) role repositories
 (Windows-11-CIS, Windows-2025-CIS, Windows-2022-CIS, Windows-2019-CIS) and their
@@ -83,9 +83,9 @@ licence. The copyright lines are those of each repository's LICENSE:
 "Copyright (c) 2026 MindPoint Group - A Quantum Sky Company / Ansible Lockdown"
 for every repository except Windows-11-CIS-Audit, whose LICENSE reads
 "Copyright (c) 2026 MindPoint Group - A Tyto Athene Company / Ansible Lockdown".
-`sources/cis_windows*/releases/<tag>/upstream/` is an unmodified copy of the
+`sources/lockdown_cis_windows*/releases/<tag>/upstream/` is an unmodified copy of the
 parts of each repository this project uses, including both LICENSE files. This
-project has modified the content in `baselines/cis_windows*/`: the role tasks
+project has modified the content in `baselines/lockdown_cis_windows*/`: the role tasks
 were translated to registry settings and PowerShell, the role defaults were made
 customisable values, and the original Ansible tasks and goss tests are kept
 verbatim in each rule. That content remains under the MIT licence and is
@@ -381,8 +381,8 @@ Requires Python 3.10 or newer.
 
 1. `python -m pip install -r requirements-dev.txt` (includes `requirements.txt`)
 2. `python tools/import_cis_cac.py --benchmark <source> --tag <CaC tag>`, for
-   example `--benchmark cis_rhel9 --tag v0.1.82`. The source is a key of
-   `BENCHMARKS` in `tools/cac_benchmarks.py` (`cis_rhel9`, `cis_ubuntu2404`)
+   example `--benchmark cac_cis_rhel9 --tag v0.1.82`. The source is a key of
+   `BENCHMARKS` in `tools/cac_benchmarks.py` (`cac_cis_rhel9`, `cac_cis_ubuntu2404`)
    and the tag is a release of the
    [ComplianceAsCode/content](https://github.com/ComplianceAsCode/content)
    repository. Each release is kept in its own folder
@@ -415,9 +415,9 @@ To add a benchmark for another product:
 ## Updating the CIS Windows (ansible-lockdown) rules
 
 1. `python tools/import_cis_lockdown.py --source <source> --tag <role tag>`, for
-   example `--source cis_windows11 --tag 3.0.3`. The source is a key of
-   `SOURCES` in `tools/lockdown_sources.py` (`cis_windows11`,
-   `cis_windows2025`, `cis_windows2022`, `cis_windows2019`) and the tag is a
+   example `--source lockdown_cis_windows11 --tag 3.0.3`. The source is a key of
+   `SOURCES` in `tools/lockdown_sources.py` (`lockdown_cis_windows11`,
+   `lockdown_cis_windows2025`, `lockdown_cis_windows2022`, `lockdown_cis_windows2019`) and the tag is a
    GitHub Release of the matching ansible-lockdown role repository. The matching
    Audit repository is pinned by the commit of its branch at import time; both
    commits are recorded in the release's `source.json`. Use `--offline` to

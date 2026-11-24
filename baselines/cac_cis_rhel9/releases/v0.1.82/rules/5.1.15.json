@@ -1,0 +1,108 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set SSH Daemon LogLevel to VERBOSE\n----\nTo determine how the SSH daemon's LogLevel option is set, run the following command:\n\n$ sudo grep -i LogLevel /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n\n\nIf a line indicating VERBOSE is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Set SSH Daemon LogLevel to VERBOSE\n\nThe `VERBOSE` parameter configures the SSH daemon to record login and logout activity.\nTo specify the log level in\nSSH, add or correct the following line in\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nLogLevel VERBOSE\n```\n\n**Rationale:**\n\nSSH provides several logging levels with varying amounts of verbosity. `DEBUG` is specifically\nnot recommended other than strictly for debugging SSH communications since it provides\nso much data that it is difficult to identify important security information. `INFO` or\n`VERBOSE` level is the basic level that only records login activity of SSH users. In many\nsituations, such as Incident Response, it is important to determine when a particular user was active\non a system. The logout record can eliminate those users who disconnected, which helps narrow the\nfield.\n\n**Notes:**\n\nThe CIS benchmark is not opinionated about which loglevel is selected here. Here, this\nprofile uses VERBOSE by default, as it allows for the capture of login and logout activity\nas well as key fingerprints.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.5.1.15",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.1.15",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sshd_set_loglevel_verbose": "CCE-86923-0"
+      },
+      "related_rules": [
+        "sshd_set_loglevel_info"
+      ],
+      "rules": [
+        "sshd_set_loglevel_verbose"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sshd_set_loglevel_verbose`",
+          "language": "bash",
+          "name": "Set SSH Daemon LogLevel to VERBOSE",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nmkdir -p /etc/ssh/sshd_config.d\nchmod 0700 /etc/ssh/sshd_config.d\ntouch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nchmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nLC_ALL=C sed -i \"/^\\s*LogLevel\\s\\+/Id\" \"/etc/ssh/sshd_config\"\nLC_ALL=C sed -i \"/^\\s*LogLevel\\s\\+/Id\" \"/etc/ssh/sshd_config.d\"/*.conf\nif [ -e \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*LogLevel\\s\\+/Id\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nelse\n    touch \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n    chmod 0644 \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n\ncp \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n# Insert at the beginning of the file\nprintf '%s\\n' \"LogLevel VERBOSE\" > \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\ncat \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\" >> \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n# Clean up after ourselves.\nrm \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.15",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd LogLevel is configured (Automated)"
+}

@@ -68,4 +68,4 @@ def test_help_without_benchmark_lists_every_option(capsys):
     usage = capsys.readouterr().out
     for option in ("--benchmark", "--tag", "--offline", "--release", "--sources-dir", "--baselines-dir"):
         assert option in usage
-    assert "cis_rhel9" in usage
+    assert "cac_cis_rhel9" in usage

@@ -1,0 +1,141 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": [
+                "System\\CurrentControlSet\\Control\\ProductOptions",
+                "System\\CurrentControlSet\\Control\\Server Applications",
+                "Software\\Microsoft\\Windows NT\\CurrentVersion"
+              ],
+              "hive": "HKLM",
+              "path": "System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths",
+              "state": "present",
+              "type": "REG_MULTI_SZ",
+              "value_name": "Machine"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('Machine', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [string[]] -and $current.Length -eq 3 -and [string]::Join([string][char]0, $current) -ceq [string]::Join([string][char]0, @('System\\CurrentControlSet\\Control\\ProductOptions', 'System\\CurrentControlSet\\Control\\Server Applications', 'Software\\Microsoft\\Windows NT\\CurrentVersion')))) {\n    Write-Output 'Mismatch: HKLM:\\System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths [Machine]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_2_3_10_7 }}\nregistry:\n  HKLM\\SYSTEM\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths\\Machine:\n    title: \"2.3.10.7 | Ensure 'Network access: Remotely accessible registry paths' is configured | Machine\"\n    exists: true\n    value: \"System\\\\CurrentControlSet\\\\Control\\\\ProductOptions\\nSystem\\\\CurrentControlSet\\\\Control\\\\Server Applications\\nSoftware\\\\Microsoft\\\\Windows NT\\\\CurrentVersion\"\n    type: REG_MULTI_SZ\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 2.3.10.7\n      NIST800-53R5:\n        - AC-6(7)(b)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_2/cis_2.3.10.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_2/cis_2.3.10.x/cis_2.3.10.7.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows11.2.3.10.7",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "2.3.10.7"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": [
+                "System\\CurrentControlSet\\Control\\ProductOptions",
+                "System\\CurrentControlSet\\Control\\Server Applications",
+                "Software\\Microsoft\\Windows NT\\CurrentVersion"
+              ],
+              "hive": "HKLM",
+              "path": "System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths",
+              "state": "present",
+              "type": "REG_MULTI_SZ",
+              "value_name": "Machine"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths')) {\n    New-Item -Path 'HKLM:\\System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths' -Name 'Machine' -Value @('System\\CurrentControlSet\\Control\\ProductOptions', 'System\\CurrentControlSet\\Control\\Server Applications', 'Software\\Microsoft\\Windows NT\\CurrentVersion') -PropertyType MultiString -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"2.3.10.7 | PATCH | Ensure 'Network access: Remotely accessible registry paths' is configured\"\n  when: win11cis_rule_2_3_10_7\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_2.3.10.7\n    - NIST800-171_3.1.5\n    - NIST800-53R5_AC-6_7_b\n  ansible.windows.win_regedit:\n    path: HKLM:\\System\\Currentcontrolset\\Control\\Securepipeservers\\Winreg\\AllowedExactpaths\n    name: \"Machine\"\n    data: ['System\\CurrentControlSet\\Control\\ProductOptions', 'System\\CurrentControlSet\\Control\\Server Applications', 'Software\\Microsoft\\Windows NT\\CurrentVersion']\n    type: multistring\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.3",
+    "2.3.10"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_2/cis_2.3.10.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.10.7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_2/cis_2.3.10.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Network access: Remotely accessible registry paths' is configured"
+}

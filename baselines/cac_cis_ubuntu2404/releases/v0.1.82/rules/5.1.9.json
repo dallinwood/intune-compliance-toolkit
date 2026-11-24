@@ -1,0 +1,98 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable GSSAPI Authentication\n----\nTo determine how the SSH daemon's GSSAPIAuthentication option is set, run the following command:\n\n$ sudo grep -i GSSAPIAuthentication /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\n$ sudo grep -i GSSAPIAuthentication /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\n\nIf a line indicating no is returned, then the required value is set.\n\n      Is it the case that the required value is not set?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Disable GSSAPI Authentication\n\nUnless needed, SSH should not permit extraneous or unnecessary\nauthentication mechanisms like GSSAPI.\n\n\nThe default SSH configuration disallows authentications based on GSSAPI. The appropriate\nconfiguration is used if no value is set for `GSSAPIAuthentication`.\n\n\nTo explicitly disable GSSAPI authentication, add or correct the following line in\n\n\n\n\n`/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf`:\n\n\n```\nGSSAPIAuthentication no\n```\n\n**Rationale:**\n\nGSSAPI authentication is used to provide additional authentication mechanisms to\napplications. Allowing GSSAPI authentication through SSH exposes the system's\nGSSAPI to remote hosts, increasing the attack surface of the system.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.1.9",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.1.9",
+      "levels": [
+        "l1_workstation",
+        "l2_server"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "sshd_disable_gssapi_auth"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sshd_disable_gssapi_auth`",
+          "language": "bash",
+          "name": "Disable GSSAPI Authentication",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nmkdir -p /etc/ssh/sshd_config.d\nchmod 0700 /etc/ssh/sshd_config.d\ntouch /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\nchmod 0600 /etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\nLC_ALL=C sed -i \"/^\\s*GSSAPIAuthentication\\s\\+/Id\" \"/etc/ssh/sshd_config\"\nLC_ALL=C sed -i \"/^\\s*GSSAPIAuthentication\\s\\+/Id\" \"/etc/ssh/sshd_config.d\"/*.conf\nif [ -e \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*GSSAPIAuthentication\\s\\+/Id\" \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\"\nelse\n    touch \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\"\n    chmod 0644 \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\"\n\ncp \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\" \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak\"\n# Insert at the beginning of the file\nprintf '%s\\n' \"GSSAPIAuthentication no\" > \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\"\ncat \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak\" >> \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf\"\n# Clean up after ourselves.\nrm \"/etc/ssh/sshd_config.d/01-complianceascode-reinforce-os-defaults.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.9",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd GSSAPIAuthentication is disabled (Automated)"
+}

@@ -1,0 +1,94 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable DCCP Support\n----\nIf the system is configured to prevent the loading of the dccp kernel module,\nit will contain lines inside any file in /etc/modprobe.d or the deprecated /etc/modprobe.conf.\nThese lines instruct the module loading system to run another program (such as /bin/false) upon a module install event.\n\nRun the following command to search for such lines in all files in /etc/modprobe.d and the deprecated /etc/modprobe.conf:\n$ grep -r dccp /etc/modprobe.conf /etc/modprobe.d\n      Is it the case that no line is returned?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Disable DCCP Support\n\nThe Datagram Congestion Control Protocol (DCCP) is a\nrelatively new transport layer protocol, designed to support\nstreaming media and telephony.\n\nTo configure the system to prevent the `dccp`\nkernel module from being loaded, add the following line to the file `/etc/modprobe.d/dccp.conf`:\n\n```\ninstall dccp /bin/false\n```\n\nThis entry will cause a non-zero return value during a `dccp` module installation\nand additionally convey the meaning of the entry to the user in form of an error message.\nIf you would like to omit a non-zero return value and an error message, you may want to add a different line instead\n(both `/bin/true` and `/bin/false` are allowed by OVAL and will be accepted by the scan):\n\n```\ninstall dccp /bin/true\n```\n\n**Rationale:**\n\nDisabling DCCP protects\nthe system against exploitation of any flaws in its implementation.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.3.2.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "3.2.1",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "kernel_module_dccp_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `kernel_module_dccp_disabled`",
+          "language": "bash",
+          "name": "Disable DCCP Support",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nif LC_ALL=C grep -q -m 1 \"^install dccp\" /etc/modprobe.d/dccp.conf ; then\n\t\n\tsed -i 's#^install dccp.*#install dccp /bin/false#g' /etc/modprobe.d/dccp.conf\nelse\n\techo -e \"\\n# Disable per security requirements\" >> /etc/modprobe.d/dccp.conf\n\techo \"install dccp /bin/false\" >> /etc/modprobe.d/dccp.conf\nfi\n\nif ! LC_ALL=C grep -q -m 1 \"^blacklist dccp$\" /etc/modprobe.d/dccp.conf ; then\n\techo \"blacklist dccp\" >> /etc/modprobe.d/dccp.conf\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "3",
+    "3.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "3.2.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure dccp kernel module is not available (Automated)"
+}

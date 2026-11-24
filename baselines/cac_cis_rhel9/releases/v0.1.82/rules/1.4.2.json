@@ -1,0 +1,158 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify /boot/grub2/grub.cfg Group Ownership\n----\nTo check the group ownership of /boot/grub2/grub.cfg,\nrun the command:\n$ ls -lL /boot/grub2/grub.cfg\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /boot/grub2/grub.cfg does not have a group owner of\nroot\n?\n----\n\n== Verify /boot/grub2/grub.cfg User Ownership\n----\nTo check the ownership of /boot/grub2/grub.cfg,\nrun the command:\n$ ls -lL /boot/grub2/grub.cfg\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /boot/grub2/grub.cfg does not have an owner of root?\n----\n\n== Verify /boot/grub2/grub.cfg Permissions\n----\nTo check the permissions of /boot/grub2/grub.cfg, run the command:\n$ sudo ls -lL /boot/grub2/grub.cfg\nIf properly configured, the output should indicate the following\npermissions: -rw-------\n      Is it the case that it does not?\n----\n\n== Verify /boot/grub2/user.cfg Group Ownership\n----\nTo check the group ownership of /boot/grub2/user.cfg,\nrun the command:\n$ ls -lL /boot/grub2/user.cfg\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /boot/grub2/user.cfg does not have a group owner of\nroot\n?\n----\n\n== Verify /boot/grub2/user.cfg User Ownership\n----\nTo check the ownership of /boot/grub2/user.cfg,\nrun the command:\n$ ls -lL /boot/grub2/user.cfg\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /boot/grub2/user.cfg does not have an owner of root?\n----\n\n== Verify /boot/grub2/user.cfg Permissions\n----\nTo check the permissions of /boot/grub2/user.cfg,\nrun the command:\n$ ls -l /boot/grub2/user.cfg\nIf properly configured, the output should indicate the following permissions:\n-rw-------\n      Is it the case that /boot/grub2/user.cfg does not have unix mode -rw-------?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Verify /boot/grub2/grub.cfg Group Ownership\n\nThe file `/boot/grub2/grub.cfg` should\nbe group-owned by the `root` group to prevent\ndestruction or modification of the file.\nTo properly set the group owner of `/boot/grub2/grub.cfg`, run the command:\n\n  \n```\n$ sudo chgrp root /boot/grub2/grub.cfg\n```\n\n**Rationale:**\n\nThe `root` group is a highly-privileged group. Furthermore, the group-owner of this\nfile should not have any access privileges anyway.\n\n## Verify /boot/grub2/grub.cfg User Ownership\n\nThe file `/boot/grub2/grub.cfg` should\nbe owned by the `root` user to prevent destruction\nor modification of the file.\nTo properly set the owner of `/boot/grub2/grub.cfg`, run the command:\n\n  \n```\n$ sudo chown root /boot/grub2/grub.cfg \n```\n\n**Rationale:**\n\nOnly root should be able to modify important boot parameters.\n\n## Verify /boot/grub2/grub.cfg Permissions\n\nFile permissions for `/boot/grub2/grub.cfg` should be set to 600.\nTo properly set the permissions of `/boot/grub2/grub.cfg`, run the command:\n\n```\n$ sudo chmod 600 /boot/grub2/grub.cfg\n```\n\n**Rationale:**\n\nProper permissions ensure that only the root user can modify important boot\nparameters.\n\n## Verify /boot/grub2/user.cfg Group Ownership\n\nThe file `/boot/grub2/user.cfg` should be group-owned by the `root`\ngroup to prevent reading or modification of the file.\nTo properly set the group owner of `/boot/grub2/user.cfg`, run the command:\n\n  \n```\n$ sudo chgrp root /boot/grub2/user.cfg\n```\n\n**Rationale:**\n\nThe `root` group is a highly-privileged group. Furthermore, the group-owner of this\nfile should not have any access privileges anyway. Non-root users who read the boot parameters\nmay be able to identify weaknesses in security upon boot and be able to exploit them.\n\n## Verify /boot/grub2/user.cfg User Ownership\n\nThe file `/boot/grub2/user.cfg` should be owned by the `root`\nuser to prevent reading or modification of the file.\nTo properly set the owner of `/boot/grub2/user.cfg`, run the command:\n\n  \n```\n$ sudo chown root /boot/grub2/user.cfg \n```\n\n**Rationale:**\n\nOnly root should be able to modify important boot parameters. Also, non-root users who read\nthe boot parameters may be able to identify weaknesses in security upon boot and be able to\nexploit them.\n\n## Verify /boot/grub2/user.cfg Permissions\n\nFile permissions for `/boot/grub2/user.cfg` should be set to 600.\nTo properly set the permissions of `/boot/grub2/user.cfg`, run the command:\n\n```\n$ sudo chmod 600 /boot/grub2/user.cfg\n```\n\n**Rationale:**\n\nProper permissions ensure that only the root user can read or modify important boot\nparameters.\n\n**Notes:**\n\nRHEL9 unified the paths for grub2 files. This requirement demands a deeper review of\nthe rules.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.1.4.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.4.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "file_groupowner_grub2_cfg": "CCE-83848-2",
+        "file_groupowner_user_cfg": "CCE-86010-6",
+        "file_owner_grub2_cfg": "CCE-83845-8",
+        "file_owner_user_cfg": "CCE-86016-3",
+        "file_permissions_grub2_cfg": "CCE-83846-6",
+        "file_permissions_user_cfg": "CCE-86025-4"
+      },
+      "related_rules": [
+        "file_groupowner_efi_grub2_cfg",
+        "file_owner_efi_grub2_cfg",
+        "file_permissions_efi_grub2_cfg",
+        "file_groupowner_efi_user_cfg",
+        "file_owner_efi_user_cfg",
+        "file_permissions_efi_user_cfg"
+      ],
+      "rules": [
+        "file_groupowner_grub2_cfg",
+        "file_owner_grub2_cfg",
+        "file_permissions_grub2_cfg",
+        "file_groupowner_user_cfg",
+        "file_owner_user_cfg",
+        "file_permissions_user_cfg"
+      ],
+      "status": "pending"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_grub2_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub2/grub.cfg Group Ownership",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( rpm --quiet -q grub2-common && rpm --quiet -q kernel-core ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nnewgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/boot/grub2/grub.cfg\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /boot/grub2/grub.cfg\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_grub2_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub2/grub.cfg User Ownership",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( rpm --quiet -q grub2-common && rpm --quiet -q kernel-core ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nnewown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/boot/grub2/grub.cfg\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /boot/grub2/grub.cfg\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_grub2_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub2/grub.cfg Permissions",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( rpm --quiet -q grub2-common && rpm --quiet -q kernel-core ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nchmod u-xs,g-xwrs,o-xwrt /boot/grub2/grub.cfg\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupowner_user_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub2/user.cfg Group Ownership",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( rpm --quiet -q grub2-common && rpm --quiet -q kernel-core ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nnewgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nif ! stat -c \"%g %G\" \"/boot/grub2/user.cfg\" | grep -E -w -q \"0\"; then\n    chgrp --no-dereference \"$newgroup\" /boot/grub2/user.cfg\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_owner_user_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub2/user.cfg User Ownership",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( rpm --quiet -q grub2-common && rpm --quiet -q kernel-core ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nnewown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\nif ! stat -c \"%u %U\" \"/boot/grub2/user.cfg\" | grep -E -w -q \"0\"; then\n    chown --no-dereference \"$newown\" /boot/grub2/user.cfg\nfi\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_user_cfg`",
+          "language": "bash",
+          "name": "Verify /boot/grub2/user.cfg Permissions",
+          "shell": "# Remediation is applicable only in certain platforms\nif ( rpm --quiet -q grub2-common && rpm --quiet -q kernel-core ) && { ( ! ( [ -f /.dockerenv ] || [ -f /run/.containerenv ] ) ); }; then\n\nchmod u-xs,g-xwrs,o-xwrt /boot/grub2/user.cfg\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.4"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.4.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure access to bootloader config is configured (Automated)"
+}

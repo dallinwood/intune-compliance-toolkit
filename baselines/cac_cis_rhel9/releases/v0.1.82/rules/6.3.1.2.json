@@ -1,0 +1,98 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable Auditing for Processes Which Start Prior to the Audit Daemon\n----\nInspect the form of default GRUB 2 command line for the Linux operating system\nin /etc/default/grub. If it includes audit=1,\nthen the parameter will be configured for newly installed kernels.\nFirst check if the GRUB recovery is enabled:\n$ sudo grep 'GRUB_DISABLE_RECOVERY' /etc/default/grub\nIf this option is set to true, then check that a line is output by the following command:\n$ sudo grep 'GRUB_CMDLINE_LINUX_DEFAULT.*audit=1.*' /etc/default/grub\nIf the recovery is disabled, check the line with\n$ sudo grep 'GRUB_CMDLINE_LINUX.*audit=1.*' /etc/default/grub.Moreover, command line parameters for currently installed kernels should be checked as well.\nRun the following command:\n$ sudo grubby --info=ALL | grep args | grep -v 'audit=1'\nThe command should not return any output.\n      Is it the case that auditing is not enabled at boot time?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Enable Auditing for Processes Which Start Prior to the Audit Daemon\n\nTo ensure all processes can be audited, even those which start\nprior to the audit daemon, add the argument `audit=1` to the default\nGRUB 2 command line for the Linux operating system.\nTo ensure that `audit=1` is added as a kernel command line\nargument to newly installed kernels, add `audit=1` to the\ndefault Grub2 command line for Linux operating systems. Modify the line within\n`/etc/default/grub` as shown below:\n\n```\nGRUB_CMDLINE_LINUX=\"... audit=1 ...\"\n```\n\nRun the following command to update command line for already installed kernels:\n```\n# grubby --update-kernel=ALL --args=\"audit=1\"\n```\n\nIf the system is distributed as a bootable container image, GRUB2 can't be configured using the method described above, but the following method needs to be used instead.\nThe kernel arguments should be set in `/usr/lib/bootc/kargs.d` in a TOML file that has the following form:\n\n```\n# /usr/lib/bootc/kargs.d/10-example.toml\nkargs = [\"audit=1\"]\n```\n\nFor more details on configuring kernel arguments in bootable container images, please refer to [Bootc documentation](https://bootc-dev.github.io/bootc//building/kernel-arguments.html).\n\n**Rationale:**\n\nEach process on the system carries an \"auditable\" flag which indicates whether\nits activities can be audited. Although `auditd` takes care of enabling\nthis for all processes which launch after it does, adding the kernel argument\nensures it is set for every process during boot.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.6.3.1.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.3.1.2",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "grub2_audit_argument": "CCE-83651-0"
+      },
+      "rules": [
+        "grub2_audit_argument"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `grub2_audit_argument`",
+          "language": "bash",
+          "name": "Enable Auditing for Processes Which Start Prior to the Audit Daemon",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q grub2-common; }; then\n\nif { rpm --quiet -q kernel bootc && ! rpm --quiet -q openshift-kubelet && { [ -f \"/run/.containerenv\" ] || [ -f \"/.containerenv\" ]; }; } ; then\n    KARGS_DIR=\"/usr/lib/bootc/kargs.d/\"\n    if grep -q -E \"audit\" \"$KARGS_DIR/*.toml\" ; then\n        sed -i -E \"s/^(\\s*kargs\\s*=\\s*\\[.*)\\\"audit=[^\\\"]*\\\"(.*]\\s*)/\\1\\\"audit=1\\\"\\2/\" \"$KARGS_DIR/*.toml\"\n    else\n        echo \"kargs = [\\\"audit=1\\\"]\" >> \"$KARGS_DIR/10-audit.toml\"\n    fi\nelse\n\n    grubby --update-kernel=ALL --args=audit=1\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "6",
+    "6.3",
+    "6.3.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.3.1.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure auditing for processes that start prior to auditd is enabled (Automated)"
+}

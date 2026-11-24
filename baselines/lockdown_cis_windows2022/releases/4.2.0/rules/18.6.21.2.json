@@ -1,0 +1,133 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level2_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "fBlockNonDomain"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('fBlockNonDomain', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]1)) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy [fBlockNonDomain]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if and (ne .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_2 }}\n  {{ if .Vars.win22cis_rule_18_6_21_2 }}\n    {{ if eq .Vars.win22cis_system_role \"memberserver\" }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy\\fBlockNonDomain:\n    title: \"18.6.21.2 | Ensure 'Prohibit connection to non-domain networks when connected to domain authenticated network' is set to 'Enabled' (MS only) | fBlockNonDomain\"\n    exists: true\n    value: 1\n    type: REG_DWORD\n    meta:\n      memberserver: 2\n      server: 2\n      CIS_ID:\n        - 18.6.21.2\n      NIST800-53R5:\n        - SC-7\n    {{ end }}\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.6.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_18/section_18.6/cis_18.6.21.2.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Member Server only (from the upstream task name).",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2022.18.6.21.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "18.6.21.2"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "fBlockNonDomain"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy' -Name 'fBlockNonDomain' -Value 1 -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.6.21.2 | PATCH | Ensure Prohibit connection to non-domain networks when connected to domain authenticated network is set to Enabled MS only | Member Server\"\n  when:\n    - win22cis_rule_18_6_21_2\n    - prelim_win22cis_is_domain_member\n  tags:\n    - level2-memberserver\n    - rule_18.6.21.2\n    - patch\n    - NIST800-171_3.13.1\n    - NIST800-171_3.13.5\n    - NIST800-53R5_SC-7\n  ansible.windows.win_regedit:\n    path: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Wcmsvc\\Grouppolicy\n    name: fBlockNonDomain\n    data: 1\n    type: dword\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.6",
+    "18.6.21"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_18/section_18.6.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.6.21.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_18/section_18.6.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Prohibit connection to non-domain networks when connected to domain authenticated network' is set to 'Enabled' (MS only)"
+}

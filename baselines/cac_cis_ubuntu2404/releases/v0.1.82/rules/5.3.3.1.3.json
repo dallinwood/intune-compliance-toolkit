@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Set Root Lockout Time for Failed Password Attempts\n\nThis rule configures the system to lock out root during a specified time period after a\nnumber of incorrect login attempts using `pam_faillock.so`.\n\nEnsure that the file `/etc/security/faillock.conf` contains the following entry:\n`root_unlock_time=<interval-in-seconds>` where\n`interval-in-seconds` is `$ODV_var_accounts_passwords_pam_faillock_root_unlock_time` or greater.\n\nIf `root_unlock_time` is set to `0`, it may enable attacker to\napply denial of service to legitimate users.\n\n**Rationale:**\n\nBy limiting the number of failed logon attempts the risk of unauthorized root\naccess via password guessing, otherwise known as brute-forcing, is reduced.\nLimits are imposed by locking the account.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.3.3.1.3",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l2_server": 60,
+        "cis_l2_workstation": 60
+      },
+      "datatype": "number",
+      "description": "fail_root_unlock_time",
+      "name": "var_accounts_passwords_pam_faillock_root_unlock_time",
+      "quoting": "single",
+      "recommended": 60,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.3.3.1.3",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_passwords_pam_faillock_root_unlock_time"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_passwords_pam_faillock_root_unlock_time`",
+          "language": "bash",
+          "name": "Set Root Lockout Time for Failed Password Attempts",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'libpam-runtime' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_accounts_passwords_pam_faillock_root_unlock_time='$ODV_var_accounts_passwords_pam_faillock_root_unlock_time'\n\n\nif [ -f /usr/bin/authselect ]; then\n    if ! authselect check; then\necho \"\nauthselect integrity check failed. Remediation aborted!\nThis remediation could not be applied because an authselect profile was not selected or the selected profile is not intact.\nIt is not recommended to manually edit the PAM files when authselect tool is available.\nIn cases where the default authselect profile does not cover a specific demand, a custom authselect profile is recommended.\"\nexit 1\nfi\nauthselect enable-feature with-faillock\n\nauthselect apply-changes -b\nelse\n    \nconf_name=cac_faillock\n\nif [ ! -f /usr/share/pam-configs/\"$conf_name\" ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"\nName: Enable pam_faillock to deny access\nDefault: yes\nConflicts: faillock\nPriority: 0\nAuth-Type: Primary\nAuth:\n    [default=die]                   pam_faillock.so authfail\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"\nfi\n\nif [ ! -f /usr/share/pam-configs/\"$conf_name\"_notify ]; then\n    cat << EOF > /usr/share/pam-configs/\"$conf_name\"_notify\nName: Notify of failed login attempts and reset count upon success\nDefault: yes\nConflicts: faillock_notify\nPriority: 1025\nAuth-Type: Primary\nAuth:\n    requisite                       pam_faillock.so preauth\nAccount-Type: Primary\nAccount:\n    required                        pam_faillock.so\nEOF\n    chmod 0644 /usr/share/pam-configs/\"$conf_name\"_notify\nfi\n\nDEBIAN_FRONTEND=noninteractive pam-auth-update\n\n\nfi\n\nAUTH_FILES=(\"/etc/pam.d/common-auth\")\nSKIP_FAILLOCK_CHECK=true\n\nFAILLOCK_CONF=\"/etc/security/faillock.conf\"\nif [ -f $FAILLOCK_CONF ] || [ \"$SKIP_FAILLOCK_CHECK\" = \"true\" ]; then\n    regex=\"^\\s*root_unlock_time\\s*=\"\n    line=\"root_unlock_time = $var_accounts_passwords_pam_faillock_root_unlock_time\"\n    if ! grep -q $regex $FAILLOCK_CONF; then\n        echo $line >> $FAILLOCK_CONF\n    else\n        sed -i --follow-symlinks 's|^\\s*\\(root_unlock_time\\s*=\\s*\\)\\(\\S\\+\\)|\\1'\"$var_accounts_passwords_pam_faillock_root_unlock_time\"'|g' $FAILLOCK_CONF\n    fi\n    \nelse\n    for pam_file in \"${AUTH_FILES[@]}\"\n    do\n        if ! grep -qE '^\\s*auth.*pam_faillock\\.so\\s+(preauth|authfail).*root_unlock_time' \"$pam_file\"; then\n            sed -i --follow-symlinks '/^auth.*required.*pam_faillock\\.so.*preauth.*/ s/$/ root_unlock_time='\"$var_accounts_passwords_pam_faillock_root_unlock_time\"'/' \"$pam_file\"\n            sed -i --follow-symlinks '/^auth.*required.*pam_faillock\\.so.*authfail.*/ s/$/ root_unlock_time='\"$var_accounts_passwords_pam_faillock_root_unlock_time\"'/' \"$pam_file\"\n        else\n            sed -i --follow-symlinks 's/\\(^auth.*required.*pam_faillock\\.so.*preauth.*\\)\\('\"root_unlock_time\"'=\\)\\S\\+\\b\\(.*\\)/\\1\\2'\"$var_accounts_passwords_pam_faillock_root_unlock_time\"'\\3/' \"$pam_file\"\n            sed -i --follow-symlinks 's/\\(^auth.*required.*pam_faillock\\.so.*authfail.*\\)\\('\"root_unlock_time\"'=\\)\\S\\+\\b\\(.*\\)/\\1\\2'\"$var_accounts_passwords_pam_faillock_root_unlock_time\"'\\3/' \"$pam_file\"\n        fi\n    done\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.3",
+    "5.3.3",
+    "5.3.3.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.3.3.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure password failed attempts lockout includes root account (Automated)"
+}

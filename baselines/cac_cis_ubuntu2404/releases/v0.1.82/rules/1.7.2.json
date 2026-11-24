@@ -1,0 +1,125 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Enable GNOME3 Login Warning Banner\n----\nTo ensure a login warning banner is enabled, run the following:\n$ grep banner-message-enable /etc/dconf/db/gdm.d/*\nIf properly configured, the output should be true.\nTo ensure a login warning banner is locked and cannot be changed by a user, run the following:\n$ grep banner-message-enable /etc/dconf/db/gdm.d/locks/*\nIf properly configured, the output should be /org/gnome/login-screen/banner-message-enable.\n      Is it the case that it is not?\n----\n\n== Set the GNOME3 Login Warning Banner Text\n----\nTo ensure the login warning banner text is properly set, run the following:\n$ grep banner-message-text /etc/gdm3/greeter.dconf-defaults\nIf properly configured, the proper banner text will appear.\n      Is it the case that it does not?\n----\nExpected values: dconf_login_banner_contents = $ODV_dconf_login_banner_contents",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Enable GNOME3 Login Warning Banner\n\nIn the default graphical environment, displaying a login warning banner\nin the GNOME Display Manager's login screen can be enabled on the login\nscreen by setting `banner-message-enable` to `true`.\n\n\n         \n\nTo enable, add or edit `banner-message-enable` to\n`/etc/dconf/db/gdm.d/00-security-settings`. For example:\n\n```\n[org/gnome/login-screen]\nbanner-message-enable=true\n```\n\nOnce the setting has been added, add a lock to\n`/etc/dconf/db/gdm.d/locks/00-security-settings-lock` to prevent user modification.\nFor example:\n\n```\n/org/gnome/login-screen/banner-message-enable\n```\n\nAfter the settings have been set, run `dconf update`.\nThe banner text must also be set.\n\n**Rationale:**\n\nDisplay of a standardized and approved use notification before granting access to the operating system\nensures privacy and security notification verbiage used is consistent with applicable federal laws,\nExecutive Orders, directives, policies, regulations, standards, and guidance.\n\n\n         \n\nFor U.S. Government systems, system use notifications are required only for access via login interfaces\nwith human users and are not required when such human interfaces do not exist.\n\n## Set the GNOME3 Login Warning Banner Text\n\nIn the default graphical environment, configuring the login warning banner text\nin the GNOME Display Manager's login screen can be configured on the login\nscreen by setting `banner-message-text` to `'*APPROVED_BANNER*'`\nwhere *APPROVED_BANNER* is the approved banner for your environment.\n\n\n         \n\nTo enable, add or edit `banner-message-text` to\n\n`/etc/gdm3/greeter.dconf-defaults`. For example:\n\n```\n[org/gnome/login-screen]\nbanner-message-text='*APPROVED_BANNER*'\n```\n\n\nAfter the settings have been set, run `dconf update`.\nWhen entering a warning banner that spans several lines, remember\nto begin and end the string with `'` and use `\\n` for new lines.\n\n**Rationale:**\n\nAn appropriate warning message reinforces policy awareness during the logon\nprocess and facilitates possible legal action against attackers.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.1.7.2",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "Authorized uses only. All activity may be monitored and reported.",
+        "cis_l1_workstation": "Authorized uses only. All activity may be monitored and reported.",
+        "cis_l2_server": "Authorized uses only. All activity may be monitored and reported.",
+        "cis_l2_workstation": "Authorized uses only. All activity may be monitored and reported."
+      },
+      "datatype": "string",
+      "description": "Login Banner Verbiage",
+      "name": "dconf_login_banner_contents",
+      "quoting": "double",
+      "recommended": "Authorized uses only. All activity may be monitored and reported.",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.7.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "dconf_gnome_banner_enabled",
+        "dconf_gnome_login_banner_text"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_banner_enabled`",
+          "language": "bash",
+          "name": "Enable GNOME3 Login Warning Banner",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'gdm3' 2>/dev/null | grep -q '^installed$'; then\n\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/user\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:local\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:local\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/local.d\nchmod 0755 /etc/dconf/db/local.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/gdm\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:gdm\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:gdm\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/gdm.d\nchmod 0755 /etc/dconf/db/gdm.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\n# Duplicate the setting also in 'greeter.dconf-defaults' for consistency with\n# 'dconf_gnome_login_banner_text' and better alignment with STIG V1R1.\nif [ -e \"/etc/gdm3/greeter.dconf-defaults\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*banner\\-message\\-enable/Id\" \"/etc/gdm3/greeter.dconf-defaults\"\nelse\n    touch \"/etc/gdm3/greeter.dconf-defaults\"\n    chmod 0644 \"/etc/gdm3/greeter.dconf-defaults\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/gdm3/greeter.dconf-defaults\"\n\ncp \"/etc/gdm3/greeter.dconf-defaults\" \"/etc/gdm3/greeter.dconf-defaults.bak\"\n# Insert after the line matching the regex '\\[org/gnome/login-screen\\]'\nline_number=\"$(LC_ALL=C grep -n \"\\[org/gnome/login-screen\\]\" \"/etc/gdm3/greeter.dconf-defaults.bak\" | LC_ALL=C sed 's/:.*//g')\"\nif [ -z \"$line_number\" ]; then\n    # There was no match of '\\[org/gnome/login-screen\\]', insert at\n    # the end of the file.\n    printf '%s\\n' \"banner-message-enable=true\" >> \"/etc/gdm3/greeter.dconf-defaults\"\nelse\n    head -n \"$(( line_number ))\" \"/etc/gdm3/greeter.dconf-defaults.bak\" > \"/etc/gdm3/greeter.dconf-defaults\"\n    printf '%s\\n' \"banner-message-enable=true\" >> \"/etc/gdm3/greeter.dconf-defaults\"\n    tail -n \"+$(( line_number + 1 ))\" \"/etc/gdm3/greeter.dconf-defaults.bak\" >> \"/etc/gdm3/greeter.dconf-defaults\"\nfi\n# Clean up after ourselves.\nrm \"/etc/gdm3/greeter.dconf-defaults.bak\"\n\n\n# Check for setting in any of the DConf db directories\n# If files contain ibus or distro, ignore them.\n# The assignment assumes that individual filenames don't contain :\nreadarray -t SETTINGSFILES < <(grep -r \"\\\\[org/gnome/login-screen\\\\]\" \"/etc/dconf/db/\" \\\n                                | grep -v 'distro\\|ibus\\|gdm.d' | cut -d\":\" -f1)\nDCONFFILE=\"/etc/dconf/db/gdm.d/00-security-settings\"\nDBDIR=\"/etc/dconf/db/gdm.d\"\n\nmkdir -p \"${DBDIR}\"\nchmod 0755 \"${DBDIR}\"\n\n# Comment out the configurations in databases different from the target one\nif [ \"${#SETTINGSFILES[@]}\" -ne 0 ]\nthen\n    if grep -q \"^\\\\s*banner-message-enable\\\\s*=\" \"${SETTINGSFILES[@]}\"\n    then\n        \n        sed -Ei \"s/(^\\s*)banner-message-enable(\\s*=)/#\\1banner-message-enable\\2/g\" \"${SETTINGSFILES[@]}\"\n    fi\nfi\n\n[ ! -z \"${DCONFFILE}\" ] && echo \"\" >> \"${DCONFFILE}\"\nif ! grep -q \"\\\\[org/gnome/login-screen\\\\]\" \"${DCONFFILE}\"\nthen\n    printf '%s\\n' \"[org/gnome/login-screen]\" >> ${DCONFFILE}\nfi\n\nescaped_value=\"$(sed -e 's/\\\\/\\\\\\\\/g' <<< \"true\")\"\nif grep -q \"^\\\\s*banner-message-enable\\\\s*=\" \"${DCONFFILE}\"\nthen\n        sed -i \"s/\\\\s*banner-message-enable\\\\s*=\\\\s*.*/banner-message-enable=${escaped_value}/g\" \"${DCONFFILE}\"\n    else\n        sed -i \"\\\\|\\\\[org/gnome/login-screen\\\\]|a\\\\banner-message-enable=${escaped_value}\" \"${DCONFFILE}\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n# Check for setting in any of the DConf db directories\nLOCKFILES=$(grep -r \"^/org/gnome/login-screen/banner-message-enable$\" \"/etc/dconf/db/\" \\\n            | grep -v 'distro\\|ibus\\|gdm.d' | grep \":\" | cut -d\":\" -f1)\nLOCKSFOLDER=\"/etc/dconf/db/gdm.d/locks\"\n\nmkdir -p \"${LOCKSFOLDER}\"\nchmod 0755 \"${LOCKSFOLDER}\"\n\n# Comment out the configurations in databases different from the target one\nif [[ ! -z \"${LOCKFILES}\" ]]\nthen\n    sed -i -E \"s|^/org/gnome/login-screen/banner-message-enable$|#&|\" \"${LOCKFILES[@]}\"\nfi\n\nif ! grep -qr \"^/org/gnome/login-screen/banner-message-enable$\" /etc/dconf/db/gdm.d/\nthen\n    echo \"/org/gnome/login-screen/banner-message-enable\" >> \"/etc/dconf/db/gdm.d/locks/00-security-settings-lock\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `dconf_gnome_login_banner_text`",
+          "language": "bash",
+          "name": "Set the GNOME3 Login Warning Banner Text",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'gdm3' 2>/dev/null | grep -q '^installed$'; then\n\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/user\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:local\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:local\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/local.d\nchmod 0755 /etc/dconf/db/local.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\nmkdir -p /etc/dconf/profile\nchmod 0755 /etc/dconf/profile\ndconf_profile_path=/etc/dconf/profile/gdm\n\n[[ -s \"${dconf_profile_path}\" ]] || echo > \"${dconf_profile_path}\"\nchmod 0644 \"${dconf_profile_path}\"\n\nif ! grep -Pzq \"(?s)^\\s*user-db:user.*\\n\\s*system-db:gdm\" \"${dconf_profile_path}\"; then\n    sed -i --follow-symlinks \"1s/^/user-db:user\\nsystem-db:gdm\\n/\" \"${dconf_profile_path}\"\nfi\n\n# Make sure the corresponding directories exist\nmkdir -p /etc/dconf/db/gdm.d\nchmod 0755 /etc/dconf/db/gdm.d\n\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/profile\n(umask 0022 && dconf update)\n\ndconf_login_banner_contents=$(echo \"$ODV_dconf_login_banner_contents\" )\n# Will do both approach, since we plan to migrate to checks over dconf db. That way, future updates of the tool\n# will pass the check even if we decide to check only for the dconf db path.\nif [ -e \"/etc/gdm3/greeter.dconf-defaults\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*banner\\-message\\-text/Id\" \"/etc/gdm3/greeter.dconf-defaults\"\nelse\n    touch \"/etc/gdm3/greeter.dconf-defaults\"\n    chmod 0644 \"/etc/gdm3/greeter.dconf-defaults\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/gdm3/greeter.dconf-defaults\"\n\ncp \"/etc/gdm3/greeter.dconf-defaults\" \"/etc/gdm3/greeter.dconf-defaults.bak\"\n# Insert after the line matching the regex '\\[org/gnome/login-screen\\]'\nline_number=\"$(LC_ALL=C grep -n \"\\[org/gnome/login-screen\\]\" \"/etc/gdm3/greeter.dconf-defaults.bak\" | LC_ALL=C sed 's/:.*//g')\"\nif [ -z \"$line_number\" ]; then\n    # There was no match of '\\[org/gnome/login-screen\\]', insert at\n    # the end of the file.\n    printf '%s\\n' \"banner-message-text='${dconf_login_banner_contents}'\" >> \"/etc/gdm3/greeter.dconf-defaults\"\nelse\n    head -n \"$(( line_number ))\" \"/etc/gdm3/greeter.dconf-defaults.bak\" > \"/etc/gdm3/greeter.dconf-defaults\"\n    printf '%s\\n' \"banner-message-text='${dconf_login_banner_contents}'\" >> \"/etc/gdm3/greeter.dconf-defaults\"\n    tail -n \"+$(( line_number + 1 ))\" \"/etc/gdm3/greeter.dconf-defaults.bak\" >> \"/etc/gdm3/greeter.dconf-defaults\"\nfi\n# Clean up after ourselves.\nrm \"/etc/gdm3/greeter.dconf-defaults.bak\"\n# Check for setting in any of the DConf db directories\n# If files contain ibus or distro, ignore them.\n# The assignment assumes that individual filenames don't contain :\nreadarray -t SETTINGSFILES < <(grep -r \"\\\\[org/gnome/login-screen\\\\]\" \"/etc/dconf/db/\" \\\n                                | grep -v 'distro\\|ibus\\|gdm.d' | cut -d\":\" -f1)\nDCONFFILE=\"/etc/dconf/db/gdm.d/00-security-settings\"\nDBDIR=\"/etc/dconf/db/gdm.d\"\n\nmkdir -p \"${DBDIR}\"\nchmod 0755 \"${DBDIR}\"\n\n# Comment out the configurations in databases different from the target one\nif [ \"${#SETTINGSFILES[@]}\" -ne 0 ]\nthen\n    if grep -q \"^\\\\s*banner-message-text\\\\s*=\" \"${SETTINGSFILES[@]}\"\n    then\n        \n        sed -Ei \"s/(^\\s*)banner-message-text(\\s*=)/#\\1banner-message-text\\2/g\" \"${SETTINGSFILES[@]}\"\n    fi\nfi\n\n[ ! -z \"${DCONFFILE}\" ] && echo \"\" >> \"${DCONFFILE}\"\nif ! grep -q \"\\\\[org/gnome/login-screen\\\\]\" \"${DCONFFILE}\"\nthen\n    printf '%s\\n' \"[org/gnome/login-screen]\" >> ${DCONFFILE}\nfi\n\nescaped_value=\"$(sed -e 's/\\\\/\\\\\\\\/g' <<< \"'${dconf_login_banner_contents}'\")\"\nif grep -q \"^\\\\s*banner-message-text\\\\s*=\" \"${DCONFFILE}\"\nthen\n        sed -i \"s/\\\\s*banner-message-text\\\\s*=\\\\s*.*/banner-message-text=${escaped_value}/g\" \"${DCONFFILE}\"\n    else\n        sed -i \"\\\\|\\\\[org/gnome/login-screen\\\\]|a\\\\banner-message-text=${escaped_value}\" \"${DCONFFILE}\"\nfi\n# Make sure permissions allow regular users to read dconf settings.\n# Also define the umask to avoid `dconf update` changing permissions.\nchmod -R u=rwX,go=rX /etc/dconf/db\n(umask 0022 && dconf update)\n# No need to use dconf update, since bash_dconf_settings does that already\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.7"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.7.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure GDM login banner is configured (Automated)"
+}

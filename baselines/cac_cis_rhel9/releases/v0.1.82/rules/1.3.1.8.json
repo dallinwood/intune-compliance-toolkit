@@ -1,0 +1,84 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Uninstall setroubleshoot Package\n\nThe SETroubleshoot service notifies desktop users of SELinux\ndenials. The service provides information around configuration errors,\nunauthorized intrusions, and other potential errors.\nThe `setroubleshoot` package can be removed with the following command:\n\n```\n$ sudo dnf remove setroubleshoot\n```\n\n**Rationale:**\n\nThe SETroubleshoot service is an unnecessary daemon to\nhave running on a server, especially if\nX Windows is removed or disabled.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.1.3.1.8",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "1.3.1.8",
+      "levels": [
+        "l1_server"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "package_setroubleshoot_removed": "CCE-84073-6"
+      },
+      "rules": [
+        "package_setroubleshoot_removed"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_setroubleshoot_removed`",
+          "language": "bash",
+          "name": "Uninstall setroubleshoot Package",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\n# CAUTION: This remediation script will remove setroubleshoot\n# from the system, and may remove any packages\n# that depend on setroubleshoot. Execute this\n# remediation AFTER testing on a non-production\n# system!\n\n\nif rpm -q --quiet \"setroubleshoot\" ; then\ndnf remove -y --noautoremove \"setroubleshoot\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.3",
+    "1.3.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.3.1.8",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure SETroubleshoot is not installed (Automated)"
+}

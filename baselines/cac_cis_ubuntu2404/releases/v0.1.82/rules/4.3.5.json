@@ -1,0 +1,201 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Base Chains Exist for Nftables\n----\nTo verify that base chains exist for INPUT, FORWARD, and OUTPUT, run the following commands:\n$ sudo nft list ruleset | grep 'hook input'\n$ sudo nft list ruleset | grep 'hook forward'\n$ sudo nft list ruleset | grep 'hook output'\nOutput should be similar to:\n\n  type filter hook input priority 0;\n  type filter hook forward priority 0;\n  type filter hook output priority 0;\n\n      Is it the case that base chains do not exist for nftables?\n----\nExpected values: var_nftables_table = $ODV_var_nftables_table, var_nftables_family = $ODV_var_nftables_family, var_nftables_base_chain_names = $ODV_var_nftables_base_chain_names, var_nftables_base_chain_types = $ODV_var_nftables_base_chain_types, var_nftables_base_chain_hooks = $ODV_var_nftables_base_chain_hooks, var_nftables_base_chain_priorities = $ODV_var_nftables_base_chain_priorities, var_nftables_base_chain_policies = $ODV_var_nftables_base_chain_policies",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure Base Chains Exist for Nftables\n\nTables in nftables hold chains. Each table only has one address family and only applies\nto packets of this family. Tables can have one of six families.\nChains are containers for rules. They exist in two kinds, base chains and regular chains.\nA base chain is an entry point for packets from the networking stack, a regular chain may\nbe used as jump target and is used for better rule organization.\n\n**Rationale:**\n\nIf a base chain doesn't exist with a hook for input, forward, and delete, packets that would\nflow through those chains will not be touched by nftables.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.4.3.5",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "filter",
+        "cis_l1_workstation": "filter",
+        "cis_l2_server": "filter",
+        "cis_l2_workstation": "filter"
+      },
+      "datatype": "string",
+      "description": "Nftables Tables",
+      "name": "var_nftables_table",
+      "quoting": "single",
+      "recommended": "filter",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "inet",
+        "cis_l1_workstation": "inet",
+        "cis_l2_server": "inet",
+        "cis_l2_workstation": "inet"
+      },
+      "datatype": "string",
+      "description": "Nftables Families",
+      "name": "var_nftables_family",
+      "quoting": "single",
+      "recommended": "inet",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "input,forward,output",
+        "cis_l1_workstation": "input,forward,output",
+        "cis_l2_server": "input,forward,output",
+        "cis_l2_workstation": "input,forward,output"
+      },
+      "datatype": "string",
+      "description": "Nftables Chain Names",
+      "name": "var_nftables_base_chain_names",
+      "quoting": "single",
+      "recommended": "input,forward,output",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "filter,filter,filter",
+        "cis_l1_workstation": "filter,filter,filter",
+        "cis_l2_server": "filter,filter,filter",
+        "cis_l2_workstation": "filter,filter,filter"
+      },
+      "datatype": "string",
+      "description": "Nftables Base Chain Types",
+      "name": "var_nftables_base_chain_types",
+      "quoting": "single",
+      "recommended": "filter,filter,filter",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "input,forward,output",
+        "cis_l1_workstation": "input,forward,output",
+        "cis_l2_server": "input,forward,output",
+        "cis_l2_workstation": "input,forward,output"
+      },
+      "datatype": "string",
+      "description": "Nftables Base Chain Hooks",
+      "name": "var_nftables_base_chain_hooks",
+      "quoting": "single",
+      "recommended": "input,forward,output",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "0,0,0",
+        "cis_l1_workstation": "0,0,0",
+        "cis_l2_server": "0,0,0",
+        "cis_l2_workstation": "0,0,0"
+      },
+      "datatype": "string",
+      "description": "Nftables Base Chain Priorities",
+      "name": "var_nftables_base_chain_priorities",
+      "quoting": "single",
+      "recommended": "0,0,0",
+      "validation": null
+    },
+    {
+      "by_benchmark": {
+        "cis_l1_server": "accept,accept,accept",
+        "cis_l1_workstation": "accept,accept,accept",
+        "cis_l2_server": "accept,accept,accept",
+        "cis_l2_workstation": "accept,accept,accept"
+      },
+      "datatype": "string",
+      "description": "Nftables Base Chain Policies",
+      "name": "var_nftables_base_chain_policies",
+      "quoting": "single",
+      "recommended": "accept,accept,accept",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "4.3.5",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "set_nftables_base_chain"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `set_nftables_base_chain`",
+          "language": "bash",
+          "name": "Ensure Base Chains Exist for Nftables",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'nftables' 2>/dev/null | grep -q '^installed$'; then\n\n#Name of the table\nvar_nftables_table='$ODV_var_nftables_table'\n\n#Family of the table \nvar_nftables_family='$ODV_var_nftables_family'\n\n#Name(s) of base chain\nvar_nftables_base_chain_names='$ODV_var_nftables_base_chain_names'\n\n#Type(s) of base chain\nvar_nftables_base_chain_types='$ODV_var_nftables_base_chain_types'\n\n# Hooks for base chain\nvar_nftables_base_chain_hooks='$ODV_var_nftables_base_chain_hooks'\n\n#Priority\nvar_nftables_base_chain_priorities='$ODV_var_nftables_base_chain_priorities'\n\n#Policy \nvar_nftables_base_chain_policies='$ODV_var_nftables_base_chain_policies'\n\n\n#Transfer some of strings to arrays\nIFS=\",\" read -r -a  names <<< \"$var_nftables_base_chain_names\"\nIFS=\",\" read -r -a  types <<< \"$var_nftables_base_chain_types\"\nIFS=\",\" read -r -a  hooks <<< \"$var_nftables_base_chain_hooks\"\nIFS=\",\" read -r -a  priorities <<< \"$var_nftables_base_chain_priorities\"\nIFS=\",\" read -r -a  policies <<< \"$var_nftables_base_chain_policies\"\n\nmy_cmd=\"nft list tables | grep '$var_nftables_family $var_nftables_table'\"\neval IS_TABLE_EXIST=\\$\\($my_cmd\\)\nif [ -z \"$IS_TABLE_EXIST\" ]\nthen\n  # We create a table and add chains to it \n  nft create table \"$var_nftables_family\" \"$var_nftables_table\"\n  num_of_chains=${#names[@]}\n  for ((i=0; i < num_of_chains; i++))\n  do\n   chain_to_add=\"add chain $var_nftables_family $var_nftables_table ${names[$i]} { type ${types[$i]} hook ${hooks[$i]} priority ${priorities[$i]} ; policy ${policies[$i]} ; }\"\n   my_cmd=\"nft '$chain_to_add'\"\n   eval $my_cmd\n  done    \nelse\n  # We add missing chains to the existing table\n  num_of_chains=${#names[@]}\n  for ((i=0; i < num_of_chains; i++))\n  do\n    IS_CHAIN_EXIST=$(nft list table \"$var_nftables_family\" \"$var_nftables_table\" | grep \"hook ${hooks[$i]}\")\n    if [ -z \"$IS_CHAIN_EXIST\" ]\n      then\n        chain_to_add=\"add chain '$var_nftables_family' '$var_nftables_table' ${names[$i]} { type ${types[$i]} hook ${hooks[$i]} priority ${priorities[$i]} ; policy ${policies[$i]} ; }\"\n        my_cmd=\"nft '$chain_to_add'\"\n        eval $my_cmd\n    fi\n  done \nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "4",
+    "4.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "4.3.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure nftables base chains exist (Automated)"
+}

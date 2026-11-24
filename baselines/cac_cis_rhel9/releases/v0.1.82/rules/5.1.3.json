@@ -1,0 +1,123 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Verify Permissions on SSH Server Public *.pub Key Files\n----\nTo check the permissions of /etc/ssh/*.pub,\nrun the command:\n$ ls -l /etc/ssh/*.pub\nIf properly configured, the output should indicate the following permissions:\n-rw-r--r--\n      Is it the case that /etc/ssh/*.pub does not have unix mode -rw-r--r--?\n----\n\n== Verify Ownership on SSH Server Public *.pub Key Files\n----\nTo check the ownership of /etc/ssh/*.pub,\nrun the command:\n$ ls -lL /etc/ssh/*.pub\nIf properly configured, the output should indicate the following owner:\nroot\n      Is it the case that /etc/ssh/*.pub does not have an owner of root?\n----\n\n== Verify Group Ownership on SSH Server Public *.pub Key Files\n----\nTo check the group ownership of /etc/ssh/*.pub,\nrun the command:\n$ ls -lL /etc/ssh/*.pub\nIf properly configured, the output should indicate the following group-owner:\n\n  root\n  \n      Is it the case that /etc/ssh/*.pub does not have a group owner of\nroot\n?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Verify Permissions on SSH Server Public *.pub Key Files\n\nTo properly set the permissions of `/etc/ssh/*.pub`, run the command: \n```\n$ sudo chmod 0644 /etc/ssh/*.pub\n```\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.\n\n## Verify Ownership on SSH Server Public *.pub Key Files\n\nSSH server public keys, files that match the `/etc/ssh/*.pub` glob, must be owned\nby `root` user.\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.\n\n## Verify Group Ownership on SSH Server Public *.pub Key Files\n\nSSH server public keys, files that match the `/etc/ssh/*.pub` glob, must be\ngroup-owned by `root` group.\n\n**Rationale:**\n\nIf a public host key file is modified by an unauthorized user, the SSH service\nmay be compromised.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.5.1.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.1.3",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "file_groupownership_sshd_pub_key": "CCE-86136-9",
+        "file_ownership_sshd_pub_key": "CCE-86130-2",
+        "file_permissions_sshd_pub_key": "CCE-90819-4"
+      },
+      "rules": [
+        "file_permissions_sshd_pub_key",
+        "file_ownership_sshd_pub_key",
+        "file_groupownership_sshd_pub_key"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_sshd_pub_key`",
+          "language": "bash",
+          "name": "Verify Permissions on SSH Server Public *.pub Key Files",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nfind -P /etc/ssh/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type f -regextype posix-extended -regex '^.*\\.pub$' -exec chmod u-xs,g-xws,o-xwt {} \\;\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownership_sshd_pub_key`",
+          "language": "bash",
+          "name": "Verify Ownership on SSH Server Public *.pub Key Files",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nnewown=\"\"\nif id \"0\" >/dev/null 2>&1; then\n  newown=\"0\"\nfi\n\nif [[ -z \"$newown\" ]]; then\n  >&2 echo \"0 is not a defined user on the system\"\nelse\n\nfind -P /etc/ssh/ -maxdepth 1 -type f  ! -user 0 -regextype posix-extended -regex '^.*\\.pub$' -exec chown --no-dereference \"$newown\" {} \\;\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownership_sshd_pub_key`",
+          "language": "bash",
+          "name": "Verify Group Ownership on SSH Server Public *.pub Key Files",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nnewgroup=\"\"\nif getent group \"0\" >/dev/null 2>&1; then\n  newgroup=\"0\"\nfi\n\nif [[ -z \"${newgroup}\" ]]; then\n  >&2 echo \"0 is not a defined group on the system\"\nelse\nfind -P /etc/ssh/ -maxdepth 1 -type f  ! -group 0 -regextype posix-extended -regex '^.*\\.pub$' -exec chgrp --no-dereference \"$newgroup\" {} \\;\n\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure permissions on SSH public host key files are configured (Automated)"
+}

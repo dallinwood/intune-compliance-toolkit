@@ -1,0 +1,87 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if and (eq .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_1 }}\n  {{ if .Vars.win22cis_rule_17_2_4 }}\n    {{ if eq .Vars.win22cis_system_role \"domaincontroller\" }}\nfile:\n  win22cis_17_2_4_other_account_management_events:\n    title: \"17.2.4 | Ensure 'Audit Other Account Management Events' is set to include 'Success' (DC only) | Other Account Management Events\"\n    path: '{{ .Vars.win22cis_snapshot_dir }}\\AuditPolicy.17.2.4'\n    exists: true\n    contents:\n      - '/^[13]$/'\n    meta:\n      domaincontroller: 1\n      server: 1\n      CIS_ID:\n        - 17.2.4\n      NIST800-53R5:\n        - AU-3\n        - AU-3(1)\n        - AU-7\n        - AU-12\n    {{ end }}\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_17/section_17.2.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_17/section_17.2/cis_17.2.4.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Domain Controller only (from the upstream task name).\n\nManual: the Ansible role fixes this with commands that have no matching check, so the commands are shown as the fix, plus the original Ansible and goss test.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2022.17.2.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "17.2.4"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "AuditPol /set /subcategory:\"{0cce923a-69ae-11d9-bed3-505054503030}\" /success:enable\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"17.2.4 | PATCH | Ensure Audit Other Account Management Events is set to include Success DC only | Domain Controller\"\n  when:\n    - win22cis_rule_17_2_4\n    - prelim_win22cis_is_domain_controller\n  tags:\n    - level1-domaincontroller\n    - rule_17.2.4\n    - patch\n    - NIST800-171_3.3.1\n    - NIST800-171_3.3.2\n    - NIST800-171_3.3.6\n    - NIST800-53R5_AU-3\n    - NIST800-53R5_AU-3_1\n    - NIST800-53R5_AU-7\n    - NIST800-53R5_AU-12\n  block:\n    - name: \"17.2.4 | AUDIT | Ensure Audit Other Account Management Events is set to include Success DC only | Get current audit events for Other Account Management Events | Domain Controller\"\n      ansible.windows.win_shell: AuditPol /get /subcategory:\"{0cce923a-69ae-11d9-bed3-505054503030}\" -r | ConvertFrom-Csv | Select-Object -expand \"Inclusion Setting\"\n      changed_when: false\n      failed_when: false\n      check_mode: false\n      register: discovered_17_2_4_audit\n\n    - name: \"17.2.4 | PATCH | Ensure Audit Other Account Management Events is set to include Success DC only | Enable Success for Other Account Management Events | Domain Controller\"\n      when: \"'Success' not in discovered_17_2_4_audit.stdout\"\n      ansible.windows.win_shell: AuditPol /set /subcategory:\"{0cce923a-69ae-11d9-bed3-505054503030}\" /success:enable\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "17",
+    "17.2"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_17/section_17.2.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "17.2.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_17/section_17.2.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Audit Other Account Management Events' is set to include 'Success' (DC only)"
+}

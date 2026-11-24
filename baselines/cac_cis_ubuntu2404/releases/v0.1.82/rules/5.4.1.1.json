@@ -1,0 +1,126 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Password Maximum Age\n----\nVerify that Ubuntu 24.04 enforces a -day maximum password lifetime for new user accounts by running the following command:\n\n$ grep -i pass_max_days /etc/login.defs\n\nPASS_MAX_DAYS \n      Is it the case that the \"PASS_MAX_DAYS\" parameter value is greater than \"$ODV_var_accounts_maximum_age_login_defs\", or commented out?\n----\nExpected values: var_accounts_maximum_age_login_defs = $ODV_var_accounts_maximum_age_login_defs\n\n== Set Existing Passwords Maximum Age\n----\nCheck whether the maximum time period for existing passwords is restricted to  days with the following commands:\n\n$ sudo awk -F: '$5 > 60 {print $1 \" \" $5}' /etc/shadow\n\n$ sudo awk -F: '$5 <= 0 {print $1 \" \" $5}' /etc/shadow\n      Is it the case that any results are returned that are not associated with a system account?\n----\nExpected values: var_accounts_maximum_age_login_defs = $ODV_var_accounts_maximum_age_login_defs",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Set Password Maximum Age\n\nTo specify password maximum age for new accounts,\nedit the file `/etc/login.defs`\nand add or correct the following line:\n\n```\nPASS_MAX_DAYS $ODV_var_accounts_maximum_age_login_defs\n         \n```\n\nThe profile requirement is `$ODV_var_accounts_maximum_age_login_defs`.\n\n**Rationale:**\n\nAny password, no matter how complex, can eventually be cracked. Therefore, passwords\nneed to be changed periodically. If the operating system does not limit the lifetime\nof passwords and force users to change their passwords, there is the risk that the\noperating system passwords could be compromised.\n\n\n         \n\nSetting the password maximum age ensures users are required to\nperiodically change their passwords. Requiring shorter password lifetimes\nincreases the risk of users writing down the password in a convenient\nlocation subject to physical compromise.\n\n## Set Existing Passwords Maximum Age\n\nConfigure non-compliant accounts to enforce a $ODV_var_accounts_maximum_age_login_defs-day maximum password lifetime\nrestriction by running the following command:\n\n\n```\n$ sudo chage -M $ODV_var_accounts_maximum_age_login_defs\n          *USER*\n         \n```\n\n**Rationale:**\n\nAny password, no matter how complex, can eventually be cracked. Therefore,\npasswords need to be changed periodically. If the operating system does\nnot limit the lifetime of passwords and force users to change their\npasswords, there is the risk that the operating system passwords could be\ncompromised.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.4.1.1",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 365,
+        "cis_l1_workstation": 365,
+        "cis_l2_server": 365,
+        "cis_l2_workstation": 365
+      },
+      "datatype": "number",
+      "description": "maximum password age",
+      "name": "var_accounts_maximum_age_login_defs",
+      "quoting": "single",
+      "recommended": 365,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.4.1.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_maximum_age_login_defs",
+        "accounts_password_set_max_life_existing"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_maximum_age_login_defs`",
+          "language": "bash",
+          "name": "Set Password Maximum Age",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$' && { dpkg-query --show --showformat='${db:Status-Status}' 'login' 2>/dev/null | grep -q '^installed$'; }; then\n\nvar_accounts_maximum_age_login_defs='$ODV_var_accounts_maximum_age_login_defs'\n\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^PASS_MAX_DAYS\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s %s\" \"$stripped_key\" \"$var_accounts_maximum_age_login_defs\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^PASS_MAX_DAYS\\\\>\" \"/etc/login.defs\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^PASS_MAX_DAYS\\\\>.*/$escaped_formatted_output/gi\" \"/etc/login.defs\"\nelse\n    if [[ -s \"/etc/login.defs\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/login.defs\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/login.defs\"\n    fi\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/login.defs\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_password_set_max_life_existing`",
+          "language": "bash",
+          "name": "Set Existing Passwords Maximum Age",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nvar_accounts_maximum_age_login_defs='$ODV_var_accounts_maximum_age_login_defs'\n\n\nwhile IFS= read -r i; do\n    \n    chage -M $var_accounts_maximum_age_login_defs $i\n\ndone <   <(awk -v var=\"$var_accounts_maximum_age_login_defs\" -F: '(/^[^:]+:[^!*]/ && ($5 > var || $5 == \"\")) {print $1}' /etc/shadow)\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure password expiration is configured (Automated)"
+}

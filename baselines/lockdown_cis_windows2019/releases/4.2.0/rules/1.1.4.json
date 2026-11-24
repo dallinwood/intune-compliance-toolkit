@@ -1,0 +1,113 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\n$mismatchCount = 0\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $exportPath = Join-Path $workDirectory 'export.inf'\n    secedit /export /cfg $exportPath /areas SECURITYPOLICY | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /export failed' }\n    $exported = @{}\n    $section = ''\n    foreach ($line in Get-Content -LiteralPath $exportPath) {\n        if ($line -match '^\\[(.+)\\]\\s*$') { $section = $Matches[1] }\n        elseif ($line -match '^\\s*([^=]+?)\\s*=\\s*(.*?)\\s*$') { $exported[$section + '|' + $Matches[1]] = $Matches[2] }\n    }\n    $current = $exported['System Access|MinimumPasswordLength']\n    if ($current -ne [string]$ODV_minimum_password_length) {\n        Write-Output 'Mismatch: [System Access] MinimumPasswordLength'\n        $mismatchCount++\n    }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_1_1_4 }}\ncommand:\n  win19cis_1_1_4_minimumpasswordlength:\n    title: \"1.1.4 | Ensure 'Minimum password length' is set to '14 or more character(s)' | MinimumPasswordLength\"\n    exec: |-\n      powershell -NoProfile -NonInteractive -Command \"$p = Join-Path '{{ .Vars.win19cis_snapshot_dir }}' 'SystemAccess.MinimumPasswordLength'; if (-not (Test-Path -LiteralPath $p)) { 'NONCOMPLIANT not_collected' } else { $r = (Get-Content -LiteralPath $p -Raw).Trim(); if ($r -notmatch '^[0-9]+$') { 'NONCOMPLIANT actual=' + $r } else { $v = [int]$r; if ($v -ge {{ .Vars.win19cis_minimum_password_length }}) { 'COMPLIANT' } else { 'NONCOMPLIANT actual=' + $v } } }\"\n    exit-status: 0\n    stdout:\n      - '/^COMPLIANT$/'\n    stderr:\n      have-len: 0\n    timeout: {{ .Vars.timeout_ms }}\n    skip: {{ if eq .Vars.win19cis_system_role \"standalone\" }}false{{ else }}true{{ end }}\n    meta:\n      skip_reason: \"domain scoped - on a domain joined host the Default Domain Policy sets this [System Access] value, so the role does not apply it\"\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 1.1.4\n      NIST800-53R5:\n        - IA-5(1)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_1/section_1.1.x.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_1/section_1.1.x/cis_1.1.4.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nThe role skips this on domain-joined hosts, where domain policy governs it.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2019.1.1.4",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "number",
+      "description": "win19cis_minimum_password_length is the policy setting that determines the least number of characters that make up a password for a user account. The recommended state for this setting is: 14 or more character(s).",
+      "name": "minimum_password_length",
+      "quoting": "unquoted",
+      "recommended": 14,
+      "validation": {
+        "min": 14
+      }
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "1.1.4"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $infLines = @(\n        '[Unicode]',\n        'Unicode=yes',\n        '[System Access]',\n        ('MinimumPasswordLength = ' + $ODV_minimum_password_length),\n        '[Version]',\n        'signature=\"$CHICAGO$\"',\n        'Revision=1'\n    )\n    $infPath = Join-Path $workDirectory 'policy.inf'\n    Set-Content -LiteralPath $infPath -Value $infLines -Encoding Unicode\n    secedit /configure /db (Join-Path $workDirectory 'policy.sdb') /cfg $infPath /areas SECURITYPOLICY | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /configure failed' }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"1.1.4 | PATCH | Ensure Minimum password length is set to 14 or more characters\"\n  when:\n    - win19cis_rule_1_1_4\n    - not prelim_win19cis_account_policy_is_domain_scoped\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_1.1.4\n    - patch\n    - password\n    - NIST800-171_3.5.2\n    - NIST800-53R5_IA-5_1\n  block:\n    - name: \"1.1.4 | PATCH | Ensure Minimum password length is set to 14 or more characters | Set Variable\"\n      when: win19cis_minimum_password_length >= 14\n      community.windows.win_security_policy:\n        section: System Access\n        key: MinimumPasswordLength\n        value: \"{{ win19cis_minimum_password_length }}\"\n\n    - name: \"1.1.4 | AUDIT | Ensure Minimum password length is set to 14 or more characters | Warning Check For Variable Standards\"\n      when: win19cis_minimum_password_length < 14\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid length set for win19cis_minimum_password_length. Please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n\n    - name: \"1.1.4 | AUDIT | Ensure Minimum password length is set to 14 or more characters | Set warning count\"\n      when: win19cis_minimum_password_length < 14\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n      vars:\n        warn_control_id: '1.1.4'\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.1"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_1/section_1.1.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_1/section_1.1.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Minimum password length' is set to '14 or more character(s)'"
+}

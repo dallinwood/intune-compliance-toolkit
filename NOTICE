@@ -114,7 +114,7 @@ derived from the catalog. This content was modified by this project. It stays in
 the public domain in the United States and under CC0 1.0 elsewhere, and is
 provided as-is.
 
-sources/cis_rhel9/releases/<tag>/upstream/ and sources/cis_ubuntu2404/releases/<tag>/upstream/
+sources/cac_cis_rhel9/releases/<tag>/upstream/ and sources/cac_cis_ubuntu2404/releases/<tag>/upstream/
 are unmodified copies of parts of the ComplianceAsCode project (the compiled
 SCAP datastream for the product, the CIS control file, and the project's
 licence), which carries the CIS Benchmark recommendations as rules:
@@ -124,13 +124,13 @@ licence), which carries the CIS Benchmark recommendations as rules:
   Licence:  BSD 3-Clause
             Copyright (c) 2012-2017, Red Hat, Inc.
 
-The licence text is in sources/cis_rhel9/releases/<tag>/upstream/LICENSE and
-sources/cis_ubuntu2404/releases/<tag>/upstream/LICENSE. Its third condition
+The licence text is in sources/cac_cis_rhel9/releases/<tag>/upstream/LICENSE and
+sources/cac_cis_ubuntu2404/releases/<tag>/upstream/LICENSE. Its third condition
 reads: "Neither the name of the Red Hat nor the names of its contributors may
 be used to endorse or promote products derived from this software without
 specific prior written permission."
 
-baselines/cis_rhel9/ and baselines/cis_ubuntu2404/ are adapted from that
+baselines/cac_cis_rhel9/ and baselines/cac_cis_ubuntu2404/ are adapted from that
 material: the controls were normalized to this project's rule format, the
 values the benchmark parameterizes were made customisable, and each rule's
 audit and fix text was assembled from the datastream. This content was
@@ -138,8 +138,8 @@ modified by this project. It remains licensed under the BSD 3-Clause licence
 and is provided as-is, with the disclaimer of warranties and limitation of
 liability in that licence.
 
-sources/cis_windows11/, sources/cis_windows2025/, sources/cis_windows2022/ and
-sources/cis_windows2019/ (under releases/<tag>/upstream/) are unmodified copies
+sources/lockdown_cis_windows11/, sources/lockdown_cis_windows2025/, sources/lockdown_cis_windows2022/ and
+sources/lockdown_cis_windows2019/ (under releases/<tag>/upstream/) are unmodified copies
 of parts of the ansible-lockdown project: from each role repository the
 licence, the role defaults and the role tasks (role/), and from its matching
 Audit repository the licence, the coverage list and the goss control files
@@ -176,8 +176,8 @@ licence requires that its copyright notice and permission notice be included in
 all copies or substantial portions of the software; they are kept in those
 files.
 
-baselines/cis_windows11/, baselines/cis_windows2025/, baselines/cis_windows2022/
-and baselines/cis_windows2019/ are adapted from that material: the role tasks
+baselines/lockdown_cis_windows11/, baselines/lockdown_cis_windows2025/, baselines/lockdown_cis_windows2022/
+and baselines/lockdown_cis_windows2019/ are adapted from that material: the role tasks
 were translated to registry settings and PowerShell, the role defaults were
 made customisable values, titles and goss tests came from the Audit repository,
 and the original Ansible tasks and goss tests are kept verbatim in each rule.

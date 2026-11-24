@@ -1,0 +1,104 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Disable systemd-journal-remote Socket\n----\nTo check that the systemd-journal-remote.socket socket is disabled in system boot configuration with systemd, run the following command:\n$ systemctl is-enabled systemd-journal-remote.socket\nOutput should indicate the systemd-journal-remote.socket socket has either not been installed,\nor has been disabled at all runlevels, as shown in the example below:\n$ sudo systemctl is-enabled systemd-journal-remote.socketdisabled\n\nRun the following command to verify systemd-journal-remote.socket is not active (i.e. not running) through current runtime configuration:\n$ sudo systemctl is-active systemd-journal-remote.socket\n\nIf the socket is not running the command will return the following output:\ninactive\n\nThe socket will also be masked, to check that the systemd-journal-remote.socket is masked, run the following command:\n$ sudo systemctl show systemd-journal-remote.socket | grep \"LoadState\\|UnitFileState\"\n\nIf the socket is masked the command will return the following outputs:\n\nLoadState=masked\n\nUnitFileState=masked\n      Is it the case that the systemd-journal-remote socket is not masked?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Disable systemd-journal-remote Socket\n\nJournald supports the ability to receive messages from remote hosts,\nthus acting as a log server. Clients should not receive data from\nother hosts.\nNOTE:\n    The same package, systemd-journal-remote , is used for both sending\n    logs to remote hosts and receiving incoming logs.\n    With regards to receiving logs, there are two Systemd unit files;\n    systemd-journal-remote.socket and systemd-journal-remote.service.\n\n**Rationale:**\n\nIf a client is configured to also receive data, thus turning it into\na server, the client system is acting outside it's operational boundary.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.6.1.2.1.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.1.2.1.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "socket_systemd-journal-remote_disabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `socket_systemd-journal-remote_disabled`",
+          "language": "bash",
+          "name": "Disable systemd-journal-remote Socket",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSOCKET_NAME=\"systemd-journal-remote.socket\"\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\n\nif \"$SYSTEMCTL_EXEC\" -q list-unit-files --type socket | grep -q \"$SOCKET_NAME\"; then\n    if [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n      \"$SYSTEMCTL_EXEC\" stop \"$SOCKET_NAME\"\n    fi\n    \"$SYSTEMCTL_EXEC\" mask \"$SOCKET_NAME\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "6",
+    "6.1",
+    "6.1.2",
+    "6.1.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.1.2.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure systemd-journal-remote service is not in use (Automated)"
+}

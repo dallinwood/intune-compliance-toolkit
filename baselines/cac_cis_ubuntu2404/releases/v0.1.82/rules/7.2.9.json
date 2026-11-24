@@ -1,0 +1,126 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== All Interactive Users Home Directories Must Exist\n----\nVerify the assigned home directories of all interactive users on the system exist with the following command:\n\n$ sudo pwck -r\n\nuser 'mailnull': directory 'var/spool/mqueue' does not exist\n\nThe output should not return any interactive users.\n      Is it the case that users home directory does not exist?\n----\n\n== All Interactive User Home Directories Must Be Group-Owned By The Primary Group\n----\nTo verify the assigned home directory of all interactive users is group-\nowned by that user's primary GID, run the following command:\n# ls -ld $(getent passwd | awk -F: '($3>=1000)&&($7 !~ /nologin/)&&($7 !~ /\\/false$/){print $6}')\n\nThis should return a list of home directories with group ownership matching each user's primary group.\nUsing getent passwd instead of reading /etc/passwd directly ensures that remote users\n(LDAP, SSSD, NIS, etc.) are also checked.\n      Is it the case that the group ownership is incorrect?\n----\n\n== All Interactive User Home Directories Must Be Owned By The Primary User\n----\nTo verify the home directory ownership, run the following command:\n# ls -ld $(awk -F: '($3>=1000)&&($7 !~ /nologin/){print $6}' /etc/passwd)\n      Is it the case that the user ownership is incorrect?\n----\n\n== All Interactive User Home Directories Must Have mode 0750 Or Less Permissive\n----\nTo verify the assigned home directory of all interactive user home directories\nhave a mode of 0750 or less permissive, run the following command:\n$ sudo ls -l /home\nInspect the output for any directories with incorrect permissions.\n      Is it the case that they are more permissive?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## All Interactive Users Home Directories Must Exist\n\nCreate home directories to all local interactive users that currently do not\nhave a home directory assigned. Use the following commands to create the user\nhome directory assigned in `/etc/passwd`:\n\n```\n$ sudo mkdir /home/*USER*\n        \n```\n\n**Rationale:**\n\nIf a local interactive user has a home directory defined that does not exist,\nthe user may be given access to the / directory as the current working directory\nupon logon. This could create a Denial of Service because the user would not be\nable to access their logon configuration files, and it may give them visibility\nto system files they normally would not be able to access.\n\n## All Interactive User Home Directories Must Be Group-Owned By The Primary Group\n\nChange the group owner of interactive user home directories to the\ngroup found in `getent passwd`. To change the group owner of\nan interactive user's home directory, use the following command:\n\n```\n$ sudo chgrp *USER_GROUP* /home/*USER*\n        \n```\n\n\nThis rule ensures every home directory related to an interactive user is\ngroup-owned by that user's primary group. It also ensures that interactive users\nare group-owners of one and only one home directory.\n\nInteractive users are those with a UID greater than or equal to 1000\nand a valid interactive shell (not `/sbin/nologin`, `/usr/sbin/nologin`,\n`/bin/false`, or `/usr/bin/false`).\n\n**Rationale:**\n\nIf the Group Identifier (GID) of a local interactive users home directory is\nnot the same as the primary GID of the user, this would allow unauthorized\naccess to the users files, and users that share the same group may not be\nable to access files that they legitimately should.\n\n## All Interactive User Home Directories Must Be Owned By The Primary User\n\nChange the owner of interactive users home directories to that correct\nowner. To change the owner of a interactive users home directory, use\nthe following command:\n\n```\n$ sudo chown *USER* /home/*USER*\n        \n```\n\n\nThis rule ensures every home directory related to an interactive user is\nowned by an interactive user. It also ensures that interactive users are\nowners of one and only one home directory.\n\n**Rationale:**\n\nIf a local interactive user does not own their home directory, unauthorized\nusers could access or modify the user's files, and the users may not be able to\naccess their own files.\n\n## All Interactive User Home Directories Must Have mode 0750 Or Less Permissive\n\nChange the mode of interactive users home directories to `0750`. To\nchange the mode of interactive users home directory, use the\nfollowing command:\n\n```\n$ sudo chmod 0750 /home/*USER*\n        \n```\n\n**Rationale:**\n\nExcessive permissions on local interactive user home directories may allow\nunauthorized access to user files by other users.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.7.2.9",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "7.2.9",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "accounts_user_interactive_home_directory_exists",
+        "file_groupownership_home_directories",
+        "file_ownership_home_directories",
+        "file_permissions_home_directories"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_user_interactive_home_directory_exists`",
+          "language": "bash",
+          "name": "All Interactive Users Home Directories Must Exist",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nfor user in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd); do\n    mkhomedir_helper $user 0077;\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_groupownership_home_directories`",
+          "language": "bash",
+          "name": "All Interactive User Home Directories Must Be Group-Owned By The Primary Group",
+          "shell": "# Get interactive users using getent to support remote users (LDAP, SSSD, etc.)\nwhile IFS=: read -r _ _ uid gid _ home shell; do\n    # Filter interactive users: UID >= 1000, not nobody, has valid home dir, not nologin/false shell\n    if [ \"$uid\" -ge 1000 ] && [ \"$uid\" -ne 65534 ] && \\\n       [ \"$home\" != \"/\" ] && \\\n       [ \"$shell\" != \"/sbin/nologin\" ] && [ \"$shell\" != \"/usr/sbin/nologin\" ] && \\\n       [ \"$shell\" != \"/bin/false\" ] && [ \"$shell\" != \"/usr/bin/false\" ]; then\n        # Arguments are properly quoted to prevent command injection\n        chgrp -f -- \"$gid\" \"$home\"\n    fi\ndone < <(getent passwd)",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_ownership_home_directories`",
+          "language": "bash",
+          "name": "All Interactive User Home Directories Must Be Owned By The Primary User",
+          "shell": "awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != \"/\") system(\"chown -f \" $3\" \"$6) }' /etc/passwd",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `file_permissions_home_directories`",
+          "language": "bash",
+          "name": "All Interactive User Home Directories Must Have mode 0750 Or Less Permissive",
+          "shell": "for home_dir in $(awk -F':' '{ if ($3 >= 1000 && $3 != 65534 && $6 != \"/\") print $6 }' /etc/passwd); do\n    # Only update the permissions when necessary. This will avoid changing the inode timestamp when\n    # the permission is already defined as expected, therefore not impacting in possible integrity\n    # check systems that also check inodes timestamps.\n    find \"$home_dir\" -maxdepth 0 -perm /7027 \\! -type l -exec chmod u-s,g-w-s,o=- {} \\;\ndone",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "7",
+    "7.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "7.2.9",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure local interactive user home directories are configured (Automated)"
+}

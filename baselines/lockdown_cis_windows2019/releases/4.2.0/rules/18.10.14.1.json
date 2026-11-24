@@ -1,0 +1,150 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": "$ODV_require_pin_for_pairing",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Connect",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "RequirePinForPairing"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('RequirePinForPairing', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]$ODV_require_pin_for_pairing)) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect [RequirePinForPairing]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_18_10_14_1 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect\\RequirePinForPairing:\n    title: \"18.10.14.1 | Ensure 'Require pin for pairing' is set to 'Enabled: First Time' OR 'Enabled: Always' | RequirePinForPairing\"\n    exists: true\n    value: {{ .Vars.win19cis_require_pin_for_pairing }}\n    type: REG_DWORD\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 18.10.14.1\n      NIST800-53R5:\n        - IA-5c\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.10.14.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_18/section_18.10.14/cis_18.10.14.1.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2019.18.10.14.1",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "number",
+      "description": "win19cis_require_pin_for_pairing is the policy setting that controls whether or not a PIN is required for pairing to a wireless display device. The recommended state for this setting is: Enabled: First Time OR Enabled: Always. 1 - First Time 2 - Always",
+      "name": "require_pin_for_pairing",
+      "quoting": "unquoted",
+      "recommended": 1,
+      "validation": {
+        "max": 2,
+        "min": 1
+      }
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "18.10.14.1"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": "$ODV_require_pin_for_pairing",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\Connect",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "RequirePinForPairing"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect' -Name 'RequirePinForPairing' -Value $ODV_require_pin_for_pairing -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.10.14.1 | PATCH | Ensure Require pin for pairing is set to Enabled First Time OR Enabled Always\"\n  when: win19cis_rule_18_10_14_1\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_18.10.14.1\n    - automated\n    - patch\n    - pin\n    - NIST800-171_3.5.2\n    - NIST800-53R5_IA-5_c\n  block:\n    - name: \"18.10.14.1 | PATCH | Ensure Require pin for pairing is set to Enabled First Time OR Enabled Always | Set Variable\"\n      when: win19cis_require_pin_for_pairing == 1 or win19cis_require_pin_for_pairing == 2\n      ansible.windows.win_regedit:\n        path: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Connect\n        name: RequirePinForPairing\n        data: \"{{ win19cis_require_pin_for_pairing }}\"\n        type: dword\n\n    - name: \"18.10.14.1 | AUDIT | Ensure Require pin for pairing is set to Enabled First Time OR Enabled Always | Warning Check For Variable Standards\"\n      when:\n        - win19cis_require_pin_for_pairing != 1\n        - win19cis_require_pin_for_pairing != 2\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid setting for win19cis_require_pin_for_pairing. Please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n\n    - name: \"18.10.14.1 | AUDIT | Ensure Require pin for pairing is set to Enabled First Time OR Enabled Always | Log a warning\"\n      when:\n        - win19cis_require_pin_for_pairing != 1\n        - win19cis_require_pin_for_pairing != 2\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n      vars:\n        warn_control_id: '18.10.14.1'\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.10",
+    "18.10.14"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_18/section_18.10.14.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.10.14.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_18/section_18.10.14.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Require pin for pairing' is set to 'Enabled: First Time' OR 'Enabled: Always'"
+}

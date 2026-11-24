@@ -1,0 +1,117 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure SSH MaxStartups is configured\n----\nTo check if MaxStartups is configured, run the following command:\n$ sudo grep -r ^[\\s]*MaxStartups /etc/ssh/sshd_config*\nIf configured, this command should output the configuration.\n      Is it the case that maxstartups is not configured?\n----\nExpected values: var_sshd_set_maxstartups = $ODV_var_sshd_set_maxstartups",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure SSH MaxStartups is configured\n\nThe MaxStartups parameter specifies the maximum number of concurrent unauthenticated\nconnections to the SSH daemon. Additional connections will be dropped until authentication\nsucceeds or the LoginGraceTime expires for a connection. To configure MaxStartups, you should\nadd or edit the following line in the `/etc/ssh/sshd_config` file:\n\n```\nMaxStartups $ODV_var_sshd_set_maxstartups\n        \n```\n\n**Rationale:**\n\nTo protect a system from denial of service due to a large number of pending authentication\nconnection attempts, use the rate limiting function of MaxStartups to protect availability of\nsshd logins and prevent overwhelming the daemon.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.5.1.18",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "10:30:60",
+        "cis_l1_workstation": "10:30:60",
+        "cis_l2_server": "10:30:60",
+        "cis_l2_workstation": "10:30:60"
+      },
+      "datatype": "string",
+      "description": "SSH MaxStartups setting",
+      "name": "var_sshd_set_maxstartups",
+      "quoting": "single",
+      "recommended": "10:30:60",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "5.1.18",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "sshd_set_maxstartups"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sshd_set_maxstartups`",
+          "language": "bash",
+          "name": "Ensure SSH MaxStartups is configured",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nvar_sshd_set_maxstartups='$ODV_var_sshd_set_maxstartups'\n\nmkdir -p /etc/ssh/sshd_config.d\nchmod 0700 /etc/ssh/sshd_config.d\ntouch /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nchmod 0600 /etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\nLC_ALL=C sed -i \"/^\\s*MaxStartups\\s\\+/Id\" \"/etc/ssh/sshd_config\"\nLC_ALL=C sed -i \"/^\\s*MaxStartups\\s\\+/Id\" \"/etc/ssh/sshd_config.d\"/*.conf\nif [ -e \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" ] ; then\n    LC_ALL=C sed -i \"/^\\s*MaxStartups\\s\\+/Id\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nelse\n    touch \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n    chmod 0644 \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\nfi\n# make sure file has newline at the end\nsed -i -e '$a\\' \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n\ncp \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\" \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n# Insert at the beginning of the file\nprintf '%s\\n' \"MaxStartups $var_sshd_set_maxstartups\" > \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\ncat \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\" >> \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf\"\n# Clean up after ourselves.\nrm \"/etc/ssh/sshd_config.d/00-complianceascode-hardening.conf.bak\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.1.18",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure sshd MaxStartups is configured (Automated)"
+}

@@ -1,0 +1,110 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure All Files Are Owned by a User\n----\nThe following command will locate the mount points related to local devices:\n$ findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\n\nThe following command will show files which do not belong to a valid user:\n$ sudo find MOUNTPOINT -xdev -nouser 2>/dev/null\n\nReplace MOUNTPOINT by the mount points listed by the fist command.\n\nNo files without a valid user should be located.\n      Is it the case that files exist that are not owned by a valid user?\n----\n\n== Ensure All Files Are Owned by a Group\n----\nThe following command will locate the mount points related to local devices:\n$ findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\n\nThe following command will show files which do not belong to a valid group:\n$ sudo find MOUNTPOINT -xdev -nogroup 2>/dev/null\n\nReplace MOUNTPOINT by the mount points listed by the fist command.\n\nNo files without a valid group should be located.\n      Is it the case that there is output?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure All Files Are Owned by a User\n\nIf any files are not owned by a user, then the cause of their lack of ownership should be\ninvestigated. Following this, the files should be deleted or assigned to an appropriate user.\n\nLocate the mount points related to local devices by the following command:\n\n```\n$ findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\n```\n\n\nFor all mount points listed by the previous command, it is necessary to search for files which\ndo not belong to a valid user using the following command:\n\n```\n$ sudo find *MOUNTPOINT* -xdev -nouser 2>/dev/null\n```\n\n**Rationale:**\n\nUnowned files do not directly imply a security problem, but they are generally a sign that\nsomething is amiss. They may be caused by an intruder, by incorrect software installation or\ndraft software removal, or by failure to remove all files belonging to a deleted account, or\nother similar cases. The files should be repaired so they will not cause problems when\naccounts are created in the future, and the cause should be discovered and addressed.\n\n## Ensure All Files Are Owned by a Group\n\nIf any file is not group-owned by a valid defined group, the cause of the lack of\ngroup-ownership must be investigated. Following this, those files should be deleted or\nassigned to an appropriate group. The groups need to be defined in `/etc/group`\nor in `/usr/lib/group` if `nss-altfiles` are configured to be used\nin `/etc/nsswitch.conf`.\n\nLocate the mount points related to local devices by the following command:\n\n```\n$ findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,)\n```\n\n\nFor all mount points listed by the previous command, it is necessary to search for files which\ndo not belong to a valid group using the following command:\n\n```\n$ sudo find *MOUNTPOINT* -xdev -nogroup 2>/dev/null\n```\n\n**Rationale:**\n\nUnowned files do not directly imply a security problem, but they are generally a sign that\nsomething is amiss. They may be caused by an intruder, by incorrect software installation or\ndraft software removal, or by failure to remove all files belonging to a deleted account, or\nother similar cases. The files should be repaired so they will not cause problems when\naccounts are created in the future, and the cause should be discovered and addressed.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.7.1.12",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "7.1.12",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "no_files_unowned_by_user",
+        "file_permissions_ungroupowned"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `no_files_unowned_by_user`).",
+          "language": "instructions",
+          "name": "Ensure All Files Are Owned by a User",
+          "shell": null,
+          "versions": null
+        },
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `file_permissions_ungroupowned`).",
+          "language": "instructions",
+          "name": "Ensure All Files Are Owned by a Group",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "7",
+    "7.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "7.1.12",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure no files or directories without an owner and a group exist (Automated)"
+}

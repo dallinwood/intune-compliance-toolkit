@@ -1,0 +1,84 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_1_2_1 }}\ncommand:\n  win19cis_1_2_1_lockoutduration:\n    title: \"1.2.1 | Ensure 'Account lockout duration' is set to '15 or more minute(s)' | LockoutDuration\"\n    exec: |-\n      powershell -NoProfile -NonInteractive -Command \"$p = Join-Path '{{ .Vars.win19cis_snapshot_dir }}' 'SystemAccess.LockoutDuration'; if (-not (Test-Path -LiteralPath $p)) { 'NONCOMPLIANT not_collected' } else { $r = (Get-Content -LiteralPath $p -Raw).Trim(); if ($r -notmatch '^[0-9]+$') { 'NONCOMPLIANT actual=' + $r } else { $v = [int]$r; if ($v -ge {{ .Vars.win19cis_account_lockout_duration }}) { 'COMPLIANT' } else { 'NONCOMPLIANT actual=' + $v } } }\"\n    exit-status: 0\n    stdout:\n      - '/^COMPLIANT$/'\n    stderr:\n      have-len: 0\n    timeout: {{ .Vars.timeout_ms }}\n    skip: {{ if eq .Vars.win19cis_system_role \"standalone\" }}false{{ else }}true{{ end }}\n    meta:\n      skip_reason: \"domain scoped - on a domain joined host the Default Domain Policy sets this [System Access] value, so the role does not apply it\"\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 1.2.1\n      NIST800-53R5:\n        - AC-7\n        - AC-19\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_1/section_1.2.x.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_1/section_1.2.x/cis_1.2.1.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nThe role skips this on domain-joined hosts, where domain policy governs it.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2019.1.2.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "1.2.1"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"1.2.1 | AUDIT | Ensure Account lockout duration is set to 15 or more minutes | Read the lockout policy as 1.2.2 left it\"\n  when:\n    - win19cis_rule_1_2_1 or win19cis_rule_1_2_4\n    - not prelim_win19cis_account_policy_is_domain_scoped\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_1.2.1\n    - patch\n    - account\n    - NIST800-171_3.1.8\n    - NIST800-171_3.1.18\n    - NIST800-53R5_AC-7\n    - NIST800-53R5_AC-19\n  block:\n    - name: \"1.2.1 | AUDIT | Ensure Account lockout duration is set to 15 or more minutes | Read the lockout policy as 1.2.2 left it | Export\"\n      ansible.windows.win_shell: |\n        $ErrorActionPreference = 'Stop'\n        # Cmdlets, operators and $Matches only - no .NET method calls - so this still\n        # runs where PowerShell is in Constrained Language Mode. secedit must write to\n        # a path that does not already exist or the export drops its [Unicode] header.\n        $cfg = Join-Path $env:TEMP \"cis_lockout_$PID.inf\"\n        Remove-Item -LiteralPath $cfg -Force -ErrorAction SilentlyContinue\n        secedit /export /areas SECURITYPOLICY /cfg $cfg /quiet | Out-Null\n        $content = Get-Content -LiteralPath $cfg\n        Remove-Item -LiteralPath $cfg -Force -ErrorAction SilentlyContinue\n        $duration = 0\n        $reset = 0\n        foreach ($line in $content) {\n          if ($line -match '^LockoutDuration\\s*=\\s*(\\d+)') { $duration = $Matches[1] }\n          if ($line -match '^ResetLockoutCount\\s*=\\s*(\\d+)') { $reset = $Matches[1] }\n        }\n        \"$duration $reset\"\n      changed_when: false\n      check_mode: false\n      register: discovered_lockout_policy\n\n    - name: \"1.2.1 | AUDIT | Ensure Account lockout duration is set to 15 or more minutes | Read the lockout policy as 1.2.2 left it | Set the current lockout facts\"\n      ansible.builtin.set_fact:\n        discovered_win19cis_current_lockout_duration: \"{{ discovered_lockout_policy.stdout.split()[0] | int }}\"\n        discovered_win19cis_current_lockout_reset: \"{{ discovered_lockout_policy.stdout.split()[1] | int }}\"\n\n- name: \"1.2.1 | PATCH | Ensure Account lockout duration is set to 15 or more minutes\"\n  when:\n    - win19cis_rule_1_2_1\n    - not prelim_win19cis_account_policy_is_domain_scoped\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_1.2.1\n    - patch\n    - account\n    - NIST800-171_3.1.8\n    - NIST800-171_3.1.18\n    - NIST800-53R5_AC-7\n    - NIST800-53R5_AC-19\n  block:\n    - name: \"1.2.1 | PATCH | Ensure Account lockout duration is set to 15 or more minutes | Lower the reset counter so the duration can be applied\"\n      when:\n        - discovered_win19cis_current_lockout_reset | int > win19cis_account_lockout_duration | int\n        - win19cis_account_lockout_counter_reset | int <= discovered_win19cis_current_lockout_duration | int or\n          discovered_win19cis_current_lockout_duration | int == 0\n      community.windows.win_security_policy:\n        section: System Access\n        key: ResetLockoutCount\n        value: \"{{ win19cis_account_lockout_counter_reset }}\"\n\n    - name: \"1.2.1 | PATCH | Ensure Account lockout duration is set to 15 or more minutes | Set Variable\"\n      when: win19cis_account_lockout_duration >= 15\n      community.windows.win_security_policy:\n        section: System Access\n        key: LockoutDuration\n        value: \"{{ win19cis_account_lockout_duration }}\"\n\n    - name: \"1.2.1 | AUDIT | Ensure Account lockout duration is set to 15 or more minutes | Verify variable set to 15 or more minutes warning\"\n      when: win19cis_account_lockout_duration < 15\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid number of minutes set for win19cis_account_lockout_duration. Please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n\n    - name: \"1.2.1 | AUDIT | Ensure Account lockout duration is set to 15 or more minutes | Set warning count\"\n      when: win19cis_account_lockout_duration < 15\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n      vars:\n        warn_control_id: '1.2.1'\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.2"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_1/section_1.2.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.2.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_1/section_1.2.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Account lockout duration' is set to '15 or more minute(s)'"
+}

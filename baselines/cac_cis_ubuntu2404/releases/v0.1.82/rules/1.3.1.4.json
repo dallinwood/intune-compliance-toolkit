@@ -1,0 +1,82 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Enforce all AppArmor Profiles\n\nAppArmor profiles define what resources applications are able to access.\nTo set all profiles to enforce mode run the following command:\n\n```\n$ sudo aa-enforce /etc/apparmor.d/*\n```\n\nTo list unconfined processes run the following command:\n\n\n```\n$ sudo apparmor_status | grep processes\n```\n\n\nAny unconfined processes may need to have a profile created or activated\nfor them and then be restarted.\n\n**Rationale:**\n\nSecurity configuration requirements vary from site to site. Some sites may\nmandate a policy that is stricter than the default policy, which is perfectly\nacceptable. This recommendation is intended to ensure that any policies that\nexist on the system are activated.\n\n**Notes:**\n\nCIS recommendation does not adequately address the nuances\nof various profiles, including disabled, force-complain,\nand unconfined. Currently, the control changes the default apparmor\nmode for all profiles in /etc/apparmor.d which can\nbreak certain applications. See https://workbench.cisecurity.org/benchmarks/18959/tickets/23987\n",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.1.3.1.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "1.3.1.4",
+      "levels": [
+        "l2_server",
+        "l2_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "all_apparmor_profiles_enforced"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `all_apparmor_profiles_enforced`",
+          "language": "bash",
+          "name": "Enforce all AppArmor Profiles",
+          "shell": "# Remediation is applicable only in certain platforms\nif [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && { ( ( [ ! -f /.dockerenv ] && [ ! -f /run/.containerenv ] && dpkg-query --show --showformat='${db:Status-Status}' 'apparmor' 2>/dev/null | grep -q '^installed$' ) ); }; then\n\n# make sure apparmor-utils is installed for aa-complain and aa-enforce\nDEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 install -y \"apparmor-utils\"\n\n# Ensure all AppArmor Profiles are enforcing\napparmor_parser -q -r /etc/apparmor.d/\n\n# Current version of apparmor-utils has issue https://gitlab.com/apparmor/apparmor/-/issues/411 and we're waiting for https://gitlab.com/apparmor/apparmor/-/merge_requests/1218 to be landed on noble\nfind /etc/apparmor.d -maxdepth 1 ! -type d -exec aa-enforce \"{}\" \\;\n\n\n\nUNCONFINED=$(aa-status | grep \"processes are unconfined\" | awk '{print $1;}')\nif [ $UNCONFINED -ne 0 ];\n\nthen\n  echo -e \"***WARNING***: There are some unconfined processes:\"\n  echo -e \"----------------------------\"\n  echo \"The may need to have a profile created or activated for them and then be restarted.\"\n  for PROCESS in \"${UNCONFINED[@]}\"\n  do\n      echo \"$PROCESS\"\n  done\n  echo -e \"----------------------------\"\n  echo \"The may need to have a profile created or activated for them and then be restarted.\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "1",
+    "1.3",
+    "1.3.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "1.3.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure all AppArmor Profiles are enforcing (Automated)"
+}

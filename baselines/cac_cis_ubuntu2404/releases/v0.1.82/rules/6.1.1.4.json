@@ -1,0 +1,90 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Ensure One Logging Service Is In Use\n\nEnsure that a logging system is active and in use.\n\n```\nsystemctl is-active rsyslog syslog-ng systemd-journald\n```\n\nThe command should return at least one `active`.\n\n**Rationale:**\n\nThe system should have one active logging service to avoid conflicts\nand ensure consistency.\n\n**Notes:**\n\nThe title of this rule is misleading. The actual audit checks that at least\none of \"rsyslogd\" and \"systemd-journald\" is active.\nSee https://workbench.cisecurity.org/benchmarks/18959/tickets/23601\n\nRemediation is not automated as the choice of correct logging service\nis dependent on site policy.\n",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.6.1.1.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "6.1.1.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "logging_services_active"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `logging_services_active`).",
+          "language": "instructions",
+          "name": "Ensure One Logging Service Is In Use",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "6",
+    "6.1",
+    "6.1.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.1.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure only one logging system is in use (Automated)"
+}

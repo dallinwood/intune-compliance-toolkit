@@ -29,8 +29,8 @@ class BenchmarkSpec:
 
 
 BENCHMARKS: dict[str, BenchmarkSpec] = {
-    "cis_rhel9": BenchmarkSpec(
-        source_name="cis_rhel9",
+    "cac_cis_rhel9": BenchmarkSpec(
+        source_name="cac_cis_rhel9",
         display_name="CIS Red Hat Enterprise Linux 9 (ComplianceAsCode)",
         provenance="community",
         product="rhel9",
@@ -45,8 +45,8 @@ BENCHMARKS: dict[str, BenchmarkSpec] = {
         version="RHEL-9",
         helper_control_ids=frozenset({"reload_dconf_db", "enable_authselect"}),
     ),
-    "cis_ubuntu2404": BenchmarkSpec(
-        source_name="cis_ubuntu2404",
+    "cac_cis_ubuntu2404": BenchmarkSpec(
+        source_name="cac_cis_ubuntu2404",
         display_name="CIS Ubuntu 24.04 LTS (ComplianceAsCode)",
         provenance="community",
         product="ubuntu2404",

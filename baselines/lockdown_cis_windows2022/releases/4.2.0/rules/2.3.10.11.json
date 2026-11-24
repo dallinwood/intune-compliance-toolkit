@@ -1,0 +1,133 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": "O:BAG:BAD:(A;;RC;;;BA)",
+              "hive": "HKLM",
+              "path": "SYSTEM\\CurrentControlSet\\Control\\Lsa",
+              "state": "present",
+              "type": "REG_SZ",
+              "value_name": "RestrictRemoteSAM"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('RestrictRemoteSAM', $null, 'DoNotExpandEnvironmentNames') }\n$kind = $null\nif ($null -ne $current) { $kind = $key.GetValueKind('RestrictRemoteSAM') }\nif (-not ($current -is [string] -and $kind -ceq 'String' -and $current -ceq 'O:BAG:BAD:(A;;RC;;;BA)')) {\n    Write-Output 'Mismatch: HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa [RestrictRemoteSAM]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if and (ne .Vars.win22cis_system_role \"domaincontroller\") .Vars.win22cis_level_1 }}\n  {{ if .Vars.win22cis_rule_2_3_10_11 }}\n    {{ if ne .Vars.win22cis_system_role \"domaincontroller\" }}\nregistry:\n  HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\RestrictRemoteSAM:\n    title: \"2.3.10.11 | Ensure 'Network access: Restrict clients allowed to make remote calls to SAM' is set to 'Administrators: Remote Access: Allow' (MS only) | RestrictRemoteSAM\"\n    exists: true\n    value: \"O:BAG:BAD:(A;;RC;;;BA)\"\n    type: REG_SZ\n    meta:\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 2.3.10.11\n      NIST800-53R5:\n        - AC-6(3)\n    {{ end }}\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_2/section_2.3.10.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_2/section_2.3.10/cis_2.3.10.11.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Member Server only (from the upstream task name).",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2022.2.3.10.11",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "2.3.10.11"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": "O:BAG:BAD:(A;;RC;;;BA)",
+              "hive": "HKLM",
+              "path": "SYSTEM\\CurrentControlSet\\Control\\Lsa",
+              "state": "present",
+              "type": "REG_SZ",
+              "value_name": "RestrictRemoteSAM"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa')) {\n    New-Item -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'RestrictRemoteSAM' -Value 'O:BAG:BAD:(A;;RC;;;BA)' -PropertyType String -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"2.3.10.11 | PATCH | Ensure Network access Restrict clients allowed to make remote calls to SAM is set to Administrators Remote Access Allow MS only | Member Server\"\n  when:\n    - win22cis_rule_2_3_10_11\n    - not prelim_win22cis_is_domain_controller\n  tags:\n    - level1-memberserver\n    - rule_2.3.10.11\n    - patch\n    - sam\n    - NIST800-171_3.1.5\n    - NIST800-53R5_AC-6_3\n  ansible.windows.win_regedit:\n    path: HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\n    name: RestrictRemoteSAM\n    data: \"O:BAG:BAD:(A;;RC;;;BA)\"\n    type: string\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.3",
+    "2.3.10"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_2/section_2.3.10.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.10.11",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_2/section_2.3.10.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Network access: Restrict clients allowed to make remote calls to SAM' is set to 'Administrators: Remote Access: Allow' (MS only)"
+}

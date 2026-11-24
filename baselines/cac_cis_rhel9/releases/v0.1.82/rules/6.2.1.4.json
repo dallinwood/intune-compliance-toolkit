@@ -1,0 +1,106 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure journald and rsyslog Are Not Active Together\n----\nTo verify that exactly one logging system is active, run the following command:\nsystemctl is-active rsyslog systemd-journald | grep -c active\nThe output should be exactly 1. If the output is 0, no logging is active.\nIf the output is 2, both logging systems are active simultaneously. Both\ncases are findings.\n      Is it the case that both rsyslog and systemd-journald services are active, or neither service is active?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure journald and rsyslog Are Not Active Together\n\nEnsure that exactly one logging system is active. Running both rsyslog and\nsystemd-journald simultaneously can lead to duplicate logging, resource\ncontention, and configuration conflicts. Running neither service means no\nlogging is occurring, which is also a violation.\n\n```\nsystemctl is-active rsyslog systemd-journald\n```\n\nThe command should return exactly one `active` service. Both services\nshould not be active at the same time, and at least one must be active.\n\n**Rationale:**\n\nRunning multiple logging systems concurrently can cause conflicts, resource\ncontention, and inconsistent logging behavior. Systems should use either\nrsyslog or systemd-journald, but not both simultaneously. This ensures\npredictable logging behavior and prevents potential issues with log\nduplication or loss.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.6.2.1.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "6.2.1.4",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "ensure_journald_and_rsyslog_not_active_together": "CCE-90715-4"
+      },
+      "rules": [
+        "ensure_journald_and_rsyslog_not_active_together"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "No fix in ComplianceAsCode (rule `ensure_journald_and_rsyslog_not_active_together`).",
+          "language": "instructions",
+          "name": "Ensure journald and rsyslog Are Not Active Together",
+          "shell": null,
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "6",
+    "6.2",
+    "6.2.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "6.2.1.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure only one logging system is in use (Automated)"
+}

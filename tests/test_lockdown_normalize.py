@@ -22,7 +22,7 @@ from tools.source_lock import SourceLock
 from tools.validate_library import schema_errors
 
 FIXTURES = Path(__file__).parent / "fixtures" / "lockdown"
-FIXTURE_SPEC = SOURCES["cis_windows2022"]
+FIXTURE_SPEC = SOURCES["lockdown_cis_windows2022"]
 ROLE_COMMIT = "a" * 40
 AUDIT_COMMIT = "b" * 40
 LOCK = SourceLock(
@@ -60,7 +60,7 @@ def role_dir(tmp_path_factory) -> Path:
 @pytest.fixture(scope="module")
 def rules(role_dir) -> dict[str, dict]:
     produced = normalize_rules(FIXTURE_SPEC, role_dir, FIXTURES / "audit", LOCK)
-    return {rule["id"].removeprefix("cis_windows2022."): rule for rule in produced}
+    return {rule["id"].removeprefix("lockdown_cis_windows2022."): rule for rule in produced}
 
 
 def check_items(rule: dict) -> list[dict]:
@@ -83,7 +83,7 @@ class TestEveryRule:
             assert placeholder_errors(rule) == [], rule["id"]
 
     def test_ids_carry_the_source_name_and_the_cis_id(self, rules):
-        assert rules["18.4.2"]["id"] == "cis_windows2022.18.4.2"
+        assert rules["18.4.2"]["id"] == "lockdown_cis_windows2022.18.4.2"
         assert rules["18.4.2"]["source"]["upstream_rule_id"] == "18.4.2"
         assert rules["18.4.2"]["references"]["cis"] == {"benchmark_version": "4.0.0", "id": "18.4.2"}
 
@@ -98,7 +98,7 @@ class TestEveryRule:
 
     def test_the_source_block_pins_the_role_release(self, rules):
         source = rules["18.4.2"]["source"]
-        assert source["name"] == "cis_windows2022"
+        assert source["name"] == "lockdown_cis_windows2022"
         assert source["release_tag"] == "4.2.0"
         assert source["commit_sha"] == ROLE_COMMIT
         assert source["upstream_path"] == "tasks/section_18/section_18.4.yml"
@@ -324,7 +324,7 @@ class TestRoleConditionNotes:
     def test_a_domain_scoped_account_policy_rule_says_the_role_skips_it_on_domain_joined_hosts(self, rules):
         skipped = [rule for rule in rules.values() if "skips this on domain-joined hosts" in rule["discussion"]]
         assert skipped, "the fixtures have account policy rules gated on domain scope"
-        assert all(rule["id"].startswith("cis_windows2022.1.") for rule in skipped)
+        assert all(rule["id"].startswith("lockdown_cis_windows2022.1.") for rule in skipped)
 
 
 class TestSecurityPolicyNumbersAreValidated:

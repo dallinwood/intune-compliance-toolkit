@@ -1,0 +1,153 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": "$ODV_remote_encryption_protection_mode",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "BruteForceProtectionConfiguredState"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('BruteForceProtectionConfiguredState', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]$ODV_remote_encryption_protection_mode)) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection [BruteForceProtectionConfiguredState]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win22cis_level_1 }}\n  {{ if .Vars.win22cis_rule_18_10_43_11_1_1_2 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection\\BruteForceProtectionConfiguredState:\n    title: \"18.10.43.11.1.1.2 | Ensure 'Configure Remote Encryption Protection Mode' is set to 'Enabled: Audit' or higher | BruteForceProtectionConfiguredState\"\n    exists: true\n    value: {{ .Vars.win22cis_remote_encryption_protection_mode }}\n    type: REG_DWORD\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 18.10.43.11.1.1.2\n      NIST800-53R5:\n        - AC-7\n        - SI-4\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.10.43.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_18/section_18.10.43/cis_18.10.43.11.1.1.2.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows2022.18.10.43.11.1.1.2",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "number",
+      "description": "win22cis_remote_encryption_protection_mode is the policy setting configures the Brute-Force Protection feature in Microsoft Defender Antivirus. Brute-Force Protection can detect and block attempts to forcibly initiate sign-ins and sessions. The recommended state for this setting is: Enabled: Audit. Configuring this setting to Block also conforms to the benchmark. 1 = Audit, 2 = Block",
+      "name": "remote_encryption_protection_mode",
+      "quoting": "unquoted",
+      "recommended": 1,
+      "validation": {
+        "max": 2,
+        "min": 1
+      }
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "18.10.43.11.1.1.2"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": "$ODV_remote_encryption_protection_mode",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "BruteForceProtectionConfiguredState"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection' -Name 'BruteForceProtectionConfiguredState' -Value $ODV_remote_encryption_protection_mode -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.10.43.11.1.1.2 | PATCH | Ensure Configure Remote Encryption Protection Mode is set to Enabled: Audit or higher\"\n  when: win22cis_rule_18_10_43_11_1_1_2\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_18.10.43.11.1.1.2\n    - patch\n    - defender\n    - brute_force\n    - NIST800-171_3.14.1\n    - NIST800-171_3.14.5\n    - NIST800-171_3.14.6\n    - NIST800-53R5_AC-7\n    - NIST800-53R5_SI-4\n  block:\n    - name: \"18.10.43.11.1.1.2 | PATCH | Ensure Configure Remote Encryption Protection Mode is set to Enabled: Audit or higher | Set Registry Value\"\n      when: win22cis_remote_encryption_protection_mode == 1 or\n          win22cis_remote_encryption_protection_mode == 2\n      ansible.windows.win_regedit:\n        path: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\\Remediation\\Behavioral Network Blocks\\Brute Force Protection\n        name: BruteForceProtectionConfiguredState\n        data: \"{{ win22cis_remote_encryption_protection_mode }}\"\n        type: dword\n\n    - name: \"18.10.43.11.1.1.2 | AUDIT | Ensure Configure Remote Encryption Protection Mode is set to Enabled: Audit or higher | Warning Check For Variable Standards\"\n      when:\n        - win22cis_remote_encryption_protection_mode != 1\n        - win22cis_remote_encryption_protection_mode != 2\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid setting for win22cis_remote_encryption_protection_mode. Please review\"\n          - \"the variable and make the necessary change to bring it into compliance. Acceptable: 1 (Audit), 2 (Block).\"\n\n    - name: \"18.10.43.11.1.1.2 | AUDIT | Ensure Configure Remote Encryption Protection Mode is set to Enabled: Audit or higher | Warning Logged\"\n      when:\n        - win22cis_remote_encryption_protection_mode != 1\n        - win22cis_remote_encryption_protection_mode != 2\n      vars:\n        warn_control_id: '18.10.43.11.1.1.2'\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.10",
+    "18.10.43",
+    "18.10.43.11",
+    "18.10.43.11.1",
+    "18.10.43.11.1.1"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_18/section_18.10.43.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.10.43.11.1.1.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_18/section_18.10.43.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Configure Remote Encryption Protection Mode' is set to 'Enabled: Audit' or higher"
+}

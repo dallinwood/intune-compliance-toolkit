@@ -1,0 +1,130 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Set Account Expiration Following Inactivity\n----\nTo verify the INACTIVE setting, run the following command:\n$ grep \"INACTIVE\" /etc/default/useradd\nThe output should indicate the INACTIVE configuration option is set\nto an appropriate integer as shown in the example below:\n$ grep \"INACTIVE\" /etc/default/useradd\nINACTIVE=\n      Is it the case that the value of INACTIVE is greater than the expected value or is -1?\n----\nExpected values: var_account_disable_post_pw_expiration = $ODV_var_account_disable_post_pw_expiration\n\n== Set existing passwords a period of inactivity before they been locked\n----\nVerify that Red Hat Enterprise Linux 9 's INACTIVE conforms to site policy (no more than 30 days) with the following command:\n\n$ sudo awk -F: '$7 > 30 {print $1 \" \" $7}' /etc/shadow\n      Is it the case that the value of INACTIVE is greater than the expected value or is -1?\n----\nExpected values: var_account_disable_post_pw_expiration = $ODV_var_account_disable_post_pw_expiration",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Set Account Expiration Following Inactivity\n\nTo specify the number of days after a password expires (which\nsignifies inactivity) until an account is permanently disabled, add or correct\nthe following line in `/etc/default/useradd`:\n\n```\nINACTIVE=*$ODV_var_account_disable_post_pw_expiration*\n         \n```\n\nIf a password is currently on the verge of expiration, then\n`$ODV_var_account_disable_post_pw_expiration`\nday(s) remain(s) until the account is automatically\ndisabled. However, if the password will not expire for another 60 days, then 60\ndays plus `$ODV_var_account_disable_post_pw_expiration` day(s) could\nelapse until the account would be automatically disabled. See the\n`useradd` man page for more information.\n\n**Rationale:**\n\nInactive identifiers pose a risk to systems and applications because attackers may exploit an inactive identifier and potentially obtain undetected access to the system.\nDisabling inactive accounts ensures that accounts which may not have been responsibly removed are not available to attackers who may have compromised their credentials.\nOwners of inactive accounts will not notice if unauthorized access to their user account has been obtained.\n\n## Set existing passwords a period of inactivity before they been locked\n\nConfigure user accounts that have been inactive for over a given period of time\nto be automatically disabled by running the following command:\n\n```\n$ sudo chage --inactive 30 USER\n```\n\n**Rationale:**\n\nInactive accounts pose a threat to system security since the users are not logging in to\nnotice failed login attempts or other anomalies.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.5.4.1.5",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": 45,
+        "cis_l1_workstation": 45,
+        "cis_l2_server": 45,
+        "cis_l2_workstation": 45
+      },
+      "datatype": "number",
+      "description": "number of days after a password expires until the account is permanently disabled",
+      "name": "var_account_disable_post_pw_expiration",
+      "quoting": "single",
+      "recommended": 45,
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.4.1.5",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "account_disable_post_pw_expiration": "CCE-83627-0",
+        "accounts_set_post_pw_existing": "CCE-86759-8"
+      },
+      "rules": [
+        "account_disable_post_pw_expiration",
+        "accounts_set_post_pw_existing"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `account_disable_post_pw_expiration`",
+          "language": "bash",
+          "name": "Set Account Expiration Following Inactivity",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q shadow-utils; }; then\n\nvar_account_disable_post_pw_expiration='$ODV_var_account_disable_post_pw_expiration'\n\n\n# Strip any search characters in the key arg so that the key can be replaced without\n# adding any search characters to the config file.\nstripped_key=$(sed 's/[\\^=\\$,;+]*//g' <<< \"^INACTIVE\")\n\n# shellcheck disable=SC2059\nprintf -v formatted_output \"%s=%s\" \"$stripped_key\" \"$var_account_disable_post_pw_expiration\"\n\n# If the key exists, change it. Otherwise, add it to the config_file.\n# We search for the key string followed by a word boundary (matched by \\>),\n# so if we search for 'setting', 'setting2' won't match.\nif LC_ALL=C grep -q -m 1 -i -e \"^INACTIVE\\\\>\" \"/etc/default/useradd\"; then\n    escaped_formatted_output=$(sed -e 's|/|\\\\/|g' <<< \"$formatted_output\")\n    LC_ALL=C sed -i --follow-symlinks \"s/^INACTIVE\\\\>.*/$escaped_formatted_output/gi\" \"/etc/default/useradd\"\nelse\n    if [[ -s \"/etc/default/useradd\" ]] && [[ -n \"$(tail -c 1 -- \"/etc/default/useradd\" || true)\" ]]; then\n        LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"/etc/default/useradd\"\n    fi\n    cce=\"CCE-83627-0\"\n    printf '# Per %s: Set %s in %s\\n' \"${cce}\" \"${formatted_output}\" \"/etc/default/useradd\" >> \"/etc/default/useradd\"\n    printf '%s\\n' \"$formatted_output\" >> \"/etc/default/useradd\"\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `accounts_set_post_pw_existing`",
+          "language": "bash",
+          "name": "Set existing passwords a period of inactivity before they been locked",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nvar_account_disable_post_pw_expiration='$ODV_var_account_disable_post_pw_expiration'\n\n\nwhile IFS= read -r i; do\n    chage --inactive $var_account_disable_post_pw_expiration $i\ndone <   <(awk -v var=\"$var_account_disable_post_pw_expiration\" -F: '(($7 > var || $7 == \"\") && $2 ~ /^\\$/) {print $1}' /etc/shadow)\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.4",
+    "5.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.4.1.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure inactive password lock is configured (Automated)"
+}

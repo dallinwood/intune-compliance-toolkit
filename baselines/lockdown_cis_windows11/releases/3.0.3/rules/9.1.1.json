@@ -1,0 +1,132 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "EnableFirewall"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('EnableFirewall', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]1)) {\n    Write-Output 'Mismatch: HKLM:\\Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile [EnableFirewall]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_9_1_1 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\DomainProfile\\EnableFirewall:\n    title: \"9.1.1 | Ensure 'Windows Firewall: Domain: Firewall state' is set to 'On (recommended)' | EnableFirewall\"\n    exists: true\n    value: 1\n    type: REG_DWORD\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 9.1.1\n      NIST800-53R5:\n        - SC-7\n        - SC-7(5)\nfile:\n  win11cis_9_1_1_effective:\n    title: \"9.1.1 | Ensure 'Windows Firewall: Domain: Firewall state' is set to 'On (recommended)' | effective\"\n    path: '{{ .Vars.win11cis_snapshot_dir }}\\Firewall.Domain.Enabled'\n    exists: true\n    contents:\n      - '/^True$/'\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 9.1.1\n      NIST800-53R5:\n        - SC-7\n        - SC-7(5)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_9/cis_9.1.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_9/cis_9.1.x/cis_9.1.1.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows11.9.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "9.1.1"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "EnableFirewall"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile')) {\n    New-Item -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile' -Name 'EnableFirewall' -Value 1 -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"9.1.1 | PATCH | Ensure 'Windows Firewall: Domain: Firewall state' is set to 'On (recommended)'\"\n  when: win11cis_rule_9_1_1\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_9.1.1\n    - firewall_state\n    - NIST800-171_3.13.1\n    - NIST800-171_3.13.5\n    - NIST800-171_3.13.6\n    - NIST800-53R5_SC-7\n    - NIST800-53R5_SC-7_5\n  ansible.windows.win_regedit:\n    path: HKLM:\\Software\\Policies\\Microsoft\\Windowsfirewall\\Domainprofile\n    name: EnableFirewall\n    data: 1\n    type: dword\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "9",
+    "9.1"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_9/cis_9.1.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "9.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_9/cis_9.1.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Windows Firewall: Domain: Firewall state' is set to 'On (recommended)'"
+}

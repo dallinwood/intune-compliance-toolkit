@@ -1,0 +1,105 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate\n----\nTo determine if !authenticate has not been configured for sudo, run the following command:\n$ sudo grep -r \\!authenticate /etc/sudoers /etc/sudoers.d/\nThe command should return no output.\n      Is it the case that !authenticate is specified in the sudo config files?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate\n\nThe sudo `!authenticate` option, when specified, allows a user to execute commands using\nsudo without having to authenticate. This should be disabled by making sure that the\n`!authenticate` option does not exist in `/etc/sudoers` configuration file or\nany sudo configuration snippets in `/etc/sudoers.d/`.\n\n**Rationale:**\n\nWithout re-authentication, users may access resources or perform tasks for which they\ndo not have authorization.\n\n\n        \n\nWhen operating systems provide the capability to escalate a functional capability, it\nis critical that the user re-authenticate.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.5.2.5",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "5.2.5",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "sudo_remove_no_authenticate": "CCE-83544-7"
+      },
+      "rules": [
+        "sudo_remove_no_authenticate"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `sudo_remove_no_authenticate`",
+          "language": "bash",
+          "name": "Ensure Users Re-Authenticate for Privilege Escalation - sudo !authenticate",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core; then\n\nfor f in /etc/sudoers /etc/sudoers.d/* ; do\n  if [ ! -e \"$f\" ] ; then\n    continue\n  fi\n  matching_list=$(grep -P '^(?!#).*[\\s]+\\!authenticate.*$' $f | uniq )\n  if ! test -z \"$matching_list\"; then\n    while IFS= read -r entry; do\n      # comment out \"!authenticate\" matches to preserve user data\n      sed -i \"s|^${entry}$|# &|g\" $f\n    done <<< \"$matching_list\"\n\n    /usr/sbin/visudo -cf $f &> /dev/null || echo \"Fail to validate $f with visudo\"\n  fi\ndone\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5",
+    "5.2"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.2.5",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure re-authentication for privilege escalation is not disabled globally (Automated)"
+}

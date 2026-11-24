@@ -1,0 +1,111 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "Ubuntu-24.04"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== Install the cron service\n----\nRun the following command to determine if the cron package is installed: $ dpkg -l cron\n      Is it the case that the cron package is not installed?\n----\n\n== Enable cron Service\n----\nRun the following command to determine the current status of the\ncron service:\n$ sudo systemctl is-active cron\nIf the service is running, it should return the following: active\n      Is it the case that ?\n----",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## Install the cron service\n\nThe Cron service should be installed.\n\n**Rationale:**\n\nThe cron service allow periodic job execution, needed for almost all administrative tasks and services (software update, log rotating, etc.). Access to cron service should be restricted to administrative accounts only.\n\n## Enable cron Service\n\nThe `crond` service is used to execute commands at\npreconfigured times. It is required by almost all systems to perform necessary\nmaintenance tasks, such as notifying root of system activity.\n\nThe `cron` service can be enabled with the following command:\n\n```\n$ sudo systemctl enable cron.service\n```\n\n**Rationale:**\n\nDue to its usage for maintenance and security-supporting tasks,\nenabling the cron daemon is essential.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_ubuntu2404.2.4.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "2.4.1.1",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "rules": [
+        "package_cron_installed",
+        "service_cron_enabled"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `package_cron_installed`",
+          "language": "bash",
+          "name": "Install the cron service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nDEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=60 install -y \"cron\"\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        },
+        {
+          "additional_info": "ComplianceAsCode rule `service_cron_enabled`",
+          "language": "bash",
+          "name": "Enable cron Service",
+          "shell": "# Remediation is applicable only in certain platforms\nif dpkg-query --show --showformat='${db:Status-Status}' 'linux-base' 2>/dev/null | grep -q '^installed$'; then\n\nSYSTEMCTL_EXEC='/usr/bin/systemctl'\n\"$SYSTEMCTL_EXEC\" unmask 'cron.service'\nif [[ $(\"$SYSTEMCTL_EXEC\" is-system-running) != \"offline\" ]]; then\n  \"$SYSTEMCTL_EXEC\" start 'cron.service'\nfi\n\"$SYSTEMCTL_EXEC\" enable 'cron.service'\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.4",
+    "2.4.1"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_ubuntu2404",
+    "release_tag": "v0.1.82",
+    "upstream_path": "controls/cis_ubuntu2404.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.4.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/controls/cis_ubuntu2404.yml"
+  },
+  "tags": [],
+  "title": "Ensure cron daemon is enabled and active (Automated)"
+}

@@ -1,0 +1,145 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": "$ODV_public_firewall_log_size",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "LogFileSize"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('LogFileSize', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]$ODV_public_firewall_log_size)) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging [LogFileSize]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_9_3_7 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\\LogFileSize:\n    title: \"9.3.7 | Ensure 'Windows Firewall: Public: Logging: Size limit (KB)' is set to '16,384 KB or greater' | LogFileSize\"\n    exists: true\n    value: {{ .Vars.win11cis_public_firewall_log_size }}\n    type: REG_DWORD\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 9.3.7\n      NIST800-53R5:\n        - SC-7\n        - SC-7(5)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_9/cis_9.3.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_9/cis_9.3.x/cis_9.3.7.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "lockdown_cis_windows11.9.3.7",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "number",
+      "description": "win11cis_public_firewall_log_size is the size of the log file To conform to CIS standards the value should be 16,384 or greater. Value is in KB",
+      "name": "public_firewall_log_size",
+      "quoting": "unquoted",
+      "recommended": 16384,
+      "validation": {
+        "max": 4294967295,
+        "min": 16384
+      }
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "9.3.7"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": "$ODV_public_firewall_log_size",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "LogFileSize"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging' -Name 'LogFileSize' -Value $ODV_public_firewall_log_size -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"9.3.7 | PATCH | Ensure 'Windows Firewall: Public: Logging: Size limit (KB)' is set to '16,384 KB or greater'\"\n  when: win11cis_rule_9_3_7\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_9.3.7\n    - logging_size\n    - NIST800-171_3.13.1\n    - NIST800-171_3.13.5\n    - NIST800-171_3.13.6\n    - NIST800-53R5_SC-7\n    - NIST800-53R5_SC-7_5\n  block:\n    - name: \"9.3.7 | PATCH | Ensure 'Windows Firewall: Public: Logging: Size limit (KB)' is set to '16,384 KB or greater' | Apply Settings To Registry\"\n      when: win11cis_public_firewall_log_size >= 16384\n      ansible.windows.win_regedit:\n        path: HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\n        name: LogFileSize\n        data: '{{ win11cis_public_firewall_log_size }}'\n        type: dword\n\n    - name: \"9.3.7 | AUDIT | Ensure 'Windows Firewall: Public: Logging: Size limit (KB)' is set to '16,384 KB or greater' | Warning Check For Variable Standards\"\n      when: win11cis_public_firewall_log_size < 16384\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid size set for win11cis_public_firewall_log_size. Please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n\n    - name: \"9.3.7 | AUDIT | Ensure 'Windows Firewall: Public: Logging: Size limit (KB)' is set to '16,384 KB or greater' | Warn Count\"\n      when: win11cis_public_firewall_log_size < 16384\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n      vars:\n        warn_control_id: '9.3.7'\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "9",
+    "9.3"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "lockdown_cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_9/cis_9.3.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "9.3.7",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_9/cis_9.3.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Windows Firewall: Public: Logging: Size limit (KB)' is set to '16,384 KB or greater'"
+}

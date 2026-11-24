@@ -1,0 +1,120 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "cis_l1_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_server",
+          "severity": null
+        },
+        {
+          "name": "cis_l1_workstation",
+          "severity": null
+        },
+        {
+          "name": "cis_l2_workstation",
+          "severity": null
+        }
+      ],
+      "target": "Linux",
+      "version": "RHEL-9"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "openscap",
+    "status": "manual"
+  },
+  "check": {
+    "Linux": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": "== A remote time server for Chrony is configured\n----\nVerify that a remote time server is configured. First, check the main configuration file:\n# grep -E \"^(server|pool)\" /etc/chrony.conf\nIf no server or pool directive is found, check for sourcedir or confdir directives:\n# grep -E \"^(sourcedir|confdir)\" /etc/chrony.conf\nFor each sourcedir found, check .sources files in that directory:\n# grep -E \"^(server|pool)\" /path/to/sourcedir/*.sources\nFor each confdir found, check .conf files in that directory:\n# grep -E \"^(server|pool)\" /path/to/confdir/*.conf\nAt least one server or pool directive must be present in the main configuration file\nor in files within directories specified by sourcedir or confdir directives.\n      Is it the case that a remote time server is not configured?\n----\nExpected values: var_multiple_time_servers = $ODV_var_multiple_time_servers",
+          "result": null,
+          "shell": null
+        },
+        "language": "instructions",
+        "name": null
+      }
+    ]
+  },
+  "discussion": "## A remote time server for Chrony is configured\n\n`Chrony` is a daemon which implements the Network Time Protocol (NTP). It is designed\nto synchronize system clocks across a variety of systems and use a source that is highly\naccurate. More information on `chrony` can be found at\n\n    [https://chrony-project.org/](https://chrony-project.org/).\n`Chrony` can be configured to be a client and/or a server.\nAdd or edit server or pool lines to `/etc/chrony.conf` as appropriate:\n\n```\nserver <remote-server>\n```\n\nAlternatively, server or pool directives can be specified in files included via\n`sourcedir` or `confdir` directives in `/etc/chrony.conf`.\nWhen using `sourcedir`, create `.sources` files in the specified directory:\n\n```\n# In /etc/chrony.conf:\nsourcedir /etc/chrony/sources.d\n\n# In /etc/chrony/sources.d/ntp.sources:\nserver 0.pool.ntp.org\n```\n\nWhen using `confdir`, create `.conf` files in the specified directory:\n\n```\n# In /etc/chrony.conf:\nconfdir /etc/chrony/conf.d\n\n# In /etc/chrony/conf.d/ntp-servers.conf:\npool 1.pool.ntp.org\n```\n\nMultiple servers may be configured.\n\n**Rationale:**\n\nIf `chrony` is in use on the system proper configuration is vital to ensuring time\nsynchronization is working properly.",
+  "discussion_format": "markdown",
+  "id": "cac_cis_rhel9.2.3.2",
+  "odvs": [
+    {
+      "by_benchmark": {
+        "cis_l1_server": "0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org",
+        "cis_l1_workstation": "0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org",
+        "cis_l2_server": "0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org",
+        "cis_l2_workstation": "0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org"
+      },
+      "datatype": "string",
+      "description": "Vendor Approved Time Servers",
+      "name": "var_multiple_time_servers",
+      "quoting": "single",
+      "recommended": "0.rhel.pool.ntp.org,1.rhel.pool.ntp.org,2.rhel.pool.ntp.org,3.rhel.pool.ntp.org",
+      "validation": null
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "2.0.0",
+      "id": "2.3.2",
+      "levels": [
+        "l1_server",
+        "l1_workstation"
+      ]
+    },
+    "complianceascode": {
+      "cce": {
+        "chronyd_specify_remote_server": "CCE-84218-7"
+      },
+      "rules": [
+        "chronyd_specify_remote_server"
+      ],
+      "status": "automated"
+    }
+  },
+  "remediation": {
+    "Linux": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": "ComplianceAsCode rule `chronyd_specify_remote_server`",
+          "language": "bash",
+          "name": "A remote time server for Chrony is configured",
+          "shell": "# Remediation is applicable only in certain platforms\nif rpm --quiet -q kernel-core && { rpm --quiet -q chrony; }; then\n\nvar_multiple_time_servers='$ODV_var_multiple_time_servers'\n\n\nconfig_file=\"/etc/chrony.conf\"\n\nif ! grep -q '^[[:space:]]*\\(server\\|pool\\)[[:space:]]\\+[[:graph:]]\\+' \"$config_file\" ; then\n  if ! grep -q '#[[:space:]]*server' \"$config_file\" ; then\n    for server in $(echo \"$var_multiple_time_servers\" | tr ',' '\\n') ; do\n      printf '\\nserver %s' \"$server\" >> \"$config_file\"\n    done\n  else\n    sed -i 's/#[ \\t]*server/server/g' \"$config_file\"\n  fi\n  if [[ -s \"$config_file\" ]] && [[ -n \"$(tail -c 1 -- \"$config_file\" || true)\" ]]; then\n      LC_ALL=C sed -i --follow-symlinks '$a'\\\\ \"$config_file\"\n  fi\nfi\n\nelse\n    >&2 echo 'Remediation is not applicable, nothing was done'\nfi",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.3"
+  ],
+  "source": {
+    "commit_sha": "3da954fbccfb4ca611da86c9be9205d83c38bfc7",
+    "license": {
+      "modified": true,
+      "name": "BSD-3-Clause",
+      "rights_holder": "Red Hat, Inc.",
+      "url": "https://opensource.org/license/bsd-3-clause"
+    },
+    "name": "cac_cis_rhel9",
+    "release_tag": "v0.1.82",
+    "upstream_path": "products/rhel9/controls/cis_rhel9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ComplianceAsCode/content/blob/3da954fbccfb4ca611da86c9be9205d83c38bfc7/products/rhel9/controls/cis_rhel9.yml"
+  },
+  "tags": [],
+  "title": "Ensure chrony is configured (Automated)"
+}
