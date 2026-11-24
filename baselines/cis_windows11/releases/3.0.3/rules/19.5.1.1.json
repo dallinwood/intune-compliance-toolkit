@@ -1,0 +1,133 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKCU",
+              "path": "Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "NoToastApplicationNotificationOnLockScreen"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('NoToastApplicationNotificationOnLockScreen', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]1)) {\n    Write-Output 'Mismatch: HKCU:\\Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications [NoToastApplicationNotificationOnLockScreen]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_19_5_1_1 }}\nfile:\n  win11cis_19_5_1_1_per_user_policy:\n    title: \"19.5.1.1 | Ensure 'Turn off toast notifications on the lock screen' is set to 'Enabled' | per-user policy\"\n    path: '{{ .Vars.win11cis_snapshot_dir }}\\HKU.19.5.1.1'\n    exists: true\n    contents:\n      - '/^COMPLIANT profiles=[1-9][0-9]*$/'\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 19.5.1.1\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_19/cis_19.5.1.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_19/cis_19.5.1.x/cis_19.5.1.1.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "cis_windows11.19.5.1.1",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "19.5.1.1"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKCU",
+              "path": "Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "NoToastApplicationNotificationOnLockScreen"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications')) {\n    New-Item -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications' -Name 'NoToastApplicationNotificationOnLockScreen' -Value 1 -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"19.5.1.1 | PATCH | Ensure Turn off toast notifications on the lock screen is set to Enabled\"\n  when: win11cis_rule_19_5_1_1\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_19.5.1.1\n    - toast_notifications\n  ansible.windows.win_regedit:\n    path: HKU:\\{{ item }}\\Software\\Policies\\Microsoft\\Windows\\Currentversion\\Pushnotifications\n    name: NoToastApplicationNotificationOnLockScreen\n    data: 1\n    type: dword\n  loop: \"{{ discovered_hku_loaded_list }}\"\n  notify: Change_requires_reboot\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "19",
+    "19.5",
+    "19.5.1"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_19/cis_19.5.1.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "19.5.1.1",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_19/cis_19.5.1.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Turn off toast notifications on the lock screen' is set to 'Enabled'"
+}

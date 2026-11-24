@@ -1,0 +1,85 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_2_3_7_9 }}\nregistry:\n  HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\ScRemoveOption:\n    title: \"2.3.7.9 | Ensure 'Interactive logon: Smart card removal behavior' is set to 'Lock Workstation' or higher | ScRemoveOption\"\n    exists: true\n    value: '{{ .Vars.win19cis_sc_remove_option }}'\n    type: REG_SZ\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 2.3.7.9\n      NIST800-53R5:\n        - AC-2(5)\n        - AC-11\n        - AC-11(1)\n        - AC-12\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_2/section_2.3.7.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_2/section_2.3.7/cis_2.3.7.9.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (number variable sc_remove_option does not fit REG_SZ); the original Ansible tasks are the fix.",
+  "discussion_format": "markdown",
+  "id": "cis_windows2019.2.3.7.9",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "2.3.7.9"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"2.3.7.9 | PATCH | Ensure Interactive logon Smart card removal behavior is set to Lock Workstation or higher\"\n  when: win19cis_rule_2_3_7_9\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_2.3.7.9\n    - patch\n    - logon\n    - NIST800-171_3.1.1\n    - NIST800-171_3.1.10\n    - NIST800-171_3.1.11\n    - NIST800-53R5_AC-2_5\n    - NIST800-53R5_AC-11\n    - NIST800-53R5_AC-11_1\n    - NIST800-53R5_AC-12\n  block:\n    - name: \"2.3.7.9 | PATCH | Ensure Interactive logon Smart card removal behavior is set to Lock Workstation or higher | Apply Settings To Registry\"\n      when:\n        - win19cis_sc_remove_option >= 1\n        - win19cis_sc_remove_option <= 3\n      ansible.windows.win_regedit:\n        path: HKLM:\\SOFTWARE\\Microsoft\\Windows Nt\\CurrentVersion\\Winlogon\n        name: ScRemoveOption\n        data: \"{{ win19cis_sc_remove_option }}\"\n        type: string\n\n    - name: \"2.3.7.9 | AUDIT | Ensure Interactive logon Smart card removal behavior is set to Lock Workstation or higher | Warning Check For Variable Standards\"\n      when:\n        - win19cis_sc_remove_option == 0 or\n          win19cis_sc_remove_option > 3\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid setting for win19cis_sc_remove_option. Please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n\n    - name: \"2.3.7.9 | AUDIT | Ensure Interactive logon Smart card removal behavior is set to Lock Workstation or higher | Warn Count\"\n      when:\n        - win19cis_sc_remove_option == 0 or\n          win19cis_sc_remove_option > 3\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n      vars:\n        warn_control_id: '2.3.7.9'\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.3",
+    "2.3.7"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_2/section_2.3.7.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.7.9",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_2/section_2.3.7.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Interactive logon: Smart card removal behavior' is set to 'Lock Workstation' or higher"
+}

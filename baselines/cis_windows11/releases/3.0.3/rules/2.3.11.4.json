@@ -1,0 +1,81 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_2_3_11_4 }}\n    {{ if .Vars.win11cis_legacy_rc4_hmac_md5_support }}\nregistry:\n  HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\SupportedEncryptionTypes:\n    title: \"2.3.11.4 | Ensure 'Network security: Configure encryption types allowed for Kerberos' is set to 'AES128_HMAC_SHA1, AES256_HMAC_SHA1, Future encryption types' | SupportedEncryptionTypes\"\n    exists: true\n    value: 2147483644\n    type: REG_DWORD\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 2.3.11.4\n      NIST800-53R5:\n        - AC-17(2)\n        - IA-5\n        - IA-5(1)\n        - SC-8\n        - SC-8(1)\n    {{ end }}\n    {{ if not .Vars.win11cis_legacy_rc4_hmac_md5_support }}\nregistry:\n  HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\\SupportedEncryptionTypes:\n    title: \"2.3.11.4 | Ensure 'Network security: Configure encryption types allowed for Kerberos' is set to 'AES128_HMAC_SHA1, AES256_HMAC_SHA1, Future encryption types' | SupportedEncryptionTypes\"\n    exists: true\n    value: 2147483640\n    type: REG_DWORD\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 2.3.11.4\n      NIST800-53R5:\n        - AC-17(2)\n        - IA-5\n        - IA-5(1)\n        - SC-8\n        - SC-8(1)\n    {{ end }}\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_2/cis_2.3.11.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_2/cis_2.3.11.x/cis_2.3.11.4.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (when: win11cis_legacy_rc4_hmac_md5_support); the original Ansible tasks are the fix.",
+  "discussion_format": "markdown",
+  "id": "cis_windows11.2.3.11.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "2.3.11.4"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"2.3.11.4 | PATCH | Ensure Network security Configure encryption types allowed for Kerberos is set to AES128 HMAC SHA1 AES256 HMAC SHA1 Future encryption types\"\n  when: win11cis_rule_2_3_11_4\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_2.3.11.4\n    - encryption\n    - NIST800-171_3.1.13\n    - NIST800-171_3.13.8\n    - NIST800-171_3.5.2\n    - NIST800-53R5_AC-17_2\n    - NIST800-53R5_IA-5\n    - NIST800-53R5_IA-5_1\n    - NIST800-53R5_SC-8\n    - NIST800-53R5_SC-8_1\n  block:\n    - name: \"2.3.11.4 | PATCH | Ensure Network security Configure encryption types allowed for Kerberos is set to AES128 HMAC SHA1 AES256 HMAC SHA1 Future encryption types | Legacy App Encryption Support\"\n      when: win11cis_legacy_rc4_hmac_md5_support\n      ansible.windows.win_regedit:\n        path: HKLM:\\Software\\Microsoft\\Windows\\Currentversion\\Policies\\System\\Kerberos\\Parameters\n        name: SupportedEncryptionTypes\n        data: 2147483644\n        type: dword\n\n    - name: \"2.3.11.4 | PATCH | Ensure Network security Configure encryption types allowed for Kerberos is set to AES128 HMAC SHA1 AES256 HMAC SHA1 Future encryption types | No Legacy App Encryption Support\"\n      when: not win11cis_legacy_rc4_hmac_md5_support\n      ansible.windows.win_regedit:\n        path: HKLM:\\Software\\Microsoft\\Windows\\Currentversion\\Policies\\System\\Kerberos\\Parameters\n        name: SupportedEncryptionTypes\n        data: 2147483640\n        type: dword\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "2",
+    "2.3",
+    "2.3.11"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_2/cis_2.3.11.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "2.3.11.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_2/cis_2.3.11.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Network security: Configure encryption types allowed for Kerberos' is set to 'AES128_HMAC_SHA1, AES256_HMAC_SHA1, Future encryption types'"
+}

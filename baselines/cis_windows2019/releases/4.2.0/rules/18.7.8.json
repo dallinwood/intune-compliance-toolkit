@@ -1,0 +1,136 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "SYSTEM\\CurrentControlSet\\Control\\Print",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "RpcAuthnLevelPrivacyEnabled"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('RpcAuthnLevelPrivacyEnabled', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]1)) {\n    Write-Output 'Mismatch: HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print [RpcAuthnLevelPrivacyEnabled]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_18_7_8 }}\nregistry:\n  HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\\RpcAuthnLevelPrivacyEnabled:\n    title: \"18.7.8 | Ensure 'Configure RPC packet level privacy setting for incoming connections' is set to 'Enabled' | RpcAuthnLevelPrivacyEnabled\"\n    exists: true\n    value: 1\n    type: REG_DWORD\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 18.7.8\n      NIST800-53R5:\n        - SI-4\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.7.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_18/section_18.7/cis_18.7.8.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "cis_windows2019.18.7.8",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "18.7.8"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "SYSTEM\\CurrentControlSet\\Control\\Print",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "RpcAuthnLevelPrivacyEnabled"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print')) {\n    New-Item -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print' -Name 'RpcAuthnLevelPrivacyEnabled' -Value 1 -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.7.8 | PATCH | Ensure 'Configure RPC packet level privacy setting for incoming connections' is set to 'Enabled'\"\n  when: win19cis_rule_18_7_8\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_18.7.8\n    - patch\n    - printers\n    - drivers\n    - NIST800-171_3.14.6\n    - NIST800-171_3.14.7\n    - NIST800-53R5_SI-4\n  ansible.windows.win_regedit:\n    path: HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Print\n    name: RpcAuthnLevelPrivacyEnabled\n    data: 1\n    type: dword\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.7"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_18/section_18.7.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.7.8",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_18/section_18.7.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Configure RPC packet level privacy setting for incoming connections' is set to 'Enabled'"
+}

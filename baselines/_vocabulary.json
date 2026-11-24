@@ -8,7 +8,11 @@
       { "label": "NIST SP 800-53", "terms": ["nist_800_53"] },
       { "label": "ASD E4EIT", "terms": ["asd_e4eit"] },
       { "label": "CIS RHEL 9 (CaC)", "terms": ["cis_rhel9"] },
-      { "label": "CIS Ubuntu 24.04 (CaC)", "terms": ["cis_ubuntu2404"] }
+      { "label": "CIS Ubuntu 24.04 (CaC)", "terms": ["cis_ubuntu2404"] },
+      { "label": "CIS Windows 11 (ansible-lockdown)", "terms": ["cis_windows11"] },
+      { "label": "CIS Windows Server 2025 (ansible-lockdown)", "terms": ["cis_windows2025"] },
+      { "label": "CIS Windows Server 2022 (ansible-lockdown)", "terms": ["cis_windows2022"] },
+      { "label": "CIS Windows Server 2019 (ansible-lockdown)", "terms": ["cis_windows2019"] }
     ],
     "benchmarks": [
       { "label": "CIS Level 1", "terms": ["cis_lvl1"], "metadata": ["benchmark"] },
@@ -54,7 +58,11 @@
       { "label": "macOS 26", "terms": ["macOS 26.0"], "metadata": ["platform"] },
       { "label": "macOS 15", "terms": ["macOS 15.0"], "metadata": ["platform"] },
       { "label": "RHEL 9", "terms": ["Linux RHEL-9"], "metadata": ["platform"] },
-      { "label": "Ubuntu 24.04", "terms": ["Linux Ubuntu-24.04"], "metadata": ["platform"] }
+      { "label": "Ubuntu 24.04", "terms": ["Linux Ubuntu-24.04"], "metadata": ["platform"] },
+      { "label": "Windows 11", "terms": ["Windows 11"], "metadata": ["platform"] },
+      { "label": "Windows Server 2025", "terms": ["Windows Server-2025"], "metadata": ["platform"] },
+      { "label": "Windows Server 2022", "terms": ["Windows Server-2022"], "metadata": ["platform"] },
+      { "label": "Windows Server 2019", "terms": ["Windows Server-2019"], "metadata": ["platform"] }
     ],
     "sections": [
       { "label": "Operating system", "terms": ["os"] },

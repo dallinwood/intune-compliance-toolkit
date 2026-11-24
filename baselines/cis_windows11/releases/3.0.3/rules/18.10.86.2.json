@@ -1,0 +1,81 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level2_high_security_sensitive_data_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_2 }}\n  {{ if .Vars.win11cis_rule_18_10_86_2 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShell\\Transcription\\EnableTranscripting:\n    title: \"18.10.86.2 | Ensure 'Turn on PowerShell Transcription' is set to 'Enabled' | EnableTranscripting\"\n    exists: true\n    value: 1\n    type: REG_DWORD\n    meta:\n      workstation: 2\n      CIS_ID:\n        - 18.10.86.2\n      NIST800-53R5:\n        - AU-2\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.10/cis_18.10.86.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_18/cis_18.10.86.x/cis_18.10.86.2.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (when: 'Default' not in win11cis_powershell_transcription_dir); the original Ansible tasks are the fix.",
+  "discussion_format": "markdown",
+  "id": "cis_windows11.18.10.86.2",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "18.10.86.2"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.10.86.2 | PATCH | Ensure 'Turn on PowerShell Transcription' is set to 'Enabled'\"\n  when: win11cis_rule_18_10_86_2\n  tags:\n    - level2-high-security-sensitive-data-environment\n    - patch\n    - automated\n    - rule_18.10.86.2\n    - NIST800-171_3.3.1\n    - NIST800-171_3.3.2\n    - NIST800-53R5_AU-2\n  block:\n    - name: \"18.10.86.2 | PATCH | Ensure 'Turn on PowerShell Transcription' is set to 'Enabled | Turn on PowerShell Transcription\"\n      ansible.windows.win_regedit:\n        path: HKLM:\\Software\\Policies\\Microsoft\\Windows\\Powershell\\Transcription\n        name: EnableTranscripting\n        data: 1\n        type: dword\n\n    - name: \"18.10.86.2 | PATCH | Ensure 'Turn on PowerShell Transcription' is set to 'Enabled | Set Log Directory\"\n      when: \"'Default' not in win11cis_powershell_transcription_dir\"\n      ansible.windows.win_regedit:\n        path: HKLM:\\Software\\Policies\\Microsoft\\Windows\\Powershell\\Transcription\n        name: OutputDirectory\n        data: \"{{ win11cis_powershell_transcription_dir }}\"\n        type: string\n\n    - name: \"18.10.86.2 | PATCH | Ensure 'Turn on PowerShell Transcription' is set to 'Enabled | Remove Custom Log Directory\"\n      when: \"'Default' in win11cis_powershell_transcription_dir\"\n      ansible.windows.win_regedit:\n        path: HKLM:\\Software\\Policies\\Microsoft\\Windows\\Powershell\\Transcription\n        name: OutputDirectory\n        state: absent\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.10",
+    "18.10.86"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_18/section_18.10/cis_18.10.86.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.10.86.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_18/section_18.10/cis_18.10.86.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Turn on PowerShell Transcription' is set to 'Enabled'"
+}

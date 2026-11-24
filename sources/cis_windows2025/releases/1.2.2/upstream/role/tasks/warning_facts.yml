@@ -1,0 +1,6 @@
+---
+
+- name: "WARNING TASK | AUDIT | Set fact for manual task warning"
+  ansible.builtin.set_fact:
+    warn_control_list: "{{ warn_control_list }} [{{ warn_control_id }}]"
+    warn_count: "{{ warn_count | int + 1 }}"

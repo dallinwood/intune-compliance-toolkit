@@ -1,0 +1,91 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2019"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win19cis_level_1 }}\n  {{ if .Vars.win19cis_rule_17_9_3 }}\nfile:\n  win19cis_17_9_3_0cce9210_69ae_11d9_bed3_505054503030:\n    title: \"17.9.3 | Ensure 'Audit Security State Change' is set to include 'Success' | {0cce9210-69ae-11d9-bed3-505054503030}\"\n    path: '{{ .Vars.win19cis_snapshot_dir }}\\AuditPolicy.17.9.3'\n    exists: true\n    contents:\n      - '/^[13]$/'\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 17.9.3\n      NIST800-53R5:\n        - AU-3\n        - AU-3(1)\n        - AU-7\n        - AU-12\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_17/section_17.9.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_17/section_17.9/cis_17.9.3.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (the role applies it, but no check could be translated); the original Ansible tasks are the fix.",
+  "discussion_format": "markdown",
+  "id": "cis_windows2019.17.9.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "17.9.3"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "AuditPol /set /subcategory:\"{0cce9210-69ae-11d9-bed3-505054503030}\" /success:enable\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"17.9.3 | PATCH | Ensure Audit Security State Change is set to include Success\"\n  when: win19cis_rule_17_9_3\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_17.9.3\n    - patch\n    - NIST800-171_3.3.1\n    - NIST800-171_3.3.2\n    - NIST800-171_3.3.6\n    - NIST800-53R5_AU-3\n    - NIST800-53R5_AU-3_1\n    - NIST800-53R5_AU-7\n    - NIST800-53R5_AU-12\n  block:\n    - name: \"17.9.3 | AUDIT | Ensure Audit Security State Change is set to include Success | Get current audit events for Security State Change\"\n      ansible.windows.win_shell: AuditPol /get /subcategory:\"{0cce9210-69ae-11d9-bed3-505054503030}\" -r | ConvertFrom-Csv | Select-Object -expand \"Inclusion Setting\"\n      changed_when: false\n      failed_when: false\n      check_mode: false\n      register: discovered_17_9_3_audit\n\n    - name: \"17.9.3 | PATCH | Ensure Audit Security State Change is set to include Success | Enable Success for Security State Change\"\n      when: \"'Success' not in discovered_17_9_3_audit.stdout\"\n      ansible.windows.win_shell: AuditPol /set /subcategory:\"{0cce9210-69ae-11d9-bed3-505054503030}\" /success:enable\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "17",
+    "17.9"
+  ],
+  "source": {
+    "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows2019",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_17/section_17.9.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "17.9.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2019-CIS/blob/18c63b00c001260c01b514792ed1dcfafb42b4bc/tasks/section_17/section_17.9.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Audit Security State Change' is set to include 'Success'"
+}

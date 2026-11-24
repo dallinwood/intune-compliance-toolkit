@@ -1,0 +1,24 @@
+---
+
+{{ if .Vars.win11cis_level_1 }}
+  {{ if .Vars.win11cis_rule_2_2_31 }}
+file:
+  win11cis_2_2_31_serelabelprivilege:
+    title: "2.2.31 | Ensure 'Modify an object label' is set to 'No One' | SeRelabelPrivilege"
+    path: '{{ .Vars.win11cis_snapshot_dir }}\PrivilegeRights.SeRelabelPrivilege'
+    exists: true
+    contents:
+      - '/^NONE$/'
+    meta:
+      workstation: 1
+      CIS_ID:
+        - 2.2.31
+      NIST800-53R5:
+        - AC-2
+        - AC-3
+        - AC-6
+        - AC-6(1)
+        - AC-6(7)
+        - AU-9(4)
+  {{ end }}
+{{ end }}

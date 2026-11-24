@@ -1,0 +1,167 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        },
+        {
+          "name": "level1_memberserver",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2022"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "DeferFeatureUpdates"
+            },
+            {
+              "data": "$ODV_defer_feature_updates_period_in_days",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "DeferFeatureUpdatesPeriodInDays"
+            }
+          ],
+          "result": null
+        },
+        "language": "registry",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('DeferFeatureUpdates', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]1)) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate [DeferFeatureUpdates]'\n    $mismatchCount++\n}\n\n$key = Get-Item -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -ErrorAction SilentlyContinue\n$current = $null\nif ($key) { $current = $key.GetValue('DeferFeatureUpdatesPeriodInDays', $null, 'DoNotExpandEnvironmentNames') }\nif (-not ($current -is [int] -and [BitConverter]::ToUInt32([BitConverter]::GetBytes($current), 0) -eq [uint32]$ODV_defer_feature_updates_period_in_days)) {\n    Write-Output 'Mismatch: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate [DeferFeatureUpdatesPeriodInDays]'\n    $mismatchCount++\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win22cis_level_1 }}\n  {{ if .Vars.win22cis_rule_18_10_93_4_2 }}\nregistry:\n  HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\DeferFeatureUpdates:\n    title: \"18.10.93.4.2 | Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days' | DeferFeatureUpdates\"\n    exists: true\n    value: 1\n    type: REG_DWORD\n    meta:\n      domaincontroller: 1\n      memberserver: 1\n      server: 1\n      CIS_ID:\n        - 18.10.93.4.2\n      NIST800-53R5:\n        - RA-5\n        - SI-2\n        - SI-2(2)\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_18/section_18.10.93.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_18/section_18.10.93/cis_18.10.93.4.2.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "cis_windows2022.18.10.93.4.2",
+  "odvs": [
+    {
+      "by_benchmark": {},
+      "datatype": "number",
+      "description": "win22cis_defer_feature_updates_period_in_days is the policy setting that determines when Preview Build or Feature Updates are received. Recommended setting: Enabled: 180 or more days",
+      "name": "defer_feature_updates_period_in_days",
+      "quoting": "unquoted",
+      "recommended": 180,
+      "validation": {
+        "max": 4294967295,
+        "min": 180
+      }
+    }
+  ],
+  "references": {
+    "cis": {
+      "benchmark_version": "4.0.0",
+      "id": "18.10.93.4.2"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "registry",
+          "name": null,
+          "registry": [
+            {
+              "data": 1,
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "DeferFeatureUpdates"
+            },
+            {
+              "data": "$ODV_defer_feature_updates_period_in_days",
+              "hive": "HKLM",
+              "path": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate",
+              "state": "present",
+              "type": "REG_DWORD",
+              "value_name": "DeferFeatureUpdatesPeriodInDays"
+            }
+          ],
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferFeatureUpdates' -Value 1 -PropertyType DWord -Force | Out-Null\nif (-not (Test-Path -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate')) {\n    New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Force | Out-Null\n}\nNew-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DeferFeatureUpdatesPeriodInDays' -Value $ODV_defer_feature_updates_period_in_days -PropertyType DWord -Force | Out-Null\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"18.10.93.4.2 | PATCH | Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days'\"\n  when: win22cis_rule_18_10_93_4_2\n  tags:\n    - level1-domaincontroller\n    - level1-memberserver\n    - rule_18.10.93.4.2\n    - automated\n    - patch\n    - manage_updates_offered_from_windows_update\n    - preview\n    - NIST800-171_3.11.2\n    - NIST800-171_3.11.3\n    - NIST800-171_3.14.1\n    - NIST800-53R5_RA-5\n    - NIST800-53R5_SI-2\n    - NIST800-53R5_SI-2_2\n  block:\n    - name: \"18.10.93.4.2 | PATCH | Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days' | DeferFeatureUpdates\"\n      ansible.windows.win_regedit:\n        path: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\n        name: DeferFeatureUpdates\n        data: 1\n        type: dword\n\n    - name: \"18.10.93.4.2 | PATCH | Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days' | DeferFeatureUpdatesPeriodInDays\"\n      when: win22cis_defer_feature_updates_period_in_days >= 180\n      ansible.windows.win_regedit:\n        path: HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\n        name: DeferFeatureUpdatesPeriodInDays\n        data: \"{{ win22cis_defer_feature_updates_period_in_days }}\"\n        type: dword\n\n    - name: \"18.10.93.4.2 | AUDIT | Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days' | Variable Warning\"\n      when: win22cis_defer_feature_updates_period_in_days < 180\n      ansible.builtin.debug:\n        msg:\n          - \"Warning!! You have an invalid number of days for win22cis_defer_feature_updates_period_in_days. Please read\"\n          - \"the notes for the variable and make the necessary change to the variable to be in compliance.\"\n\n    - name: \"18.10.93.4.2 | AUDIT | Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days' | Log a warning\"\n      when: win22cis_defer_feature_updates_period_in_days < 180\n      vars:\n        warn_control_id: '18.10.93.4.2'\n      ansible.builtin.import_tasks:\n        file: warning_facts.yml\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "18",
+    "18.10",
+    "18.10.93",
+    "18.10.93.4"
+  ],
+  "source": {
+    "commit_sha": "ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows2022",
+    "release_tag": "4.2.0",
+    "upstream_path": "tasks/section_18/section_18.10.93.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "18.10.93.4.2",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2022-CIS/blob/ee3e7b5043ab235d9084a4e83f4493e3ba5bbdf9/tasks/section_18/section_18.10.93.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Select when Preview Builds and Feature Updates are received' is set to 'Enabled: 180 or more days'"
+}

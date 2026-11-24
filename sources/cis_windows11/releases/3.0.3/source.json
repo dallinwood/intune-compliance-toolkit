@@ -1,0 +1,14 @@
+{
+  "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+  "details": {
+    "audit_branch": "benchmark_v3.0.0",
+    "audit_commit": "4482e08730e97d949e0ca27c29bc32f351c589e8",
+    "audit_repository": "ansible-lockdown/Windows-11-CIS-Audit",
+    "benchmark_version": "v3.0.0"
+  },
+  "importer_format": "lockdown-cis-1",
+  "published_date": "2026-11-10",
+  "repository_url": "https://github.com/ansible-lockdown/Windows-11-CIS",
+  "retrieved_date": "2026-11-24",
+  "tag": "3.0.3"
+}

@@ -1,0 +1,66 @@
+---
+
+- name: "SECTION | 19.5.1 | Notifications"
+  tags:
+    - administrative_templates_user
+    - start_menu_and_taskbar
+    - notifications
+  ansible.builtin.import_tasks:
+    file: cis_19.5.1.x.yml
+
+- name: "SECTION | 19.6.6 | Internet Communication Management"
+  tags:
+    - administrative_templates_user
+    - system
+    - internet_coommuication_management
+  ansible.builtin.import_tasks:
+    file: cis_19.6.6.x.yml
+
+- name: "SECTION | 19.7.5 | Attachment Manager"
+  tags:
+    - administrative_templates_user
+    - windows_components
+    - attachment_manager
+  ansible.builtin.import_tasks:
+    file: cis_19.7.5.x.yml
+
+- name: "SECTION | 19.7.8 | Cloud Content"
+  tags:
+    - administrative_templates_user
+    - windows_components
+    - cloud_content
+  ansible.builtin.import_tasks:
+    file: cis_19.7.8.x.yml
+
+- name: "SECTION | 19.7.26 | Network Sharing"
+  tags:
+    - administrative_templates_user
+    - windows_components
+    - network_sharing
+  ansible.builtin.import_tasks:
+    file: cis_19.7.26.x.yml
+
+- name: "SECTION | 19.7.38 | Windows Copilot"
+  tags:
+    - administrative_templates_user
+    - windows_components
+    - windows_copilot
+  ansible.builtin.import_tasks:
+    file: cis_19.7.38.x.yml
+
+- name: "SECTION | 19.7.42 | Windows Installer"
+  tags:
+    - administrative_templates_user
+    - windows_components
+    - windows_installer
+  ansible.builtin.import_tasks:
+    file: cis_19.7.42.x.yml
+
+- name: "SECTION | 19.7.44 | Windows Media Player"
+  tags:
+    - administrative_templates_user
+    - windows_components
+    - windows_media_player
+    - playback
+  ansible.builtin.import_tasks:
+    file: cis_19.7.44.2.x.yml

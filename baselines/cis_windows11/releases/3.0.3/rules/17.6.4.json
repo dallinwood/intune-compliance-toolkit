@@ -1,0 +1,87 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_corporate_enterprise_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_1 }}\n  {{ if .Vars.win11cis_rule_17_6_4 }}\nfile:\n  win11cis_17_6_4_removable_storage:\n    title: \"17.6.4 | Ensure 'Audit Removable Storage' is set to 'Success and Failure' | Removable Storage\"\n    path: '{{ .Vars.win11cis_snapshot_dir }}\\AuditPolicy.17.6.4'\n    exists: true\n    contents:\n      - '/^3$/'\n    meta:\n      workstation: 1\n      CIS_ID:\n        - 17.6.4\n      NIST800-53R5:\n        - AU-12\n        - AU-3\n        - AU-3(1)\n        - AU-7\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_17/cis_17.6.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_17/cis_17.6.x/cis_17.6.4.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (the role applies it, but no check could be translated); the original Ansible tasks are the fix.",
+  "discussion_format": "markdown",
+  "id": "cis_windows11.17.6.4",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "17.6.4"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "AuditPol /set /subcategory:\"Removable Storage\" /success:enable\nAuditPol /set /subcategory:\"Removable Storage\" /failure:enable\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"17.6.4 | PATCH | Ensure Audit Removable Storage is set to Success and Failure\"\n  when: win11cis_rule_17_6_4\n  tags:\n    - level1-corporate-enterprise-environment\n    - patch\n    - automated\n    - rule_17.6.4\n    - audit_removable_storage\n    - NIST800-171_3.3.1\n    - NIST800-171_3.3.2\n    - NIST800-171_3.3.6\n    - NIST800-53R5_AU-12\n    - NIST800-53R5_AU-3\n    - NIST800-53R5_AU-3_1\n    - NIST800-53R5_AU-7\n  block:\n    - name: \"17.6.4 | AUDIT | Ensure Audit Removable Storage is set to Success and Failure | Get current audit events\"\n      ansible.windows.win_shell: AuditPol /get /subcategory:\"Removable Storage\" -r | ConvertFrom-Csv | Select-Object -expand \"Inclusion Setting\"\n      changed_when: false\n      check_mode: false\n      failed_when: false\n      register: discovered_17_6_4_audit\n\n    - name: \"17.6.4 | PATCH | Ensure Audit Removable Storage is set to Success and Failure | Success\"\n      when: \"'Success' not in discovered_17_6_4_audit.stdout\"\n      ansible.windows.win_shell: AuditPol /set /subcategory:\"Removable Storage\" /success:enable\n\n    - name: \"17.6.4 | PATCH | Ensure Audit Removable Storage is set to Success and Failure | Failure\"\n      when: \"'Failure' not in discovered_17_6_4_audit.stdout\"\n      ansible.windows.win_shell: AuditPol /set /subcategory:\"Removable Storage\" /failure:enable\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "17",
+    "17.6"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_17/cis_17.6.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "17.6.4",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_17/cis_17.6.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Audit Removable Storage' is set to 'Success and Failure'"
+}

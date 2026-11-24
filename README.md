@@ -73,6 +73,26 @@ and they do not endorse it. The upstream licence text is vendored in
 `sources/cis_*/releases/<tag>/upstream/LICENSE`. See `NOTICE` for the full
 attribution of the sources.
 
+The Windows CIS rule content in `sources/cis_windows11/`,
+`sources/cis_windows2025/`, `sources/cis_windows2022/`, `sources/cis_windows2019/`
+and the matching `baselines/` folders comes from the
+[ansible-lockdown](https://github.com/ansible-lockdown) role repositories
+(Windows-11-CIS, Windows-2025-CIS, Windows-2022-CIS, Windows-2019-CIS) and their
+Audit repositories (the same names with `-Audit`), all licensed under the MIT
+licence. The copyright lines are those of each repository's LICENSE:
+"Copyright (c) 2026 MindPoint Group - A Quantum Sky Company / Ansible Lockdown"
+for every repository except Windows-11-CIS-Audit, whose LICENSE reads
+"Copyright (c) 2026 MindPoint Group - A Tyto Athene Company / Ansible Lockdown".
+`sources/cis_windows*/releases/<tag>/upstream/` is an unmodified copy of the
+parts of each repository this project uses, including both LICENSE files. This
+project has modified the content in `baselines/cis_windows*/`: the role tasks
+were translated to registry settings and PowerShell, the role defaults were made
+customisable values, and the original Ansible tasks and goss tests are kept
+verbatim in each rule. That content remains under the MIT licence and is
+provided as-is, without warranty. MindPoint Group, Quantum Sky, Tyto Athene, the
+ansible-lockdown contributors and the Center for Internet Security do not
+endorse this project. See `NOTICE` for the full attribution.
+
 ## Web UI
 
 The web UI in `webui/` browses the imported rules and generates Intune custom
@@ -390,7 +410,20 @@ To add a benchmark for another product:
    `import_cis_cac.IMPORTERS`, and `.gitattributes` already covers
    `sources/cis_*`.
 5. Update the library-size constants in the e2e specs (`webui/e2e/`, e.g.
-   `3,177 of 3,177 rules`) to the new total.
+   `5,056 of 5,056 rules`) to the new total.
+
+## Updating the CIS Windows (ansible-lockdown) rules
+
+1. `python tools/import_cis_lockdown.py --source <source> --tag <role tag>`, for
+   example `--source cis_windows11 --tag 3.0.3`. The source is a key of
+   `SOURCES` in `tools/lockdown_sources.py` (`cis_windows11`,
+   `cis_windows2025`, `cis_windows2022`, `cis_windows2019`) and the tag is a
+   GitHub Release of the matching ansible-lockdown role repository. The matching
+   Audit repository is pinned by the commit of its branch at import time; both
+   commits are recorded in the release's `source.json`. Use `--offline` to
+   regenerate a stored release without fetching.
+2. Review `git diff sources/<source>/` and `git diff baselines/<source>/`.
+3. Run the same tests as for the CaC rules above.
 
 ## Writing overlays
 

@@ -138,6 +138,53 @@ modified by this project. It remains licensed under the BSD 3-Clause licence
 and is provided as-is, with the disclaimer of warranties and limitation of
 liability in that licence.
 
+sources/cis_windows11/, sources/cis_windows2025/, sources/cis_windows2022/ and
+sources/cis_windows2019/ (under releases/<tag>/upstream/) are unmodified copies
+of parts of the ansible-lockdown project: from each role repository the
+licence, the role defaults and the role tasks (role/), and from its matching
+Audit repository the licence, the coverage list and the goss control files
+(audit/). They carry the CIS Benchmark recommendations for Windows as rules:
+
+  Role repositories:
+    https://github.com/ansible-lockdown/Windows-11-CIS         (release 3.0.3)
+    https://github.com/ansible-lockdown/Windows-2025-CIS       (release 1.2.2)
+    https://github.com/ansible-lockdown/Windows-2022-CIS       (release 4.2.0)
+    https://github.com/ansible-lockdown/Windows-2019-CIS       (release 4.2.0)
+  Audit repositories:
+    https://github.com/ansible-lockdown/Windows-11-CIS-Audit
+    https://github.com/ansible-lockdown/Windows-2025-CIS-Audit
+    https://github.com/ansible-lockdown/Windows-2022-CIS-Audit
+    https://github.com/ansible-lockdown/Windows-2019-CIS-Audit
+  Licence:  MIT, each repository under its own copyright line:
+
+    Copyright (c) 2026 MindPoint Group - A Quantum Sky Company / Ansible Lockdown
+      for:
+        Windows-11-CIS, Windows-2025-CIS, Windows-2025-CIS-Audit,
+        Windows-2022-CIS, Windows-2022-CIS-Audit, Windows-2019-CIS,
+        Windows-2019-CIS-Audit
+
+    Copyright (c) 2026 MindPoint Group - A Tyto Athene Company / Ansible Lockdown
+      for:
+        Windows-11-CIS-Audit
+
+  See source.json in each release folder for the exact commits of the role
+  and Audit repositories.
+
+Each licence text is in sources/<source>/releases/<tag>/upstream/role/LICENSE
+and upstream/audit/LICENSE, reproduced verbatim from the repository. The MIT
+licence requires that its copyright notice and permission notice be included in
+all copies or substantial portions of the software; they are kept in those
+files.
+
+baselines/cis_windows11/, baselines/cis_windows2025/, baselines/cis_windows2022/
+and baselines/cis_windows2019/ are adapted from that material: the role tasks
+were translated to registry settings and PowerShell, the role defaults were
+made customisable values, titles and goss tests came from the Audit repository,
+and the original Ansible tasks and goss tests are kept verbatim in each rule.
+This content was modified by this project. It remains licensed under the MIT
+licence and is provided as-is, without warranty of any kind, as that licence
+states. The CIS Benchmark text itself is not part of these sources.
+
 baselines/_overlays/scripts/*.ps1 (referenced by baselines/_overlays/rules/asd-blueprint-*.json)
 are PowerShell scripts from ASD's Blueprint for Secure Cloud:
 
@@ -207,3 +254,7 @@ endorsement is implied.
 
 Red Hat, Inc. and the other ComplianceAsCode contributors do not endorse or
 sponsor this project, and no endorsement is implied.
+
+MindPoint Group, Quantum Sky, Tyto Athene, the other ansible-lockdown contributors
+and the Center for Internet Security do not endorse or sponsor this project, and
+no endorsement is implied.

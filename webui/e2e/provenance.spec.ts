@@ -18,7 +18,7 @@ test('the Frameworks home lists official cards before the Community separator an
 
   expect(before.length + after.length).toBe(cardPositions.length)
   expect(before.length).toBeGreaterThan(0)
-  expect(after).toHaveLength(2)
+  expect(after).toHaveLength(6)
   expect(after.every((title) => title.startsWith('CIS'))).toBe(true)
   expect(before.some((title) => title.startsWith('CIS'))).toBe(false)
 })
@@ -29,8 +29,8 @@ test('each card carries an Official or Community badge', async ({ page }) => {
   const nistCard = page.getByTestId('framework-card').filter({ has: page.getByRole('heading', { name: /NIST SP 800-53/ }) })
   await expect(nistCard.getByText('Official', { exact: true })).toBeVisible()
   const cisCards = page.getByTestId('framework-card').filter({ has: page.getByRole('heading', { name: /^CIS/ }) })
-  await expect(cisCards).toHaveCount(2)
-  await expect(cisCards.getByText('Community', { exact: true })).toHaveCount(2)
+  await expect(cisCards).toHaveCount(6)
+  await expect(cisCards.getByText('Community', { exact: true })).toHaveCount(6)
 })
 
 test('a framework page shows its provenance badge by the title', async ({ page }) => {

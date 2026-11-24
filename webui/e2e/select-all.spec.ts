@@ -14,14 +14,14 @@ async function visibleRuleCount(page: Page): Promise<number> {
 
 async function searchAndWaitForTable(page: Page, search: string) {
   await page.getByPlaceholder(SEARCH_PLACEHOLDER).fill(search)
-  await expect(page.getByText('3,177 of 3,177 rules')).toHaveCount(0)
+  await expect(page.getByText('5,056 of 5,056 rules')).toHaveCount(0)
   await expect(page.getByRole('status', { name: 'Updating rules' })).toHaveCount(0)
 }
 
 test('select-all ticks the filtered rules; clearing the filter leaves it mixed with exactly those rules ticked', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
   await page.getByPlaceholder(SEARCH_PLACEHOLDER).fill('gatekeeper')
-  await expect(page.getByText(/^[\d,]+ of 3,177 rules$/)).not.toHaveText('3,177 of 3,177 rules')
+  await expect(page.getByText(/^[\d,]+ of 5,056 rules$/)).not.toHaveText('5,056 of 5,056 rules')
   const narrowedCount = await visibleRuleCount(page)
   expect(narrowedCount).toBeGreaterThan(1)
   await expect(selectAllCheckbox(page)).toHaveAttribute('aria-checked', 'false')
@@ -31,7 +31,7 @@ test('select-all ticks the filtered rules; clearing the filter leaves it mixed w
   await expect(page.getByText(`${narrowedCount} selected`)).toBeVisible()
 
   await page.getByPlaceholder(SEARCH_PLACEHOLDER).fill('')
-  await expect(page.getByText('3,177 of 3,177 rules')).toBeVisible()
+  await expect(page.getByText('5,056 of 5,056 rules')).toBeVisible()
   await expect(selectAllCheckbox(page)).toHaveAttribute('aria-checked', 'mixed')
   await expect(page.getByText(`${narrowedCount} selected`)).toBeVisible()
 })

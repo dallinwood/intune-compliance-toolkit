@@ -1,0 +1,14 @@
+{
+  "commit_sha": "18c63b00c001260c01b514792ed1dcfafb42b4bc",
+  "details": {
+    "audit_branch": "latest",
+    "audit_commit": "793fd816ce68ded15f2c42b3fb8221065e09b9b5",
+    "audit_repository": "ansible-lockdown/Windows-2019-CIS-Audit",
+    "benchmark_version": "v4.0.0"
+  },
+  "importer_format": "lockdown-cis-1",
+  "published_date": "2026-11-18",
+  "repository_url": "https://github.com/ansible-lockdown/Windows-2019-CIS",
+  "retrieved_date": "2026-11-24",
+  "tag": "4.2.0"
+}

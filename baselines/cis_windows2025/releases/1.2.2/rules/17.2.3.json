@@ -1,0 +1,87 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level1_domaincontroller",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "Server-2025"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if and (eq .Vars.win25cis_system_role \"domaincontroller\") .Vars.win25cis_level_1 }}\n  {{ if .Vars.win25cis_rule_17_2_3 }}\n    {{ if eq .Vars.win25cis_system_role \"domaincontroller\" }}\nfile:\n  win25cis_17_2_3_0cce9238_69ae_11d9_bed3_505054503030:\n    title: \"17.2.3 | Ensure 'Audit Distribution Group Management' is set to include 'Success' (DC only) | {0cce9238-69ae-11d9-bed3-505054503030}\"\n    path: '{{ .Vars.win25cis_snapshot_dir }}\\AuditPolicy.17.2.3'\n    exists: true\n    contents:\n      - '/^[13]$/'\n    meta:\n      domaincontroller: 1\n      server: 1\n      CIS_ID:\n        - 17.2.3\n      NIST800-53R5:\n        - AU-3\n        - AU-3(1)\n        - AU-7\n        - AU-12\n    {{ end }}\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_17/section_17.2.yml` of `ansible-lockdown/Windows-2025-CIS` and Audit control `section_17/section_17.2/cis_17.2.3.yml` of `ansible-lockdown/Windows-2025-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Domain Controller only (from the upstream task name).\n\nNo runnable check (the role applies it, but no check could be translated); the original Ansible tasks are the fix.",
+  "discussion_format": "markdown",
+  "id": "cis_windows2025.17.2.3",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "1.0.0",
+      "id": "17.2.3"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "AuditPol /set /subcategory:\"{0cce9238-69ae-11d9-bed3-505054503030}\" /success:enable\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"17.2.3 | PATCH | Ensure Audit Distribution Group Management is set to include Success DC only | Domain Controller\"\n  when:\n    - win25cis_rule_17_2_3\n    - prelim_win25cis_is_domain_controller\n  tags:\n    - level1-domaincontroller\n    - automated\n    - rule_17.2.3\n    - patch\n    - NIST800-171_3.3.1\n    - NIST800-171_3.3.2\n    - NIST800-171_3.3.6\n    - NIST800-53R5_AU-3\n    - NIST800-53R5_AU-3_1\n    - NIST800-53R5_AU-7\n    - NIST800-53R5_AU-12\n  block:\n    - name: \"17.2.3 | AUDIT | Ensure Audit Distribution Group Management is set to include Success DC only | Get current audit events for Distribution Group Management | Domain Controller\"\n      ansible.windows.win_shell: AuditPol /get /subcategory:\"{0cce9238-69ae-11d9-bed3-505054503030}\" -r | ConvertFrom-Csv | Select-Object -expand \"Inclusion Setting\"\n      changed_when: false\n      failed_when: false\n      check_mode: false\n      register: discovered_17_2_3_audit\n\n    - name: \"17.2.3 | PATCH | Ensure Audit Distribution Group Management is set to include Success DC only | Enable Success for Distribution Group Management | Domain Controller\"\n      when: \"'Success' not in discovered_17_2_3_audit.stdout\"\n      ansible.windows.win_shell: AuditPol /set /subcategory:\"{0cce9238-69ae-11d9-bed3-505054503030}\" /success:enable\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "17",
+    "17.2"
+  ],
+  "source": {
+    "commit_sha": "2389a564b8114ad1d8a35a6be3d27629ffd70f16",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows2025",
+    "release_tag": "1.2.2",
+    "upstream_path": "tasks/section_17/section_17.2.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "17.2.3",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-2025-CIS/blob/2389a564b8114ad1d8a35a6be3d27629ffd70f16/tasks/section_17/section_17.2.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'Audit Distribution Group Management' is set to include 'Success' (DC only)"
+}

@@ -1,0 +1,96 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [
+        {
+          "name": "level2_high_security_sensitive_data_environment",
+          "severity": null
+        }
+      ],
+      "target": "Windows",
+      "version": "11"
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": null,
+    "status": "automated"
+  },
+  "check": {
+    "Windows": [
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "$mismatchCount = 0\n\n$service = Get-Service -Name 'PNRPAutoReg' -ErrorAction SilentlyContinue\nif ($service) {\n    if ($service.StartType -ne 'Disabled') {\n        Write-Output ('Mismatch: service PNRPAutoReg start type is ' + $service.StartType + ', expected Disabled')\n        $mismatchCount++\n    }\n    if ($service.Status -ne 'Stopped') {\n        Write-Output ('Mismatch: service PNRPAutoReg is ' + $service.Status + ', expected Stopped')\n        $mismatchCount++\n    }\n}\n\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
+        },
+        "language": "powershell",
+        "name": null
+      },
+      {
+        "by_version": {},
+        "default": {
+          "additional_info": null,
+          "result": null,
+          "shell": "---\n\n{{ if .Vars.win11cis_level_2 }}\n  {{ if .Vars.win11cis_rule_5_16 }}\nfile:\n  win11cis_5_16_pnrpautoreg:\n    title: \"5.16 | Ensure 'PNRP Machine Name Publication Service (PNRPAutoReg)' is set to 'Disabled' | PNRPAutoReg\"\n    path: '{{ .Vars.win11cis_snapshot_dir }}\\Service.PNRPAutoReg'\n    exists: true\n    contents:\n      - '/^(Disabled|NotInstalled)$/'\n    meta:\n      workstation: 2\n      CIS_ID:\n        - 5.16\n  {{ end }}\n{{ end }}\n"
+        },
+        "language": "goss",
+        "name": "Original goss test"
+      }
+    ]
+  },
+  "discussion": "Imported from role task file `tasks/section_5/cis_5.12.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_5/cis_5.12.x/cis_5.16.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion_format": "markdown",
+  "id": "cis_windows11.5.16",
+  "odvs": [],
+  "references": {
+    "cis": {
+      "benchmark_version": "3.0.0",
+      "id": "5.16"
+    }
+  },
+  "remediation": {
+    "Windows": {
+      "payloads": [],
+      "steps": [
+        {
+          "additional_info": null,
+          "language": "powershell",
+          "name": null,
+          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\n$service = Get-Service -Name 'PNRPAutoReg' -ErrorAction SilentlyContinue\nif ($service) {\n    Set-Service -Name 'PNRPAutoReg' -StartupType Disabled\n    if ($service.Status -ne 'Stopped') {\n        Stop-Service -Name 'PNRPAutoReg'\n    }\n}\n\nexit 0\n",
+          "versions": null
+        },
+        {
+          "additional_info": null,
+          "language": "ansible",
+          "name": "Original Ansible tasks",
+          "shell": "- name: \"5.16 | PATCH | Ensure 'PNRP Machine Name Publication Service (PNRPAutoReg)' is set to 'Disabled'\"\n  when: win11cis_rule_5_16\n  tags:\n    - level2-high-security-sensitive-data-environment\n    - patch\n    - automated\n    - rule_5.16\n    - pnrpautoreg\n  block:\n    - name: \"5.16 | AUDIT | Ensure 'PNRP Machine Name Publication Service (PNRPAutoReg)' is set to 'Disabled' \\ Check to see if PNRPAutoReg service exists\"\n      ansible.windows.win_service_info:\n        name: PNRPAutoReg\n      register: discovered_5_16_pnrpautoreg_service_info\n\n    - name: \"5.16 | PATCH | Ensure 'PNRP Machine Name Publication Service (PNRPAutoReg)' is set to 'Disabled' | Disable PNRPAutoReg service\"\n      when: discovered_5_16_pnrpautoreg_service_info.exists\n      ansible.windows.win_service:\n        name: PNRPAutoReg\n        start_mode: disabled\n        state: stopped\n",
+          "versions": null
+        }
+      ]
+    }
+  },
+  "schema_version": 7,
+  "section_path": [
+    "5"
+  ],
+  "source": {
+    "commit_sha": "9788f2db3a8a71c6621927ee4697ca1ae8bdad10",
+    "license": {
+      "modified": true,
+      "name": "MIT",
+      "rights_holder": "MindPoint Group - A Quantum Sky Company / Ansible Lockdown",
+      "url": "https://opensource.org/license/mit"
+    },
+    "name": "cis_windows11",
+    "release_tag": "3.0.3",
+    "upstream_path": "tasks/section_5/cis_5.12.x.yml",
+    "upstream_revision": null,
+    "upstream_rule_id": "5.16",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/ansible-lockdown/Windows-11-CIS/blob/9788f2db3a8a71c6621927ee4697ca1ae8bdad10/tasks/section_5/cis_5.12.x.yml"
+  },
+  "tags": [],
+  "title": "Ensure 'PNRP Machine Name Publication Service (PNRPAutoReg)' is set to 'Disabled'"
+}

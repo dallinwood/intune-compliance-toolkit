@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from tools import import_asd_e4eit, import_asd_ism, import_cis_cac, import_mscp, import_nist_800_53
+from tools import import_asd_e4eit, import_asd_ism, import_cis_cac, import_cis_lockdown, import_mscp, import_nist_800_53
 from tools.asd_e4eit_normalize import MAPPING_FILE_ID
 from tools.file_references import is_binary_payload
 from tools.mappings import validate_mappings
@@ -31,6 +31,7 @@ IMPORTERS_BY_NAME = {
         import_nist_800_53.IMPORTER,
         import_asd_e4eit.IMPORTER,
         *import_cis_cac.IMPORTERS.values(),
+        *import_cis_lockdown.IMPORTERS.values(),
     )
 }
 
@@ -157,6 +158,10 @@ EXPECTED_PROVENANCE = {
     "asd_e4eit": "official",
     "cis_rhel9": "community",
     "cis_ubuntu2404": "community",
+    "cis_windows11": "community",
+    "cis_windows2025": "community",
+    "cis_windows2022": "community",
+    "cis_windows2019": "community",
 }
 
 
@@ -356,3 +361,85 @@ def test_committed_asd_e4eit_to_ism_mapping_is_what_the_importer_generates(tmp_p
 def test_committed_mappings_have_no_errors():
     errors, _warnings = validate_mappings(BASELINES_DIR / MAPPINGS_DIR_NAME / "rules", BASELINES_DIR)
     assert errors == []
+
+
+LOCKDOWN_SOURCES = {
+    # source: (upstream rule count today, role tag, role repository, Audit repository, benchmark version)
+    "cis_windows11": (539, "3.0.3", "ansible-lockdown/Windows-11-CIS", "ansible-lockdown/Windows-11-CIS-Audit", "v3.0.0"),
+    "cis_windows2025": (463, "1.2.2", "ansible-lockdown/Windows-2025-CIS", "ansible-lockdown/Windows-2025-CIS-Audit", "v1.0.0"),
+    "cis_windows2022": (445, "4.2.0", "ansible-lockdown/Windows-2022-CIS", "ansible-lockdown/Windows-2022-CIS-Audit", "v4.0.0"),
+    "cis_windows2019": (434, "4.2.0", "ansible-lockdown/Windows-2019-CIS", "ansible-lockdown/Windows-2019-CIS-Audit", "v4.0.0"),
+}
+LOCKDOWN_RULE_COUNT_TOLERANCE = 0.05
+LOCKDOWN_MINIMUM_AUTOMATED_SHARE = 0.8
+
+
+def committed_lockdown_rules(source_name: str) -> list[dict]:
+    rule_paths = sorted((current_release_dir(source_name) / "rules").glob("*.json"))
+    return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
+
+
+def test_the_four_lockdown_sources_are_committed_at_their_role_tags():
+    assert {name: current_release_tag(name) for name in LOCKDOWN_SOURCES} == {
+        name: details[1] for name, details in LOCKDOWN_SOURCES.items()
+    }
+
+
+@pytest.mark.parametrize("source_name", sorted(LOCKDOWN_SOURCES))
+def test_lockdown_source_records_both_repositories_pinned_by_commit(source_name):
+    _count, tag, role_repository, audit_repository, benchmark_version = LOCKDOWN_SOURCES[source_name]
+    lock = read_source_lock(REPO_ROOT / "sources" / source_name / "releases" / tag / "source.json")
+
+    assert lock.tag == tag
+    assert lock.repository_url == f"https://github.com/{role_repository}"
+    assert len(lock.commit_sha) == 40
+    assert lock.details["audit_repository"] == audit_repository
+    assert len(lock.details["audit_commit"]) == 40
+    assert lock.details["benchmark_version"] == benchmark_version
+    assert lock.details["audit_branch"]
+
+
+@pytest.mark.parametrize("source_name", sorted(LOCKDOWN_SOURCES))
+def test_lockdown_source_vendors_both_mit_licences_with_their_own_copyright(source_name):
+    upstream_dir = REPO_ROOT / "sources" / source_name / "releases" / current_release_tag(source_name) / "upstream"
+    rights_holder = next(
+        source["license"]["rights_holder"] for source in committed_manifest()["sources"] if source["name"] == source_name
+    )
+
+    for repository_folder in ("role", "audit"):
+        licence_lines = (upstream_dir / repository_folder / "LICENSE").read_text(encoding="utf-8").splitlines()
+        assert licence_lines[0] == "MIT License"
+        assert licence_lines[2].startswith("Copyright (c) ")
+        assert "Ansible Lockdown" in licence_lines[2]
+    assert rights_holder in (upstream_dir / "role" / "LICENSE").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("source_name", sorted(LOCKDOWN_SOURCES))
+def test_lockdown_rule_count_is_within_five_percent_of_the_upstream_count(source_name):
+    expected_count = LOCKDOWN_SOURCES[source_name][0]
+    rules = committed_lockdown_rules(source_name)
+
+    assert abs(len(rules) - expected_count) <= expected_count * LOCKDOWN_RULE_COUNT_TOLERANCE
+
+
+@pytest.mark.parametrize("source_name", sorted(LOCKDOWN_SOURCES))
+def test_lockdown_automated_share_is_reported_and_stays_high(source_name, record_property):
+    rules = committed_lockdown_rules(source_name)
+    automated_count = sum(rule["assessment"]["status"] == "automated" for rule in rules)
+    automated_share = automated_count / len(rules)
+    record_property("automated_rules", f"{automated_count} of {len(rules)} ({automated_share:.1%})")
+
+    assert automated_share >= LOCKDOWN_MINIMUM_AUTOMATED_SHARE
+
+
+@pytest.mark.parametrize("source_name", sorted(LOCKDOWN_SOURCES))
+def test_lockdown_manual_rules_carry_the_original_ansible_tasks_as_their_fix(source_name):
+    manual_rules = [rule for rule in committed_lockdown_rules(source_name) if rule["assessment"]["status"] == "manual"]
+    assert manual_rules
+
+    without_ansible_step = [
+        rule["id"]
+        for rule in manual_rules
+        if not any(step["language"] == "ansible" for step in rule["remediation"]["Windows"]["steps"])
+    ]
+    assert without_ansible_step == []
