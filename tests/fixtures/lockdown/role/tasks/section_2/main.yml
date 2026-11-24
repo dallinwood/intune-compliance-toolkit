@@ -1,0 +1,13 @@
+---
+
+- name: "SECTION | 2.2 | User Rights Assignment"
+  ansible.builtin.import_tasks:
+    file: section_2.2.yml
+
+- name: "SECTION | 2.3.7 | Interactive logon"
+  ansible.builtin.import_tasks:
+    file: section_2.3.7.yml
+
+- name: "SECTION | 2.3.10 | Network access"
+  ansible.builtin.import_tasks:
+    file: section_2.3.10.yml

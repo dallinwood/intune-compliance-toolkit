@@ -1,0 +1,28 @@
+---
+
+- name: "2.2.2 | PATCH | Ensure Access this computer from the network is set to Administrators, Authenticated Users, & ENTERPRISE DOMAIN CONTROLLERS DC only | Domain Controller"
+  when:
+    - win22cis_rule_2_2_2
+    - prelim_win22cis_is_domain_controller
+  tags:
+    - level1-domaincontroller
+    - rule_2.2.2
+    - patch
+    - userrights
+    - NIST800-171_3.1.1
+    - NIST800-171_3.1.5
+    - NIST800-171_3.3.8
+    - NIST800-171_3.3.9
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-6
+    - NIST800-53R5_AC-6_1
+    - NIST800-53R5_AC-6_7
+    - NIST800-53R5_AU-9_4
+  ansible.windows.win_user_right:
+    name: SeNetworkLogonRight
+    users:
+      - Administrators
+      - Authenticated Users
+      - ENTERPRISE DOMAIN CONTROLLERS
+    action: set

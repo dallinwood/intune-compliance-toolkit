@@ -1,0 +1,37 @@
+---
+
+- name: "1.1.1 | PATCH | Ensure Enforce password history is set to 24 or more passwords"
+  when:
+    - win22cis_rule_1_1_1
+    - not prelim_win22cis_account_policy_is_domain_scoped
+  tags:
+    - level1-domaincontroller
+    - level1-memberserver
+    - rule_1.1.1
+    - patch
+    - password
+    - NIST800-171_3.5.2
+    - NIST800-53R5_IA-5_1
+  block:
+    - name: "1.1.1 | PATCH | Ensure Enforce password history is set to 24 or more passwords | Set Variable"
+      when: win22cis_max_passwords_saved == 24
+      community.windows.win_security_policy:
+        section: System Access
+        key: PasswordHistorySize
+        value: "{{ win22cis_max_passwords_saved }}"
+
+    - name: "1.1.1 | AUDIT | Ensure Enforce password history is set to 24 or more passwords | Check for more than 24 saved passwords warning"
+      when: win22cis_max_passwords_saved > 24 or
+          win22cis_max_passwords_saved <= 23
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have an invalid number of maximum passwords set in win22cis_max_passwords_saved please read"
+          - "the notes for the variable and make the necessary change to the variable to be in compliance."
+
+    - name: "1.1.1 | AUDIT | Ensure Enforce password history is set to 24 or more passwords | Set warning count"
+      when: win22cis_max_passwords_saved > 24 or
+          win22cis_max_passwords_saved <= 23
+      vars:
+        warn_control_id: '1.1.1'
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

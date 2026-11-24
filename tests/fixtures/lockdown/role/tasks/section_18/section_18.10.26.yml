@@ -1,0 +1,16 @@
+---
+
+- name: "18.10.26.1.1 | PATCH | Ensure Application Control Event Log behavior when the log file reaches its maximum size is set to Disabled"
+  when: win22cis_rule_18_10_26_1_1
+  tags:
+    - level1-domaincontroller
+    - level1-memberserver
+    - rule_18.10.26.1.1
+    - patch
+    - eventlog
+    - NIST800-53R5_AU-4
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\EventLog\Application
+    name: Retention
+    data: 0
+    type: string

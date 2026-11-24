@@ -20,3 +20,4 @@ tests/fixtures/cis_cac/** -text
 tests/fixtures/mappings/** text eol=lf
 catalog/** text eol=lf
 tests/fixtures/catalog/** text eol=lf
+tests/fixtures/lockdown/** -text

@@ -1,0 +1,51 @@
+---
+
+- name: "2.3.7.5 | PATCH | Configure Interactive logon Message title for users attempting to log on"
+  when: win22cis_rule_2_3_7_5
+  tags:
+    - level1-domaincontroller
+    - level1-memberserver
+    - rule_2.3.7.5
+    - patch
+    - logon
+    - NIST800-171_3.1.9
+    - NIST800-53R5_AC-8
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+    name: LegalNoticeCaption
+    data: "{{ win22cis_legal_notice_caption }}"
+    type: string
+
+- name: "2.3.7.6 | PATCH | Ensure Interactive logon Number of previous logons to cache in case domain controller is not available is set to 4 or fewer logons MS only | Member Server"
+  when:
+    - win22cis_rule_2_3_7_6
+    - prelim_win22cis_is_domain_member
+  tags:
+    - level2-memberserver
+    - rule_2.3.7.6
+    - patch
+    - logon
+    - NIST800-171_3.5.2
+    - NIST800-53R5_IA-5_13
+  block:
+    - name: "2.3.7.6 | PATCH | Ensure Interactive logon Number of previous logons to cache in case domain controller is not available is set to 4 or fewer logons MS only | Apply Settings To Registry | Member Server"
+      when: win22cis_cached_logons_count <= 4
+      ansible.windows.win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows Nt\CurrentVersion\Winlogon
+        name: CachedLogonsCount
+        data: "{{ win22cis_cached_logons_count }}"
+        type: string
+
+    - name: "2.3.7.6 | AUDIT | Ensure Interactive logon Number of previous logons to cache in case domain controller is not available is set to 4 or fewer logons MS only | Warning Check For Variable Standards | Member Server"
+      when: win22cis_cached_logons_count > 4
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You have an invalid number of logons set for win22cis_cached_logons_count please read"
+          - "the notes for the variable and make the necessary change to the variable to be in compliance."
+
+    - name: "2.3.7.6 | AUDIT | Ensure Interactive logon Number of previous logons to cache in case domain controller is not available is set to 4 or fewer logons MS only | Warn Count | Member Server"
+      when: win22cis_cached_logons_count > 4
+      vars:
+        warn_control_id: '2.3.7.6'
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

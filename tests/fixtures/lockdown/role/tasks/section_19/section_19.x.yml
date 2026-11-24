@@ -1,0 +1,17 @@
+---
+
+- name: "19.5.1.1 | PATCH | Ensure Turn off toast notifications on the lock screen is set to Enabled"
+  when: win22cis_rule_19_5_1_1
+  tags:
+    - level1-domaincontroller
+    - level1-memberserver
+    - rule_19.5.1.1
+    - patch
+    - toast
+  notify: Change_Requires_Reboot
+  ansible.windows.win_regedit:
+    path: HKU:\{{ item }}\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Pushnotifications
+    name: NoToastApplicationNotificationOnLockScreen
+    data: 1
+    type: dword
+  loop: "{{ prelim_hku_loaded_list }}"

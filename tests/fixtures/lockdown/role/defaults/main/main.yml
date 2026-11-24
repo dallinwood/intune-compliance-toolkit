@@ -1,0 +1,87 @@
+---
+
+# Benchmark identity.
+benchmark: Windows-2022-CIS
+benchmark_version: v4.0.0
+
+win22cis_section01: true
+win22cis_rule_1_1_1: true
+win22cis_rule_1_2_1: true
+win22cis_rule_1_2_2: true
+
+# Next Generation Windows Security (NGWS) is an optional CIS profile, not a third
+# level. It gates its eight controls (18.9.5.x Device Guard and Credential Guard,
+# 18.9.26.2 LSA protection) in the role and in the audit, so with it false neither
+# applies nor asserts them. They need virtualization based security support, so
+# enable it deliberately.
+# Default: false
+win22cis_ngws: false
+
+# 1.1.1
+# win22cis_max_passwords_saved is the variable used to dictate the number of unique passwords
+# that have to be associated with a user account before you can reuse an old password.
+# The recommended state for this setting is 24 Or More passwords.
+# NOTE: As Of the publication of this benchmark, Microsoft has a maximum limit of 24 saved passwords.
+# This may change at a later date but we have left it set up as a variable for that reason.
+# Default: 24
+win22cis_max_passwords_saved: 24
+
+# 1.2.1
+# ORDERING NOTE: Windows enforces LockoutDuration >= ResetLockoutCount and win_security_policy
+# re-imports the whole secedit ini on every call, so each write is validated against the machine's
+# current pair (see ansible/ansible#62594). On a stock host lockout is disabled and both values
+# read 0, but applying 1.2.2 enables lockout and Windows then auto-populates both to 30 - so a
+# decision taken before 1.2.2 runs is already stale. The reconcile step therefore lives in
+# tasks/section01.yml between 1.2.2 and 1.2.1, where it re-reads the pair and lowers
+# ResetLockoutCount only when the current value exceeds the target duration, which is the one
+# state in which writing the duration first is rejected.
+# win22cis_account_lockout_duration is the  policy setting determines the length of time that
+# must pass before a locked account is unlocked and a user can try to log on again.
+# NOTE: If the value for this policy setting is configured to 0, locked-out accounts will remain locked-out
+# until an administrator manually unlocks them.
+# The recommended state for this setting is: 15 or more minute(s).
+# Default: 15
+win22cis_account_lockout_duration: 15
+
+# 1.2.2
+# win22cis_bad_login_lockout_count is the policy setting that determines the number of failed logon
+# attempts before the account is locked.
+# The recommended state for this setting is: 5 or fewer invalid logon attempt(s), but not 0.
+# Default: 5
+win22cis_bad_login_lockout_count: 5
+
+# 1.2.4
+# win22cis_account_lockout_counter_reset is the policy setting that determines the length of time before the
+# Account lockout threshold resets to zero. The default value for this policy setting is Not Defined.
+# NOTE: If the Account lockout threshold is defined (win22cis_account_lockout_duration), this reset
+# time must be less than or equal to the value for the Account lockout duration setting.
+# The recommended state for this setting is: 15 or more minute(s).
+# Default: 15
+win22cis_account_lockout_counter_reset: 15
+
+# 2.3.7.5
+# win22cis_legal_notice_caption is the policy setting that specifies the text displayed in the title bar of the window that users see
+# when they log on to the system. Configure this setting in a manner that is consistent with the security and operational
+# requirements of your organization.
+win22cis_legal_notice_caption: "DoD Notice and Consent Banner"
+
+# 2.3.7.6
+# win22cis_cached_logons_count is the number that is assigned to this policy setting and indicates the number of users whose
+# logon information the computer will cache locally. If this value is set to 0, the logon cache feature is disabled.
+# The recommended state for this setting is: 4 or fewer logon(s).
+# Default: 1
+win22cis_cached_logons_count: 1
+
+# 18.10.57.3.10.1
+# win22cis_idle_rdp_session_disconnect_time is the setting that allows you to specify the maximum amount of time that an active Remote Desktop
+# Services session can be idle (without user input) before it is automatically disconnected.
+# The recommended state for this setting is: Enabled: 15 minutes or less, but not Never (0).
+# This now accepts any value between 1 and 900000.
+# Default: 900000
+win22cis_idle_rdp_session_disconnect_time: 900000
+
+# 9.1.5
+# win22cis_domain_firewall_log_size is the size of the log file generated
+# To conform to CIS standards the value should be 16,384 or greater. Value is in KB
+# Default: 16384
+win22cis_domain_firewall_log_size: 16384

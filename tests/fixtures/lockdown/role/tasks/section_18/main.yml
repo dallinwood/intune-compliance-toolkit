@@ -1,0 +1,21 @@
+---
+
+- name: "SECTION | 18.4 | MS Security Guide"
+  ansible.builtin.import_tasks:
+    file: section_18.4.yml
+
+- name: "SECTION | 18.9 | System"
+  ansible.builtin.import_tasks:
+    file: section_18.9.yml
+
+- name: "SECTION | 18.10.26 | Event Log Service"
+  ansible.builtin.import_tasks:
+    file: section_18.10.26.yml
+
+- name: "SECTION | 18.10.43 | Microsoft Defender Antivirus (formerly Windows Defender and Windows Defender Antivirus)"
+  ansible.builtin.import_tasks:
+    file: section_18.10.43.yml
+
+- name: "SECTION | 18.10.57 | Remote Desktop Services (formerly Terminal Services)"
+  ansible.builtin.import_tasks:
+    file: section_18.10.57.yml

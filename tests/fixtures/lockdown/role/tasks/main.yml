@@ -1,0 +1,37 @@
+---
+
+- name: "Main | Execute The Section 1 Tasks"
+  when: win22cis_section01
+  tags: section01
+  ansible.builtin.import_tasks:
+    file: section_1/main.yml
+
+- name: "Main | Execute The Section 2 Tasks"
+  when: win22cis_section02
+  tags: section02
+  ansible.builtin.import_tasks:
+    file: section_2/main.yml
+
+- name: "Main | Execute The Section 5 Tasks"
+  when: win22cis_section05
+  tags: section05
+  ansible.builtin.import_tasks:
+    file: section_5/main.yml
+
+- name: "Main | Execute The Section 17 Tasks"
+  when: win22cis_section17
+  tags: section17
+  ansible.builtin.import_tasks:
+    file: section_17/main.yml
+
+- name: "Main | Execute The Section 18 Tasks"
+  when: win22cis_section18
+  tags: section18
+  ansible.builtin.import_tasks:
+    file: section_18/main.yml
+
+- name: "Main | Execute The Section 19 Tasks"
+  when: win22cis_section19
+  tags: section19
+  ansible.builtin.import_tasks:
+    file: section_19/main.yml
