@@ -35,6 +35,7 @@ ANSIBLE_STEP_NAME = "Original Ansible tasks"
 # The schema has no "ansible_only" reason for manual rules; a rule nothing machine-checkable was
 # translated for is the nearest existing one, and the discussion says why.
 ANSIBLE_ONLY_REASON = "no_check"
+NO_CHECK_TRANSLATED = "the role applies it, but no check could be translated"
 REGISTRY_ONLY_BLOCKER = "registry settings have their own translation"
 TASK_YAML_SEPARATOR = "\n\n"
 PARAGRAPH_SEPARATOR = "\n\n"
@@ -86,6 +87,9 @@ def _role_rule_unchecked(
     powershell = translate_powershell(tasks, role_odvs, prefix)
     translated = registry is not None or powershell is not None
     blocker = None if translated else _blocker(tasks, role_odvs, prefix)
+    has_runnable_check = registry is not None or (powershell is not None and powershell[0] is not None)
+    if translated and not has_runnable_check:
+        blocker = NO_CHECK_TRANSLATED
 
     check_powershell = registry_check_powershell(registry) if registry is not None else None
     fix_powershell = registry_fix_powershell(registry) if registry is not None else None
@@ -121,7 +125,7 @@ def _role_rule_unchecked(
         source_path=role_path,
         assessment=(
             {"status": "automated", "manual_reason": None}
-            if translated
+            if has_runnable_check
             else {"status": "manual", "manual_reason": ANSIBLE_ONLY_REASON}
         ),
         benchmarks=profiles_for(tasks),
@@ -269,8 +273,7 @@ def _discussion(
         paragraphs.append(f"Applies to: {', '.join(notes)} only (from the upstream task name).")
     if blocker is not None:
         paragraphs.append(
-            f"Not translated to a registry or PowerShell check or fix ({blocker}); "
-            "the original Ansible tasks are the fix."
+            f"No runnable check ({blocker}); the original Ansible tasks are the fix."
         )
     return PARAGRAPH_SEPARATOR.join(paragraphs)
 

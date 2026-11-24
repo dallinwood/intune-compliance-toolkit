@@ -235,7 +235,8 @@ class TestPowerShellOnlyRules:
         assert languages(check_items(rule)) == ["goss"]
         assert languages(fix_steps(rule)) == ["powershell", "ansible"]
         assert "AuditPol" in fix_steps(rule)[0]["shell"]
-        assert rule["assessment"]["status"] == "automated"
+        assert rule["assessment"] == {"status": "manual", "manual_reason": "no_check"}
+        assert "the role applies it, but no check could be translated" in rule["discussion"]
 
     def test_the_member_server_suffix_becomes_a_note_not_title_text(self, rules):
         assert "Member Server" not in rules["2.3.7.6"]["title"]
@@ -262,7 +263,7 @@ class TestAnsibleOnlyRules:
         assert rules["2.3.7.6"]["check"] is None
 
     def test_the_discussion_says_why_it_was_not_translated(self, rules):
-        assert "Not translated to a registry or PowerShell check or fix" in rules["2.3.7.6"]["discussion"]
+        assert "No runnable check" in rules["2.3.7.6"]["discussion"]
         assert "number" in rules["2.3.7.6"]["discussion"].lower()
 
     def test_jinja_data_that_is_not_a_single_role_variable_is_ansible_only_never_raw_jinja(self, rules):
