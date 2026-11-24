@@ -17,37 +17,14 @@
   ],
   "architecture": null,
   "assessment": {
-    "manual_reason": null,
-    "status": "automated"
+    "manual_reason": "no_check",
+    "status": "manual"
   },
-  "check": {
-    "Windows": [
-      {
-        "by_version": {},
-        "default": {
-          "additional_info": null,
-          "result": null,
-          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nfunction ConvertTo-AccountSid {\n    param([string]$Account)\n    if ($Account -match '^\\*?(S-1-[0-9-]+)$') { return $Matches[1] }\n    return ([System.Security.Principal.NTAccount]$Account).Translate([System.Security.Principal.SecurityIdentifier]).Value\n}\n\n$mismatchCount = 0\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $exportPath = Join-Path $workDirectory 'export.inf'\n    secedit /export /cfg $exportPath /areas USER_RIGHTS | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /export failed' }\n    $holdersByRight = @{}\n    foreach ($line in Get-Content -LiteralPath $exportPath) {\n        if ($line -match '^(Se\\w+)\\s*=\\s*(.*)$') {\n            $holdersByRight[$Matches[1]] = @($Matches[2].Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ } | ForEach-Object { ConvertTo-AccountSid $_ })\n        }\n    }\n    $holders = @()\n    if ($holdersByRight.ContainsKey('SeIncreaseBasePriorityPrivilege')) { $holders = $holdersByRight['SeIncreaseBasePriorityPrivilege'] }\n    $expected = @('$ODV_increase_scheduling_priority_users' | ForEach-Object { ConvertTo-AccountSid $_ })\n    if ((($expected | Sort-Object -Unique) -join ',') -ne (($holders | Sort-Object -Unique) -join ',')) {\n        Write-Output 'Mismatch: SeIncreaseBasePriorityPrivilege'\n        $mismatchCount++\n    }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nif ($mismatchCount -gt 0) { exit 1 }\nexit 0\n"
-        },
-        "language": "powershell",
-        "name": null
-      }
-    ]
-  },
-  "discussion": "Imported from role task file `tasks/section_2/section_2.2.yml` of `ansible-lockdown/Windows-2019-CIS`. The CIS Benchmark text is not part of this source.",
+  "check": null,
+  "discussion": "Imported from role task file `tasks/section_2/section_2.2.yml` of `ansible-lockdown/Windows-2019-CIS`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible.",
   "discussion_format": "markdown",
   "id": "cis_windows2019.2.2.34",
-  "odvs": [
-    {
-      "by_benchmark": {},
-      "datatype": "string",
-      "description": "Window Manager\\Window Manager Group only exists on non-Core installations windows_installation_type should be 'Server Core' for Core installations This is a variable to determine if Windows Manager should be included in this step",
-      "name": "increase_scheduling_priority_users",
-      "quoting": "single",
-      "recommended": "{{ [\"Administrators\"] if (prelim_windows_installation_type == \"Server Core\") else ([\"Administrators\", \"Window Manager\\Window Manager Group\"]) }}",
-      "validation": null
-    }
-  ],
+  "odvs": [],
   "references": {
     "cis": {
       "benchmark_version": "4.0.0",
@@ -58,13 +35,6 @@
     "Windows": {
       "payloads": [],
       "steps": [
-        {
-          "additional_info": null,
-          "language": "powershell",
-          "name": null,
-          "shell": "$ErrorActionPreference = 'Stop'\ntrap { Write-Output $_.Exception.Message; exit 1 }\n\nfunction ConvertTo-AccountSid {\n    param([string]$Account)\n    if ($Account -match '^\\*?(S-1-[0-9-]+)$') { return $Matches[1] }\n    return ([System.Security.Principal.NTAccount]$Account).Translate([System.Security.Principal.SecurityIdentifier]).Value\n}\n\n$workDirectory = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())\ntry {\n    New-Item -ItemType Directory -Path $workDirectory | Out-Null\n    $desiredByRight = [ordered]@{}\n    $desiredByRight['SeIncreaseBasePriorityPrivilege'] = @('$ODV_increase_scheduling_priority_users' | ForEach-Object { ConvertTo-AccountSid $_ })\n    $infLines = @('[Unicode]', 'Unicode=yes', '[Privilege Rights]')\n    foreach ($right in $desiredByRight.Keys) {\n        $infLines += ($right + ' = ' + (@($desiredByRight[$right] | ForEach-Object { '*' + $_ }) -join ','))\n    }\n    $infLines += @('[Version]', 'signature=\"$CHICAGO$\"', 'Revision=1')\n    $infPath = Join-Path $workDirectory 'rights.inf'\n    Set-Content -LiteralPath $infPath -Value $infLines -Encoding Unicode\n    secedit /configure /db (Join-Path $workDirectory 'rights.sdb') /cfg $infPath /areas USER_RIGHTS | Out-Null\n    if ($LASTEXITCODE -ne 0) { throw 'secedit /configure failed' }\n}\nfinally {\n    Remove-Item -LiteralPath $workDirectory -Recurse -Force -ErrorAction SilentlyContinue\n}\nexit 0\n",
-          "versions": null
-        },
         {
           "additional_info": null,
           "language": "ansible",

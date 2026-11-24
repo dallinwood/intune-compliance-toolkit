@@ -21,7 +21,7 @@
     "status": "manual"
   },
   "check": null,
-  "discussion": "Imported from role task file `tasks/section_2/section_2.3.10.yml` of `ansible-lockdown/Windows-2019-CIS`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (data is Jinja other than one role variable: {{ discovered_remote_registry_paths }}); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_2/section_2.3.10.yml` of `ansible-lockdown/Windows-2019-CIS`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible.",
   "discussion_format": "markdown",
   "id": "cis_windows2019.2.3.10.9",
   "odvs": [],

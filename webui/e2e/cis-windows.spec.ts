@@ -10,7 +10,6 @@ const WINDOWS_CIS_TITLES = [
 ]
 
 const REGISTRY_RULE_ID = 'cis_windows11.18.1.1.1'
-const REGISTRY_RULE_TITLE = "Ensure 'Prevent enabling lock screen camera' is set to 'Enabled'"
 const ANSIBLE_ONLY_RULE_ID = 'cis_windows11.5.3'
 const ANSIBLE_ONLY_RULE_TITLE = "Ensure 'Computer Browser (Browser)' is set to 'Disabled' or 'Not Installed'"
 

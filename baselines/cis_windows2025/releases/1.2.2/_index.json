@@ -1395,11 +1395,11 @@
       ],
       "architecture": null,
       "assessment": {
-        "manual_reason": null,
-        "status": "automated"
+        "manual_reason": "no_check",
+        "status": "manual"
       },
       "file": "rules/2.2.34.json",
-      "has_odv": true,
+      "has_odv": false,
       "id": "cis_windows2025.2.2.34",
       "section": "2",
       "section_path": [

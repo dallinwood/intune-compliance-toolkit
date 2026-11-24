@@ -6,6 +6,7 @@ own prose exists upstream, so the discussion only says where the rule came from.
 docs/plans/2026-11-20-windows-cis-lockdown-design.md, section 4.
 """
 
+import re
 from pathlib import Path
 
 from tools.cac_controls import section_path
@@ -36,6 +37,11 @@ ANSIBLE_STEP_NAME = "Original Ansible tasks"
 # translated for is the nearest existing one, and the discussion says why.
 ANSIBLE_ONLY_REASON = "no_check"
 NO_CHECK_TRANSLATED = "the role applies it, but no check could be translated"
+GENERATED_LANGUAGES = ("registry", "powershell")
+GENERATED_JINJA_MARKERS = ("{{", "{%")
+BITLOCKER_NOTE = "The role applies this only when its BitLocker option is turned on."
+DOMAIN_SCOPED_NOTE = "The role skips this on domain-joined hosts, where domain policy governs it."
+DOMAIN_SCOPED_SKIP_PATTERN = re.compile(r"^not\s+\w*account_policy_is_domain_scoped$")
 REGISTRY_ONLY_BLOCKER = "registry settings have their own translation"
 TASK_YAML_SEPARATOR = "\n\n"
 PARAGRAPH_SEPARATOR = "\n\n"
@@ -112,6 +118,7 @@ def _role_rule_unchecked(
     fix_steps.append(_fix_step(ANSIBLE_STEP_NAME, "ansible", shell=_ansible_text(tasks)))
 
     rule_text = {"check": check_items, "fix": fix_steps}
+    _reject_jinja_in_generated_items(rule_text, where)
     odvs = _odvs_used(rule_text, role_odvs, registry, where)
     first_task = tasks[0]
     patch_task = next((task for task in tasks if task.verb == "PATCH"), first_task)
@@ -121,7 +128,14 @@ def _role_rule_unchecked(
         lock,
         rule_id,
         title=control.title if control is not None else patch_task.title,
-        discussion=_discussion(spec, role_path, control, _applicability_notes(tasks), blocker),
+        discussion=_discussion(
+            spec,
+            role_path,
+            control,
+            _applicability_notes(tasks),
+            _condition_notes(tasks, spec.variable_prefix),
+            blocker,
+        ),
         source_path=role_path,
         assessment=(
             {"status": "automated", "manual_reason": None}
@@ -146,7 +160,7 @@ def _audit_only_rule(spec: LockdownSpec, lock: SourceLock, control: AuditControl
         lock,
         control.rule_id,
         title=control.title,
-        discussion=_discussion(spec, None, control, [], None),
+        discussion=_discussion(spec, None, control, [], [], None),
         source_path=control.file or "coverage.json",
         assessment={"status": "manual", "manual_reason": ANSIBLE_ONLY_REASON},
         benchmarks=[],
@@ -256,8 +270,38 @@ def _blocker(tasks: list[RoleTask], role_odvs: dict[str, RoleOdv], prefix: str) 
     return reason or "no translation applies"
 
 
+def _condition_notes(tasks: list[RoleTask], prefix: str) -> list[str]:
+    """Plain-English notes for the role conditions that decide whether the role applies a rule at all."""
+    notes: list[str] = []
+    for task in tasks:
+        for condition in task.when:
+            stripped = condition.strip()
+            if stripped == f"{prefix}_bitlocker" and BITLOCKER_NOTE not in notes:
+                notes.append(BITLOCKER_NOTE)
+            if DOMAIN_SCOPED_SKIP_PATTERN.match(stripped) and DOMAIN_SCOPED_NOTE not in notes:
+                notes.append(DOMAIN_SCOPED_NOTE)
+    return notes
+
+
+def _reject_jinja_in_generated_items(rule_text: dict, where: str) -> None:
+    """Registry and PowerShell the importer generated must never carry Jinja: the role renders it, nothing here does."""
+    generated = [
+        item
+        for item in (*rule_text["check"], *rule_text["fix"])
+        if item["language"] in GENERATED_LANGUAGES
+    ]
+    for text in _strings_of(generated):
+        if any(marker in text for marker in GENERATED_JINJA_MARKERS):
+            raise UnsupportedUpstreamData(f"{where}: generated registry or PowerShell text contains Jinja: {text[:80]!r}")
+
+
 def _discussion(
-    spec: LockdownSpec, role_path: str | None, control: AuditControl | None, notes: list[str], blocker: str | None
+    spec: LockdownSpec,
+    role_path: str | None,
+    control: AuditControl | None,
+    notes: list[str],
+    condition_notes: list[str],
+    blocker: str | None,
 ) -> str:
     """Where the rule came from. The schema has no applicability notes field, so those go here too."""
     sources = []
@@ -271,10 +315,18 @@ def _discussion(
     ]
     if notes:
         paragraphs.append(f"Applies to: {', '.join(notes)} only (from the upstream task name).")
+    paragraphs.extend(condition_notes)
     if blocker is not None:
-        paragraphs.append(
-            f"No runnable check ({blocker}); the original Ansible tasks are the fix."
-        )
+        has_goss = control is not None and control.goss_text is not None
+        shown = "the original Ansible and goss test" if has_goss else "the original Ansible"
+        if blocker == NO_CHECK_TRANSLATED:
+            paragraphs.append(
+                f"Manual: the Ansible role fixes this with commands that have no matching check, so the commands are shown as the fix, plus {shown}."
+            )
+        else:
+            paragraphs.append(
+                f"Manual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as {shown}."
+            )
     return PARAGRAPH_SEPARATOR.join(paragraphs)
 
 
@@ -306,6 +358,8 @@ def _odvs_used(rule_text: dict, role_odvs: dict[str, RoleOdv], registry: list[di
         role_odv = role_odvs.get(name)
         if role_odv is None:
             raise UnsupportedUpstreamData(f"{where}: $ODV_{name} is not a variable of the role defaults")
+        if any(marker in text for text in _strings_of(role_odv.default) for marker in GENERATED_JINJA_MARKERS):
+            raise UnsupportedUpstreamData(f"{where}: ODV {name} has a default with Jinja: {role_odv.default!r}")
         if role_odv.datatype not in ODV_QUOTING_BY_DATATYPE:
             raise UnsupportedUpstreamData(f"{where}: ODV {name} has datatype {role_odv.datatype!r}")
         quoting = ODV_QUOTING_BY_DATATYPE[role_odv.datatype]
@@ -332,6 +386,7 @@ def _validation(role_odv: RoleOdv, registry_type: str | None) -> dict | None:
     if registry_type is not None:
         minimum, maximum = registry_number_bounds(role_odv, registry_type)
         return {"min": minimum, "max": maximum}
-    bounds = {"min": role_odv.min, "max": role_odv.max}
-    present = {key: value for key, value in bounds.items() if value is not None}
-    return present or None
+    # A security policy number is never negative, and upstream gives no ceiling unless a range check does.
+    minimum = 0 if role_odv.min is None else role_odv.min
+    bounds = {"min": minimum, "max": role_odv.max}
+    return {key: value for key, value in bounds.items() if value is not None}

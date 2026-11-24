@@ -142,8 +142,17 @@ def security_policy_fix_powershell(settings: list[dict]) -> str:
 def accounts_expression(accounts: list[str]) -> str:
     if not accounts:
         return "@()"
-    quoted = ", ".join(string_expression(account) for account in accounts)
-    return f"@({quoted} | ForEach-Object {{ ConvertTo-AccountSid $_ }})"
+    if not any(is_odv(account) for account in accounts):
+        quoted = ", ".join(string_expression(account) for account in accounts)
+        return f"@({quoted} | ForEach-Object {{ ConvertTo-AccountSid $_ }})"
+    # Ansible splits a string given as `users` on commas, so a variable holding "A, B" is two accounts.
+    parts = [
+        f"@('{account}' -split ',' | ForEach-Object {{ $_.Trim() }} | Where-Object {{ $_ }})"
+        if is_odv(account)
+        else f"@({string_expression(account)})"
+        for account in accounts
+    ]
+    return f"@({' + '.join(parts)} | ForEach-Object {{ ConvertTo-AccountSid $_ }})"
 
 
 PARSE_RIGHT_HOLDERS = [

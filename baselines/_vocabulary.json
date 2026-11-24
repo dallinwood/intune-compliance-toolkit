@@ -46,7 +46,18 @@
       { "label": "CIS L1 Server", "terms": ["cis_l1_server"], "metadata": ["benchmark"] },
       { "label": "CIS L2 Server", "terms": ["cis_l2_server"], "metadata": ["benchmark"] },
       { "label": "CIS L1 Workstation", "terms": ["cis_l1_workstation"], "metadata": ["benchmark"] },
-      { "label": "CIS L2 Workstation", "terms": ["cis_l2_workstation"], "metadata": ["benchmark"] }
+      { "label": "CIS L2 Workstation", "terms": ["cis_l2_workstation"], "metadata": ["benchmark"] },
+      { "label": "Level 1 - Member Server", "terms": ["level1_memberserver"], "metadata": ["benchmark"] },
+      { "label": "Level 1 - Domain Controller", "terms": ["level1_domaincontroller"], "metadata": ["benchmark"] },
+      { "label": "Level 2 - Member Server", "terms": ["level2_memberserver"], "metadata": ["benchmark"] },
+      { "label": "Level 2 - Domain Controller", "terms": ["level2_domaincontroller"], "metadata": ["benchmark"] },
+      { "label": "Level 1 - Domain Member", "terms": ["level1_domainmember"], "metadata": ["benchmark"] },
+      { "label": "Level 1 - Corporate/Enterprise Environment", "terms": ["level1_corporate_enterprise_environment"], "metadata": ["benchmark"] },
+      { "label": "Level 2 - High Security/Sensitive Data Environment", "terms": ["level2_high_security_sensitive_data_environment"], "metadata": ["benchmark"] },
+      { "label": "Level 1 - BitLocker", "terms": ["level1_bitlocker"], "metadata": ["benchmark"] },
+      { "label": "Level 2 - BitLocker", "terms": ["level2_bitlocker"], "metadata": ["benchmark"] },
+      { "label": "Next Generation Windows Security - Member Server", "terms": ["ngws_memberserver"], "metadata": ["benchmark"] },
+      { "label": "Next Generation Windows Security - Domain Controller", "terms": ["ngws_domaincontroller"], "metadata": ["benchmark"] }
     ],
     "severities": [
       { "label": "low", "terms": ["low"], "metadata": ["severity"] },

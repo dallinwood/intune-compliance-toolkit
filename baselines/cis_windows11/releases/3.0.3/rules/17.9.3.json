@@ -30,7 +30,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_17/cis_17.9.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_17/cis_17.9.x/cis_17.9.3.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (the role applies it, but no check could be translated); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_17/cis_17.9.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_17/cis_17.9.x/cis_17.9.3.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role fixes this with commands that have no matching check, so the commands are shown as the fix, plus the original Ansible and goss test.",
   "discussion_format": "markdown",
   "id": "cis_windows11.17.9.3",
   "odvs": [],

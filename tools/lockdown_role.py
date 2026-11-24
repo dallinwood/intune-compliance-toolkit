@@ -10,6 +10,7 @@ The role files are untrusted input: they are only ever parsed with `yaml.safe_lo
 machinery, never executed, and the Jinja in their strings is never rendered.
 """
 
+import operator
 import re
 from dataclasses import dataclass
 from functools import lru_cache
@@ -26,7 +27,7 @@ from tools.lockdown_powershell import (
     user_rights_fix_powershell,
 )
 
-RULE_NAME_PATTERN = re.compile(r"^(?P<rule_id>\d+(?:\.\d+)*)\s*\|\s*(?P<verb>[A-Za-z]+)\s*(?:\|\s*)?(?P<rest>.*)$")
+RULE_NAME_PATTERN = re.compile(r"^(?P<rule_id>\d+(?:\.\d+)*)\s*\|\s*(?P<verb>[A-Za-z]+(?:\|[A-Za-z]+)*)\s*(?:\|\s*)?(?P<rest>.*)$")
 APPLICABILITY_BY_SUFFIX = {"MS only": "Member Server", "DC only": "Domain Controller"}
 APPLICABILITY_SUFFIX_PATTERN = re.compile(r"\s+(MS only|DC only)$")
 APPLICABILITY_WORDS = ("Member Server", "Domain Controller")
@@ -215,7 +216,9 @@ def section_files_in_upstream_order(tasks_dir: Path) -> list[Path]:
                 continue
             for candidate in (file_path.parent / target, tasks_dir / target):
                 if candidate.is_file():
-                    relative_parts = candidate.relative_to(tasks_dir).parts
+                    if not candidate.resolve().is_relative_to(tasks_dir.resolve()):
+                        raise RoleParseError(f"{file_path}: import target {target!r} leaves the role's tasks directory")
+                    relative_parts = candidate.resolve().relative_to(tasks_dir.resolve()).parts
                     if relative_parts[0].startswith("section") and candidate not in ordered:
                         ordered.append(candidate)
                         visit(candidate)
@@ -348,7 +351,19 @@ def group_by_rule(tasks: list[RoleTask]) -> dict[str, list[RoleTask]]:
     return grouped
 
 
+def contains_jinja(value) -> bool:
+    if isinstance(value, str):
+        return any(marker in value for marker in JINJA_MARKERS)
+    if isinstance(value, list):
+        return any(contains_jinja(item) for item in value)
+    if isinstance(value, dict):
+        return any(contains_jinja(item) for item in value.values())
+    return False
+
+
 def datatype_of(default) -> str:
+    if contains_jinja(default):
+        return "other"
     if isinstance(default, bool):
         return "boolean"
     if isinstance(default, int):
@@ -702,6 +717,8 @@ def load_role_odvs(role_dir: Path, prefix: str) -> dict[str, RoleOdv]:
                 patch_ranges.get(variable, (None, None)), warning_ranges.get(variable, (None, None))
             )
         name = odv_key_for(variable, prefix)
+        if name in odvs:
+            raise RoleParseError(f"{defaults_file}: variables {variable} and another one both map to ODV name {name}")
         odvs[name] = RoleOdv(name, description, default, datatype, rule_id, low, high)
     return odvs
 
@@ -732,6 +749,8 @@ def odv_reference(text: str, prefix: str, odvs: dict[str, RoleOdv]) -> RoleOdv |
         if single[1] in discovered_facts_of(odvs):
             return None
         raise UnknownRoleVariableError(f"{single[1]} is used by a task but not defined in the role defaults")
+    if contains_jinja(odvs[name].default):
+        raise TranslationBlocker(f"the default of variable {name} is Jinja, which the role renders at run time")
     return odvs[name]
 
 
@@ -814,6 +833,55 @@ def check_conditions(
         check_condition_variables(stripped, prefix, odvs)
         if expression_intervals(stripped, prefix) is None:
             raise TranslationBlocker(f"when: {stripped}")
+        if holds_at_defaults(stripped, prefix, odvs) is not True:
+            raise TranslationBlocker(f"when is not true at the role defaults: {stripped}")
+
+
+COMPARISON_OPERATORS = {
+    ">=": operator.ge, "<=": operator.le, "==": operator.eq, "!=": operator.ne, ">": operator.gt, "<": operator.lt,
+}
+
+
+def default_number_of(token: str, prefix: str, odvs: dict[str, RoleOdv]) -> int | None:
+    """An integer literal, or the integer default of a role variable; None for anything else."""
+    literal = integer_literal(token)
+    if literal is not None:
+        return literal
+    odv = odvs.get(odv_key_for(token, prefix)) if token.startswith(f"{prefix}_") else None
+    if odv is None or isinstance(odv.default, bool) or not isinstance(odv.default, int):
+        return None
+    return odv.default
+
+
+def atom_holds_at_defaults(atom: str, prefix: str, odvs: dict[str, RoleOdv]) -> bool | None:
+    atom = atom.strip()
+    membership = MEMBERSHIP_PATTERN.match(atom)
+    if membership:
+        value = default_number_of(membership["variable"], prefix, odvs)
+        members = [integer_literal(member.strip()) for member in membership["members"].split(",")]
+        return None if value is None or None in members else value in members
+    comparison = COMPARISON_PATTERN.match(atom)
+    if comparison is None:
+        return None
+    left = default_number_of(comparison["left"], prefix, odvs)
+    right = default_number_of(comparison["right"], prefix, odvs)
+    if left is None or right is None:
+        return None
+    return COMPARISON_OPERATORS[comparison["operator"]](left, right)
+
+
+def holds_at_defaults(expression: str, prefix: str, odvs: dict[str, RoleOdv]) -> bool | None:
+    """Whether a range-check condition is true when every role variable has its default; None when it cannot be told."""
+    expression = strip_outer_parentheses(expression)
+    alternatives = split_top_level(expression, "or")
+    if len(alternatives) > 1:
+        results = [holds_at_defaults(alternative, prefix, odvs) for alternative in alternatives]
+        return True if True in results else (None if None in results else False)
+    conjuncts = split_top_level(expression, "and")
+    if len(conjuncts) > 1:
+        results = [holds_at_defaults(conjunct, prefix, odvs) for conjunct in conjuncts]
+        return False if False in results else (None if None in results else True)
+    return atom_holds_at_defaults(expression, prefix, odvs)
 
 
 def registry_hive_and_path(task: RoleTask) -> tuple[str, str]:

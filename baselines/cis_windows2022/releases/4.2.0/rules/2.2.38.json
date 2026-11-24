@@ -30,7 +30,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_2/section_2.2.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_2/section_2.2/cis_2.2.38.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Domain Controller only (from the upstream task name).\n\nNo runnable check (when: not win22cis_exchange_server_running); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_2/section_2.2.yml` of `ansible-lockdown/Windows-2022-CIS` and Audit control `section_2/section_2.2/cis_2.2.38.yml` of `ansible-lockdown/Windows-2022-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Domain Controller only (from the upstream task name).\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
   "discussion_format": "markdown",
   "id": "cis_windows2022.2.2.38",
   "odvs": [],

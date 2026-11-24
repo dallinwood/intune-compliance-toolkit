@@ -63,7 +63,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_2/cis_2.3.7.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_2/cis_2.3.7.x/cis_2.3.7.3.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion": "Imported from role task file `tasks/section_2/cis_2.3.7.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_2/cis_2.3.7.x/cis_2.3.7.3.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nThe role applies this only when its BitLocker option is turned on.",
   "discussion_format": "markdown",
   "id": "cis_windows11.2.3.7.3",
   "odvs": [

@@ -138,3 +138,11 @@ def test_windows_line_endings_are_kept_in_goss_text(tmp_path):
     entry = {"rule_id": "1.1.1", "title": "A", "emitted": True, "gate": "g", "file": "section_1/cis_1.1.1.yml"}
     (tmp_path / "coverage.json").write_text(json.dumps([entry]), encoding="utf-8")
     assert load_audit(tmp_path)["1.1.1"].goss_text == "---\r\n\r\nregistry:\r\n"
+
+
+@pytest.mark.parametrize("rule_id", ["../../x", "1.1/../x", "1.1.", "a.b", "", "1.1\n"])
+def test_a_rule_id_that_is_not_a_dotted_number_is_refused(tmp_path, rule_id):
+    entry = {"rule_id": rule_id, "title": "A", "emitted": False}
+    (tmp_path / "coverage.json").write_text(json.dumps([entry]), encoding="utf-8")
+    with pytest.raises(AuditParseError, match="not a dotted number"):
+        load_audit(tmp_path)

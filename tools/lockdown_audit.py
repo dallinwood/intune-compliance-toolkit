@@ -17,6 +17,7 @@ from pathlib import Path
 import yaml
 
 COVERAGE_FILE = "coverage.json"
+RULE_ID_PATTERN = re.compile(r"^\d+(?:\.\d+)*$")
 META_LINE_PATTERN = re.compile(r"^(?P<indent>[ \t]*)meta:[ \t]*$")
 TEMPLATE_DIRECTIVE_PATTERN = re.compile(r"^\s*\{\{.*\}\}\s*$")
 
@@ -93,6 +94,8 @@ def load_audit(audit_dir: Path) -> dict[str, AuditControl]:
             rule_id, title = str(entry["rule_id"]), entry["title"]
         except (KeyError, TypeError) as error:
             raise AuditParseError(f"{coverage_path}: a rule has no rule_id or title") from error
+        if not RULE_ID_PATTERN.fullmatch(rule_id):
+            raise AuditParseError(f"{coverage_path}: rule id {rule_id!r} is not a dotted number")
         if rule_id in controls:
             raise AuditParseError(f"{coverage_path}: rule {rule_id} is listed twice")
         goss_text, gate = None, None

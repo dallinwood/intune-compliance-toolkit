@@ -8,6 +8,7 @@ real upstream default so the whole fixture role can be normalized, and one test 
 
 import json
 import shutil
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -236,7 +237,7 @@ class TestPowerShellOnlyRules:
         assert languages(fix_steps(rule)) == ["powershell", "ansible"]
         assert "AuditPol" in fix_steps(rule)[0]["shell"]
         assert rule["assessment"] == {"status": "manual", "manual_reason": "no_check"}
-        assert "the role applies it, but no check could be translated" in rule["discussion"]
+        assert "have no matching check" in rule["discussion"]
 
     def test_the_member_server_suffix_becomes_a_note_not_title_text(self, rules):
         assert "Member Server" not in rules["2.3.7.6"]["title"]
@@ -262,9 +263,15 @@ class TestAnsibleOnlyRules:
     def test_a_rule_without_an_audit_control_has_no_check_at_all(self, rules):
         assert rules["2.3.7.6"]["check"] is None
 
-    def test_the_discussion_says_why_it_was_not_translated(self, rules):
-        assert "No runnable check" in rules["2.3.7.6"]["discussion"]
-        assert "number" in rules["2.3.7.6"]["discussion"].lower()
+    def test_the_discussion_says_in_plain_english_why_it_was_not_translated(self, rules):
+        discussion = rules["2.3.7.6"]["discussion"]
+        assert "Manual: the Ansible role applies this only under conditions we cannot translate" in discussion
+        assert "shown as the original Ansible." in discussion
+        assert "when:" not in discussion and "variable" not in discussion and "No runnable check" not in discussion
+
+    def test_the_manual_note_names_the_goss_test_only_when_the_rule_has_one(self, rules):
+        assert "original Ansible and goss test" in rules["5.1"]["discussion"]
+        assert "goss" not in rules["2.3.7.6"]["discussion"]
 
     def test_jinja_data_that_is_not_a_single_role_variable_is_ansible_only_never_raw_jinja(self, rules):
         rule = rules["2.3.10.9"]
@@ -307,6 +314,89 @@ class TestTitlesAndAuditOnlyRules:
     def test_a_title_falls_back_to_the_task_name_without_the_suffix(self, rules):
         assert rules["2.3.7.6"]["title"].startswith("Ensure")
         assert "MS only" not in rules["2.3.7.6"]["title"]
+
+
+class TestRoleConditionNotes:
+    def test_a_bitlocker_gated_rule_says_the_role_needs_its_bitlocker_option(self, rules):
+        notes = [rule for rule in rules.values() if "BitLocker option" in rule["discussion"]]
+        assert notes == [] or all("only when its BitLocker option is turned on" in rule["discussion"] for rule in notes)
+
+    def test_a_domain_scoped_account_policy_rule_says_the_role_skips_it_on_domain_joined_hosts(self, rules):
+        skipped = [rule for rule in rules.values() if "skips this on domain-joined hosts" in rule["discussion"]]
+        assert skipped, "the fixtures have account policy rules gated on domain scope"
+        assert all(rule["id"].startswith("cis_windows2022.1.") for rule in skipped)
+
+
+class TestSecurityPolicyNumbersAreValidated:
+    def test_a_number_without_a_range_gets_a_minimum_of_zero_and_no_maximum(self, rules):
+        (odv,) = rules["1.1.1"]["odvs"]
+        assert odv["name"] == "max_passwords_saved"
+        assert odv["validation"] == {"min": 0}
+
+    def test_a_derived_range_is_kept(self, rules):
+        (odv,) = rules["1.2.2"]["odvs"]
+        assert odv["validation"] == {"min": 1, "max": 5}
+
+
+SCHEDULING_PRIORITY_DEFAULT = (
+    "\nwin22cis_increase_scheduling_priority_users: "
+    "'{{ [\"Administrators\"] if (prelim_windows_installation_type == \"Server Core\") "
+    "else ([\"Administrators\", \"Window Manager\\Window Manager Group\"]) }}'\n"
+)
+SCHEDULING_PRIORITY_TASK = (
+    '- name: "2.2.34 | PATCH | Increase scheduling priority"\n'
+    "  when: win22cis_rule_2_2_34\n"
+    "  ansible.windows.win_user_right:\n"
+    "    name: SeIncreaseBasePriorityPrivilege\n"
+    '    users: "{{ win22cis_increase_scheduling_priority_users }}"\n'
+    "    action: set\n"
+)
+
+
+class TestJinjaNeverReachesTranslatedText:
+    def role_with_the_real_2_2_34(self, role_dir, tmp_path) -> Path:
+        role = tmp_path / "role"
+        shutil.copytree(role_dir, role)
+        with open(role / "defaults" / "main" / "main.yml", "a", encoding="utf-8", newline="") as defaults_file:
+            defaults_file.write(SCHEDULING_PRIORITY_DEFAULT)
+        (role / "tasks" / "section_2" / "section_2.2.34.yml").write_text(SCHEDULING_PRIORITY_TASK, encoding="utf-8")
+        return role
+
+    def test_a_rule_using_a_jinja_default_is_manual_with_no_translated_script(self, role_dir, tmp_path):
+        role = self.role_with_the_real_2_2_34(role_dir, tmp_path)
+        produced = normalize_rules(FIXTURE_SPEC, role, FIXTURES / "audit", LOCK)
+        rule = next(rule for rule in produced if rule["id"].endswith(".2.2.34"))
+        assert rule["assessment"] == {"status": "manual", "manual_reason": "no_check"}
+        assert rule["odvs"] == []
+        assert languages(fix_steps(rule)) == ["ansible"]
+        assert all(item["language"] == "goss" for item in rule["check"] or [])
+
+    def test_no_translated_text_or_odv_default_anywhere_has_jinja(self, rules):
+        for rule in rules.values():
+            for odv in rule["odvs"]:
+                assert "{{" not in json.dumps(odv["recommended"]) and "{%" not in json.dumps(odv["recommended"])
+            checks = check_items(rule) if rule["check"] else []
+            fixes = fix_steps(rule) if rule["remediation"] else []
+            for item in [*checks, *fixes]:
+                if item["language"] in ("registry", "powershell"):
+                    assert "{{" not in json.dumps(item) and "{%" not in json.dumps(item)
+
+    def test_translated_text_with_jinja_fails_the_import_loudly(self, role_dir, monkeypatch):
+        from tools import lockdown_normalize
+
+        monkeypatch.setattr(lockdown_normalize, "registry_check_powershell", lambda registry: "Write-Output '{{ x }}'")
+        with pytest.raises(UnsupportedUpstreamData, match="contains Jinja"):
+            normalize_rules(FIXTURE_SPEC, role_dir, FIXTURES / "audit", LOCK)
+
+    def test_an_odv_default_with_jinja_that_still_reaches_a_script_fails_the_import_loudly(self, role_dir):
+        from tools.lockdown_normalize import _odvs_used
+        from tools.lockdown_role import load_role_odvs
+
+        odvs = load_role_odvs(role_dir, FIXTURE_SPEC.variable_prefix)
+        odvs["max_passwords_saved"] = replace(odvs["max_passwords_saved"], default="{{ x }}")
+        rule_text = {"check": [{"language": "powershell", "default": {"shell": "$ODV_max_passwords_saved"}}], "fix": []}
+        with pytest.raises(UnsupportedUpstreamData, match="default with Jinja"):
+            _odvs_used(rule_text, odvs, None, "rule 1.1.1")
 
 
 class TestFailuresAreLoud:

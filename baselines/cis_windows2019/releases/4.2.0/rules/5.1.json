@@ -30,7 +30,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_5/section_5.x.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_5/section_5.x/cis_5.1.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Domain Controller only (from the upstream task name).\n\nNo runnable check (primary writes mix win_regedit, win_service); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_5/section_5.x.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_5/section_5.x/cis_5.1.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nApplies to: Domain Controller only (from the upstream task name).\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
   "discussion_format": "markdown",
   "id": "cis_windows2019.5.1",
   "odvs": [],

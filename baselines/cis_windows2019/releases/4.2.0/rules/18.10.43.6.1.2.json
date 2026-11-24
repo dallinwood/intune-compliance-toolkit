@@ -34,7 +34,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_18/section_18.10.43.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_18/section_18.10.43/cis_18.10.43.6.1.2.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (loop other than the per-user HKU loop); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_18/section_18.10.43.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_18/section_18.10.43/cis_18.10.43.6.1.2.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
   "discussion_format": "markdown",
   "id": "cis_windows2019.18.10.43.6.1.2",
   "odvs": [],

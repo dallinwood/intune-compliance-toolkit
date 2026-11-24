@@ -167,7 +167,7 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
   await expect(rowOf(inNoBenchmark.id).locator('td').last()).toHaveText('Not in a benchmark')
 })
 
-// Only the mSCP rules name the macOS target (the CIS rules name Linux), so ticking macOS or NIST mSCP keeps 352 of the 3177 rules; ticking ASD ISM keeps 1143 and NIST SP 800-53 keeps 1014.
+// Only the mSCP rules name the macOS target (the CIS rules name Linux), so ticking macOS or NIST mSCP keeps 352 of the 5,056 rules; ticking ASD ISM keeps 1143 and NIST SP 800-53 keeps 1014.
 test('the Target facet follows Automation and the Source facet sits between Version and Benchmark, and each filters to its own rules', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('5,056 of 5,056 rules', { timeout: 10_000 })

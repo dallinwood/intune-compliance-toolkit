@@ -44,7 +44,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_2/section_2.3.11.yml` of `ansible-lockdown/Windows-2025-CIS` and Audit control `section_2/section_2.3.11/cis_2.3.11.6.yml` of `ansible-lockdown/Windows-2025-CIS-Audit`. The CIS Benchmark text is not part of this source.",
+  "discussion": "Imported from role task file `tasks/section_2/section_2.3.11.yml` of `ansible-lockdown/Windows-2025-CIS` and Audit control `section_2/section_2.3.11/cis_2.3.11.6.yml` of `ansible-lockdown/Windows-2025-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nThe role skips this on domain-joined hosts, where domain policy governs it.",
   "discussion_format": "markdown",
   "id": "cis_windows2025.2.3.11.6",
   "odvs": [],

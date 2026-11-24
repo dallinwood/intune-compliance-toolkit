@@ -18,9 +18,11 @@ from tools.lockdown_role import (
     RoleTask,
     UnknownRoleVariableError,
     group_by_rule,
+    is_writing_task,
     load_role_odvs,
     load_role_tasks,
     odv_range_disagreements,
+    parse_task_name,
     powershell_blocker,
     profiles_for,
     registry_blocker,
@@ -73,11 +75,15 @@ def golden_cases(tasks_by_rule, odvs) -> dict[str, tuple[str | None, str | None]
         task if task.module != "win_service" else with_arguments(task, force_dependent_services=True)
         for task in service_tasks_of(tasks_by_rule)
     ]
+    odv_accounts = with_arguments(
+        toggle_only(tasks_by_rule["2.2.8"][0]), users=["{{ win22cis_admin_username }}", "Guests"]
+    )
     cases = {
         "user_right_no_one": translated(tasks_by_rule["2.2.1"]),
         "user_right_set": translated(tasks_by_rule["2.2.8"]),
         "user_right_add": translated(tasks_by_rule["2.2.21"]),
         "user_right_remove": translated([remove_right]),
+        "user_right_odv_accounts": translated([odv_accounts]),
         "security_policy_number": translated(tasks_by_rule["2.3.1.1"]),
         "security_policy_number_odv": translated([toggle_only(lockout_count)]),
         "security_policy_text_odv": translated([toggle_only(rename_admin)]),
@@ -93,6 +99,7 @@ GOLDEN_STEMS = [
     "user_right_set",
     "user_right_add",
     "user_right_remove",
+    "user_right_odv_accounts",
     "security_policy_number",
     "security_policy_number_odv",
     "security_policy_text_odv",
@@ -140,8 +147,9 @@ class TestUserRights:
     def test_a_string_odv_account_is_a_single_quoted_placeholder(self, tasks_by_rule, odvs):
         task = with_arguments(toggle_only(tasks_by_rule["2.2.8"][0]), users=["{{ win22cis_admin_username }}"])
         check, fix = translate_powershell([task], odvs, PREFIX)
-        assert "@('$ODV_admin_username' | ForEach-Object" in check
-        assert "@('$ODV_admin_username' | ForEach-Object" in fix
+        for script in (check, fix):
+            assert "'$ODV_admin_username' -split ','" in script
+            assert "ConvertTo-AccountSid $_" in script
 
     def test_a_list_valued_variable_is_not_translatable(self, tasks_by_rule, odvs):
         task = with_arguments(toggle_only(tasks_by_rule["2.2.8"][0]), users="{{ win22cis_ngws }}")
@@ -572,3 +580,95 @@ class TestDiscoveredFacts:
         role_odvs = load_role_odvs(role, PREFIX)
         with pytest.raises(UnknownRoleVariableError, match="win22cis_found_out"):
             translate_registry(load_role_tasks(role), role_odvs, PREFIX)
+
+
+SCHEDULING_PRIORITY_DEFAULT = (
+    "win22cis_increase_scheduling_priority_users: "
+    "'{{ [\"Administrators\"] if (prelim_windows_installation_type == \"Server Core\") "
+    "else ([\"Administrators\", \"Window Manager\\Window Manager Group\"]) }}'\n"
+)
+SCHEDULING_PRIORITY_TASK = (
+    '- name: "2.2.34 | PATCH | Increase scheduling priority"\n'
+    "  when: win22cis_rule_2_2_34\n"
+    "  ansible.windows.win_user_right:\n"
+    "    name: SeIncreaseBasePriorityPrivilege\n"
+    '    users: "{{ win22cis_increase_scheduling_priority_users }}"\n'
+    "    action: set\n"
+)
+
+
+class TestJinjaDefaults:
+    def test_a_variable_whose_default_is_jinja_is_not_a_translatable_account(self, tmp_path):
+        role = write_role(tmp_path, SCHEDULING_PRIORITY_DEFAULT, SCHEDULING_PRIORITY_TASK)
+        role_odvs = load_role_odvs(role, PREFIX)
+        tasks = load_role_tasks(role)
+        assert translate_powershell(tasks, role_odvs, PREFIX) is None
+        assert "Jinja" in powershell_blocker(tasks, role_odvs, PREFIX)
+
+    def test_a_registry_value_fed_by_a_jinja_default_is_not_translatable(self, tmp_path):
+        role = write_role(
+            tmp_path,
+            "win22cis_text_setting: '{{ some_fact }}'\n",
+            '- name: "9.1.1 | PATCH | A rule"\n'
+            "  when: win22cis_rule_9_1_1\n"
+            "  ansible.windows.win_regedit:\n"
+            "    path: HKLM:\\SOFTWARE\\Example\n"
+            "    name: Text\n"
+            '    data: "{{ win22cis_text_setting }}"\n'
+            "    type: string\n",
+        )
+        role_odvs = load_role_odvs(role, PREFIX)
+        assert translate_registry(load_role_tasks(role), role_odvs, PREFIX) is None
+
+
+class TestVerbsThatPatch:
+    def test_a_combined_audit_and_patch_verb_keeps_its_title(self):
+        parsed = parse_task_name("1.1 | AUDIT|PATCH | Ensure something | Step")
+        assert (parsed.verb, parsed.title, parsed.step) == ("AUDIT|PATCH", "Ensure something", "Step")
+
+    def test_a_combined_verb_writing_task_is_a_primary_write(self, tasks_by_rule):
+        task = replace(tasks_by_rule["18.4.2"][0], verb="AUDIT|PATCH")
+        assert is_writing_task(task)
+        service = replace(service_tasks_of(tasks_by_rule)[-1], verb="AUDIT|PATCH")
+        assert registry_blocker([task, service], {}, PREFIX) == "primary write is win_service"
+
+
+class TestToleratedComparisonsAtTheDefaults:
+    def role_with(self, tmp_path, default: int, condition: str) -> Path:
+        return write_role(
+            tmp_path,
+            f"win22cis_limit: {default}\nwin22cis_other: 5\n",
+            '- name: "9.1.1 | PATCH | A rule"\n'
+            "  when:\n"
+            "    - win22cis_rule_9_1_1\n"
+            f"    - {condition}\n"
+            "  ansible.windows.win_regedit:\n"
+            "    path: HKLM:\\SOFTWARE\\Example\n"
+            "    name: Limit\n"
+            '    data: "{{ win22cis_limit }}"\n'
+            "    type: dword\n",
+        )
+
+    @pytest.mark.parametrize(
+        "condition", ["win22cis_limit > 5", "win22cis_other == 6", "win22cis_limit >= win22cis_other", "win22cis_limit in [7, 8]"]
+    )
+    def test_a_comparison_that_is_false_at_the_defaults_blocks_translation(self, tmp_path, condition):
+        role = self.role_with(tmp_path, 3, condition)
+        role_odvs = load_role_odvs(role, PREFIX)
+        tasks = load_role_tasks(role)
+        assert translate_registry(tasks, role_odvs, PREFIX) is None
+        assert "defaults" in registry_blocker(tasks, role_odvs, PREFIX)
+
+    @pytest.mark.parametrize("condition", ["win22cis_limit >= 3", "win22cis_other == 5", "win22cis_limit <= win22cis_other"])
+    def test_a_comparison_that_holds_at_the_defaults_is_still_translated(self, tmp_path, condition):
+        role = self.role_with(tmp_path, 3, condition)
+        assert translate_registry(load_role_tasks(role), load_role_odvs(role, PREFIX), PREFIX) is not None
+
+
+class TestCommaSeparatedAccountVariables:
+    def test_a_string_odv_account_is_split_on_commas_like_ansible_does(self, tasks_by_rule, odvs):
+        task = with_arguments(toggle_only(tasks_by_rule["2.2.8"][0]), users=["{{ win22cis_admin_username }}", "Guests"])
+        check, fix = translate_powershell([task], odvs, PREFIX)
+        for script in (check, fix):
+            assert "'$ODV_admin_username' -split ','" in script
+            assert "'Guests'" in script

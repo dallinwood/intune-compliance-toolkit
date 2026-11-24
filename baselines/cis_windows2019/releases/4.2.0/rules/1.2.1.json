@@ -34,7 +34,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_1/section_1.2.x.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_1/section_1.2.x/cis_1.2.1.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (when: discovered_win19cis_current_lockout_reset | int > win19cis_account_lockout_duration | int); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_1/section_1.2.x.yml` of `ansible-lockdown/Windows-2019-CIS` and Audit control `section_1/section_1.2.x/cis_1.2.1.yml` of `ansible-lockdown/Windows-2019-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nThe role skips this on domain-joined hosts, where domain policy governs it.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
   "discussion_format": "markdown",
   "id": "cis_windows2019.1.2.1",
   "odvs": [],

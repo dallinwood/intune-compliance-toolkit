@@ -30,7 +30,7 @@
       }
     ]
   },
-  "discussion": "Imported from role task file `tasks/section_5/cis_5.12.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_5/cis_5.12.x/cis_5.12.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nNo runnable check (when: not discovered_control_connection_is_ssh); the original Ansible tasks are the fix.",
+  "discussion": "Imported from role task file `tasks/section_5/cis_5.12.x.yml` of `ansible-lockdown/Windows-11-CIS` and Audit control `section_5/cis_5.12.x/cis_5.12.yml` of `ansible-lockdown/Windows-11-CIS-Audit`. The CIS Benchmark text is not part of this source.\n\nManual: the Ansible role applies this only under conditions we cannot translate into a check, so it is shown as the original Ansible and goss test.",
   "discussion_format": "markdown",
   "id": "cis_windows11.5.12",
   "odvs": [],

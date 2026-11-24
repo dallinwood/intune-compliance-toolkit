@@ -1,5 +1,6 @@
 import json
 import shutil
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -92,3 +93,47 @@ def test_main_requires_a_known_source():
         import_cis_lockdown.main(["--source", "cis_windows95", "--offline"])
     with pytest.raises(SystemExit):
         import_cis_lockdown.main(["--offline"])
+
+
+class TestReplacingAReleaseWithNewerAuditContent:
+    NEWER_AUDIT_COMMIT = "c" * 40
+
+    def stage_fetch(self, monkeypatch):
+        def fake_fetch(spec, tag, staging_dir, today, opener):
+            return replace(LOCK, details={**LOCK.details, "audit_commit": self.NEWER_AUDIT_COMMIT})
+
+        monkeypatch.setattr(import_cis_lockdown, "fetch", fake_fetch)
+
+    def test_a_different_audit_commit_is_refused_without_the_flag(self, sources_dir, tmp_path, monkeypatch):
+        self.stage_fetch(monkeypatch)
+        importer = import_cis_lockdown.build_importer(FIXTURE_SPEC)
+        staging_dir = sources_dir / "releases" / ".staging"
+        with pytest.raises(ValueError, match="--replace-release"):
+            importer.fetch(LOCK.tag, staging_dir, "2026-11-24")
+
+    def test_the_flag_allows_the_replacement(self, sources_dir, monkeypatch):
+        self.stage_fetch(monkeypatch)
+        importer = import_cis_lockdown.build_importer(FIXTURE_SPEC, replace_release=True)
+        lock = importer.fetch(LOCK.tag, sources_dir / "releases" / ".staging", "2026-11-24")
+        assert lock.details["audit_commit"] == self.NEWER_AUDIT_COMMIT
+
+    def test_the_same_audit_commit_needs_no_flag(self, sources_dir, monkeypatch):
+        monkeypatch.setattr(import_cis_lockdown, "fetch", lambda spec, tag, staging_dir, today, opener: LOCK)
+        importer = import_cis_lockdown.build_importer(FIXTURE_SPEC)
+        assert importer.fetch(LOCK.tag, sources_dir / "releases" / ".staging", "2026-11-24") == LOCK
+
+    def test_a_first_import_needs_no_flag(self, tmp_path, monkeypatch):
+        self.stage_fetch(monkeypatch)
+        importer = import_cis_lockdown.build_importer(FIXTURE_SPEC)
+        assert importer.fetch(LOCK.tag, tmp_path / "releases" / ".staging", "2026-11-24").tag == LOCK.tag
+
+    def test_the_flag_is_accepted_on_the_command_line(self, sources_dir, tmp_path):
+        baselines_dir = tmp_path / "baselines"
+        baselines_dir.mkdir()
+        exit_code = import_cis_lockdown.main(
+            [
+                "--source", FIXTURE_SPEC.source_name, "--offline", "--replace-release",
+                "--sources-dir", str(sources_dir), "--baselines-dir", str(baselines_dir),
+            ]
+        )
+        assert exit_code == 0
