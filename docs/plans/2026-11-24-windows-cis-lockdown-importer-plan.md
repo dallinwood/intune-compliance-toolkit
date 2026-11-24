@@ -83,4 +83,4 @@
 
 ## Progress log
 
-- 2026-11-24: Task 1 done. Added `tools/lockdown_role.py` (role task and ODV parsing, `win_regedit` to native registry settings) with tests and verbatim Windows-2022-CIS fixtures under `tests/fixtures/lockdown/role/`. Run over the four real roles it finds 540, 462, 444 and 433 rules (Windows 11, 2025, 2022, 2019) with no parse failures; strict registry translation covers 342, 305, 286 and 282 of them. Commit: (this commit) feat: parse ansible-lockdown Windows role tasks and registry settings.
+- 2026-11-24: Task 1 done. Added `tools/lockdown_role.py` (role task and ODV parsing, `win_regedit` to native registry settings) with tests and verbatim Windows-2022-CIS fixtures under `tests/fixtures/lockdown/role/`. Run over the four real roles it finds 540, 462, 444 and 433 rules (Windows 11, 2025, 2022, 2019) with no parse failures; strict registry translation covers 342, 305, 286 and 282 of them. Commit: 22b893b10 feat: parse ansible-lockdown Windows role tasks and registry settings.
