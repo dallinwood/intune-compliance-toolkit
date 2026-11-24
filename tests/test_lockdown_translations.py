@@ -188,9 +188,9 @@ class TestSecurityPolicy:
         assert "$current -cne '$ODV_admin_username'" in check
         assert "('newadministratorname = \"' + '$ODV_admin_username' + '\"')" in fix
 
-    def test_a_domain_scoped_account_policy_is_not_a_profile_gate(self, tasks_by_rule, odvs):
-        blocker = powershell_blocker(tasks_by_rule["1.1.1"], odvs, PREFIX)
-        assert blocker == "when: not prelim_win22cis_account_policy_is_domain_scoped"
+    def test_a_domain_scoped_account_policy_is_a_profile_gate(self, tasks_by_rule, odvs):
+        assert powershell_blocker(tasks_by_rule["1.1.1"], odvs, PREFIX) is None
+        assert translate_powershell(tasks_by_rule["1.1.1"], odvs, PREFIX) is not None
 
     def test_two_keys_become_two_lines_of_one_section(self, tasks_by_rule, odvs):
         first = tasks_by_rule["2.3.1.1"][0]
@@ -337,6 +337,11 @@ class TestToleratedConditions:
             "win22cis_ngws",
             "not win22cis_ngws",
             "win22cis_bitlocker",
+            "not prelim_win22cis_account_policy_is_domain_scoped",
+            "prelim_win22cis_account_policy_is_domain_scoped",
+            "not discovered_account_policy_is_domain_scoped",
+            "not prelim_win22cis_is_standalone",
+            "prelim_win22cis_is_standalone",
             "not win_skip_for_test",
             "not (win_skip_for_test | bool)",
             "win_skip_for_test",
@@ -349,8 +354,8 @@ class TestToleratedConditions:
     @pytest.mark.parametrize(
         "condition",
         [
-            "not prelim_win22cis_account_policy_is_domain_scoped",
-            "not prelim_win22cis_is_standalone",
+            "not prelim_win19cis_is_standalone",
+            "not prelim_win22cis_account_policy_is_domain_scoped and x",
             "win22cis_hyperv_installed",
             "discovered_value > 3",
             "prelim_win22cis_is_domain_controller and something_else",

@@ -747,8 +747,8 @@ def check_condition_variables(condition: str, prefix: str, odvs: dict[str, RoleO
 def profile_gate_patterns(prefix: str) -> tuple[re.Pattern, ...]:
     """The `when` conditions that only select a profile or a test run, and so do not change what a rule sets.
 
-    Domain controller and member server gates, the NGWS and BitLocker switches, and
-    `win_skip_for_test`, each optionally negated. The profile tags already carry them.
+    Domain controller and member server gates, the NGWS and BitLocker switches, the
+    domain-scoped account policy and standalone gates, and `win_skip_for_test`, each optionally negated. The profile tags already carry them.
     """
     escaped = re.escape(prefix)
     return tuple(
@@ -757,6 +757,8 @@ def profile_gate_patterns(prefix: str) -> tuple[re.Pattern, ...]:
             rf"(?:not\s+)?prelim_{escaped}_is_domain_(?:controller|member)",
             rf"(?:not\s+)?{escaped}_ngws",
             rf"(?:not\s+)?{escaped}_bitlocker",
+            rf"(?:not\s+)?(?:prelim_{escaped}|discovered)_account_policy_is_domain_scoped",
+            rf"(?:not\s+)?prelim_{escaped}_is_standalone",
             r"(?:not\s+)?\(?\s*win_skip_for_test(?:\s*\|\s*bool)?\s*\)?",
         )
     )

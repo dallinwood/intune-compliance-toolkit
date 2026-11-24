@@ -55,6 +55,11 @@ def test_template_syntax_and_windows_paths_survive_untouched(controls):
     assert "HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\\Start:" in controls["18.4.2"].goss_text
 
 
+def test_the_control_file_path_is_the_coverage_path_and_none_without_a_test(controls):
+    assert controls["2.2.1"].file == "section_2/section_2.2/cis_2.2.1.yml"
+    assert controls["2.2.34"].file is None
+
+
 def test_the_gate_is_the_coverage_gate(controls):
     assert controls["1.1.1"].gate == "win22cis_level_1"
     assert controls["2.2.2"].gate == 'and (eq .Vars.win22cis_system_role "domaincontroller") .Vars.win22cis_level_1'

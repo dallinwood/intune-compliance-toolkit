@@ -39,6 +39,7 @@ class AuditControl:
     gate: str | None
     goss_text: str | None
     meta: dict
+    file: str | None = None
 
 
 def indentation_width(line: str) -> int:
@@ -107,5 +108,6 @@ def load_audit(audit_dir: Path) -> dict[str, AuditControl]:
             gate=gate,
             goss_text=goss_text,
             meta=meta_block_of(goss_text) if goss_text is not None else {},
+            file=entry["file"] if goss_text is not None else None,
         )
     return controls
