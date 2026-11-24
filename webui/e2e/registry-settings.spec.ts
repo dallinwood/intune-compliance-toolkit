@@ -223,7 +223,7 @@ test('a registry remediation step shows a Delete row and the Ansible pill', asyn
   await expect(remediation.locator('pre', { hasText: 'ansible.windows.win_regedit' })).toBeVisible()
 })
 
-test('Download .reg saves <rule id>-Windows.reg as UTF-16LE with a byte order mark', async ({ page }) => {
+test('Download .reg saves <rule id>-Windows-check.reg as UTF-16LE with a byte order mark', async ({ page }) => {
   await serveOverlays(page, { 'a-ism.json': ismOverlay })
   const detail = await openRule(page, 'ism-1622', ISM_TITLE)
   await detail
@@ -234,13 +234,24 @@ test('Download .reg saves <rule id>-Windows.reg as UTF-16LE with a byte order ma
   const downloadPromise = page.waitForEvent('download')
   await detail.getByTestId('check-target').getByRole('button', { name: 'Download .reg' }).click()
   const download = await downloadPromise
-  expect(download.suggestedFilename()).toBe(`${ISM_RULE_ID}-Windows.reg`)
+  expect(download.suggestedFilename()).toBe(`${ISM_RULE_ID}-Windows-check.reg`)
   const bytes = await readFile((await download.path()) as string)
   expect([bytes[0], bytes[1]]).toEqual([0xff, 0xfe])
   const text = bytes.subarray(2).toString('utf16le')
   expect(text.startsWith('Windows Registry Editor Version 5.00\r\n')).toBe(true)
   expect(text).toContain(`[HKEY_LOCAL_MACHINE\\${LONG_KEY_PATH}]`)
   expect(text).toContain('@="C:\\\\Tools\\\\caf\u00e9"')
+})
+
+test('the remediation Download .reg saves <rule id>-Windows-fix.reg, apart from the check download', async ({ page }) => {
+  await serveOverlays(page, { 'a-ism.json': ismOverlay })
+  const detail = await openRule(page, 'ism-1622', ISM_TITLE)
+  await detail.getByRole('button', { name: /Registry/ }).last().click()
+
+  const downloadPromise = page.waitForEvent('download')
+  await detail.getByTestId('remediation-target').getByRole('button', { name: 'Download .reg' }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toBe(`${ISM_RULE_ID}-Windows-fix.reg`)
 })
 
 test('a customised organization value appears in the table and the .reg download', async ({ page }) => {

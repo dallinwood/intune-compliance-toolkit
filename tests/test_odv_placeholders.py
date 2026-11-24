@@ -461,7 +461,7 @@ def build_registry_rule(setting: dict, odvs: list[dict]) -> dict:
 
 
 def numeric_odv(name: str = "max_age") -> dict:
-    return {**build_odv(name, recommended=30), "datatype": "number"}
+    return {**build_odv(name, recommended=30), "datatype": "number", "validation": {"min": 0, "max": 1000}}
 
 
 @pytest.mark.parametrize(
@@ -476,7 +476,38 @@ def numeric_odv(name: str = "max_age") -> dict:
     ],
 )
 def test_registry_odv_of_a_fitting_datatype_is_accepted(registry_type, datatype):
-    odv = {**build_odv("limit"), "datatype": datatype}
+    odv = {**build_odv("limit"), "datatype": datatype, "validation": {"min": 0, "max": 100}}
+    assert placeholder_errors(build_registry_rule(registry_setting(registry_type, "$ODV_limit"), [odv])) == []
+
+
+@pytest.mark.parametrize(
+    ("registry_type", "validation"),
+    [
+        ("REG_DWORD", None),
+        ("REG_DWORD", {"max": 100}),
+        ("REG_DWORD", {"min": 0}),
+        ("REG_DWORD", {"min": -1, "max": 100}),
+        ("REG_DWORD", {"min": 0, "max": 4294967296}),
+        ("REG_QWORD", {"min": 0, "max": 18446744073709551616}),
+        ("REG_QWORD", {"min": -5, "max": 10}),
+    ],
+)
+def test_registry_number_odv_without_a_range_inside_the_type_is_rejected(registry_type, validation):
+    odv = {**build_odv("limit"), "datatype": "number", "validation": validation}
+    errors = placeholder_errors(build_registry_rule(registry_setting(registry_type, "$ODV_limit"), [odv]))
+    assert any("limit" in error and "min >= 0" in error for error in errors)
+
+
+@pytest.mark.parametrize(
+    ("registry_type", "validation"),
+    [
+        ("REG_DWORD", {"min": 0, "max": 4294967295}),
+        ("REG_QWORD", {"min": 0, "max": 18446744073709551615}),
+        ("REG_DWORD", {"min": 1, "max": 3600}),
+    ],
+)
+def test_registry_number_odv_with_a_range_inside_the_type_is_accepted(registry_type, validation):
+    odv = {**build_odv("limit"), "datatype": "number", "validation": validation}
     assert placeholder_errors(build_registry_rule(registry_setting(registry_type, "$ODV_limit"), [odv])) == []
 
 

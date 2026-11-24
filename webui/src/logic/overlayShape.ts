@@ -132,31 +132,38 @@ const REGISTRY = 'registry'
 
 const REGISTRY_TYPES = ['REG_DWORD', 'REG_QWORD', 'REG_SZ', 'REG_EXPAND_SZ', 'REG_MULTI_SZ', 'REG_BINARY']
 const REGISTRY_SETTING_KEYS = ['hive', 'path', 'value_name', 'type', 'data', 'state']
-const DWORD_MAXIMUM = 2 ** 32 - 1
-const QWORD_MAXIMUM = 2 ** 64 - 1
+const DWORD_LIMIT = 2 ** 32
+const QWORD_LIMIT = 2 ** 64
 const ODV_REFERENCE_PATTERN = /^\$ODV_[a-z][a-z0-9_]*(?![\s\S])/
-const REGISTRY_PATH_PATTERN = /^[^\\\n](?:[^\n]*[^\\\n])?(?![\s\S])/
+// No line break, NUL or "]" anywhere, and no empty segment (a doubled, leading or trailing backslash).
+const REGISTRY_PATH_PATTERN = /^(?!.*\\\\)[^\\\r\n\0\]](?:[^\r\n\0\]]*[^\\\r\n\0\]])?(?![\s\S])/
+const REGISTRY_TEXT_PATTERN = /^[^\r\n\0]*(?![\s\S])/
 const BINARY_DATA_PATTERN = /^(?:[0-9a-fA-F]{2})*(?![\s\S])/
 
 const isOdvReference = (value: unknown) => typeof value === 'string' && ODV_REFERENCE_PATTERN.test(value)
 
-function numberData(maximum: number): Check {
+// A QWORD above 2^53 cannot be held exactly by a JSON number, so the limit is
+// the first number past the range; registryFile.ts refuses unsafe integers.
+function numberData(exclusiveLimit: number, rangeText: string): Check {
   return (value, path) =>
     expect(
-      isOdvReference(value) || (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= maximum),
+      isOdvReference(value) || (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value < exclusiveLimit),
       path,
-      `an integer from 0 to ${maximum} or a whole-value ODV placeholder`,
+      `an integer from 0 to ${rangeText} or a whole-value ODV placeholder`,
     )
 }
 
+const registryText: Check = (value, path) =>
+  expect(typeof value === 'string' && REGISTRY_TEXT_PATTERN.test(value), path, 'a string with no line break or NUL')
+
 const registryDataChecks: Record<string, Check> = {
-  REG_DWORD: numberData(DWORD_MAXIMUM),
-  REG_QWORD: numberData(QWORD_MAXIMUM),
-  REG_SZ: text,
-  REG_EXPAND_SZ: text,
+  REG_DWORD: numberData(DWORD_LIMIT, '4294967295'),
+  REG_QWORD: numberData(QWORD_LIMIT, '18446744073709551615'),
+  REG_SZ: registryText,
+  REG_EXPAND_SZ: registryText,
   REG_MULTI_SZ: listOf((value, path) =>
     firstProblem(
-      () => text(value, path),
+      () => registryText(value, path),
       () => expect(!(value as string).startsWith('$ODV'), path, 'text that does not start with $ODV'),
     ),
   ),
@@ -169,8 +176,8 @@ const registrySetting: Check = (value, path) =>
     () =>
       objectWith({
         hive: oneOf('HKLM', 'HKCU', 'HKU', 'HKCR'),
-        path: (pathValue, pathPath) => expect(typeof pathValue === 'string' && REGISTRY_PATH_PATTERN.test(pathValue), pathPath, 'a key path with no leading or trailing backslash'),
-        value_name: text,
+        path: (pathValue, pathPath) => expect(typeof pathValue === 'string' && REGISTRY_PATH_PATTERN.test(pathValue), pathPath, 'a key path with no line break, NUL, "]" or empty segment'),
+        value_name: registryText,
         type: oneOf(...REGISTRY_TYPES, null),
         data: anyValue,
         state: oneOf('present', 'absent'),
@@ -205,11 +212,16 @@ function registryEntry(requiresNullResult: boolean): Check {
     )
 }
 
+// ansible and goss text is shown as written, so it is always an inline string.
+const DISPLAY_TEXT_LANGUAGES = ['ansible', 'goss']
+
 function scriptEntryFor(scriptLanguage: unknown): Check {
+  const displaysText = DISPLAY_TEXT_LANGUAGES.includes(scriptLanguage as string)
   return (value, path) =>
     firstProblem(
       () => expect(!isObject(value) || !Object.hasOwn(value, REGISTRY), `${path}.registry`, 'absent unless the language is registry'),
-      () => exactlyOneOf('shell', textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
+      () => exactlyOneOf('shell', displaysText ? text : textOrNull, 'shell_file', scriptFileFor(scriptLanguage))(value, path),
+      () => expect(!displaysText || (isObject(value) && Object.hasOwn(value, 'shell')), `${path}.shell`, 'a string for ansible and goss'),
     )
 }
 

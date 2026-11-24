@@ -11,7 +11,7 @@ import {
 } from '../../logic/targetDisplay'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RemediationStep, Rule, TargetRemediation } from '../../types/library'
-import { OdvCodeBlock, SectionHeading } from './CodeBlock'
+import { CodeBlock, OdvCodeBlock, SectionHeading } from './CodeBlock'
 import { DisclosureButtons, type DisclosureItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { PayloadFile, ScriptFile } from './ReferencedFile'
@@ -34,14 +34,17 @@ function StepEntry({
   codeOdv: CodeOdvValues
 }) {
   const highlightLanguage = scriptHighlightLanguage(step.language)
+  // ansible and goss text is upstream's, shown as written: not scanned for ODV quoting, so never substituted.
+  const isDisplayOnly = step.language === 'ansible' || step.language === 'goss'
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
-      {step.registry !== undefined && <RegistryTable settings={step.registry} odvValues={odvValues} ruleId={ruleId} target={target} />}
+      {step.registry !== undefined && <RegistryTable settings={step.registry} odvValues={odvValues} ruleId={ruleId} target={target} purpose="fix" />}
       {step.shell_file !== undefined && (
         <ScriptFile path={step.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
       )}
-      {step.shell && (
+      {step.shell && isDisplayOnly && <CodeBlock code={step.shell} language={highlightLanguage} />}
+      {step.shell && !isDisplayOnly && (
         <OdvCodeBlock code={step.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
       )}
       {step.additional_info && <DiscussionText text={step.additional_info} format="asciidoc" odvValues={odvValues} codeOdv={codeOdv} />}

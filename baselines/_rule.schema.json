@@ -198,7 +198,7 @@
       "required": ["hive", "path", "value_name", "type", "data", "state"],
       "properties": {
         "hive": { "enum": ["HKLM", "HKCU", "HKU", "HKCR"] },
-        "path": { "type": "string", "pattern": "^[^\\\\\\r\\n\\u0000\\]](?:[^\\r\\n\\u0000\\]]*[^\\\\\\r\\n\\u0000\\]])?(?![\\s\\S])" },
+        "path": { "type": "string", "pattern": "^(?!.*\\\\\\\\)[^\\\\\\r\\n\\u0000\\]](?:[^\\r\\n\\u0000\\]]*[^\\\\\\r\\n\\u0000\\]])?(?![\\s\\S])" },
         "value_name": { "type": "string", "pattern": "^[^\\r\\n\\u0000]*(?![\\s\\S])" },
         "type": { "enum": ["REG_DWORD", "REG_QWORD", "REG_SZ", "REG_EXPAND_SZ", "REG_MULTI_SZ", "REG_BINARY", null] },
         "data": {},

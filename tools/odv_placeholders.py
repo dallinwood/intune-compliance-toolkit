@@ -55,7 +55,8 @@ ANSI_C_QUOTE = "ansi-c"
 # Shown verbatim and never run. Their text is in the upstream tool's own
 # variable syntax (Jinja, Go templates), so no scan reads it.
 DISPLAY_ONLY_LANGUAGES = ("ansible", "goss")
-NUMBER_REGISTRY_TYPES = ("REG_DWORD", "REG_QWORD")
+REGISTRY_NUMBER_MAXIMUM = {"REG_DWORD": 2**32 - 1, "REG_QWORD": 2**64 - 1}
+NUMBER_REGISTRY_TYPES = tuple(REGISTRY_NUMBER_MAXIMUM)
 TEXT_REGISTRY_TYPES = ("REG_SZ", "REG_EXPAND_SZ")
 TEXT_ODV_DATATYPES = ("string", "enum", "regex")
 
@@ -512,7 +513,8 @@ def quoting_errors(rule: dict, script_texts: list[ShellText]) -> list[str]:
 def registry_odv_errors(rule: dict) -> list[str]:
     """A registry setting may hold an ODV only as its whole number or text data, of a fitting datatype."""
     rule_id = rule["id"]
-    datatype_by_name = {odv["name"]: odv.get("datatype") for odv in rule["odvs"] if isinstance(odv.get("name"), str)}
+    named_odvs = {odv["name"]: odv for odv in rule["odvs"] if isinstance(odv.get("name"), str)}
+    datatype_by_name = {name: odv.get("datatype") for name, odv in named_odvs.items()}
     errors = []
     for setting in iter_registry_settings(rule):
         registry_type = setting.get("type")
@@ -546,7 +548,24 @@ def registry_odv_errors(rule: dict) -> list[str]:
                 f"{rule_id}: {placeholder(well_formed.group(1))} has datatype {datatype!r}, "
                 f"which does not fit {registry_type} data"
             )
+        elif fits_number:
+            errors += registry_number_range_errors(
+                rule_id, registry_type, well_formed.group(1), named_odvs[well_formed.group(1)]
+            )
     return errors
+
+
+def registry_number_range_errors(rule_id: str, registry_type: str, odv_name: str, odv: dict) -> list[str]:
+    """The reader's input field is the only range check an ODV value gets before it becomes registry data."""
+    maximum_allowed = REGISTRY_NUMBER_MAXIMUM[registry_type]
+    validation = odv.get("validation") or {}
+    minimum, maximum = validation.get("min"), validation.get("max")
+    if isinstance(minimum, (int, float)) and minimum >= 0 and isinstance(maximum, (int, float)) and maximum <= maximum_allowed:
+        return []
+    return [
+        f"{rule_id}: {placeholder(odv_name)} is {registry_type} data, so its validation needs "
+        f"min >= 0 and max <= {maximum_allowed}"
+    ]
 
 
 def display_value_errors(rule: dict) -> list[str]:

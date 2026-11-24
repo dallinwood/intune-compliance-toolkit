@@ -78,6 +78,12 @@ function scriptFieldParts(field: string, rest: string[], vocabularyIndex: Vocabu
       remaining = inTarget.slice(2)
     }
   }
+  if (remaining[0] === 'registry' && remaining.length > 1 && /^[0-9]+$/.test(remaining[1])) {
+    const settingLabel = `Registry setting ${Number(remaining[1]) + 1}`
+    const insideSetting = remaining.slice(2)
+    parts.push(insideSetting.length > 0 ? `${settingLabel} ${insideSetting.join(' ').replaceAll('_', ' ')}` : settingLabel)
+    return parts
+  }
   const isTheScript = remaining.length === 1 && (remaining[0] === 'shell' || remaining[0] === 'script' || remaining[0] === 'data')
   if (remaining.length > 0 && !isTheScript) parts.push(sentenceCase(remaining.join(' ')))
   return parts

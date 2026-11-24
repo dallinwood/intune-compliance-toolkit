@@ -102,9 +102,11 @@ these two languages (their variables are the upstream names, not ours).
 
 ### 3. Web UI
 
-- Check and Remediation sections show a `registry` item as a table: Hive, Key path, Value name,
-  Type, Data, Action (Set / Delete). Data shows the customised ODV value the way scripts do,
-  with the ODV highlighted. Key paths are copyable (full `HKLM\...` path). At narrow widths each
+- Check and Remediation sections show a `registry` item as a table: Key, Value name, Type, Data.
+  Decision (final review, 2026-11-22): the hive is the first segment of the full long-form key
+  path (`HKEY_LOCAL_MACHINE\...`), so a separate Hive column would only repeat it, and there is
+  no Action column: a Set is implicit and a Delete shows "Delete this value" in place of the
+  data. Data shows the customised ODV value the way scripts do, with the ODV highlighted. Key paths are copyable (full `HKLM\...` path). At narrow widths each
   row becomes a stacked card; nothing scrolls horizontally except a long key path inside its cell.
 - Each registry table has a "Download .reg" button (beside it, the way code blocks have a copy
   button; maintainer request 2026-11-20). It saves a `.reg` file that sets every setting in that
@@ -113,7 +115,9 @@ these two languages (their variables are the upstream names, not ours).
   quoted strings, and `"name"=-` for `absent`. Hives are written in long form
   (`HKEY_LOCAL_MACHINE`, ...). ODVs use the reader's customised values. The file is UTF-16LE with
   a BOM, as regedit writes it. It is generated in the web UI (it needs the customised values) by
-  a pure function with Vitest golden tests. The button appears on check items too, since the
+  a pure function with Vitest golden tests. The file is named `<rule id>-<target>-check.reg` or
+  `<rule id>-<target>-fix.reg`, so a rule's check and fix for one target do not collide. The
+  button appears on check items too, since the
   file is the same "set these values" either way.
 - `ansible` and `goss` get labels and pills like the other languages.
 - Change labels, the custom-changes notice, overlays and attestation reports treat `registry`

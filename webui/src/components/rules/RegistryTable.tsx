@@ -1,6 +1,6 @@
 import { Download } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
-import { registryFileBytes, registryFileName, registryFileProblem, registryFileText } from '../../logic/registryFile'
+import { registryFileBytes, registryFileName, type RegistryFilePurpose, registryFileProblem, registryFileText } from '../../logic/registryFile'
 import { registryRows, type RegistryRow } from '../../logic/registryRows'
 import { odvPlaceholder } from '../../logic/odv'
 import type { OdvValues } from '../../logic/selectionEntry'
@@ -112,11 +112,13 @@ export function RegistryTable({
   odvValues,
   ruleId,
   target,
+  purpose,
 }: {
   settings: RegistrySetting[]
   odvValues: Partial<OdvValues>
   ruleId: string
   target: string
+  purpose: RegistryFilePurpose
 }) {
   const rows = registryRows(settings, odvValues)
   const problem = registryFileProblem(settings, odvValues)
@@ -132,7 +134,7 @@ export function RegistryTable({
         <button
           type="button"
           disabled={problem !== null}
-          onClick={() => downloadRegistryFile(registryFileText(settings, odvValues), registryFileName(ruleId, target))}
+          onClick={() => downloadRegistryFile(registryFileText(settings, odvValues), registryFileName(ruleId, target, purpose))}
           className={buttonVariants({ variant: 'outline', size: 'xs' })}
         >
           <Download aria-hidden className="size-3.5" />

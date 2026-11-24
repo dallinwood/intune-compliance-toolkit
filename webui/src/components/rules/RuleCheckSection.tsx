@@ -10,7 +10,7 @@ import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleCheck, ScriptLanguage, CheckItem } from '../../types/library'
-import { OdvCodeBlock, SectionHeading } from './CodeBlock'
+import { CodeBlock, OdvCodeBlock, SectionHeading } from './CodeBlock'
 import { DisclosureButtons, SelectionButtons, type SelectionItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { ScriptFile } from './ReferencedFile'
@@ -36,13 +36,17 @@ function CheckEntry({
 }) {
   const highlightLanguage = scriptHighlightLanguage(language)
   const isInstructions = language === 'instructions'
+  // ansible and goss text is upstream's, shown as written: not scanned for ODV quoting, so never substituted.
+  const isDisplayOnly = language === 'ansible' || language === 'goss'
   return (
     <div className="space-y-1">
       <p className="text-xs font-medium text-foreground/80">{label}</p>
       {check.registry !== undefined ? (
-        <RegistryTable settings={check.registry} odvValues={odvValues} ruleId={ruleId} target={target} />
+        <RegistryTable settings={check.registry} odvValues={odvValues} ruleId={ruleId} target={target} purpose="check" />
       ) : check.shell_file !== undefined ? (
         <ScriptFile path={check.shell_file} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} />
+      ) : check.shell && isDisplayOnly ? (
+        <CodeBlock code={check.shell} language={highlightLanguage} />
       ) : check.shell ? (
         <OdvCodeBlock code={check.shell} language={highlightLanguage} odvValues={odvValues} codeOdv={codeOdv} isVerifiedShell />
       ) : isInstructions ? null : (

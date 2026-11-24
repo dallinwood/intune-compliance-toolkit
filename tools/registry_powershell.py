@@ -15,6 +15,7 @@ PROVIDER_PREFIX_BY_HIVE = {
     "HKU": "Registry::HKEY_USERS",
     "HKCR": "Registry::HKEY_CLASSES_ROOT",
 }
+BASE_KEY_BY_HIVE = {"HKLM": "LocalMachine", "HKCU": "CurrentUser", "HKU": "Users", "HKCR": "ClassesRoot"}
 PROPERTY_TYPE_BY_REGISTRY_TYPE = {
     "REG_DWORD": "DWord",
     "REG_QWORD": "QWord",
@@ -25,6 +26,7 @@ PROPERTY_TYPE_BY_REGISTRY_TYPE = {
 }
 DEFAULT_VALUE_NAME = "(default)"
 ODV_PREFIX = "$ODV_"
+LINE_BREAK = chr(10)
 JOIN_WITH_NULL_CHARACTER = "[string]::Join([string][char]0, {})"
 
 
@@ -68,6 +70,10 @@ def value_expression(setting: dict) -> str:
     return f"'{data}'" if is_odv(data) else single_quoted(data)
 
 
+def kind_name_for(registry_type: str):
+    return {"REG_SZ": "String", "REG_EXPAND_SZ": "ExpandString"}.get(registry_type)
+
+
 def match_expression(setting: dict) -> str:
     if setting["state"] == "absent":
         return "$null -eq $current"
@@ -83,7 +89,10 @@ def match_expression(setting: dict) -> str:
             f"-eq [uint64]{number_literal(data)}"
         )
     if registry_type in ("REG_SZ", "REG_EXPAND_SZ"):
-        return f"$current -is [string] -and $current -ceq {value_expression(setting)}"
+        return (
+            f"$current -is [string] -and $kind -ceq '{kind_name_for(registry_type)}' "
+            f"-and $current -ceq {value_expression(setting)}"
+        )
     if registry_type == "REG_MULTI_SZ":
         return (
             f"$current -is [string[]] -and $current.Length -eq {len(data)} -and "
@@ -94,16 +103,26 @@ def match_expression(setting: dict) -> str:
     return f"$current -is [byte[]] -and [BitConverter]::ToString($current) -ceq {expected_bytes}"
 
 
-def read_current_value(setting: dict) -> str:
-    path = single_quoted(provider_path(setting))
-    if setting["type"] == "REG_EXPAND_SZ":
-        # Get-ItemProperty expands %VARIABLE% references, which would never equal the stored text.
-        return (
-            f"$current = (Get-Item -LiteralPath {path} -ErrorAction SilentlyContinue)"
-            f".GetValue({single_quoted(setting['value_name'])}, $null, 'DoNotExpandEnvironmentNames')"
-        )
-    name = single_quoted(powershell_value_name(setting))
-    return f"$current = (Get-ItemProperty -LiteralPath {path} -Name {name} -ErrorAction SilentlyContinue).{name}"
+def key_value_name(setting: dict) -> str:
+    """The name the registry key object takes: the default value is the empty string."""
+    return single_quoted(setting["value_name"])
+
+
+def read_current_value(setting: dict) -> list[str]:
+    """Read through the key object so the value name is literal and %VARIABLE% text stays unexpanded.
+
+    Get-Item returns nothing for a missing key, so every read resets $current and $kind first.
+    The reads avoid `$x = if (...) {...}`, which would flatten an array value into object[].
+    """
+    name = key_value_name(setting)
+    lines = [
+        f"$key = Get-Item -LiteralPath {single_quoted(provider_path(setting))} -ErrorAction SilentlyContinue",
+        "$current = $null",
+        f"if ($key) {{ $current = $key.GetValue({name}, $null, 'DoNotExpandEnvironmentNames') }}",
+    ]
+    if setting["state"] == "present" and kind_name_for(setting["type"]):
+        lines += ["$kind = $null", f"if ($null -ne $current) {{ $kind = $key.GetValueKind({name}) }}"]
+    return lines
 
 
 def registry_check_powershell(settings: list[dict]) -> str:
@@ -112,7 +131,7 @@ def registry_check_powershell(settings: list[dict]) -> str:
     for setting in settings:
         label = f"Mismatch: {provider_path(setting)} [{setting['value_name'] or '(Default)'}]"
         lines += [
-            read_current_value(setting),
+            *read_current_value(setting),
             f"if (-not ({match_expression(setting)})) {{",
             f"    Write-Output {single_quoted(label)}",
             "    $mismatchCount++",
@@ -124,13 +143,24 @@ def registry_check_powershell(settings: list[dict]) -> str:
 
 
 def registry_fix_powershell(settings: list[dict]) -> str:
-    """A script that sets every present setting, creating its key, and removes every absent one."""
-    lines = []
+    """A script that sets every present setting, creating its key, and removes every absent one.
+
+    Any failure stops the script with exit code 1; without that, New-ItemProperty and
+    Remove-ItemProperty errors are non-terminating and the script would still exit 0.
+    """
+    lines = ["$ErrorActionPreference = 'Stop'", "trap { Write-Output $_.Exception.Message; exit 1 }", ""]
     for setting in settings:
         path = single_quoted(provider_path(setting))
         name = single_quoted(powershell_value_name(setting))
         if setting["state"] == "absent":
-            lines.append(f"Remove-ItemProperty -LiteralPath {path} -Name {name} -ErrorAction SilentlyContinue")
+            # Remove-ItemProperty -Name reads * ? [ as wildcards; DeleteValue takes the name literally.
+            lines += [
+                f"$key = [Microsoft.Win32.Registry]::{BASE_KEY_BY_HIVE[setting['hive']]}.OpenSubKey({single_quoted(setting['path'])}, $true)",
+                "if ($key) {",
+                f"    $key.DeleteValue({key_value_name(setting)}, $false)",
+                "    $key.Close()",
+                "}",
+            ]
             continue
         property_type = PROPERTY_TYPE_BY_REGISTRY_TYPE[setting["type"]]
         lines += [
@@ -140,4 +170,5 @@ def registry_fix_powershell(settings: list[dict]) -> str:
             f"New-ItemProperty -LiteralPath {path} -Name {name} -Value {value_expression(setting)} "
             f"-PropertyType {property_type} -Force | Out-Null",
         ]
+    lines.append("exit 0")
     return "\n".join(lines) + "\n"

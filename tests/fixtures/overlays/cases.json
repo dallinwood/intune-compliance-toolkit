@@ -797,6 +797,54 @@
         }
       },
       "error": true
+    },
+    {
+      "name": "a carriage return in a registry value name is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "registry", "default": { "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\Example", "value_name": "Bad\rName", "type": "REG_DWORD", "data": 1, "state": "present" }], "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "a NUL in registry string data is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "registry", "default": { "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\Example", "value_name": "Enabled", "type": "REG_SZ", "data": "a\u0000b", "state": "present" }], "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "a closing bracket in a registry key path is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "registry", "default": { "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\Ex]ample", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present" }], "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "an empty segment in a registry key path is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "registry", "default": { "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\\\Example", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present" }], "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "a leading backslash in a registry key path is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "registry", "default": { "registry": [{ "hive": "HKLM", "path": "\\SOFTWARE\\Example", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present" }], "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "a trailing backslash in a registry key path is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": null, "language": "registry", "default": { "registry": [{ "hive": "HKLM", "path": "SOFTWARE\\Example\\", "value_name": "Enabled", "type": "REG_DWORD", "data": 1, "state": "present" }], "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "a goss item with a null shell is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": "goss", "language": "goss", "default": { "shell": null, "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
+    },
+    {
+      "name": "an ansible item with a shell_file instead of text is invalid",
+      "rule": { "id": "x.rule", "check": null },
+      "fields": { "check": { "Windows": [{ "name": "ansible", "language": "ansible", "default": { "shell_file": "baselines/_overlays/scripts/x.yml", "result": null, "additional_info": null }, "by_version": {} }] } },
+      "error": true
     }
   ],
   "file_reference_cases": [

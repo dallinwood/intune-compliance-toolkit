@@ -146,6 +146,24 @@ describe('registryFileProblem', () => {
     expect(registryFileProblem([present({ data: '$ODV_timeout' })], {})).toBe('Set a valid value for $ODV_timeout to download')
   })
 
+  it('refuses a DWORD outside 0 to 4294967295 or not a whole number', () => {
+    for (const data of [-1, 4294967296, 5000000000, 1.5, Number.NaN]) {
+      expect(registryFileProblem([present({ data })], {}), String(data)).toContain('whole number from 0 to 4294967295')
+    }
+  })
+
+  it('refuses a QWORD that is negative, not whole, or too large to hold exactly', () => {
+    for (const data of [-1, 0.5, 2 ** 53, 2 ** 64]) {
+      expect(registryFileProblem([present({ type: 'REG_QWORD', data })], {}), String(data)).toContain('whole number from 0 to')
+    }
+    expect(registryFileProblem([present({ type: 'REG_QWORD', data: Number.MAX_SAFE_INTEGER })], {})).toBeNull()
+  })
+
+  it('refuses a customised ODV value that is out of range', () => {
+    expect(registryFileProblem([present({ data: '$ODV_timeout' })], { timeout: -5 })).toContain('whole number from 0 to 4294967295')
+    expect(registryFileProblem([present({ data: '$ODV_timeout' })], { timeout: 5000000000 })).toContain('4294967295')
+  })
+
   it('gives the refusal for a value that cannot be written', () => {
     expect(registryFileProblem([present({ type: 'REG_SZ', data: 'a\nb' })], {})).toContain('line break')
   })
@@ -164,7 +182,8 @@ describe('registryFileBytes', () => {
 })
 
 describe('registryFileName', () => {
-  it('joins the rule id and target', () => {
-    expect(registryFileName('cis_windows.1_1_1', 'Windows')).toBe('cis_windows.1_1_1-Windows.reg')
+  it('joins the rule id, target and purpose, so a check and a fix download under different names', () => {
+    expect(registryFileName('cis_windows.1_1_1', 'Windows', 'check')).toBe('cis_windows.1_1_1-Windows-check.reg')
+    expect(registryFileName('cis_windows.1_1_1', 'Windows', 'fix')).toBe('cis_windows.1_1_1-Windows-fix.reg')
   })
 })

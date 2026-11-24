@@ -100,6 +100,28 @@ function refuseLineInjection(setting: RegistrySetting): void {
   }
 }
 
+const DWORD_LIMIT = 2 ** 32
+const QWORD_LIMIT = 2n ** 64n
+
+// A number outside its type's range would write a malformed or different value
+// (a sign, an extra hex digit, wrapped bits). A QWORD must also be a safe
+// integer: JSON.parse rounds anything larger, so the digits are no longer the
+// library's.
+function refuseOutOfRangeNumber(setting: RegistrySetting): void {
+  if (setting.type !== 'REG_DWORD' && setting.type !== 'REG_QWORD') return
+  const data = setting.data
+  const isDword = setting.type === 'REG_DWORD'
+  const rangeText = isDword ? '0 to 4294967295' : `0 to ${Number.MAX_SAFE_INTEGER} (larger QWORD values cannot be held exactly)`
+  const inRange =
+    typeof data === 'number' &&
+    Number.isInteger(data) &&
+    data >= 0 &&
+    (isDword ? data < DWORD_LIMIT : Number.isSafeInteger(data) && BigInt(data) < QWORD_LIMIT)
+  if (!inRange) {
+    throw new Error(`${describeSetting(setting)} has data ${String(data)}, which is not a whole number from ${rangeText}`)
+  }
+}
+
 function refuseUnresolvedOdv(setting: RegistrySetting): void {
   const odvName = registryOdvName(setting.data)
   if (odvName !== null) {
@@ -117,6 +139,7 @@ export function registryFileText(settings: RegistrySetting[], odvValues: Partial
     const setting = resolveRegistrySetting(declared, odvValues)
     refuseUnresolvedOdv(setting)
     refuseLineInjection(setting)
+    refuseOutOfRangeNumber(setting)
     const keyHeader = `[${LONG_HIVE_NAMES[setting.hive]}\\${setting.path}]`
     const lines = linesByKey.get(keyHeader) ?? []
     lines.push(valueLine(setting))
@@ -146,6 +169,10 @@ export function registryFileBytes(text: string): Uint8Array {
   return Uint8Array.from([...BYTE_ORDER_MARK, ...utf16LittleEndianBytes(text)])
 }
 
-export function registryFileName(ruleId: string, target: string): string {
-  return `${ruleId}-${target}.reg`
+export type RegistryFilePurpose = 'check' | 'fix'
+
+// The purpose is in the name because a rule's check and fix for one target
+// would otherwise download under the same name.
+export function registryFileName(ruleId: string, target: string, purpose: RegistryFilePurpose): string {
+  return `${ruleId}-${target}-${purpose}.reg`
 }
