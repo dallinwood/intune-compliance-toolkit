@@ -128,7 +128,9 @@ function FrameworkCard({ source, coverage }: { source: ManifestSource; coverage:
   return (
     <li data-testid="framework-card" className="space-y-3 rounded-lg border border-border bg-panel p-4">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <div className="min-w-0 space-y-0.5">
+        {/* The 16rem basis lets the source line wrap its licence badge before it pushes the
+            Rules/Coverage links out of the title row; below that width the links wrap instead. */}
+        <div className="min-w-0 flex-[1_1_16rem] space-y-0.5">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <h2 className="text-base font-semibold">{source.display_name}</h2>
             <ProvenanceBadge provenance={source.provenance} />

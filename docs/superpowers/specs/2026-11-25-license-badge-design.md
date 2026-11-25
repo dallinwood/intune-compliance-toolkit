@@ -69,3 +69,7 @@ either, and we don't want that anyway.
 - Check the longest name, "CC0 1.0 (public domain)", at a ~375px viewport
   in a Playwright screenshot. Because the source line wraps, the badge
   should drop below the "Source:" text rather than overflow.
+
+## Progress log
+
+- 2026-11-25: Built `LicenseBadge` and rendered it in `SourceLine`, so it shows on the framework cards and the framework page header. The longer source line pushed the cards' Rules/Coverage links out of the title row, so the title column now has a 16rem flex basis and the source line wraps the badge onto its own line instead.
