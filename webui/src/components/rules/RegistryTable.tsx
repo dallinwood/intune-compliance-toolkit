@@ -5,7 +5,6 @@ import { registryRows, type RegistryRow } from '../../logic/registryRows'
 import { odvPlaceholder } from '../../logic/odv'
 import type { OdvValues } from '../../logic/selectionEntry'
 import type { RegistrySetting } from '../../types/library'
-import { CopyButton } from './CopyButton'
 
 function downloadRegistryFile(text: string, fileName: string): void {
   const url = URL.createObjectURL(new Blob([registryFileBytes(text) as BlobPart], { type: 'application/octet-stream' }))
@@ -33,10 +32,7 @@ function DataText({ row }: { row: RegistryRow }) {
 
 function FullPath({ row }: { row: RegistryRow }) {
   return (
-    <div className="relative pr-8">
-      <code className="font-mono text-xs [overflow-wrap:anywhere]">{row.fullPath}</code>
-      <CopyButton text={row.fullPath} tone="light" label={`Copy key path ${row.fullPath}`} />
-    </div>
+    <code className="block font-mono text-xs [overflow-wrap:anywhere]">{row.fullPath}</code>
   )
 }
 
