@@ -125,7 +125,7 @@ export function FrameworkPage({ page, context }: { page: ResolvedFrameworkPage<M
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="shrink-0 border-b border-border px-4 pt-0.5">
+      <div className="shrink-0 border-b border-border px-4 pt-2">
         <BackToGridLink />
         <PageTitle title={isAll ? 'All rules' : source.display_name} adornment={isAll ? undefined : <ProvenanceBadge provenance={source.provenance} />} subtitle={subtitle} />
         {!isAll && <div className="mt-1"><SourceLine source={source} /></div>}
