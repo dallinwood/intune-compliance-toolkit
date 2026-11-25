@@ -53,14 +53,14 @@ either, and we don't want that anyway.
 - The title row and `ProvenanceBadge` stay as they are.
 - Markup: an `<a href={license.url} target="_blank" rel="noreferrer">`
   wrapping two spans:
-  - key segment: lucide `Scale` icon (aria-hidden) plus the text "license",
+  - key segment: lucide `Scale` icon (aria-hidden) plus the text "licence" (the app's spelling),
     neutral zinc background, white text
   - value segment: `license.name`, blue background, white text
 - Size: 20px tall to match the existing badge height, `text-[11px]`,
   `rounded` (4px), `whitespace-nowrap`.
 - Colours: light theme zinc-600 key and blue-600 value. Dark theme
   zinc-700 key and blue-700 value, so it isn't glaring on the dark panel.
-- Accessible name: "License: CC BY 4.0 (opens in a new tab)".
+- Accessible name: "Licence: CC BY 4.0 (opens in a new tab)".
 - Visible focus ring consistent with the other links.
 
 ## Left to the builder
@@ -72,4 +72,4 @@ either, and we don't want that anyway.
 
 ## Progress log
 
-- 2026-11-25: Built `LicenseBadge` and rendered it in `SourceLine`, so it shows on the framework cards and the framework page header. The longer source line pushed the cards' Rules/Coverage links out of the title row, so the title column now has a 16rem flex basis and the source line wraps the badge onto its own line instead.
+- 2026-11-25: Built `LicenseBadge` and rendered it in `SourceLine`, so it shows on the framework cards and the framework page header. The longer source line pushed the cards' Rules/Coverage links out of the title row, so the title column now has a 16rem flex basis and the source line wraps the badge onto its own line instead. (f5482b09b feat: show a shields-style licence badge on the source line)
