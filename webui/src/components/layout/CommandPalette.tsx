@@ -1,7 +1,9 @@
 import { Autocomplete } from '@base-ui/react/autocomplete'
 import { SearchIcon } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { requestCatalogOnce } from '../../hooks/useCatalogIndex'
 import {
+  buildCatalogPaletteEntries,
   buildPaletteEntries,
   isApplePlatform,
   isPaletteShortcut,
@@ -13,14 +15,22 @@ import { upstreamRuleId } from '../../logic/ruleDisplay'
 import { termLabel } from '../../logic/vocabulary'
 import { useFilterStore } from '../../state/filterStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
+import type { CatalogIndex } from '../../types/catalog'
 import type { ManifestSource } from '../../types/library'
 import type { RuleRow } from '../../types/rule-row'
 import { VIEWS } from '../../views/viewRegistry'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Badge } from '@/components/ui/badge'
 
-const PALETTE_DESCRIPTION = 'Search rules, frameworks and views'
-const INPUT_PLACEHOLDER = 'Search rules, frameworks and views…'
+const PALETTE_DESCRIPTION = 'Search rules, frameworks, licences, products and views'
+const INPUT_PLACEHOLDER = 'Search rules, frameworks, licences, products and views…'
+
+const ENTRY_KIND_LABELS: Record<Exclude<PaletteEntry['kind'], 'rule'>, string> = {
+  view: 'View',
+  framework: 'Framework',
+  licence: 'Licence',
+  product: 'Product',
+}
 
 interface PaletteGroup {
   value: string
@@ -56,7 +66,7 @@ function PaletteItemContent({ entry }: { entry: PaletteEntry }) {
   return (
     <>
       <span className="min-w-0 flex-1 text-sm">{entry.label}</span>
-      <span className="shrink-0 text-xs text-muted-foreground">{entry.kind === 'view' ? 'View' : 'Framework'}</span>
+      <span className="shrink-0 text-xs text-muted-foreground">{ENTRY_KIND_LABELS[entry.kind]}</span>
     </>
   )
 }
@@ -72,23 +82,42 @@ export function CommandPalette({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [catalog, setCatalog] = useState<CatalogIndex | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const vocabularyIndex = useVocabularyIndex()
   const setView = useFilterStore((state) => state.setView)
   const showComparison = useFilterStore((state) => state.showComparison)
   const showRuleFromComparison = useFilterStore((state) => state.showRuleFromComparison)
+  const showCatalogEntry = useFilterStore((state) => state.showCatalogEntry)
 
   const entries = useMemo(
     () =>
       buildPaletteEntries(VIEWS, sources, rows, (sourceName) => termLabel(vocabularyIndex, 'sources', sourceName)),
     [rows, sources, vocabularyIndex],
   )
-  const results = searchPalette(entries, query)
+  const catalogEntries = useMemo(() => (catalog === null ? [] : buildCatalogPaletteEntries(catalog)), [catalog])
+  const results = searchPalette([...entries, ...catalogEntries], query)
   const groups: PaletteGroup[] = [
     { value: 'Views', items: results.views },
     { value: 'Frameworks', items: results.frameworks },
+    { value: 'Licences', items: results.licences },
+    { value: 'Products', items: results.products },
     { value: 'Rules', items: results.rules },
   ].filter((group) => group.items.length > 0)
+
+  // Fetched on first open rather than on page load, so people who never
+  // search never download the catalog. A failed load just leaves the catalog
+  // groups out.
+  useEffect(() => {
+    if (!isOpen || catalog !== null) return
+    let cancelled = false
+    requestCatalogOnce().then((loaded) => {
+      if (!cancelled && loaded.index !== null) setCatalog(loaded.index)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [isOpen, catalog])
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -109,6 +138,8 @@ export function CommandPalette({
     onNavigate()
     if (entry.kind === 'view') setView(entry.viewId)
     else if (entry.kind === 'framework') showComparison(entry.sourceName, null, null)
+    else if (entry.kind === 'licence') showCatalogEntry('licences', entry.catalogId)
+    else if (entry.kind === 'product') showCatalogEntry('products', entry.catalogId)
     else showRuleFromComparison(entry.ruleId, upstreamRuleId(entry.ruleId), null)
   }
 

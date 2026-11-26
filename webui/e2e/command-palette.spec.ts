@@ -76,6 +76,28 @@ test('choosing the Licences view switches to it', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Licences' })).toHaveAttribute('aria-current', 'page')
 })
 
+test('choosing a licence opens it on the Licences tab', async ({ page }) => {
+  await page.goto('/frameworks')
+  await openPaletteWithShortcut(page)
+
+  await page.keyboard.type('microsoft 365 e5')
+  await palette(page).getByRole('option', { name: /^Microsoft 365 E5\s*Licence$/ }).click()
+
+  await expect(page).toHaveURL(/\/licences\?.*licence=microsoft\.m365-e5/)
+  await expect(page.getByRole('heading', { name: 'Microsoft 365 E5', level: 2 })).toBeVisible()
+})
+
+test('choosing a product opens it on the Products tab', async ({ page }) => {
+  await page.goto('/frameworks')
+  await openPaletteWithShortcut(page)
+
+  await page.keyboard.type('intune cloud pki')
+  await palette(page).getByRole('option', { name: /^Intune Cloud PKI\s*Product$/ }).click()
+
+  await expect(page).toHaveURL(/\/products\?.*product=microsoft\.intune-cloud-pki/)
+  await expect(page.getByRole('heading', { name: 'Intune Cloud PKI', level: 2 })).toBeVisible()
+})
+
 test('the result list exposes combobox, listbox and option roles and announces a count', async ({ page }) => {
   await page.goto('/rules')
   await openPaletteWithShortcut(page)
@@ -86,7 +108,7 @@ test('the result list exposes combobox, listbox and option roles and announces a
   await expect(palette(page).getByRole('listbox')).toBeVisible()
   await expect(palette(page).getByRole('option').first()).toBeVisible()
   await expect(palette(page).getByRole('group')).not.toHaveCount(0)
-  await expect(palette(page).getByText(/^(\d+ results?|Showing \d+ of \d+ rules; keep typing to narrow)$/)).toBeVisible()
+  await expect(palette(page).getByText(/^(\d+ results?|Showing \d+ of \d+ results; keep typing to narrow)$/)).toBeVisible()
   const activeDescendant = await paletteInput(page).getAttribute('aria-activedescendant')
   expect(activeDescendant).not.toBeNull()
   await expect(page.locator(`[id="${activeDescendant}"]`)).toHaveAttribute('role', 'option')

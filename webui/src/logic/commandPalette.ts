@@ -1,20 +1,31 @@
+import { compareNatural } from './naturalOrder'
 import { upstreamRuleId } from './ruleDisplay'
 
 export type PaletteEntry =
   | { kind: 'view'; key: string; viewId: string; label: string; matchText: string }
   | { kind: 'framework'; key: string; sourceName: string; label: string; shortLabel: string; matchText: string }
   | { kind: 'rule'; key: string; ruleId: string; upstreamId: string; title: string; sourceLabel: string; matchText: string }
+  | { kind: 'licence'; key: string; catalogId: string; label: string; matchText: string }
+  | { kind: 'product'; key: string; catalogId: string; label: string; matchText: string }
 
 export interface PaletteResults {
   views: PaletteEntry[]
   frameworks: PaletteEntry[]
+  licences: PaletteEntry[]
+  products: PaletteEntry[]
   rules: PaletteEntry[]
+  totalLicenceMatches: number
+  totalProductMatches: number
   totalRuleMatches: number
 }
 
 export const RULE_RESULT_LIMIT = 50
+// Small, so a short query that matches hundreds of products does not push the
+// rules out of sight.
+export const CATALOG_RESULT_LIMIT = 10
 
 type RuleEntry = Extract<PaletteEntry, { kind: 'rule' }>
+type CatalogEntry = Extract<PaletteEntry, { kind: 'licence' | 'product' }>
 
 export function buildPaletteEntries(
   views: readonly { id: string; label: string }[],
@@ -56,6 +67,29 @@ export function buildPaletteEntries(
     })
     .sort((first, second) => compareText(first.ruleId, second.ruleId))
   return [...viewEntries, ...frameworkEntries, ...ruleEntries]
+}
+
+// Built apart from the other entries because the catalog loads later, and
+// only once the palette is first opened.
+export function buildCatalogPaletteEntries(catalog: {
+  licences: readonly { id: string; title: string; family: string }[]
+  products: readonly { id: string; title: string; category: string | null }[]
+}): PaletteEntry[] {
+  const licenceEntries: PaletteEntry[] = catalog.licences.map((licence) => ({
+    kind: 'licence',
+    key: `licence:${licence.id}`,
+    catalogId: licence.id,
+    label: licence.title,
+    matchText: `${licence.title} ${licence.family} ${licence.id}`.toLowerCase(),
+  }))
+  const productEntries: PaletteEntry[] = catalog.products.map((product) => ({
+    kind: 'product',
+    key: `product:${product.id}`,
+    catalogId: product.id,
+    label: product.title,
+    matchText: `${product.title} ${product.category ?? ''} ${product.id}`.toLowerCase(),
+  }))
+  return [...licenceEntries, ...productEntries]
 }
 
 function compareText(first: string, second: string): number {
@@ -102,6 +136,13 @@ function rankRules(rules: RuleEntry[], normalizedQuery: string): RuleEntry[] {
     .map(({ entry }) => entry)
 }
 
+function rankCatalogEntries(entries: CatalogEntry[], normalizedQuery: string): CatalogEntry[] {
+  const startsWithQuery = (entry: CatalogEntry) => entry.label.toLowerCase().startsWith(normalizedQuery)
+  return entries.toSorted(
+    (first, second) => Number(startsWithQuery(second)) - Number(startsWithQuery(first)) || compareNatural(first.label, second.label),
+  )
+}
+
 export function searchPalette(
   entries: readonly PaletteEntry[],
   query: string,
@@ -112,7 +153,11 @@ export function searchPalette(
     return {
       views: entries.filter((entry) => entry.kind === 'view'),
       frameworks: entries.filter((entry) => entry.kind === 'framework'),
+      licences: [],
+      products: [],
       rules: [],
+      totalLicenceMatches: 0,
+      totalProductMatches: 0,
       totalRuleMatches: 0,
     }
   }
@@ -122,20 +167,33 @@ export function searchPalette(
     matching.filter((entry): entry is RuleEntry => entry.kind === 'rule'),
     normalizedQuery,
   )
+  const matchingLicences = rankCatalogEntries(
+    matching.filter((entry): entry is CatalogEntry => entry.kind === 'licence'),
+    normalizedQuery,
+  )
+  const matchingProducts = rankCatalogEntries(
+    matching.filter((entry): entry is CatalogEntry => entry.kind === 'product'),
+    normalizedQuery,
+  )
   return {
     views: matching.filter((entry) => entry.kind === 'view'),
     frameworks: matching.filter((entry) => entry.kind === 'framework'),
+    licences: matchingLicences.slice(0, CATALOG_RESULT_LIMIT),
+    products: matchingProducts.slice(0, CATALOG_RESULT_LIMIT),
     rules: matchingRules.slice(0, ruleLimit),
+    totalLicenceMatches: matchingLicences.length,
+    totalProductMatches: matchingProducts.length,
     totalRuleMatches: matchingRules.length,
   }
 }
 
 export function resultStatus(results: PaletteResults): string {
-  const total = results.views.length + results.frameworks.length + results.rules.length
+  const shown =
+    results.views.length + results.frameworks.length + results.licences.length + results.products.length + results.rules.length
+  const total =
+    results.views.length + results.frameworks.length + results.totalLicenceMatches + results.totalProductMatches + results.totalRuleMatches
   if (total === 0) return 'No matches'
-  if (results.totalRuleMatches > results.rules.length) {
-    return `Showing ${results.rules.length} of ${results.totalRuleMatches} rules; keep typing to narrow`
-  }
+  if (total > shown) return `Showing ${shown} of ${total} results; keep typing to narrow`
   return total === 1 ? '1 result' : `${total} results`
 }
 

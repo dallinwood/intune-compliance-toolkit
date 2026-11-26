@@ -147,9 +147,10 @@ Requires [Bun](https://bun.sh).
   | `history-unavailable` | Note | The release history for a source could not be loaded, so release checks were skipped for its rules. |
 - Press Ctrl+K (Cmd+K on a Mac) or use the Search button in the header to open a command
   palette from any view. Type a rule id or words from its title to find rules from all four
-  sources, or a framework or view name. The first result is highlighted, and Enter or a click
-  goes there: a rule opens on the all-rules page with the filters cleared, a framework opens its
-  release comparison, and a view opens that tab. Back returns to where you were.
+  sources, or a framework, licence, product or view name. The first result is highlighted, and
+  Enter or a click goes there: a rule opens on the all-rules page with the filters cleared, a
+  framework opens its release comparison, a licence or product opens on its tab, and a view
+  opens that tab. Back returns to where you were.
 - `bun run test` runs the unit tests. `bun run test:e2e` runs the Playwright
   tests against a running `bun run dev`.
 

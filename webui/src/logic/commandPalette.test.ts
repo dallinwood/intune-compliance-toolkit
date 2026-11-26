@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  CATALOG_RESULT_LIMIT,
   RULE_RESULT_LIMIT,
+  buildCatalogPaletteEntries,
   buildPaletteEntries,
   isApplePlatform,
   isPaletteShortcut,
@@ -177,12 +179,63 @@ describe('commandPalette', () => {
       matchText: 'cis.1 1 t cis',
     }
 
-    expect(resultStatus({ views: [], frameworks: [], rules: [], totalRuleMatches: 0 })).toBe('No matches')
-    expect(resultStatus({ views: [view], frameworks: [], rules: [], totalRuleMatches: 0 })).toBe('1 result')
-    expect(resultStatus({ views: [view], frameworks: [], rules: [rule], totalRuleMatches: 1 })).toBe('2 results')
-    expect(resultStatus({ views: [], frameworks: [], rules: [rule], totalRuleMatches: 120 })).toBe(
-      'Showing 1 of 120 rules; keep typing to narrow',
+    const noResults: PaletteResults = {
+      views: [],
+      frameworks: [],
+      licences: [],
+      products: [],
+      rules: [],
+      totalLicenceMatches: 0,
+      totalProductMatches: 0,
+      totalRuleMatches: 0,
+    }
+
+    expect(resultStatus(noResults)).toBe('No matches')
+    expect(resultStatus({ ...noResults, views: [view] })).toBe('1 result')
+    expect(resultStatus({ ...noResults, views: [view], rules: [rule], totalRuleMatches: 1 })).toBe('2 results')
+    expect(resultStatus({ ...noResults, rules: [rule], totalRuleMatches: 120 })).toBe(
+      'Showing 1 of 120 results; keep typing to narrow',
     )
+    expect(resultStatus({ ...noResults, rules: [rule], totalRuleMatches: 1, totalProductMatches: 4 })).toBe(
+      'Showing 1 of 5 results; keep typing to narrow',
+    )
+  })
+
+  it('finds licences by title or family and products by title or category, title prefixes first', () => {
+    const entries = [
+      ...entriesFor([]),
+      ...buildCatalogPaletteEntries({
+        licences: [
+          { id: 'm365_e5', title: 'Microsoft 365 E5', family: 'Enterprise' },
+          { id: 'defender_p2', title: 'Defender for Endpoint Plan 2', family: 'Defender' },
+        ],
+        products: [
+          { id: 'intune', title: 'Microsoft Intune Plan 1', category: 'Endpoint management' },
+          { id: 'mde', title: 'Endpoint detection and response', category: 'Security' },
+        ],
+      }),
+    ]
+
+    const endpoint = searchPalette(entries, 'endpoint')
+    expect(endpoint.licences.map((entry) => entry.key)).toEqual(['licence:defender_p2'])
+    expect(endpoint.products.map((entry) => entry.key)).toEqual(['product:mde', 'product:intune'])
+    expect(searchPalette(entries, 'enterprise').licences.map((entry) => entry.key)).toEqual(['licence:m365_e5'])
+    expect(searchPalette(entries, '').licences).toEqual([])
+    expect(searchPalette(entries, '').products).toEqual([])
+  })
+
+  it('licences and products are capped at the catalog limit with the full match count', () => {
+    const products = Array.from({ length: CATALOG_RESULT_LIMIT + 3 }, (_, index) => ({
+      id: `product_${index}`,
+      title: `Shared product ${index}`,
+      category: null,
+    }))
+    const entries = buildCatalogPaletteEntries({ licences: [], products })
+
+    const results = searchPalette(entries, 'shared')
+    expect(results.products).toHaveLength(CATALOG_RESULT_LIMIT)
+    expect(results.totalProductMatches).toBe(CATALOG_RESULT_LIMIT + 3)
+    expect(results.products.slice(0, 3).map((entry) => entry.key)).toEqual(['product:product_0', 'product:product_1', 'product:product_2'])
   })
 
   it('normalizeQuery lower-cases, trims and collapses whitespace', () => {
