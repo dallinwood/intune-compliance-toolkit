@@ -40,6 +40,14 @@ function filters(overrides: Partial<FilterValues> = {}): FilterValues {
 }
 
 describe('filtersShowingRule', () => {
+  it('returns only filter values, never other state passed in with them', () => {
+    const storeState = { ...filters(), framework: 'mscp', frameworkTab: 'coverage', view: 'frameworks' }
+
+    const next = filtersShowingRule(ISM_ROW, storeState, index)
+
+    expect(Object.keys(next).sort()).toEqual(Object.keys(filters()).sort())
+  })
+
   it('sets the search to the upstream id and keeps filters that do not hide the rule', () => {
     const current = filters({ sources: new Set(['asd_ism', 'mscp']) })
 

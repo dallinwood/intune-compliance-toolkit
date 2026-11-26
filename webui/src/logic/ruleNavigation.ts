@@ -31,7 +31,19 @@ export function filtersShowingRule(
   index: VocabularyIndex,
   linkedFrameworks?: LinkedFrameworksByRule,
 ): FilterValues {
-  let next: FilterValues = { ...filters, search: upstreamRuleId(row.ref.id) }
+  // Copied field by field: callers pass the whole store state, and spreading
+  // it would carry the current framework page into the change.
+  let next: FilterValues = {
+    search: upstreamRuleId(row.ref.id),
+    targets: filters.targets,
+    sources: filters.sources,
+    versions: filters.versions,
+    benchmarks: filters.benchmarks,
+    sections: filters.sections,
+    tags: filters.tags,
+    linked: filters.linked,
+    automatable: filters.automatable,
+  }
   if (matchesFilters(row, next, index, undefined, linkedFrameworks)) return next
   for (const facet of FACETS) {
     if (!matchesFilters(row, { ...noFilters(), [facet]: next[facet] }, index, undefined, linkedFrameworks)) next = { ...next, [facet]: new Set<string>() }
