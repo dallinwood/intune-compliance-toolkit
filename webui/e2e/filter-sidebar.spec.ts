@@ -45,20 +45,16 @@ test('a group restored from the URL with a selection starts open, and shows its 
   await expect(page.getByRole('heading', { name: 'Section (1 selected)' })).toBeVisible()
 })
 
-test('Version, Benchmark, Section and Tags start closed and Automation, Target and Source start open', async ({ page }) => {
+test('every filter group starts open', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
   await expect(page.getByText(/^[\d,]+ of [\d,]+ rules$/)).toBeVisible({ timeout: 10_000 })
-  for (const title of ['Automation', 'Target', 'Source']) {
+  for (const title of ['Automation', 'Check', 'Remediation', 'Organization values', 'Target', 'Source', 'Version', 'Benchmark', 'Section', 'Tags']) {
     await expect(page.getByRole('heading', { name: title, exact: true }).getByRole('button')).toHaveAttribute('aria-expanded', 'true')
   }
-  for (const title of ['Version', 'Benchmark', 'Section', 'Tags']) {
-    await expect(page.getByRole('heading', { name: title, exact: true }).getByRole('button')).toHaveAttribute('aria-expanded', 'false')
-  }
-  await openFacetGroup(page, 'Version')
   await expect(page.getByRole('group', { name: 'Version', exact: true })).toBeVisible()
 })
 
-test('ticking an option in a closed-by-default group keeps it open', async ({ page }) => {
+test('ticking an option keeps its group open', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
   await openFacetGroup(page, 'Version')
   await page.getByRole('checkbox', { name: 'macOS 27', exact: true }).click()

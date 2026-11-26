@@ -211,7 +211,7 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
 
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div ref={scrollAreaRef} data-testid="sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto px-4 pb-2">
-          <FacetGroup title="Automation" startsOpen>
+          <FacetGroup title="Automation">
             <RadioGroup
               value={filters.automatable}
               onValueChange={(value) => {
@@ -262,7 +262,6 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
 
           <StableFacetGroup
             title="Target"
-            startsOpen
             rows={rows}
             valueOf={accessors.targetsOf}
             compareValues={accessors.compareTargets}
@@ -288,7 +287,6 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
           {!hideSourceFacet && (
             <StableFacetGroup
               title="Source"
-              startsOpen
               rows={rows}
               valueOf={accessors.sourceOf}
               compareValues={accessors.compareSources}
@@ -477,10 +475,8 @@ function StableFacetGroup({
   counts,
   selected,
   onToggle,
-  startsOpen,
 }: {
   title: string
-  startsOpen?: boolean
   rows: RuleRow[]
   valueOf: (row: RuleRow) => string | string[]
   compareValues?: (left: string, right: string) => number
@@ -501,7 +497,7 @@ function StableFacetGroup({
   if (!hasShownValue && selected.size === 0) return null
 
   return (
-    <FacetGroup title={title} selectedCount={selected.size} startsOpen={startsOpen}>
+    <FacetGroup title={title} selectedCount={selected.size}>
       {canonicalOrder
         .filter((value) => shown.has(value))
         .map((value) => {

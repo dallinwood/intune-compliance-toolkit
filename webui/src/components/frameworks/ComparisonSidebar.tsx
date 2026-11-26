@@ -133,7 +133,7 @@ export function ComparisonSidebar({
   return (
     <aside aria-label="Filters" className="flex max-h-64 w-full flex-col border-b border-border text-sm md:max-h-none md:w-64 md:shrink-0 md:border-r md:border-b-0">
       <div data-testid="comparison-sidebar-scroll-area" className="min-h-0 flex-1 overflow-y-auto p-4">
-        <FacetGroup title="Releases" startsOpen>
+        <FacetGroup title="Releases">
           <LabelledSelect label="Framework" value={source.name} onChange={changeFramework}>
             {sources.map((candidate) => (
               <option key={candidate.name} value={candidate.name}>
@@ -158,14 +158,14 @@ export function ComparisonSidebar({
           </LabelledSelect>
         </FacetGroup>
 
-        <FacetGroup title="Kind of change" startsOpen>
+        <FacetGroup title="Kind of change">
           {CHANGE_KINDS.map((kind) => (
             <Option key={kind} label={KIND_LABELS[kind]} count={counts.kinds[kind]} checked={tickedKinds.includes(kind)} onChange={() => toggleKind(kind)} />
           ))}
           <KindsNote selectedCount={tickedKinds.length} onShowAll={() => setChangeKinds(null)} />
         </FacetGroup>
 
-        <FacetGroup title="Only rules that…" startsOpen>
+        <FacetGroup title="Only rules that…">
           <Option label="have my custom changes" checked={only.includes('custom')} disabled={customisedUnavailable} onChange={() => toggleOnly('custom')} />
           {customisedUnavailable && <p className="text-xs text-muted-foreground">Your custom changes could not be loaded.</p>}
           <Option label="are in my selection" checked={only.includes('selected')} onChange={() => toggleOnly('selected')} />
