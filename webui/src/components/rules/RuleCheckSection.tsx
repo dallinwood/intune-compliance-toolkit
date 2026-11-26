@@ -10,11 +10,13 @@ import { compareVersionsDescending } from '../../logic/versions'
 import { termLabel } from '../../logic/vocabulary'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleCheck, ScriptLanguage, CheckItem } from '../../types/library'
-import { CodeBlock, OdvCodeBlock, SectionHeading } from './CodeBlock'
-import { DisclosureButtons, SelectionButtons, type SelectionItem } from './DisclosureButtons'
+import { CodeBlock, OdvCodeBlock } from './CodeBlock'
+import { SelectionButtons, type SelectionItem } from './DisclosureButtons'
 import { DiscussionText } from './DiscussionText'
 import { ScriptFile } from './ReferencedFile'
 import { RegistryTable } from './RegistryTable'
+import { ScriptTabs } from './ScriptTabs'
+import { SectionCard } from './SectionCard'
 import { TargetIcons } from './TargetIcons'
 
 function CheckEntry({
@@ -160,8 +162,7 @@ export function RuleCheckSection({
     versionsForTarget(rule.applicability, GENERATED_TARGET).length === 0
 
   return (
-    <div className="space-y-2">
-      <SectionHeading custom={custom}>Check</SectionHeading>
+    <SectionCard title="Check" custom={custom}>
       {hasNoMacosVersion && (
         <p className="text-xs text-warning-foreground">
           No macOS version listed: the source does not map this rule to any macOS release.
@@ -177,12 +178,13 @@ export function RuleCheckSection({
           No automated check. {assessmentLabel(rule.assessment, index).description}
         </p>
       ) : (
-        <DisclosureButtons
+        <ScriptTabs
+          ariaLabel="Check scripts"
           items={checkItemsByTarget.flatMap(([target, checkItems]) =>
             checkItems.map((checkItem, position) => ({
               key: `${target}-${position}`,
               panelTestId: 'check-target',
-              buttonContent: (
+              tabContent: (
                 <>
                   <TargetIcons targetKeys={[target]} />
                   {checkItem.name ?? scriptLanguageLabel(checkItem.language)}
@@ -193,6 +195,6 @@ export function RuleCheckSection({
           )}
         />
       )}
-    </div>
+    </SectionCard>
   )
 }

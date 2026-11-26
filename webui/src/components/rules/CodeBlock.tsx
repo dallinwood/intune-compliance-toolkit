@@ -6,7 +6,6 @@ import { codeTextWithOdvs, containsOdvPlaceholder, displayWithOdvs, odvPlacehold
 import { expandsOdvOnlyAsQuotedVariable, shellWithExportedOdv } from '../../logic/odvExportDisplay'
 import type { OdvValues, OrgDefinedValue } from '../../logic/selectionEntry'
 import { CopyButton } from './CopyButton'
-import { CustomTag } from './CustomTag'
 
 const MAX_NOTE_VALUE_LENGTH = 80
 
@@ -123,16 +122,5 @@ export function OdvCodeBlock({
       <OdvSubstitutionNote code={code} values={codeOdvValuesForBlock} />
       {hiddenNames.length > 0 && <OdvNote names={hiddenNames} odvValues={odvValues} />}
     </>
-  )
-}
-
-export function SectionHeading({ children, custom = false }: { children: string; custom?: boolean }) {
-  const heading = <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{children}</h3>
-  if (!custom) return heading
-  return (
-    <div className="flex items-center gap-2">
-      {heading}
-      <CustomTag />
-    </div>
   )
 }

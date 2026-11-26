@@ -56,11 +56,11 @@ test('rule browser loads the mSCP library and expands a rule to its check', asyn
   await expect(page.getByText('objectIsForcedForKey')).toBeVisible()
   // Reference keys are shown raw; friendly names only come from the vocabulary file.
   const detail = page.locator('[id^="rule-detail-"]')
-  // Checks and fixes are buttons per target, named by language or fix type; a single one starts open.
-  await expect(detail.getByRole('button', { name: /Bash/ })).toHaveAttribute('aria-expanded', 'true')
+  // Checks and fixes are tabs per target, named by language or fix type; the first starts open.
+  await expect(detail.getByRole('tab', { name: /Bash/ })).toHaveAttribute('aria-selected', 'true')
   await expect(detail.getByTestId('check-target')).toBeVisible()
   // Its remediation is a profile payload only, so no script language is named.
-  await expect(detail.getByRole('button', { name: /Configuration profile/ })).toHaveAttribute('aria-expanded', 'true')
+  await expect(detail.getByRole('tab', { name: /Configuration profile/ })).toHaveAttribute('aria-selected', 'true')
   await expect(detail.getByTestId('remediation-target')).toBeVisible()
   await expect(detail.getByText('macos_15', { exact: true }).first()).toBeVisible()
   // The Benchmarks section labels versions through the vocabulary, so only the reference keys are checked.
@@ -1441,9 +1441,9 @@ test.describe('custom overlays', () => {
     const detail = await openIsm1622(page)
     const remediation = detail.getByTestId('remediation-target')
 
-    const fixButtons = detail.getByRole('button', { name: /registry|admx/ })
+    const fixButtons = detail.getByRole('tab', { name: /registry|admx/ })
     await expect(fixButtons).toHaveCount(3)
-    await expect(remediation).toHaveCount(0)
+    await expect(fixButtons.nth(0)).toHaveAttribute('aria-selected', 'true')
 
     await fixButtons.nth(0).click()
     await expect(remediation.locator('pre', { hasText: 'Windows Registry Editor Version 5.00' })).toBeVisible()
@@ -1472,7 +1472,7 @@ test('the committed ASD Blueprint overlay gives ISM-1621 a Custom Windows PowerS
 
   const remediation = detail.getByTestId('remediation-target')
   await expect(remediation).toHaveCount(1)
-  await expect(detail.getByRole('button', { name: /PowerShell script/ })).toHaveAttribute('aria-expanded', 'true')
+  await expect(detail.getByRole('tab', { name: /PowerShell script/ })).toHaveAttribute('aria-selected', 'true')
   await expect(remediation.getByText('RemovePowerShellV2', { exact: true })).toBeVisible()
   await expect(detail.getByRole('heading', { name: 'Remediation' }).locator('xpath=..').getByText('Custom', { exact: true })).toBeVisible()
   await expect(page.getByRole('status', { name: 'Custom content problems' })).toHaveCount(0)
@@ -1503,55 +1503,46 @@ test('ISM-1654 and ISM-1655 each show their own Blueprint script step', async ({
   }
 })
 
-test.describe('check and fix buttons', () => {
+test.describe('check and fix tabs', () => {
   test('a rule with a single check shows it open', async ({ page }) => {
     await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_gatekeeper_enable', 'Enable Gatekeeper')
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
-    const checkButton = detail.getByRole('button', { name: 'macOS Bash', exact: true })
-    await expect(checkButton).toHaveAttribute('aria-expanded', 'true')
+    const checkTab = detail.getByRole('tab', { name: 'macOS Bash', exact: true })
+    await expect(checkTab).toHaveAttribute('aria-selected', 'true')
     await expect(detail.getByTestId('check-target').locator('pre')).toContainText('objectIsForcedForKey')
     await expect(detail.getByText('Expected result')).toBeVisible()
-    await checkButton.click()
-    await expect(checkButton).toHaveAttribute('aria-expanded', 'false')
-    await expect(detail.getByTestId('check-target')).toHaveCount(0)
+    await checkTab.click()
+    await expect(checkTab).toHaveAttribute('aria-selected', 'true')
+    await expect(detail.getByTestId('check-target')).toBeVisible()
   })
 
-  test('a fix with two items shows two closed buttons, one open at a time', async ({ page }) => {
+  test('a fix with two items opens the first tab, one at a time', async ({ page }) => {
     await page.goto(ALL_RULES_PATH)
     const row = await searchForSingleRow(page, 'os_sshd_fips_compliant', /./)
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
-    const bashButton = detail.getByRole('button', { name: /Bash script/ })
-    const declarationButton = detail.getByRole('button', { name: /DDM declaration/ })
+    const bashTab = detail.getByRole('tab', { name: /Bash script/ })
+    const declarationTab = detail.getByRole('tab', { name: /DDM declaration/ })
     const remediation = detail.getByTestId('remediation-target')
 
-    await expect(bashButton).toHaveAttribute('aria-expanded', 'false')
-    await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
-    await expect(remediation).toHaveCount(0)
-    await expect(bashButton).not.toHaveAttribute('aria-controls')
-    await expect(declarationButton).not.toHaveAttribute('aria-controls')
-
-    await bashButton.click()
-    await expect(bashButton).toHaveAttribute('aria-expanded', 'true')
-    await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
+    await expect(bashTab).toHaveAttribute('aria-selected', 'true')
+    await expect(declarationTab).toHaveAttribute('aria-selected', 'false')
     await expect(remediation.locator('pre')).toHaveCount(1)
-    const bashRegionId = await bashButton.getAttribute('aria-controls')
-    expect(await page.locator(`[id="${bashRegionId}"]`).count()).toBe(1)
     const danglingReferences = await page.evaluate(() =>
       [...document.querySelectorAll('[aria-controls]')].filter((element) => document.getElementById(element.getAttribute('aria-controls') ?? '') === null).length,
     )
     expect(danglingReferences).toBe(0)
 
-    await declarationButton.click()
-    await expect(bashButton).toHaveAttribute('aria-expanded', 'false')
-    await expect(declarationButton).toHaveAttribute('aria-expanded', 'true')
+    await declarationTab.click()
+    await expect(bashTab).toHaveAttribute('aria-selected', 'false')
+    await expect(declarationTab).toHaveAttribute('aria-selected', 'true')
     await expect(remediation).toHaveCount(1)
 
-    await declarationButton.click()
-    await expect(declarationButton).toHaveAttribute('aria-expanded', 'false')
-    await expect(remediation).toHaveCount(0)
+    await declarationTab.click()
+    await expect(declarationTab).toHaveAttribute('aria-selected', 'true')
+    await expect(remediation).toHaveCount(1)
   })
 
   test('a rule with per-version checks shows a version row that swaps the content', async ({ page }) => {
@@ -1560,7 +1551,7 @@ test.describe('check and fix buttons', () => {
     await row.getByRole('button').click()
     const detail = page.locator('[id^="rule-detail-"]')
     // A single platform's check starts open.
-    await expect(detail.getByRole('button', { name: 'macOS Bash', exact: true })).toHaveAttribute('aria-expanded', 'true')
+    await expect(detail.getByRole('tab', { name: 'macOS Bash', exact: true })).toHaveAttribute('aria-selected', 'true')
     const versionRow = detail.getByRole('group', { name: 'Check versions' })
     const defaultButton = versionRow.getByRole('button', { name: 'Default' })
     const versionButton = versionRow.getByRole('button', { name: 'macOS 15' })
@@ -2097,7 +2088,9 @@ test.describe('rule mappings', () => {
     await expect(title).toHaveAttribute('aria-expanded', 'true')
     await expect(row.getByText('digitally signed by an Apple-issued certificate')).toBeVisible()
     await expect(row.getByRole('heading', { name: 'Check' })).toBeVisible()
-    await expect(row.getByRole('tablist')).toHaveCount(0)
+    // Only the script tabs; the nested panel has no Details / Mapped rules / History tabs.
+    await expect(row.getByRole('tab', { name: 'Details' })).toHaveCount(0)
+    await expect(row.getByRole('tablist', { name: /scripts$/ })).toHaveCount(2)
     await expect(detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' })).toBeVisible()
     await expect(mappedRulesPanel(page, ISM_1622)).toBeVisible()
 

@@ -42,7 +42,7 @@ test('a Windows CIS registry rule shows the registry table, PowerShell and goss 
   const detail = await openRule(page, REGISTRY_RULE_ID)
   const checkPanel = detail.getByTestId('check-target')
 
-  await detail.getByRole('button', { name: /Registry/ }).first().click()
+  await detail.getByRole('tab', { name: /Registry/ }).first().click()
   const table = checkPanel.getByRole('table')
   for (const header of ['Key', 'Value', 'Type', 'Data']) {
     await expect(table.getByRole('columnheader', { name: header })).toBeVisible()
@@ -52,13 +52,13 @@ test('a Windows CIS registry rule shows the registry table, PowerShell and goss 
   await expect(settingRow).toContainText('REG_DWORD')
   await expect(settingRow.getByRole('cell').last()).toHaveText('1')
 
-  await detail.getByRole('button', { name: /PowerShell/ }).first().click()
+  await detail.getByRole('tab', { name: /PowerShell/ }).first().click()
   await expect(checkPanel.locator('pre', { hasText: 'NoLockScreenCamera' })).toBeVisible()
 
-  await detail.getByRole('button', { name: /goss/ }).click()
+  await detail.getByRole('tab', { name: /goss/ }).click()
   await expect(checkPanel.locator('pre', { hasText: 'win11cis_rule_18_1_1_1' })).toBeVisible()
 
-  await detail.getByRole('button', { name: /Registry/ }).first().click()
+  await detail.getByRole('tab', { name: /Registry/ }).first().click()
   const downloadPromise = page.waitForEvent('download')
   await checkPanel.getByRole('button', { name: 'Download .reg' }).click()
   const download = await downloadPromise
@@ -79,6 +79,6 @@ test('an Ansible-only Windows CIS rule shows Manual and its original Ansible ste
   const remediation = detail.getByTestId('remediation-target')
   const ansibleStep = remediation.locator('pre', { hasText: 'when: win11cis_rule_5_3' })
   // A single step opens by itself, so only click the pill when the step is still hidden.
-  if (!(await ansibleStep.isVisible())) await detail.getByRole('button', { name: /Ansible/ }).click()
+  if (!(await ansibleStep.isVisible())) await detail.getByRole('tab', { name: /Ansible/ }).click()
   await expect(ansibleStep).toBeVisible()
 })

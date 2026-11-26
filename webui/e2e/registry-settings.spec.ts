@@ -191,7 +191,7 @@ test('a registry check shows a table, the default value as (Default), and the go
   const checkPanel = detail.getByTestId('check-target')
 
   await detail
-    .getByRole('button', { name: /Registry/ })
+    .getByRole('tab', { name: /Registry/ })
     .first()
     .click()
   const table = checkPanel.getByRole('table')
@@ -206,7 +206,7 @@ test('a registry check shows a table, the default value as (Default), and the go
   await expect(defaultRow).toContainText('REG_SZ')
   await expect(defaultRow).toContainText('C:\\Tools\\caf\u00e9')
 
-  await detail.getByRole('button', { name: /goss/ }).click()
+  await detail.getByRole('tab', { name: /goss/ }).click()
   await expect(checkPanel.locator('pre', { hasText: 'exists: true' })).toBeVisible()
 })
 
@@ -215,11 +215,11 @@ test('a registry remediation step shows a Delete row and the Ansible pill', asyn
   const detail = await openRule(page, 'ism-1622', ISM_TITLE)
   const remediation = detail.getByTestId('remediation-target')
 
-  await detail.getByRole('button', { name: /Registry/ }).last().click()
+  await detail.getByRole('tab', { name: /Registry/ }).last().click()
   const deleteRow = remediation.getByRole('table').getByRole('row').filter({ hasText: 'Gone' })
   await expect(deleteRow).toContainText('Delete')
 
-  await detail.getByRole('button', { name: /Ansible/ }).click()
+  await detail.getByRole('tab', { name: /Ansible/ }).click()
   await expect(remediation.locator('pre', { hasText: 'ansible.windows.win_regedit' })).toBeVisible()
 })
 
@@ -227,7 +227,7 @@ test('Download .reg saves <rule id>-Windows-check.reg as UTF-16LE with a byte or
   await serveOverlays(page, { 'a-ism.json': ismOverlay })
   const detail = await openRule(page, 'ism-1622', ISM_TITLE)
   await detail
-    .getByRole('button', { name: /Registry/ })
+    .getByRole('tab', { name: /Registry/ })
     .first()
     .click()
 
@@ -246,7 +246,7 @@ test('Download .reg saves <rule id>-Windows-check.reg as UTF-16LE with a byte or
 test('the remediation Download .reg saves <rule id>-Windows-fix.reg, apart from the check download', async ({ page }) => {
   await serveOverlays(page, { 'a-ism.json': ismOverlay })
   const detail = await openRule(page, 'ism-1622', ISM_TITLE)
-  await detail.getByRole('button', { name: /Registry/ }).last().click()
+  await detail.getByRole('tab', { name: /Registry/ }).last().click()
 
   const downloadPromise = page.waitForEvent('download')
   await detail.getByTestId('remediation-target').getByRole('button', { name: 'Download .reg' }).click()
@@ -259,7 +259,7 @@ test('a customised organization value appears in the table and the .reg download
   await seedOdvValue(page, '900')
   const detail = await openRule(page, 'pwpolicy_minimum_length_enforce', /minimum/i)
   await detail
-    .getByRole('button', { name: /Registry/ })
+    .getByRole('tab', { name: /Registry/ })
     .first()
     .click()
   const checkPanel = detail.getByTestId('check-target')
@@ -276,7 +276,7 @@ test('an organization value with no usable value disables Download .reg and says
   await seedOdvValue(page, 'not a number')
   const detail = await openRule(page, 'pwpolicy_minimum_length_enforce', /minimum/i)
   await detail
-    .getByRole('button', { name: /Registry/ })
+    .getByRole('tab', { name: /Registry/ })
     .first()
     .click()
   const checkPanel = detail.getByTestId('check-target')

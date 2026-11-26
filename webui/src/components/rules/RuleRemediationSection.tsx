@@ -11,11 +11,12 @@ import {
 } from '../../logic/targetDisplay'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RemediationStep, Rule, TargetRemediation } from '../../types/library'
-import { CodeBlock, OdvCodeBlock, SectionHeading } from './CodeBlock'
-import { DisclosureButtons, type DisclosureItem } from './DisclosureButtons'
+import { CodeBlock, OdvCodeBlock } from './CodeBlock'
 import { DiscussionText } from './DiscussionText'
 import { PayloadFile, ScriptFile } from './ReferencedFile'
 import { RegistryTable } from './RegistryTable'
+import { ScriptTabs, type ScriptTabItem } from './ScriptTabs'
+import { SectionCard } from './SectionCard'
 import { TargetIcons } from './TargetIcons'
 
 function StepEntry({
@@ -125,11 +126,11 @@ export function RuleRemediationSection({
   custom?: boolean
 }) {
   const index = useVocabularyIndex()
-  const disclosureItems: DisclosureItem[] = Object.entries(rule.remediation ?? {}).flatMap(([target, targetRemediation]) =>
+  const scriptTabItems: ScriptTabItem[] = Object.entries(rule.remediation ?? {}).flatMap(([target, targetRemediation]) =>
     remediationItemsOf(targetRemediation).map((item, position) => ({
       key: `${target}-${item.type}-${position}`,
       panelTestId: 'remediation-target',
-      buttonContent: (
+      tabContent: (
         <>
           <TargetIcons targetKeys={[target]} />
           {remediationItemButtonLabel(index, target, item)}
@@ -142,13 +143,12 @@ export function RuleRemediationSection({
   if (!showsRemediationSection(rule)) return null
 
   return (
-    <div className="space-y-2">
-      <SectionHeading custom={custom}>Remediation</SectionHeading>
-      {disclosureItems.length === 0 ? (
+    <SectionCard title="Remediation" custom={custom}>
+      {scriptTabItems.length === 0 ? (
         <p className="text-xs text-muted-foreground">No remediation provided.</p>
       ) : (
-        <DisclosureButtons items={disclosureItems} />
+        <ScriptTabs ariaLabel="Remediation scripts" items={scriptTabItems} />
       )}
-    </div>
+    </SectionCard>
   )
 }
