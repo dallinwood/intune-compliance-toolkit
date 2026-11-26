@@ -8,7 +8,7 @@ const AVAILABILITY_ICONS = { included: Check, add_on: Plus } as const
 
 const AVAILABILITY_STYLES: Record<Availability, string> = {
   included: 'bg-success text-success-foreground',
-  add_on: 'border-border text-foreground',
+  add_on: '',
 }
 
 // The icon and the label both carry the meaning, so colour is never the only cue.
