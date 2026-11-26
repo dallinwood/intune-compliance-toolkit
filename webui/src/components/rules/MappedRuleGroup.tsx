@@ -1,44 +1,21 @@
-import { ArrowUpRight } from 'lucide-react'
-import { useId, type MouseEvent } from 'react'
+import { useId, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { buttonVariants } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDisplayTitle } from '../../hooks/useDisplayTitle'
 import { groupCaption, relationBadgeLabel, type MappedRuleItem, type MappedSourceGroup, type MappingGroupRelation } from '../../logic/mappedRuleView'
 import { upstreamRuleId } from '../../logic/ruleDisplay'
-import { filtersShowingRule } from '../../logic/ruleNavigation'
 import { termLabel } from '../../logic/vocabulary'
-import { useFilterStore } from '../../state/filterStore'
 import type { MappedRulesViewState } from '../../state/mappedRulesView'
 import { useRuleMappings } from '../../state/mappingsContext'
-import { DEFAULT_AUTOMATION, DEFAULT_PAGE_SIZE, ALL_FRAMEWORKS, DEFAULT_VIEW_ID, parseUrlState, serializeUrlLocation } from '../../state/urlState'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { RuleRow } from '../../types/rule-row'
 import { MappingProvenance } from '../mappings/MappingProvenance'
 import { MappedRuleSummary } from './MappedRuleSummary'
 import { MappingPathHops } from './MappingPathHops'
-import { RuleDetailPanel } from './RuleDetailPanel'
+import { RuleDetailsDialog } from './RuleDetailsDialog'
 import { AssessmentCell, BenchmarkText } from './RuleRowCells'
 import { StaleLinkNotes } from './StaleLinkNotes'
 import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
-
-// What a new tab or a copied link opens: just the search and the open rule.
-// A plain click keeps every filter that does not hide the rule instead.
-function hrefShowing(ruleId: string): string {
-  const state = {
-    ...parseUrlState(''),
-    view: DEFAULT_VIEW_ID,
-    framework: ALL_FRAMEWORKS,
-    frameworkTab: 'rules' as const,
-    search: upstreamRuleId(ruleId),
-    openRule: ruleId,
-  }
-  return serializeUrlLocation(state, { automation: DEFAULT_AUTOMATION, size: DEFAULT_PAGE_SIZE }, import.meta.env.BASE_URL)
-}
-
-function isPlainClick(event: MouseEvent): boolean {
-  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey
-}
 
 const RELATION_BADGE_VARIANTS: Record<MappingGroupRelation, 'default' | 'secondary' | 'outline'> = {
   supports: 'default',
@@ -101,7 +78,7 @@ export function MappedSourceGroupSection({
           className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left font-medium hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
         >
           <DisclosureChevron isOpen={isOpen} />
-          <Badge variant={RELATION_BADGE_VARIANTS[group.relation]} className={group.indirect ? 'h-auto border-dashed whitespace-normal' : undefined}>
+          <Badge variant={RELATION_BADGE_VARIANTS[group.relation]} className={group.indirect ? 'h-auto border-dashed border-current whitespace-normal' : undefined}>
             {relationLabel}
           </Badge>
           <span className="min-w-0 break-words">{sourceLabel}</span>
@@ -117,8 +94,6 @@ export function MappedSourceGroupSection({
                 key={item.link.rule}
                 item={item}
                 self={self}
-                isExpanded={view.expandedRuleIds.has(item.row.ref.id)}
-                onToggle={() => view.toggleRule(item.row.ref.id)}
                 isHopListOpen={view.openHopListRuleIds.has(item.row.ref.id)}
                 onToggleHopList={() => view.toggleHopList(item.row.ref.id)}
               />
@@ -133,23 +108,18 @@ export function MappedSourceGroupSection({
 export function MappedRuleRow({
   item,
   self,
-  isExpanded,
-  onToggle,
   isHopListOpen,
   onToggleHopList,
 }: {
   item: MappedRuleItem
   self: RuleRow
-  isExpanded: boolean
-  onToggle: () => void
   isHopListOpen: boolean
   onToggleHopList: () => void
 }) {
   const { link, row, indirect } = item
-  const { rowsById, linkedFrameworks } = useRuleMappings()
+  const { rowsById } = useRuleMappings()
   const vocabularyIndex = useVocabularyIndex()
-  const showRule = useFilterStore((store) => store.showRule)
-  const detailsId = useId()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const hopListId = useId()
   const sourceLabel = termLabel(vocabularyIndex, 'sources', row.sourceName)
   const upstreamId = upstreamRuleId(row.ref.id)
@@ -158,32 +128,22 @@ export function MappedRuleRow({
   // An indirect link's stale notes are judged against the rule just before this one on the path, not the open rule.
   const linkedFromRow = (lastHop === undefined ? undefined : rowsById.get(lastHop.fromRuleId)) ?? self
 
-  function navigate(event: MouseEvent<HTMLAnchorElement>) {
-    if (!isPlainClick(event)) return
-    event.preventDefault()
-    const currentState = useFilterStore.getState()
-    // A framework page only lists its own rules, so a rule from another framework opens on the all-rules page.
-    const framework = currentState.framework === row.sourceName ? row.sourceName : ALL_FRAMEWORKS
-    showRule(row.ref.id, filtersShowingRule(row, currentState, vocabularyIndex, linkedFrameworks), framework)
-  }
-
   return (
     <li data-testid="mapped-rule" className="py-2 text-xs">
       <div
         className="flex cursor-pointer flex-col gap-1 md:flex-row md:items-start md:gap-3"
         onClick={(event) => {
           if ((event.target as HTMLElement).closest('input, a, button, ol')) return
-          onToggle()
+          setIsDialogOpen(true)
         }}
       >
         <div className="min-w-0 break-words md:flex-1">
           <Tooltip>
             <TooltipTrigger
               render={<button type="button" />}
-              aria-expanded={isExpanded}
-              aria-controls={isExpanded ? detailsId : undefined}
+              aria-haspopup="dialog"
               aria-label={`${sourceLabel} ${upstreamId}: ${title}`}
-              onClick={onToggle}
+              onClick={() => setIsDialogOpen(true)}
               className="rounded-sm text-left text-sm text-link underline underline-offset-4 hover:no-underline focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
             >
               {title}
@@ -223,17 +183,14 @@ export function MappedRuleRow({
           </div>
         </div>
       </div>
-      {isExpanded && (
-        <div id={detailsId} className="mt-2 overflow-hidden rounded-lg border border-border">
-          <div className="flex justify-end border-b border-border bg-panel px-4 py-2">
-            <a href={hrefShowing(row.ref.id)} onClick={navigate} className={buttonVariants({ variant: 'outline', size: 'xs' })}>
-              Go to this rule
-              <ArrowUpRight data-icon="inline-end" aria-hidden="true" />
-            </a>
-          </div>
-          <RuleDetailPanel ruleRef={row.ref} nested />
-        </div>
-      )}
+      <RuleDetailsDialog
+        ruleRef={row.ref}
+        title={`${upstreamId} - ${title}`}
+        description={`Details of this ${sourceLabel} rule.`}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        nested
+      />
     </li>
   )
 }

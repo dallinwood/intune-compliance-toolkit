@@ -337,3 +337,20 @@ test('Details opens the rule in a dialog, a value set there shows on the row, an
   await expect(detailsButton).toBeFocused()
   expect(rulePathRequests).toEqual([])
 })
+
+test('Go to this rule in a supporting check dialog leaves the review for the rule', async ({ page }) => {
+  await seed(page, [{ ruleId: MEDIA_CONTROL }], { includeSupporting: true, overrides: {} })
+  await openGenerate(page, 1)
+  await expect(panel(page)).toContainText('Adding', { timeout: 15_000 })
+  await reviewButton(page).click()
+  await rowOf(page, VALUE_SUPPORTER).getByRole('button', { name: 'Details' }).click()
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toBeVisible()
+
+  await dialog.getByRole('link', { name: 'Go to this rule' }).click()
+
+  await expect(dialog).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Review & generate' })).toHaveCount(0)
+  await expect(page.locator(`[id="rule-detail-${VALUE_SUPPORTER}"]`)).toBeVisible()
+  expect(new URL(page.url()).searchParams.get('rule')).toBe(VALUE_SUPPORTER)
+})

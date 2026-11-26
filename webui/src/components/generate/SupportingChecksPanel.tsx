@@ -40,6 +40,7 @@ export function SupportingChecksPanel({
   fetchedRules,
   unavailableRuleIds,
   selections,
+  onGoToRule,
 }: {
   offers: SupportingCheckOffers
   selectedManualControlCount: number
@@ -52,6 +53,8 @@ export function SupportingChecksPanel({
   // Offered checks whose rule could not be loaded; the review stays usable unless one of them is included.
   unavailableRuleIds: ReadonlySet<string>
   selections: SelectionMap
+  // Leaves the review screen after a rule's dialog jumps to that rule.
+  onGoToRule: () => void
 }) {
   const setIncludeSupporting = useSupportingChecksStore((store) => store.setIncludeSupporting)
   const setRuleChoice = useSupportingChecksStore((store) => store.setRuleChoice)
@@ -112,6 +115,7 @@ export function SupportingChecksPanel({
         needsValue={rowsById.get(offer.ruleId)?.hasOdv === true}
         valueSummary={valueSummary}
         outcome={includedRuleIds.has(offer.ruleId) ? (outcomes.get(offer.ruleId) ?? null) : null}
+        onGoToRule={onGoToRule}
       />
     )
   }

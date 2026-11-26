@@ -600,9 +600,10 @@ under "Indirect mapped rules", after the direct groups: one block per path
 support chains in one direction, with at most one "related" hop, are followed
 (up to 4 levels), so other rules that merely support the same control are not
 listed. A filter finds a rule by id or title, or by automated or manual. Hovering a
-title shows a summary, clicking a row shows that rule's details in place, and
-"Go to this rule" opens it in the main table (the URL holds the opened rule,
-so the link can be shared).
+title shows a summary, and clicking a row opens that rule's details in a
+dialog. Every rule dialog (here, on the Coverage tab and in Review & generate)
+has a "Go to this rule" link that opens the rule in the main table (the URL
+holds the opened rule, so the link can be shared).
 
 In the rule table, each row shows its status as icons rather than text. A
 platform icon (macOS, Windows or Linux), or a clipboard when the rule has no

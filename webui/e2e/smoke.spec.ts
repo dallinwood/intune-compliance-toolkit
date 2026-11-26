@@ -1959,6 +1959,7 @@ test.describe('rule mappings', () => {
     mappedRulesPanel(page, ruleId).getByTestId('mapped-rule').filter({ hasText: upstreamId })
   const titleButton = (row: Locator, upstreamId: string) => row.getByRole('button', { name: new RegExp(`^[^:]*${upstreamId}:`) })
   const summaryTooltip = (page: Page, text: string) => page.getByRole('tooltip').filter({ hasText: text })
+  const ruleDialog = (page: Page) => page.getByRole('dialog')
 
   async function openMappedRules(page: Page, ruleId: string) {
     await mappedRulesTab(page, ruleId).click()
@@ -2093,7 +2094,7 @@ test.describe('rule mappings', () => {
     await expect(summary).toContainText('Fix: ')
   })
 
-  test('clicking a mapped rule expands its details in place, with no nested tabs', async ({ page }) => {
+  test('clicking a mapped rule opens its details in a dialog, with no nested tabs', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
@@ -2101,36 +2102,35 @@ test.describe('rule mappings', () => {
 
     const row = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
     const title = titleButton(row, 'os_gatekeeper_enable')
-    await expect(title).toHaveAttribute('aria-expanded', 'false')
+    await expect(title).toHaveAttribute('aria-haspopup', 'dialog')
     await title.click()
-    await expect(title).toHaveAttribute('aria-expanded', 'true')
-    await expect(row.getByText('digitally signed by an Apple-issued certificate')).toBeVisible()
-    await expect(row.getByRole('heading', { name: 'Check' })).toBeVisible()
+    const dialog = ruleDialog(page)
+    await expect(dialog.getByRole('heading', { level: 2 })).toContainText('os_gatekeeper_enable')
+    await expect(dialog.getByText('digitally signed by an Apple-issued certificate')).toBeVisible()
+    await expect(dialog.getByRole('heading', { name: 'Check' })).toBeVisible()
     // Only the script tabs; the nested panel has no Details / Mapped rules / History tabs.
-    await expect(row.getByRole('tab', { name: 'Details' })).toHaveCount(0)
-    await expect(row.getByRole('tablist', { name: /scripts$/ })).toHaveCount(2)
-    await expect(detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' })).toBeVisible()
-    await expect(mappedRulesPanel(page, ISM_1622)).toBeVisible()
-
-    await title.click()
-    await expect(title).toHaveAttribute('aria-expanded', 'false')
+    await expect(dialog.getByRole('tab', { name: 'Details' })).toHaveCount(0)
+    await expect(dialog.getByRole('tablist', { name: /scripts$/ })).toHaveCount(2)
     await expect(row.getByRole('heading', { name: 'Check' })).toHaveCount(0)
+
+    await page.keyboard.press('Escape')
+    await expect(dialog).toHaveCount(0)
+    await expect(title).toBeFocused()
+    await expect(mappedRulesPanel(page, ISM_1622)).toBeVisible()
   })
 
-  test('clicking anywhere on a mapped rule row toggles its details', async ({ page }) => {
+  test('clicking anywhere on a mapped rule row opens its details', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
 
     const row = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
-    const title = titleButton(row, 'os_gatekeeper_enable')
     await row.getByText('Covers the PowerShell part only.').click()
-    await expect(title).toHaveAttribute('aria-expanded', 'true')
-    await expect(row.getByRole('heading', { name: 'Check' })).toBeVisible()
+    await expect(ruleDialog(page).getByRole('heading', { name: 'Check' })).toBeVisible()
 
-    await row.getByText('Covers the PowerShell part only.').click()
-    await expect(title).toHaveAttribute('aria-expanded', 'false')
+    await ruleDialog(page).getByRole('button', { name: 'Close' }).click()
+    await expect(ruleDialog(page)).toHaveCount(0)
   })
 
   test('the hover summary of a rule with an organization-defined value shows no raw placeholder', async ({ page }) => {
@@ -2164,7 +2164,7 @@ test.describe('rule mappings', () => {
 
     const gatekeeperRow = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
     await titleButton(gatekeeperRow, 'os_gatekeeper_enable').click()
-    await gatekeeperRow.getByRole('link', { name: 'Go to this rule' }).click()
+    await page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' }).click()
     await expect(searchBox(page)).toHaveValue('os_gatekeeper_enable')
     expect(new URL(page.url()).searchParams.get('rule')).toBe(GATEKEEPER)
     await expect(mappedRulesTab(page, GATEKEEPER)).toHaveAccessibleName('Mapped rules (1)')
@@ -2180,7 +2180,7 @@ test.describe('rule mappings', () => {
     await expect(detailOf(page, GATEKEEPER)).toBeVisible()
     const ismRow = mappedRow(page, GATEKEEPER, 'ism-1622')
     await titleButton(ismRow, 'ism-1622').click()
-    await ismRow.getByRole('link', { name: 'Go to this rule' }).click()
+    await page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' }).click()
     await expect(searchBox(page)).toHaveValue('ism-1622')
     await expect(mscpSource).not.toBeChecked()
     await expect(mappedRulesTab(page, ISM_1622)).toHaveAccessibleName('Mapped rules (2)')
@@ -2195,7 +2195,7 @@ test.describe('rule mappings', () => {
     const gatekeeperRow = mappedRow(page, ISM_1622, 'os_gatekeeper_enable')
     await titleButton(gatekeeperRow, 'os_gatekeeper_enable').click()
 
-    const href = await gatekeeperRow.getByRole('link', { name: 'Go to this rule' }).getAttribute('href')
+    const href = await page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' }).getAttribute('href')
     expect(href).not.toBeNull()
     const sharedUrl = new URL(href ?? '', page.url())
     expect(sharedUrl.searchParams.get('q')).toBe('os_gatekeeper_enable')
@@ -2205,7 +2205,7 @@ test.describe('rule mappings', () => {
     await expect(mappedRulesTab(page, GATEKEEPER)).toHaveAccessibleName('Mapped rules (1)')
   })
 
-  test('a mapped rule open in the main table and expanded in a tab has no duplicate element ids', async ({ page }) => {
+  test('a mapped rule open in the main table and in a dialog has no duplicate element ids', async ({ page }) => {
     const calendar = 'mscp.os_calendar_app_disable'
     const familyControls = 'mscp.os_calendar_app_disable_familycontrols'
     await serveMappings(page, {
@@ -2216,13 +2216,13 @@ test.describe('rule mappings', () => {
       },
     })
     await openLibrary(page, `${ALL_RULES_PATH}&q=os_calendar_app_disable&rule=${calendar}`)
+    await page.locator(`[data-rule-id="${familyControls}"]`).getByRole('button', { name: 'Expand os_calendar_app_disable_familycontrols' }).click()
+    await expect(detailOf(page, familyControls)).toBeVisible()
     await openMappedRules(page, calendar)
     await groupButton(page, calendar, 'Related NIST mSCP (1)').click()
     const familyControlsRow = mappedRulesPanel(page, calendar).getByTestId('mapped-rule')
     await titleButton(familyControlsRow, 'os_calendar_app_disable_familycontrols').click()
-    await expect(familyControlsRow.getByRole('heading', { name: 'Check' })).toBeVisible()
-    await page.locator(`[data-rule-id="${familyControls}"]`).getByRole('button', { name: 'Expand os_calendar_app_disable_familycontrols' }).click()
-    await expect(detailOf(page, familyControls)).toBeVisible()
+    await expect(ruleDialog(page).getByRole('heading', { name: 'Check' })).toBeVisible()
 
     expect(await page.locator(`[id="rule-detail-${familyControls}"]`).count()).toBe(1)
     const duplicatedIds = await page.evaluate(() => {
@@ -2266,21 +2266,16 @@ test.describe('rule mappings', () => {
     await expect(mappedRulesPanel(page, ISM_1622).getByTestId('mapped-rule')).toHaveCount(2)
   })
 
-  test('open groups and expanded rows survive switching to Details and back', async ({ page }) => {
+  test('open groups survive switching to Details and back', async ({ page }) => {
     await serveMappings(page, { 'powershell.json': supportsIsm1622 })
     await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
-    const title = titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')
-    await title.click()
-    await expect(title).toHaveAttribute('aria-expanded', 'true')
 
     await detailOf(page, ISM_1622).getByRole('tab', { name: 'Details' }).click()
     await openMappedRules(page, ISM_1622)
     await expect(groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')).toHaveAttribute('aria-expanded', 'true')
-    await expect(title).toHaveAttribute('aria-expanded', 'true')
-    await expect(mappedRow(page, ISM_1622, 'os_gatekeeper_enable').getByRole('heading', { name: 'Check' })).toBeVisible()
-    await expect(titleButton(mappedRow(page, ISM_1622, 'os_dictation_disable'), 'os_dictation_disable')).toHaveAttribute('aria-expanded', 'false')
+    await expect(titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')).toBeVisible()
   })
 
   test('collapsing the rule and reopening it resets the tab to Details with groups closed', async ({ page }) => {
@@ -2288,7 +2283,6 @@ test.describe('rule mappings', () => {
     await openLibrary(page, `${ALL_RULES_PATH}&q=ism-1622&rule=${ISM_1622}`)
     await openMappedRules(page, ISM_1622)
     await groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)').click()
-    await titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable').click()
 
     await page.getByRole('button', { name: 'Collapse ism-1622' }).click()
     await expect(detailOf(page, ISM_1622)).toHaveCount(0)
@@ -2299,7 +2293,7 @@ test.describe('rule mappings', () => {
     const group = groupButton(page, ISM_1622, 'Supported by NIST mSCP (2)')
     await expect(group).toHaveAttribute('aria-expanded', 'false')
     await group.click()
-    await expect(titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')).toHaveAttribute('aria-expanded', 'false')
+    await expect(titleButton(mappedRow(page, ISM_1622, 'os_gatekeeper_enable'), 'os_gatekeeper_enable')).toBeVisible()
   })
 
   test('a filter matching nothing says so', async ({ page }) => {
@@ -2414,7 +2408,7 @@ test.describe('rule mappings', () => {
     await groupButton(page, familyControls, 'Related NIST mSCP (1)').click()
     const calendarMappedRow = mappedRulesPanel(page, familyControls).getByTestId('mapped-rule')
     await calendarMappedRow.getByRole('button', { name: /os_calendar_app_disable(?!_)/ }).click()
-    const linkBack = calendarMappedRow.getByRole('link', { name: 'Go to this rule' })
+    const linkBack = page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' })
     await linkBack.scrollIntoViewIfNeeded()
     const calendarRow = page.locator(`[data-rule-id="${calendar}"]`)
     await expect(calendarRow).not.toBeInViewport()
@@ -2441,7 +2435,7 @@ test.describe('rule mappings', () => {
     await groupButton(page, calendar, 'Related NIST mSCP (1)').click()
     const familyControlsMappedRow = mappedRulesPanel(page, calendar).getByTestId('mapped-rule')
     await familyControlsMappedRow.getByRole('button', { name: /os_calendar_app_disable_familycontrols/ }).click()
-    await familyControlsMappedRow.getByRole('link', { name: 'Go to this rule' }).click()
+    await page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' }).click()
     const calendarRow = page.locator(`[data-rule-id="${calendar}"]`)
     await expect(page.locator(`[data-rule-id="${familyControls}"]`)).toBeInViewport()
     await expect(calendarRow).not.toBeInViewport()

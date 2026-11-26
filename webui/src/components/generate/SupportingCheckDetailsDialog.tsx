@@ -8,12 +8,14 @@ export function SupportingCheckDetailsDialog({
   title,
   open,
   onOpenChange,
+  onGoToRule,
 }: {
   ruleRef: RuleRef
   // "<upstream id> - <title>"
   title: string
   open: boolean
   onOpenChange: (open: boolean) => void
+  onGoToRule: () => void
 }) {
   return (
     <RuleDetailsDialog
@@ -23,6 +25,7 @@ export function SupportingCheckDetailsDialog({
       open={open}
       onOpenChange={onOpenChange}
       nested
+      onGoToRule={onGoToRule}
     />
   )
 }

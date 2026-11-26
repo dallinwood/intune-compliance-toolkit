@@ -163,7 +163,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     await mscpPanel.getByRole('button', { name: 'Supports NIST SP 800-53 (5)', exact: true }).click()
     const cm5Row = mscpPanel.getByTestId('mapped-rule').filter({ hasText: 'cm-5' })
     await cm5Row.getByRole('button', { name: /^[^:]*cm-5:/ }).click()
-    await cm5Row.getByRole('link', { name: 'Go to this rule' }).click()
+    await page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' }).click()
 
     const cm5 = 'nist_800_53.cm-5'
     await expect(detailOf(page, cm5)).toBeVisible()
@@ -173,7 +173,7 @@ test.describe('generated mSCP to 800-53 mappings', () => {
     await controlPanel.getByRole('button', { name: /^Supported by NIST mSCP \(\d+\)$/ }).click()
     const gatekeeperRow = controlPanel.getByTestId('mapped-rule').filter({ hasText: 'os_gatekeeper_enable' })
     await gatekeeperRow.getByRole('button', { name: /^[^:]*os_gatekeeper_enable:/ }).click()
-    await gatekeeperRow.getByRole('link', { name: 'Go to this rule' }).click()
+    await page.getByRole('dialog').getByRole('link', { name: 'Go to this rule' }).click()
 
     await expect(detailOf(page, GATEKEEPER)).toBeVisible()
     expect(new URL(page.url()).searchParams.get('rule')).toBe(GATEKEEPER)

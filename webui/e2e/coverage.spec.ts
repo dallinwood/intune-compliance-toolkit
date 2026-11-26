@@ -179,6 +179,13 @@ test.describe('with the library mappings', () => {
     await ruleRows.first().getByRole('button', { name: `Open ${firstSupportedId}` }).click()
     await expect(dialog).toBeVisible()
     await expect(dialog.getByRole('heading', { level: 2 })).toContainText(firstSupportedId)
+
+    await dialog.getByRole('link', { name: 'Go to this rule' }).click()
+    await expect(dialog).toHaveCount(0)
+    await expect(page.locator(`[id="rule-detail-asd_ism.${firstSupportedId}"]`)).toBeVisible()
+    const address = new URL(page.url())
+    expect(address.searchParams.get('rule')).toBe(`asd_ism.${firstSupportedId}`)
+    expect(address.searchParams.get('tab')).toBe('rules')
   })
 
   test('a section on the ASD ISM page lists the mSCP rules that map into it', async ({ page }) => {

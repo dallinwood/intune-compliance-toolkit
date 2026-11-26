@@ -50,6 +50,7 @@ export function SupportingCheckRow({
   needsValue,
   valueSummary,
   outcome,
+  onGoToRule,
 }: {
   offer: SupportingCheckOffer
   ruleRef: RuleRef
@@ -65,6 +66,7 @@ export function SupportingCheckRow({
   valueSummary: SupportingCheckValueSummary | null
   // Only for an included check whose classification is known.
   outcome: PulledInOutcome | null
+  onGoToRule: () => void
 }) {
   const label = upstreamRuleId(offer.ruleId)
   const setOdvValue = useSelectionStore((store) => store.setOdvValue)
@@ -127,7 +129,7 @@ export function SupportingCheckRow({
           Details
         </Button>
       </div>
-      <SupportingCheckDetailsDialog ruleRef={ruleRef} title={`${label} - ${title}`} open={detailsOpen} onOpenChange={setDetailsOpen} />
+      <SupportingCheckDetailsDialog ruleRef={ruleRef} title={`${label} - ${title}`} open={detailsOpen} onOpenChange={setDetailsOpen} onGoToRule={onGoToRule} />
     </li>
   )
 }

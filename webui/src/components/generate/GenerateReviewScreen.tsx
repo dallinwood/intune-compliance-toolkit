@@ -397,6 +397,7 @@ function ReviewBody({
           fetchedRules={supportingChecks.fetchedRules}
           unavailableRuleIds={supportingChecks.unavailableRuleIds}
           selections={supportingChecks.selections}
+          onGoToRule={onBack}
         />
       )}
 
