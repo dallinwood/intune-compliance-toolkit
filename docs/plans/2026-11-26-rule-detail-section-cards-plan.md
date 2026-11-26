@@ -40,12 +40,12 @@
 **Interfaces:**
 - Produces: `SectionCard({ title, custom = false, children, ariaLabel? }: { title: string; custom?: boolean; children: ReactNode; ariaLabel?: string })`. It renders `<section aria-label={ariaLabel}>`, a label strip holding `<h3>` + `<CustomTag/>`, and a `min-w-0` content column. The layout is `grid-cols-1` by default and `@md:grid-cols-[6.5rem_minmax(0,1fr)]`. The strip has a bottom border by default and switches to a right border at `@md`.
 
-- [ ] **Step 1:** Create `SectionCard` as above. Put `@container` on the panel root (`PANEL_CLASS` in `RuleDetailPanel.tsx`).
-- [ ] **Step 2:** Wrap the ODV inputs in `<SectionCard title="Values" custom={isCustom('odvs')}>`. Replace the `SectionHeading` in `RuleBenchmarks` with `<SectionCard title="Benchmarks" ariaLabel="Benchmarks">` (this removes its own `<section>` wrapper) and the one in `RuleReferences` with `<SectionCard title="References">`.
-- [ ] **Step 2b:** In `RuleDetailPanel.tsx` (~276-285), render the breadcrumb and the revision line as one `<p>` joined with ` · ` when both exist, e.g. `1 › 1.1 · Revision 3, updated 2026-08-01`. Keep `data-testid="rule-breadcrumb"` on a `<span>` that wraps only the breadcrumb text, so tests that read it don't also match the revision.
-- [ ] **Step 3:** Run `bun run typecheck && bun run lint` from `webui/`. Expected: clean.
-- [ ] **Step 4:** Run `bun run test:e2e -- e2e/smoke.spec.ts -g "Benchmarks|benchmark|odv|ODV"` (shared server, `PLAYWRIGHT_BASE_URL=http://localhost:5199`). Expected: PASS.
-- [ ] **Step 5:** Commit `feat: show rule values, benchmarks and references as section cards` and push.
+- [x] **Step 1:** Create `SectionCard` as above. Put `@container` on the panel root (`PANEL_CLASS` in `RuleDetailPanel.tsx`).
+- [x] **Step 2:** Wrap the ODV inputs in `<SectionCard title="Values" custom={isCustom('odvs')}>`. Replace the `SectionHeading` in `RuleBenchmarks` with `<SectionCard title="Benchmarks" ariaLabel="Benchmarks">` (this removes its own `<section>` wrapper) and the one in `RuleReferences` with `<SectionCard title="References">`.
+- [x] **Step 2b:** In `RuleDetailPanel.tsx` (~276-285), render the breadcrumb and the revision line as one `<p>` joined with ` · ` when both exist, e.g. `1 › 1.1 · Revision 3, updated 2026-08-01`. Keep `data-testid="rule-breadcrumb"` on a `<span>` that wraps only the breadcrumb text, so tests that read it don't also match the revision.
+- [x] **Step 3:** Run `bun run typecheck && bun run lint` from `webui/`. Expected: clean.
+- [x] **Step 4:** Run `bun run test:e2e -- e2e/smoke.spec.ts -g "Benchmarks|benchmark|odv|ODV"` (shared server, `PLAYWRIGHT_BASE_URL=http://localhost:5199`). Expected: PASS.
+- [x] **Step 5:** Commit `feat: show rule values, benchmarks and references as section cards` and push.
 
 ### Task 2: Check and Remediation cards with script tabs
 
@@ -59,23 +59,44 @@
 - Consumes: `SectionCard` from Task 1.
 - Produces: `ScriptTabs({ items, ariaLabel }: { items: readonly ScriptTabItem[]; ariaLabel: string })`, where `ScriptTabItem = { key: string; tabContent: ReactNode; panel: ReactNode; panelTestId?: string }`. It's a Base UI `Tabs.Root` with `defaultValue` set to the first key. `Tabs.List` uses the underline style of `TAB_CLASS` in `RuleDetailPanel.tsx`, and the `Tabs.Panel` carries `data-testid`. Tab ids come from `useId` (the same rule can be on screen twice).
 
-- [ ] **Step 1: Update e2e tests to the new behaviour (they will fail).** Use role `tab` + `aria-selected` instead of role `button` + `aria-expanded`:
+- [x] **Step 1: Update e2e tests to the new behaviour (they will fail).** Use role `tab` + `aria-selected` instead of role `button` + `aria-expanded`:
   - "a rule with a single check shows it open": the `macOS Bash` tab is `aria-selected="true"`, and clicking it keeps the panel visible (the `toHaveCount(0)` assertion goes).
   - Rename "a fix with two items shows two closed buttons, one open at a time" to "a fix with two items opens the first tab, one at a time": the Bash tab is selected first and the `remediation-target` panel shows one `pre`; clicking DDM declaration selects it and deselects Bash; clicking it again keeps it selected. Drop the `aria-controls` assertions, but keep the dangling-`aria-controls` count check.
   - Per-version test (~1563) and the custom remediation test (~1475): `getByRole('tab', ...)` with `aria-selected="true"`.
   - `several-checks.spec.ts`: `macOS Bash` starts selected and `check-target` contains `objectIsForcedForKey`. Clicking `macOS Original goss test` shows `second check body`.
-- [ ] **Step 2:** Run those specs. Expected: FAIL on role `tab` not found.
-- [ ] **Step 3:** Create `ScriptTabs`. In `RuleCheckSection`, wrap everything in `<SectionCard title="Check" custom={custom}>` and replace `DisclosureButtons` with `<ScriptTabs ariaLabel="Check scripts" ...>`. Do the same in `RuleRemediationSection` with `<SectionCard title="Remediation" ...>` and `ariaLabel="Remediation scripts"`. Restyle `SelectionButtons` as a joined segmented control: one bordered rounded group, dividers between buttons, and `bg-muted font-semibold` for the pressed button. Keep `role="group"`, `aria-label` and `aria-pressed`. Delete `DisclosureButtons`.
-- [ ] **Step 4:** Run `bun run typecheck && bun run lint && bun run test`, then `bun run test:e2e -- e2e/smoke.spec.ts e2e/several-checks.spec.ts e2e/registry-settings.spec.ts e2e/cis-windows.spec.ts`. Expected: PASS.
-- [ ] **Step 5:** Commit `feat: show check and remediation as section cards with script tabs` and push.
+- [x] **Step 2:** Run those specs. Expected: FAIL on role `tab` not found.
+- [x] **Step 3:** Create `ScriptTabs`. In `RuleCheckSection`, wrap everything in `<SectionCard title="Check" custom={custom}>` and replace `DisclosureButtons` with `<ScriptTabs ariaLabel="Check scripts" ...>`. Do the same in `RuleRemediationSection` with `<SectionCard title="Remediation" ...>` and `ariaLabel="Remediation scripts"`. Restyle `SelectionButtons` as a joined segmented control: one bordered rounded group, dividers between buttons, and `bg-muted font-semibold` for the pressed button. Keep `role="group"`, `aria-label` and `aria-pressed`. Delete `DisclosureButtons`.
+- [x] **Step 4:** Run `bun run typecheck && bun run lint && bun run test`, then `bun run test:e2e -- e2e/smoke.spec.ts e2e/several-checks.spec.ts e2e/registry-settings.spec.ts e2e/cis-windows.spec.ts`. Expected: PASS.
+- [x] **Step 5:** Commit `feat: show check and remediation as section cards with script tabs` and push.
 
 ### Task 3: Visual verification and log
 
 **Files:**
 - Modify: `docs/plans/2026-11-26-rule-detail-section-cards-plan.md` (Progress log)
 
-- [ ] **Step 1:** Write a throwaway Playwright script in the scratchpad that takes screenshots at 375px and 1400px of: a Windows CIS rule with an ODV (1.1.3 minimum password age), a registry rule, `os_authenticated_root_enable` (version picker), a manual rule (no automated check), and an ISM control's Mapped rules tab with a nested rule open. Read each screenshot. Fix anything that overflows, wraps badly or looks misaligned.
-- [ ] **Step 2:** Run the full `bun run test:e2e`. Expected: PASS (this is a broad UI change, so the full suite is warranted).
-- [ ] **Step 3:** Add a Progress log entry with the commits. Commit `docs: log the rule detail section cards work` and push.
+- [x] **Step 1:** Write a throwaway Playwright script in the scratchpad that takes screenshots at 375px and 1400px of: a Windows CIS rule with an ODV (1.1.3 minimum password age), a registry rule, `os_authenticated_root_enable` (version picker), a manual rule (no automated check), and an ISM control's Mapped rules tab with a nested rule open. Read each screenshot. Fix anything that overflows, wraps badly or looks misaligned.
+- [x] **Step 2:** Run the full `bun run test:e2e`. Expected: PASS (this is a broad UI change, so the full suite is warranted).
+- [x] **Step 3:** Add a Progress log entry with the commits. Commit `docs: log the rule detail section cards work` and push.
 
 ## Progress log
+
+- 2026-11-26: Values, Benchmarks and References became section cards with a
+  left label strip (top bar in narrow panels), and the breadcrumb and
+  revision now share one line. `146fd3f feat: show rule values, benchmarks
+  and references as section cards`
+- 2026-11-26: Check and Remediation became cards with script tabs (first tab
+  open, one always selected); the version picker is a segmented control;
+  e2e specs updated from pills to tabs. `57662a4 feat: show check and
+  remediation as section cards with script tabs`
+- 2026-11-26: Screenshots at 375px and 1400px checked (CIS ODV rule,
+  registry rule, per-version rule, ISM control); the full e2e suite run
+  surfaced only load-timing flakes plus the tests updated below.
+- 2026-11-26 (requested alongside this work): section groups, subsections
+  and rule titles sort numerically (2 before 19). `567e49e fix: sort
+  numbered sections and rules by number`
+- 2026-11-26 (requested alongside this work): rules-view sections open by
+  default. `8f7d8f2 feat: open every rules view section by default`
+- 2026-11-26: Final review fixes: Collapse all now holds across filter
+  changes, and collapsing a section from a repeated header returns to the
+  page where it starts. `f0fdbac fix: keep Collapse all across filters and
+  return to a collapsed section's page`
