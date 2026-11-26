@@ -71,3 +71,30 @@ test('ASD ISM has no Check group, offers the PowerShell remediations its overlay
   await expect(odvGroup.getByRole('checkbox')).toHaveCount(1)
   await expect(odvGroup.getByRole('checkbox', { name: 'No values to set', exact: true })).toBeVisible()
 })
+
+test('on the all-rules page Benchmark options sit under their framework, and a shared option ticks in every framework', async ({ page }) => {
+  await page.goto('/frameworks?framework=all&tab=rules')
+  await expect(ruleCount(page)).toBeVisible({ timeout: 15_000 })
+  const benchmarkGroup = page.getByRole('group', { name: 'Benchmark', exact: true })
+  const server2019 = benchmarkGroup.getByRole('group', { name: 'CIS Windows Server 2019 (ansible-lockdown)', exact: true })
+  const server2022 = benchmarkGroup.getByRole('group', { name: 'CIS Windows Server 2022 (ansible-lockdown)', exact: true })
+  await expect(benchmarkGroup.getByRole('group', { name: 'NIST mSCP', exact: true }).getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
+
+  await server2019.getByRole('checkbox', { name: 'Level 1 - Member Server', exact: true }).click()
+
+  await expect(server2019.getByRole('checkbox', { name: 'Level 1 - Member Server', exact: true })).toBeChecked()
+  await expect(server2022.getByRole('checkbox', { name: 'Level 1 - Member Server', exact: true })).toBeChecked()
+  expect(new URL(page.url()).searchParams.getAll('benchmark')).toEqual(['level1_memberserver'])
+
+  const subgroupToggle = benchmarkGroup.getByRole('button', { name: 'CIS Windows Server 2019 (ansible-lockdown)', exact: true })
+  await expect(subgroupToggle).toHaveAttribute('aria-expanded', 'true')
+  await subgroupToggle.click()
+  await expect(server2019).toBeHidden()
+})
+
+test('a framework page lists its Benchmark options without framework sub-headings', async ({ page }) => {
+  await openRulesPage(page, 'mscp')
+  const benchmarkGroup = page.getByRole('group', { name: 'Benchmark', exact: true })
+  await expect(benchmarkGroup.getByRole('checkbox', { name: 'CIS Level 1', exact: true })).toBeVisible()
+  await expect(benchmarkGroup.getByRole('group')).toHaveCount(0)
+})

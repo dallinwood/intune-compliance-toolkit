@@ -225,6 +225,30 @@ export function facetOptionCounts(
   return counts
 }
 
+// facetOptionCounts split by framework, for the all-rules page's per-framework
+// sub-groups: each source's own matching rules per value. A value shared by
+// several sources is counted under each, though ticking it filters them all.
+export function facetOptionCountsBySource(
+  rows: RuleRow[],
+  filters: FilterValues,
+  dimension: FilterDimension,
+  valueOf: (row: RuleRow) => string | string[],
+  sourceOf: (row: RuleRow) => string,
+  index: VocabularyIndex,
+  linkedFrameworks?: LinkedFrameworksByRule,
+): Map<string, Map<string, number>> {
+  const countsBySource = new Map<string, Map<string, number>>()
+  for (const row of rows) {
+    if (!matchesFilters(row, filters, index, dimension, linkedFrameworks)) continue
+    const sourceKey = sourceOf(row)
+    const counts = countsBySource.get(sourceKey) ?? new Map<string, number>()
+    countsBySource.set(sourceKey, counts)
+    const value = valueOf(row)
+    for (const distinctValue of new Set(Array.isArray(value) ? value : [value])) counts.set(distinctValue, (counts.get(distinctValue) ?? 0) + 1)
+  }
+  return countsBySource
+}
+
 export function facetOptions(
   rows: RuleRow[],
   filters: FilterValues,

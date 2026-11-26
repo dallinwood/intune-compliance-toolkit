@@ -17,6 +17,7 @@ import {
   benchmarksListedUnder,
   automationOptionCounts,
   facetOptionCounts,
+  facetOptionCountsBySource,
   facetOptions,
   matchesFilters,
   parseBenchmarkFacetValue,
@@ -266,6 +267,29 @@ describe('facetOptions', () => {
   it('flattens array-valued facets like benchmarks', () => {
     const options = facetOptions(rows, emptyFilters(), 'benchmarks', (r) => r.benchmarks, [], noVocabulary)
     expect(options).toEqual(['cis_lvl1', 'cis_lvl2', 'disa_stig'])
+  })
+})
+
+describe('facetOptionCountsBySource', () => {
+  const ismRow = row({ ref: { id: 'asd_ism.ism-1', path: 'asd_ism/rules/ism-1.json' }, sourceName: 'asd_ism', section: 'os', tags: ['shared', 'ism only'] })
+  const mscpRow = row({ sourceName: 'mscp', section: 'os', tags: ['shared'] })
+  const otherMscpRow = row({ ref: { id: 'mscp.other', path: 'mscp/rules/other.json' }, sourceName: 'mscp', section: 'pwpolicy', tags: ['shared'] })
+  const sourceRows = [ismRow, mscpRow, otherMscpRow]
+
+  it('counts each source’s matching rules per value, a value shared by sources counted under each', () => {
+    const countsBySource = facetOptionCountsBySource(sourceRows, emptyFilters(), 'tags', (r) => r.tags, (r) => r.sourceName, noVocabulary)
+
+    expect(countsBySource.get('asd_ism')).toEqual(new Map([['shared', 1], ['ism only', 1]]))
+    expect(countsBySource.get('mscp')).toEqual(new Map([['shared', 2]]))
+  })
+
+  it('narrows by every other filter but not the facet’s own selection', () => {
+    const filters = emptyFilters({ sections: new Set(['pwpolicy']), tags: new Set(['ism only']) })
+
+    const countsBySource = facetOptionCountsBySource(sourceRows, filters, 'tags', (r) => r.tags, (r) => r.sourceName, noVocabulary)
+
+    expect(countsBySource.get('mscp')).toEqual(new Map([['shared', 1]]))
+    expect(countsBySource.has('asd_ism')).toBe(false)
   })
 })
 

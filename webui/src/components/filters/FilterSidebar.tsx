@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronUp, X } from 'lucide-react'
-import { cloneElement, isValidElement, useId, useMemo, useRef, type ReactNode } from 'react'
+import { cloneElement, isValidElement, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import { FacetGroup } from './FacetGroup'
+import { DisclosureChevron } from '@/components/ui/disclosure-chevron'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
@@ -18,6 +19,7 @@ import {
   compareTargetGroupKeys,
   automationOptionCounts,
   facetOptionCounts,
+  facetOptionCountsBySource,
   linkedFrameworkKeys,
   HAS_ODV_KEY,
   odvKey,
@@ -169,6 +171,40 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
       ),
     [rows, deferredFilters, index, linkedFrameworks],
   )
+  // The all-rules page lists Benchmark, Section and Tags options under the
+  // framework they come from; a framework page has one framework, so it does not.
+  const isSubgroupedBySource = useMemo(() => !hideSourceFacet && new Set(rows.map(accessors.sourceOf)).size > 1, [rows, accessors, hideSourceFacet])
+  const subgroupsFor = (bySourceCounts: ReadonlyMap<string, ReadonlyMap<string, number>> | null): SourceSubgroups | undefined =>
+    bySourceCounts === null
+      ? undefined
+      : { sourceOf: accessors.sourceOf, sourceLabel: accessors.sourceLabel, compareSources: accessors.compareSources, countsBySource: bySourceCounts }
+  const benchmarkCountsBySource = useMemo(
+    () =>
+      isSubgroupedBySource
+        ? facetOptionCountsBySource(
+            rows,
+            deferredFilters,
+            'benchmarks',
+            (row) => benchmarksListedUnder(row, deferredFilters.versions, index),
+            accessors.sourceOf,
+            index,
+            linkedFrameworks,
+          )
+        : null,
+    [isSubgroupedBySource, rows, deferredFilters, accessors, index, linkedFrameworks],
+  )
+  const sectionCountsBySource = useMemo(
+    () =>
+      isSubgroupedBySource
+        ? facetOptionCountsBySource(rows, deferredFilters, 'sections', accessors.sectionOf, accessors.sourceOf, index, linkedFrameworks)
+        : null,
+    [isSubgroupedBySource, rows, deferredFilters, accessors, index, linkedFrameworks],
+  )
+  const tagCountsBySource = useMemo(
+    () =>
+      isSubgroupedBySource ? facetOptionCountsBySource(rows, deferredFilters, 'tags', accessors.tagsOf, accessors.sourceOf, index, linkedFrameworks) : null,
+    [isSubgroupedBySource, rows, deferredFilters, accessors, index, linkedFrameworks],
+  )
   const sectionCounts = useMemo(
     () => facetOptionCounts(rows, deferredFilters, 'sections', accessors.sectionOf, deferredFilters.sections, index, linkedFrameworks),
     [rows, deferredFilters, accessors, index, linkedFrameworks],
@@ -304,6 +340,7 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
             compareValues={accessors.compareBenchmarks}
             labelOf={benchmarkLabel}
             counts={benchmarkCounts}
+            bySource={subgroupsFor(benchmarkCountsBySource)}
             selected={filters.benchmarks}
             onToggle={filters.toggleBenchmark}
           />
@@ -315,6 +352,7 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
             compareValues={accessors.compareSections}
             labelOf={accessors.sectionLabel}
             counts={sectionCounts}
+            bySource={subgroupsFor(sectionCountsBySource)}
             selected={filters.sections}
             onToggle={filters.toggleSection}
           />
@@ -337,6 +375,7 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
             compareValues={accessors.compareTags}
             labelOf={accessors.tagLabel}
             counts={tagCounts}
+            bySource={subgroupsFor(tagCountsBySource)}
             selected={filters.tags}
             onToggle={filters.toggleTag}
           />
@@ -475,6 +514,7 @@ function StableFacetGroup({
   counts,
   selected,
   onToggle,
+  bySource,
 }: {
   title: string
   rows: RuleRow[]
@@ -485,8 +525,25 @@ function StableFacetGroup({
   counts: ReadonlyMap<string, number>
   selected: ReadonlySet<string>
   onToggle: (value: string) => void
+  bySource?: SourceSubgroups
 }) {
   const canonicalOrder = useMemo(() => allFacetValues(rows, valueOf, compareValues), [rows, valueOf, compareValues])
+  // Which values each framework's rules have at all, ignoring filters, so a
+  // selected value stays under its frameworks (and can be unticked) when
+  // other filters leave it no matching rules.
+  const sourceOf = bySource?.sourceOf
+  const valuesBySource = useMemo(() => {
+    if (sourceOf === undefined) return null
+    const values = new Map<string, Set<string>>()
+    for (const row of rows) {
+      const sourceKey = sourceOf(row)
+      const sourceValues = values.get(sourceKey) ?? new Set<string>()
+      values.set(sourceKey, sourceValues)
+      const value = valueOf(row)
+      for (const entry of Array.isArray(value) ? value : [value]) sourceValues.add(entry)
+    }
+    return values
+  }, [rows, valueOf, sourceOf])
   const reachable = useMemo(() => Array.from(counts.keys()), [counts])
   const { shown, leaving } = useStableFacetShown(reachable)
 
@@ -496,14 +553,10 @@ function StableFacetGroup({
   // be unchecked.
   if (!hasShownValue && selected.size === 0) return null
 
-  return (
-    <FacetGroup title={title} selectedCount={selected.size}>
-      {canonicalOrder
-        .filter((value) => shown.has(value))
-        .map((value) => {
-          const isReachable = counts.has(value)
-          const isLeaving = leaving.has(value)
-          return (
+  function renderOption(value: string, count: number) {
+    const isReachable = counts.has(value)
+    const isLeaving = leaving.has(value)
+    return (
             // The grid-rows 1fr->0fr trick animates height even though the
             // row's content height is intrinsic ("auto"), which a plain
             // height/max-height transition can't do without measuring it in
@@ -522,13 +575,77 @@ function StableFacetGroup({
               style={{ transitionDuration: `${FACET_EXIT_TRANSITION_MS}ms` }}
             >
               <div className="min-h-0">
-                <FacetOption label={labelOf(value)} count={counts.get(value) ?? 0} disabled={!isReachable} isSystemGenerated={isSystemGenerated?.(value)}>
+                <FacetOption label={labelOf(value)} count={count} disabled={!isReachable} isSystemGenerated={isSystemGenerated?.(value)}>
                   <Checkbox checked={selected.has(value)} disabled={!isReachable} onCheckedChange={() => onToggle(value)} />
                 </FacetOption>
               </div>
             </div>
+    )
+  }
+
+  if (bySource !== undefined && valuesBySource !== null) {
+    const sourceKeys = Array.from(valuesBySource.keys()).sort(bySource.compareSources)
+    return (
+      <FacetGroup title={title} selectedCount={selected.size}>
+        {sourceKeys.map((sourceKey) => {
+          const sourceCounts = bySource.countsBySource.get(sourceKey)
+          const sourceValues = valuesBySource.get(sourceKey)
+          // A value unreachable everywhere is fading out of the whole group, so
+          // it greys and fades here too; one reachable only in other
+          // frameworks just leaves this one.
+          const values = canonicalOrder.filter(
+            (value) =>
+              shown.has(value) &&
+              sourceValues?.has(value) === true &&
+              (sourceCounts?.has(value) === true || selected.has(value) || !counts.has(value)),
+          )
+          if (values.length === 0) return null
+          return (
+            <FacetSubgroup key={sourceKey} label={bySource.sourceLabel(sourceKey)}>
+              {values.map((value) => renderOption(value, sourceCounts?.get(value) ?? 0))}
+            </FacetSubgroup>
           )
         })}
+      </FacetGroup>
+    )
+  }
+
+  return (
+    <FacetGroup title={title} selectedCount={selected.size}>
+      {canonicalOrder.filter((value) => shown.has(value)).map((value) => renderOption(value, counts.get(value) ?? 0))}
     </FacetGroup>
+  )
+}
+
+interface SourceSubgroups {
+  sourceOf: (row: RuleRow) => string
+  sourceLabel: (sourceKey: string) => string
+  compareSources: (left: string, right: string) => number
+  // Per framework, each option's count of that framework's matching rules.
+  countsBySource: ReadonlyMap<string, ReadonlyMap<string, number>>
+}
+
+// One framework's options inside a group on the all-rules page. Starts open
+// like the groups, and closes to shorten a long group. Its label is a button,
+// not a heading, so the sidebar's headings stay one per group.
+function FacetSubgroup({ label, children }: { label: string; children: ReactNode }) {
+  const regionId = useId()
+  const [isOpen, setIsOpen] = useState(true)
+  return (
+    <div className="mt-1.5 first:mt-0">
+      <button
+        type="button"
+        aria-expanded={isOpen}
+        aria-controls={regionId}
+        onClick={() => setIsOpen((wasOpen) => !wasOpen)}
+        className="flex w-full items-center gap-1 rounded-sm py-0.5 text-left text-xs font-medium text-foreground/80 focus-visible:ring-2 focus-visible:ring-focus-ring focus-visible:outline-none"
+      >
+        <DisclosureChevron isOpen={isOpen} className="size-3" />
+        {label}
+      </button>
+      <div id={regionId} role="group" aria-label={label} hidden={!isOpen} className="pl-4">
+        {children}
+      </div>
+    </div>
   )
 }
