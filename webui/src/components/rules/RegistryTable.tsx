@@ -100,9 +100,10 @@ function RegistryCards({ rows }: { rows: RegistryRow[] }) {
 }
 
 // A registry body shown as what it is: the settings in a table (cards on a
-// narrow screen), with a download of the .reg file that sets them. The file is
+// narrow screen), with a download of the .reg file that sets them below it,
+// so the keys sit right under the section's label. The file is
 // built from the reader's organization-defined values, so the button is
-// disabled, with the reason beside it, whenever the file cannot be built.
+// disabled, with the reason after it, whenever the file cannot be built.
 export function RegistryTable({
   settings,
   odvValues,
@@ -121,12 +122,9 @@ export function RegistryTable({
   const customisedNames = [...new Set(rows.flatMap((row) => (row.odvName !== null && Object.hasOwn(odvValues, row.odvName) ? [row.odvName] : [])))]
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
-        {problem !== null && (
-          <p data-testid="registry-download-problem" className="min-w-0 flex-1 text-xs text-muted-foreground [overflow-wrap:anywhere]">
-            {problem}
-          </p>
-        )}
+      <RegistryRowsTable rows={rows} />
+      <RegistryCards rows={rows} />
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <button
           type="button"
           disabled={problem !== null}
@@ -136,9 +134,12 @@ export function RegistryTable({
           <Download aria-hidden className="size-3.5" />
           Download .reg
         </button>
+        {problem !== null && (
+          <p data-testid="registry-download-problem" className="min-w-0 flex-1 text-xs text-muted-foreground [overflow-wrap:anywhere]">
+            {problem}
+          </p>
+        )}
       </div>
-      <RegistryRowsTable rows={rows} />
-      <RegistryCards rows={rows} />
       {customisedNames.map((name) => (
         <p key={name} className="text-xs text-muted-foreground">
           Shown with {odvPlaceholder(name)} as the organization-defined value: {String(odvValues[name])}

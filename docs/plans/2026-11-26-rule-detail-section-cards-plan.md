@@ -100,3 +100,4 @@
   changes, and collapsing a section from a repeated header returns to the
   page where it starts. `f0fdbac fix: keep Collapse all across filters and
   return to a collapsed section's page`
+- 2026-11-26 (requested alongside): registry settings sit right under their label, with Download .reg below the table on the left (and any reason it is disabled after it). Commit: fix: put the registry download below the settings table.
