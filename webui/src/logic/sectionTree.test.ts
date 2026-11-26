@@ -4,6 +4,8 @@ import {
   allNodeIds,
   buildSectionTree,
   clampPage,
+  collapsedAfter,
+  expandedFromCollapsed,
   paginate,
   revealRules,
   searchExpanded,
@@ -237,5 +239,27 @@ describe('clampPage', () => {
     expect(clampPage(0, 4)).toBe(1)
     expect(clampPage(2, 4)).toBe(2)
     expect(clampPage(Number.NaN, 4)).toBe(1)
+  })
+})
+
+
+describe('expandedFromCollapsed', () => {
+  it('opens every section the user has not closed, including ones never seen before', () => {
+    const tree = mixedTree()
+    const collapsed = new Set([sectionId('Guidelines for email', 'Email usage'), 'some-section-from-another-filter'])
+    const expanded = expandedFromCollapsed(tree, collapsed)
+    expect(expanded.has('os')).toBe(true)
+    expect(expanded.has(sectionId('Guidelines for email'))).toBe(true)
+    expect(expanded.has(sectionId('Guidelines for email', 'Email usage'))).toBe(false)
+    expect(expanded.has('some-section-from-another-filter')).toBe(false)
+  })
+})
+
+describe('collapsedAfter', () => {
+  it('records the closed sections of this tree and keeps closed sections from other trees', () => {
+    const tree = mixedTree()
+    const openOnly = new Set([...allNodeIds(tree)].filter((id) => id !== 'audit'))
+    const collapsed = collapsedAfter(tree, new Set(['os', 'some-section-from-another-filter']), openOnly)
+    expect([...collapsed].sort()).toEqual(['audit', 'some-section-from-another-filter'])
   })
 })

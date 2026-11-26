@@ -9,6 +9,8 @@ import { sectionGroupKey } from '../../logic/ruleFilters'
 import {
   allNodeIds,
   buildSectionTree,
+  collapsedAfter,
+  expandedFromCollapsed,
   clampPage,
   paginate,
   revealRules,
@@ -76,8 +78,9 @@ export function RuleTable({
   // section controls act on that search view only; clearing the search goes
   // back to the stored state. A new search result starts fully open again.
   const isSearching = search.trim() !== ''
-  const storedExpanded = useSectionStore((store) => store.expanded)
-  const setStoredExpanded = useSectionStore((store) => store.setExpanded)
+  const storedCollapsed = useSectionStore((store) => store.collapsed)
+  const setStoredCollapsed = useSectionStore((store) => store.setCollapsed)
+  const storedExpanded = useMemo(() => expandedFromCollapsed(tree, storedCollapsed), [tree, storedCollapsed])
   const [searchExpansion, setSearchExpansion] = useState<SearchExpansion | null>(null)
   const expandedForSearch = useMemo(() => (isSearching ? searchExpanded(tree) : null), [isSearching, tree])
   const expanded: ReadonlySet<string> = expandedForSearch
@@ -98,12 +101,12 @@ export function RuleTable({
   const setExpanded = useCallback(
     (next: ReadonlySet<string>, isCollapse: boolean) => {
       if (isSearching) setSearchExpansion({ tree, expanded: next })
-      else setStoredExpanded(next)
+      else setStoredCollapsed(collapsedAfter(tree, storedCollapsed, next))
       if (!isCollapse || size === 'all') return
       const nextPageCount = paginate(visibleItems(tree, next), size).length
       if (storedPage > nextPageCount) setPage(clampPage(storedPage, nextPageCount))
     },
-    [isSearching, tree, setStoredExpanded, size, storedPage, setPage],
+    [isSearching, tree, storedCollapsed, setStoredCollapsed, size, storedPage, setPage],
   )
   const toggleSection = useCallback(
     (sectionId: string) => {

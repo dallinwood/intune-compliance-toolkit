@@ -688,6 +688,8 @@ test('display names come from the vocabulary file, with raw codes and a warning 
   await expect(page.getByRole('checkbox', { name: 'cis_lvl1', exact: true })).toBeVisible()
   await expect(page.getByRole('checkbox', { name: 'macOS 27', exact: true })).toHaveCount(0)
   await expect(page.getByRole('checkbox', { name: 'macOS 27.0', exact: true })).toBeVisible()
+  // Sections start open, so only the first ones fit on page 1; collapse them to see every root header.
+  await page.getByRole('button', { name: 'Collapse all' }).click()
   await expect(page.getByRole('heading', { name: /^os \(\d+\)/ })).toBeVisible()
 
   // Raw-code filters still filter.
@@ -1040,8 +1042,13 @@ const pageSizeSelect = (page: Page) => page.getByLabel('Rules per page')
 const pageStatus = (page: Page) => page.getByText(/^Page \d+ of \d+$/)
 
 test.describe('section tree and paging', () => {
-  test('the initial view shows only the root section headers, all collapsed', async ({ page }) => {
+  test('the initial view opens every section, and Collapse all leaves only the root headers', async ({ page }) => {
     await openLibrary(page)
+    await expect(sectionHeadings(page, 2).first()).toHaveText(/^Operating system \(203\)$/)
+    await expect(ruleRows(page)).toHaveCount(50)
+    await expect(pageStatus(page)).toHaveText('Page 1 of 102')
+
+    await page.getByRole('button', { name: 'Collapse all' }).click()
     // 7 mSCP sections, 23 ISM guidelines, 20 NIST SP 800-53 control families 5 E4EIT sections, and 4 more that the CIS sources add.
     await expect(sectionHeadings(page, 2)).toHaveCount(66)
     await expect(sectionHeadings(page, 3)).toHaveCount(0)
@@ -1060,6 +1067,7 @@ test.describe('section tree and paging', () => {
 
   test('a section header toggles its own section', async ({ page }) => {
     await openLibrary(page)
+    await page.getByRole('button', { name: 'Collapse all' }).click()
     const auditing = ruleTable(page).getByRole('button', { name: /^Auditing \(31\)$/ })
     await auditing.click()
     await expect(auditing).toHaveAttribute('aria-expanded', 'true')

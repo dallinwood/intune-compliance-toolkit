@@ -147,6 +147,22 @@ export function allNodeIds(tree: SectionNode[]): Set<string> {
   return ids
 }
 
+// Sections start open: the store remembers only the ones the user closed,
+// because section ids depend on the filters and cannot all be known up front.
+export function expandedFromCollapsed(tree: SectionNode[], collapsed: ReadonlySet<string>): Set<string> {
+  return new Set([...allNodeIds(tree)].filter((id) => !collapsed.has(id)))
+}
+
+// The closed sections once this tree shows `nextExpanded` open. Closed
+// sections from other filters' trees are kept, so they stay closed when
+// those filters come back.
+export function collapsedAfter(tree: SectionNode[], previousCollapsed: ReadonlySet<string>, nextExpanded: ReadonlySet<string>): Set<string> {
+  const treeIds = allNodeIds(tree)
+  const collapsed = new Set([...previousCollapsed].filter((id) => !treeIds.has(id)))
+  for (const id of treeIds) if (!nextExpanded.has(id)) collapsed.add(id)
+  return collapsed
+}
+
 // Every section in the tree holds at least one rule, since the tree is built
 // from matching rules only.
 export function searchExpanded(tree: SectionNode[]): Set<string> {
