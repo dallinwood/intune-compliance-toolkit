@@ -81,7 +81,7 @@ export function termDescription(index: VocabularyIndex, vocabulary: VocabularyNa
   return index[vocabulary].entryByTerm.get(code)?.description ?? null
 }
 
-// Listed entries in file order first, then unlisted codes alphabetically.
+// Listed entries in file order first, then unlisted codes in natural order (2 before 19).
 export function compareGroupKeys(index: VocabularyIndex, vocabulary: VocabularyName): (left: string, right: string) => number {
   const entryByGroupKey = index[vocabulary].entryByGroupKey
   return (left, right) => {

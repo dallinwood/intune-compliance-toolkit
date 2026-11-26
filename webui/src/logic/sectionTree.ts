@@ -147,20 +147,32 @@ export function allNodeIds(tree: SectionNode[]): Set<string> {
   return ids
 }
 
-// Sections start open: the store remembers only the ones the user closed,
-// because section ids depend on the filters and cannot all be known up front.
-export function expandedFromCollapsed(tree: SectionNode[], collapsed: ReadonlySet<string>): Set<string> {
-  return new Set([...allNodeIds(tree)].filter((id) => !collapsed.has(id)))
+// Which sections are open: a default that Expand all / Collapse all set, plus
+// the sections the user toggled against it. Section ids depend on the
+// filters and cannot all be known up front, so the default covers the rest.
+export interface SectionState {
+  openByDefault: boolean
+  exceptions: ReadonlySet<string>
 }
 
-// The closed sections once this tree shows `nextExpanded` open. Closed
-// sections from other filters' trees are kept, so they stay closed when
-// those filters come back.
-export function collapsedAfter(tree: SectionNode[], previousCollapsed: ReadonlySet<string>, nextExpanded: ReadonlySet<string>): Set<string> {
+export function expandedFromSectionState(tree: SectionNode[], state: SectionState): Set<string> {
+  return new Set([...allNodeIds(tree)].filter((id) => state.openByDefault !== state.exceptions.has(id)))
+}
+
+// The state once this tree shows `nextExpanded` open. Exceptions from other
+// filters' trees are kept, so they still apply when those filters come back.
+export function sectionStateAfter(tree: SectionNode[], state: SectionState, nextExpanded: ReadonlySet<string>): SectionState {
   const treeIds = allNodeIds(tree)
-  const collapsed = new Set([...previousCollapsed].filter((id) => !treeIds.has(id)))
-  for (const id of treeIds) if (!nextExpanded.has(id)) collapsed.add(id)
-  return collapsed
+  const exceptions = new Set([...state.exceptions].filter((id) => !treeIds.has(id)))
+  for (const id of treeIds) if (nextExpanded.has(id) !== state.openByDefault) exceptions.add(id)
+  return { openByDefault: state.openByDefault, exceptions }
+}
+
+// The 1-based page where a section's header first appears; later pages only
+// repeat it. Null when the section is not on any page.
+export function pageOfSection(pages: Page[], sectionId: string): number | null {
+  const position = pages.findIndex((page) => page.items.some((item) => item.kind === 'section' && item.node.id === sectionId))
+  return position === -1 ? null : position + 1
 }
 
 // Every section in the tree holds at least one rule, since the tree is built

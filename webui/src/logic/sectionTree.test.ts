@@ -4,8 +4,9 @@ import {
   allNodeIds,
   buildSectionTree,
   clampPage,
-  collapsedAfter,
-  expandedFromCollapsed,
+  expandedFromSectionState,
+  pageOfSection,
+  sectionStateAfter,
   paginate,
   revealRules,
   searchExpanded,
@@ -243,23 +244,47 @@ describe('clampPage', () => {
 })
 
 
-describe('expandedFromCollapsed', () => {
-  it('opens every section the user has not closed, including ones never seen before', () => {
+describe('expandedFromSectionState', () => {
+  it('opens every section except the exceptions when sections are open by default, including ones never seen before', () => {
     const tree = mixedTree()
-    const collapsed = new Set([sectionId('Guidelines for email', 'Email usage'), 'some-section-from-another-filter'])
-    const expanded = expandedFromCollapsed(tree, collapsed)
+    const state = { openByDefault: true, exceptions: new Set([sectionId('Guidelines for email', 'Email usage')]) }
+    const expanded = expandedFromSectionState(tree, state)
     expect(expanded.has('os')).toBe(true)
     expect(expanded.has(sectionId('Guidelines for email'))).toBe(true)
     expect(expanded.has(sectionId('Guidelines for email', 'Email usage'))).toBe(false)
-    expect(expanded.has('some-section-from-another-filter')).toBe(false)
+  })
+
+  it('opens only the exceptions when sections are closed by default', () => {
+    const expanded = expandedFromSectionState(mixedTree(), { openByDefault: false, exceptions: new Set(['audit']) })
+    expect([...expanded]).toEqual(['audit'])
   })
 })
 
-describe('collapsedAfter', () => {
-  it('records the closed sections of this tree and keeps closed sections from other trees', () => {
+describe('sectionStateAfter', () => {
+  it('records the sections of this tree that differ from the default and keeps exceptions from other trees', () => {
     const tree = mixedTree()
-    const openOnly = new Set([...allNodeIds(tree)].filter((id) => id !== 'audit'))
-    const collapsed = collapsedAfter(tree, new Set(['os', 'some-section-from-another-filter']), openOnly)
-    expect([...collapsed].sort()).toEqual(['audit', 'some-section-from-another-filter'])
+    const openExceptAudit = new Set([...allNodeIds(tree)].filter((id) => id !== 'audit'))
+    const state = sectionStateAfter(tree, { openByDefault: true, exceptions: new Set(['os', 'from-another-filter']) }, openExceptAudit)
+    expect(state.openByDefault).toBe(true)
+    expect([...state.exceptions].sort()).toEqual(['audit', 'from-another-filter'])
+  })
+
+  it('keeps a closed default, so sections a filter hid stay closed when it is cleared', () => {
+    const tree = mixedTree()
+    const state = sectionStateAfter(tree, { openByDefault: false, exceptions: new Set() }, new Set(['os']))
+    expect(state).toEqual({ openByDefault: false, exceptions: new Set(['os']) })
+    expect(expandedFromSectionState(tree, state).has('a-section-the-filter-hid')).toBe(false)
+  })
+})
+
+describe('pageOfSection', () => {
+  it('finds the page where a section header first appears, not a page that repeats it', () => {
+    const tree = mixedTree()
+    const pages = paginate(visibleItems(tree, allNodeIds(tree)), 1)
+    const emailUsage = sectionId('Guidelines for email', 'Email usage')
+    const firstPage = pages.findIndex((page) => page.items.some((item) => item.kind === 'section' && item.node.id === emailUsage)) + 1
+    expect(pages.filter((page) => page.items.some((item) => item.kind === 'section' && item.node.id === emailUsage)).length).toBeGreaterThan(1)
+    expect(pageOfSection(pages, emailUsage)).toBe(firstPage)
+    expect(pageOfSection(pages, 'not-a-section')).toBeNull()
   })
 })

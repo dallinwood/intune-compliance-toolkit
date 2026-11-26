@@ -1065,6 +1065,16 @@ test.describe('section tree and paging', () => {
     await expect(page.getByRole('button', { name: /one level/ })).toHaveCount(0)
   })
 
+  test('collapsing a section from its repeated header goes back to the page where the section starts', async ({ page }) => {
+    await openLibrary(page)
+    await page.getByRole('button', { name: 'Next page' }).click()
+    await expect(pageStatus(page)).toHaveText('Page 2 of 102')
+    // Page 2 starts inside Operating system, so its header repeats at the top.
+    await ruleTable(page).getByRole('button', { name: /^Operating system \(203\)$/ }).click()
+    await expect(pageStatus(page)).toHaveText(/^Page 1 of /)
+    await expect(sectionHeadings(page, 2).first()).toHaveText(/^Operating system \(203\)$/)
+  })
+
   test('a section header toggles its own section', async ({ page }) => {
     await openLibrary(page)
     await page.getByRole('button', { name: 'Collapse all' }).click()

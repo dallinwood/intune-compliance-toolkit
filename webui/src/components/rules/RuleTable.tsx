@@ -9,8 +9,10 @@ import { sectionGroupKey } from '../../logic/ruleFilters'
 import {
   allNodeIds,
   buildSectionTree,
-  collapsedAfter,
-  expandedFromCollapsed,
+  expandedFromSectionState,
+  pageOfSection,
+  sectionStateAfter,
+  type SectionState,
   clampPage,
   paginate,
   revealRules,
@@ -78,9 +80,9 @@ export function RuleTable({
   // section controls act on that search view only; clearing the search goes
   // back to the stored state. A new search result starts fully open again.
   const isSearching = search.trim() !== ''
-  const storedCollapsed = useSectionStore((store) => store.collapsed)
-  const setStoredCollapsed = useSectionStore((store) => store.setCollapsed)
-  const storedExpanded = useMemo(() => expandedFromCollapsed(tree, storedCollapsed), [tree, storedCollapsed])
+  const storedSections = useSectionStore((store) => store.sections)
+  const setStoredSections = useSectionStore((store) => store.setSections)
+  const storedExpanded = useMemo(() => expandedFromSectionState(tree, storedSections), [tree, storedSections])
   const [searchExpansion, setSearchExpansion] = useState<SearchExpansion | null>(null)
   const expandedForSearch = useMemo(() => (isSearching ? searchExpanded(tree) : null), [isSearching, tree])
   const expanded: ReadonlySet<string> = expandedForSearch
@@ -94,19 +96,21 @@ export function RuleTable({
   const setPage = useFilterStore((store) => store.setPage)
   const setSize = useFilterStore((store) => store.setSize)
 
-  // A collapse that leaves fewer pages than the stored page moves the stored
-  // page (and the URL) back into range, so reopening a section starts at its
-  // top. Expanding never moves it: a shared page=3 still lands on page 3 once
-  // its sections are open.
+  // A collapse moves the stored page (and the URL) back to the collapsed
+  // section's own header when that is on an earlier page (later pages only
+  // repeat it), or back into range when fewer pages are left. Expanding never
+  // moves it: a shared page=3 still lands on page 3 once its sections are open.
   const setExpanded = useCallback(
-    (next: ReadonlySet<string>, isCollapse: boolean) => {
+    (next: ReadonlySet<string>, nextStored: SectionState, collapsedSectionId: string | null, isCollapse: boolean) => {
       if (isSearching) setSearchExpansion({ tree, expanded: next })
-      else setStoredCollapsed(collapsedAfter(tree, storedCollapsed, next))
+      else setStoredSections(nextStored)
       if (!isCollapse || size === 'all') return
-      const nextPageCount = paginate(visibleItems(tree, next), size).length
-      if (storedPage > nextPageCount) setPage(clampPage(storedPage, nextPageCount))
+      const nextPages = paginate(visibleItems(tree, next), size)
+      const headerPage = collapsedSectionId === null ? null : pageOfSection(nextPages, collapsedSectionId)
+      if (headerPage !== null && headerPage < storedPage) setPage(headerPage)
+      else if (storedPage > nextPages.length) setPage(clampPage(storedPage, nextPages.length))
     },
-    [isSearching, tree, storedCollapsed, setStoredCollapsed, size, storedPage, setPage],
+    [isSearching, tree, setStoredSections, size, storedPage, setPage],
   )
   const toggleSection = useCallback(
     (sectionId: string) => {
@@ -114,10 +118,12 @@ export function RuleTable({
       const isCollapse = next.has(sectionId)
       if (isCollapse) next.delete(sectionId)
       else next.add(sectionId)
-      setExpanded(next, isCollapse)
+      setExpanded(next, sectionStateAfter(tree, storedSections, next), sectionId, isCollapse)
     },
-    [expanded, setExpanded],
+    [expanded, setExpanded, tree, storedSections],
   )
+  const expandAll = useCallback(() => setExpanded(allNodeIds(tree), { openByDefault: true, exceptions: new Set() }, null, false), [setExpanded, tree])
+  const collapseAll = useCallback(() => setExpanded(new Set(), { openByDefault: false, exceptions: new Set() }, null, true), [setExpanded])
 
   // Section actions render from a deferred copy, like filter changes:
   // expanding every section is a large render, and the zustand store updates
@@ -172,8 +178,8 @@ export function RuleTable({
   return (
     <div ref={tableTopRef} id={RULE_TABLE_ID} tabIndex={-1} data-testid="rule-table" className="outline-none">
       <SectionToolbar
-        onExpandAll={() => setExpanded(allNodeIds(tree), false)}
-        onCollapseAll={() => setExpanded(new Set(), true)}
+        onExpandAll={expandAll}
+        onCollapseAll={collapseAll}
         trailing={<RuleStatusKeyDialog scopeRows={scopeRows} />}
       />
       <SelectAllRow rows={rows} isReadOnly={isSelectionReadOnly} />

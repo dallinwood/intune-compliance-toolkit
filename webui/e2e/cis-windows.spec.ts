@@ -78,7 +78,6 @@ test('an Ansible-only Windows CIS rule shows Manual and its original Ansible ste
 
   const remediation = detail.getByTestId('remediation-target')
   const ansibleStep = remediation.locator('pre', { hasText: 'when: win11cis_rule_5_3' })
-  // A single step opens by itself, so only click the pill when the step is still hidden.
-  if (!(await ansibleStep.isVisible())) await detail.getByRole('tab', { name: /Ansible/ }).click()
+  await detail.getByRole('tab', { name: /Ansible/ }).click()
   await expect(ansibleStep).toBeVisible()
 })
