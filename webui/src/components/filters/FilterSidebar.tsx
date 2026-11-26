@@ -19,6 +19,8 @@ import {
   automationOptionCounts,
   facetOptionCounts,
   linkedFrameworkKeys,
+  HAS_ODV_KEY,
+  odvKey,
   sectionGroupKey,
   sourceGroupKey,
   tagGroupKeys,
@@ -33,6 +35,8 @@ import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { LinkedFrameworksByRule } from '../../logic/linkedFrameworks'
 import type { RuleRow } from '../../types/rule-row'
 import { formatCount } from '../../lib/format'
+import { compareNatural } from '../../logic/naturalOrder'
+import { scriptTypeLabel } from '../../logic/targetDisplay'
 
 const AUTOMATABLE_OPTIONS = [
   { value: 'all', label: 'All rules' },
@@ -48,6 +52,23 @@ const isNoTarget = (value: string) => value === NO_TARGET_KEY
 const isNoVersion = (value: string) => value === NO_VERSION_KEY
 
 const NO_SELECTION: ReadonlySet<string> = new Set()
+
+const ODV_LABELS: Record<string, string> = { yes: 'Has values to set', no: 'No values to set' }
+
+function odvLabel(value: string): string {
+  return ODV_LABELS[value] ?? value
+}
+
+function compareOdvKeys(left: string, right: string): number {
+  return Number(right === HAS_ODV_KEY) - Number(left === HAS_ODV_KEY)
+}
+
+function compareScriptTypes(left: string, right: string): number {
+  return compareNatural(scriptTypeLabel(left), scriptTypeLabel(right))
+}
+
+const checkTypesOf = (row: RuleRow) => row.checkTypes
+const remediationTypesOf = (row: RuleRow) => row.remediationTypes
 
 // Every facet value is a vocabulary group key (a benchmark's is paired with
 // a severity, see benchmarkFacetValue), so grouped codes show as one option.
@@ -162,6 +183,18 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
     [rows, deferredFilters, accessors, index, linkedFrameworks],
   )
 
+  const checkCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'checks', checkTypesOf, deferredFilters.checks, index, linkedFrameworks),
+    [rows, deferredFilters, index, linkedFrameworks],
+  )
+  const remediationCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'remediations', remediationTypesOf, deferredFilters.remediations, index, linkedFrameworks),
+    [rows, deferredFilters, index, linkedFrameworks],
+  )
+  const odvCounts = useMemo(
+    () => facetOptionCounts(rows, deferredFilters, 'odvs', odvKey, deferredFilters.odvs, index, linkedFrameworks),
+    [rows, deferredFilters, index, linkedFrameworks],
+  )
   const automationCounts = useMemo(
     () => automationOptionCounts(rows, deferredFilters, index, linkedFrameworks),
     [rows, deferredFilters, index, linkedFrameworks],
@@ -193,6 +226,39 @@ export function FilterSidebar({ rows, hideSourceFacet = false }: { rows: RuleRow
               ))}
             </RadioGroup>
           </FacetGroup>
+
+          <StableFacetGroup
+            title="Check"
+            rows={rows}
+            valueOf={checkTypesOf}
+            compareValues={compareScriptTypes}
+            labelOf={scriptTypeLabel}
+            counts={checkCounts}
+            selected={filters.checks}
+            onToggle={filters.toggleCheck}
+          />
+
+          <StableFacetGroup
+            title="Remediation"
+            rows={rows}
+            valueOf={remediationTypesOf}
+            compareValues={compareScriptTypes}
+            labelOf={scriptTypeLabel}
+            counts={remediationCounts}
+            selected={filters.remediations}
+            onToggle={filters.toggleRemediation}
+          />
+
+          <StableFacetGroup
+            title="Organization values"
+            rows={rows}
+            valueOf={odvKey}
+            compareValues={compareOdvKeys}
+            labelOf={odvLabel}
+            counts={odvCounts}
+            selected={filters.odvs}
+            onToggle={filters.toggleOdv}
+          />
 
           <StableFacetGroup
             title="Target"

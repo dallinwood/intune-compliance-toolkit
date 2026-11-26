@@ -168,16 +168,13 @@ test('the benchmark column follows the Version filter', async ({ page }) => {
 })
 
 // Only the mSCP rules name the macOS target (the CIS rules name Linux), so ticking macOS or NIST mSCP keeps 352 of the 5,056 rules; ticking ASD ISM keeps 1143 and NIST SP 800-53 keeps 1014.
-test('the Target facet follows Automation and the Source facet sits between Version and Benchmark, and each filters to its own rules', async ({ page }) => {
+test('Check, Remediation and Organization values follow Automation, then Target, Version, Source and Benchmark, and each filters to its own rules', async ({ page }) => {
   await page.goto(ALL_RULES_PATH)
   await expect(ruleCount(page)).toHaveText('5,056 of 5,056 rules', { timeout: 10_000 })
 
   const facetTitles = page.getByTestId('sidebar-scroll-area').getByRole('heading')
-  await expect(facetTitles.nth(0)).toHaveText('Automation')
-  await expect(facetTitles.nth(1)).toHaveText('Target')
-  await expect(facetTitles.nth(2)).toHaveText('Version')
-  await expect(facetTitles.nth(3)).toHaveText('Source')
-  await expect(facetTitles.nth(4)).toHaveText('Benchmark')
+  const expectedOrder = ['Automation', 'Check', 'Remediation', 'Organization values', 'Target', 'Version', 'Source', 'Benchmark']
+  for (const [position, title] of expectedOrder.entries()) await expect(facetTitles.nth(position)).toHaveText(title)
   await expect(facetTitles.last()).toHaveText('Tags')
 
   const platformOption = page.getByRole('checkbox', { name: 'macOS', exact: true })
@@ -186,14 +183,14 @@ test('the Target facet follows Automation and the Source facet sits between Vers
   await expect(ruleCount(page)).toHaveText('352 of 5,056 rules')
   await platformOption.click()
 
-  const sourceOption = page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })
+  const sourceOption = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'NIST mSCP', exact: true })
   await sourceOption.scrollIntoViewIfNeeded()
   await sourceOption.click()
   await expect(sourceOption).toBeChecked()
   await expect(ruleCount(page)).toHaveText('352 of 5,056 rules')
   await sourceOption.click()
 
-  const ismSourceOption = page.getByRole('checkbox', { name: 'ASD ISM', exact: true })
+  const ismSourceOption = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'ASD ISM', exact: true })
   await ismSourceOption.scrollIntoViewIfNeeded()
   await ismSourceOption.click()
   await expect(ismSourceOption).toBeChecked()
@@ -364,7 +361,7 @@ test('a facet with no reachable options is not rendered', async ({ page }) => {
   const tagsHeading = page.getByTestId('sidebar-scroll-area').getByRole('heading', { name: 'Tags', exact: true })
   await expect(tagsHeading).toBeVisible()
 
-  const ismSourceOption = page.getByRole('checkbox', { name: 'ASD ISM', exact: true })
+  const ismSourceOption = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'ASD ISM', exact: true })
   await ismSourceOption.scrollIntoViewIfNeeded()
   await ismSourceOption.click()
   await expect(ruleCount(page)).toHaveText('1,143 of 5,056 rules')
@@ -792,7 +789,7 @@ test('facet options show how many rules they would leave in view', async ({ page
   await expect(optionRow(sourceGroup, 'ASD ISM')).toContainText('(1,143)')
   await expect(optionRow(sourceGroup, 'NIST mSCP')).toContainText('(352)')
 
-  await page.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
+  await page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
   await expect(ruleCount(page)).toHaveText('1,143 of 5,056 rules')
   const targetGroup = page.getByRole('group', { name: 'Target', exact: true })
   await expect(optionRow(targetGroup, 'None')).toContainText('(1,143)')
@@ -908,8 +905,8 @@ test('filters, search, page and size survive a reload through the URL', async ({
   const versionOption = page.getByRole('checkbox', { name: 'macOS 15', exact: true })
 
   await searchBox(page).fill('configure')
-  await page.getByRole('checkbox', { name: 'NIST mSCP', exact: true }).click()
-  await page.getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
+  await page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'NIST mSCP', exact: true }).click()
+  await page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'ASD ISM', exact: true }).click()
   await page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true }).click()
   await versionOption.click()
   await expect(versionOption).toBeChecked()
@@ -929,8 +926,8 @@ test('filters, search, page and size survive a reload through the URL', async ({
   await page.goto(withPaging)
   await expect(ruleCount(page)).toHaveText(filteredCount, { timeout: 10_000 })
   await expect(searchBox(page)).toHaveValue('configure')
-  await expect(page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })).toBeChecked()
-  await expect(page.getByRole('checkbox', { name: 'ASD ISM', exact: true })).toBeChecked()
+  await expect(page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'NIST mSCP', exact: true })).toBeChecked()
+  await expect(page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'ASD ISM', exact: true })).toBeChecked()
   await expect(page.getByRole('checkbox', { name: 'DISA STIG (high)', exact: true })).toBeChecked()
   await expect(versionOption).toBeChecked()
   expect(page.url()).toBe(withPaging)
@@ -2174,7 +2171,7 @@ test.describe('rule mappings', () => {
 
     // A filter that would hide the target is cleared on the way back; the
     // search box keeps the opened rule in view meanwhile.
-    const mscpSource = page.getByRole('checkbox', { name: 'NIST mSCP', exact: true })
+    const mscpSource = page.getByRole('group', { name: 'Source', exact: true }).getByRole('checkbox', { name: 'NIST mSCP', exact: true })
     await mscpSource.click()
     await expect(mscpSource).toBeChecked()
     await expect(detailOf(page, GATEKEEPER)).toBeVisible()

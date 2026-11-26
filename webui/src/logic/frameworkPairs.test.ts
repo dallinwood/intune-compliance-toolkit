@@ -41,6 +41,8 @@ function row({ sourceName, upstreamId, benchmarks = [], assessmentStatus = 'auto
     benchmarks,
     tags: [],
     hasOdv: false,
+    checkTypes: [],
+    remediationTypes: [],
   } as unknown as RuleRow
 }
 

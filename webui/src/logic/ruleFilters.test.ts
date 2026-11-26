@@ -45,6 +45,8 @@ function row(overrides: Partial<RuleRow> = {}): RuleRow {
     benchmarks: ['cis_lvl1'],
     tags: ['800-53r5_high'],
     hasOdv: false,
+    checkTypes: [],
+    remediationTypes: [],
     ...overrides,
   }
 }
@@ -59,6 +61,9 @@ function emptyFilters(overrides: Partial<FilterValues> = {}): FilterValues {
     sections: new Set(),
     tags: new Set(),
     linked: new Set(),
+    checks: new Set(),
+    remediations: new Set(),
+    odvs: new Set(),
     automatable: 'all',
     ...overrides,
   }
@@ -125,6 +130,8 @@ const passwordRow = row({
   benchmarks: ['cis_lvl2', 'disa_stig'],
   tags: ['cisv8'],
   hasOdv: true,
+  checkTypes: [],
+  remediationTypes: [],
 })
 const rows = [gatekeeperRow, passwordRow]
 const noVocabulary = vocabularyIndexOf({})

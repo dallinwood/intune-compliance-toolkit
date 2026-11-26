@@ -50,9 +50,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-01.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-01.1",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -111,9 +113,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-01.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-01.2",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -152,9 +156,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-01.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-01.3",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -213,9 +219,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-02.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-02.1",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -254,9 +262,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-02.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-02.2",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -295,9 +305,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-03.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-03.1",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -336,9 +348,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-03.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-03.2",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -385,9 +399,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-04.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-04.1",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -426,9 +442,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.det-05.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.det-05.1",
+      "remediation_types": [],
       "section": "Detect principles",
       "section_path": [
         "Detect principles",
@@ -467,9 +485,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-01.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-01.1",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -508,9 +528,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-03.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-03.1",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -549,9 +571,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-04.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-04.1",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -590,9 +614,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-04.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-04.2",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -631,9 +657,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-08.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-08.1",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -672,9 +700,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-11.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-11.1",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -713,9 +743,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-11.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-11.2",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -754,9 +786,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.gov-14.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.gov-14.1",
+      "remediation_types": [],
       "section": "Govern principles",
       "section_path": [
         "Govern principles",
@@ -795,9 +829,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.ide-01.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.ide-01.1",
+      "remediation_types": [],
       "section": "Identify principles",
       "section_path": [
         "Identify principles",
@@ -856,9 +892,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.ide-01.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.ide-01.2",
+      "remediation_types": [],
       "section": "Identify principles",
       "section_path": [
         "Identify principles",
@@ -897,9 +935,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.ide-04.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.ide-04.1",
+      "remediation_types": [],
       "section": "Identify principles",
       "section_path": [
         "Identify principles",
@@ -958,9 +998,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-01.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-01.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1019,9 +1061,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-01.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-01.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1080,9 +1124,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-04.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-04.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1141,9 +1187,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-04.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-04.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1202,9 +1250,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-04.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-04.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1251,9 +1301,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-05.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-05.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1300,9 +1352,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-05.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-05.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1349,9 +1403,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-05.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-05.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1410,9 +1466,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-06.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-06.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1471,9 +1529,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-06.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-06.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1532,9 +1592,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-06.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-06.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1593,9 +1655,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-07.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-07.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1654,9 +1718,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-07.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-07.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1711,9 +1777,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-09.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-09.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1752,9 +1820,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-09.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-09.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1793,9 +1863,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-09.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-09.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1850,9 +1922,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-10.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-10.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1907,9 +1981,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-10.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-10.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -1964,9 +2040,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-10.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-10.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2025,9 +2103,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-12.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-12.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2074,9 +2154,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-12.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-12.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2123,9 +2205,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-12.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-12.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2184,9 +2268,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-13.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-13.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2241,9 +2327,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-13.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-13.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2282,9 +2370,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-13.3.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-13.3",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2343,9 +2433,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-13.4.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-13.4",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2404,9 +2496,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-13.5.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-13.5",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2465,9 +2559,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-13.6.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-13.6",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2514,9 +2610,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-14.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-14.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2555,9 +2653,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-14.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-14.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2616,9 +2716,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-16.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-16.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2665,9 +2767,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-16.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-16.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2722,9 +2826,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-18.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-18.1",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2779,9 +2885,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.pro-18.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.pro-18.2",
+      "remediation_types": [],
       "section": "Protect principles",
       "section_path": [
         "Protect principles",
@@ -2820,9 +2928,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.res-03.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.res-03.1",
+      "remediation_types": [],
       "section": "Respond principles",
       "section_path": [
         "Respond principles",
@@ -2861,9 +2971,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.res-04.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.res-04.1",
+      "remediation_types": [],
       "section": "Respond principles",
       "section_path": [
         "Respond principles",
@@ -2902,9 +3014,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.res-04.2.json",
       "has_odv": false,
       "id": "asd_e4eit.it.res-04.2",
+      "remediation_types": [],
       "section": "Respond principles",
       "section_path": [
         "Respond principles",
@@ -2943,9 +3057,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/it.res-05.1.json",
       "has_odv": false,
       "id": "asd_e4eit.it.res-05.1",
+      "remediation_types": [],
       "section": "Respond principles",
       "section_path": [
         "Respond principles",

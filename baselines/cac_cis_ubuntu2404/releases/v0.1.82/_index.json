@@ -30,9 +30,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -72,9 +78,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -114,9 +124,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -156,9 +170,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -198,9 +216,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -232,9 +254,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -266,9 +292,11 @@
         "manual_reason": "inherent",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.7",
+      "remediation_types": [],
       "section": "1",
       "section_path": [
         "1",
@@ -300,9 +328,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -338,9 +370,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.1.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -380,9 +418,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.1.1.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.1.10",
+      "remediation_types": [],
       "section": "1",
       "section_path": [
         "1",
@@ -422,9 +462,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.1.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -465,9 +511,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -508,9 +560,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -551,9 +609,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -594,9 +658,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.2.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -637,9 +707,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -680,9 +756,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -723,9 +805,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -758,9 +846,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.3.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.3.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -801,9 +895,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -844,9 +944,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -879,9 +985,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.4.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.4.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -922,9 +1034,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.4.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.4.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -965,9 +1083,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.4.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.4.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1000,9 +1124,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.5.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.5.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1043,9 +1173,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.5.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.5.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1086,9 +1222,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.5.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.5.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1129,9 +1271,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.5.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.5.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1164,9 +1312,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.6.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.6.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1207,9 +1361,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.6.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.6.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1250,9 +1410,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.6.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.6.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1293,9 +1459,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.6.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.6.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1328,9 +1500,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.7.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.7.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1371,9 +1549,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.7.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.7.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1414,9 +1598,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.7.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.7.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1457,9 +1647,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.1.2.7.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.1.2.7.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1500,9 +1696,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.2.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.2.1.1",
+      "remediation_types": [],
       "section": "1",
       "section_path": [
         "1",
@@ -1542,9 +1740,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.2.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.2.1.2",
+      "remediation_types": [],
       "section": "1",
       "section_path": [
         "1",
@@ -1584,9 +1784,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.2.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.2.2.1",
+      "remediation_types": [],
       "section": "1",
       "section_path": [
         "1",
@@ -1626,9 +1828,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.3.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.3.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1668,9 +1874,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.3.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.3.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1710,9 +1920,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.3.1.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.3.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1744,9 +1958,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.3.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.3.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1786,9 +2004,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.4.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.4.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1827,9 +2051,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.4.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.4.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1868,9 +2098,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.5.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.5.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1909,9 +2145,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.5.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.5.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1950,9 +2192,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.5.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.5.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -1991,9 +2239,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.5.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.5.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2032,9 +2284,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/1.5.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.5.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2073,9 +2329,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.6.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.6.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2114,9 +2376,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.6.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.6.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2155,9 +2423,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.6.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.6.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2196,9 +2470,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.6.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.6.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2237,9 +2517,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.6.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.6.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2278,9 +2564,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.6.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.6.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2307,9 +2599,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2348,9 +2646,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.7.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2389,9 +2693,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2430,9 +2740,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.7.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2471,9 +2787,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.5.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.1.7.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2508,9 +2830,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2545,9 +2873,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2586,9 +2920,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2627,9 +2967,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2668,9 +3014,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/1.7.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.1.7.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -2705,9 +3057,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2742,9 +3100,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2783,9 +3147,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2824,9 +3194,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2865,9 +3241,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2906,9 +3288,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2947,9 +3335,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2988,9 +3382,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3029,9 +3429,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3070,9 +3476,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3107,9 +3519,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.11.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.11",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3148,9 +3566,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.12.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.12",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3189,9 +3613,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.13.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.13",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3230,9 +3660,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.14.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.14",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3271,9 +3707,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.15.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.15",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3312,9 +3754,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.16.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.16",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3353,9 +3801,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.17.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.17",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3394,9 +3848,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.18.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.18",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3435,9 +3895,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.19.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.19",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3464,9 +3930,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.20.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.20",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3505,9 +3977,16 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.1.21.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.2.1.21",
+      "remediation_types": [
+        "bash",
+        "instructions"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3546,9 +4025,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/2.1.22.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.1.22",
+      "remediation_types": [],
       "section": "2",
       "section_path": [
         "2",
@@ -3587,9 +4068,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/2.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3628,9 +4113,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3669,9 +4160,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3710,9 +4207,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3751,9 +4254,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.2.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.2.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3792,9 +4301,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.2.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.2.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3833,9 +4348,16 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.3.1.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.2.3.1.1",
+      "remediation_types": [
+        "bash",
+        "instructions"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3875,9 +4397,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.3.2.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.2.3.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3917,9 +4445,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/2.3.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.3.2.2",
+      "remediation_types": [],
       "section": "2",
       "section_path": [
         "2",
@@ -3959,9 +4489,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.3.3.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.2.3.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4001,9 +4537,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.3.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.3.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4043,9 +4585,11 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/2.3.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.3.3.3",
+      "remediation_types": [],
       "section": "2",
       "section_path": [
         "2",
@@ -4085,9 +4629,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4127,9 +4677,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4169,9 +4725,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4211,9 +4773,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4253,9 +4821,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4295,9 +4869,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4337,9 +4917,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4379,9 +4965,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.1.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.1.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4421,9 +5013,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/2.4.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.2.4.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4463,9 +5061,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/3.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.1.1",
+      "remediation_types": [],
       "section": "3",
       "section_path": [
         "3",
@@ -4496,9 +5096,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4533,9 +5139,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4566,9 +5178,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4599,9 +5217,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4632,9 +5256,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4665,9 +5295,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4706,9 +5342,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4747,9 +5389,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.3.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4788,9 +5436,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4829,9 +5483,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4870,9 +5530,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.5.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4911,9 +5577,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.6.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4952,9 +5624,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.7.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -4993,9 +5671,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.8.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -5034,9 +5718,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.9.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -5075,9 +5765,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.10.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -5116,9 +5812,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/3.3.11.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.3.3.11",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "3",
       "section_path": [
         "3",
@@ -5157,9 +5859,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/4.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.1.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5198,9 +5904,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.2.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5239,9 +5951,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5280,9 +5998,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.2.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5321,9 +6045,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5362,9 +6092,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/4.2.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.2.5",
+      "remediation_types": [],
       "section": "4",
       "section_path": [
         "4",
@@ -5403,9 +6135,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.2.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.2.6",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5444,9 +6182,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.2.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.2.7",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5485,9 +6229,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5526,9 +6276,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5567,9 +6323,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/4.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.3.3",
+      "remediation_types": [],
       "section": "4",
       "section_path": [
         "4",
@@ -5608,9 +6366,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5649,9 +6413,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.5.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5690,9 +6460,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.6.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5731,9 +6507,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/4.3.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.3.7",
+      "remediation_types": [],
       "section": "4",
       "section_path": [
         "4",
@@ -5772,9 +6550,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.3.8",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5813,9 +6597,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.9.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5854,9 +6644,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.3.10.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.3.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5895,9 +6691,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.1.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.4.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5937,9 +6739,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.1.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.4.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -5979,9 +6787,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.1.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.4.4.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6021,9 +6835,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.2.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6063,9 +6883,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6105,9 +6931,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/4.4.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.2.3",
+      "remediation_types": [],
       "section": "4",
       "section_path": [
         "4",
@@ -6147,9 +6975,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.2.4",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6189,9 +7023,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.3.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.3.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6231,9 +7071,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6273,9 +7119,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/4.4.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.3.3",
+      "remediation_types": [],
       "section": "4",
       "section_path": [
         "4",
@@ -6315,9 +7163,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/4.4.3.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.4.4.3.4",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "4",
       "section_path": [
         "4",
@@ -6357,9 +7211,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6398,9 +7258,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6439,9 +7305,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6480,9 +7352,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.4",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6521,9 +7399,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6562,9 +7446,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6603,9 +7493,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.7.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6640,9 +7536,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6677,9 +7579,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6718,9 +7626,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6759,9 +7673,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.11.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.11",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6800,9 +7720,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.12.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.12",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6841,9 +7767,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.13.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.13",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6882,9 +7814,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.14.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.14",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6923,9 +7861,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.15.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.15",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -6964,9 +7908,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.16.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.16",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7005,9 +7955,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.17.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.17",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7046,9 +8002,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.18.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.1.18",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7087,9 +8049,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.19.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.19",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7128,9 +8096,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.20.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.20",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7169,9 +8143,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.21.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.21",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7210,9 +8190,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.1.22.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.1.22",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7251,9 +8237,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7292,9 +8284,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7333,9 +8331,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7366,9 +8370,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7407,9 +8417,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.2.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7448,9 +8464,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.6.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.2.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7489,9 +8511,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.2.7.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.2.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7530,9 +8558,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7572,9 +8604,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7614,9 +8650,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7656,9 +8698,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7698,9 +8744,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7740,9 +8790,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7782,9 +8836,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7824,9 +8882,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.1.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7867,9 +8931,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.1.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7902,9 +8972,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.3.1.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7945,9 +9019,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -7988,9 +9068,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8031,9 +9117,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8074,9 +9166,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8117,9 +9215,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.3.2.5.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8160,9 +9262,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.6.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8203,9 +9311,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.7.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.2.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8246,9 +9360,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.2.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.3.2.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8289,9 +9409,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.3.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8332,9 +9458,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.3.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.3.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8375,9 +9505,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.3.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.3.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8418,9 +9552,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.3.3.4.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.3.4.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8461,9 +9599,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.4.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.3.4.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8504,9 +9648,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.4.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.3.3.4.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8547,9 +9697,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.3.3.4.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.3.3.4.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8590,9 +9746,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.1.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8624,9 +9786,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.1.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8666,9 +9834,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.1.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8708,9 +9882,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.1.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8750,9 +9930,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.1.5.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.1.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8792,9 +9978,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.1.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.1.6",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8834,9 +10026,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8876,9 +10074,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.2",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8918,9 +10122,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.3",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -8960,9 +10170,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.4",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9002,9 +10218,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.2.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.5",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9044,9 +10266,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.4.2.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9086,9 +10312,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.2.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9128,9 +10360,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/5.4.2.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.2.8",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9162,9 +10398,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.3.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.5.4.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9204,9 +10446,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.3.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9246,9 +10494,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/5.4.3.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.5.4.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "5",
       "section_path": [
         "5",
@@ -9288,9 +10542,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9330,9 +10590,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.1.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.1.2",
+      "remediation_types": [],
       "section": "6",
       "section_path": [
         "6",
@@ -9372,9 +10634,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.1.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.1.3",
+      "remediation_types": [],
       "section": "6",
       "section_path": [
         "6",
@@ -9414,9 +10678,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.1.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.1.4",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9456,9 +10724,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.2.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9499,9 +10773,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.1.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.1.2.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9542,9 +10822,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.2.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9585,9 +10871,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.2.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9628,9 +10920,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9670,9 +10968,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9712,9 +11016,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9754,9 +11064,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.3.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9796,9 +11112,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9838,9 +11160,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9880,9 +11208,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.3.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -9922,9 +11256,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.1.3.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.5",
+      "remediation_types": [],
       "section": "6",
       "section_path": [
         "6",
@@ -9964,9 +11300,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.1.3.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.6",
+      "remediation_types": [],
       "section": "6",
       "section_path": [
         "6",
@@ -10006,9 +11344,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.3.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10048,9 +11392,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.1.3.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.3.8",
+      "remediation_types": [],
       "section": "6",
       "section_path": [
         "6",
@@ -10090,9 +11436,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.1.4.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.1.4.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10124,9 +11476,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10158,9 +11516,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10192,9 +11556,16 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.1.3",
+      "remediation_types": [
+        "bash",
+        "instructions"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10226,9 +11597,16 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.1.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.2.1.4",
+      "remediation_types": [
+        "bash",
+        "instructions"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10260,9 +11638,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.2.1.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.2.2.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10294,9 +11678,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.2.2.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.2.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10328,9 +11718,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.2.3.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.2.2.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10362,9 +11758,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.2.4.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.2.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10396,9 +11798,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10430,9 +11838,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10464,9 +11878,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10498,9 +11918,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10532,9 +11958,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10566,9 +11998,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10600,9 +12038,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10634,9 +12078,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10668,9 +12118,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10702,9 +12158,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10736,9 +12198,13 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.2.3.11.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.11",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10770,9 +12236,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.12.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.6.2.3.12",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10804,9 +12276,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.13.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.13",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10838,9 +12316,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.14.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.14",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10872,9 +12356,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.15.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.15",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10906,9 +12396,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.16.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.16",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10940,9 +12436,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.17.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.17",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -10974,9 +12476,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.18.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.18",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11008,9 +12516,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.19.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.19",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11042,9 +12556,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.3.20.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.20",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11076,9 +12596,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/6.2.3.21.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.3.21",
+      "remediation_types": [],
       "section": "6",
       "section_path": [
         "6",
@@ -11110,9 +12632,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11144,9 +12672,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11178,9 +12712,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11212,9 +12752,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11246,9 +12792,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11280,9 +12832,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11314,9 +12872,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11348,9 +12912,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11382,9 +12952,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11416,9 +12992,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.2.4.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.2.4.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11458,9 +13040,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.3.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.3.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11499,9 +13087,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.3.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.3.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11532,9 +13126,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/6.3.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.6.3.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "6",
       "section_path": [
         "6",
@@ -11573,9 +13173,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.1",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11614,9 +13220,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11655,9 +13267,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.3",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11696,9 +13314,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11737,9 +13361,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.5",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11778,9 +13408,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.6",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11819,9 +13455,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.7",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11860,9 +13502,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.8",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11901,9 +13549,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11942,9 +13596,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.10.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.10",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -11983,9 +13643,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.11.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.11",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12024,9 +13690,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.1.12.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.12",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12065,9 +13737,11 @@
         "manual_reason": "manual",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/7.1.13.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.1.13",
+      "remediation_types": [],
       "section": "7",
       "section_path": [
         "7",
@@ -12106,9 +13780,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.1.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.1",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12147,9 +13827,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.2.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.2",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12188,9 +13874,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.3.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.3",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12229,9 +13921,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.4.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.4",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12270,9 +13968,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.5.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.5",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12311,9 +14015,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.6.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.6",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12352,9 +14062,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.7.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.7",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12393,9 +14109,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.8.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.8",
+      "remediation_types": [
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12434,9 +14156,15 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.9.json",
       "has_odv": false,
       "id": "cac_cis_ubuntu2404.7.2.9",
+      "remediation_types": [
+        "bash"
+      ],
       "section": "7",
       "section_path": [
         "7",
@@ -12475,9 +14203,16 @@
         "manual_reason": "openscap",
         "status": "manual"
       },
+      "check_types": [
+        "instructions"
+      ],
       "file": "rules/7.2.10.json",
       "has_odv": true,
       "id": "cac_cis_ubuntu2404.7.2.10",
+      "remediation_types": [
+        "bash",
+        "instructions"
+      ],
       "section": "7",
       "section_path": [
         "7",

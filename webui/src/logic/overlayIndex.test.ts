@@ -61,7 +61,12 @@ describe('buildOverlayIndex', () => {
             discussion: 'long text',
             tags: { $append: ['x'] },
             references: { nist: ['AC-1'] },
-            remediation: { Windows: { steps: [], payloads: [] } },
+            remediation: {
+              Windows: {
+                steps: [{ name: 'Fix', language: 'powershell', shell_file: 'baselines/_overlays/scripts/Fix.ps1', additional_info: null, versions: null }],
+                payloads: [{ kind: 'mobileconfig', versions: null, data: { large: 'payload body' } }],
+              },
+            },
             section_path: ['One', 'Two'],
             assessment: { status: 'automated', manual_reason: null },
             architecture: 'arm64',
@@ -72,8 +77,10 @@ describe('buildOverlayIndex', () => {
       () => {},
     )
 
-    expect(Object.keys(index.overlays[0].index_fields)).toEqual(['title', 'tags', 'section_path', 'assessment', 'architecture', 'applicability'])
+    expect(Object.keys(index.overlays[0].index_fields)).toEqual(['title', 'tags', 'remediation', 'section_path', 'assessment', 'architecture', 'applicability'])
     expect(index.overlays[0].index_fields.tags).toEqual({ $append: ['x'] })
+    // Reduced to the types it names: no script path or payload body.
+    expect(index.overlays[0].index_fields.remediation).toEqual({ any: { steps: [{ language: 'powershell' }, { language: 'mobileconfig' }], payloads: [] } })
   })
 
   it('skips a structurally invalid file and a reused id, logging each', () => {

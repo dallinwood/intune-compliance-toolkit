@@ -32,6 +32,8 @@ function row(id: string, title: string, sectionPath: string[]): RuleRow {
     benchmarks: [],
     tags: [],
     hasOdv: false,
+    checkTypes: [],
+    remediationTypes: [],
   }
 }
 

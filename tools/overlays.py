@@ -177,10 +177,61 @@ def apply_overlay_fields(rule: dict, fields: dict, known_fields: set[str] | None
     return merged
 
 
+def _unwrapped(value: object, path: str) -> object:
+    if isinstance(value, dict):
+        wrapper = _wrapper_of(value, path)
+        if wrapper is not None:
+            return wrapper[1]
+    return value
+
+
+def _unwrapped_dicts(value: object, path: str) -> list[dict]:
+    """The objects in a list overlay value, each with any wrapper taken off."""
+    entries = _unwrapped(value, path)
+    if not isinstance(entries, list):
+        return []
+    unwrapped_entries = (_unwrapped(entry, f"{path}[{position}]") for position, entry in enumerate(entries))
+    return [entry for entry in unwrapped_entries if isinstance(entry, dict)]
+
+
+def _unwrapped_targets(value: object, path: str) -> dict:
+    targets = _unwrapped(value, path)
+    return targets if isinstance(targets, dict) else {}
+
+
+def _check_types_named(check: object) -> set[str]:
+    return {
+        item["language"]
+        for target, items in _unwrapped_targets(check, "check").items()
+        for item in _unwrapped_dicts(items, f"check.{target}")
+        if isinstance(item.get("language"), str)
+    }
+
+
+def _remediation_types_named(remediation: object) -> set[str]:
+    types: set[str] = set()
+    for target, target_remediation in _unwrapped_targets(remediation, "remediation").items():
+        target_fields = _unwrapped_targets(target_remediation, f"remediation.{target}")
+        steps = _unwrapped_dicts(target_fields.get("steps"), f"remediation.{target}.steps")
+        payloads = _unwrapped_dicts(target_fields.get("payloads"), f"remediation.{target}.payloads")
+        types.update(step["language"] for step in steps if isinstance(step.get("language"), str))
+        types.update(payload["kind"] for payload in payloads if isinstance(payload.get("kind"), str))
+    return types
+
+
+def _overlaid_types(current: list[str], overlay_value: object, named: set[str]) -> list[str]:
+    # Only a top-level $replace says what the whole field now holds. Any other
+    # value merges or appends, so it can add types but never remove one: the
+    # index does not know what the rest of the field holds.
+    is_whole_replacement = isinstance(overlay_value, dict) and list(overlay_value) == [REPLACE_WRAPPER]
+    return sorted(named if is_whole_replacement else set(current) | named)
+
+
 def apply_overlay_to_index_entry(entry: dict, fields: dict) -> dict:
     """Apply an overlay to an index entry, then recompute the derived fields.
 
     An index entry has no odvs, only has_odv; a replaced odvs list sets it.
+    It has no check or remediation either, only the types they list.
     """
     merged = apply_overlay_fields(entry, fields, INDEX_OVERLAY_FIELDS | REPLACE_ONLY_FIELDS)
     if "odvs" in merged:
@@ -191,6 +242,14 @@ def apply_overlay_to_index_entry(entry: dict, fields: dict) -> dict:
     section_path = merged.get("section_path")
     if isinstance(section_path, list) and section_path:
         merged["section"] = section_path[0]
+    if "check" in fields:
+        merged["check_types"] = _overlaid_types(
+            entry["check_types"], fields["check"], _check_types_named(fields["check"])
+        )
+    if "remediation" in fields:
+        merged["remediation_types"] = _overlaid_types(
+            entry["remediation_types"], fields["remediation"], _remediation_types_named(fields["remediation"])
+        )
     return merged
 
 

@@ -176,6 +176,11 @@ export interface IndexEntry {
   applicability: Applicability
   tags: string[]
   has_odv: boolean
+  // Sorted and distinct: the check languages, and the remediation step
+  // languages plus payload kinds. Optional only for an index a browser cached
+  // before these fields existed.
+  check_types?: string[]
+  remediation_types?: string[]
 }
 
 export interface RuleIndex {

@@ -22,9 +22,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.1.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.1.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -55,9 +63,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.1.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.1.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -88,9 +104,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.1.3.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.1.1.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -121,9 +145,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.1.4.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.1.1.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -154,9 +186,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.1.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.1.1.5",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -187,9 +227,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.1.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.1.1.6",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -220,9 +268,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.2.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.1.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -253,9 +309,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/1.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.1.2.1",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -286,9 +348,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/1.2.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.1.2.4",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -315,9 +383,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/1.2.3.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.1.2.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "1",
       "section_path": [
         "1",
@@ -348,9 +424,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -377,9 +461,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -406,9 +498,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -439,9 +539,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -468,9 +576,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.5",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -501,9 +617,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.6",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -530,9 +654,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.7",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -559,9 +691,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.8",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -588,9 +728,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.9",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -617,9 +765,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.10.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.10",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -650,9 +806,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.11.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.11",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -683,9 +847,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.12.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.12",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -716,9 +888,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.13.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.13",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -749,9 +929,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.14.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.14",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -782,9 +970,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.15.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.15",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -815,9 +1011,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.16.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.16",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -848,9 +1052,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.17.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.17",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -877,9 +1089,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.18.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.18",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -906,9 +1126,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.2.19.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.19",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -939,9 +1165,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.20.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.20",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -968,9 +1202,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.21.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.21",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -997,9 +1239,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.22.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.22",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1030,9 +1280,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.23.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.23",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1063,9 +1321,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.24.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.24",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1096,9 +1362,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.25.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.25",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1125,9 +1399,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.26.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.26",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1154,9 +1436,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.27.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.27",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1183,9 +1473,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.28.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.28",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1212,9 +1510,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.29.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.29",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1245,9 +1551,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.30.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.30",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1278,9 +1592,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.2.31.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.31",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1307,9 +1627,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.32.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.32",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1336,9 +1664,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.2.33.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.33",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1369,9 +1703,13 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/2.2.34.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.34",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1402,9 +1740,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.35.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.35",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1435,9 +1781,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.36.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.36",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1464,9 +1818,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.37.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.37",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1493,9 +1855,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.2.38.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.38",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1522,9 +1890,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.39.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.39",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1555,9 +1931,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.40.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.40",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1588,9 +1972,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.41.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.41",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1621,9 +2013,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.42.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.42",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1654,9 +2054,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.43.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.43",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1687,9 +2095,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.44.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.44",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1720,9 +2136,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.45.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.45",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1753,9 +2177,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.46.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.46",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1786,9 +2218,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.47.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.47",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1815,9 +2255,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.48.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.48",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1848,9 +2296,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.2.49.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.2.49",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1877,9 +2333,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.3.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1911,9 +2375,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1945,9 +2419,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.1.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.1.3",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -1979,9 +2459,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.1.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.1.4",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2013,9 +2499,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2047,9 +2543,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2081,9 +2587,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2111,9 +2627,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2141,9 +2667,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.5.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.5.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2171,9 +2707,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.5.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.5.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2201,9 +2747,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.5.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.5.4",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2231,9 +2783,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.5.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.5.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2265,9 +2827,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.6.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.6.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2299,9 +2871,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.6.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.6.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2333,9 +2915,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.6.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.6.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2367,9 +2959,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.6.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.6.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2401,9 +3003,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.6.5.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.6.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2435,9 +3047,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.6.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.6.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2469,9 +3091,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.7.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.7.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2503,9 +3135,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.7.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.7.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2537,9 +3179,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.7.3.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.7.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2571,9 +3223,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.7.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.7.4",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2605,9 +3263,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.7.5.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.7.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2635,9 +3303,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.7.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.7.6",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2669,9 +3343,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.7.7.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.7.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2699,9 +3383,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.7.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.7.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2733,9 +3427,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.7.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.7.9",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2767,9 +3467,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.8.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.8.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2801,9 +3511,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.8.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.8.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2835,9 +3555,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.8.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.8.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2869,9 +3599,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.9.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.9.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2903,9 +3643,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.9.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.9.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2937,9 +3687,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.9.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.9.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -2971,9 +3731,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.9.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.9.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3001,9 +3771,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.9.5.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.9.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3035,9 +3815,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.3.10.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3065,9 +3853,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3095,9 +3893,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3129,9 +3937,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3163,9 +3981,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3193,9 +4021,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3223,9 +4061,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3257,9 +4105,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3291,9 +4149,13 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [],
       "file": "rules/2.3.10.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.9",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3325,9 +4187,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.10.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.10",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3355,9 +4227,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.11.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.11",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3389,9 +4271,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.12.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.12",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3423,9 +4315,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.10.13.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.10.13",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3457,9 +4359,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3491,9 +4403,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3525,9 +4447,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3559,9 +4491,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/2.3.11.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.4",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3593,9 +4531,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3627,9 +4575,17 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell"
+      ],
       "file": "rules/2.3.11.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.6",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3661,9 +4617,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3695,9 +4661,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.8.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.11.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3729,9 +4705,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.9",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3763,9 +4749,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.10.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.10",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3797,9 +4793,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.11.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.11",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3827,9 +4833,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.12.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.11.12",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3861,9 +4877,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.11.13.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.11.13",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3895,9 +4921,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.13.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.13.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3929,9 +4965,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.15.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.15.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3963,9 +5009,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.15.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.15.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -3997,9 +5053,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4031,9 +5097,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.2.3.17.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4065,9 +5141,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4099,9 +5185,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4133,9 +5229,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4167,9 +5273,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4201,9 +5317,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4235,9 +5361,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/2.3.17.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.2.3.17.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "2",
       "section_path": [
         "2",
@@ -4265,9 +5401,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.5.1",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "5",
       "section_path": [
         "5"
@@ -4293,9 +5435,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/5.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.5.2",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "5",
       "section_path": [
         "5"
@@ -4325,9 +5473,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4358,9 +5516,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4391,9 +5559,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.1.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4424,9 +5602,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.4.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.9.1.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4457,9 +5645,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.5.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.9.1.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4490,9 +5688,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.1.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4523,9 +5731,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.1.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.1.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4556,9 +5774,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4589,9 +5817,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4622,9 +5860,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.2.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4655,9 +5903,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.4.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.9.2.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4688,9 +5946,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.5.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.9.2.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4721,9 +5989,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.2.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4754,9 +6032,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.2.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.2.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4787,9 +6075,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4820,9 +6118,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4853,9 +6161,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4886,9 +6204,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4919,9 +6247,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4952,9 +6290,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.6.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.9.3.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -4985,9 +6333,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.7.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.9.3.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -5018,9 +6376,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -5051,9 +6419,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/9.3.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.9.3.9",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "9",
       "section_path": [
         "9",
@@ -5084,9 +6462,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5113,9 +6498,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5142,9 +6534,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.1.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.1.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5175,9 +6574,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5204,9 +6610,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5233,9 +6646,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.2.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.2.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5262,9 +6682,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.2.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.2.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5295,9 +6722,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.2.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.2.5",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5328,9 +6762,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.2.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.2.6",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5361,9 +6802,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.3.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.3.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5394,9 +6842,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.3.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.3.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5423,9 +6878,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5452,9 +6914,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.4.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.4.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5485,9 +6954,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5518,9 +6994,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.5.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.5.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5551,9 +7034,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.5.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.5.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5584,9 +7074,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.5.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.5.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5617,9 +7114,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.5.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.5.5",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5650,9 +7154,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.5.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.5.6",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5683,9 +7194,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.6.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.6.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5716,9 +7234,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.6.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.6.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5749,9 +7274,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.6.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.6.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5782,9 +7314,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.6.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.6.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5815,9 +7354,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.7.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.7.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5848,9 +7394,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.7.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.7.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5881,9 +7434,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.7.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.7.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5914,9 +7474,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.7.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.7.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5947,9 +7514,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.7.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.7.5",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -5980,9 +7554,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.8.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.8.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -6013,9 +7594,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.9.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.9.1",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -6046,9 +7634,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.9.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.9.2",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -6079,9 +7674,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.9.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.9.3",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -6112,9 +7714,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.9.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.9.4",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -6145,9 +7754,16 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/17.9.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.17.9.5",
+      "remediation_types": [
+        "ansible",
+        "powershell"
+      ],
       "section": "17",
       "section_path": [
         "17",
@@ -6178,9 +7794,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.1.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.1.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6212,9 +7838,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.1.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.1.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6246,9 +7882,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.1.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.1.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6280,9 +7926,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.1.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.1.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6309,9 +7965,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6342,9 +8008,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6375,9 +8051,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6408,9 +8094,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6441,9 +8137,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6474,9 +8180,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6507,9 +8223,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.7.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.4.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6540,9 +8266,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.4.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.4.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6573,9 +8309,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6606,9 +8352,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6639,9 +8395,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6672,9 +8438,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6705,9 +8481,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6738,9 +8524,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6771,9 +8567,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6804,9 +8610,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6837,9 +8653,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/18.5.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.9",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6870,9 +8692,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.10.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.10",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6903,9 +8735,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.11.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.5.11",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6936,9 +8778,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.5.12.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.5.12",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -6969,9 +8821,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7003,9 +8865,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.4.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.6.4.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7037,9 +8909,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.4.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.4.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7071,9 +8953,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.4.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.4.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7105,9 +8997,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7139,9 +9041,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.8.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.8.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7173,9 +9085,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.9.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.9.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7207,9 +9129,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.9.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.9.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7241,9 +9173,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.10.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.10.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7275,9 +9217,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.11.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.11.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7309,9 +9261,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.11.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.11.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7343,9 +9305,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.11.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.11.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7377,9 +9349,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.14.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.14.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7411,9 +9393,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.19.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.19.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7446,9 +9438,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.20.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.20.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7480,9 +9482,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.20.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.20.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7514,9 +9526,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.21.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.21.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7544,9 +9566,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.6.21.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.6.21.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7578,9 +9610,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7611,9 +9653,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7644,9 +9696,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7677,9 +9739,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7710,9 +9782,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7743,9 +9825,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.6.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.7.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7776,9 +9868,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7809,9 +9911,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7842,9 +9954,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.9",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7875,9 +9997,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.10.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.10",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7908,9 +10040,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.11.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.11",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7941,9 +10083,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.7.12.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.7.12",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -7974,9 +10126,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.8.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.8.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8008,9 +10170,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.3.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.3.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8042,9 +10214,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8076,9 +10258,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.4.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.4.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8110,9 +10302,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8144,9 +10346,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.9.5.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8178,9 +10390,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.5.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8212,9 +10434,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.5.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8242,9 +10474,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.5.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8272,9 +10514,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.5.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8306,9 +10558,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.5.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.5.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8340,9 +10602,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.7.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.7.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8374,9 +10646,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.13.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.13.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8408,9 +10690,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.19.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.19.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8442,9 +10734,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.19.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.19.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8476,9 +10778,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.19.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.19.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8510,9 +10822,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.19.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.19.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8544,9 +10866,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.19.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.19.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8578,9 +10910,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.19.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.19.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8612,9 +10954,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8647,9 +10999,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8682,9 +11044,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8717,9 +11089,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8752,9 +11134,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8787,9 +11179,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8822,9 +11224,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8857,9 +11269,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.8.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8892,9 +11314,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.9.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.9",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8927,9 +11359,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.10.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.10",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8962,9 +11404,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.11.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.11",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -8997,9 +11449,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.12.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.12",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9032,9 +11494,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.20.1.13.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.20.1.13",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9067,9 +11539,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.23.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.23.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9101,9 +11583,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.24.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.24.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9131,9 +11623,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.9.25.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9161,9 +11663,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.25.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9191,9 +11703,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.25.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9221,9 +11743,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.25.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9251,9 +11783,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.5.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.9.25.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9281,9 +11823,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.6.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.9.25.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9311,9 +11863,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.7.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.9.25.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9341,9 +11903,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.25.8.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.9.25.8",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9375,9 +11947,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.27.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.27.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9409,9 +11991,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9443,9 +12035,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9477,9 +12079,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9507,9 +12119,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9541,9 +12163,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9575,9 +12207,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9609,9 +12251,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.28.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.28.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9643,9 +12295,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.31.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.31.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9677,9 +12339,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.31.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.31.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9711,9 +12383,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.33.6.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.33.6.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9746,9 +12428,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.33.6.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.33.6.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9781,9 +12473,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.33.6.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.33.6.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9816,9 +12518,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.33.6.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.33.6.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9851,9 +12563,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.35.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.35.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9885,9 +12607,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.35.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.35.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9915,9 +12647,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.36.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.36.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9945,9 +12687,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.36.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.36.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -9979,9 +12731,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.47.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.47.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10014,9 +12776,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.47.11.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.47.11.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10049,9 +12821,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.49.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.49.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10083,9 +12865,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.51.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.51.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10114,9 +12906,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.9.51.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.9.51.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10149,9 +12951,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10183,9 +12995,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.6.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.6.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10217,9 +13039,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.8.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.8.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10251,9 +13083,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.8.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.8.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10285,9 +13127,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.8.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.8.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10319,9 +13171,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.9.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.9.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10354,9 +13216,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.11.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.11.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10388,9 +13260,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.13.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.13.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10422,9 +13304,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.13.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.13.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10456,9 +13348,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.14.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.14.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10490,9 +13392,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.15.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.15.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10524,9 +13436,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.15.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.15.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10558,9 +13480,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.16.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10592,9 +13524,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.16.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10626,9 +13568,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.16.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10660,9 +13612,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.16.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10694,9 +13656,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.16.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10728,9 +13700,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.16.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10762,9 +13744,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.16.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.16.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10796,9 +13788,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10830,9 +13832,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10864,9 +13876,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10898,9 +13920,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10932,9 +13964,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -10966,9 +14008,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.6.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.6",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11000,9 +14052,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.18.7.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.18.7",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11034,9 +14096,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.26.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11069,9 +14141,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.1.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.26.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11104,9 +14186,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.26.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11139,9 +14231,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.2.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.26.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11174,9 +14276,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.3.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.26.3.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11209,9 +14321,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.3.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.26.3.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11244,9 +14366,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.26.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11279,9 +14411,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.26.4.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.26.4.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11314,9 +14456,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.29.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.29.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11348,9 +14500,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.29.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.29.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11382,9 +14544,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.29.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.29.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11416,9 +14588,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.29.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.29.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11450,9 +14632,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.37.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.37.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11484,9 +14676,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.41.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.41.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11518,9 +14720,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.42.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.42.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11552,9 +14764,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11587,9 +14809,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11622,9 +14854,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.5.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.5.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11657,9 +14899,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.6.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.6.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11693,9 +14945,15 @@
         "manual_reason": "no_check",
         "status": "manual"
       },
+      "check_types": [
+        "goss"
+      ],
       "file": "rules/18.10.43.6.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.6.1.2",
+      "remediation_types": [
+        "ansible"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11729,9 +14987,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.6.3.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.6.3.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11765,9 +15033,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.7.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.7.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11800,9 +15078,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.8.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.8.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11835,9 +15123,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.10.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.10.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11870,9 +15168,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.10.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.10.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11905,9 +15213,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.10.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.10.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11940,9 +15258,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.10.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.10.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -11975,9 +15303,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.10.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.10.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12010,9 +15348,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.11.1.1.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.43.11.1.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12047,9 +15395,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.11.1.1.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.43.11.1.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12084,9 +15442,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.11.1.2.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.43.11.1.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12121,9 +15489,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.12.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.12.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12156,9 +15534,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.13.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.13.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12191,9 +15579,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.13.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.13.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12226,9 +15624,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.13.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.13.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12261,9 +15669,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.13.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.13.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12296,9 +15714,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.13.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.13.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12331,9 +15759,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.16.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.16",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12365,9 +15803,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.43.17.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.43.17",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12399,9 +15847,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.51.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.51.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12433,9 +15891,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.56.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.56.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12467,9 +15935,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12502,9 +15980,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12538,9 +16026,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.3.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.3.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12574,9 +16072,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.3.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.3.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12610,9 +16118,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.3.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.3.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12646,9 +16164,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.3.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.3.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12682,9 +16210,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.9.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.9.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12718,9 +16256,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.9.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.9.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12754,9 +16302,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.9.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.9.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12790,9 +16348,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.9.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.9.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12826,9 +16394,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.9.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.9.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12862,9 +16440,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.10.1.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.57.3.10.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12898,9 +16486,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.10.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.10.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12934,9 +16532,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.11.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.11.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -12970,9 +16578,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.57.3.11.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.57.3.11.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13006,9 +16624,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.58.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.58.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13040,9 +16668,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.58.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.58.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13074,9 +16712,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.59.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.59.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13108,9 +16756,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.59.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.59.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13142,9 +16800,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.59.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.59.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13176,9 +16844,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.63.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.63.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13210,9 +16888,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.76.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.76.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13245,9 +16933,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.80.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.80.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13279,9 +16977,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.80.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.80.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13313,9 +17021,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.81.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.81.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13347,9 +17065,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.81.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.81.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13381,9 +17109,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.81.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.81.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13415,9 +17153,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.82.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.82.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13449,9 +17197,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.87.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.87.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13483,9 +17241,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.87.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.87.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13517,9 +17285,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13552,9 +17330,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.1.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.1.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13587,9 +17375,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.1.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.1.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13622,9 +17420,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13657,9 +17465,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13692,9 +17510,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.2.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.2.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13727,9 +17555,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.89.2.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.89.2.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13762,9 +17600,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.90.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.90.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13796,9 +17644,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.92.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.92.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13831,9 +17689,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.93.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.93.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13866,9 +17734,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.93.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.93.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13901,9 +17779,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.93.2.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.93.2.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13936,9 +17824,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.93.4.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.93.4.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -13971,9 +17869,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.93.4.2.json",
       "has_odv": true,
       "id": "lockdown_cis_windows2019.18.10.93.4.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -14006,9 +17914,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/18.10.93.4.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.18.10.93.4.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "18",
       "section_path": [
         "18",
@@ -14041,9 +17959,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.5.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.5.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14075,9 +18003,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.6.6.1.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.6.6.1.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14110,9 +18048,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.5.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.5.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14144,9 +18092,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.5.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.5.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14178,9 +18136,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.8.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.8.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14212,9 +18180,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.8.2.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.8.2",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14246,9 +18224,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.8.3.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.8.3",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14280,9 +18268,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.8.4.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.8.4",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14314,9 +18312,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.8.5.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.8.5",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14348,9 +18356,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.26.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.26.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14382,9 +18400,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.44.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.44.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",
@@ -14416,9 +18444,19 @@
         "manual_reason": null,
         "status": "automated"
       },
+      "check_types": [
+        "goss",
+        "powershell",
+        "registry"
+      ],
       "file": "rules/19.7.46.2.1.json",
       "has_odv": false,
       "id": "lockdown_cis_windows2019.19.7.46.2.1",
+      "remediation_types": [
+        "ansible",
+        "powershell",
+        "registry"
+      ],
       "section": "19",
       "section_path": [
         "19",

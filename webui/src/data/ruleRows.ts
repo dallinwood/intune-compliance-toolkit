@@ -60,6 +60,8 @@ export function buildRuleRows(
       benchmarks: Array.from(benchmarks).sort(),
       tags: entry.tags,
       hasOdv: entry.has_odv,
+      checkTypes: entry.check_types ?? [],
+      remediationTypes: entry.remediation_types ?? [],
     }
   })
 }

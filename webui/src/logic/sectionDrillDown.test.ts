@@ -28,6 +28,8 @@ function row({ sourceName, upstreamId, section = 'Section A', assessmentStatus =
     benchmarks: [],
     tags: [],
     hasOdv: false,
+    checkTypes: [],
+    remediationTypes: [],
   } as unknown as RuleRow
 }
 

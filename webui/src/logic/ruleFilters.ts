@@ -6,12 +6,33 @@ import { upstreamRuleId } from './ruleDisplay'
 import type { LinkedFrameworksByRule } from './linkedFrameworks'
 import { compareGroupKeys, groupLabel, termGroupKey, type VocabularyIndex } from './vocabulary'
 
-export type FilterValues = Pick<FilterState, 'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'linked' | 'automatable'>
+export type FilterValues = Pick<
+  FilterState,
+  'search' | 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'linked' | 'checks' | 'remediations' | 'odvs' | 'automatable'
+>
 
 // The Set-valued facets matchesFilters can be asked to ignore - used to
 // compute "what values are still reachable in this facet, given every
 // other currently-applied filter" for faceted-search-style narrowing.
-export type FilterDimension = 'targets' | 'sources' | 'versions' | 'benchmarks' | 'sections' | 'tags' | 'linked'
+export type FilterDimension =
+  | 'targets'
+  | 'sources'
+  | 'versions'
+  | 'benchmarks'
+  | 'sections'
+  | 'tags'
+  | 'linked'
+  | 'checks'
+  | 'remediations'
+  | 'odvs'
+
+// The Organization values facet's two options, kept in the URL as odv=yes or odv=no.
+export const HAS_ODV_KEY = 'yes'
+export const NO_ODV_KEY = 'no'
+
+export function odvKey(row: RuleRow): string {
+  return row.hasOdv ? HAS_ODV_KEY : NO_ODV_KEY
+}
 
 // Filter state holds vocabulary group keys (benchmarks: group keys paired
 // with a severity group key, see benchmarkFacetValue), so grouped codes (e.g.
@@ -160,6 +181,10 @@ export function matchesFilters(
     return false
   if (excludeDimension !== 'linked' && filters.linked.size > 0 && !linkedFrameworkKeys(row, linkedFrameworks).some((key) => filters.linked.has(key)))
     return false
+  if (excludeDimension !== 'checks' && filters.checks.size > 0 && !row.checkTypes.some((type) => filters.checks.has(type))) return false
+  if (excludeDimension !== 'remediations' && filters.remediations.size > 0 && !row.remediationTypes.some((type) => filters.remediations.has(type)))
+    return false
+  if (excludeDimension !== 'odvs' && filters.odvs.size > 0 && !filters.odvs.has(odvKey(row))) return false
   if (filters.automatable === 'automatable' && row.assessment.status !== 'automated') return false
   if (filters.automatable === 'manual' && row.assessment.status !== 'manual') return false
 
@@ -286,6 +311,9 @@ export function knownFacetValues(
     sections: new Set(),
     tags: new Set(),
     linked: new Set(),
+    checks: new Set(),
+    remediations: new Set(),
+    odvs: new Set(),
   }
   for (const row of rows) {
     targetGroupKeys(row, index).forEach((value) => known.targets.add(value))
@@ -295,6 +323,9 @@ export function knownFacetValues(
     known.sections.add(sectionGroupKey(row, index))
     tagGroupKeys(row, index).forEach((value) => known.tags.add(value))
     linkedFrameworkKeys(row, linkedFrameworks).forEach((value) => known.linked.add(value))
+    row.checkTypes.forEach((value) => known.checks.add(value))
+    row.remediationTypes.forEach((value) => known.remediations.add(value))
+    known.odvs.add(odvKey(row))
   }
   return known
 }

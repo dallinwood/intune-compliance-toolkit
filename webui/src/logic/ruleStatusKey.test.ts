@@ -21,6 +21,8 @@ function rowFor(ruleId: string, overrides: Partial<RuleRow> = {}): RuleRow {
     benchmarks: [],
     tags: [],
     hasOdv: false,
+    checkTypes: [],
+    remediationTypes: [],
     ...overrides,
   }
 }

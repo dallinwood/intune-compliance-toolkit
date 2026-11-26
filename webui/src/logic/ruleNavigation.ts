@@ -4,7 +4,7 @@ import { matchesFilters, type FilterDimension, type FilterValues } from './ruleF
 import type { LinkedFrameworksByRule } from './linkedFrameworks'
 import type { VocabularyIndex } from './vocabulary'
 
-const FACETS: readonly FilterDimension[] = ['targets', 'sources', 'versions', 'benchmarks', 'sections', 'tags', 'linked']
+const FACETS: readonly FilterDimension[] = ['targets', 'sources', 'versions', 'benchmarks', 'sections', 'tags', 'linked', 'checks', 'remediations', 'odvs']
 
 function noFilters(): FilterValues {
   return {
@@ -16,6 +16,9 @@ function noFilters(): FilterValues {
     sections: new Set(),
     tags: new Set(),
     linked: new Set(),
+    checks: new Set(),
+    remediations: new Set(),
+    odvs: new Set(),
     automatable: 'all',
   }
 }
@@ -42,6 +45,9 @@ export function filtersShowingRule(
     sections: filters.sections,
     tags: filters.tags,
     linked: filters.linked,
+    checks: filters.checks,
+    remediations: filters.remediations,
+    odvs: filters.odvs,
     automatable: filters.automatable,
   }
   if (matchesFilters(row, next, index, undefined, linkedFrameworks)) return next

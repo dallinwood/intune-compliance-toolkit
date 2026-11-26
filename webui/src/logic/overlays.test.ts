@@ -407,6 +407,8 @@ describe('applyOverlaysToIndexEntry', () => {
     applicability: [],
     tags: [],
     has_odv: false,
+    check_types: [],
+    remediation_types: [],
   }
 
   it('applies only the overlays targeting the entry, in order, and recomputes section', () => {
@@ -445,11 +447,11 @@ describe('overlayable fields follow the v6 schemas', () => {
     expect(Object.keys(FIELD_KINDS).sort()).toEqual(ruleFields)
   })
 
-  it('INDEX_OVERLAY_FIELDS lists every index field an overlay can set, plus odvs standing in for has_odv', () => {
-    const derivedOrProtected = new Set(['id', 'file', 'section', 'has_odv'])
+  it('INDEX_OVERLAY_FIELDS lists every index field an overlay can set, plus the rule fields standing in for derived ones', () => {
+    const derivedOrProtected = new Set(['id', 'file', 'section', 'has_odv', 'check_types', 'remediation_types'])
     const indexFields = schemaProperties('index', (schema) => schema.properties.rules.items.properties).filter(
       (field) => !derivedOrProtected.has(field),
     )
-    expect([...INDEX_OVERLAY_FIELDS].sort()).toEqual([...indexFields, 'odvs'].sort())
+    expect([...INDEX_OVERLAY_FIELDS].sort()).toEqual([...indexFields, 'odvs', 'check', 'remediation'].sort())
   })
 })

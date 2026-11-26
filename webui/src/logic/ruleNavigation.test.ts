@@ -22,6 +22,8 @@ const ISM_ROW: RuleRow = {
   benchmarks: [],
   tags: [],
   hasOdv: false,
+  checkTypes: [],
+  remediationTypes: [],
 }
 
 function filters(overrides: Partial<FilterValues> = {}): FilterValues {
@@ -34,6 +36,9 @@ function filters(overrides: Partial<FilterValues> = {}): FilterValues {
     sections: new Set(),
     tags: new Set(),
     linked: new Set(),
+    checks: new Set(),
+    remediations: new Set(),
+    odvs: new Set(),
     automatable: 'all',
     ...overrides,
   }

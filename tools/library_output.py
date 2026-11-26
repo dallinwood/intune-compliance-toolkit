@@ -7,6 +7,7 @@ from pathlib import Path
 
 from tools.directory_swap import rename_directory, replace_directory, replace_file
 from tools.json_output import write_json
+from tools.script_types import check_types, remediation_types
 from tools.source_lock import SourceLock
 from tools.validate_library import manifest_consistency_errors, schema_errors, validate_library
 
@@ -32,6 +33,8 @@ def index_entry(rule: dict, file: str) -> dict:
         "applicability": rule["applicability"],
         "tags": rule["tags"],
         "has_odv": len(rule["odvs"]) > 0,
+        "check_types": check_types(rule["check"]),
+        "remediation_types": remediation_types(rule["remediation"]),
     }
 
 

@@ -1,4 +1,4 @@
-import { INDEX_OVERLAY_FIELDS, parseOverlay, type Overlay, type OverlayTarget } from './overlays'
+import { INDEX_OVERLAY_FIELDS, parseOverlay, reduceScriptTypes, type Overlay, type OverlayTarget } from './overlays'
 
 // The overlay index is generated at publish time (scripts/copy-baselines.mjs)
 // as _overlays/_index.json, so the app can show overlaid titles, tags and
@@ -39,7 +39,10 @@ export function reduceOdv(value: unknown): unknown {
 export function indexFieldsOf(fields: Record<string, unknown>): Record<string, unknown> {
   const indexFields: Record<string, unknown> = {}
   for (const [name, value] of Object.entries(fields)) {
-    if (INDEX_OVERLAY_FIELDS.has(name)) indexFields[name] = name === 'odvs' ? reduceOdv(value) : value
+    if (!INDEX_OVERLAY_FIELDS.has(name)) continue
+    if (name === 'odvs') indexFields[name] = reduceOdv(value)
+    else if (name === 'check' || name === 'remediation') indexFields[name] = reduceScriptTypes(name, value)
+    else indexFields[name] = value
   }
   return indexFields
 }

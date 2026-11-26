@@ -29,6 +29,9 @@ const everyKeySet: UrlState = {
   sections: ['Access Control'],
   tags: ['800-53r5', 'cnssi-1253'],
   linked: ['asd_ism', 'e4eit'],
+  checks: ['powershell', 'registry'],
+  remediations: ['mobileconfig'],
+  odvs: ['yes'],
   page: 3,
   size: 100,
   openRule: 'asd_ism.ism-1622',
@@ -50,7 +53,7 @@ const everyKeySet: UrlState = {
 
 describe('urlState', () => {
   it('writes the comparison parameters under their own names, in a fixed order', () => {
-    expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], linked: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
+    expect(serializeUrlState({ ...parseUrlState(''), ...everyKeySet, search: '', automation: 'all', targets: [], versions: [], sources: [], benchmarks: [], sections: [], tags: [], linked: [], checks: [], remediations: [], odvs: [], page: 1, size: DEFAULT_PAGE_SIZE, openRule: null, licence: null, product: null, compare: [], compareBenchmarks: [] }, defaults)).toBe(
       '?framework=asd_ism&tab=coverage&release=v2026.03.24&from=v2025.12.9&to=v2026.09.4&group=changed&kind=behaviour&kind=references&cq=access+control&csection=Guidelines+for+email&only=custom&only=selected',
     )
   })

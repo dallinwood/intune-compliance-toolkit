@@ -456,9 +456,10 @@ def test_index_entry_fields():
     entry = index_entry(rule, "rules/os_gatekeeper_enable.json")
     assert set(entry) == {
         "id", "title", "file", "section", "section_path", "assessment", "architecture",
-        "applicability", "tags", "has_odv",
+        "applicability", "tags", "has_odv", "check_types", "remediation_types",
     }
     assert entry["has_odv"] is False
+    assert entry["check_types"] == ["bash"]
     wrapped = {"schema_version": 7, "source": "mscp", "rules": [entry]}
     assert schema_errors(wrapped, "index") == []
 

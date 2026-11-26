@@ -141,6 +141,36 @@ def snapshot(directory: Path) -> dict[str, bytes]:
     }
 
 
+def check_item(language: str) -> dict:
+    return {"name": None, "language": language, "default": None, "by_version": {}}
+
+
+def test_index_entry_lists_each_check_language_and_remediation_type_once_in_order():
+    rule = example_rule()
+    rule["check"] = {
+        "Windows": [check_item("registry"), check_item("powershell")],
+        "macOS": [check_item("powershell")],
+    }
+    rule["remediation"] = {
+        "macOS": {
+            "steps": [{"name": None, "language": "bash", "shell": "true", "additional_info": None, "versions": None}],
+            "payloads": [{"kind": "mobileconfig", "versions": None, "data": {}}],
+        },
+    }
+
+    entry = index_entry(rule, "rules/rule_one.json")
+
+    assert entry["check_types"] == ["powershell", "registry"]
+    assert entry["remediation_types"] == ["bash", "mobileconfig"]
+
+
+def test_index_entry_of_a_rule_without_check_or_remediation_lists_no_types():
+    entry = index_entry(example_rule(), "rules/rule_one.json")
+
+    assert entry["check_types"] == []
+    assert entry["remediation_types"] == []
+
+
 def test_release_dir_and_release_entry():
     lock = SourceLock(
         tag="v1",

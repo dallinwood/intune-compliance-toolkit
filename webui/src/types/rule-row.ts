@@ -20,4 +20,6 @@ export interface RuleRow {
   benchmarks: string[]
   tags: string[]
   hasOdv: boolean
+  checkTypes: string[]
+  remediationTypes: string[]
 }

@@ -33,6 +33,11 @@ export interface FilterState {
   sections: Set<string>
   tags: Set<string>
   linked: Set<string>
+  // Check and remediation types (script languages and payload kinds) and
+  // whether a rule has organization-defined values (HAS_ODV_KEY, NO_ODV_KEY).
+  checks: Set<string>
+  remediations: Set<string>
+  odvs: Set<string>
   automatable: AutomatableFilter
   page: number
   size: PageSize
@@ -91,6 +96,9 @@ export interface FilterState {
   toggleSection: (value: string) => void
   toggleTag: (value: string) => void
   toggleLinked: (value: string) => void
+  toggleCheck: (value: string) => void
+  toggleRemediation: (value: string) => void
+  toggleOdv: (value: string) => void
   setAutomatable: (value: AutomatableFilter) => void
   setPage: (value: number) => void
   setSize: (value: PageSize) => void
@@ -170,6 +178,9 @@ function filterValuesOf(urlState: UrlState) {
     sections: new Set(urlState.sections),
     tags: new Set(urlState.tags),
     linked: new Set(urlState.linked),
+    checks: new Set(urlState.checks),
+    remediations: new Set(urlState.remediations),
+    odvs: new Set(urlState.odvs),
     automatable: automatableFrom(urlState.automation),
     page: urlState.page,
     size: urlState.size,
@@ -206,6 +217,9 @@ const NO_FRAMEWORK_FACET_FILTERS = {
   benchmarks: new Set<string>(),
   tags: new Set<string>(),
   linked: new Set<string>(),
+  checks: new Set<string>(),
+  remediations: new Set<string>(),
+  odvs: new Set<string>(),
 }
 
 // The release comparison and the facet filters belong to one framework (the
@@ -266,6 +280,9 @@ export const useFilterStore = create<FilterState>((set) => {
     toggleSection: (value) => set((state) => ({ sections: toggled(state.sections, value), ...FIRST_PAGE })),
     toggleTag: (value) => set((state) => ({ tags: toggled(state.tags, value), ...FIRST_PAGE })),
     toggleLinked: (value) => set((state) => ({ linked: toggled(state.linked, value), ...FIRST_PAGE })),
+    toggleCheck: (value) => set((state) => ({ checks: toggled(state.checks, value), ...FIRST_PAGE })),
+    toggleRemediation: (value) => set((state) => ({ remediations: toggled(state.remediations, value), ...FIRST_PAGE })),
+    toggleOdv: (value) => set((state) => ({ odvs: toggled(state.odvs, value), ...FIRST_PAGE })),
     setAutomatable: (value) => set({ automatable: value, ...FIRST_PAGE }),
     setPage: (value) => set({ page: value }),
     setSize: (value) => {
@@ -282,6 +299,9 @@ export const useFilterStore = create<FilterState>((set) => {
           sections: retained(state.sections, known.sections),
           tags: retained(state.tags, known.tags),
           linked: retained(state.linked, known.linked),
+          checks: retained(state.checks, known.checks),
+          remediations: retained(state.remediations, known.remediations),
+          odvs: retained(state.odvs, known.odvs),
         }
         const unchanged = (Object.keys(next) as (keyof typeof next)[]).every((key) => next[key] === state[key])
         return unchanged ? state : next
@@ -306,6 +326,9 @@ export const useFilterStore = create<FilterState>((set) => {
         sections: new Set(),
         tags: new Set(),
         linked: new Set(),
+        checks: new Set(),
+        remediations: new Set(),
+        odvs: new Set(),
         automatable: 'all',
         openRule: ruleId,
         openRuleTab: tab,
@@ -325,6 +348,9 @@ export const useFilterStore = create<FilterState>((set) => {
           sections: new Set(),
           tags: new Set(),
           linked: new Set(),
+          checks: new Set(),
+          remediations: new Set(),
+          odvs: new Set(),
           automatable: 'all',
           ...FIRST_PAGE,
         }
@@ -344,6 +370,9 @@ function urlStateOf(state: FilterState): UrlState {
     sections: Array.from(state.sections),
     tags: Array.from(state.tags),
     linked: Array.from(state.linked),
+    checks: Array.from(state.checks),
+    remediations: Array.from(state.remediations),
+    odvs: Array.from(state.odvs),
     page: state.page,
     size: state.size,
     openRule: state.openRule,

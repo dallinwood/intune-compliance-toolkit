@@ -502,7 +502,7 @@
   ],
   "index_cases": [
     {
-      "name": "title, tags and assessment apply to an index entry",
+      "name": "title, tags and assessment apply to an index entry, and a replaced check sets its languages",
       "entry": {
         "id": "asd_ism.ism-1622",
         "title": "Upstream title",
@@ -513,7 +513,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": ["registry"],
+        "remediation_types": []
       },
       "fields": {
         "title": "Custom title",
@@ -532,7 +534,9 @@
         "architecture": null,
         "applicability": [],
         "tags": ["powershell"],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": ["powershell"],
+        "remediation_types": []
       }
     },
     {
@@ -547,7 +551,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "section_path": { "$replace": ["new", "child"] } },
       "expected": {
@@ -560,7 +566,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       }
     },
     {
@@ -575,7 +583,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "odvs": { "$replace": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] } },
       "expected": {
@@ -588,7 +598,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": true
+        "has_odv": true,
+        "check_types": [],
+        "remediation_types": []
       }
     },
     {
@@ -603,7 +615,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": true
+        "has_odv": true,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "odvs": { "$replace": [] } },
       "expected": {
@@ -616,7 +630,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       }
     },
     {
@@ -631,7 +647,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": true
+        "has_odv": true,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "odvs": { "$merge": { "recommended": 7 } } },
       "error": true
@@ -648,7 +666,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": true
+        "has_odv": true,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "odvs": { "$append": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] } },
       "error": true
@@ -665,7 +685,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "odvs": [{ "name": "value", "datatype": "number", "description": "Value", "validation": null, "recommended": 5, "by_benchmark": {}, "quoting": "unquoted" }] },
       "error": true
@@ -682,7 +704,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "section": "elsewhere", "has_odv": true },
       "expected": {
@@ -695,7 +719,9 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       }
     },
     {
@@ -710,10 +736,30 @@
         "architecture": null,
         "applicability": [],
         "tags": [],
-        "has_odv": false
+        "has_odv": false,
+        "check_types": [],
+        "remediation_types": []
       },
       "fields": { "tags": { "$merge": { "a": 1 } } },
       "error": true
+    },
+    {
+      "name": "a merged remediation adds its step languages and payload kinds to the existing types",
+      "entry": { "id": "asd_ism.ism-1621", "title": "Rule", "file": "rules/ism-1621.json", "section": "os", "section_path": ["os"], "assessment": { "status": "manual", "manual_reason": "no_check" }, "architecture": null, "applicability": [], "tags": [], "has_odv": false, "check_types": ["instructions"], "remediation_types": ["instructions"] },
+      "fields": { "remediation": { "Windows": { "steps": [{ "name": "Remove", "language": "powershell", "shell_file": "baselines/_overlays/scripts/Remove.ps1", "additional_info": null, "versions": null }], "payloads": [{ "kind": "mobileconfig", "versions": null, "data": { "kind": "not a payload kind" } }] } } },
+      "expected": { "id": "asd_ism.ism-1621", "title": "Rule", "file": "rules/ism-1621.json", "section": "os", "section_path": ["os"], "assessment": { "status": "manual", "manual_reason": "no_check" }, "architecture": null, "applicability": [], "tags": [], "has_odv": false, "check_types": ["instructions"], "remediation_types": ["instructions", "mobileconfig", "powershell"] }
+    },
+    {
+      "name": "a remediation set by a top-level $replace sets its types exactly",
+      "entry": { "id": "asd_ism.ism-1621", "title": "Rule", "file": "rules/ism-1621.json", "section": "os", "section_path": ["os"], "assessment": { "status": "manual", "manual_reason": "no_check" }, "architecture": null, "applicability": [], "tags": [], "has_odv": false, "check_types": ["instructions"], "remediation_types": ["instructions"] },
+      "fields": { "remediation": { "$replace": { "Windows": { "steps": [{ "name": "Remove", "language": "powershell", "shell_file": "baselines/_overlays/scripts/Remove.ps1", "additional_info": null, "versions": null }], "payloads": [{ "kind": "mobileconfig", "versions": null, "data": { "kind": "not a payload kind" } }] } } } },
+      "expected": { "id": "asd_ism.ism-1621", "title": "Rule", "file": "rules/ism-1621.json", "section": "os", "section_path": ["os"], "assessment": { "status": "manual", "manual_reason": "no_check" }, "architecture": null, "applicability": [], "tags": [], "has_odv": false, "check_types": ["instructions"], "remediation_types": ["mobileconfig", "powershell"] }
+    },
+    {
+      "name": "check items appended under one target add their languages",
+      "entry": { "id": "asd_ism.ism-1621", "title": "Rule", "file": "rules/ism-1621.json", "section": "os", "section_path": ["os"], "assessment": { "status": "manual", "manual_reason": "no_check" }, "architecture": null, "applicability": [], "tags": [], "has_odv": false, "check_types": ["instructions"], "remediation_types": ["instructions"] },
+      "fields": { "check": { "Windows": { "$append": [{ "name": null, "language": "registry", "default": null, "by_version": {} }] } } },
+      "expected": { "id": "asd_ism.ism-1621", "title": "Rule", "file": "rules/ism-1621.json", "section": "os", "section_path": ["os"], "assessment": { "status": "manual", "manual_reason": "no_check" }, "architecture": null, "applicability": [], "tags": [], "has_odv": false, "check_types": ["instructions", "registry"], "remediation_types": ["instructions"] }
     }
   ],
   "rule_shape_cases": [

@@ -34,6 +34,12 @@ export function scriptLanguageLabel(language: ScriptLanguage): string {
   return SCRIPT_LANGUAGE_LABELS[language]
 }
 
+// A check or remediation type from the rule index: a script language or a
+// payload kind. An unknown code is shown as it is.
+export function scriptTypeLabel(type: string): string {
+  return (SCRIPT_LANGUAGE_LABELS as Record<string, string>)[type] ?? PAYLOAD_BUTTON_LABELS[type] ?? type
+}
+
 function withVersions(index: VocabularyIndex, target: string, label: string, versions: string[] | null): string {
   if (versions === null) return label
   const versionLabels = versions.map((version) => termLabel(index, 'versions', versionKey(target, version)))

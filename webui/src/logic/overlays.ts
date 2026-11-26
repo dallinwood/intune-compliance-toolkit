@@ -82,9 +82,9 @@ export const FIELD_KINDS: Readonly<Record<string, FieldKind>> = {
 }
 export const OVERLAYABLE_RULE_FIELDS: ReadonlySet<string> = new Set(Object.keys(FIELD_KINDS))
 
-// Index entries are copies of these rule fields (odvs stands in for has_odv);
-// every other overlay field only exists on the full rule and is ignored at
-// index level.
+// Index entries are copies of these rule fields (odvs stands in for has_odv,
+// check and remediation for check_types and remediation_types); every other
+// overlay field only exists on the full rule and is ignored at index level.
 export const INDEX_OVERLAY_FIELDS: ReadonlySet<string> = new Set([
   'title',
   'section_path',
@@ -93,6 +93,8 @@ export const INDEX_OVERLAY_FIELDS: ReadonlySet<string> = new Set([
   'applicability',
   'tags',
   'odvs',
+  'check',
+  'remediation',
 ])
 
 type JsonObject = Record<string, unknown>
@@ -209,14 +211,92 @@ export function applyOverlayFields<T>(target: T, fields: Record<string, unknown>
   return merged as T
 }
 
+function unwrapped(value: unknown, path: string): unknown {
+  if (!isObject(value)) return value
+  const wrapper = wrapperOf(value, path)
+  return wrapper === null ? value : wrapper[1]
+}
+
+// The objects in a list overlay value, each with any wrapper taken off.
+function unwrappedObjects(value: unknown, path: string): JsonObject[] {
+  const entries = unwrapped(value, path)
+  if (!Array.isArray(entries)) return []
+  return entries.map((entry, position) => unwrapped(entry, `${path}[${position}]`)).filter(isObject)
+}
+
+function unwrappedTargets(value: unknown, path: string): JsonObject {
+  const targets = unwrapped(value, path)
+  return isObject(targets) ? targets : {}
+}
+
+function textValues(objects: JsonObject[], key: string): string[] {
+  return objects.flatMap((object) => {
+    const value = object[key]
+    return typeof value === 'string' ? [value] : []
+  })
+}
+
+function checkTypesNamed(check: unknown): Set<string> {
+  const types = new Set<string>()
+  for (const [target, items] of Object.entries(unwrappedTargets(check, 'check'))) {
+    for (const language of textValues(unwrappedObjects(items, `check.${target}`), 'language')) types.add(language)
+  }
+  return types
+}
+
+function remediationTypesNamed(remediation: unknown): Set<string> {
+  const types = new Set<string>()
+  for (const [target, targetRemediation] of Object.entries(unwrappedTargets(remediation, 'remediation'))) {
+    const targetFields = unwrappedTargets(targetRemediation, `remediation.${target}`)
+    const steps = unwrappedObjects(targetFields.steps, `remediation.${target}.steps`)
+    const payloads = unwrappedObjects(targetFields.payloads, `remediation.${target}.payloads`)
+    for (const language of textValues(steps, 'language')) types.add(language)
+    for (const kind of textValues(payloads, 'kind')) types.add(kind)
+  }
+  return types
+}
+
+// Only a top-level $replace says what the whole field now holds. Any other
+// value merges or appends, so it can add types but never remove one: the
+// index does not know what the rest of the field holds.
+function overlaidTypes(current: readonly string[], overlayValue: unknown, named: Set<string>): string[] {
+  const types = isReplaceWrapper(overlayValue) ? named : new Set([...current, ...named])
+  return Array.from(types).sort()
+}
+
+// The overlay index carries a check or remediation reduced to the types it
+// names, keeping a top-level $replace, so it stays small and still overlays
+// an index entry exactly as the full value would.
+export function reduceScriptTypes(fieldName: 'check' | 'remediation', value: unknown): unknown {
+  const reduced =
+    fieldName === 'check'
+      ? { any: Array.from(checkTypesNamed(value)).map((language) => ({ language })) }
+      : { any: { steps: Array.from(remediationTypesNamed(value)).map((language) => ({ language })), payloads: [] } }
+  return isReplaceWrapper(value) ? { [REPLACE]: reduced } : reduced
+}
+
 // An index entry has no odvs, only has_odv; a replaced odvs list sets it.
-// section and has_odv are derived, so they are recomputed.
+// Nor has it check or remediation, only check_types and remediation_types.
+// section, has_odv and the types are derived, so they are recomputed.
 export function applyOverlayToIndexEntry(entry: IndexEntry, fields: Record<string, unknown>): IndexEntry {
-  const { odvs, ...merged } = applyOverlayFields<IndexEntry & { odvs?: unknown }>(entry, fields, INDEX_OVERLAY_FIELDS)
+  const merged = applyOverlayFields<IndexEntry & { odvs?: unknown; check?: unknown; remediation?: unknown }>(entry, fields, INDEX_OVERLAY_FIELDS)
+  const { odvs } = merged
+  delete merged.odvs
+  delete merged.check
+  delete merged.remediation
   if (odvs !== undefined && !Array.isArray(odvs)) throw new InvalidOverlayError('odvs: must be a list')
   const sectionPath: unknown = merged.section_path
   const section = Array.isArray(sectionPath) && sectionPath.length > 0 ? sectionPath[0] : merged.section
-  return { ...merged, section, has_odv: odvs === undefined ? entry.has_odv : odvs.length > 0 }
+  const checkTypes = entry.check_types ?? []
+  const remediationTypes = entry.remediation_types ?? []
+  return {
+    ...merged,
+    section,
+    has_odv: odvs === undefined ? entry.has_odv : odvs.length > 0,
+    check_types: 'check' in fields ? overlaidTypes(checkTypes, fields.check, checkTypesNamed(fields.check)) : checkTypes,
+    remediation_types:
+      'remediation' in fields ? overlaidTypes(remediationTypes, fields.remediation, remediationTypesNamed(fields.remediation)) : remediationTypes,
+  }
 }
 
 // The UI's single-overlay steps: merge, then check the result's shape so

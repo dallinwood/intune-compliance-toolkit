@@ -14,7 +14,7 @@
         "additionalProperties": false,
         "required": [
           "id", "title", "file", "section", "section_path", "assessment", "architecture",
-          "applicability", "tags", "has_odv"
+          "applicability", "tags", "has_odv", "check_types", "remediation_types"
         ],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_-]+(?:\\.[a-z0-9_-]+)*(?![\\s\\S])" },
@@ -71,7 +71,9 @@
             }
           },
           "tags": { "type": "array", "items": { "type": "string" } },
-          "has_odv": { "type": "boolean" }
+          "has_odv": { "type": "boolean" },
+          "check_types": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "remediation_types": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
         }
       }
     }

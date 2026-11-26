@@ -104,6 +104,8 @@ describe('buildRuleRows', () => {
       assessment: { status: 'manual', manual_reason: 'manual' },
       architecture: 'arm64',
       hasOdv: true,
+      checkTypes: [],
+      remediationTypes: [],
     })
   })
 })

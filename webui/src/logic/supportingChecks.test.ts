@@ -69,6 +69,8 @@ function row(ruleId: string, status: 'automated' | 'manual'): RuleRow {
     benchmarks: [],
     tags: [],
     hasOdv: false,
+    checkTypes: [],
+    remediationTypes: [],
   }
 }
 
