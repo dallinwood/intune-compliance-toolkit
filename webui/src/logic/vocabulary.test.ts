@@ -73,6 +73,12 @@ describe('compareGroupKeys', () => {
     const keys = ['zeta', 'audit', 'alpha', 'pwpolicy', 'os']
     expect([...keys].sort(compareGroupKeys(index, 'sections'))).toEqual(['os', 'pwpolicy', 'audit', 'alpha', 'zeta'])
   })
+
+  it('orders unlisted numbered codes by number, not character by character', () => {
+    const index = vocabularyIndexOf({ sections: [] })
+    const keys = ['19', '2', '17', '1', '9', '18', '5']
+    expect([...keys].sort(compareGroupKeys(index, 'sections'))).toEqual(['1', '2', '5', '9', '17', '18', '19'])
+  })
 })
 
 describe('buildVocabularyIndex', () => {

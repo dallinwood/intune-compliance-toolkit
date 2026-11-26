@@ -1,3 +1,4 @@
+import { compareNatural } from './naturalOrder'
 import { VOCABULARY_NAMES, type VocabularyEntry, type VocabularyFile, type VocabularyName } from '../types/vocabulary'
 
 export type { VocabularyName } from '../types/vocabulary'
@@ -89,7 +90,7 @@ export function compareGroupKeys(index: VocabularyIndex, vocabulary: VocabularyN
     if (leftPosition !== undefined && rightPosition !== undefined) return leftPosition - rightPosition
     if (leftPosition !== undefined) return -1
     if (rightPosition !== undefined) return 1
-    return left.localeCompare(right)
+    return compareNatural(left, right)
   }
 }
 

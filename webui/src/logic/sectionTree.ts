@@ -1,4 +1,5 @@
 import type { RuleRow } from '../types/rule-row'
+import { compareNatural } from './naturalOrder'
 
 // The ASCII unit separator never appears in a section title.
 export const SECTION_ID_SEPARATOR = '\u001f'
@@ -33,21 +34,21 @@ function newNode(id: string, label: string, depth: number): MutableNode {
 }
 
 function compareByLabel(left: SectionNode, right: SectionNode): number {
-  return left.label.localeCompare(right.label)
+  return compareNatural(left.label, right.label)
 }
 
 function finish(node: MutableNode, compareChildren: (left: SectionNode, right: SectionNode) => number): SectionNode {
   const children = Array.from(node.childrenByTitle.values())
     .map((child) => finish(child, compareByLabel))
     .sort(compareChildren)
-  const rules = [...node.rules].sort((left, right) => left.title.localeCompare(right.title))
+  const rules = [...node.rules].sort((left, right) => compareNatural(left.title, right.title))
   const ruleCount = rules.length + children.reduce((total, child) => total + child.ruleCount, 0)
   return { id: node.id, label: node.label, depth: node.depth, ruleCount, children, rules }
 }
 
 export function buildSectionTree(rows: RuleRow[], labelRoot: (code: string) => string, options: SectionTreeOptions = {}): SectionNode[] {
   const rootKeyOf = options.rootKeyOf ?? ((row: RuleRow) => row.sectionPath[0])
-  const compareRoots = options.compareRoots ?? ((left: string, right: string) => left.localeCompare(right))
+  const compareRoots = options.compareRoots ?? compareNatural
   const rootsByKey = new Map<string, MutableNode>()
 
   for (const row of rows) {

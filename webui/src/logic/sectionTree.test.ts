@@ -106,6 +106,19 @@ describe('buildSectionTree', () => {
     expect(tree[0].id).toBe('group')
     expect(tree[0].ruleCount).toBe(2)
   })
+
+  it('orders numbered subsections and rule titles by number', () => {
+    const rows = [
+      row('cis.a', '1.10 Tenth', ['1', '1.10']),
+      row('cis.b', '1.2 Second', ['1', '1.2']),
+      row('cis.c', '1.1 First', ['1', '1.1']),
+      row('cis.d', '1.9.2 Ninth, part two', ['1', '1.9']),
+      row('cis.e', '1.9.10 Ninth, part ten', ['1', '1.9']),
+    ]
+    const [root] = buildSectionTree(rows, labelRoot)
+    expect(root.children.map((child) => child.label)).toEqual(['1.1', '1.2', '1.9', '1.10'])
+    expect(root.children[2].rules.map((rule) => rule.title)).toEqual(['1.9.2 Ninth, part two', '1.9.10 Ninth, part ten'])
+  })
 })
 
 describe('visibleItems', () => {
