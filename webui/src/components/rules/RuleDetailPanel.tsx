@@ -21,7 +21,6 @@ import { useSelectionStore } from '../../state/selectionStore'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Rule, RuleSource } from '../../types/library'
 import { RuleHistoryTab, type HistoryCompare } from '../history/RuleHistoryTab'
-import { SectionHeading } from './CodeBlock'
 import { CustomTag } from './CustomTag'
 import { DiscussionText } from './DiscussionText'
 import { MappedRulesTab } from './MappedRulesTab'
@@ -30,9 +29,10 @@ import { RuleBenchmarks } from './RuleBenchmarks'
 import { licenceLeadIn } from '../../logic/licenceWording'
 import { RuleCheckSection } from './RuleCheckSection'
 import { RuleReferences } from './RuleReferences'
+import { SectionCard } from './SectionCard'
 import { RuleRemediationSection } from './RuleRemediationSection'
 
-const PANEL_CLASS = 'border-t border-border bg-panel p-4 text-sm'
+const PANEL_CLASS = '@container border-t border-border bg-panel p-4 text-sm'
 
 // Only the parts the source provides: mSCP rules have neither, an ISM control
 // has both.
@@ -274,21 +274,17 @@ function LoadedRuleDetail({
       )}
 
       {(showBreadcrumb || revision) && (
-        <div className="space-y-0.5 text-xs text-muted-foreground">
-          {showBreadcrumb && (
-            <p data-testid="rule-breadcrumb" className="break-words">
-              {rule.section_path.join(BREADCRUMB_SEPARATOR)}
-            </p>
-          )}
-          {revision && <p>{revision}</p>}
-        </div>
+        <p className="text-xs break-words text-muted-foreground">
+          {showBreadcrumb && <span data-testid="rule-breadcrumb">{rule.section_path.join(BREADCRUMB_SEPARATOR)}</span>}
+          {showBreadcrumb && revision && ' · '}
+          {revision}
+        </p>
       )}
 
       <DiscussionText text={rule.discussion} format={rule.discussion_format} odvValues={odvValues} codeOdv={codeOdv} />
 
       {rule.odvs.length > 0 && (
-        <div className="space-y-3">
-          <SectionHeading custom={isCustom('odvs')}>Organization-defined values</SectionHeading>
+        <SectionCard title="Values" custom={isCustom('odvs')}>
           {rule.odvs.map((odv) => (
             <OrgDefinedValueInput
               key={odv.name}
@@ -301,7 +297,7 @@ function LoadedRuleDetail({
               onClear={() => clearOdvValue(ruleRef, odv.name)}
             />
           ))}
-        </div>
+        </SectionCard>
       )}
 
       <RuleCheckSection rule={rule} odvValues={odvValues} codeOdv={codeOdv} custom={isCustom('check')} />

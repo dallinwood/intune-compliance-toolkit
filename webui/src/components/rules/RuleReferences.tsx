@@ -1,5 +1,5 @@
 import { macosReferences, type ReferenceNode } from '../../logic/references'
-import { SectionHeading } from './CodeBlock'
+import { SectionCard } from './SectionCard'
 import { LinkedText } from './LinkedText'
 
 function ReferenceList({ nodes }: { nodes: ReferenceNode[] }) {
@@ -35,11 +35,10 @@ export function RuleReferences({ references, custom = false }: { references: Rec
   if (nodes.length === 0) return null
 
   return (
-    <div className="space-y-1">
-      <SectionHeading custom={custom}>References</SectionHeading>
+    <SectionCard title="References" custom={custom}>
       <div className="text-xs">
         <ReferenceList nodes={nodes} />
       </div>
-    </div>
+    </SectionCard>
   )
 }

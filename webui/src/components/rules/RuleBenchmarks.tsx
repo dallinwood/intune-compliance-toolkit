@@ -2,7 +2,7 @@ import { useId } from 'react'
 import { benchmarksByScope } from '../../logic/ruleDisplay'
 import { useVocabularyIndex } from '../../state/vocabularyContext'
 import type { Applicability } from '../../types/library'
-import { SectionHeading } from './CodeBlock'
+import { SectionCard } from './SectionCard'
 
 export function RuleBenchmarks({ applicability, custom = false }: { applicability: Applicability; custom?: boolean }) {
   const index = useVocabularyIndex()
@@ -10,8 +10,7 @@ export function RuleBenchmarks({ applicability, custom = false }: { applicabilit
   const scopes = benchmarksByScope(applicability, index)
 
   return (
-    <section aria-label="Benchmarks" className="space-y-1">
-      <SectionHeading custom={custom}>Benchmarks</SectionHeading>
+    <SectionCard title="Benchmarks" ariaLabel="Benchmarks" custom={custom}>
       {scopes.length === 0 ? (
         <p className="text-xs text-muted-foreground italic">Not in a benchmark</p>
       ) : (
@@ -36,6 +35,6 @@ export function RuleBenchmarks({ applicability, custom = false }: { applicabilit
           })}
         </div>
       )}
-    </section>
+    </SectionCard>
   )
 }
