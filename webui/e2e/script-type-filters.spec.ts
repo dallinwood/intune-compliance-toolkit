@@ -56,7 +56,7 @@ test('Organization values filters to rules with values to set', async ({ page })
   expect(new URL(page.url()).searchParams.getAll('odv')).toEqual(['yes'])
 })
 
-test('ASD ISM has no Check group, offers the PowerShell remediations its overlays add, and only No values to set', async ({ page }) => {
+test('ASD ISM has no Check group, offers the PowerShell remediations its overlays add, and hides Organization values', async ({ page }) => {
   await openRulesPage(page, 'asd_ism')
 
   await expect(page.getByRole('heading', { name: 'Check', exact: true })).toHaveCount(0)
@@ -66,10 +66,18 @@ test('ASD ISM has no Check group, offers the PowerShell remediations its overlay
   await remediationGroup.getByRole('checkbox', { name: 'PowerShell', exact: true }).click()
   await expect(ruleCount(page)).toHaveText('5 of 1,143 rules')
 
-  await openFacetGroup(page, 'Organization values')
-  const odvGroup = page.getByRole('group', { name: 'Organization values', exact: true })
-  await expect(odvGroup.getByRole('checkbox')).toHaveCount(1)
-  await expect(odvGroup.getByRole('checkbox', { name: 'No values to set', exact: true })).toBeVisible()
+  // Every ISM rule has no values to set, so that one option would filter nothing.
+  await expect(page.getByRole('heading', { name: 'Organization values', exact: true })).toHaveCount(0)
+})
+
+test('a group whose one option every rule has is hidden, unless that option is ticked', async ({ page }) => {
+  await openRulesPage(page, 'asd_e4eit')
+  await expect(page.getByRole('heading', { name: 'Version', exact: true })).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Target', exact: true })).toHaveCount(0)
+
+  await page.goto(`${frameworkRulesPath('asd_e4eit')}&target=none`)
+  await expect(ruleCount(page)).toBeVisible({ timeout: 15_000 })
+  await expect(page.getByRole('group', { name: 'Target', exact: true }).getByRole('checkbox', { name: 'None', exact: true })).toBeChecked()
 })
 
 test('on the all-rules page Benchmark options sit under their framework, and a shared option ticks in every framework', async ({ page }) => {

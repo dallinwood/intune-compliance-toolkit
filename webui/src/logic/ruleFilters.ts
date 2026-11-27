@@ -225,6 +225,20 @@ export function facetOptionCounts(
   return counts
 }
 
+// A facet whose single value every row has (Target "None" on a framework that
+// names no target, say) cannot narrow anything, so the sidebar hides it.
+export function onlyOptionCoversEveryRow(rows: RuleRow[], valueOf: (row: RuleRow) => string | string[]): boolean {
+  let onlyValue: string | null = null
+  for (const row of rows) {
+    const value = valueOf(row)
+    const values = Array.isArray(value) ? value : [value]
+    if (values.length !== 1) return false
+    if (onlyValue === null) onlyValue = values[0]
+    else if (values[0] !== onlyValue) return false
+  }
+  return onlyValue !== null
+}
+
 // facetOptionCounts split by framework, for the all-rules page's per-framework
 // sub-groups: each source's own matching rules per value. A value shared by
 // several sources is counted under each, though ticking it filters them all.

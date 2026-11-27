@@ -21,6 +21,7 @@ import {
   facetOptionCounts,
   facetOptionCountsBySource,
   linkedFrameworkKeys,
+  onlyOptionCoversEveryRow,
   HAS_ODV_KEY,
   odvKey,
   sectionGroupKey,
@@ -547,11 +548,15 @@ function StableFacetGroup({
   const reachable = useMemo(() => Array.from(counts.keys()), [counts])
   const { shown, leaving } = useStableFacetShown(reachable)
 
+  const offersNoChoice = useMemo(() => onlyOptionCoversEveryRow(rows, valueOf), [rows, valueOf])
   const hasShownValue = canonicalOrder.some((value) => shown.has(value))
   // Once every option has faded out (e.g. Tags with only ASD ISM rules left)
   // a bare heading would be noise; a selected value keeps its group so it can
   // be unchecked.
   if (!hasShownValue && selected.size === 0) return null
+  // One option every rule in view has would filter nothing; a selection
+  // restored from an address keeps the group so it can be cleared.
+  if (offersNoChoice && selected.size === 0) return null
 
   function renderOption(value: string, count: number) {
     const isReachable = counts.has(value)

@@ -18,6 +18,7 @@ import {
   automationOptionCounts,
   facetOptionCounts,
   facetOptionCountsBySource,
+  onlyOptionCoversEveryRow,
   facetOptions,
   matchesFilters,
   parseBenchmarkFacetValue,
@@ -267,6 +268,24 @@ describe('facetOptions', () => {
   it('flattens array-valued facets like benchmarks', () => {
     const options = facetOptions(rows, emptyFilters(), 'benchmarks', (r) => r.benchmarks, [], noVocabulary)
     expect(options).toEqual(['cis_lvl1', 'cis_lvl2', 'disa_stig'])
+  })
+})
+
+describe('onlyOptionCoversEveryRow', () => {
+  const macRow = row({ targetKeys: ['macOS'], tags: ['a'] })
+  const otherMacRow = row({ ref: { id: 'mscp.other', path: 'mscp/rules/other.json' }, targetKeys: ['macOS'], tags: [] })
+
+  it('is true when the facet has one value and every row has it', () => {
+    expect(onlyOptionCoversEveryRow([macRow, otherMacRow], (r) => r.targetKeys)).toBe(true)
+  })
+
+  it('is false when the one value is missing from some rows, or there are several values', () => {
+    expect(onlyOptionCoversEveryRow([macRow, otherMacRow], (r) => r.tags)).toBe(false)
+    expect(onlyOptionCoversEveryRow([macRow, row({ targetKeys: ['Windows'] })], (r) => r.targetKeys)).toBe(false)
+  })
+
+  it('is false for no rows', () => {
+    expect(onlyOptionCoversEveryRow([], (r) => r.targetKeys)).toBe(false)
   })
 })
 
