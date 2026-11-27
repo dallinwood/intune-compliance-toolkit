@@ -17,7 +17,7 @@ from tools.nist_800_171_normalize import (
     framework_version,
     normalize_catalog,
 )
-from tools.generate_mscp_nist_800_171_mapping import regenerate_after_import
+from tools import generate_nist_800_171_nist_800_53_mapping, generate_mscp_nist_800_171_mapping
 from tools.release_import import SourceImporter, run_cli
 from tools.source_lock import SourceLock
 
@@ -48,6 +48,12 @@ def release_label(tag: str, upstream_dir: Path) -> str:
     return framework_version(read_catalog(upstream_dir))
 
 
+def regenerate_mappings(sources_dir: Path, baselines_dir: Path) -> None:
+    """mSCP cites 800-171 and 800-171 lists 800-53 source controls, so both generated mappings stay current."""
+    generate_mscp_nist_800_171_mapping.regenerate_after_import(sources_dir, baselines_dir)
+    generate_nist_800_171_nist_800_53_mapping.regenerate_after_import(sources_dir, baselines_dir)
+
+
 IMPORTER = SourceImporter(
     name=SOURCE_NAME,
     display_name=SOURCE_DISPLAY_NAME,
@@ -57,7 +63,7 @@ IMPORTER = SourceImporter(
     fetch=fetch,
     build_rule_tree_by_format={IMPORTER_FORMAT: build_rule_tree},
     release_label=release_label,
-    after_import=regenerate_after_import,
+    after_import=regenerate_mappings,
 )
 
 

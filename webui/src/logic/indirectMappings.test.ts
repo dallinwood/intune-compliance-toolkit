@@ -355,12 +355,15 @@ describe('real committed mappings', () => {
     return new Set((byRule.get(ruleId) ?? []).map((link) => link.rule)).size
   }
 
-  it('reaches one indirect rule from the gatekeeper rule', () => {
+  // The two NIST paths cross the 800-171 to 800-53 source-control mapping in each direction.
+  it('reaches three indirect rules from the gatekeeper rule, two of them across the 800-171 to 800-53 mapping', () => {
     const ruleId = 'mscp.system_settings_gatekeeper_override_disallow'
     const result = indirectMappedRules(ruleId, byRule)
     expect(directCount(ruleId)).toBe(5)
     expect(result.rules.map((rule) => [rule.ruleId, rule.effectiveRelation, pathIds(rule)])).toEqual([
       ['asd_e4eit.it.pro-12.2', 'related', ['asd_ism.ism-1584', 'asd_e4eit.it.pro-12.2']],
+      ['nist_800_53.si-3', 'related', ['nist_800_171.03.14.02', 'nist_800_53.si-3']],
+      ['nist_800_171.03.04.05', 'related', ['nist_800_53.cm-5', 'nist_800_171.03.04.05']],
     ])
     expect(result.truncated).toBe(false)
   })
@@ -391,8 +394,8 @@ describe('real committed mappings', () => {
       for (const rule of result.rules) deepestPath = Math.max(deepestPath, rule.path.length)
       anyTruncated ||= result.truncated
     }
-    expect(byRule.size).toBe(811)
-    expect(rulesWithIndirect).toBe(118)
+    expect(byRule.size).toBe(954)
+    expect(rulesWithIndirect).toBe(255)
     expect(mostIndirect).toBe(60)
     expect(deepestPath).toBe(2)
     expect(anyTruncated).toBe(false)

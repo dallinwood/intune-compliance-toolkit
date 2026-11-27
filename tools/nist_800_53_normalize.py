@@ -94,6 +94,18 @@ def control_id_for_label(label: str) -> str | None:
     return control_id if enhancement_number is None else f"{control_id}.{enhancement_number}"
 
 
+def control_id_for_zero_padded_label(label: str) -> str | None:
+    """"AC-02(03)" -> "ac-2.3"; None unless the label is exactly the zero-padded form NIST derives from the id."""
+    match = CONTROL_LABEL_PATTERN.match(label)
+    if match is None:
+        return None
+    family, number, enhancement_number = match.groups()
+    control_id = f"{family.lower()}-{int(number)}"
+    if enhancement_number is not None:
+        control_id = f"{control_id}.{int(enhancement_number)}"
+    return control_id if zero_padded_label_for_control_id(control_id) == label else None
+
+
 def _item_label(label: str, depth: int, where: str) -> str:
     return label
 

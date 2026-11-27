@@ -384,14 +384,16 @@ and `v1.6.0` (5.2.0). Releases that only re-publish the same 800-53 version
 (`v1.1.0`, `v1.2.0`, `v1.2.1`, `v1.4.0`, `v1.5.0`) are skipped on purpose; the
 library validator also rejects two releases with the same label.
 
-The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
-and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
+The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`,
+`baselines/_mappings/rules/nist-800-171-to-nist-800-53.json` and their
+`docs/mappings/*-unresolved.json` reports (see "Mapping rules").
 Review their diff with the rest.
 
 ## Updating the NIST SP 800-171 rules
 
 The same steps as for 800-53, with `python tools/import_nist_800_171.py --tag <release tag>`
-and the `nist_800_171` folders. The release label is the 800-171 version
+and the `nist_800_171` folders. It regenerates `mscp-to-nist-800-171.json` and
+`nist-800-171-to-nist-800-53.json`. The release label is the 800-171 version
 (`3.0.0`) from the catalog's `framework-version-identifier` property, not the
 catalog's `metadata.version`, which only versions NIST's OSCAL file.
 
@@ -725,7 +727,20 @@ hand-written link that repeats a generated pair.
 `03.03.08`), by the mSCP and NIST SP 800-171 imports or
 `python tools/generate_mscp_nist_800_171_mapping.py`. Its unresolved report,
 `docs/mappings/mscp-to-nist-800-171-unresolved.json`, lists mSCP citations of
-requirements that Rev. 3 withdrew. Both generators share `tools/mscp_citation_mappings.py`.
+requirements that Rev. 3 withdrew.
+
+`nist-800-171-to-nist-800-53.json` is generated too, from NIST's own data: each
+800-171 requirement lists the 800-53 controls it was derived from (its "source
+controls", kept in the rule's `references.source_controls`). It has one
+`related` link per requirement, so it shows in the mapped rules of both sides but
+does not count towards coverage. NIST published those source controls against
+800-53 5.1.1; the links point at the current 800-53 release because the control
+ids carry over, and the note on every link says so. 800-53 does not reference
+800-171, so there is no mapping the other way. Both NIST imports regenerate it
+(so does `python tools/generate_nist_800_171_nist_800_53_mapping.py`); its
+unresolved report is `docs/mappings/nist-800-171-to-nist-800-53-unresolved.json`.
+
+All three generated mappings share `tools/citation_mappings.py`.
 
 `baselines/_mappings/rules/asd-e4eit-to-asd-ism.json` is also generated, not
 written by hand. It carries ASD's own published mapping from each Essentials

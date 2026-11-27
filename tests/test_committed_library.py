@@ -25,8 +25,9 @@ from tools.validate_library import validate_library
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINES_DIR = REPO_ROOT / "baselines"
 
-# Maintainer-written, except _mappings/rules/mscp-to-nist-800-53.json and mscp-to-nist-800-171.json,
-# which the mSCP importer and the matching NIST importer regenerate (tools/mscp_citation_mappings.py).
+# Maintainer-written, except the generated _mappings/rules/ files (mscp-to-nist-800-53.json,
+# mscp-to-nist-800-171.json, nist-800-171-to-nist-800-53.json and asd-e4eit-to-asd-ism.json), which
+# their sources' importers regenerate.
 OVERLAYS_DIR_NAME = "_overlays"
 MAPPINGS_DIR_NAME = "_mappings"
 MAINTAINER_DIR_NAMES = (OVERLAYS_DIR_NAME, MAPPINGS_DIR_NAME)

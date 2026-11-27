@@ -8,6 +8,7 @@ import pytest
 from tools import (
     generate_mscp_nist_800_53_mapping,
     generate_mscp_nist_800_171_mapping,
+    generate_nist_800_171_nist_800_53_mapping,
     import_asd_ism,
     import_mscp,
     import_nist_800_53,
@@ -419,11 +420,34 @@ def test_a_failing_after_import_exits_one_but_keeps_the_releases(workspace, caps
     assert [release["tag"] for release in source["releases"]] == ["A", "B"]
 
 
-def test_mscp_regenerates_both_cited_mappings_and_each_nist_importer_its_own():
+def test_each_importer_regenerates_the_mappings_its_source_takes_part_in():
     assert import_mscp.IMPORTER.after_import is import_mscp.regenerate_cited_mappings
-    assert import_nist_800_53.IMPORTER.after_import is generate_mscp_nist_800_53_mapping.regenerate_after_import
-    assert import_nist_800_171.IMPORTER.after_import is generate_mscp_nist_800_171_mapping.regenerate_after_import
+    assert import_nist_800_53.IMPORTER.after_import is import_nist_800_53.regenerate_mappings
+    assert import_nist_800_171.IMPORTER.after_import is import_nist_800_171.regenerate_mappings
     assert import_asd_ism.IMPORTER.after_import is None
+
+
+@pytest.mark.parametrize(
+    ("importer_module", "mscp_mapping_module", "mscp_label"),
+    [
+        (import_nist_800_53, generate_mscp_nist_800_53_mapping, "mscp-800-53"),
+        (import_nist_800_171, generate_mscp_nist_800_171_mapping, "mscp-800-171"),
+    ],
+)
+def test_nist_hooks_regenerate_their_mscp_mapping_and_the_800_171_to_800_53_mapping(
+    monkeypatch, tmp_path, importer_module, mscp_mapping_module, mscp_label
+):
+    calls = []
+    monkeypatch.setattr(mscp_mapping_module, "regenerate_after_import", lambda *directories: calls.append(mscp_label))
+    monkeypatch.setattr(
+        generate_nist_800_171_nist_800_53_mapping,
+        "regenerate_after_import",
+        lambda *directories: calls.append("800-171-800-53"),
+    )
+
+    importer_module.regenerate_mappings(tmp_path / "sources", tmp_path / "baselines")
+
+    assert calls == [mscp_label, "800-171-800-53"]
 
 
 def test_mscp_hook_regenerates_the_800_53_and_800_171_mappings(monkeypatch, tmp_path):

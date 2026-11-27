@@ -17,6 +17,7 @@ sources/cac_cis_*/releases/*/source.json text eol=lf
 sources/lockdown_cis_*/releases/*/source.json text eol=lf
 docs/mappings/mscp-to-nist-800-53-unresolved.json text eol=lf
 docs/mappings/mscp-to-nist-800-171-unresolved.json text eol=lf
+docs/mappings/nist-800-171-to-nist-800-53-unresolved.json text eol=lf
 tests/fixtures/mscp_upstream/** -text
 tests/fixtures/asd_ism/** -text
 tests/fixtures/asd_e4eit/** -text
