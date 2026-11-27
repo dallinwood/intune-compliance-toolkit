@@ -1,5 +1,6 @@
-import { ChevronDown } from 'lucide-react'
-import type { MouseEvent } from 'react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { useScrollEdges } from '@/hooks/useScrollEdges'
 import { splitReleases } from '../../logic/cardReleases'
 import { groupByProvenance } from '../../logic/provenanceGroups'
 import { EMPTY_RELEASE_LABEL, comparisonLocation, previousReleaseTag } from '../../logic/releaseRange'
@@ -67,19 +68,109 @@ function CompactCappedBar({ title, capped }: { title: string; capped: CappedCove
 
 const RELATED_NOT_COVERAGE_NOTE = 'linked as related, not counted as coverage'
 
+// Cards line up better when no coverage section outgrows the busiest one today (three bars);
+// a longer one scrolls inside its card until opened.
+const MAXIMUM_VISIBLE_COVERAGE_BARS = 3
+
+function CappedCoverageList({ items }: { items: { key: string; node: ReactNode }[] }) {
+  const listRef = useRef<HTMLDivElement>(null)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [cappedHeight, setCappedHeight] = useState<number | null>(null)
+  const { canScrollUp, canScrollDown } = useScrollEdges(listRef)
+  const canExpand = items.length > MAXIMUM_VISIBLE_COVERAGE_BARS
+  const isCapped = canExpand && !isExpanded
+
+  // The cap is measured, not fixed, because a related bar carries an extra note line.
+  useLayoutEffect(() => {
+    const list = listRef.current
+    if (!isCapped || !list) {
+      setCappedHeight(null)
+      return
+    }
+    const measure = () => {
+      const lastVisibleItem = list.children[MAXIMUM_VISIBLE_COVERAGE_BARS - 1] as HTMLElement | undefined
+      if (lastVisibleItem) setCappedHeight(lastVisibleItem.offsetTop + lastVisibleItem.offsetHeight)
+    }
+    measure()
+    const resizeObserver = new ResizeObserver(measure)
+    Array.from(list.children).forEach((child) => resizeObserver.observe(child))
+    return () => resizeObserver.disconnect()
+  }, [isCapped, items.length])
+
+  const collapse = () => {
+    setIsExpanded(false)
+    listRef.current?.scrollTo({ top: 0 })
+  }
+
+  return (
+    <div>
+      <div className="relative">
+        <div
+          ref={listRef}
+          data-testid="card-coverage-list"
+          className={cn('relative space-y-4', isCapped && 'overflow-y-auto')}
+          style={isCapped && cappedHeight !== null ? { maxHeight: cappedHeight } : undefined}
+          {...(isCapped ? { tabIndex: 0, role: 'region', 'aria-label': 'Coverage bars (scroll for more)' } : {})}
+        >
+          {items.map(({ key, node }) => (
+            <div key={key}>{node}</div>
+          ))}
+        </div>
+        {isCapped && (
+          <>
+            <div
+              aria-hidden="true"
+              data-testid="card-coverage-fade-up"
+              className={cn(
+                'pointer-events-none absolute inset-x-0 top-0 flex h-8 items-start justify-center bg-gradient-to-b from-panel to-transparent transition-opacity duration-200',
+                canScrollUp ? 'opacity-100' : 'opacity-0',
+              )}
+            >
+              <ChevronUp className="size-4 text-muted-foreground" />
+            </div>
+            {canScrollDown && (
+              <button
+                type="button"
+                onClick={() => setIsExpanded(true)}
+                aria-label={`Show all ${items.length} coverage bars`}
+                className="absolute inset-x-0 bottom-0 flex h-8 cursor-pointer items-end justify-center rounded-b-md bg-gradient-to-t from-panel to-transparent outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+              >
+                <ChevronDown aria-hidden="true" className="size-4 text-muted-foreground" />
+              </button>
+            )}
+          </>
+        )}
+      </div>
+      {canExpand && isExpanded && (
+        <button
+          type="button"
+          onClick={collapse}
+          aria-label="Show fewer coverage bars"
+          className="mt-1 flex h-6 w-full cursor-pointer items-end justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
+        >
+          <ChevronUp aria-hidden="true" className="size-4 text-muted-foreground" />
+        </button>
+      )}
+    </div>
+  )
+}
+
 function CardCoverageBlock({ coverage }: { coverage: CardCoverage }) {
   const vocabularyIndex = useVocabularyIndex()
   const sourceLabel = (name: string) => termLabel(vocabularyIndex, 'sources', name)
-  return (
-    <div data-testid="card-coverage" className="space-y-4 border-t border-border pt-3">
-      {coverage.covers.map(({ coveredSource, capped }) => (
-        <CompactCappedBar key={`covers:${coveredSource}`} title={`Supports ${sourceLabel(coveredSource)}`} capped={capped} />
-      ))}
-      {coverage.coveredBy.map(({ coveringSource, capped }) => (
-        <CompactCappedBar key={`covered-by:${coveringSource}`} title={`Supported by ${sourceLabel(coveringSource)}`} capped={capped} />
-      ))}
-      {coverage.related.map(({ otherSource, coverage: relatedCoverage }) => (
-        <div key={`related:${otherSource}`} className="space-y-0.5">
+  const items = [
+    ...coverage.covers.map(({ coveredSource, capped }) => ({
+      key: `covers:${coveredSource}`,
+      node: <CompactCappedBar title={`Supports ${sourceLabel(coveredSource)}`} capped={capped} />,
+    })),
+    ...coverage.coveredBy.map(({ coveringSource, capped }) => ({
+      key: `covered-by:${coveringSource}`,
+      node: <CompactCappedBar title={`Supported by ${sourceLabel(coveringSource)}`} capped={capped} />,
+    })),
+    ...coverage.related.map(({ otherSource, coverage: relatedCoverage }) => ({
+      key: `related:${otherSource}`,
+      node: (
+        <div className="space-y-0.5">
           <p className="flex flex-wrap justify-between gap-x-3 text-xs">
             <span className="font-medium">Related to {sourceLabel(otherSource)}</span>
             <span className="text-muted-foreground">{formatCount(relatedCoverage.relatedOnly)} related only</span>
@@ -93,7 +184,12 @@ function CardCoverageBlock({ coverage }: { coverage: CardCoverage }) {
           />
           <p className="text-xs text-muted-foreground">{RELATED_NOT_COVERAGE_NOTE}</p>
         </div>
-      ))}
+      ),
+    })),
+  ]
+  return (
+    <div data-testid="card-coverage" className="space-y-4 border-t border-border pt-3">
+      <CappedCoverageList items={items} />
       {coverage.combined !== null && (
         <div className="border-t border-border pt-3">
           <CompactCappedBar title="All mapped frameworks" capped={coverage.combined} />
