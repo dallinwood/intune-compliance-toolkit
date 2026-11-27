@@ -115,7 +115,8 @@ test.describe('with the library mappings', () => {
     await page.goto(MSCP_COVERAGE_PATH)
     await expect(report(page, 'Supports NIST SP 800-53')).toContainText('max 140')
     await expect(report(page, 'Supports ASD ISM')).toContainText('max 61')
-    await expect(page.getByTestId('pair-coverage-report')).toHaveCount(2)
+    await expect(report(page, 'Supports NIST SP 800-171')).toContainText('max 45')
+    await expect(page.getByTestId('pair-coverage-report')).toHaveCount(3)
     await expect(report(page, 'All mapped frameworks')).toHaveCount(0)
   })
 

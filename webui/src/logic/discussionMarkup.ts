@@ -1,7 +1,7 @@
 // A deliberately small reading of the AsciiDoc mSCP uses in rule
 // discussions: enough to show paragraphs, code and emphasis legibly, not a
 // full AsciiDoc renderer. Anything unrecognised is shown as plain text.
-// ASD ISM, ASD E4EIT and NIST SP 800-53 discussions are Markdown, but only
+// ASD ISM, ASD E4EIT, NIST SP 800-53 and NIST SP 800-171 discussions are Markdown, but only
 // `# ` to `###### ` headings, `- ` lists (nested by two-space indentation) and [text](url)
 // links appear in them. CIS discussions add ``` fenced code, `inline code` and
 // **bold**; that is all the Markdown reader understands.

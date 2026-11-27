@@ -358,7 +358,7 @@ describe('real committed mappings', () => {
   it('reaches one indirect rule from the gatekeeper rule', () => {
     const ruleId = 'mscp.system_settings_gatekeeper_override_disallow'
     const result = indirectMappedRules(ruleId, byRule)
-    expect(directCount(ruleId)).toBe(4)
+    expect(directCount(ruleId)).toBe(5)
     expect(result.rules.map((rule) => [rule.ruleId, rule.effectiveRelation, pathIds(rule)])).toEqual([
       ['asd_e4eit.it.pro-12.2', 'related', ['asd_ism.ism-1584', 'asd_e4eit.it.pro-12.2']],
     ])
@@ -391,7 +391,7 @@ describe('real committed mappings', () => {
       for (const rule of result.rules) deepestPath = Math.max(deepestPath, rule.path.length)
       anyTruncated ||= result.truncated
     }
-    expect(byRule.size).toBe(764)
+    expect(byRule.size).toBe(811)
     expect(rulesWithIndirect).toBe(118)
     expect(mostIndirect).toBe(60)
     expect(deepestPath).toBe(2)
