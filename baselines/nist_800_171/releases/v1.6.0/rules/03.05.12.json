@@ -1,0 +1,50 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Verify the identity of the individual, group, role, service, or device receiving the authenticator as part of the initial authenticator distribution.\n- b. Establish initial authenticator content for any authenticators issued by the organization.\n- c. Establish and implement administrative procedures for initial authenticator distribution; for lost, compromised, or damaged authenticators; and for revoking authenticators.\n- d. Change default authenticators at first use.\n- e. Change or refresh authenticators [Assignment: organization-defined frequency] or when the following events occur: [Assignment: organization-defined events].\n- f. Protect authenticator content from unauthorized disclosure and modification.\n\n## Discussion\n\nAuthenticators include passwords, cryptographic devices, biometrics, certificates, one-time password devices, and ID badges. The initial authenticator content is the actual content of the authenticator (e.g., the initial password). In contrast, requirements for authenticator content contain specific characteristics. Authenticator management is supported by organization-defined settings and restrictions for various authenticator characteristics (e.g., password complexity and composition rules, validation time window for time synchronous one-time tokens, and the number of allowed rejections during the verification stage of biometric authentication). The requirement to protect individual authenticators may be implemented by 03.15.03 for authenticators in the possession of individuals and by 03.01.01, 03.01.02, 03.01.05, and 03.13.08 for authenticators stored in organizational systems. This includes passwords stored in hashed or encrypted formats or files that contain hashed or encrypted passwords that are accessible with administrator privileges. Actions can be taken to protect authenticators, including maintaining possession of authenticators, not sharing authenticators with others, and immediately reporting lost, stolen, or compromised authenticators. Developers may deliver system components with factory default authentication credentials to allow for initial installation and configuration. Default authentication credentials are often well-known, easily discoverable, and present a significant risk. Authenticator management includes issuing and revoking authenticators for temporary access when they are no longer needed. The use of long passwords or passphrases may obviate the need to periodically change authenticators.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.05.12",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-63-3"
+    ],
+    "source_controls": [
+      "IA-05"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.05 Identification and Authentication"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.05.12",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Authenticator Management"
+}

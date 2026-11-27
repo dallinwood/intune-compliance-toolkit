@@ -1,0 +1,2431 @@
+{
+  "rules": [
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.01",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Account Management"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.02",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Access Enforcement"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.03",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Information Flow Enforcement"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.04",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Separation of Duties"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.05",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Least Privilege"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.06",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Least Privilege – Privileged Accounts"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.07.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.07",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Least Privilege – Privileged Functions"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.08.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.08",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Unsuccessful Logon Attempts"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.09.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.09",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "System Use Notification"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.10.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.10",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Device Lock"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.11.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.11",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Session Termination"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.12.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.12",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Remote Access"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.16.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.16",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Wireless Access"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.18.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.18",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Access Control for Mobile Devices"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.20.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.20",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Use of External Systems"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.01.22.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.01.22",
+      "remediation_types": [],
+      "section": "03.01 Access Control",
+      "section_path": [
+        "03.01 Access Control"
+      ],
+      "tags": [],
+      "title": "Publicly Accessible Content"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.02.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.02.01",
+      "remediation_types": [],
+      "section": "03.02 Awareness and Training",
+      "section_path": [
+        "03.02 Awareness and Training"
+      ],
+      "tags": [],
+      "title": "Literacy Training and Awareness"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.02.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.02.02",
+      "remediation_types": [],
+      "section": "03.02 Awareness and Training",
+      "section_path": [
+        "03.02 Awareness and Training"
+      ],
+      "tags": [],
+      "title": "Role-Based Training"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.01",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Event Logging"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.02",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Audit Record Content"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.03",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Audit Record Generation"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.04",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Response to Audit Logging Process Failures"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.05",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Audit Record Review, Analysis, and Reporting"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.06",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Audit Record Reduction and Report Generation"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.07.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.07",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Time Stamps"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.03.08.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.03.08",
+      "remediation_types": [],
+      "section": "03.03 Audit and Accountability",
+      "section_path": [
+        "03.03 Audit and Accountability"
+      ],
+      "tags": [],
+      "title": "Protection of Audit Information"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.01",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Baseline Configuration"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.02",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Configuration Settings"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.03",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Configuration Change Control"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.04",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Impact Analyses"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.05",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Access Restrictions for Change"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.06",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Least Functionality"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.08.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.08",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Authorized Software – Allow by Exception"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.10.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.10",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "System Component Inventory"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.11.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.11",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "Information Location"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.04.12.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.04.12",
+      "remediation_types": [],
+      "section": "03.04 Configuration Management",
+      "section_path": [
+        "03.04 Configuration Management"
+      ],
+      "tags": [],
+      "title": "System and Component Configuration for High-Risk Areas"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.01",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "User Identification and Authentication"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.02",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Device Identification and Authentication"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.03",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Multi-Factor Authentication"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.04",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Replay-Resistant Authentication"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.05",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Identifier Management"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.07.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.07",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Password Management"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.11.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.11",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Authentication Feedback"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.05.12.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.05.12",
+      "remediation_types": [],
+      "section": "03.05 Identification and Authentication",
+      "section_path": [
+        "03.05 Identification and Authentication"
+      ],
+      "tags": [],
+      "title": "Authenticator Management"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.06.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.06.01",
+      "remediation_types": [],
+      "section": "03.06 Incident Response",
+      "section_path": [
+        "03.06 Incident Response"
+      ],
+      "tags": [],
+      "title": "Incident Handling"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.06.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.06.02",
+      "remediation_types": [],
+      "section": "03.06 Incident Response",
+      "section_path": [
+        "03.06 Incident Response"
+      ],
+      "tags": [],
+      "title": "Incident Monitoring, Reporting, and Response Assistance"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.06.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.06.03",
+      "remediation_types": [],
+      "section": "03.06 Incident Response",
+      "section_path": [
+        "03.06 Incident Response"
+      ],
+      "tags": [],
+      "title": "Incident Response Testing"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.06.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.06.04",
+      "remediation_types": [],
+      "section": "03.06 Incident Response",
+      "section_path": [
+        "03.06 Incident Response"
+      ],
+      "tags": [],
+      "title": "Incident Response Training"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.06.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.06.05",
+      "remediation_types": [],
+      "section": "03.06 Incident Response",
+      "section_path": [
+        "03.06 Incident Response"
+      ],
+      "tags": [],
+      "title": "Incident Response Plan"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.07.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.07.04",
+      "remediation_types": [],
+      "section": "03.07 Maintenance",
+      "section_path": [
+        "03.07 Maintenance"
+      ],
+      "tags": [],
+      "title": "Maintenance Tools"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.07.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.07.05",
+      "remediation_types": [],
+      "section": "03.07 Maintenance",
+      "section_path": [
+        "03.07 Maintenance"
+      ],
+      "tags": [],
+      "title": "Nonlocal Maintenance"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.07.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.07.06",
+      "remediation_types": [],
+      "section": "03.07 Maintenance",
+      "section_path": [
+        "03.07 Maintenance"
+      ],
+      "tags": [],
+      "title": "Maintenance Personnel"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.01",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "Media Storage"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.02",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "Media Access"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.03",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "Media Sanitization"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.04",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "Media Marking"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.05",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "Media Transport"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.07.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.07",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "Media Use"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.08.09.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.08.09",
+      "remediation_types": [],
+      "section": "03.08 Media Protection",
+      "section_path": [
+        "03.08 Media Protection"
+      ],
+      "tags": [],
+      "title": "System Backup – Cryptographic Protection"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.09.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.09.01",
+      "remediation_types": [],
+      "section": "03.09 Personnel Security",
+      "section_path": [
+        "03.09 Personnel Security"
+      ],
+      "tags": [],
+      "title": "Personnel Screening"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.09.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.09.02",
+      "remediation_types": [],
+      "section": "03.09 Personnel Security",
+      "section_path": [
+        "03.09 Personnel Security"
+      ],
+      "tags": [],
+      "title": "Personnel Termination and Transfer"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.10.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.10.01",
+      "remediation_types": [],
+      "section": "03.10 Physical Protection",
+      "section_path": [
+        "03.10 Physical Protection"
+      ],
+      "tags": [],
+      "title": "Physical Access Authorizations"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.10.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.10.02",
+      "remediation_types": [],
+      "section": "03.10 Physical Protection",
+      "section_path": [
+        "03.10 Physical Protection"
+      ],
+      "tags": [],
+      "title": "Monitoring Physical Access"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.10.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.10.06",
+      "remediation_types": [],
+      "section": "03.10 Physical Protection",
+      "section_path": [
+        "03.10 Physical Protection"
+      ],
+      "tags": [],
+      "title": "Alternate Work Site"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.10.07.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.10.07",
+      "remediation_types": [],
+      "section": "03.10 Physical Protection",
+      "section_path": [
+        "03.10 Physical Protection"
+      ],
+      "tags": [],
+      "title": "Physical Access Control"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.10.08.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.10.08",
+      "remediation_types": [],
+      "section": "03.10 Physical Protection",
+      "section_path": [
+        "03.10 Physical Protection"
+      ],
+      "tags": [],
+      "title": "Access Control for Transmission"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.11.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.11.01",
+      "remediation_types": [],
+      "section": "03.11 Risk Assessment",
+      "section_path": [
+        "03.11 Risk Assessment"
+      ],
+      "tags": [],
+      "title": "Risk Assessment"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.11.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.11.02",
+      "remediation_types": [],
+      "section": "03.11 Risk Assessment",
+      "section_path": [
+        "03.11 Risk Assessment"
+      ],
+      "tags": [],
+      "title": "Vulnerability Monitoring and Scanning"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.11.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.11.04",
+      "remediation_types": [],
+      "section": "03.11 Risk Assessment",
+      "section_path": [
+        "03.11 Risk Assessment"
+      ],
+      "tags": [],
+      "title": "Risk Response"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.12.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.12.01",
+      "remediation_types": [],
+      "section": "03.12 Security Assessment and Monitoring",
+      "section_path": [
+        "03.12 Security Assessment and Monitoring"
+      ],
+      "tags": [],
+      "title": "Security Assessment"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.12.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.12.02",
+      "remediation_types": [],
+      "section": "03.12 Security Assessment and Monitoring",
+      "section_path": [
+        "03.12 Security Assessment and Monitoring"
+      ],
+      "tags": [],
+      "title": "Plan of Action and Milestones"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.12.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.12.03",
+      "remediation_types": [],
+      "section": "03.12 Security Assessment and Monitoring",
+      "section_path": [
+        "03.12 Security Assessment and Monitoring"
+      ],
+      "tags": [],
+      "title": "Continuous Monitoring"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.12.05.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.12.05",
+      "remediation_types": [],
+      "section": "03.12 Security Assessment and Monitoring",
+      "section_path": [
+        "03.12 Security Assessment and Monitoring"
+      ],
+      "tags": [],
+      "title": "Information Exchange"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.01",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Boundary Protection"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.04.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.04",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Information in Shared System Resources"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.06",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Network Communications – Deny by Default – Allow by Exception"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.08.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.08",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Transmission and Storage Confidentiality"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.09.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.09",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Network Disconnect"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.10.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.10",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Cryptographic Key Establishment and Management"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.11.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.11",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Cryptographic Protection"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.12.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.12",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Collaborative Computing Devices and Applications"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.13.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.13",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Mobile Code"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.13.15.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.13.15",
+      "remediation_types": [],
+      "section": "03.13 System and Communications Protection",
+      "section_path": [
+        "03.13 System and Communications Protection"
+      ],
+      "tags": [],
+      "title": "Session Authenticity"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.14.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.14.01",
+      "remediation_types": [],
+      "section": "03.14 System and Information Integrity",
+      "section_path": [
+        "03.14 System and Information Integrity"
+      ],
+      "tags": [],
+      "title": "Flaw Remediation"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.14.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.14.02",
+      "remediation_types": [],
+      "section": "03.14 System and Information Integrity",
+      "section_path": [
+        "03.14 System and Information Integrity"
+      ],
+      "tags": [],
+      "title": "Malicious Code Protection"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.14.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.14.03",
+      "remediation_types": [],
+      "section": "03.14 System and Information Integrity",
+      "section_path": [
+        "03.14 System and Information Integrity"
+      ],
+      "tags": [],
+      "title": "Security Alerts, Advisories, and Directives"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.14.06.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.14.06",
+      "remediation_types": [],
+      "section": "03.14 System and Information Integrity",
+      "section_path": [
+        "03.14 System and Information Integrity"
+      ],
+      "tags": [],
+      "title": "System Monitoring"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.14.08.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.14.08",
+      "remediation_types": [],
+      "section": "03.14 System and Information Integrity",
+      "section_path": [
+        "03.14 System and Information Integrity"
+      ],
+      "tags": [],
+      "title": "Information Management and Retention"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.15.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.15.01",
+      "remediation_types": [],
+      "section": "03.15 Planning",
+      "section_path": [
+        "03.15 Planning"
+      ],
+      "tags": [],
+      "title": "Policy and Procedures"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.15.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.15.02",
+      "remediation_types": [],
+      "section": "03.15 Planning",
+      "section_path": [
+        "03.15 Planning"
+      ],
+      "tags": [],
+      "title": "System Security Plan"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.15.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.15.03",
+      "remediation_types": [],
+      "section": "03.15 Planning",
+      "section_path": [
+        "03.15 Planning"
+      ],
+      "tags": [],
+      "title": "Rules of Behavior"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.16.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.16.01",
+      "remediation_types": [],
+      "section": "03.16 System and Services Acquisition",
+      "section_path": [
+        "03.16 System and Services Acquisition"
+      ],
+      "tags": [],
+      "title": "Security Engineering Principles"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.16.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.16.02",
+      "remediation_types": [],
+      "section": "03.16 System and Services Acquisition",
+      "section_path": [
+        "03.16 System and Services Acquisition"
+      ],
+      "tags": [],
+      "title": "Unsupported System Components"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.16.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.16.03",
+      "remediation_types": [],
+      "section": "03.16 System and Services Acquisition",
+      "section_path": [
+        "03.16 System and Services Acquisition"
+      ],
+      "tags": [],
+      "title": "External System Services"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.17.01.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.17.01",
+      "remediation_types": [],
+      "section": "03.17 Supply Chain Risk Management",
+      "section_path": [
+        "03.17 Supply Chain Risk Management"
+      ],
+      "tags": [],
+      "title": "Supply Chain Risk Management Plan"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.17.02.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.17.02",
+      "remediation_types": [],
+      "section": "03.17 Supply Chain Risk Management",
+      "section_path": [
+        "03.17 Supply Chain Risk Management"
+      ],
+      "tags": [],
+      "title": "Acquisition Strategies, Tools, and Methods"
+    },
+    {
+      "applicability": [
+        {
+          "benchmarks": [],
+          "target": null,
+          "version": null
+        }
+      ],
+      "architecture": null,
+      "assessment": {
+        "manual_reason": "no_check",
+        "status": "manual"
+      },
+      "check_types": [],
+      "file": "rules/03.17.03.json",
+      "has_odv": false,
+      "id": "nist_800_171.03.17.03",
+      "remediation_types": [],
+      "section": "03.17 Supply Chain Risk Management",
+      "section_path": [
+        "03.17 Supply Chain Risk Management"
+      ],
+      "tags": [],
+      "title": "Supply Chain Requirements and Processes"
+    }
+  ],
+  "schema_version": 7,
+  "source": "nist_800_171"
+}

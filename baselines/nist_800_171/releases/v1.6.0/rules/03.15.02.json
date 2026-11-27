@@ -1,0 +1,50 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Develop a system security plan that:\n  - 1. Defines the constituent system components;\n  - 2. Identifies the information types processed, stored, and transmitted by the system;\n  - 3. Describes specific threats to the system that are of concern to the organization;\n  - 4. Describes the operational environment for the system and any dependencies on or connections to other systems or system components;\n  - 5. Provides an overview of the security requirements for the system;\n  - 6. Describes the safeguards in place or planned for meeting the security requirements;\n  - 7. Identifies individuals that fulfill system roles and responsibilities; and\n  - 8. Includes other relevant information necessary for the protection of CUI.\n- b. Review and update the system security plan [Assignment: organization-defined frequency].\n- c. Protect the system security plan from unauthorized disclosure.\n\n## Discussion\n\nSystem security plans provide key characteristics of the system that is processing, storing, and transmitting CUI and how the system and information are protected. System security plans contain sufficient information to enable a design and implementation that are unambiguously compliant with the intent of the plans and the subsequent determinations of risk if the plan is implemented as intended. System security plans can be a collection of documents, including documents that already exist. Effective system security plans reference policies, procedures, and documents (e.g., design specifications) that provide additional detailed information. This reduces the documentation requirements associated with security programs and maintains security information in other established management or operational areas related to enterprise architecture, the system development life cycle, systems engineering, and acquisition.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.15.02",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-18"
+    ],
+    "source_controls": [
+      "PL-02"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.15 Planning"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.15.02",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "System Security Plan"
+}

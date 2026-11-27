@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Monitor and control communications at external managed interfaces to the system and key internal managed interfaces within the system.\n- b. Implement subnetworks for publicly accessible system components that are physically or logically separated from internal networks.\n- c. Connect to external systems only through managed interfaces that consist of boundary protection devices arranged in accordance with an organizational security architecture.\n\n## Discussion\n\nManaged interfaces include gateways, routers, firewalls, network-based malicious code analysis, virtualization systems, and encrypted tunnels implemented within a security architecture. Subnetworks that are either physically or logically separated from internal networks are referred to as demilitarized zones or DMZs. Restricting or prohibiting interfaces within organizational systems includes restricting external web traffic to designated web servers within managed interfaces, prohibiting external traffic that appears to be spoofing internal addresses, and prohibiting internal traffic that appears to be spoofing external addresses.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.13.01",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-125B",
+      "SP 800-160-1",
+      "SP 800-189",
+      "SP 800-207",
+      "SP 800-41"
+    ],
+    "source_controls": [
+      "SC-07"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.13 System and Communications Protection"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.13.01",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Boundary Protection"
+}

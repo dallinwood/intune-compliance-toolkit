@@ -1,0 +1,51 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Uniquely identify and authenticate system users, and associate that unique identification with processes acting on behalf of those users.\n- b. Re-authenticate users when [Assignment: organization-defined circumstances or situations] .\n\n## Discussion\n\nSystem users include individuals (or system processes acting on behalf of individuals) who are authorized to access a system. Typically, individual identifiers are the usernames associated with the system accounts assigned to those individuals. Since system processes execute on behalf of groups and roles, organizations may require the unique identification of individuals in group accounts or the accountability of individual activity. The unique identification and authentication of users apply to all system accesses. Organizations use passwords, physical authenticators, biometrics, or some combination thereof to authenticate user identities. Organizations may re-authenticate individuals in certain situations, including when roles, authenticators, or credentials change; when the execution of privileged functions occurs; after a fixed time period; or periodically.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.05.01",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-63-3"
+    ],
+    "source_controls": [
+      "IA-02",
+      "IA-11"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.05 Identification and Authentication"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.05.01",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "User Identification and Authentication"
+}

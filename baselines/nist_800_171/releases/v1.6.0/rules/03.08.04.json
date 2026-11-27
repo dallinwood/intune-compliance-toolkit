@@ -1,0 +1,47 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\nMark system media that contain CUI to indicate distribution limitations, handling caveats, and applicable CUI markings.\n\n## Discussion\n\nSystem media include digital and non-digital media. Marking refers to the use or application of human-readable security attributes. Labeling refers to the use of security attributes for internal system data structures. Digital media include diskettes, magnetic tapes, external or removable solid state or magnetic drives, flash drives, compact discs, and digital versatile discs. Non-digital media include paper and microfilm. CUI is defined by NARA along with marking, safeguarding, and dissemination requirements for such information.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.08.04",
+  "odvs": [],
+  "references": {
+    "source_controls": [
+      "MP-03"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.08 Media Protection"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.08.04",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Media Marking"
+}

@@ -5,7 +5,15 @@ from pathlib import Path
 
 import pytest
 
-from tools import import_asd_e4eit, import_asd_ism, import_cis_cac, import_cis_lockdown, import_mscp, import_nist_800_53
+from tools import (
+    import_asd_e4eit,
+    import_asd_ism,
+    import_cis_cac,
+    import_cis_lockdown,
+    import_mscp,
+    import_nist_800_53,
+    import_nist_800_171,
+)
 from tools.asd_e4eit_normalize import MAPPING_FILE_ID
 from tools.file_references import is_binary_payload
 from tools.mappings import validate_mappings
@@ -17,8 +25,8 @@ from tools.validate_library import validate_library
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINES_DIR = REPO_ROOT / "baselines"
 
-# Maintainer-written, except _mappings/rules/mscp-to-nist-800-53.json, which the mSCP and
-# NIST SP 800-53 importers regenerate (tools/generate_mscp_nist_800_53_mapping.py).
+# Maintainer-written, except _mappings/rules/mscp-to-nist-800-53.json and mscp-to-nist-800-171.json,
+# which the mSCP importer and the matching NIST importer regenerate (tools/mscp_citation_mappings.py).
 OVERLAYS_DIR_NAME = "_overlays"
 MAPPINGS_DIR_NAME = "_mappings"
 MAINTAINER_DIR_NAMES = (OVERLAYS_DIR_NAME, MAPPINGS_DIR_NAME)
@@ -29,6 +37,7 @@ IMPORTERS_BY_NAME = {
         import_mscp.IMPORTER,
         import_asd_ism.IMPORTER,
         import_nist_800_53.IMPORTER,
+        import_nist_800_171.IMPORTER,
         import_asd_e4eit.IMPORTER,
         *import_cis_cac.IMPORTERS.values(),
         *import_cis_lockdown.IMPORTERS.values(),
@@ -154,6 +163,7 @@ def test_regenerating_a_release_keeps_the_maintainer_folders(tmp_path):
 EXPECTED_PROVENANCE = {
     "mscp": "official",
     "nist_800_53": "official",
+    "nist_800_171": "official",
     "asd_ism": "official",
     "asd_e4eit": "official",
     "cac_cis_rhel9": "community",
@@ -318,6 +328,37 @@ def test_nist_800_53_every_control_id_round_trips_through_its_label():
         for control_id in control_ids
         if control_id_for_label(label_for_control_id(control_id)) != control_id
     ] == []
+
+
+NIST_800_171_CATALOG_SHA256 = "fd68bad4c1fee98dd1b2511884b585fb1f14265d4c5693d0492a25dd66e73dde"
+
+
+def committed_nist_800_171_rules() -> list[dict]:
+    rule_paths = sorted((current_release_dir("nist_800_171") / "rules").glob("*.json"))
+    return [json.loads(path.read_text(encoding="utf-8")) for path in rule_paths]
+
+
+def test_nist_800_171_vendored_catalog_hash_and_licence():
+    upstream_dir = REPO_ROOT / "sources" / "nist_800_171" / "releases" / current_release_tag("nist_800_171") / "upstream"
+    catalog_path = upstream_dir / "nist.gov" / "SP800-171" / "rev3" / "json" / "NIST_SP800-171_rev3_catalog.json"
+    assert hashlib.sha256(catalog_path.read_bytes()).hexdigest() == NIST_800_171_CATALOG_SHA256
+    assert "CC0" in (upstream_dir / "LICENSE.md").read_text(encoding="utf-8")
+
+
+def test_nist_800_171_rule_counts_and_references():
+    rules = committed_nist_800_171_rules()
+    assert len(rules) == 97
+    assert len({rule["section_path"][0] for rule in rules}) == 17
+    assert sum(len(rule["references"].get("source_controls", [])) for rule in rules) == 157
+    assert sum(len(rule["references"].get("publications", [])) for rule in rules) == 199
+
+
+def test_nist_800_171_discussions_have_no_raw_links_inserts_or_oscal_item_labels():
+    rules = committed_nist_800_171_rules()
+    assert rules
+    assert [rule["id"] for rule in rules if "](#" in rule["discussion"] or "[](" in rule["discussion"]] == []
+    assert [rule["id"] for rule in rules if "{{" in rule["discussion"]] == []
+    assert [rule["id"] for rule in rules if "SR-03." in rule["discussion"]] == []
 
 
 def test_asd_e4eit_vendored_license_present():

@@ -13,7 +13,7 @@ from tools.json_output import write_json
 from tools.library_output import SCHEMA_VERSION, index_entry
 from tools.mscp_fetch import IMPORTER_FORMAT, REPOSITORY_URL, fetch
 from tools.mscp_normalize import LICENSE, load_mscp_yaml, normalize_rule
-from tools.generate_mscp_nist_800_53_mapping import regenerate_after_import
+from tools import generate_mscp_nist_800_53_mapping, generate_mscp_nist_800_171_mapping
 from tools.release_import import SourceImporter, run_cli
 from tools.source_lock import SourceLock
 
@@ -69,6 +69,12 @@ def build_rule_tree(upstream_dir: Path, lock: SourceLock, tree_dir: Path) -> int
     return len(ordered_entries)
 
 
+def regenerate_cited_mappings(sources_dir: Path, baselines_dir: Path) -> None:
+    """mSCP cites both NIST frameworks, so an mSCP import keeps both generated mappings current."""
+    generate_mscp_nist_800_53_mapping.regenerate_after_import(sources_dir, baselines_dir)
+    generate_mscp_nist_800_171_mapping.regenerate_after_import(sources_dir, baselines_dir)
+
+
 IMPORTER = SourceImporter(
     name=SOURCE_NAME,
     display_name=SOURCE_DISPLAY_NAME,
@@ -78,7 +84,7 @@ IMPORTER = SourceImporter(
     fetch=fetch,
     build_rule_tree_by_format={IMPORTER_FORMAT: build_rule_tree},
     release_label=lambda tag, upstream_dir: tag.removeprefix("release_"),
-    after_import=regenerate_after_import,
+    after_import=regenerate_cited_mappings,
 )
 
 

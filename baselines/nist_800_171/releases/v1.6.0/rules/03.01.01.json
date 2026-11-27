@@ -1,0 +1,65 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Define the types of system accounts allowed and prohibited.\n- b. Create, enable, modify, disable, and remove system accounts in accordance with policy, procedures, prerequisites, and criteria.\n- c. Specify:\n  - 1. Authorized users of the system,\n  - 2. Group and role membership, and\n  - 3. Access authorizations (i.e., privileges) for each account.\n- d. Authorize access to the system based on:\n  - 1. A valid access authorization and\n  - 2. Intended system usage.\n- e. Monitor the use of system accounts.\n- f. Disable system accounts when:\n  - 1. The accounts have expired,\n  - 2. The accounts have been inactive for [Assignment: organization-defined time period],\n  - 3. The accounts are no longer associated with a user or individual,\n  - 4. The accounts are in violation of organizational policy, or\n  - 5. Significant risks associated with individuals are discovered.\n- g. Notify account managers and designated personnel or roles within:\n  - 1. [Assignment: organization-defined time period] when accounts are no longer required.\n  - 2. [Assignment: organization-defined time period] when users are terminated or transferred.\n  - 3. [Assignment: organization-defined time period] when system usage or the need-to-know changes for an individual.\n- h. Require that users log out of the system after [Assignment: organization-defined time period] of expected inactivity or when [Assignment: organization-defined circumstances].\n\n## Discussion\n\nThis requirement focuses on account management for systems and applications. The definition and enforcement of access authorizations other than those determined by account type (e.g., privileged access, non-privileged access) are addressed in 03.01.02. System account types include individual, group, temporary, system, guest, anonymous, emergency, developer, and service. Users who require administrative privileges on system accounts receive additional scrutiny by personnel responsible for approving such accounts and privileged access. Types of accounts that organizations may prohibit due to increased risk include group, emergency, guest, anonymous, and temporary. Organizations may choose to define access privileges or other attributes by account, type of account, or a combination of both. Other attributes required for authorizing access include restrictions on the time of day, day of the week, and point of origin. When defining other system account attributes, organizations consider system requirements (e.g., system upgrades, scheduled maintenance) and mission and business requirements (e.g., time zone differences, remote access to facilitate travel requirements). Users who pose a significant security risk include individuals for whom reliable evidence indicates either the intention to use authorized access to the system to cause harm or that adversaries will cause harm through them. Close coordination among mission and business owners, system administrators, human resource managers, and legal staff is essential when disabling system accounts for high-risk individuals. Time periods for the notification of organizational personnel or roles may vary. Inactivity logout is behavior- or policy-based and requires users to take physical action to log out when they are expecting inactivity longer than the defined period. Automatic enforcement of inactivity logout is addressed by 03.01.10.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.01.01",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "IR 7874",
+      "IR 7966",
+      "SP 800-113",
+      "SP 800-114",
+      "SP 800-121",
+      "SP 800-162",
+      "SP 800-178",
+      "SP 800-192",
+      "SP 800-46",
+      "SP 800-57-1",
+      "SP 800-57-2",
+      "SP 800-57-3",
+      "SP 800-77"
+    ],
+    "source_controls": [
+      "AC-02",
+      "AC-02(03)",
+      "AC-02(05)",
+      "AC-02(13)"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.01 Access Control"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.01.01",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Account Management"
+}

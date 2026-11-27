@@ -1,0 +1,52 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\nApply the following systems security engineering principles to the development or modification of the system and system components: [Assignment: organization-defined systems security engineering principles].\n\n## Discussion\n\nOrganizations apply systems security engineering principles to new development systems. For legacy systems, organizations apply systems security engineering principles to system modifications to the extent feasible, given the current state of hardware, software, and firmware components. The application of systems security engineering principles helps to develop trustworthy, secure, and resilient systems and reduce the susceptibility of organizations to disruptions, hazards, and threats. Examples include developing layered protections; establishing security policies, architectures, and controls as the foundation for system design; incorporating security requirements into the system development life cycle; delineating physical and logical security boundaries; ensuring that developers are trained on how to build trustworthy secure software; and performing threat modeling to identify use cases, threat agents, attack vectors and patterns, design patterns, and compensating controls needed to mitigate risk. Organizations that apply security engineering principles can facilitate the development of trustworthy, secure systems, system components, and system services; reduce risks to acceptable levels; and make informed risk-management decisions.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.16.01",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-160-1",
+      "SP 800-160-2",
+      "SP 800-207"
+    ],
+    "source_controls": [
+      "SA-08"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.16 System and Services Acquisition"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.16.01",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Security Engineering Principles"
+}

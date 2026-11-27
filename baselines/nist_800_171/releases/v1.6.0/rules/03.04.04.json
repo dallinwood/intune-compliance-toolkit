@@ -1,0 +1,51 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Analyze changes to the system to determine potential security impacts prior to change implementation.\n- b. Verify that the security requirements for the system continue to be satisfied after the system changes have been implemented.\n\n## Discussion\n\nOrganizational personnel with security responsibilities conduct impact analyses that include reviewing system security plans, policies, and procedures to understand security requirements; reviewing system design documentation and operational procedures to understand how system changes might affect the security state of the system; reviewing the impacts of system changes on supply chain partners with stakeholders; and determining how potential changes to a system create new risks and the ability to mitigate those risks. Impact analyses also include risk assessments to understand the impacts of changes and determine whether additional security requirements are needed. Changes to the system may affect the safeguards and countermeasures previously implemented. This requirement is related to 03.04.03. Not all changes to the system are configuration controlled.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.04.04",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-128"
+    ],
+    "source_controls": [
+      "CM-04",
+      "CM-04(02)"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.04 Configuration Management"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.04.04",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Impact Analyses"
+}

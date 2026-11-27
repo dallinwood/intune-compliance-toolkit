@@ -114,6 +114,26 @@ derived from the catalog. This content was modified by this project. It stays in
 the public domain in the United States and under CC0 1.0 elsewhere, and is
 provided as-is.
 
+sources/nist_800_171/releases/<tag>/upstream/ is an unmodified copy of the NIST SP 800-171
+Rev. 3 security requirements catalog, published by NIST in OSCAL format:
+
+  Project:  https://github.com/usnistgov/oscal-content
+  Release:  v1.6.0 (commit f0de6d8d8c059d374f15e0ae07508d82e370fc1d),
+            SP 800-171 Rev. 3 (3.0.0)
+  Licence:  a work of the United States government, in the public domain in
+            the United States and dedicated worldwide under CC0 1.0 Universal
+            https://creativecommons.org/publicdomain/zero/1.0/
+
+No attribution is required; it is given here anyway. The licence text is
+vendored in sources/nist_800_171/releases/<tag>/upstream/LICENSE.md.
+
+baselines/nist_800_171/ is adapted from that material: the catalog was converted to
+a normalized rule format, requirement statements and parameters were rendered as
+Markdown, cross-reference anchors in the discussions were removed, and rule ids,
+titles, sections and item labels were derived from the catalog. This content was
+modified by this project. It stays in the public domain in the United States and
+under CC0 1.0 elsewhere, and is provided as-is.
+
 sources/cac_cis_rhel9/releases/<tag>/upstream/ and sources/cac_cis_ubuntu2404/releases/<tag>/upstream/
 are unmodified copies of parts of the ComplianceAsCode project (the compiled
 SCAP datastream for the product, the CIS control file, and the project's
@@ -249,8 +269,8 @@ and no endorsement is implied.
 
 ASD does not endorse or sponsor this project, and no endorsement is implied.
 
-NIST does not endorse or sponsor this project's use of the SP 800-53 content, and no
-endorsement is implied.
+NIST does not endorse or sponsor this project's use of the SP 800-53 or SP 800-171
+content, and no endorsement is implied.
 
 Red Hat, Inc. and the other ComplianceAsCode contributors do not endorse or
 sponsor this project, and no endorsement is implied.

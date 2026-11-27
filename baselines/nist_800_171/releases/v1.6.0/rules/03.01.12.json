@@ -1,0 +1,57 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Establish usage restrictions, configuration requirements, and connection requirements for each type of allowable remote system access.\n- b. Authorize each type of remote system access prior to establishing such connections.\n- c. Route remote access to the system through authorized and managed access control points.\n- d. Authorize the remote execution of privileged commands and remote access to security-relevant information.\n\n## Discussion\n\nRemote access is access to systems (or processes acting on behalf of users) that communicate through external networks, such as the internet. Monitoring and controlling remote access methods allows organizations to detect attacks and ensure compliance with remote access policies. Routing remote access through managed access control points enhances explicit control over such connections and reduces susceptibility to unauthorized access to the system, which could result in the unauthorized disclosure of CUI. Remote access to the system represents a significant potential vulnerability that can be exploited by adversaries. Restricting the execution of privileged commands and access to security-relevant information via remote access reduces the exposure of the organization and its susceptibility to threats by adversaries. A privileged command is a human-initiated command executed on a system that involves the control, monitoring, or administration of the system, including security functions and security-relevant information. Security-relevant information is information that can potentially impact the operation of security functions or the provision of security services in a manner that could result in failure to enforce the system security policy or maintain isolation of code and data. Privileged commands give individuals the ability to execute sensitive, security-critical, or security-relevant system functions.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.01.12",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "IR 7966",
+      "SP 800-113",
+      "SP 800-114",
+      "SP 800-121",
+      "SP 800-46",
+      "SP 800-77"
+    ],
+    "source_controls": [
+      "AC-17",
+      "AC-17(03)",
+      "AC-17(04)"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.01 Access Control"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.01.12",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Remote Access"
+}

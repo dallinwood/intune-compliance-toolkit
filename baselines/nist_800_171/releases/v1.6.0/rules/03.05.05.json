@@ -1,0 +1,51 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Receive authorization from organizational personnel or roles to assign an individual, group, role, service, or device identifier.\n- b. Select and assign an identifier that identifies an individual, group, role, service, or device.\n- c. Prevent the reuse of identifiers for [Assignment: organization-defined time period].\n- d. Manage individual identifiers by uniquely identifying each individual as [Assignment: organization-defined characteristic].\n\n## Discussion\n\nIdentifiers are provided for users, processes acting on behalf of users, and devices. Prohibiting the reuse of identifiers prevents the assignment of previously used individual, group, role, service, or device identifiers to different individuals, groups, roles, services, or devices. Characteristics that identify the status of individuals include contractors, foreign nationals, and non-organizational users. Identifying the status of individuals by these characteristics provides information about the people with whom organizational personnel are communicating. For example, it is useful for an employee to know that one of the individuals on an email message is a contractor.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.05.05",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-63-3"
+    ],
+    "source_controls": [
+      "IA-04",
+      "IA-04(04)"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.05 Identification and Authentication"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.05.05",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Identifier Management"
+}

@@ -1,0 +1,12 @@
+{
+  "mscp_release": "release_27.1",
+  "nist_800_171_release": "v1.6.0",
+  "schema_version": 1,
+  "unresolved": [
+    {
+      "citation": "03.13.03",
+      "reason": "not_in_release",
+      "rule": "mscp.system_settings_software_update_enforce"
+    }
+  ]
+}

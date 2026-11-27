@@ -57,6 +57,17 @@ That content stays in the public domain and under CC0 1.0. The upstream licence
 text is vendored in `sources/nist_800_53/releases/<tag>/upstream/LICENSE.md`.
 NIST does not endorse this project.
 
+The NIST SP 800-171 Rev. 3 rule content in `sources/nist_800_171/` and
+`baselines/nist_800_171/` comes from the same
+[OSCAL content published by NIST](https://github.com/usnistgov/oscal-content),
+under the same terms: public domain in the United States and CC0 1.0 worldwide.
+`sources/nist_800_171/releases/<tag>/upstream/` is an unmodified copy of the
+catalog. This project has modified the content in `baselines/nist_800_171/`: it
+was converted to a normalized rule format, requirement statements and parameters
+were rendered as Markdown, cross-reference anchors in the discussions were
+removed, and rule ids, titles, sections and item labels were derived from the
+catalog. NIST does not endorse this project.
+
 The CIS rule content in `sources/cac_cis_rhel9/`, `sources/cac_cis_ubuntu2404/`,
 `baselines/cac_cis_rhel9/` and `baselines/cac_cis_ubuntu2404/` comes from the
 [ComplianceAsCode project](https://github.com/ComplianceAsCode/content),
@@ -284,8 +295,9 @@ Requires Python 3.10 or newer.
    running.
 6. Commit the result.
 
-The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
-and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
+The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`,
+`baselines/_mappings/rules/mscp-to-nist-800-171.json` and their
+`docs/mappings/*-unresolved.json` reports (see "Mapping rules").
 Review their diff with the rest.
 
 ## Updating the ASD ISM rules
@@ -375,6 +387,22 @@ library validator also rejects two releases with the same label.
 The import also regenerates `baselines/_mappings/rules/mscp-to-nist-800-53.json`
 and `docs/mappings/mscp-to-nist-800-53-unresolved.json` (see "Mapping rules").
 Review their diff with the rest.
+
+## Updating the NIST SP 800-171 rules
+
+The same steps as for 800-53, with `python tools/import_nist_800_171.py --tag <release tag>`
+and the `nist_800_171` folders. The release label is the 800-171 version
+(`3.0.0`) from the catalog's `framework-version-identifier` property, not the
+catalog's `metadata.version`, which only versions NIST's OSCAL file.
+
+Only `v1.6.0` is stored. oscal-content carries 800-171 from `v1.4.0` on, always
+Rev. 3: `v1.4.0` left 29 requirement statements empty (fixed in `v1.5.0`, with
+no wording change), and `v1.5.0` holds the same requirements as `v1.6.0`, so
+neither is a separate version of the framework. Import another tag only when
+the 800-171 version changes.
+
+Withdrawn requirements are not imported, and the import stops with an error on
+any part of the catalog it does not understand.
 
 ## Updating the CIS (ComplianceAsCode) rules
 
@@ -691,6 +719,13 @@ current 800-53 release, or a repeat) are printed as warnings and listed in
 a citation shows up as a diff there. Hand-written links between mSCP and
 800-53 are only for pairs mSCP does not cite, because the validator rejects a
 hand-written link that repeats a generated pair.
+
+`mscp-to-nist-800-171.json` is generated the same way from mSCP's
+`references.nist["800-171r3"]` citations (requirement numbers such as
+`03.03.08`), by the mSCP and NIST SP 800-171 imports or
+`python tools/generate_mscp_nist_800_171_mapping.py`. Its unresolved report,
+`docs/mappings/mscp-to-nist-800-171-unresolved.json`, lists mSCP citations of
+requirements that Rev. 3 withdrew. Both generators share `tools/mscp_citation_mappings.py`.
 
 `baselines/_mappings/rules/asd-e4eit-to-asd-ism.json` is also generated, not
 written by hand. It carries ASD's own published mapping from each Essentials

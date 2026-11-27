@@ -1,0 +1,54 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Develop and document an inventory of system components.\n- b. Review and update the system component inventory [Assignment: organization-defined frequency].\n- c. Update the system component inventory as part of installations, removals, and system updates.\n\n## Discussion\n\nSystem components are discrete, identifiable assets (i.e., hardware, software, and firmware elements) that compose a system. Organizations may implement centralized system component inventories that include components from all systems. In such situations, organizations ensure that the inventories include the system-specific information required for component accountability. The information necessary for effective accountability of system components includes the system name, software owners, software version numbers, software license information, hardware inventory specifications, and — for networked components — the machine names and network addresses for all implemented protocols (e.g., IPv4, IPv6). Inventory specifications include component type, physical location, date of receipt, manufacturer, cost, model, serial number, and supplier information.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.04.10",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "IR 8011-2",
+      "IR 8011-3",
+      "SP 800-124",
+      "SP 800-128"
+    ],
+    "source_controls": [
+      "CM-08",
+      "CM-08(01)"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.04 Configuration Management"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.04.10",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "System Component Inventory"
+}

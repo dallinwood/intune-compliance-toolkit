@@ -1,0 +1,51 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Develop an incident response plan that:\n  - 1. Provides the organization with a roadmap for implementing its incident response capability,\n  - 2. Describes the structure and organization of the incident response capability,\n  - 3. Provides a high-level approach for how the incident response capability fits into the overall organization,\n  - 4. Defines reportable incidents,\n  - 5. Addresses the sharing of incident information, and\n  - 6. Designates responsibilities to organizational entities, personnel, or roles.\n- b. Distribute copies of the incident response plan to designated incident response personnel (identified by name and/or by role) and organizational elements.\n- c. Update the incident response plan to address system and organizational changes or problems encountered during plan implementation, execution, or testing.\n- d. Protect the incident response plan from unauthorized disclosure.\n\n## Discussion\n\nIt is important that organizations develop and implement a coordinated approach to incident response. Organizational mission and business functions determine the structure of incident response capabilities. As part of the incident response capabilities, organizations consider the coordination and sharing of information with external organizations, including external service providers and other organizations involved in the supply chain.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.06.05",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-137",
+      "SP 800-86"
+    ],
+    "source_controls": [
+      "IR-08"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.06 Incident Response"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.06.05",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Incident Response Plan"
+}

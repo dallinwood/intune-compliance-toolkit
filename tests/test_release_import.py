@@ -5,7 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from tools import import_asd_ism, import_mscp, import_nist_800_53
+from tools import (
+    generate_mscp_nist_800_53_mapping,
+    generate_mscp_nist_800_171_mapping,
+    import_asd_ism,
+    import_mscp,
+    import_nist_800_53,
+    import_nist_800_171,
+)
 from tools.library_output import SCHEMA_VERSION, UnsupportedUpstreamData, index_entry
 from tools.json_output import write_json
 from tools.release_import import (
@@ -412,10 +419,25 @@ def test_a_failing_after_import_exits_one_but_keeps_the_releases(workspace, caps
     assert [release["tag"] for release in source["releases"]] == ["A", "B"]
 
 
-def test_mscp_and_nist_importers_regenerate_the_mapping_and_asd_ism_does_not():
-    assert import_mscp.IMPORTER.after_import is not None
-    assert import_mscp.IMPORTER.after_import is import_nist_800_53.IMPORTER.after_import
+def test_mscp_regenerates_both_cited_mappings_and_each_nist_importer_its_own():
+    assert import_mscp.IMPORTER.after_import is import_mscp.regenerate_cited_mappings
+    assert import_nist_800_53.IMPORTER.after_import is generate_mscp_nist_800_53_mapping.regenerate_after_import
+    assert import_nist_800_171.IMPORTER.after_import is generate_mscp_nist_800_171_mapping.regenerate_after_import
     assert import_asd_ism.IMPORTER.after_import is None
+
+
+def test_mscp_hook_regenerates_the_800_53_and_800_171_mappings(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(
+        generate_mscp_nist_800_53_mapping, "regenerate_after_import", lambda *directories: calls.append("800-53")
+    )
+    monkeypatch.setattr(
+        generate_mscp_nist_800_171_mapping, "regenerate_after_import", lambda *directories: calls.append("800-171")
+    )
+
+    import_mscp.regenerate_cited_mappings(tmp_path / "sources", tmp_path / "baselines")
+
+    assert calls == ["800-53", "800-171"]
 
 
 def test_published_source_entry_records_the_importer_provenance(workspace):

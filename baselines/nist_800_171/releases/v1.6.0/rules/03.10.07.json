@@ -1,0 +1,48 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Enforce physical access authorizations at entry and exit points to the facility where the system resides by:\n  - 1. Verifying individual physical access authorizations before granting access to the facility and\n  - 2. Controlling ingress and egress with physical access control systems, devices, or guards.\n- b. Maintain physical access audit logs for entry or exit points.\n- c. Escort visitors, and control visitor activity.\n- d. Secure keys, combinations, and other physical access devices.\n- e. Control physical access to output devices to prevent unauthorized individuals from obtaining access to CUI.\n\n## Discussion\n\nThis requirement addresses physical locations containing systems or system components that process, store, or transmit CUI. Organizations determine the types of guards needed, including professional security staff or administrative staff. Physical access devices include keys, locks, combinations, biometric readers, and card readers. Physical access control systems comply with applicable laws, Executive Orders, directives, policies, regulations, standards, and guidelines. Organizations have flexibility in the types of audit logs employed. Audit logs can be procedural, automated, or some combination thereof. Physical access points can include exterior access points, interior access points to systems that require supplemental access controls, or both. Physical access control applies to employees and visitors. Individuals with permanent physical access authorizations are not considered visitors. Controlling physical access to output devices includes placing output devices in locked rooms or other secured areas with keypad or card reader access controls and only allowing access to authorized individuals, placing output devices in locations that can be monitored by personnel, installing monitor or screen filters, and using headphones. Examples of output devices include monitors, printers, scanners, facsimile machines, audio devices, and copiers.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.10.07",
+  "odvs": [],
+  "references": {
+    "source_controls": [
+      "PE-03",
+      "PE-05"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.10 Physical Protection"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.10.07",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Physical Access Control"
+}

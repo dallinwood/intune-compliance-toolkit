@@ -1,0 +1,67 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Develop, document, and disseminate to organizational personnel or roles the policies and procedures needed to satisfy the security requirements for the protection of CUI.\n- b. Review and update policies and procedures [Assignment: organization-defined frequency].\n\n## Discussion\n\nThis requirement addresses policies and procedures for the protection of CUI. Policies and procedures contribute to security assurance and should address each family of the CUI security requirements. Policies can be included as part of the organizational security policy or be represented by separate policies that address each family of security requirements. Procedures describe how policies are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security plans or in one or more separate documents.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.15.01",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-100",
+      "SP 800-12"
+    ],
+    "source_controls": [
+      "AC-01",
+      "AT-01",
+      "AU-01",
+      "CA-01",
+      "CM-01",
+      "IA-01",
+      "IR-01",
+      "MA-01",
+      "MP-01",
+      "PE-01",
+      "PL-01",
+      "PS-01",
+      "RA-01",
+      "SA-01",
+      "SC-01",
+      "SI-01",
+      "SR-01"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.15 Planning"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.15.01",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Policy and Procedures"
+}

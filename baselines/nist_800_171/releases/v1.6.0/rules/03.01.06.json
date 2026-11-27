@@ -1,0 +1,48 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Restrict privileged accounts on the system to [Assignment: organization-defined personnel or roles]..\n- b. Require that users (or roles) with privileged accounts use non-privileged accounts when accessing non-security functions or non-security information.\n\n## Discussion\n\nPrivileged accounts refer to accounts that are granted elevated privileges to access resources (including security functions or security-relevant information) that are otherwise restricted for non-privileged accounts. These accounts are typically described as system administrator or super user accounts. For example, a privileged account is often required in order to perform privileged functions such as executing commands that could modify system behavior. Restricting privileged accounts to specific personnel or roles ensures that only those authorized users can access and manipulate security functions or security-relevant information. Requiring the use of non-privileged accounts when such access is not needed can limit unauthorized access to and manipulation of security functions or security-relevant information.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.01.06",
+  "odvs": [],
+  "references": {
+    "source_controls": [
+      "AC-06(02)",
+      "AC-06(05)"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.01 Access Control"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.01.06",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Least Privilege – Privileged Accounts"
+}

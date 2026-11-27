@@ -1,0 +1,51 @@
+{
+  "applicability": [
+    {
+      "benchmarks": [],
+      "target": null,
+      "version": null
+    }
+  ],
+  "architecture": null,
+  "assessment": {
+    "manual_reason": "no_check",
+    "status": "manual"
+  },
+  "check": null,
+  "discussion": "## Requirement\n\n- a. Provide incident response training to system users consistent with assigned roles and responsibilities:\n  - 1. Within [Assignment: organization-defined time period] of assuming an incident response role or responsibility or acquiring system access,\n  - 2. When required by system changes, and\n  - 3. [Assignment: organization-defined frequency] thereafter.\n- b. Review and update incident response training content [Assignment: organization-defined frequency] and following [Assignment: organization-defined events].\n\n## Discussion\n\nIncident response training is associated with the assigned roles and responsibilities of organizational personnel to ensure that the appropriate content and level of detail are included in such training. For example, users may only need to know how to recognize an incident or whom to call; system administrators may require additional training on how to handle incidents; and incident responders may receive specific training on data collection techniques, forensics, reporting, system recovery, and system restoration. Incident response training includes user training in identifying and reporting suspicious activities from external and internal sources. Incident response training for users may be provided as part of 03.02.02. Events that may cause an update to incident response training content include incident response plan testing, response to an actual incident, audit or assessment findings, or changes in applicable laws, Executive Orders, policies, directives, regulations, standards, and guidelines.",
+  "discussion_format": "markdown",
+  "id": "nist_800_171.03.06.04",
+  "odvs": [],
+  "references": {
+    "publications": [
+      "SP 800-137",
+      "SP 800-86"
+    ],
+    "source_controls": [
+      "IR-02"
+    ]
+  },
+  "remediation": null,
+  "schema_version": 7,
+  "section_path": [
+    "03.06 Incident Response"
+  ],
+  "source": {
+    "commit_sha": "f0de6d8d8c059d374f15e0ae07508d82e370fc1d",
+    "license": {
+      "modified": true,
+      "name": "CC0 1.0 (public domain)",
+      "rights_holder": "National Institute of Standards and Technology",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "name": "nist_800_171",
+    "release_tag": "v1.6.0",
+    "upstream_path": "nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json",
+    "upstream_revision": null,
+    "upstream_rule_id": "SP_800_171_03.06.04",
+    "upstream_updated": null,
+    "upstream_url": "https://github.com/usnistgov/oscal-content/blob/f0de6d8d8c059d374f15e0ae07508d82e370fc1d/nist.gov/SP800-171/rev3/json/NIST_SP800-171_rev3_catalog.json"
+  },
+  "tags": [],
+  "title": "Incident Response Training"
+}

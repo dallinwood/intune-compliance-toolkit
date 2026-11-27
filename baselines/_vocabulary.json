@@ -6,6 +6,7 @@
       { "label": "ASD ISM", "terms": ["asd_ism"] },
       { "label": "NIST mSCP", "terms": ["mscp"] },
       { "label": "NIST SP 800-53", "terms": ["nist_800_53"] },
+      { "label": "NIST SP 800-171", "terms": ["nist_800_171"] },
       { "label": "ASD E4EIT", "terms": ["asd_e4eit"] },
       { "label": "CIS RHEL 9 (CaC)", "terms": ["cac_cis_rhel9"] },
       { "label": "CIS Ubuntu 24.04 (CaC)", "terms": ["cac_cis_ubuntu2404"] },
